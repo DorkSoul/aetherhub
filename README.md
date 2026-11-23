@@ -171,6 +171,26 @@ Or run a production build: `npm run build && DATA_DIR=./data npm start`.
 
 ### Tests
 
+Two levels:
+
+```bash
+npm run test:changed      # quick: only what covers your changes (seconds to ~15 min)
+npm run test:full         # everything, before a release (about an hour)
+```
+
+`test:changed` looks at the files changed since the last commit (or `-- --since <ref>`) and runs:
+
+| What changed | What runs |
+|---|---|
+| card files (`cards/<X>/<Name>.json`, `cards/tests/<Name>.json`) | those cards: compile, scenarios, random play |
+| engine Rust code | fast engine build, the engine's own tests, and the scenarios of the cards using the DSL types and rules areas the change touches (plus `cards/core`) |
+| TypeScript (`packages/`, `e2e/`) | typecheck and unit tests; browser tests when the client, server or e2e changed |
+
+Engine code is shared by many cards, so a change can still break one the quick run didn't pick: that is what
+`test:full` (every scenario of every card, every card in random play, all tests, generated files up to date) is for.
+
+The individual commands:
+
 ```bash
 npm run typecheck
 npm test                                  # Vitest: shared logic, server API + WebSocket, rules engine bindings
@@ -182,7 +202,8 @@ engine/target/release/smoke --all         # every card survives random play
 ```
 
 A full `cards test` or `smoke --all` loads the whole card database (about 0.7 GB of memory). Pass card names to run
-just those, e.g. `engine/target/release/cards test Lightning_Bolt`.
+just those, e.g. `engine/target/release/cards test Lightning_Bolt`. For quicker engine builds while working, use
+`cargo build --profile fast` (no link-time optimisation; binaries in `engine/target/fast`).
 
 ### Adding or fixing cards
 
@@ -209,7 +230,7 @@ The tests run locally, not on GitHub, so a release costs no Actions minutes beyo
 
 1. Set the version (e.g. `1.1.0`) everywhere: `npm version 1.1.0 --workspaces --include-workspace-root
    --no-git-tag-version`, plus `version` in `packages/server/src/config.ts` and `packaging/launcher/Cargo.toml`.
-2. Run the tests (see [Tests](#tests)) and `npm run dist`.
+2. Run `npm run test:full` and `npm run dist`.
 3. Commit, tag and push: `git tag v1.1.0 && git push && git push origin v1.1.0`.
 4. Publish the release with the two files and their checksums:
    `gh release create v1.1.0 release/Aetherhub-1.1.0-* --title "Aetherhub 1.1.0" --generate-notes`
