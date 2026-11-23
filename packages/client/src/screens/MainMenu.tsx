@@ -119,6 +119,9 @@ export function MainMenu() {
         <div className="display" style={{ fontSize: 19 }}>
           Aetherhub
         </div>
+        <div style={{ fontSize: 12, color: 'var(--mu2)', marginLeft: -8 }} title="Aetherhub version">
+          v{__APP_VERSION__}
+        </div>
         {status?.serverName && status.serverName.trim().toLowerCase() !== 'aetherhub' && (
           <div className="hide-sm" style={{ fontSize: 12, color: 'var(--mu2)', padding: '3px 8px', border: '1px solid var(--line3)', borderRadius: 6 }}>
             {status.serverName}

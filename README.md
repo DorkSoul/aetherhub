@@ -83,8 +83,10 @@ Download the file for your system from the [latest release](https://github.com/D
 | Linux (x86-64) | `Aetherhub-<version>-x86_64.AppImage` | `chmod +x Aetherhub-*.AppImage`, then run it |
 | Windows 10/11 (x64) | `Aetherhub-<version>-windows-x64.zip` | Unzip it anywhere and run `Aetherhub.exe` |
 
-A console window opens. It shows the address for this computer and the one other devices on your home network
-can use, and the browser opens automatically. Close the window (or press Ctrl+C) to stop the server.
+A small Aetherhub window opens. It shows the address for this computer and the one other devices on your home
+network can use, and the browser opens automatically once the server is ready. **Closing that window (or its Stop
+button) stops Aetherhub**; running games are saved first. The server's log is `aetherhub.log` in the data folder.
+On a machine without a desktop, the Linux version runs in the terminal instead (or pass `--no-gui`): Ctrl+C stops it.
 
 - **Windows:** the app isn't code-signed, so SmartScreen may say "Windows protected your PC": choose **More info →
   Run anyway**. Allow access when the firewall asks, otherwise only this computer can connect.

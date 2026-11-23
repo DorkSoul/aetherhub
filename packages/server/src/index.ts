@@ -25,6 +25,16 @@ for (const sig of ['SIGINT', 'SIGTERM'] as const) {
   });
 }
 
+// Run by the desktop launcher: it holds stdin open for as long as it runs, so the server stops (saving games) when the
+// launcher's window is closed or the launcher itself ends.
+if (process.env.AETHERHUB_STOP_ON_STDIN_EOF === '1') {
+  process.stdin.on('end', () => {
+    f.log.info('Launcher closed, shutting down');
+    shutdown(0);
+  });
+  process.stdin.resume();
+}
+
 // A stray rejected promise is logged instead of taking every game down with it (Node's default is to exit).
 process.on('unhandledRejection', (err) => {
   f.log.error({ err }, 'Unhandled promise rejection');
