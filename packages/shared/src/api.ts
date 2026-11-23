@@ -61,6 +61,28 @@ export interface ServerStatus {
   games: GameSummary[];
 }
 
+/** A game the server is running, as the admin Server page lists it. */
+export interface AdminGame {
+  id: string;
+  kind: 'sandbox' | 'rules';
+  name: string;
+  /** the players; an AI seat is marked "(AI)", a player who is not connected "(away)" */
+  players: string[];
+  turn: number;
+  /** when someone last did something in it (ms), if known */
+  lastActive: number | null;
+  /** waiting for players, running, over, or restored after a restart and not opened since */
+  state: 'waiting' | 'running' | 'over' | 'sleeping';
+}
+
+/** A line of the server's log (kept in memory: the most recent ones). */
+export interface AdminLogLine {
+  seq: number;
+  at: number;
+  level: string;
+  msg: string;
+}
+
 /** sandbox: no rules enforced; rules: the rules engine plays the game (AI seats allowed); draft / sealed: a limited event */
 export type GameType = 'sandbox' | 'rules' | 'draft' | 'sealed';
 export const GAME_TYPES: { id: GameType; label: string; hint: string }[] = [

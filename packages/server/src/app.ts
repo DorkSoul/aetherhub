@@ -17,6 +17,7 @@ import { RulingsDb, rulingsDbPath } from './db/rulings';
 import { DeckService } from './decks';
 import { GameHub } from './games/hub';
 import { ImageCache } from './images';
+import { logStream } from './serverlog';
 import { adminRoutes } from './routes/admin';
 import { authRoutes } from './routes/auth';
 import { contentRoutes } from './routes/content';
@@ -36,7 +37,7 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<{ f: Fa
   fs.mkdirSync(config.dataDir, { recursive: true });
   const f = Fastify({
     trustProxy: config.trustProxy,
-    logger: opts.logger ? { level: process.env.LOG_LEVEL || 'info' } : false,
+    logger: opts.logger ? { level: process.env.LOG_LEVEL || 'info', stream: logStream } : false,
     bodyLimit: 12 * 1024 * 1024,
     forceCloseConnections: true,
   });

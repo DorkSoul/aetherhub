@@ -197,6 +197,8 @@ interface DeckInfo {
 
 export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
   const sessions = new Map<string, Session>();
+  /** the players' names for the log and the admin page, an AI marked as one */
+  const playersOf = (s: Session) => s.setup.seats.map((x) => (x.human ? x.name : `${x.name} (AI)`));
   const WATCH_IDLE_MS = 2 * 60_000;
   const db = ctx.app.db;
   /** the app is shutting down: no more watch-mode steps or scheduled saves */
@@ -436,6 +438,10 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
         for (let n = 0; n <= MAX_AUTO_ANSWERS; n++) {
           const adv = await s.game.advance();
           storeFrames(s, adv, n === 0 ? by : undefined);
+          if (adv.over && !s.over) {
+            const names = playersOf(s);
+            ctx.log(`Rules game over: ${names.join(', ')} – ${adv.over.t === 'Winner' ? `${names[adv.over.player] ?? 'a player'} won` : 'a draw'} on turn ${s.turn}`);
+          }
           s.over = adv.over;
           s.out = !!adv.humans_out && !adv.over;
           // Every human has left and this step showed nothing: the engine is waiting on a seat nobody answers for.
@@ -800,6 +806,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     );
     sessions.set(s.id, s);
     begin(s);
+    ctx.log(`Rules game started: ${playersOf(s).join(', ')}`);
     return s.id;
   };
 
@@ -807,6 +814,17 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     const s = sessions.get(id);
     return !!s && !s.over && !s.error;
   };
+
+  ctx.hub.rulesGames = () =>
+    [...sessions.values()].map((s) => ({
+      id: s.id,
+      kind: 'rules' as const,
+      name: s.deckName,
+      players: playersOf(s),
+      turn: s.turn,
+      lastActive: s.touched,
+      state: s.over || s.error ? ('over' as const) : s.status === 'waiting' ? ('waiting' as const) : !s.game && s.pending ? ('sleeping' as const) : ('running' as const),
+    }));
 
   /** The player's running games, so a closed tab can find its way back. */
   r.get('/api/rules/mine', auth, async (req) => {

@@ -9,6 +9,7 @@ import { config } from '../config';
 import { bad, notFound, type Ctx } from '../context';
 import { AppDb } from '../db/app';
 import { all, get, run, tx } from '../db/sqlite';
+import { recentLog } from '../serverlog';
 import { NewPw, Username } from './auth';
 
 export function adminRoutes(r: FastifyInstance, ctx: Ctx) {
@@ -112,6 +113,13 @@ export function adminRoutes(r: FastifyInstance, ctx: Ctx) {
     if (b.defaultMaxPlayers) ctx.app.setSetting('defaultMaxPlayers', String(b.defaultMaxPlayers));
     ctx.hub.broadcastStatus();
     return { ok: true };
+  });
+
+  r.get('/api/admin/games', opts, async () => ctx.hub.adminGames());
+
+  r.get('/api/admin/log', opts, async (req) => {
+    const { after } = z.object({ after: z.coerce.number().int().min(0).optional() }).parse(req.query);
+    return recentLog(after ?? 0);
   });
 
   r.get('/api/admin/carddata', opts, async () => ({ ...ctx.carddata.status(), cache: ctx.images.cacheStats(), prefetch: ctx.images.prefetch, queued: ctx.images.queued() }));

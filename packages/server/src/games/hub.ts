@@ -1,5 +1,5 @@
 import type WebSocket from 'ws';
-import type { AiLevel, ClientMsg, GameSettings, GameState, LobbySlot, LobbyView, ServerMsg, ServerStatus } from '@aetherhub/shared';
+import type { AdminGame, AiLevel, ClientMsg, GameSettings, GameState, LobbySlot, LobbyView, ServerMsg, ServerStatus } from '@aetherhub/shared';
 import { mergePrefs } from '@aetherhub/shared';
 import type { AppDb } from '../db/app';
 import type { CardDb } from '../db/cards';
@@ -48,6 +48,8 @@ export class GameHub implements RoomHost {
   eventDeckCards?: (draftId: string, seat: number) => [string, number][] | null;
   /** whether a rules game is still running (event lobbies list their running games) */
   rulesAlive?: (id: string) => boolean;
+  /** the rules games the server holds, for the admin Server page */
+  rulesGames?: () => AdminGame[];
   private nextConnId = 1;
   private heartbeat: NodeJS.Timeout | null = null;
   statusExtra: () => Pick<ServerStatus, 'serverName' | 'cardDataUpdatedAt' | 'cardCount' | 'importing'> = () => ({ serverName: 'Aetherhub', cardDataUpdatedAt: null, cardCount: 0, importing: false });
@@ -186,7 +188,24 @@ export class GameHub implements RoomHost {
   }
 
   dropRoom(room: GameRoom) {
-    this.rooms.delete(room.id);
+    if (this.rooms.delete(room.id)) this.logger(`Sandbox game ended: ${room.game.state.settings.name}`);
+  }
+
+  /** Every game the server is running (sandbox and rules), for the admin Server page. */
+  adminGames(): AdminGame[] {
+    const sandbox = [...this.rooms.values()].map((r): AdminGame => {
+      const st = r.game.state;
+      return {
+        id: r.id,
+        kind: 'sandbox',
+        name: st.settings.name,
+        players: st.seats.map((x) => x.name + (x.connected ? '' : ' (away)')),
+        turn: st.turn.n,
+        lastActive: r.game.events.at(-1)?.at ?? null,
+        state: st.stage === 'ended' ? 'over' : 'running',
+      };
+    });
+    return [...sandbox, ...(this.rulesGames?.() ?? [])];
   }
 
   /** The lobby this user is in. */
@@ -404,6 +423,7 @@ export class GameHub implements RoomHost {
     const room = new GameRoom(this, LiveGame.create(this.app, state, meta));
     room.eventLobby = eventLobby ?? null;
     this.rooms.set(room.id, room);
+    this.logger(`Sandbox game started: ${settings.name} (${list.map((x) => x.name).join(', ')})`);
     room.afterStart();
     return room;
   }

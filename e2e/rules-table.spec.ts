@@ -152,5 +152,13 @@ test('Auras and Curses on an opponent sit on their side, the hand keeps its orde
     const old = was.find((w) => w.iid === iid)!.box!;
     expect(Math.abs(box!.x - old.x) + Math.abs(box!.y - old.y), `card ${iid} moved`).toBeLessThan(2);
   }
+
+  // the admin Server page lists the game and shows the server log
+  await p.goto(srv.url + 'settings/server');
+  await expect(p.getByRole('heading', { name: 'Running games' })).toBeVisible({ timeout: 20_000 });
+  await expect(p.getByText(/alice, .*\(AI\)/)).toBeVisible();
+  await expect(p.getByText('in progress', { exact: false }).first()).toBeVisible();
+  await expect(p.getByRole('heading', { name: 'Server log' })).toBeVisible();
+  await p.screenshot({ path: test.info().outputPath('server-page.png'), fullPage: true });
   await p.request.delete(srv.url + `api/rules/games/${id}`);
 });

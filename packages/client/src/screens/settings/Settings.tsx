@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Select } from '../../ui/Select';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import type { HotkeyAction, PanelSlot, UserPrefs } from '@aetherhub/shared';
+import type { AdminGame, AdminLogLine, HotkeyAction, PanelSlot, UserPrefs } from '@aetherhub/shared';
 import { ACCENT_DEFAULT, ACCENTS, DEFAULT_HOTKEYS, defaultSlots, FORMATS, hexA, HOTKEY_LABELS, PLAYER_COLORS } from '@aetherhub/shared';
 import { api, download } from '../../lib/api';
 import { imgUrl } from '../../lib/base';
@@ -707,7 +707,7 @@ function Server() {
   if (!f || !q.data) return null;
   const e = q.data.env;
   return (
-    <div style={{ maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ maxWidth: 820, display: 'flex', flexDirection: 'column', gap: 16 }}>
       <h2 style={{ fontSize: 20 }}>Server</h2>
       <label className="field">
         Server name
@@ -741,6 +741,76 @@ function Server() {
         >
           Save
         </button>
+      </div>
+      <RunningGames />
+      <ServerLog />
+    </div>
+  );
+}
+
+const GAME_STATE: Record<AdminGame['state'], string> = { waiting: 'waiting for players', running: 'in progress', over: 'over', sleeping: 'saved, not opened since the restart' };
+
+/** The games the server is running: worth a look before restarting or updating it. */
+function RunningGames() {
+  const q = useQuery({ queryKey: ['admin-games'], queryFn: () => api.get<AdminGame[]>('api/admin/games'), refetchInterval: 5000 });
+  const games = q.data ?? [];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <h3 style={{ fontSize: 16 }}>Running games</h3>
+      <div style={{ fontSize: 12.5, color: 'var(--mu)' }}>Games in progress are saved and carry on after a restart; players reconnect when it is back.</div>
+      <div style={{ border: '1px solid var(--line2)', borderRadius: 12, overflow: 'hidden' }}>
+        {games.map((g) => (
+          <div key={g.id} className="row" style={{ gap: 14, padding: '10px 16px', borderBottom: '1px solid var(--line)', background: 'var(--surface)', flexWrap: 'wrap', fontSize: 13 }}>
+            <span style={{ width: 70, color: 'var(--mu)' }}>{g.kind === 'rules' ? 'Rules' : 'Sandbox'}</span>
+            <span className="grow">
+              <b>{g.name || 'Untitled'}</b> · {g.players.join(', ')}
+            </span>
+            <span style={{ color: 'var(--mu)' }}>
+              {g.turn > 0 ? `turn ${g.turn} · ` : ''}
+              {GAME_STATE[g.state]}
+            </span>
+            <span style={{ color: 'var(--mu2)', width: 110, textAlign: 'right' }}>{timeAgo(g.lastActive)}</span>
+          </div>
+        ))}
+        {!games.length && <div style={{ padding: 16, fontSize: 13, color: 'var(--mu)' }}>{q.isLoading ? 'Loading…' : 'No games are running.'}</div>}
+      </div>
+    </div>
+  );
+}
+
+/** The server's most recent log lines, newest at the bottom. */
+function ServerLog() {
+  const q = useQuery({ queryKey: ['admin-log'], queryFn: () => api.get<AdminLogLine[]>('api/admin/log'), refetchInterval: 5000 });
+  const box = useRef<HTMLDivElement>(null);
+  const lines = q.data ?? [];
+  const last = lines.at(-1)?.seq ?? 0;
+  // follow new lines unless the admin scrolled up to read
+  const pinned = useRef(true);
+  useEffect(() => {
+    const el = box.current;
+    if (el && pinned.current) el.scrollTop = el.scrollHeight;
+  }, [last]);
+  const color = (level: string) => (level === 'error' || level === 'fatal' ? 'var(--danger)' : level === 'warn' ? 'var(--acc)' : 'var(--mu)');
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <h3 style={{ fontSize: 16 }}>Server log</h3>
+      <div style={{ fontSize: 12.5, color: 'var(--mu)' }}>The most recent lines since the server started (up to 1,000 are kept), refreshed every few seconds.</div>
+      <div
+        ref={box}
+        className="card-box mono"
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
+        }}
+        style={{ borderRadius: 10, padding: '10px 14px', fontSize: 12, lineHeight: 1.6, height: 320, overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+      >
+        {lines.map((l) => (
+          <div key={l.seq}>
+            <span style={{ color: 'var(--mu2)' }}>{new Date(l.at).toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>{' '}
+            <span style={{ color: color(l.level) }}>{l.level.padEnd(5)}</span> <span style={{ color: l.level === 'info' ? 'var(--tx2)' : color(l.level) }}>{l.msg}</span>
+          </div>
+        ))}
+        {!lines.length && <span style={{ color: 'var(--mu)' }}>{q.isLoading ? 'Loading…' : 'Nothing logged yet.'}</span>}
       </div>
     </div>
   );

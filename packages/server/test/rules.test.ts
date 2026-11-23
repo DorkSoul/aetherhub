@@ -274,6 +274,12 @@ describe.skipIf(!hasNative)('rules games (native engine)', () => {
     // Easy AIs: this checks a 4-player game end to end, not AI strength (Normal thinks 250 ms per decision: 20+ seconds a game)
     const g = await req('POST', '/api/rules/games', { deckId, seed: 11, ais: [{ difficulty: 'Easy' }, { difficulty: 'Easy' }, { difficulty: 'Easy' }] }, cookie);
     expect(g.status, JSON.stringify(g.json)).toBe(200);
+    // the admin Server page lists it while it runs
+    const listed = (await req('GET', '/api/admin/games', undefined, cookie)).json as { id: string; kind: string; players: string[]; state: string }[];
+    const mine = listed.find((x) => x.id === g.json.id);
+    expect(mine).toMatchObject({ kind: 'rules', state: 'running' });
+    expect(mine!.players.filter((p) => p.endsWith('(AI)'))).toHaveLength(3);
+    expect(Array.isArray((await req('GET', '/api/admin/log', undefined, cookie)).json)).toBe(true);
     const done = await drive(g.json.id, [cookie]);
     expect(done.view.players.length).toBe(4);
     expect(done.over).toBeTruthy();
