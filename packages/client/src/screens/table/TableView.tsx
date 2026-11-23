@@ -518,6 +518,14 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
     }
   };
 
+  // Where a card dropped at x goes in a hand: after every other card whose middle is left of x.
+  const handSlotAt = (seat: number, moving: string[], x: number): number => {
+    if (!v || !g) return 0;
+    const hand = v.seats[seat].zones.hand;
+    const rects = handRects(g.areas[seat], hand.length);
+    return hand.filter((iid, k) => !moving.includes(iid) && !!rects[k] && rects[k].x + rects[k].w / 2 < x).length;
+  };
+
   const drop = (d: Drag, x: number, y: number, shift: boolean) => {
     if (!v || !g) return;
     const h = hitTest(gHit!, x, y);
@@ -555,8 +563,12 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
       setPending((p) => ({ ...p, ...pend }));
       send({ type: 'move', iids: ids, seat: h.seat, zone: 'battlefield', positions });
     } else if (h.t === 'hand') {
-      if (ids.every((i) => v.seats[h.seat].zones.hand.includes(i))) return;
-      send({ type: 'move', iids: ids, seat: h.seat, zone: 'hand' });
+      const hand = v.seats[h.seat].zones.hand;
+      const at = handSlotAt(h.seat, ids, x);
+      const rest = hand.filter((i) => !ids.includes(i));
+      const next = [...rest.slice(0, at), ...ids, ...rest.slice(at)];
+      if (next.length === hand.length && next.every((i, k) => i === hand[k])) return;
+      send({ type: 'move', iids: ids, seat: h.seat, zone: 'hand', pos: at + 1 });
     } else if (h.t === 'pile') {
       if (d.from.zone === h.zone && d.from.seat === h.seat) return;
       send({ type: 'move', iids: ids, seat: h.seat, zone: h.zone, pos: h.zone === 'library' ? (shift ? 'bottom' : 'top') : undefined });
@@ -709,9 +721,9 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
       face = drag.showFace;
     } else if (hot?.t === 'hand') {
       const hs = v.seats[hot.seat];
-      const already = drag.from.zone === 'hand' && drag.from.seat === hot.seat;
-      const hl = handRects(g.areas[hot.seat], hs.zones.hand.length + (already ? 0 : 1));
-      const slot = already ? hl[hs.zones.hand.indexOf(drag.iid)] : hl[hl.length - 1];
+      const others = hs.zones.hand.filter((i) => i !== drag.iid);
+      const hl = handRects(g.areas[hot.seat], others.length + 1);
+      const slot = hl[handSlotAt(hot.seat, [drag.iid], drag.x)];
       if (slot) r = slot;
       face = drag.showFace && (hot.seat === me || !!me);
     } else if (hot?.t === 'pile') {
@@ -1735,6 +1747,7 @@ function viewMenu() {
           { kind: 'sep' as const },
           { kind: 'head' as const, label: 'Rules game' },
           { kind: 'item' as const, label: 'Auto-tap lands to pay for spells', checked: p.autoTap, run: () => set({ autoTap: !p.autoTap }), keep: true },
+          { kind: 'item' as const, label: 'Auto-sort the battlefields', checked: p.autoSort, run: () => set({ autoSort: !p.autoSort }), keep: true },
           { kind: 'item' as const, label: "Slow down other players' actions", checked: p.aiPaceOn, run: () => set({ aiPaceOn: !p.aiPaceOn }), keep: true },
           ...(p.aiPaceOn ? [{ kind: 'number' as const, label: 'Seconds per action', value: p.aiPaceSeconds, min: 0.01, step: paceStep, set: (x: number) => set({ aiPaceSeconds: Math.round(x * 100) / 100 }), format: (x: number) => `${x}s` }] : []),
         ]

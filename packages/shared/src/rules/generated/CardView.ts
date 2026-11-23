@@ -38,4 +38,8 @@ art_token: boolean, damage: number,
 /**
  * A battle's protector (the opponent who defends it); the table shows the battle on that player's side.
  */
-protector: number | null, };
+protector: number | null, 
+/**
+ * The player an Aura enchants (a Curse); the table shows it on that player's side.
+ */
+enchanted_player: number | null, };

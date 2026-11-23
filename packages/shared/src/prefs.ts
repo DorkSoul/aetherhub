@@ -65,6 +65,8 @@ export interface UserPrefs {
   aiPaceSeconds: number;
   /** Rules game: tap lands automatically to pay for spells (off = always tap by hand). */
   autoTap: boolean;
+  /** Rules game: keep every battlefield sorted into its rows as cards come and go (off by default). */
+  autoSort: boolean;
 }
 
 export const DEFAULT_PREFS: UserPrefs = {
@@ -100,6 +102,7 @@ export const DEFAULT_PREFS: UserPrefs = {
   aiPaceOn: false,
   aiPaceSeconds: 0.1,
   autoTap: true,
+  autoSort: false,
 };
 
 export function defaultSlots(n: 2 | 3 | 4): PanelSlot[] {

@@ -138,6 +138,23 @@ describe('moves and logging', () => {
     expect(lib[lib.length - 1]).toBe(b);
     expect(lib[2]).toBe(c);
   });
+
+  it('hands: cards go where they are dropped, a draw goes at the end, and reordering is not logged', () => {
+    const g = game();
+    const hand = g.seats[0].zones.hand;
+    const [a, b, c, d] = hand;
+    const r = act(g, 0, { type: 'move', iids: [d, c], seat: 0, zone: 'hand', pos: 1 });
+    expect(hand.slice(0, 4)).toEqual([d, c, a, b]);
+    expect(r.logs).toEqual([]);
+    act(g, 0, { type: 'draw', seat: 0, n: 1 });
+    const drawn = hand[hand.length - 1];
+    expect([a, b, c, d]).not.toContain(drawn);
+    const bf = g.seats[0].zones.battlefield;
+    act(g, 0, { type: 'move', iids: [a], seat: 0, zone: 'battlefield' });
+    expect(bf).toContain(a);
+    act(g, 0, { type: 'move', iids: [a], seat: 0, zone: 'hand', pos: 2 });
+    expect(hand.slice(0, 3)).toEqual([d, a, c]);
+  });
 });
 
 describe('face-down cards in the log', () => {

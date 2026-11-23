@@ -13,7 +13,7 @@ import { unmarkDragged } from '../table/flights';
 import { resetTable, useTable } from '../table/store';
 import { TableView } from '../table/TableView';
 import { isGridPick, PromptPanel } from './RulesPrompts';
-import { AUTO_SLOT, counterKindOf, tapChoices, describeEvent, frameDelay, gestureOption, isPermanentCard, layoutBoard, logViews, onlyUntaps, optionsOf, PHASE_INDEX, PILE_DX, PHASE_STEP, stepIndex, toGameView, type Placed, type Remembered, type RView } from './rulesView';
+import { AUTO_SLOT, counterKindOf, tapChoices, describeEvent, frameDelay, gestureOption, isPermanentCard, layoutBoard, logViews, onlyUntaps, optionsOf, PHASE_INDEX, PILE_DX, PHASE_STEP, sides, stepIndex, toGameView, type Placed, type Remembered, type RView } from './rulesView';
 
 // Wire shapes of the rules-game API (packages/server/src/routes/rules.ts).
 interface Frame {
@@ -262,6 +262,7 @@ export default function RulesGame() {
   const compact = useCompact();
   // Phones have no side panel: the messages open over the table instead.
   const detailedView = useApp((s) => s.me?.prefs.panel === 'detailed') && !compact;
+  const autoSort = useApp((s) => s.me?.prefs.autoSort ?? false);
   const [msgOpen, setMsgOpen] = useState(false);
   const [chipOpen, setChipOpen] = useState<'stack' | 'notes' | null>(null);
   /** Phones: the prompt box covers the opponent's board, so it can be tucked away (until the next prompt). */
@@ -323,6 +324,8 @@ export default function RulesGame() {
   const sizes = useRef<Record<number, { handFrac?: number; cardScale?: number }>>({});
   /** cards the player just dropped on the table from their hand: shown there at once, until the engine accepts the play or it is refused */
   const optimistic = useRef<Placed>(new Map());
+  /** the order of this player's hand as they arranged it; cards that arrive go at the end */
+  const handOrder = useRef<number[]>([]);
   /** plays made while the game was busy (the AI acting, the server working): tried in order at this player's next priority */
   const actionQueue = useRef<{ intent: Parameters<NonNullable<ReturnType<typeof useTable.getState>['send']>>[0]; card: number }[]>([]);
   const [queueTick, setQueueTick] = useState(0);
@@ -720,11 +723,40 @@ export default function RulesGame() {
     return srcs.flatMap(tapChoices);
   };
 
+  /** Sorts one side of the table (see `layoutBoard`); returns true when a card moved. */
+  const sortSeat = (v: RView, seat: number): boolean => {
+    const sideOf = sides(v.cards);
+    const mine = v.cards.filter((c) => c.zone === 'Battlefield' && sideOf(c) === seat && !optimistic.current.has(c.id));
+    const { pos, piles } = layoutBoard(mine, v.players.length, groups.current, placed.current);
+    const onField = new Set(v.cards.filter((c) => c.zone === 'Battlefield').map((c) => c.id));
+    groups.current = [...groups.current, ...piles].map((g) => g.filter((id) => onField.has(id))).filter((g) => g.length > 1);
+    let moved = false;
+    for (const [id, p] of pos) {
+      const was = placed.current.get(id);
+      if (!was || Math.abs(was.x - p.x) > 1e-6 || Math.abs(was.y - p.y) > 1e-6) moved = true;
+      placed.current.set(id, p);
+      // remembered so that undo / replay put it back here
+      const name = mine.find((c) => c.id === id)?.name;
+      if (name !== undefined) memory.current.set(id, { ...p, name });
+    }
+    return moved;
+  };
+
   useEffect(() => {
     if (!gameId || !state?.view) return;
     const v = state.view;
     const queuedIds = new Map(actionQueue.current.map((q, i) => [q.card, i + 1]));
-    const { view } = toGameView(v, state.images ?? {}, state.names ?? [], state.seat, state.id, undefined, placed.current, optimistic.current, memory.current, queuedIds);
+    const { view } = toGameView(v, state.images ?? {}, state.names ?? [], state.seat, state.id, undefined, placed.current, optimistic.current, memory.current, queuedIds, handOrder.current);
+    // Auto-sort: every side of the table is kept sorted (after the new permanents got their first spot above)
+    if (autoSort) {
+      let moved = false;
+      for (let seat = 0; seat < v.players.length; seat++) moved = sortSeat(v, seat) || moved;
+      if (moved)
+        for (const c of v.cards) {
+          const p = placed.current.get(c.id);
+          if (c.zone === 'Battlefield' && p && view.cards[String(c.id)]) Object.assign(view.cards[String(c.id)], p);
+        }
+    }
     view.settings.format = state.commander ? 'commander' : 'standard';
     view.seats.forEach((seat, i) => {
       const sz = sizes.current[i];
@@ -779,14 +811,7 @@ export default function RulesGame() {
           setLayoutTick((t) => t + 1);
         },
         sortBoard: (seat) => {
-          const mine = v.cards.filter((c) => c.zone === 'Battlefield' && c.controller === seat && !optimistic.current.has(c.id));
-          const { pos, piles } = layoutBoard(mine, v.players.length, groups.current);
-          const onField = new Set(v.cards.filter((c) => c.zone === 'Battlefield').map((c) => c.id));
-          groups.current = [...groups.current, ...piles].map((g) => g.filter((id) => onField.has(id))).filter((g) => g.length > 1);
-          for (const [id, p] of pos) {
-            placed.current.set(id, p);
-            memory.current.delete(id);
-          }
+          sortSeat(v, seat);
           setLayoutTick((t) => t + 1);
         },
         concede: () => void concedeRef.current(),
@@ -848,10 +873,22 @@ export default function RulesGame() {
           setLayoutTick((t) => t + 1);
           return;
         }
+        // rearranging the hand only changes how this screen shows it
+        if (intent.type === 'move' && intent.zone === 'hand' && st?.view && intent.seat === st.seat) {
+          const ids = (intent.iids ?? []).map(Number);
+          if (ids.length && ids.every((id) => handOrder.current.includes(id))) {
+            const rest = handOrder.current.filter((id) => !ids.includes(id));
+            rest.splice(Math.min(rest.length, typeof intent.pos === 'number' ? intent.pos - 1 : rest.length), 0, ...ids);
+            handOrder.current = rest;
+            setLayoutTick((t) => t + 1);
+            return;
+          }
+        }
         // Breaking the rules: the table works like the sandbox, and each gesture becomes a direct change to the game
         if (st?.paused?.mine && st.view) {
           const zoneOf: Record<string, R.Zone> = { battlefield: 'Battlefield', hand: 'Hand', graveyard: 'Graveyard', exile: 'Exile', library: 'Library', command: 'Command' };
           const byId = (iid: string) => (/^\d+$/.test(iid) ? st.view!.cards.find((c) => c.id === Number(iid)) : undefined);
+          const sideOf = sides(st.view.cards);
           const ops: R.EditOp[] = [];
           if (intent.type === 'move') {
             (intent.iids ?? []).forEach((iid: string, k: number) => {
@@ -861,7 +898,7 @@ export default function RulesGame() {
               const pos = intent.positions?.[k] ?? (intent.x !== undefined && intent.y !== undefined ? { x: intent.x, y: intent.y } : null);
               if (to === 'Battlefield' && pos) placed.current.set(c.id, { x: pos.x, y: pos.y });
               if (c.zone === 'Battlefield' && to === 'Battlefield') {
-                if (intent.seat !== undefined && intent.seat !== c.controller) ops.push({ t: 'Control', card: c.id, player: intent.seat });
+                if (intent.seat !== undefined && intent.seat !== c.controller && intent.seat !== sideOf(c)) ops.push({ t: 'Control', card: c.id, player: intent.seat });
               } else ops.push({ t: 'Move', card: c.id, to, bottom: intent.pos === 'bottom', controller: to === 'Battlefield' ? (intent.seat ?? null) : null });
             });
             setLayoutTick((t) => t + 1);
@@ -1042,7 +1079,7 @@ export default function RulesGame() {
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameId, state, layoutTick, ending, endPhase, endingLocal, detailedView, slot, queueTick, statusText]);
+  }, [gameId, state, layoutTick, ending, endPhase, endingLocal, detailedView, slot, queueTick, statusText, autoSort]);
 
   // A queued play is tried as soon as this player has priority again (one per question, in order)
   useEffect(() => {

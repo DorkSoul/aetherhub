@@ -380,10 +380,19 @@ export function applyIntent(state: GameState, ctx: ApplyCtx, intent: Intent, res
         const p = intent.positions?.[i];
         const before = locate(state, iid);
         if (!before) return;
-        const sameBf = before.zone === 'battlefield' && intent.zone === 'battlefield' && before.seat === intent.seat;
+        // reordering a battlefield or a hand is not logged
+        const sameZone = (before.zone === 'battlefield' || before.zone === 'hand') && before.zone === intent.zone && before.seat === intent.seat;
         const m = moveCard(state, ctx, iid, intent.seat, intent.zone, { x: p?.x ?? intent.x, y: p?.y ?? intent.y, pos: intent.pos, faceDown: intent.faceDown }, notices);
-        if (!sameBf) moves.push(m);
+        if (!sameZone) moves.push(m);
       });
+      // a hand position: the cards go there together, in the order given (counted among the cards that stay)
+      if (intent.zone === 'hand' && typeof intent.pos === 'number') {
+        const hand = state.seats[intent.seat].zones.hand;
+        const moved = intent.iids.filter((iid) => hand.includes(iid));
+        const rest = hand.filter((iid) => !moved.includes(iid));
+        rest.splice(Math.min(rest.length, intent.pos - 1), 0, ...moved);
+        hand.splice(0, hand.length, ...rest);
+      }
       const d = describeMoves(state, ctx, moves, intent.seat, intent.zone, intent.faceDown, intent.pos);
       if (d) logs.push(d);
       if (moves.some((m) => m.from.zone === 'library' && intent.zone === 'hand')) notices.push({ to: 'all', kind: 'sound', sound: 'draw' });

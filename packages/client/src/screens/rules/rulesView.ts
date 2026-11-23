@@ -69,8 +69,20 @@ function slotPitch(seats: number): number {
   return slotGeom(seats).pitch;
 }
 
-/** The seat whose side of the table a permanent sits on: a battle's protector, else its controller. */
-const sideOf = (c: { controller: number; protector?: number | null }) => c.protector ?? c.controller;
+/** Finds the seat whose side of the table a permanent sits on, as a real table would show it: a battle's protector, a
+ *  Curse's enchanted player, an attached permanent's host's side (an Aura on an opponent's creature lies with that
+ *  creature), else its controller. */
+export function sides(cards: readonly RCard[]): (c: RCard) => number {
+  const byId = new Map(cards.map((c) => [c.id, c]));
+  const side = (c: RCard, depth: number): number => {
+    if (c.protector != null) return c.protector;
+    if (c.enchanted_player != null) return c.enchanted_player;
+    const host = c.attached_to != null && depth < 8 ? byId.get(c.attached_to) : undefined;
+    if (host && host.zone === 'Battlefield') return side(host, depth + 1);
+    return c.controller;
+  };
+  return (c) => side(c, 0);
+}
 
 const rowY = (c: { types: string }) => (/Land/.test(c.types) ? ROW_Y.land : /Creature/.test(c.types) ? ROW_Y.creature : ROW_Y.other);
 
@@ -79,6 +91,7 @@ const rowY = (c: { types: string }) => (/Land/.test(c.types) ? ROW_Y.land : /Cre
 function settle(list: RCard[], placed: Placed, seatCount: number, memory?: Remembered): void {
   const here = new Set(list.map((c) => c.id));
   for (const id of [...placed.keys()]) if (!here.has(id)) placed.delete(id);
+  const sideOf = sides(list);
   const byController = new Map<number, RCard[]>();
   for (const c of list) byController.set(sideOf(c), [...(byController.get(sideOf(c)) ?? []), c]);
   for (const cards of byController.values()) {
@@ -136,9 +149,15 @@ function settle(list: RCard[], placed: Placed, seatCount: number, memory?: Remem
 
 /** "Sort this board": the three automatic rows (creatures, other permanents, lands), with every pile kept together and
  *  laid out as one wide unit. `groups` are piles the player made (kept as they are); three or more copies of the same
- *  card that are not in a pile yet become a new pile. Returns every card's position and the new piles. */
-export function layoutBoard(cards: RCard[], seatCount: number, groups: number[][]): { pos: Map<number, { x: number; y: number }>; piles: number[][] } {
+ *  card that are not in a pile yet become a new pile. Each card moves as little as it can: it goes to its row at about
+ *  where it is now, cards keep their left-to-right order, and only cards that would overlap are pushed apart; cards with
+ *  no position yet go after the others in their row. Sorting a sorted board changes nothing. Returns the position of every
+ *  card except attached ones, and the new piles. */
+export function layoutBoard(all: RCard[], seatCount: number, groups: number[][], current?: Placed): { pos: Map<number, { x: number; y: number }>; piles: number[][] } {
   const pitch = slotPitch(seatCount);
+  // an Aura or Equipment is drawn under its host, so it takes no place of its own in a row
+  const here = new Set(all.map((c) => c.id));
+  const cards = all.filter((c) => c.attached_to == null || !here.has(c.attached_to));
   const byId = new Map(cards.map((c) => [c.id, c]));
   const used = new Set<number>();
   const units: number[][] = [];
@@ -162,20 +181,41 @@ export function layoutBoard(cards: RCard[], seatCount: number, groups: number[][
     ids.forEach((id) => used.add(id));
   }
   for (const c of cards) if (!used.has(c.id)) units.push([c.id]);
+  // where a unit is now: its leftmost card (none for a card that has no position yet)
+  const at = (u: number[]): number | null => {
+    const xs = u.map((id) => current?.get(id)).filter((p): p is { x: number; y: number } => !!p && p.x >= 0).map((p) => p.x);
+    return xs.length ? Math.min(...xs) : null;
+  };
   const pos = new Map<number, { x: number; y: number }>();
   for (const y of [ROW_Y.creature, ROW_Y.other, ROW_Y.land]) {
-    const row = units.filter((u) => rowY(byId.get(u[0])!) === y).sort((a, b) => byId.get(a[0])!.name.localeCompare(byId.get(b[0])!.name) || a[0] - b[0]);
+    const row = units
+      .filter((u) => rowY(byId.get(u[0])!) === y)
+      .map((u) => ({ u, x: at(u) }))
+      .sort((a, b) => (a.x ?? Infinity) - (b.x ?? Infinity) || byId.get(a.u[0])!.name.localeCompare(byId.get(b.u[0])!.name) || a.u[0] - b.u[0]);
     if (!row.length) continue;
-    // each unit takes a slot plus the fan of its pile; a row that doesn't fit is squeezed evenly
-    const advance = row.map((u) => pitch + (u.length - 1) * PILE_DX);
-    const lastFan = (row[row.length - 1].length - 1) * PILE_DX;
-    const needed = advance.slice(0, -1).reduce((a, b) => a + b, 0) + lastFan;
-    const f = needed > 1 ? 1 / needed : 1;
-    let x = 0;
-    row.forEach((u, i) => {
-      u.forEach((id, k) => pos.set(id, { x: Math.min(1, x + k * PILE_DX * f), y }));
-      x += advance[i] * f;
+    // each unit takes a slot plus the fan of its pile
+    const fan = row.map(({ u }) => (u.length - 1) * PILE_DX);
+    const advance = fan.map((f) => pitch + f);
+    const needed = advance.slice(0, -1).reduce((a, b) => a + b, 0) + fan[fan.length - 1];
+    const xs: number[] = [];
+    if (needed > 1) {
+      // a row that doesn't fit is squeezed evenly
+      const f = 1 / needed;
+      let x = 0;
+      row.forEach((_, i) => {
+        xs.push(x);
+        x += advance[i] * f;
+      });
+      row.forEach(({ u }, i) => u.forEach((id, k) => pos.set(id, { x: Math.min(1, xs[i] + k * PILE_DX * f), y })));
+      continue;
+    }
+    // where each unit is, pushed right past the one before it, then back left from the edge
+    row.forEach(({ x }, i) => {
+      const prev = i > 0 ? xs[i - 1] + advance[i - 1] : 0;
+      xs.push(Math.max(prev, x ?? prev));
     });
+    for (let i = row.length - 1; i >= 0; i--) xs[i] = Math.min(xs[i], i === row.length - 1 ? 1 - fan[i] : xs[i + 1] - advance[i]);
+    row.forEach(({ u }, i) => u.forEach((id, k) => pos.set(id, { x: Math.max(0, Math.min(1, xs[i] + k * PILE_DX)), y })));
   }
   return { pos, piles };
 }
@@ -208,7 +248,7 @@ export function isPermanentCard(c: { types: string }): boolean {
   return /\b(Land|Creature|Artifact|Enchantment|Planeswalker|Battle)\b/.test(c.types) && !/\b(Instant|Sorcery)\b/.test(c.types);
 }
 
-export function toGameView(snap: RView, images: Record<string, string>, names: string[], me: number, gameId: string, wins: number[] | undefined, placed: Placed, optimistic: Placed, memory?: Remembered, queued?: Map<number, number>): { view: GameView } {
+export function toGameView(snap: RView, images: Record<string, string>, names: string[], me: number, gameId: string, wins: number[] | undefined, placed: Placed, optimistic: Placed, memory?: Remembered, queued?: Map<number, number>, handOrder?: number[]): { view: GameView } {
   const defs: Record<string, CardDef> = {};
   const cards: Record<string, CardView> = {};
   const defFor = (c: RCard): string => {
@@ -253,6 +293,7 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
   });
   const bf = new Map<number, RCard[]>();
   const stackSources = new Set(snap.stack.filter((s) => s.is_spell).map((s) => s.source));
+  const sideOf = sides(snap.cards);
   for (const c of snap.cards) {
     // the top card of a library that is played revealed (Oracle of Mul Daya) or that its owner may look at (Radar Sense): shown face up on the pile
     if (c.zone === 'Library') {
@@ -297,6 +338,16 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     if (c.zone === 'Command' && /\bScheme\b/.test(c.types)) z = 'schemes';
     seat.zones[z].push(iid);
     if (z === 'battlefield') bf.set(sideOf(c), [...(bf.get(sideOf(c)) ?? []), c]);
+  }
+  // the viewer's hand keeps the order they gave it (updated in place); a card that arrives goes at the end
+  if (handOrder && seats[me]) {
+    const inHand = snap.cards.filter((c) => c.zone === 'Hand' && c.owner === me).map((c) => c.id);
+    const have = new Set(inHand);
+    const kept = handOrder.filter((id) => have.has(id));
+    const known = new Set(kept);
+    handOrder.splice(0, handOrder.length, ...kept, ...inHand.filter((id) => !known.has(id)));
+    const shown = new Set(seats[me].zones.hand);
+    seats[me].zones.hand = [...handOrder.map(String).filter((iid) => shown.has(iid)), ...seats[me].zones.hand.filter((iid) => !handOrder.includes(Number(iid)))];
   }
   settle([...bf.values()].flat(), placed, snap.players.length, memory);
   if (memory) for (const list of bf.values()) for (const c of list) if (placed.has(c.id)) memory.set(c.id, { ...placed.get(c.id)!, name: c.name });
@@ -411,9 +462,11 @@ export function onlyUntaps(a: RView, b: RView): boolean {
   if (a.players.some((p, i) => p.life !== b.players[i]?.life)) return false;
   let untapped = 0;
   const before = new Map(a.cards.map((c) => [c.id, c]));
+  const sideA = sides(a.cards);
+  const sideB = sides(b.cards);
   for (const c of b.cards) {
     const was = before.get(c.id);
-    if (!was || was.zone !== c.zone || sideOf(was) !== sideOf(c)) return false;
+    if (!was || was.zone !== c.zone || sideA(was) !== sideB(c)) return false;
     if (was.tapped && !c.tapped) untapped++;
     else if (was.tapped !== c.tapped) return false;
   }
@@ -426,6 +479,8 @@ export function frameDelay(prev: RView | null, next: RView): number {
   // before the game starts (opening hands, mulligans) there is nothing to watch but the deal: keep it brisk
   if (next.turn === 0) return 110;
   const before = new Map(prev.cards.map((c) => [c.id, c]));
+  const sidePrev = sides(prev.cards);
+  const sideNext = sides(next.cards);
   let big = false;
   let draws = 0;
   for (const c of next.cards) {
@@ -433,7 +488,7 @@ export function frameDelay(prev: RView | null, next: RView): number {
     if (!was) {
       if (c.zone === 'Hand') draws++; // a card appearing in the hand is a draw
       else big = true;
-    } else if (was.zone !== c.zone || sideOf(was) !== sideOf(c)) big = true;
+    } else if (was.zone !== c.zone || sidePrev(was) !== sideNext(c)) big = true;
   }
   for (const c of prev.cards) if (!next.cards.some((n) => n.id === c.id) && c.zone !== 'Hand') big = true;
   if (big || prev.stack.length !== next.stack.length) return 750;
