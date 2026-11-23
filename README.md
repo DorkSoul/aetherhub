@@ -59,21 +59,24 @@ Pick one of the two ways to run it. Either way, on first start:
 
 ### Option A: Docker Compose
 
-Needs [Docker](https://docs.docker.com/get-docker/) with Compose and [Git](https://git-scm.com/):
+Needs [Docker](https://docs.docker.com/get-docker/) with Compose. Download
+[`docker-compose.yml`](https://raw.githubusercontent.com/DorkSoul/aetherhub/main/docker-compose.yml) into an empty
+folder, then in that folder:
 
 ```bash
-git clone <this repository's URL> aetherhub
-cd aetherhub
-docker compose up -d --build
+docker compose up -d
 ```
 
-The first build compiles the rules engine and takes several minutes. Then open `http://<your-computer>:8080`. Data
-is kept in the `aetherhub-data` volume, so rebuilding or updating doesn't lose it. To update, run `git pull` and
-`docker compose up -d --build` again.
+Then open `http://<your-computer>:8080`. Data is kept in the `aetherhub-data` volume, so updating doesn't lose it.
+To update to the latest release: `docker compose pull && docker compose up -d`.
+
+To build the image from source instead, clone this repository and run
+`docker build -t ghcr.io/dorksoul/aetherhub:latest . && docker compose up -d` in it (the first build compiles the
+rules engine and takes several minutes).
 
 ### Option B: standalone app (no Docker)
 
-Download the file for your system from this repository's Releases page:
+Download the file for your system from the [latest release](https://github.com/DorkSoul/aetherhub/releases/latest):
 
 | System | File | How to start |
 |---|---|---|
@@ -107,7 +110,7 @@ admin Users page warn when someone signs in from outside the LAN over plain HTTP
 | `BASE_PATH` | `/` | serve under a sub-path, e.g. `/aether/` |
 | `DATA_DIR` | `/data` in Docker | SQLite databases, image cache, uploads, backups |
 | `TRUST_PROXY` | private networks | whose `X-Forwarded-*` headers to believe (client IP, Secure cookies). By default proxies on loopback or private addresses, such as a tunnel client on the same host. `false` = none, `true` = any peer (only if nothing else can reach the port), or a comma-separated list of IPs / CIDRs |
-| `SCRYFALL_UA` | `Aetherhub/3.0 (self-hosted MTG table)` | User-Agent sent to Scryfall |
+| `SCRYFALL_UA` | `Aetherhub/1.0 (self-hosted MTG table)` | User-Agent sent to Scryfall |
 | `NO_AUTO_DOWNLOAD` | unset | `1` = never download card data automatically |
 | `SEED_CARDS` | unset | path to a Scryfall *Default Cards* bulk file to import when no card database exists |
 
@@ -187,13 +190,27 @@ the UI uses, regenerate the TypeScript bindings with `npm run rules:types`.
 ### Building releases
 
 ```bash
-docker compose build                      # the Docker image
+docker build -t ghcr.io/dorksoul/aetherhub:latest .   # the Docker image
 npm run dist                              # standalone releases into release/ (Linux AppImage + Windows zip)
 bash packaging/build.sh linux             # or just one of them: linux | windows
 ```
 
 `packaging/build.sh` builds the web UI and server, compiles the rules engine and the launcher for Linux and Windows
 in a container (`packaging/Dockerfile`), downloads the matching Node.js runtime, and packs everything.
+
+### Making a release
+
+The tests run locally, not on GitHub, so a release costs no Actions minutes beyond building the image.
+
+1. Set the version (e.g. `1.1.0`) everywhere: `npm version 1.1.0 --workspaces --include-workspace-root
+   --no-git-tag-version`, plus `version` in `packages/server/src/config.ts` and `packaging/launcher/Cargo.toml`.
+2. Run the tests (see [Tests](#tests)) and `npm run dist`.
+3. Commit, tag and push: `git tag v1.1.0 && git push && git push origin v1.1.0`.
+4. Publish the release with the two files:
+   `gh release create v1.1.0 release/Aetherhub-1.1.0-* --title "Aetherhub 1.1.0" --generate-notes`
+
+Pushing the tag starts `.github/workflows/container.yml`, which only builds the Docker image and publishes it as
+`ghcr.io/dorksoul/aetherhub:<version>` and `:latest`. It can also be started by hand from the Actions tab.
 
 ## License
 

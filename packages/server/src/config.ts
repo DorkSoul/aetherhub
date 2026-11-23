@@ -38,7 +38,7 @@ export const config = {
   basePath: normBase(process.env.BASE_PATH),
   dataDir: defaultDataDir(),
   trustProxy: trustProxy(process.env.TRUST_PROXY),
-  userAgent: process.env.SCRYFALL_UA || 'Aetherhub/3.0 (self-hosted MTG table)',
+  userAgent: process.env.SCRYFALL_UA || 'Aetherhub/1.0 (self-hosted MTG table)',
   seedFile: process.env.SEED_CARDS || '',
   /** Skip the automatic bulk download when no card DB exists (tests, offline dev). */
   noAutoDownload: process.env.NO_AUTO_DOWNLOAD === '1',
@@ -51,7 +51,7 @@ export const config = {
   uploadLimit: 10 * 1024 * 1024,
   heartbeatMs: 25_000,
   sessionDays: 30,
-  version: '3.0.0',
+  version: '1.0.0',
 };
 
 export function dataPath(...p: string[]): string {
