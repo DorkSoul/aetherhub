@@ -1,0 +1,104 @@
+[
+  {
+    "name": "creature spells cost 2 less",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Planar Gate",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Planar Gate"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "noncreature spells are not reduced",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Planar Gate",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination",
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: multiple Gates are cumulative (two Gates take {4} off Serra Angel)",
+    "players": [
+      { "hand": ["Serra Angel"], "battlefield": ["Planar Gate", "Planar Gate", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [ { "cast": "Serra Angel" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Serra Angel"] }, {} ] }
+  },
+  {
+    "name": "ruling: one Gate only takes {2} off Serra Angel, so two Plains are not enough",
+    "players": [
+      { "hand": ["Serra Angel"], "battlefield": ["Planar Gate", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [ { "cast": "Serra Angel", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Serra Angel"] }, {} ] }
+  },
+  {
+    "name": "ruling: only the controller's creature spells are reduced (opponent with four lands cannot cast Serra Angel)",
+    "players": [
+      { "battlefield": ["Planar Gate"] },
+      { "hand": ["Serra Angel"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }
+    ],
+    "steps": [ { "advance_to": "Main1" }, { "cast": "Serra Angel", "player": 1, "illegal": true } ],
+    "expect": { "players": [ {}, { "hand_count": 2 } ] }
+  },
+  {
+    "name": "ruling: the opponent with five lands casts Serra Angel on its own turn (proves the opponent can act)",
+    "players": [
+      { "battlefield": ["Planar Gate"] },
+      { "hand": ["Serra Angel"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] }
+    ],
+    "steps": [ { "advance_to": "Main1" }, { "cast": "Serra Angel", "player": 1 }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "battlefield_has": ["Serra Angel"] } ] }
+  },
+  {
+    "name": "ruling: an Enchantment creature (Heliod's Emissary) is a creature spell and gets the reduction",
+    "players": [
+      { "hand": ["Heliod's Emissary"], "battlefield": ["Planar Gate", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [ { "cast": "Heliod's Emissary" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Heliod's Emissary"] }, {} ] }
+  }
+]

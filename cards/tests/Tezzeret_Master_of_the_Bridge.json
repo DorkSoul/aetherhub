@@ -1,0 +1,385 @@
+[
+  {
+    "name": "affinity for artifacts: a creature spell costs {1} less per artifact you control",
+    "players": [
+      {
+        "hand": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Tezzeret, Master of the Bridge",
+          "Ornithopter",
+          "Ornithopter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Hill Giant"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "battlefield_has": [
+            "Hill Giant",
+            "Tezzeret, Master of the Bridge"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "affinity: the discounted cost still has to be paid",
+    "players": [
+      {
+        "hand": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Tezzeret, Master of the Bridge",
+          "Ornithopter",
+          "Ornithopter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Hill Giant",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no affinity without Tezzeret on the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Ornithopter",
+          "Ornithopter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Hill Giant",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "+2: deals damage to each opponent equal to artifacts you control and gains that much life",
+    "players": [
+      {
+        "battlefield": [
+          "Tezzeret, Master of the Bridge",
+          "Ornithopter",
+          "Ornithopter",
+          "Arcane Signet"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Tezzeret, Master of the Bridge",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "-3: returns target artifact card from your graveyard to your hand",
+    "players": [
+      {
+        "battlefield": [
+          "Tezzeret, Master of the Bridge"
+        ],
+        "graveyard": [
+          "Arcane Signet",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Tezzeret, Master of the Bridge",
+        "ability": 1,
+        "targets": [
+          "Arcane Signet"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Arcane Signet"
+          ],
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "-8 needs eight loyalty; with four it cannot be activated",
+    "players": [
+      {
+        "battlefield": [
+          "Tezzeret, Master of the Bridge",
+          "Arcane Signet"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Tezzeret, Master of the Bridge",
+        "ability": 2,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Tezzeret, Master of the Bridge",
+            "Arcane Signet"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "-8: exiles the top ten cards and puts the artifacts among them onto the battlefield",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Tezzeret, Master of the Bridge",
+            "counters": {
+              "loyalty": 10
+            }
+          }
+        ],
+        "library": [
+          "Arcane Signet",
+          "Forest",
+          "Forest",
+          "Grizzly Bears",
+          "Arcane Signet",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Tezzeret, Master of the Bridge",
+        "ability": 2
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Arcane Signet",
+            "Arcane Signet",
+            "Tezzeret, Master of the Bridge"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the discount is locked in before paying, so sacrificing the Treasure for mana still pays the reduced cost",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Tezzeret, Master of the Bridge", "Treasure"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Tezzeret, Master of the Bridge"], "battlefield_lacks": ["Treasure"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: affinity does not change mana value: Spell Swindle on the discounted Grizzly Bears makes two Treasures",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Tezzeret, Master of the Bridge", "Icy Manipulator", "Forest"]
+      },
+      {
+        "hand": ["Spell Swindle"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Spell Swindle", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Grizzly Bears"] },
+        {
+          "graveyard_has": ["Spell Swindle"],
+          "battlefield": ["Island", "Island", "Island", "Island", "Island", "Treasure", "Treasure"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: affinity only reduces generic mana: Grizzly Bears still needs a green source",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Tezzeret, Master of the Bridge", "Icy Manipulator", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with a Forest the green cost is paid and the generic part is discounted",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Tezzeret, Master of the Bridge", "Icy Manipulator", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: multiple affinity instances each apply (Frogmite with two artifacts and Tezzeret costs nothing)",
+    "players": [
+      {
+        "hand": ["Frogmite"],
+        "battlefield": ["Tezzeret, Master of the Bridge", "Icy Manipulator", "Icy Manipulator"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Frogmite" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Frogmite"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Tezzeret himself has no affinity: {4}{U}{B} is not reduced by the artifact",
+    "players": [
+      {
+        "hand": ["Tezzeret, Master of the Bridge"],
+        "battlefield": ["Icy Manipulator", "Island", "Island", "Island", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tezzeret, Master of the Bridge", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Tezzeret, Master of the Bridge"] },
+        {}
+      ]
+    }
+  }
+]

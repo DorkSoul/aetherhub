@@ -1,0 +1,279 @@
+[
+ {
+  "name": "enters: draw, then exile a card from hand foretold",
+  "players": [
+   {
+    "hand": [
+     "Ethereal Valkyrie",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Island"
+    ],
+    "library": [
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ethereal Valkyrie"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Ethereal Valkyrie"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "hand": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the foretold card can't be cast the same turn",
+  "players": [
+   {
+    "hand": [
+     "Ethereal Valkyrie",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Island",
+     "Forest"
+    ],
+    "library": [
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ethereal Valkyrie"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "on a later turn it is cast for its mana cost minus {2} ({1}{G} becomes {G})",
+  "players": [
+   {
+    "hand": [
+     "Ethereal Valkyrie",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Island",
+     "Forest"
+    ],
+    "library": [
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ethereal Valkyrie"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Forest": true,
+    "Plains": false
+   }
+  }
+ },
+ {
+  "name": "attacking: draw, then foretell another card",
+  "players": [
+   {
+    "hand": [
+     "Hill Giant"
+    ],
+    "battlefield": [
+     {
+      "name": "Ethereal Valkyrie",
+      "sick": false
+     }
+    ],
+    "library": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ethereal Valkyrie",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      1
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Hill Giant"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a foretold instant can be cast for its printed foretell cost {1}{U} on the opponent's turn",
+  "players": [
+   {
+    "hand": ["Ethereal Valkyrie", "Saw It Coming"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Island", "Island", "Swamp"],
+    "library": ["Hill Giant"]
+   },
+   {
+    "hand": ["Shock"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ethereal Valkyrie" },
+   { "resolve": true, "answers": [[0]] },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "cast": "Shock", "player": 1, "targets": ["p0"] },
+   { "pass": true, "player": 1 },
+   { "cast": "Saw It Coming", "targets": [{ "stack": "Shock" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Saw It Coming"], "exile": [] },
+    { "graveyard": ["Shock"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the foretell cost reduction applies only to generic mana ({1}{G}{G} becomes {G}{G})",
+  "players": [
+   {
+    "hand": ["Elvish Archdruid"],
+    "battlefield": [{ "name": "Ethereal Valkyrie", "sick": false }, "Forest", "Forest"],
+    "library": ["Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Ethereal Valkyrie", "at": "p1" } ] },
+   { "resolve": true, "answers": [[0]] },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "cast": "Elvish Archdruid" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Elvish Archdruid", "Ethereal Valkyrie"], "exile": [] },
+    {}
+   ]
+  }
+ }
+]

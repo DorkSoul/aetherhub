@@ -1,0 +1,140 @@
+[
+  {
+    "name": "living weapon Germ gets +X/+X where X is the greatest mana value among your commanders",
+    "players": [
+      {
+        "command": ["Savannah Lions", "Boulderborn Dragon"],
+        "hand": ["Tangleweave Armor"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tangleweave Armor" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tangleweave Armor", "Phyrexian Germ"] },
+        {}
+      ],
+      "attached": { "Tangleweave Armor": "Phyrexian Germ" },
+      "pt": { "Phyrexian Germ": [5, 5] }
+    },
+    "commander": true
+  },
+  {
+    "name": "only a mana value 1 commander: Germ is 1/1",
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Tangleweave Armor"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tangleweave Armor" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Tangleweave Armor": "Phyrexian Germ" },
+      "pt": { "Phyrexian Germ": [1, 1] }
+    },
+    "commander": true
+  },
+  {
+    "name": "no commander: the 0/0 Germ dies and the Armor stays unattached",
+    "players": [
+      {
+        "hand": ["Tangleweave Armor"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tangleweave Armor" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tangleweave Armor"], "battlefield_lacks": ["Phyrexian Germ"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "equip {4}: moves the armor to another creature, and the 0/0 Germ dies",
+    "players": [
+      {
+        "command": ["Savannah Lions", "Boulderborn Dragon"],
+        "hand": ["Tangleweave Armor"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tangleweave Armor" },
+      { "resolve": true },
+      { "activate": "Tangleweave Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tangleweave Armor", "Grizzly Bears"], "battlefield_lacks": ["Phyrexian Germ"] },
+        {}
+      ],
+      "attached": { "Tangleweave Armor": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [7, 7] }
+    },
+    "commander": true
+  },
+  {
+    "name": "equip with only 3 mana left is illegal",
+    "players": [
+      {
+        "command": ["Savannah Lions", "Boulderborn Dragon"],
+        "hand": ["Tangleweave Armor"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tangleweave Armor" },
+      { "resolve": true },
+      { "activate": "Tangleweave Armor", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tangleweave Armor", "Phyrexian Germ"] },
+        {}
+      ],
+      "attached": { "Tangleweave Armor": "Phyrexian Germ" }
+    },
+    "commander": true
+  },
+  {
+    "name": "ruling: destroying the Germ leaves the Armor on the battlefield",
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Tangleweave Armor", "Lightning Bolt"],
+        "battlefield": ["Forest", "Forest", "Island", "Swamp", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Island" },
+      { "tap_for_mana": "Swamp" },
+      { "cast": "Tangleweave Armor" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Phyrexian Germ"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Tangleweave Armor"], "battlefield_lacks": ["Phyrexian Germ"], "graveyard_has": ["Lightning Bolt"] }, {} ]
+    },
+    "commander": true
+  }
+]

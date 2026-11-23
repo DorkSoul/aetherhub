@@ -1,0 +1,172 @@
+[
+ {
+  "name": "0: draw a card and lose 1 life",
+  "players": [
+   { "battlefield": ["Lolth, Spider Queen"], "library": ["Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Lolth, Spider Queen": { "loyalty": 4 } },
+   "players": [
+    { "hand": ["Mountain"], "life": 19 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-3: creates two 2/1 black Spider tokens with reach and menace",
+  "players": [
+   { "battlefield": ["Lolth, Spider Queen"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Lolth, Spider Queen": { "loyalty": 1 } },
+   "pt": { "Spider 2-1 Reach Menace": [2, 1] },
+   "players": [
+    { "battlefield_has": ["Spider 2-1 Reach Menace"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-3 cannot be activated with only 2 loyalty",
+  "players": [
+   { "battlefield": [{ "name": "Lolth, Spider Queen", "counters": { "loyalty": 2 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 1, "illegal": true }
+  ],
+  "expect": {
+   "counters": { "Lolth, Spider Queen": { "loyalty": 2 } }
+  }
+ },
+ {
+  "name": "a creature you control dying puts a loyalty counter on Lolth",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Lolth, Spider Queen", "Mountain", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Lolth, Spider Queen": { "loyalty": 5 } },
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "an opponent's creature dying does not put a loyalty counter on Lolth",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Lolth, Spider Queen", "Mountain"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Lolth, Spider Queen": { "loyalty": 4 } },
+   "players": [
+    {},
+    { "graveyard": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "-8: you get the emblem",
+  "players": [
+   { "battlefield": [{ "name": "Lolth, Spider Queen", "counters": { "loyalty": 8 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 2 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["Lolth Spider Queen Emblem"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "emblem: combat damage from your creatures makes the opponent lose the difference up to 8 life",
+  "players": [
+   { "battlefield": [{ "name": "Lolth, Spider Queen", "counters": { "loyalty": 8 } }, { "name": "Grizzly Bears", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 2 },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["Lolth Spider Queen Emblem"] },
+    { "life": 12 }
+   ]
+  }
+ },
+ {
+  "name": "emblem: no trigger when the opponent already lost 8 or more this turn",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Lolth, Spider Queen", "counters": { "loyalty": 8 } },
+     { "name": "Grizzly Bears", "sick": false },
+     { "name": "Grizzly Bears", "sick": false },
+     { "name": "Grizzly Bears", "sick": false },
+     { "name": "Grizzly Bears", "sick": false }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 2 },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["Lolth Spider Queen Emblem"] },
+    { "life": 12 }
+   ]
+  }
+ },
+ {
+  "name": "emblem: noncombat damage does not trigger it",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Lolth, Spider Queen", "counters": { "loyalty": 8 } }, "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lolth, Spider Queen", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["Lolth Spider Queen Emblem"] },
+    { "life": 17 }
+   ]
+  }
+ }
+]

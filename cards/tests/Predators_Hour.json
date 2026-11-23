@@ -1,0 +1,161 @@
+[
+  {
+    "name": "combat damage to a player exiles their top card, castable later with any mana",
+    "players": [
+      {
+        "hand": [
+          "Predators' Hour"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Predators' Hour"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Predators' Hour"
+          ],
+          "exile": []
+        },
+        {
+          "life": 15,
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "no combat damage to the player, no exiled card",
+    "players": [
+      {
+        "hand": [
+          "Predators' Hour"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Predators' Hour"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": []
+        },
+        {
+          "life": 20,
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exiled land can be played in main phase 2 if no land was played this turn",
+    "players": [
+      { "hand": ["Predators' Hour"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      { "library": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Predators' Hour" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"] },
+        { "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exiled land cannot be played after another land was already played this turn",
+    "players": [
+      { "hand": ["Predators' Hour", "Swamp"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      { "library": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Predators' Hour" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "play_land": "Swamp" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Forest"], "hand_count": 0 },
+        { "exile": ["Forest"] }
+      ]
+    }
+  }
+]

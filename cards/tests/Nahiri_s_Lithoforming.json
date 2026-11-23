@@ -1,0 +1,54 @@
+[
+  { "name": "X=2 sacrifices two lands and draws a card for each",
+    "players": [ { "hand": ["Nahiri's Lithoforming"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest"], "library": ["Plains", "Island", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Nahiri's Lithoforming", "answers": [2] }, { "resolve": true, "answers": ["Forest", "Forest"] } ],
+    "expect": { "players": [ { "battlefield": ["Mountain", "Mountain"], "hand": ["Plains", "Island"], "graveyard": ["Nahiri's Lithoforming", "Forest", "Forest"], "library_count": 1 }, {} ] } },
+  { "name": "X=0 sacrifices nothing and draws nothing",
+    "players": [ { "hand": ["Nahiri's Lithoforming"], "battlefield": ["Mountain", "Mountain"], "library": ["Plains"] }, {} ],
+    "steps": [ { "cast": "Nahiri's Lithoforming", "answers": [0] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield": ["Mountain", "Mountain"], "hand": [], "graveyard": ["Nahiri's Lithoforming"], "library_count": 1 }, {} ] } },
+  { "name": "X=2 allows two extra land plays this turn, and lands enter tapped",
+    "players": [ { "hand": ["Nahiri's Lithoforming", "Plains", "Island", "Swamp", "Forest"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest"], "library": ["Plains"] }, {} ],
+    "steps": [
+      { "cast": "Nahiri's Lithoforming", "answers": [2] },
+      { "resolve": true, "answers": ["Forest", "Forest"] },
+      { "play_land": "Plains" },
+      { "play_land": "Island" },
+      { "play_land": "Swamp" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Plains", "Island", "Swamp"] }, {} ],
+      "tapped": { "Plains": true, "Island": true, "Swamp": true }
+    } },
+  { "name": "ruling: extra land plays from Scale the Heights stack with Nahiri's X (base drop + 1 + 1 = 3 lands)",
+    "players": [ { "hand": ["Nahiri's Lithoforming", "Scale the Heights", "Plains", "Island", "Swamp", "Swamp"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest"], "library": ["Plains", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Nahiri's Lithoforming", "answers": [1] },
+      { "resolve": true, "answers": ["Forest"] },
+      { "cast": "Scale the Heights" },
+      { "resolve": true },
+      { "play_land": "Plains" },
+      { "play_land": "Island" },
+      { "play_land": "Swamp" },
+      { "play_land": "Swamp", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Plains", "Island", "Swamp"] }, {} ]
+    } },
+  { "name": "ruling: X above the land count sacrifices every land, draws fewer cards, and still allows X extra land plays",
+    "players": [ { "hand": ["Nahiri's Lithoforming", "Plains", "Island", "Swamp", "Forest"], "battlefield": ["Mountain", "Mountain", "Sol Ring", "Sol Ring"], "library": ["Plains", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Nahiri's Lithoforming", "answers": [4] },
+      { "resolve": true, "answers": ["Mountain"] },
+      { "play_land": "Plains" },
+      { "play_land": "Island" },
+      { "play_land": "Swamp" },
+      { "play_land": "Forest" },
+      { "play_land": "Plains" },
+      { "play_land": "Island", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Island"], "graveyard": ["Nahiri's Lithoforming", "Mountain", "Mountain"] }, {} ]
+    } }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "name": "damage to the opponent is tripled this turn",
+    "players": [
+      { "hand": ["Isengard Unleashed", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Isengard Unleashed" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Isengard Unleashed", "Lightning Bolt"] }, { "life": 11 } ]
+    }
+  },
+  {
+    "name": "damage to an opponent's creature is tripled",
+    "players": [
+      { "hand": ["Isengard Unleashed", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Isengard Unleashed" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Isengard Unleashed", "Lightning Bolt"] }, { "graveyard": ["Serra Angel"] } ]
+    }
+  },
+  {
+    "name": "damage to your own creature is not tripled",
+    "players": [
+      { "hand": ["Isengard Unleashed", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Isengard Unleashed" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Serra Angel"], "graveyard": ["Isengard Unleashed", "Lightning Bolt"] }, {} ]
+    }
+  },
+  {
+    "name": "flashback for 4RRR exiles it after it resolves",
+    "players": [
+      { "graveyard": ["Isengard Unleashed"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Isengard Unleashed", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Isengard Unleashed"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Isengard Unleashed stops a later Moment's Peace from preventing combat damage",
+    "players": [
+      { "hand": ["Isengard Unleashed", "Moment's Peace"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "auto": true },
+      { "cast": "Isengard Unleashed" },
+      { "resolve": true },
+      { "cast": "Moment's Peace" },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 11 } ]
+    }
+  },
+  {
+    "name": "ruling: a flashback Isengard Unleashed that is countered is still exiled",
+    "players": [
+      { "graveyard": ["Isengard Unleashed"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Isengard Unleashed", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Isengard Unleashed" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": [], "exile": ["Isengard Unleashed"] }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: two Isengard Unleashed resolved in one turn multiply damage by 9",
+    "players": [
+      { "hand": ["Isengard Unleashed", "Lightning Bolt"], "graveyard": ["Isengard Unleashed"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Isengard Unleashed" },
+      { "resolve": true },
+      { "cast": "Isengard Unleashed", "alt": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": -7 } ]
+    }
+  }
+]

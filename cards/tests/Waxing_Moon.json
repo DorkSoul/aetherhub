@@ -1,0 +1,129 @@
+[
+  {
+    "name": "transforms a target Werewolf you control and gives your creatures trample",
+    "players": [
+      {
+        "hand": [
+          "Waxing Moon"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Ulvenwald Captive",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Waxing Moon",
+        "targets": [
+          "Ulvenwald Captive"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ulvenwald Abomination"
+          ],
+          "battlefield_lacks": [
+            "Ulvenwald Captive"
+          ]
+        },
+        {}
+      ],
+      "keywords": {
+        "Grizzly Bears": [
+          "Trample"
+        ]
+      }
+    }
+  },
+  {
+    "name": "without a target it still gives trample (no werewolf transforms)",
+    "players": [
+      {
+        "hand": [
+          "Waxing Moon"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Waxing Moon"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "keywords": {
+        "Grizzly Bears": [
+          "Trample"
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: target illegal on resolution, so no creatures gain trample",
+    "players": [
+      { "hand": ["Waxing Moon"], "battlefield": ["Forest", "Forest", "Ulvenwald Captive", { "name": "Grizzly Bears", "sick": false }] },
+      { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Waxing Moon", "targets": ["Ulvenwald Captive"] },
+      { "pass": true },
+      { "cast": "Terror", "player": 1, "targets": ["Ulvenwald Captive"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Waxing Moon", "Ulvenwald Captive"] },
+        { "graveyard_has": ["Llanowar Elves"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no target Waxing Moon resolves and the blocked Bears trample over (contrast)",
+    "players": [
+      { "hand": ["Waxing Moon"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Waxing Moon" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard_has": ["Llanowar Elves"], "life": 19 } ]
+    }
+  }
+]

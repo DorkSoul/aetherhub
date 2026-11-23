@@ -1,0 +1,46 @@
+{
+  "name": "Bioshift",
+  "mana_cost": "{G/U}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature to move counters from" },
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controlled_by": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } } } },
+          "label": "another target creature with the same controller",
+          "distinct": true
+        }
+      ],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "All",
+            "cs": [
+              { "type": "TargetIs", "idx": 0, "filter": { "types": ["Creature"] } },
+              { "type": "TargetIs", "idx": 1, "filter": { "types": ["Creature"], "controlled_by": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } } } }
+            ]
+          },
+          "then": [
+            { "type": "ChooseNumber", "who": { "type": "You" }, "min": 0, "max": 99 },
+            {
+              "type": "AddCounters",
+              "what": { "type": "Target", "idx": 1 },
+              "kind": "PlusOnePlusOne",
+              "n": { "type": "Min", "a": { "type": "ChosenNumber" }, "b": { "type": "CountersOn", "of": { "type": "Target", "idx": 0 }, "kind": "PlusOnePlusOne" } }
+            },
+            {
+              "type": "RemoveCounters",
+              "what": { "type": "Target", "idx": 0 },
+              "kind": "PlusOnePlusOne",
+              "n": { "type": "Min", "a": { "type": "ChosenNumber" }, "b": { "type": "CountersOn", "of": { "type": "Target", "idx": 0 }, "kind": "PlusOnePlusOne" } }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Move any number of +1/+1 counters from target creature onto another target creature with the same controller."
+}

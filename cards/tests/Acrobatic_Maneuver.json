@@ -1,0 +1,130 @@
+[
+  {
+    "name": "blinks your creature and draws a card",
+    "players": [
+      {
+        "hand": [
+          "Acrobatic Maneuver"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Acrobatic Maneuver",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "hand_count": 1,
+          "graveyard_has": [
+            "Acrobatic Maneuver"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "can't target an opponent's creature",
+    "players": [
+      {
+        "hand": [
+          "Acrobatic Maneuver"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Acrobatic Maneuver",
+        "targets": [
+          "Hill Giant"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Acrobatic Maneuver"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the blinked creature is a new object, so its +1/+1 counters are gone",
+    "players": [
+      {
+        "hand": ["Acrobatic Maneuver"],
+        "battlefield": ["Plains", "Plains", "Plains", {"name": "Grizzly Bears", "counters": {"PlusOnePlusOne": 2}}],
+        "library": ["Island"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Acrobatic Maneuver", "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Grizzly Bears"]}, {}],
+      "pt": {"Grizzly Bears": [2, 2]}
+    }
+  },
+  {
+    "name": "ruling: a creature token exiled by Acrobatic Maneuver ceases to exist and does not return",
+    "players": [
+      {
+        "hand": ["Sprout Swarm", "Acrobatic Maneuver"],
+        "battlefield": ["Forest", "Forest", "Plains", "Island", "Island"],
+        "library": ["Island"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Sprout Swarm", "answers": [false]},
+      {"resolve": true},
+      {"cast": "Acrobatic Maneuver", "targets": ["Saproling"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_lacks": ["Saproling"], "graveyard_has": ["Acrobatic Maneuver", "Sprout Swarm"]}, {}]
+    }
+  }
+]

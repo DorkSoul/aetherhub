@@ -1,0 +1,98 @@
+[
+  {
+    "name": "pay 3 life: enters untapped",
+    "players": [{ "hand": ["The Black Gate"] }, {}],
+    "steps": [
+      { "play_land": "The Black Gate" },
+      { "pass": true, "answers": [true] }
+    ],
+    "expect": {
+      "tapped": { "The Black Gate": false },
+      "players": [{ "life": 17 }]
+    }
+  },
+  {
+    "name": "don't pay: enters tapped, no life lost",
+    "players": [{ "hand": ["The Black Gate"] }, {}],
+    "steps": [
+      { "play_land": "The Black Gate" },
+      { "pass": true, "answers": [false] }
+    ],
+    "expect": {
+      "tapped": { "The Black Gate": true },
+      "players": [{ "life": 20 }]
+    }
+  },
+  {
+    "name": "target creature can't be blocked by creatures of the player with most life",
+    "players": [
+      { "life": 15, "battlefield": ["The Black Gate", "Swamp", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "The Black Gate", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 15 }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "creatures of the player without the most life can still block",
+    "players": [
+      { "life": 25, "battlefield": ["The Black Gate", "Swamp", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+      { "life": 20, "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "The Black Gate", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 25 }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "ruling: a creature entering after the ability resolves still cannot block the target",
+    "players": [
+      { "life": 15, "battlefield": ["The Black Gate", "Swamp", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+      { "hand": ["Bounding Wolf"], "battlefield": ["Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "activate": "The Black Gate", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "pass": true },
+      { "player": 1, "cast": "Bounding Wolf" },
+      { "resolve": true },
+      { "block": [{ "blocker": "Bounding Wolf", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 15 }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "ruling: lowering the chosen player's life after resolution does not let its creatures block",
+    "players": [
+      { "life": 15, "battlefield": ["The Black Gate", "Swamp", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "The Black Gate", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "player": 1, "set_life": 5 },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 15 }, { "life": 3 }]
+    }
+  }
+]

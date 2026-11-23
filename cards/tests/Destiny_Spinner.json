@@ -1,0 +1,311 @@
+[
+ {
+  "name": "becomes an X/X trample haste Elemental where X is enchantments you control",
+  "players": [
+   {
+    "battlefield": [
+     "Destiny Spinner",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Destiny Spinner",
+    "ability": 0,
+    "targets": [
+     "Plains"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "pt": {
+    "Plains": [
+     1,
+     1
+    ]
+   },
+   "keywords": {
+    "Plains": [
+     "Trample",
+     "Haste"
+    ]
+   }
+  }
+ },
+ {
+  "name": "X counts every enchantment you control, not just the Spinner",
+  "players": [
+   {
+    "battlefield": [
+     "Destiny Spinner",
+     "Glorious Anthem",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Destiny Spinner",
+    "ability": 0,
+    "targets": [
+     "Plains"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "pt": {
+    "Plains": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "creature spells you control can't be countered",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Destiny Spinner",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "other spells you cast can still be countered",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Destiny Spinner",
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 20,
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "ruling: the most recent activation's X applies when the ability is activated again",
+  "players": [
+   {
+    "hand": ["Rancor"],
+    "battlefield": ["Destiny Spinner", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Destiny Spinner", "ability": 0, "targets": ["Plains"] },
+   { "resolve": true },
+   { "cast": "Rancor", "targets": ["Destiny Spinner"] },
+   { "resolve": true },
+   { "activate": "Destiny Spinner", "ability": 0, "targets": ["Plains"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "pt": { "Plains": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: a Spinner spell can be countered, its static works only on the battlefield",
+  "players": [
+   {
+    "hand": ["Destiny Spinner"],
+    "battlefield": ["Forest", "Forest"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Destiny Spinner" },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Destiny Spinner" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Destiny Spinner"] },
+    { "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with no enchantments left when it resolves, the animated land becomes 0/0 and dies",
+  "players": [
+   {
+    "battlefield": ["Destiny Spinner", "Forest", "Forest", "Forest", "Forest", "Plains"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "activate": "Destiny Spinner", "ability": 0, "targets": ["Plains"] },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Destiny Spinner"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Destiny Spinner", "Plains"] },
+    { "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: X is fixed on resolution, a later enchantment does not change the base P/T",
+  "players": [
+   {
+    "hand": ["Rancor"],
+    "battlefield": ["Destiny Spinner", "Forest", "Forest", "Forest", "Forest", "Forest", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Destiny Spinner", "ability": 0, "targets": ["Plains"] },
+   { "resolve": true },
+   { "cast": "Rancor", "targets": ["Destiny Spinner"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "pt": { "Plains": [1, 1] }
+  }
+ },
+ {
+  "name": "ruling: the animation does not untap a tapped land",
+  "players": [
+   {
+    "battlefield": ["Destiny Spinner", "Forest", "Forest", "Forest", "Forest", { "name": "Plains", "tapped": true }]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Destiny Spinner", "ability": 0, "targets": ["Plains"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "tapped": { "Plains": true },
+   "pt": { "Plains": [1, 1] }
+  }
+ }
+]

@@ -1,0 +1,76 @@
+[
+  {
+    "name": "returns target creature to its owner's hand",
+    "players": [
+      { "hand": ["Temporal Fissure"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Temporal Fissure", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Temporal Fissure"] },
+        { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "can return one of its own lands to hand",
+    "players": [
+      { "hand": ["Temporal Fissure"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Temporal Fissure", "targets": ["Island"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Island"], "graveyard": ["Temporal Fissure"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: each storm copy may choose new targets",
+    "players": [
+      {"hand": ["Lightning Bolt", "Temporal Fissure"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island"]},
+      {"battlefield": ["Grizzly Bears", "Savannah Lions"]}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"resolve": true},
+      {"cast": "Temporal Fissure", "targets": ["Grizzly Bears"]},
+      {"resolve": true, "answers": ["Savannah Lions"]}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Lightning Bolt", "Temporal Fissure"]},
+        {"hand": ["Grizzly Bears", "Savannah Lions"], "battlefield_lacks": ["Grizzly Bears", "Savannah Lions"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered spell still counts for storm, so Temporal Fissure gets a copy",
+    "players": [
+      {"hand": ["Lightning Bolt", "Temporal Fissure"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island"]},
+      {"hand": ["Counterspell"], "battlefield": ["Island", "Island", "Grizzly Bears", "Savannah Lions"]}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"pass": true},
+      {"cast": "Counterspell", "targets": [{"stack": "Lightning Bolt"}], "player": 1},
+      {"resolve": true},
+      {"cast": "Temporal Fissure", "targets": ["Grizzly Bears"]},
+      {"resolve": true, "answers": ["Savannah Lions"]}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Lightning Bolt", "Temporal Fissure"]},
+        {"graveyard": ["Counterspell"], "hand": ["Grizzly Bears", "Savannah Lions"]}
+      ]
+    }
+  }
+]

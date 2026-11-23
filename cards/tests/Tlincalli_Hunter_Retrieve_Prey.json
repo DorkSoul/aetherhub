@@ -1,0 +1,204 @@
+[
+ {
+  "name": "the creature side costs seven mana",
+  "players": [
+   {
+    "hand": [
+     "Tlincalli Hunter // Retrieve Prey"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Tlincalli Hunter // Retrieve Prey"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Tlincalli Hunter // Retrieve Prey"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Retrieve Prey exiles a creature card from your graveyard and the adventure goes to exile",
+  "players": [
+   {
+    "hand": [
+     "Tlincalli Hunter // Retrieve Prey"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Tlincalli Hunter // Retrieve Prey",
+    "face": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "exile": [
+      "Tlincalli Hunter // Retrieve Prey",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the exiled creature is cast for {0} from exile, once per turn",
+  "players": [
+   {
+    "hand": [
+     "Light Up the Stage"
+    ],
+    "battlefield": [
+     "Tlincalli Hunter // Retrieve Prey",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Light Up the Stage"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "alt": 100
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Hill Giant",
+    "alt": 100,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature cast from exile follows timing (illegal with a Bolt on the stack, legal once it empties)",
+  "players": [
+   {
+    "hand": ["Light Up the Stage", "Lightning Bolt"],
+    "battlefield": ["Tlincalli Hunter // Retrieve Prey", "Mountain", "Mountain", "Mountain", "Mountain"],
+    "library": ["Grizzly Bears", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Light Up the Stage" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Grizzly Bears", "alt": 100, "illegal": true },
+   { "resolve": true },
+   { "cast": "Grizzly Bears", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "exile": ["Hill Giant"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card exiled by Tlincalli's static gets no permission to cast non-creature spells from exile",
+  "players": [
+   {
+    "battlefield": ["Tlincalli Hunter // Retrieve Prey", "Mountain"],
+    "exile": ["Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a countered Adventure is not exiled and its creature cannot be cast later",
+  "players": [
+   {
+    "hand": ["Tlincalli Hunter // Retrieve Prey"],
+    "battlefield": ["Forest", "Forest"],
+    "graveyard": ["Grizzly Bears"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Tlincalli Hunter // Retrieve Prey", "face": true, "targets": ["Grizzly Bears"] },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Retrieve Prey" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard_has": ["Tlincalli Hunter // Retrieve Prey", "Grizzly Bears"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

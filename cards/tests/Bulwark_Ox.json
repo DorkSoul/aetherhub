@@ -1,0 +1,230 @@
+[
+  {
+    "name": "saddle with power-1 creature, attack puts a +1/+1 counter on target creature",
+    "players": [
+      {
+        "battlefield": [
+          "Bulwark Ox",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Bulwark Ox",
+        "ability": 1
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Bulwark Ox",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": {
+        "Hill Giant": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Bulwark Ox": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "unsaddled attack does not trigger",
+    "players": [
+      {
+        "battlefield": [
+          "Bulwark Ox"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Bulwark Ox",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "saddle needs total power 1 from other creatures",
+    "players": [
+      {
+        "battlefield": [
+          "Bulwark Ox"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Bulwark Ox",
+        "ability": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": {
+        "Bulwark Ox": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "sacrifice: creatures with counters gain hexproof and indestructible until end of turn",
+    "players": [
+      {
+        "battlefield": [
+          "Bulwark Ox",
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Bulwark Ox",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Grizzly Bears",
+            "Hill Giant"
+          ],
+          "graveyard": [
+            "Bulwark Ox"
+          ]
+        },
+        {}
+      ],
+      "keywords": {
+        "Grizzly Bears": [
+          "Hexproof",
+          "Indestructible"
+        ],
+        "Hill Giant": []
+      }
+    }
+  },
+  {
+    "name": "ruling: a saddled Mount can be saddled again with another creature",
+    "players": [
+      { "battlefield": [ "Bulwark Ox", "Grizzly Bears", "Hill Giant" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bulwark Ox", "ability": 1 },
+      { "resolve": true },
+      { "activate": "Bulwark Ox", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true }
+    }
+  },
+  {
+    "name": "ruling: still saddled after moving to combat, so the attack trigger fires",
+    "players": [
+      { "battlefield": [ "Bulwark Ox", "Grizzly Bears" ] },
+      { "battlefield": [ "Hill Giant" ] }
+    ],
+    "steps": [
+      { "activate": "Bulwark Ox", "ability": 1 },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Bulwark Ox", "at": "p1" } ] },
+      { "resolve": true, "targets": [ "Hill Giant" ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a tapped creature cannot be tapped to saddle",
+    "players": [
+      { "battlefield": [ "Bulwark Ox", { "name": "Grizzly Bears", "tapped": true } ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bulwark Ox", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  }
+]

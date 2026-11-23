@@ -1,0 +1,180 @@
+[
+ {
+  "name": "Other white creatures get +1/+1, itself and non-white do not",
+  "players": [
+   {
+    "battlefield": [
+     "Celestial Crusader",
+     "Serra Angel",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Celestial Crusader": [
+     2,
+     2
+    ],
+    "Serra Angel": [
+     5,
+     5
+    ],
+    "Grizzly Bears": [
+     2,
+     2
+    ],
+    "Savannah Lions": [
+     3,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "Split second: opponent cannot respond while it is on the stack",
+  "players": [
+   {
+    "hand": [
+     "Celestial Crusader"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Celestial Crusader"
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p0"
+    ],
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "hand": [
+      "Shock"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flash: can be cast at the beginning of combat",
+  "players": [
+   {
+    "hand": [
+     "Celestial Crusader"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "cast": "Celestial Crusader"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Plains",
+      "Plains",
+      "Plains",
+      "Plains",
+      "Celestial Crusader"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: nonlethal damage on a white creature becomes lethal when Celestial Crusader leaves the battlefield that turn",
+  "players": [
+   { "hand": ["Shock", "Shock", "Shock"], "battlefield": ["Mountain", "Mountain", "Mountain", "Serra Angel", "Celestial Crusader"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Celestial Crusader"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Serra Angel", "Celestial Crusader"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling control: while Celestial Crusader is on the battlefield, two Shocks do not kill the 5/5 Serra Angel",
+  "players": [
+   { "hand": ["Shock", "Shock"], "battlefield": ["Mountain", "Mountain", "Serra Angel", "Celestial Crusader"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Serra Angel", "Celestial Crusader"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: casting a split second spell does not affect a spell already on the stack, which still resolves",
+  "players": [
+   { "hand": ["Celestial Crusader"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["p0"] },
+   { "pass": true, "player": 1 },
+   { "cast": "Celestial Crusader" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 18, "battlefield_has": ["Celestial Crusader"] }, { "graveyard_has": ["Shock"] } ]
+  }
+ }
+]

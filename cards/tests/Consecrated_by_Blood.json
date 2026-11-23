@@ -1,0 +1,151 @@
+[
+  {
+    "name": "enchanted creature gets +2/+2 and flying",
+    "players": [
+      {
+        "hand": [
+          "Consecrated by Blood"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Consecrated by Blood",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      },
+      "keywords": {
+        "Grizzly Bears": [
+          "Flying"
+        ]
+      }
+    }
+  },
+  {
+    "name": "sacrifice two other creatures: regenerate",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Grizzly Bears",
+          "Llanowar Elves",
+          "Llanowar Elves"
+        ],
+        "hand": [
+          "Consecrated by Blood"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Consecrated by Blood",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Grizzly Bears",
+        "ability": 32768,
+        "auto": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Llanowar Elves"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: regenerating before combat damage saves the creature, and the sacrificed attackers deal no damage",
+    "players": [
+      {
+        "hand": ["Consecrated by Blood"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears", "Hill Giant", "Savannah Lions"]
+      },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Consecrated by Blood", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Grizzly Bears" } ] },
+      { "activate": "Grizzly Bears", "ability": 32768, "auto": true },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Hill Giant", "Savannah Lions"], "graveyard_has": ["Hill Giant", "Savannah Lions"] },
+        { "life": 20, "graveyard_has": ["Serra Angel"] }
+      ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: without regenerating before combat damage, the enchanted creature dies to the blocker's damage",
+    "players": [
+      {
+        "hand": ["Consecrated by Blood"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears", "Hill Giant", "Savannah Lions"]
+      },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Consecrated by Blood", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant", "Savannah Lions"], "graveyard_has": ["Grizzly Bears"] },
+        { "life": 15, "graveyard_has": ["Serra Angel"] }
+      ]
+    }
+  }
+]

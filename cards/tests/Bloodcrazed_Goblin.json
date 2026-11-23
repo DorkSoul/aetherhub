@@ -1,0 +1,209 @@
+[
+  {
+    "name": "cannot attack before an opponent was dealt damage this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Bloodcrazed Goblin"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Bloodcrazed Goblin",
+            "at": "p1"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "can attack once an opponent was dealt damage this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Bloodcrazed Goblin"
+        ]
+      },
+      {
+        "hand": [
+          "Shock"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Shock",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Bloodcrazed Goblin",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "damage dealt to its own controller does not enable the attack",
+    "players": [
+      {
+        "battlefield": [
+          "Bloodcrazed Goblin",
+          "Mountain"
+        ],
+        "hand": [
+          "Shock"
+        ]
+      },
+      {
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Shock",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Bloodcrazed Goblin",
+            "at": "p1"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 18
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "not yet damaged: the Goblin's attack is dropped, the other attacker still hits",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Bloodcrazed Goblin", "sick": false },
+          { "name": "Grizzly Bears", "sick": false }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          { "card": "Bloodcrazed Goblin", "at": "p1" },
+          { "card": "Grizzly Bears", "at": "p1" }
+        ]
+      },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "ruling: damage dealt in an earlier turn does not allow the attack",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", "Bloodcrazed Goblin"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Bloodcrazed Goblin", "at": "p1" }], "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: the opponent gaining life afterwards does not stop the attack",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", "Bloodcrazed Goblin"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "set_life": 30, "player": 1 },
+      { "attack": [{ "card": "Bloodcrazed Goblin", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 28 } ] }
+  },
+  {
+    "name": "ruling: the opponent dealing damage to itself enables the attack",
+    "players": [
+      { "battlefield": ["Bloodcrazed Goblin"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Bloodcrazed Goblin", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ] }
+  }
+]

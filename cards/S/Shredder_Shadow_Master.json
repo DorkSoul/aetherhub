@@ -1,0 +1,68 @@
+{
+  "name": "Shredder, Shadow Master",
+  "mana_cost": "{3}{B}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Ninja"],
+  "colors": ["B"],
+  "power": 5,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true }, "player_only": true },
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponentExceptTriggerPlayer" },
+          "effects": [
+            {
+              "type": "CopyPermanent",
+              "what": { "type": "This" },
+              "n": { "type": "Fixed", "n": 1 },
+              "except": [{ "type": "NotLegendary" }],
+              "tapped": true,
+              "attacking": true
+            },
+            { "type": "StoreRemembered", "slot": 1, "append": false },
+            {
+              "type": "ChangeDefender",
+              "what": { "type": "Stored", "slot": 1 },
+              "to": { "type": "EachObject" }
+            },
+            { "type": "StoreRemembered", "slot": 0, "append": true }
+          ]
+        },
+        { "type": "Remember", "what": { "type": "Stored", "slot": 0 } },
+        {
+          "type": "Delayed",
+          "at": "EndOfCombat",
+          "effects": [
+            {
+              "type": "Sacrifice",
+              "who": { "type": "All", "filter": { "controller": "You", "among_remembered": true }, "zone": "Battlefield" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "DealsCombatDamage", "filter": { "this": true }, "to": "Player" },
+      "effects": [
+        {
+          "type": "LoseLife",
+          "who": { "type": "TriggerPlayer" },
+          "n": {
+            "type": "Half",
+            "a": { "type": "LifeOf", "who": { "type": "TriggerPlayer" } },
+            "round_up": true
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever Shredder attacks a player, for each other opponent, create a token that's a copy of Shredder tapped and attacking that player, except it isn't legendary. Sacrifice those tokens at end of combat.\nWhenever Shredder deals combat damage to a player, that player loses half their life, rounded up."
+}

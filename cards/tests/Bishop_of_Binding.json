@@ -1,0 +1,246 @@
+[
+  {
+    "name": "ETB exiles target creature an opponent controls",
+    "players": [
+      {
+        "hand": [
+          "Bishop of Binding"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Bishop of Binding"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Bishop of Binding"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "battlefield": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "attack trigger gives a Vampire +X/+X where X is the power of the exiled card",
+    "players": [
+      {
+        "hand": [
+          "Bishop of Binding"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Bloodrage Vampire"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Bishop of Binding"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "auto": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Bishop of Binding",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Bloodrage Vampire"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Bishop of Binding",
+            "Bloodrage Vampire"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "pt": {
+        "Bloodrage Vampire": [
+          5,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "exiled card with no power (a land) gives X = 0 and the pump is still legal",
+    "players": [
+      {
+        "hand": [
+          "Bishop of Binding"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Bloodrage Vampire"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Bishop of Binding"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "auto": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Bishop of Binding",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Bloodrage Vampire"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Bishop of Binding",
+            "Bloodrage Vampire"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Bloodrage Vampire": [
+          5,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: exiled token ceases to exist and does not return when Bishop leaves",
+    "players": [
+      { "hand": ["Bishop of Binding"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Zombie 2-2 Decayed", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Bishop of Binding" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Bishop of Binding"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Bishop of Binding"] },
+        { "battlefield_lacks": ["Zombie 2-2 Decayed"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Bishop leaving before its ETB resolves means nothing is exiled",
+    "players": [
+      { "hand": ["Bishop of Binding"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Bishop of Binding" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Bishop of Binding"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Bishop of Binding"] },
+        { "battlefield_has": ["Grizzly Bears"], "exile": [] }
+      ]
+    }
+  }
+]

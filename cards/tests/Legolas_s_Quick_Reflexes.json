@@ -1,0 +1,111 @@
+[
+  { "name": "untaps the creature and gives it reach and hexproof until end of turn",
+    "players": [
+      { "hand": ["Legolas's Quick Reflexes"], "battlefield": ["Forest", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Legolas's Quick Reflexes", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false },
+      "keywords": { "Grizzly Bears": ["Reach", "Hexproof"] }
+    }
+  },
+  { "name": "when the creature becomes tapped (attacking) it deals damage equal to its power to up to one target creature",
+    "players": [
+      { "hand": ["Legolas's Quick Reflexes"], "battlefield": ["Forest", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Legolas's Quick Reflexes", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Grizzly Bears"] } ],
+      "tapped": { "Hill Giant": true }
+    }
+  },
+ {
+  "name": "ruling: after split second resolves, a spell can be cast again before the spell below it resolves",
+  "players": [
+   { "hand": ["Lightning Bolt", "Lightning Bolt", "Legolas's Quick Reflexes"], "battlefield": ["Mountain", "Mountain", "Forest", "Hill Giant"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "cast": "Legolas's Quick Reflexes", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 17, "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell cast before split second resolves normally after it",
+  "players": [
+   { "hand": ["Lightning Bolt", "Legolas's Quick Reflexes"], "battlefield": ["Mountain", "Forest", "Hill Giant"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "cast": "Legolas's Quick Reflexes", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: during split second the opponent can still tap for mana but not activate an ability",
+  "players": [
+   { "hand": ["Legolas's Quick Reflexes"], "battlefield": ["Forest", "Hill Giant"] },
+   { "battlefield": [ { "name": "Prodigal Sorcerer", "sick": false }, "Mountain" ] }
+  ],
+  "steps": [
+   { "cast": "Legolas's Quick Reflexes", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "activate": "Prodigal Sorcerer", "player": 1, "targets": ["p0"], "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20 },
+    { "battlefield_has": ["Prodigal Sorcerer"] }
+   ],
+   "tapped": { "Prodigal Sorcerer": false }
+  }
+ },
+ {
+  "name": "ruling: a triggered ability still triggers while split second is on the stack",
+  "players": [
+   { "hand": ["Chalice of the Void", "Legolas's Quick Reflexes"], "battlefield": ["Island", "Island", "Forest"] },
+   { "battlefield": ["Giant Spider"] }
+  ],
+  "steps": [
+   { "cast": "Chalice of the Void", "answers": [1] },
+   { "resolve": true },
+   { "cast": "Legolas's Quick Reflexes", "targets": ["Giant Spider"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Legolas's Quick Reflexes"] },
+    { "battlefield_has": ["Giant Spider"] }
+   ]
+  }
+ }
+]

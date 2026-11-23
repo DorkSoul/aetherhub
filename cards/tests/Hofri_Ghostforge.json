@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Spirits get +1/+1, trample and haste",
+    "players": [ { "battlefield": ["Hofri Ghostforge"] }, {} ],
+    "steps": [],
+    "expect": { "pt": { "Hofri Ghostforge": [4, 5] } }
+  },
+  {
+    "name": "a nontoken creature dies: it is exiled and a Spirit token copy (3/3 trample haste) appears",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Hofri Ghostforge", "Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hofri Ghostforge", "Grizzly Bears"], "exile": ["Grizzly Bears"], "graveyard": ["Shock"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] },
+      "keywords": { "Grizzly Bears": ["Trample", "Haste"] }
+    }
+  },
+  {
+    "name": "when the token leaves the battlefield the exiled card returns to its owner's graveyard",
+    "players": [
+      { "hand": ["Shock", "Lightning Bolt"], "battlefield": ["Hofri Ghostforge", "Grizzly Bears", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hofri Ghostforge"], "battlefield_lacks": ["Grizzly Bears"], "exile": [], "graveyard": ["Grizzly Bears", "Lightning Bolt", "Shock"] }, {} ]
+    }
+  },
+  {
+    "name": "a token that dies doesn't trigger Hofri again",
+    "players": [
+      { "hand": ["Shock", "Lightning Bolt"], "battlefield": ["Hofri Ghostforge", "Grizzly Bears", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, {} ], "stack_empty": true }
+  },
+  {
+    "name": "ruling: the copy's enters trigger fires when the token enters (Mulldrifter draws two)",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Hofri Ghostforge", "Mulldrifter", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Mulldrifter"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hofri Ghostforge", "Mulldrifter"], "exile": ["Mulldrifter"], "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: each Spirit token returns only the card it was made from",
+    "players": [
+      { "hand": ["Shock", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Hofri Ghostforge", "Grizzly Bears", "Hill Giant", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hofri Ghostforge", "Hill Giant"], "battlefield_lacks": ["Grizzly Bears"], "exile": ["Hill Giant"], "graveyard": ["Grizzly Bears", "Shock", "Lightning Bolt", "Lightning Bolt"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the token copies only printed values, so the original's +1/+1 counter is not copied",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hofri Ghostforge", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hofri Ghostforge", "Grizzly Bears"], "exile": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  }
+]

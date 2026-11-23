@@ -1,0 +1,64 @@
+[
+ {
+  "name": "cast and resolve draws a card",
+  "players": [
+   { "hand": ["Wedding Invitation"], "battlefield": ["Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Wedding Invitation" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1, "battlefield_has": ["Wedding Invitation"] }, {} ]
+  }
+ },
+ {
+  "name": "target creature can't be blocked this turn and the artifact is sacrificed",
+  "players": [
+   { "battlefield": ["Wedding Invitation", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Wedding Invitation", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Wedding Invitation"], "battlefield_has": ["Grizzly Bears"] }, {} ],
+   "keywords": { "Grizzly Bears": ["Unblockable"] }
+  }
+ },
+ {
+  "name": "a Vampire also gains lifelink",
+  "players": [
+   { "battlefield": ["Wedding Invitation", "Vampire Nighthawk"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Wedding Invitation", "ability": 0, "targets": ["Vampire Nighthawk"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "keywords": { "Vampire Nighthawk": ["Unblockable", "Lifelink"] }
+  }
+ },
+ {
+  "name": "ruling: activating the last ability on an already-blocked creature does not unblock it",
+  "players": [
+   { "battlefield": ["Wedding Invitation", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "activate": "Wedding Invitation", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20 } ]
+  }
+ }
+]

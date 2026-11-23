@@ -1,0 +1,154 @@
+[
+  {
+    "name": "mode 1 only: returns the permanent card from your graveyard, not the instant",
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest"],
+        "graveyard": ["Llanowar Elves", "Lightning Bolt"]
+      },
+      {
+        "graveyard": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Llanowar Elves"], "graveyard": ["Road of Return", "Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "mode 2 only: commander goes from the command zone to hand",
+    "commander": true,
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest"],
+        "command": ["Test Commander"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Test Commander"], "command": [], "graveyard": ["Road of Return"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "mode 2 with no commander in the command zone does nothing",
+    "commander": true,
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Road of Return"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "entwined: both modes happen (graveyard permanent and commander)",
+    "commander": true,
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest"],
+        "graveyard": ["Llanowar Elves"],
+        "command": ["Test Commander"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Llanowar Elves", "Test Commander"], "command": [], "graveyard": ["Road of Return"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "two lands only: entwine is not offered, the spell is just the printed GG",
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest"],
+        "graveyard": ["Llanowar Elves"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Llanowar Elves"], "graveyard": ["Road of Return"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two commanders in the command zone, mode 2 puts only the one you choose into hand",
+    "commander": true,
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest"],
+        "command": ["Savannah Lions", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [1] },
+      { "resolve": true, "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "command": ["Savannah Lions"], "graveyard": ["Road of Return"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: outside the Commander variant mode 2 does nothing",
+    "players": [
+      {
+        "hand": ["Road of Return"],
+        "battlefield": ["Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Road of Return", "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Road of Return"] },
+        {}
+      ]
+    }
+  }
+]

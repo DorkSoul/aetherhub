@@ -1,0 +1,171 @@
+[
+  {
+    "name": "up to X target creatures phase out",
+    "players": [
+      {
+        "hand": [
+          "March of Swirling Mist"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "March of Swirling Mist",
+        "targets": [
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ],
+        "answers": [
+          2
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "March of Swirling Mist"
+          ]
+        },
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears",
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "exiling a blue card from hand makes X=2 cost only {U}",
+    "players": [
+      {
+        "hand": ["March of Swirling Mist", "Merfolk Looter"],
+        "battlefield": ["Island"]
+      },
+      { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "March of Swirling Mist", "targets": ["Grizzly Bears", "Llanowar Elves"], "answers": [1, 2] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["March of Swirling Mist"], "exile": ["Merfolk Looter"] }, { "battlefield_lacks": ["Grizzly Bears", "Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "ruling: exiling two blue cards still leaves {U} to pay",
+    "players": [
+      {
+        "hand": ["March of Swirling Mist", "Merfolk Looter", "Merfolk Looter"],
+        "battlefield": ["Island"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "March of Swirling Mist", "targets": ["Grizzly Bears"], "answers": [2, 2, [0]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["March of Swirling Mist"], "exile": ["Merfolk Looter", "Merfolk Looter"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the reduced cost cannot go below {U}, so no lands means it cannot be cast",
+    "players": [
+      {
+        "hand": ["March of Swirling Mist", "Merfolk Looter", "Merfolk Looter"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "March of Swirling Mist", "targets": ["Grizzly Bears"], "answers": [2, 2], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 3 },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an attacker that phases out is removed from combat and deals no damage",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "hand": ["March of Swirling Mist"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "pass": true },
+      { "cast": "March of Swirling Mist", "player": 1, "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: phasing in does not trigger enters-the-battlefield abilities",
+    "players": [
+      { "hand": ["March of Swirling Mist"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Mulldrifter"] }
+    ],
+    "steps": [
+      { "cast": "March of Swirling Mist", "targets": ["Mulldrifter"], "answers": [1] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Mulldrifter"], "hand_count": 1 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature phases in during its controller's untap step and can attack that turn",
+    "players": [
+      { "hand": ["March of Swirling Mist"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "March of Swirling Mist", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat", "player": 1 },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18 },
+        {}
+      ]
+    }
+  }
+]

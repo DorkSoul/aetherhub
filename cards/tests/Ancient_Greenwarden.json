@@ -1,0 +1,182 @@
+[
+  {
+    "name": "plays a land from the graveyard",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden"], "graveyard": ["Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "graveyard": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "nonland cards in the graveyard can't be cast",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "a land entering makes your landfall triggers trigger an additional time",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden", "Aesi, Tyrant of Gyre Strait"], "hand": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without Greenwarden a land entering triggers landfall only once",
+    "players": [
+      { "battlefield": ["Aesi, Tyrant of Gyre Strait"], "hand": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a creature entering does not trigger its ETB an additional time",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden", "Plains", "Plains"], "hand": ["Wall of Omens"], "library": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wall of Omens" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the nonland face of a modal card in the graveyard cannot be cast",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Shatterskull Smashing"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shatterskull Smashing", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Shatterskull Smashing"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: playing a land from the graveyard still counts as the one land of the turn",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden"], "graveyard": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "graveyard": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature land entering makes Purphoros's creature-enters trigger trigger an additional time",
+    "players": [
+      { "hand": ["Dryad Arbor"], "battlefield": ["Ancient Greenwarden", "Purphoros, God of the Forge"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Dryad Arbor" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dryad Arbor"] },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two Greenwardens a land entering triggers landfall three times",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden", "Ancient Greenwarden", "Aesi, Tyrant of Gyre Strait"], "hand": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true, "answers": [true, true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 3 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: each additional landfall trigger makes its own choice",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden", "Aesi, Tyrant of Gyre Strait"], "hand": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true, "answers": [true, false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land that enters tapped still does, and the landfall trigger still doubles",
+    "players": [
+      { "battlefield": ["Ancient Greenwarden", "Aesi, Tyrant of Gyre Strait", "Forest"], "hand": ["Vernal Fen"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Vernal Fen" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2 },
+        {}
+      ],
+      "tapped": { "Vernal Fen": true }
+    }
+  }
+]

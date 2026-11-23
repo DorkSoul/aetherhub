@@ -1,0 +1,187 @@
+[
+ {
+  "name": "enters with three time counters and exiles an opposing creature",
+  "players": [
+   {
+    "hand": [
+     "Crack in Time"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Crack in Time"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Crack in Time": {
+     "time": 3
+    }
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Crack in Time"
+     ]
+    },
+    {
+     "exile": [
+      "Hill Giant"
+     ],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "creature returns when the last counter is removed and it is sacrificed",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Crack in Time",
+      "counters": {
+       "time": 1
+      }
+     }
+    ]
+   },
+   {
+    "exile": []
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Crack in Time"
+     ],
+     "battlefield": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cannot target your own creature",
+  "players": [
+   {
+    "hand": [
+     "Crack in Time"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Crack in Time"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Crack in Time",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "first main phase of your turn exiles target opposing creature until Crack leaves",
+  "players": [
+   {"battlefield": [{"name": "Crack in Time", "counters": {"time": 3}}]},
+   {"battlefield": ["Hill Giant"]}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep"},
+   {"resolve": true},
+   {"advance_to": "Main1"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "counters": {"Crack in Time": {"time": 2}},
+   "players": [
+    {"battlefield_has": ["Crack in Time"]},
+    {"exile": ["Hill Giant"]}
+   ]
+  }
+ },
+ {
+  "name": "boundary: nothing happens in the opponent's first main phase",
+  "players": [
+   {"battlefield": [{"name": "Crack in Time", "counters": {"time": 3}}]},
+   {"battlefield": ["Hill Giant"]}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Main1"}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Crack in Time"]},
+    {"battlefield_has": ["Hill Giant"], "exile": []}
+   ]
+  }
+ },
+ {
+  "name": "ruling: if Crack in Time leaves before its ETB trigger resolves, the creature is not exiled",
+  "players": [
+   {"hand": ["Crack in Time"], "battlefield": ["Plains", "Plains", "Plains", "Plains"]},
+   {"hand": ["Naturalize"], "battlefield": ["Hill Giant", "Forest", "Forest"]}
+  ],
+  "steps": [
+   {"cast": "Crack in Time"},
+   {"pass": true},
+   {"pass": true, "player": 1},
+   {"pass": true},
+   {"cast": "Naturalize", "player": 1, "targets": ["Crack in Time"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Crack in Time"]},
+    {"battlefield_has": ["Hill Giant"], "exile": []}
+   ]
+  }
+ }
+]

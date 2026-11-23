@@ -1,0 +1,136 @@
+{
+  "name": "Turf War",
+  "mana_cost": "{4}{R}",
+  "types": [
+    "Enchantment"
+  ],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "EntersBattlefield",
+        "filter": {
+          "this": true
+        }
+      },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": {
+            "type": "EachPlayer"
+          },
+          "effects": [
+            {
+              "type": "Reflexive",
+              "targets": [
+                {
+                  "what": {
+                    "type": "Permanent",
+                    "filter": {
+                      "types": [
+                        "Land"
+                      ],
+                      "controlled_by": {
+                        "type": "EachObject"
+                      }
+                    }
+                  },
+                  "label": "target land that player controls"
+                }
+              ],
+              "effects": [
+                {
+                  "type": "AddCounters",
+                  "what": {
+                    "type": "Target",
+                    "idx": 0
+                  },
+                  "kind": "Contested",
+                  "n": {
+                    "type": "Fixed",
+                    "n": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "CombatDamageToPlayer",
+        "filter": {
+          "types": [
+            "Creature"
+          ]
+        }
+      },
+      "condition": {
+        "type": "Compare",
+        "a": {
+          "type": "Count",
+          "filter": {
+            "types": [
+              "Land"
+            ],
+            "controlled_by": {
+              "type": "TriggerPlayer"
+            },
+            "has_counter": "Contested"
+          }
+        },
+        "cmp": {
+          "op": "Ge",
+          "n": 1
+        }
+      },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": {
+            "type": "ControllerOf",
+            "of": {
+              "type": "TriggerObject"
+            }
+          },
+          "zone": "Battlefield",
+          "filter": {
+            "types": [
+              "Land"
+            ],
+            "controlled_by": {
+              "type": "TriggerPlayer"
+            },
+            "has_counter": "Contested"
+          },
+          "min": 1,
+          "max": 1,
+          "then": [
+            {
+              "type": "GainControl",
+              "what": {
+                "type": "Remembered"
+              },
+              "to": {
+                "type": "ControllerOf",
+                "of": {
+                  "type": "TriggerObject"
+                }
+              },
+              "duration": "Forever"
+            },
+            {
+              "type": "Untap",
+              "what": {
+                "type": "Remembered"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When this enchantment enters, for each player, put a contested counter on target land that player controls.\nWhenever a creature deals combat damage to a player, if that player controls one or more lands with contested counters on them, that creature's controller gains control of one of those lands of their choice and untaps it."
+}

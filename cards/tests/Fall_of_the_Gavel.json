@@ -1,0 +1,55 @@
+[
+  {
+    "name": "counters a spell and its controller gains 5 life",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Fall of the Gavel"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "player": 1, "cast": "Fall of the Gavel", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Lightning Bolt"] },
+        { "life": 25, "graveyard": ["Fall of the Gavel"] }
+      ]
+    }
+  },
+  {
+    "name": "needs a spell to target: illegal with an empty stack",
+    "players": [
+      { "hand": ["Fall of the Gavel"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fall of the Gavel", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "hand": ["Fall of the Gavel"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: target countered by another spell first, so this Fall fizzles (no life gain)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Fall of the Gavel"], "battlefield": ["Mountain", "Plains", "Plains", "Island", "Island", "Island"] },
+      { "hand": ["Fall of the Gavel"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "player": 1, "cast": "Fall of the Gavel", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true, "player": 1 },
+      { "cast": "Fall of the Gavel", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 25, "graveyard": ["Lightning Bolt", "Fall of the Gavel"] },
+        { "life": 20, "graveyard": ["Fall of the Gavel"] }
+      ]
+    }
+  }
+]

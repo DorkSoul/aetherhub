@@ -1,0 +1,95 @@
+[
+  {
+    "name": "+1: each opponent discards a card and loses 2 life",
+    "players": [
+      { "battlefield": ["Angrath, the Flame-Chained"] },
+      { "hand": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Angrath, the Flame-Chained", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18, "hand_count": 0, "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "-3: steals a creature with mana value 3 or less and sacrifices it at the next end step",
+    "players": [
+      { "battlefield": ["Angrath, the Flame-Chained"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Angrath, the Flame-Chained", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Angrath, the Flame-Chained"] },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "-3: a stolen creature with mana value above 3 is not sacrificed",
+    "players": [
+      { "battlefield": ["Angrath, the Flame-Chained"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "activate": "Angrath, the Flame-Chained", "ability": 1, "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Serra Angel"] },
+        {}
+      ]
+    }
+  },
+ { "name": "-8: each opponent loses life equal to the cards in their graveyard (3)",
+   "players": [ { "battlefield": [ { "name": "Angrath, the Flame-Chained", "counters": { "Loyalty": 8 } } ] }, { "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] } ],
+   "steps": [ { "activate": "Angrath, the Flame-Chained", "ability": 2 }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_lacks": ["Angrath, the Flame-Chained"] }, { "life": 17 } ] } },
+ { "name": "-8 is illegal at 7 loyalty",
+   "players": [ { "battlefield": [ { "name": "Angrath, the Flame-Chained", "counters": { "Loyalty": 7 } } ] }, { "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] } ],
+   "steps": [ { "activate": "Angrath, the Flame-Chained", "ability": 2, "illegal": true } ],
+   "expect": { "players": [ {}, { "life": 20 } ], "counters": { "Angrath, the Flame-Chained": { "Loyalty": 7 } } } },
+  {
+    "name": "ruling: -3 can untap a tapped creature you already control and give it haste (attacks at once)",
+    "players": [
+      { "battlefield": ["Angrath, the Flame-Chained", { "name": "Grizzly Bears", "tapped": true, "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Angrath, the Flame-Chained", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "ruling: the +1 still makes the opponent lose 2 life with an empty hand",
+    "players": [
+      { "battlefield": ["Angrath, the Flame-Chained"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Angrath, the Flame-Chained", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18, "hand_count": 0 } ]
+    }
+  },
+  {"name": "-3: another spell resolving before the end step does not stop the sacrifice", "players": [{"battlefield": ["Angrath, the Flame-Chained", "Island", "Island"], "hand": ["Time and Tide"]}, {"battlefield": ["Grizzly Bears"]}], "steps": [{"activate": "Angrath, the Flame-Chained", "ability": 1, "targets": ["Grizzly Bears"]}, {"resolve": true}, {"cast": "Time and Tide"}, {"resolve": true}, {"advance_to": "End"}, {"resolve": true}], "expect": {"turn": 1, "players": [{"battlefield_has": ["Angrath, the Flame-Chained"], "graveyard": ["Time and Tide"]}, {"graveyard_has": ["Grizzly Bears"]}]}}
+]

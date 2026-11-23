@@ -1,0 +1,50 @@
+[
+  { "name": "the target land becomes a 4/4 haste creature that must be blocked",
+    "players": [ { "hand": ["Elemental Uprising"], "battlefield": ["Forest", "Forest", "Mountain"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "tap_for_mana": "Forest", "color": "G" },
+      { "cast": "Elemental Uprising", "targets": ["Mountain"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Mountain", "at": "p1" } ] },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Mountain" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Elemental Uprising"] }, { "graveyard": ["Hill Giant"] } ],
+      "pt": { "Mountain": [4, 4] }
+    } },
+  { "name": "with no creature to block with, the attack is unblocked",
+    "players": [ { "hand": ["Elemental Uprising"], "battlefield": ["Forest", "Forest", "Mountain"] }, {} ],
+    "steps": [
+      { "tap_for_mana": "Forest", "color": "G" },
+      { "cast": "Elemental Uprising", "targets": ["Mountain"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Mountain", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Elemental Uprising"] }, { "life": 16 } ] } },
+  { "name": "ruling: with two possible blockers the defending player must block with at least one",
+    "players": [ { "hand": ["Elemental Uprising"], "battlefield": ["Forest", "Forest", "Mountain"] }, { "battlefield": ["Hill Giant", "Grizzly Bears"] } ],
+    "steps": [
+      { "tap_for_mana": "Forest", "color": "G" },
+      { "cast": "Elemental Uprising", "targets": ["Mountain"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Mountain", "at": "p1" } ] },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Mountain" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Elemental Uprising"] }, { "graveyard": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"] } ],
+      "pt": { "Mountain": [4, 4] }
+    } },
+  { "name": "ruling: a land that is already a creature keeps its +1/+1 counters: 4/4 with three counters is 7/7",
+    "players": [ { "hand": ["Elemental Uprising"], "battlefield": ["Forest", "Forest", { "name": "Mountain", "counters": { "p1p1": 3 } }] }, {} ],
+    "steps": [
+      { "tap_for_mana": "Forest", "color": "G" },
+      { "cast": "Elemental Uprising", "targets": ["Mountain"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Elemental Uprising"] }, {} ], "pt": { "Mountain": [7, 7] } } }
+]

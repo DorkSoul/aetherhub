@@ -1,0 +1,56 @@
+{
+  "name": "Nihiloor",
+  "mana_cost": "{2}{W}{U}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Horror"],
+  "power": 3, "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Battlefield",
+              "filter": { "types": ["Creature"], "controller": "You", "tapped": false },
+              "min": 0,
+              "max": 1,
+              "then": [
+                { "type": "Tap", "what": { "type": "Remembered" } },
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    {
+                      "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controlled_by": { "type": "EachObject" }, "power_vs": { "op": "Le", "amount": { "type": "PowerOf", "of": { "type": "Remembered" } } } } },
+                      "min": 1, "max": 1,
+                      "label": "creature that player controls with power less than or equal to the tapped creature's power"
+                    }
+                  ],
+                  "effects": [
+                    { "type": "GainControl", "what": { "type": "Target", "idx": 0 }, "duration": "WhileSourceControlled" }
+                  ]
+                }
+              ]
+            },
+            { "type": "ClearRemembered" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "types": ["Creature"], "controller": "You", "owner": "Opponent" } },
+      "effects": [
+        { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } },
+        { "type": "LoseLife", "who": { "type": "OwnerOf", "of": { "type": "TriggerSource" } }, "n": { "type": "Fixed", "n": 2 } }
+      ]
+    }
+  ],
+  "oracle_text": "When Nihiloor enters, for each opponent, tap up to one untapped creature you control. When you do, gain control of target creature that player controls with power less than or equal to the tapped creature's power for as long as you control Nihiloor.\nWhenever you attack with a creature an opponent owns, you gain 2 life and that player loses 2 life."
+}

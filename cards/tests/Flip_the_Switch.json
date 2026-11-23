@@ -1,0 +1,43 @@
+[
+  { "name": "counter the spell when its controller cannot pay; zombie is still made",
+    "players": [ { "hand": ["Grizzly Bears", "Flip the Switch"], "battlefield": ["Forest", "Forest", "Island", "Island", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Flip the Switch", "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Flip the Switch"], "battlefield_has": ["Zombie 2-2 Decayed"] }, {} ] } },
+  { "name": "controller pays {4}: the spell resolves",
+    "players": [ { "hand": ["Grizzly Bears", "Flip the Switch"], "battlefield": ["Forest", "Forest", "Island", "Island", "Island", "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Flip the Switch", "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Zombie 2-2 Decayed"] }, {} ] } },
+  { "name": "ruling: a decayed Zombie does not have to attack and stays on the battlefield",
+    "players": [ { "battlefield": ["Zombie 2-2 Decayed"] }, {} ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Zombie 2-2 Decayed"] }, { "life": 20 } ] } },
+  { "name": "ruling: a decayed Zombie that attacks deals its damage, then is sacrificed at end of combat",
+    "players": [ { "battlefield": ["Zombie 2-2 Decayed"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Zombie 2-2 Decayed", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Zombie 2-2 Decayed"] }, { "life": 18 } ] } },
+  { "name": "ruling: a decayed Zombie can't block",
+    "players": [ { "battlefield": ["Zombie 2-2 Decayed"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "player": 1, "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "player": 0, "block": [ { "blocker": "Zombie 2-2 Decayed", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield_has": ["Zombie 2-2 Decayed"] }, { "battlefield_has": ["Grizzly Bears"] } ] } }
+]

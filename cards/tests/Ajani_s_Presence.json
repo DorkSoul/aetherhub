@@ -1,0 +1,106 @@
+[
+  {
+    "name": "two targets cost {W} + {2}{W}: both get +1/+1 and indestructible",
+    "players": [
+      { "hand": ["Ajani's Presence"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4] },
+      "keywords": { "Grizzly Bears": ["Indestructible"], "Hill Giant": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "one target costs only {W}: the other creature is unchanged",
+    "players": [
+      { "hand": ["Ajani's Presence"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [3, 3] },
+      "keywords": { "Grizzly Bears": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "strive: two targets use all four Plains, so a {W} creature spell can no longer be cast",
+    "players": [
+      { "hand": ["Ajani's Presence", "Savannah Lions"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Savannah Lions", "illegal": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4] }
+    }
+  },
+  {
+    "name": "strive: one target leaves three Plains, so a {W} creature spell is still castable",
+    "players": [
+      { "hand": ["Ajani's Presence", "Savannah Lions"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Savannah Lions" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Savannah Lions", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Shock kills one target in response; Ajani's Presence still resolves for the other creature",
+    "players": [
+      { "hand": ["Ajani's Presence"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "player": 1, "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] }, { "graveyard": ["Shock"] } ],
+      "pt": { "Hill Giant": [4, 4] },
+      "keywords": { "Hill Giant": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "ruling: when its only target is gone Ajani's Presence does not resolve (it goes to the graveyard)",
+    "players": [
+      { "hand": ["Ajani's Presence"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "player": 1, "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Ajani's Presence", "Grizzly Bears"] }, { "graveyard": ["Shock"] } ]
+    }
+  },
+  {
+    "name": "ruling: a strive spell can be cast with no targets, costing only {W}",
+    "players": [ { "hand": ["Ajani's Presence"], "battlefield": ["Plains"] }, {} ],
+    "steps": [
+      { "cast": "Ajani's Presence", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Ajani's Presence"] }, {} ] }
+  }
+]

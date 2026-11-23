@@ -1,0 +1,67 @@
+[
+  {
+    "name": "returns an artifact creature that dies this turn, tapped under its controller's control",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Mountain", "Cryptek", "Juggernaut"], "hand": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Cryptek", "targets": ["Juggernaut"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Juggernaut"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Juggernaut", "Cryptek"], "graveyard": ["Lightning Bolt"] },
+        {}
+      ],
+      "tapped": { "Juggernaut": true, "Cryptek": true }
+    }
+  },
+  {
+    "name": "needs another artifact creature: cannot target itself",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Cryptek"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Cryptek", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Cryptek"] }, {} ]
+    }
+  },
+  {
+    "name": "a creature that does not die is not returned",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Cryptek", "Juggernaut"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Cryptek", "targets": ["Juggernaut"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Juggernaut", "Cryptek"], "graveyard": [] }, {} ],
+      "tapped": { "Juggernaut": false, "Cryptek": true }
+    }
+  },
+  {
+    "name": "ruling: the delayed return lasts only this turn (a creature dying on the opponent's turn is not returned)",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Cryptek", "Juggernaut"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Cryptek", "targets": ["Juggernaut"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Juggernaut"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Juggernaut"], "battlefield_lacks": ["Juggernaut"] }, {} ] }
+  }
+]

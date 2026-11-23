@@ -1,0 +1,215 @@
+[
+  {
+    "name": "exiles the target and the opponent puts the first creature from their library onto the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Blessed Reincarnation"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Forest",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Blessed Reincarnation",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Blessed Reincarnation"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "battlefield_has": [
+            "Hill Giant"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no creature in the library: the target stays exiled",
+    "players": [
+      {
+        "hand": [
+          "Blessed Reincarnation"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Blessed Reincarnation",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "rebound: at your next upkeep you may cast it again from exile",
+    "players": [
+      {
+        "hand": [
+          "Blessed Reincarnation"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Hill Giant",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Blessed Reincarnation",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ],
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "graveyard": [
+            "Blessed Reincarnation"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears",
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the rebound cast leaves the card exiled for good",
+    "players": [
+      { "hand": ["Blessed Reincarnation"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "library": ["Hill Giant", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Blessed Reincarnation", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Blessed Reincarnation"], "graveyard": [] }, { "exile": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: the opponent casts it from their own hand, so it is a hand cast and rebound applies",
+    "players": [
+      { "battlefield": ["Grizzly Bears"], "library": ["Hill Giant"] },
+      { "hand": ["Blessed Reincarnation"], "battlefield": ["Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Blessed Reincarnation", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] }, { "graveyard": [], "exile": ["Blessed Reincarnation"] } ] }
+  },
+  {
+    "name": "ruling: all targets gone when it tries to resolve (Bolt kills the target in response): no effects, no rebound",
+    "players": [
+      { "hand": ["Blessed Reincarnation"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"], "library": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Blessed Reincarnation", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Blessed Reincarnation"], "exile": [] }, { "battlefield_lacks": ["Grizzly Bears", "Hill Giant"], "library_top": ["Hill Giant"] } ] }
+  }
+]

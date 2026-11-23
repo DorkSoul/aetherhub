@@ -1,0 +1,148 @@
+[
+  {
+    "name": "tap: 1 damage to target opponent",
+    "players": [
+      {
+        "battlefield": [
+          "Kindlespark Duo"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Kindlespark Duo",
+        "ability": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "noncreature spell untaps it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          {
+            "name": "Kindlespark Duo",
+            "tapped": true
+          },
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Kindlespark Duo": false
+      }
+    }
+  },
+  {
+    "name": "creature spell does not untap it",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          {
+            "name": "Kindlespark Duo",
+            "tapped": true
+          },
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Kindlespark Duo": true
+      }
+    }
+  },
+  {
+    "name": "ruling: the untap trigger resolves even when the noncreature spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Kindlespark Duo", "tapped": true }, "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Grizzly Bears", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Counterspell"] }
+      ],
+      "tapped": { "Kindlespark Duo": false }
+    }
+  },
+  {
+    "name": "ruling: after the untap trigger resolves, the Duo can tap again before the spell resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Kindlespark Duo", "tapped": true }, "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Kindlespark Duo", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 19, "graveyard": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Kindlespark Duo": true }
+    }
+  }
+]

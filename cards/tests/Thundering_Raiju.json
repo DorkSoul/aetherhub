@@ -1,0 +1,83 @@
+[
+  {
+    "name": "attack: counter on a creature, then X damage where X counts the other modified creatures (the new counter counts)",
+    "players": [
+      { "battlefield": ["Thundering Raiju", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thundering Raiju", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "the only modified creature is Raiju itself: no extra damage (combat damage only, 4 with its own counter)",
+    "players": [
+      { "battlefield": ["Thundering Raiju"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thundering Raiju", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ],
+      "counters": { "Thundering Raiju": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a shield counter (any kind) on another creature makes it modified for X",
+    "players": [ { "battlefield": ["Thundering Raiju", { "name": "Grizzly Bears", "counters": { "shield": 1 } }] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thundering Raiju", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Thundering Raiju"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15 } ],
+      "counters": { "Thundering Raiju": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: an Aura an opponent controls on your creature does not make that creature modified",
+    "players": [ { "battlefield": ["Thundering Raiju", "Grizzly Bears"] }, { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains"] } ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Pacifism", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thundering Raiju", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Thundering Raiju"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ],
+      "attached": { "Pacifism": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: a creature equipped with an Equipment is modified (counts for X)",
+    "players": [ { "battlefield": ["Thundering Raiju", "Grizzly Bears", "Short Sword", "Plains"] }, {} ],
+    "steps": [
+      { "activate": "Short Sword", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Thundering Raiju", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Thundering Raiju"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15 } ]
+    }
+  }
+]

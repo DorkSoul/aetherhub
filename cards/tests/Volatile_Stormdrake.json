@@ -1,0 +1,196 @@
+[
+ {
+  "name": "exchange for Grizzly Bears, pay 2 energy to keep it",
+  "players": [
+   {
+    "hand": [
+     "Volatile Stormdrake"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Volatile Stormdrake"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 2,
+     "battlefield": [
+      "Grizzly Bears",
+      "Island",
+      "Island"
+     ]
+    },
+    {
+     "battlefield": [
+      "Volatile Stormdrake"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "target too expensive: sacrificed",
+  "players": [
+   {
+    "hand": [
+     "Volatile Stormdrake"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Air Elemental"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Volatile Stormdrake"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 4
+    },
+    {
+     "battlefield": [
+      "Volatile Stormdrake"
+     ],
+     "graveyard": [
+      "Air Elemental"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "hexproof from abilities only: Lightning Bolt (a spell) can still target it",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Volatile Stormdrake",
+      "sick": false
+     },
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Volatile Stormdrake"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Volatile Stormdrake"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+  {
+    "name": "hexproof from abilities: an opponent's Royal Assassin cannot target it, although it is a tapped creature",
+    "players": [
+      { "battlefield": [{ "name": "Volatile Stormdrake", "tapped": true }] },
+      { "battlefield": [{ "name": "Royal Assassin", "sick": false }] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "activate": "Royal Assassin", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Volatile Stormdrake"] }, {}]
+    }
+  },
+  {
+    "name": "control: the same opponent's Royal Assassin can destroy a tapped Grizzly Bears (the timing is legal)",
+    "players": [
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] },
+      { "battlefield": [{ "name": "Royal Assassin", "sick": false }] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "activate": "Royal Assassin", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: energy counters are not mana and stay through steps and the end of the turn",
+    "players": [
+      { "hand": ["Volatile Stormdrake"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Volatile Stormdrake" },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "energy": 2, "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Volatile Stormdrake"] }]
+    }
+  },
+  {
+    "name": "ruling: the control change lasts after Volatile Stormdrake leaves the battlefield",
+    "players": [
+      { "hand": ["Volatile Stormdrake"], "battlefield": ["Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Volatile Stormdrake" },
+      { "resolve": true, "answers": [true] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Volatile Stormdrake"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"], "graveyard": ["Volatile Stormdrake"] }, { "graveyard": ["Lightning Bolt"] }]
+    }
+  }
+]

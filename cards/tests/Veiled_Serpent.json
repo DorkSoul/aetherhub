@@ -1,0 +1,298 @@
+[
+ {
+  "name": "opponent spell turns it into a 4/4 Serpent",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Serpent",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Veiled Serpent": [
+     4,
+     4
+    ]
+   },
+   "players": [
+    {
+     "life": 17,
+     "battlefield_has": [
+      "Veiled Serpent"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "as a Serpent it cannot attack a player without an Island",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Serpent",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Veiled Serpent",
+      "at": "p1"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "as a Serpent it can attack a player who controls an Island",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Serpent",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Veiled Serpent",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "life": 16
+    }
+   ]
+  }
+ },
+ {
+  "name": "not a creature before an opponent casts a spell",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Serpent",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Veiled Serpent",
+      "at": "p1"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "cycles for {2}",
+  "players": [
+   {
+    "hand": [
+     "Veiled Serpent"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Veiled Serpent",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Veiled Serpent"
+     ],
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the Serpent is already a creature while the opponent's spell is still on the stack",
+  "players": [
+   {"battlefield": ["Veiled Serpent", "Island", "Island"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"pass": true, "player": 1},
+   {"pass": true}
+  ],
+  "expect": {"pt": {"Veiled Serpent": [4, 4]}, "players": [{"life": 20}, {}]}
+ },
+ {
+  "name": "ruling: the Serpent becomes a creature even if the opponent's spell is countered",
+  "players": [
+   {"hand": ["Counterspell"], "battlefield": ["Veiled Serpent", "Island", "Island", "Island"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"pass": true, "player": 1},
+   {"cast": "Counterspell", "targets": [{"stack": "Lightning Bolt"}]},
+   {"resolve": true}
+  ],
+  "expect": {"pt": {"Veiled Serpent": [4, 4]}, "players": [{"life": 20, "graveyard_has": ["Counterspell"]}, {"graveyard_has": ["Lightning Bolt"]}]}
+ },
+ {
+  "name": "ruling: a Serpent that came under control this turn cannot attack even after becoming a creature",
+  "players": [
+   {"battlefield": [{"name": "Veiled Serpent", "sick": true}, "Island", "Island"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Island"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"resolve": true},
+   {"attack": [{"card": "Veiled Serpent", "at": "p1"}], "illegal": true}
+  ],
+  "expect": {"players": [{"life": 17}, {"life": 20}]}
+ }
+]

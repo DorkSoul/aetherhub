@@ -1,0 +1,67 @@
+[
+  {
+    "name": "target creature gains banding until end of turn",
+    "players": [
+      { "hand": ["Formation"], "battlefield": ["Plains", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formation", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "keywords": { "Grizzly Bears": ["Banding"] }
+    }
+  },
+  {
+    "name": "draw a card at the beginning of the next turn's upkeep",
+    "players": [
+      { "hand": ["Formation"], "battlefield": ["Plains", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formation", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "auto": true },
+      { "advance_to": "Upkeep", "auto": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1 }, {} ] }
+  },
+  {
+    "name": "needs a creature target",
+    "players": [
+      { "hand": ["Formation"], "battlefield": ["Plains", "Island"] },
+      {}
+    ],
+    "steps": [ { "cast": "Formation", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Formation"] }, {} ] }
+  },
+  {
+    "name": "ruling: a band of banding creatures plus one nonbanding creature is blocked as a whole",
+    "players": [
+      {
+        "hand": ["Formation"],
+        "battlefield": ["Plains", "Island", { "name": "Benalish Infantry", "sick": false }, { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }]
+      },
+      { "battlefield": ["Craw Wurm"] }
+    ],
+    "steps": [
+      { "cast": "Formation", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [
+          { "card": "Benalish Infantry", "at": "p1", "band": 1 },
+          { "card": "Grizzly Bears", "at": "p1", "band": 1 },
+          { "card": "Hill Giant", "at": "p1", "band": 1 }
+      ] },
+      { "block": [ { "blocker": "Craw Wurm", "attacker": "Benalish Infantry" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20 }
+      ]
+    }
+  }
+]

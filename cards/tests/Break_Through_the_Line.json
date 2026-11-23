@@ -1,0 +1,53 @@
+[
+  {
+    "name": "power 2 or less creature gains haste and can't be blocked: a fresh creature attacks",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Mountain", "Break Through the Line"] }, {} ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "activate": "Break Through the Line", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ],
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  },
+  {
+    "name": "boundary: power 3 creature is not a legal target",
+    "players": [ { "battlefield": ["Mountain", "Break Through the Line"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "activate": "Break Through the Line", "ability": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ]
+    }
+  }
+,
+  { "name": "ruling: power raised above 2 while the ability is on the stack: it does not resolve (no haste, can be blocked)",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": ["Mountain", "Forest", "Break Through the Line", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "activate": "Break Through the Line", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Hill Giant"], "life": 20 } ] } },
+  { "name": "ruling: power raised after the ability resolves: the creature keeps unblockable",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": ["Mountain", "Forest", "Break Through the Line", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "activate": "Break Through the Line", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 15, "battlefield_has": ["Hill Giant"] } ] } }
+]

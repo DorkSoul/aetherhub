@@ -1,0 +1,59 @@
+{
+  "name": "Collector's Cage",
+  "mana_cost": "{1}{W}",
+  "types": ["Artifact"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "LookAtTop",
+          "who": { "type": "You" },
+          "n": { "type": "Fixed", "n": 5 },
+          "filter": {},
+          "take": 1,
+          "must": true,
+          "to": "Exile",
+          "rest": "Library",
+          "random_rest": true
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{1}" }, { "type": "Tap" } ],
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "min": 1, "max": 1, "label": "target creature you control" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "Targets" }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "CompareAmounts",
+            "a": { "type": "DistinctPowers", "filter": { "types": ["Creature"], "controller": "You" } },
+            "op": "Ge",
+            "b": { "type": "Fixed", "n": 3 }
+          },
+          "then": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Exile",
+              "filter": { "types": ["Land"], "exiled_with_this": true },
+              "min": 0,
+              "max": 1,
+              "then": [
+                { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "under_your_control": true }
+              ]
+            },
+            { "type": "CastFree", "what": { "type": "ExiledWithThis" }, "may": true }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Hideaway 5 (When this artifact enters, look at the top five cards of your library, exile one face down, then put the rest on the bottom in a random order.)\n{1}, {T}: Put a +1/+1 counter on target creature you control. Then if you control three or more creatures with different powers, you may play the exiled card without paying its mana cost."
+}

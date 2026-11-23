@@ -1,0 +1,98 @@
+[
+  {
+    "name": "activating lets a creature spell be cast in the end step",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Alchemist's Refuge", "Forest", "Island", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Alchemist's Refuge", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": [] }, {}],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "without activating, a creature spell can't be cast in the end step",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Alchemist's Refuge", "Forest", "Island", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "the activation needs both G and U",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Alchemist's Refuge", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Alchemist's Refuge", "ability": 0, "illegal": true },
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: an activated Refuge lets a creature spell be cast on the opponent's turn",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Alchemist's Refuge", "Forest", "Island", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "activate": "Alchemist's Refuge", "ability": 0 },
+      { "resolve": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": [], "battlefield_has": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: the flash permission also applies to a flashback spell in the graveyard",
+    "players": [
+      { "graveyard": ["Faithless Looting"], "battlefield": ["Alchemist's Refuge", "Forest", "Island", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Swamp", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "activate": "Alchemist's Refuge", "ability": 0 },
+      { "resolve": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Faithless Looting", "alt": 0 },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Faithless Looting"], "hand_count": 0 }, {}]
+    }
+  }
+]

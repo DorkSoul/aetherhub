@@ -1,0 +1,121 @@
+[
+  {
+    "name": "attacking with Merry and another attacking legendary creature draws a card",
+    "players": [
+      { "battlefield": ["Merry, Esquire of Rohan", "Black Widow, Natasha Romanoff"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Merry, Esquire of Rohan", "at": "p1" }, { "card": "Black Widow, Natasha Romanoff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, { "life": 16 } ]
+    }
+  },
+  {
+    "name": "attacking with Merry alone does not draw",
+    "players": [
+      { "battlefield": ["Merry, Esquire of Rohan", "Black Widow, Natasha Romanoff"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Merry, Esquire of Rohan", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "another legendary creature attacking without Merry does not draw",
+    "players": [
+      { "battlefield": ["Merry, Esquire of Rohan", "Black Widow, Natasha Romanoff"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Black Widow, Natasha Romanoff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "has haste when cast",
+    "players": [
+      { "hand": ["Merry, Esquire of Rohan"], "battlefield": ["Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Merry, Esquire of Rohan" },
+      { "resolve": true },
+      { "attack": [ { "card": "Merry, Esquire of Rohan", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "equipped Merry is a 4/4 with first strike",
+    "players": [
+      { "battlefield": ["+2 Mace", "Merry, Esquire of Rohan", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "+2 Mace", "targets": ["Merry, Esquire of Rohan"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Merry, Esquire of Rohan": [4, 4] },
+      "attached": { "+2 Mace": "Merry, Esquire of Rohan" }
+    }
+  },
+  {
+    "name": "equipped Merry has first strike: its 4 damage kills a 4-power Serra Angel before it deals damage",
+    "players": [
+      { "battlefield": ["+2 Mace", "Merry, Esquire of Rohan", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "activate": "+2 Mace", "targets": ["Merry, Esquire of Rohan"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Merry, Esquire of Rohan", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Merry, Esquire of Rohan" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Merry, Esquire of Rohan"] }, { "graveyard_has": ["Serra Angel"] } ]
+    }
+  },
+  {
+    "name": "unequipped Merry has no first strike: Serra Angel's 4 damage kills it first",
+    "players": [
+      { "battlefield": ["Merry, Esquire of Rohan"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Merry, Esquire of Rohan", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Merry, Esquire of Rohan" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Merry, Esquire of Rohan"] }, { "battlefield_has": ["Serra Angel"] } ]
+    }
+  },
+  {
+    "name": "ruling: Merry and the other legendary attacker need not attack the same player or planeswalker",
+    "players": [
+      { "battlefield": ["Merry, Esquire of Rohan", "Black Widow, Natasha Romanoff"], "library": ["Forest"] },
+      { "battlefield": ["Chandra, Torch of Defiance"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Merry, Esquire of Rohan", "at": "p1" }, { "card": "Black Widow, Natasha Romanoff", "at": "Chandra, Torch of Defiance" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  }
+]

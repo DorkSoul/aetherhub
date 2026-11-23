@@ -1,0 +1,90 @@
+[
+ {"name": "each upkeep each player makes a Tombspawn per creature card in their graveyard; gone at end step",
+  "players": [
+   {"battlefield": ["Tombstone Stairwell"], "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"]},
+   {"graveyard": ["Serra Angel"]}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [
+    {"battlefield_has": ["Tombstone Stairwell", "Tombspawn", "Tombspawn"]},
+    {"battlefield_has": ["Tombspawn"]}
+  ]}
+ },
+ {"name": "tokens are destroyed at the beginning of the end step",
+  "players": [
+   {"battlefield": ["Tombstone Stairwell"], "graveyard": ["Grizzly Bears", "Hill Giant"]},
+   {"graveyard": ["Serra Angel"]}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"resolve": true},
+   {"advance_to": "End"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [
+    {"battlefield": ["Tombstone Stairwell"], "graveyard_has": ["Grizzly Bears", "Hill Giant"]},
+    {"battlefield": [], "graveyard_has": ["Serra Angel"]}
+  ]}
+ },
+ {"name": "tokens are destroyed when the enchantment leaves the battlefield",
+  "players": [
+   {"battlefield": ["Tombstone Stairwell"], "graveyard": ["Grizzly Bears", "Hill Giant"]},
+   {"hand": ["Disenchant"], "battlefield": ["Plains", "Plains"], "graveyard": ["Serra Angel"]}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"resolve": true},
+   {"cast": "Disenchant", "player": 1, "targets": ["Tombstone Stairwell"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [
+    {"battlefield": [], "graveyard_has": ["Tombstone Stairwell"]},
+    {"battlefield_has": ["Plains"]}
+  ]}
+ },
+ {"name": "cumulative upkeep: pays {1}{B} on its first upkeep, tokens only made when it stays",
+  "players": [
+   {"battlefield": ["Tombstone Stairwell", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"resolve": true},
+   {"advance_to": "Upkeep", "answers": [true]},
+   {"resolve": true}
+  ],
+  "expect": {"counters": {"Tombstone Stairwell": {"age": 1}},
+   "players": [{"battlefield_has": ["Tombstone Stairwell", "Tombspawn"]}, {}]}
+ },
+ {"name": "ruling: each player controls the Tombspawn they create, so the opponent's tokens are on the opponent's battlefield",
+  "players": [
+   {"battlefield": ["Tombstone Stairwell"]},
+   {"graveyard": ["Grizzly Bears", "Serra Angel"]}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [
+    {"battlefield_lacks": ["Tombspawn"]},
+    {"battlefield": ["Tombspawn", "Tombspawn"]}
+  ]}
+ },
+ {"name": "ruling: world rule: a second World permanent puts the one already on the battlefield into its owner's graveyard",
+  "players": [
+   {"hand": ["Tombstone Stairwell"], "battlefield": ["Tombstone Stairwell", "Swamp", "Swamp", "Plains", "Plains"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Tombstone Stairwell"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [
+    {"battlefield": ["Tombstone Stairwell", "Swamp", "Swamp", "Plains", "Plains"], "graveyard": ["Tombstone Stairwell"]},
+    {}
+  ]}
+ }
+]

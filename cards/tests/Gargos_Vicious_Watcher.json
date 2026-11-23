@@ -1,0 +1,129 @@
+[
+  {
+    "name": "targeted spell on your creature with no opposing creature: nothing fights",
+    "players": [
+      {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Gargos, Vicious Watcher"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["Gargos, Vicious Watcher"]},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Gargos, Vicious Watcher"]}, {}]
+    }
+  },
+  {
+    "name": "Hydra spells cost {4} less (generic)",
+    "players": [
+      {"hand": ["Bristling Hydra"], "battlefield": ["Forest", "Forest", "Gargos, Vicious Watcher"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Bristling Hydra"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Bristling Hydra"]}, {}]
+    }
+  },
+  {
+    "name": "ruling: Gargos reduces only generic cost; GG still needs two green sources",
+    "players": [
+      {"hand": ["Bristling Hydra"], "battlefield": ["Forest", "Island", "Gargos, Vicious Watcher"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Bristling Hydra", "illegal": true}
+    ],
+    "expect": {
+      "players": [{"hand_count": 1, "battlefield_has": ["Gargos, Vicious Watcher"]}, {}]
+    }
+  },
+  {
+    "name": "ruling: Gargos does not reduce its own cost ({3}{G}{G}{G} stays full price)",
+    "players": [
+      {"hand": ["Gargos, Vicious Watcher"], "battlefield": ["Forest", "Forest", "Forest"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Gargos, Vicious Watcher", "illegal": true}
+    ],
+    "expect": {
+      "players": [{"hand_count": 1}, {}]
+    }
+  },
+  {
+    "name": "ruling: X is chosen before the reduction; {X}{R}{R} with X 6 costs {2}{R}{R} and X stays 6",
+    "players": [
+      {"hand": ["Balduvian Hydra"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Gargos, Vicious Watcher"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Balduvian Hydra", "answers": [6]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Balduvian Hydra"]}, {}],
+      "pt": {"Balduvian Hydra": [6, 1]}
+    }
+  },
+  {
+    "name": "ruling: Gargos's fight still happens when the targeting spell is countered",
+    "players": [
+      {"hand": ["Giant Growth"], "battlefield": ["Forest", "Gargos, Vicious Watcher", "Grizzly Bears"]},
+      {"hand": ["Counterspell"], "battlefield": ["Island", "Island", "Hill Giant"]}
+    ],
+    "steps": [
+      {"cast": "Giant Growth", "targets": ["Grizzly Bears", "Hill Giant"]},
+      {"pass": true},
+      {"cast": "Counterspell", "player": 1, "targets": [{"stack": "Giant Growth"}]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Gargos, Vicious Watcher", "Grizzly Bears"], "graveyard": ["Giant Growth"]},
+        {"graveyard": ["Hill Giant", "Counterspell"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Gargos exiled in response means its fight trigger does nothing",
+    "players": [
+      {"hand": ["Giant Growth"], "battlefield": ["Forest", "Gargos, Vicious Watcher", "Grizzly Bears"]},
+      {"hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Hill Giant"]}
+    ],
+    "steps": [
+      {"cast": "Giant Growth", "targets": ["Grizzly Bears", "Hill Giant"]},
+      {"pass": true},
+      {"cast": "Swords to Plowshares", "player": 1, "targets": ["Gargos, Vicious Watcher"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"exile": ["Gargos, Vicious Watcher"], "battlefield_has": ["Grizzly Bears"]},
+        {"battlefield_has": ["Hill Giant"], "graveyard": ["Swords to Plowshares"]}
+      ],
+      "pt": {"Hill Giant": [3, 3]}
+    }
+  },
+  {
+    "name": "ruling: the Gargos controller chooses the fight, so the opponent's Bolt on my creature still makes Gargos fight their Hill Giant",
+    "players": [
+      {"battlefield": ["Gargos, Vicious Watcher", "Grizzly Bears", "Forest"]},
+      {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"]}
+    ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears", "Hill Giant"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Gargos, Vicious Watcher"], "graveyard": ["Grizzly Bears"]},
+        {"graveyard": ["Lightning Bolt", "Hill Giant"]}
+      ]
+    }
+  }
+]

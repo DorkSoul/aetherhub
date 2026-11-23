@@ -1,0 +1,90 @@
+[
+  {
+    "name": "untaps during another player's untap step (own tapped creature stays tapped)",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Endbringer", "tapped": true },
+          { "name": "Grizzly Bears", "tapped": true }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "tapped": { "Endbringer": false, "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "{T}: deals 1 damage to any target",
+    "players": [
+      { "battlefield": ["Endbringer"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Endbringer", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19 } ],
+      "tapped": { "Endbringer": true }
+    }
+  },
+  {
+    "name": "{C}{C}, {T}: draw a card",
+    "players": [
+      { "battlefield": ["Endbringer", "Wastes", "Wastes"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Endbringer", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ],
+      "tapped": { "Endbringer": true }
+    }
+  },
+  {
+    "name": "{C}, {T}: target creature can't attack this turn",
+    "players": [
+      { "battlefield": ["Endbringer", "Wastes", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Endbringer", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: activating its ability after a block does not undo the block",
+    "players": [
+      { "battlefield": ["Endbringer", "Wastes"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Endbringer", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "pass": true, "player": 1 },
+      { "activate": "Endbringer", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Endbringer"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Endbringer": true }
+    }
+  }
+]

@@ -1,0 +1,311 @@
+[
+  {
+    "name": "the next instant is copied twice (three resolutions)",
+    "players": [
+      {
+        "hand": [
+          "Complete the Circuit",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Complete the Circuit"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 11
+        }
+      ]
+    }
+  },
+  {
+    "name": "only the next instant or sorcery is copied",
+    "players": [
+      {
+        "hand": [
+          "Complete the Circuit",
+          "Lightning Bolt",
+          "Shock"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Complete the Circuit"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Shock",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 9
+        }
+      ]
+    }
+  },
+  {
+    "name": "a sorcery can be cast in combat this turn",
+    "players": [
+      {
+        "hand": [
+          "Complete the Circuit",
+          "Divination"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Complete the Circuit"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Complete the Circuit",
+            "Divination"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without the card a sorcery cannot be cast in combat",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "cast": "Divination",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Divination"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "convoke: a creature pays for the generic part",
+    "players": [
+      {
+        "hand": [
+          "Complete the Circuit"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Complete the Circuit",
+        "answers": [
+          [
+            "Grizzly Bears"
+          ]
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Complete the Circuit"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "convoke: five lands alone cannot pay for it",
+    "players": [
+      {
+        "hand": [
+          "Complete the Circuit"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Complete the Circuit",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Complete the Circuit"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "convoke: a summoning-sick creature can still be tapped to convoke",
+    "players": [
+      {
+        "hand": ["Complete the Circuit"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", { "name": "Grizzly Bears", "sick": true }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Complete the Circuit", "answers": [["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Complete the Circuit"] }, {}],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: the flash-like permission does not make a sorcery-speed activated ability usable in combat",
+    "players": [
+      {
+        "hand": ["Complete the Circuit"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "The Animus", "Barktooth Warbeard"],
+        "exile": [{ "name": "Yargle, Goliath of Otaria", "counters": { "memory": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Complete the Circuit" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "activate": "The Animus", "targets": ["Barktooth Warbeard", "Yargle, Goliath of Otaria"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Animus", "Barktooth Warbeard"], "exile": ["Yargle, Goliath of Otaria"] },
+        {}
+      ]
+    }
+  }
+]

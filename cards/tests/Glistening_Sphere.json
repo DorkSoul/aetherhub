@@ -1,0 +1,122 @@
+[
+  {
+    "name": "ruling: a permanent with both +1/+1 and -1/-1 counters loses the pair when proliferated (state-based action)",
+    "players": [ { "hand": ["Glistening Sphere"], "battlefield": ["Plains", "Plains", "Plains", { "name": "Grizzly Bears", "counters": { "+1/+1": 1, "-1/-1": 1 } }] }, {} ],
+    "steps": [ { "cast": "Glistening Sphere" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Glistening Sphere", "Grizzly Bears"] }, {} ], "pt": { "Grizzly Bears": [2, 2] }, "counters": { "Grizzly Bears": { "+1/+1": 0, "-1/-1": 0 } } }
+  },
+  {
+    "name": "ruling: proliferate gives a player with two kinds of counters one of each kind (poison and energy)",
+    "players": [ { "hand": ["Glistening Sphere"], "battlefield": ["Plains", "Plains", "Plains"] }, { "poison": 1, "energy": 1 } ],
+    "steps": [ { "cast": "Glistening Sphere" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Glistening Sphere"] }, { "poison": 2, "energy": 2 } ] }
+  },
+  {
+    "name": "ruling: proliferate may add a counter to an opponent's creature",
+    "players": [ { "hand": ["Glistening Sphere"], "battlefield": ["Plains", "Plains", "Plains"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "+1/+1": 1 } } ] } ],
+    "steps": [ { "cast": "Glistening Sphere" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Glistening Sphere"] }, { "battlefield_has": ["Grizzly Bears"] } ], "pt": { "Grizzly Bears": [4, 4] }, "counters": { "Grizzly Bears": { "+1/+1": 2 } } }
+  },
+  {
+    "name": "ruling: choosing no permanents and no players when proliferating is allowed (the opponent's counters stay as they were)",
+    "players": [ { "hand": ["Glistening Sphere"], "battlefield": ["Plains", "Plains", "Plains"] }, { "poison": 1, "battlefield": [ { "name": "Grizzly Bears", "counters": { "+1/+1": 1 } } ] } ],
+    "steps": [ { "cast": "Glistening Sphere" }, { "resolve": true, "answers": [[]] } ],
+    "expect": { "players": [ { "battlefield_has": ["Glistening Sphere"] }, { "poison": 1 } ], "pt": { "Grizzly Bears": [3, 3] } }
+  },
+  {
+    "name": "enters tapped and proliferates the opponent's poison counter",
+    "players": [
+      { "hand": ["Prologue to Phyresis", "Glistening Sphere"], "battlefield": ["Island", "Island", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prologue to Phyresis" },
+      { "resolve": true },
+      { "cast": "Glistening Sphere" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Glistening Sphere"] },
+        { "poison": 2 }
+      ],
+      "tapped": { "Glistening Sphere": true }
+    }
+  },
+  {
+    "name": "proliferate does nothing without any poison counters",
+    "players": [
+      { "hand": ["Glistening Sphere"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glistening Sphere" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Glistening Sphere"] },
+        { "poison": 0 }
+      ]
+    }
+  },
+  {
+    "name": "tap for one mana of any color",
+    "players": [
+      { "battlefield": ["Glistening Sphere"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Glistening Sphere", "ability": 2, "color": "R" }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "R": 1 } },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "corrupted: three mana of one color when an opponent has three poison counters",
+    "players": [
+      { "hand": ["Prologue to Phyresis", "Prologue to Phyresis", "Prologue to Phyresis"], "battlefield": ["Glistening Sphere", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prologue to Phyresis" },
+      { "resolve": true },
+      { "cast": "Prologue to Phyresis" },
+      { "resolve": true },
+      { "cast": "Prologue to Phyresis" },
+      { "resolve": true },
+      { "tap_for_mana": "Glistening Sphere", "ability": 3, "color": "G" }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "G": 3 } },
+        { "poison": 3 }
+      ]
+    }
+  },
+  {
+    "name": "corrupted ability is not available with only two poison counters",
+    "players": [
+      { "hand": ["Prologue to Phyresis", "Prologue to Phyresis"], "battlefield": ["Glistening Sphere", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prologue to Phyresis" },
+      { "resolve": true },
+      { "cast": "Prologue to Phyresis" },
+      { "resolve": true },
+      { "tap_for_mana": "Glistening Sphere", "ability": 2, "color": "R" },
+      { "tap_for_mana": "Glistening Sphere", "ability": 3, "color": "G", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "R": 1 } },
+        { "poison": 2 }
+      ]
+    }
+  }
+]

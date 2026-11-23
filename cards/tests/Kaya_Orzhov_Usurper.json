@@ -1,0 +1,111 @@
+[
+  {
+    "name": "+1 exiles two cards from one graveyard and gains 2 life when a creature is among them",
+    "players": [
+      { "battlefield": ["Kaya, Orzhov Usurper"] },
+      { "graveyard": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "activate": "Kaya, Orzhov Usurper", "ability": 0, "targets": ["Grizzly Bears", "Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22 }, { "graveyard": [], "exile": ["Grizzly Bears", "Forest"] } ],
+      "counters": { "Kaya, Orzhov Usurper": { "Loyalty": 4 } }
+    }
+  },
+  {
+    "name": "+1 exiling only non-creature cards gains no life",
+    "players": [
+      { "battlefield": ["Kaya, Orzhov Usurper"] },
+      { "graveyard": ["Forest", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Kaya, Orzhov Usurper", "ability": 0, "targets": ["Forest", "Island"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "exile": ["Forest", "Island"] } ],
+      "counters": { "Kaya, Orzhov Usurper": { "Loyalty": 4 } }
+    }
+  },
+  {
+    "name": "-1 exiles a nonland permanent with mana value 1 or less",
+    "players": [
+      { "battlefield": ["Kaya, Orzhov Usurper"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "activate": "Kaya, Orzhov Usurper", "ability": 1, "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_lacks": ["Llanowar Elves"], "exile": ["Llanowar Elves"] } ],
+      "counters": { "Kaya, Orzhov Usurper": { "Loyalty": 2 } }
+    }
+  },
+  {
+    "name": "-5 deals damage equal to cards the target player owns in exile and gains that much life",
+    "players": [
+      { "battlefield": [ { "name": "Kaya, Orzhov Usurper", "counters": { "loyalty": 6 } } ] },
+      { "exile": ["Forest", "Island", "Swamp"] }
+    ],
+    "steps": [
+      { "activate": "Kaya, Orzhov Usurper", "ability": 2, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 23 }, { "life": 17 } ],
+      "counters": { "Kaya, Orzhov Usurper": { "Loyalty": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a permanent with {X} in its cost has mana value 0, so -1 can exile it",
+    "players": [
+      { "battlefield": ["Kaya, Orzhov Usurper"] },
+      { "battlefield": [ { "name": "Walking Ballista", "counters": { "+1/+1": 2 } } ] }
+    ],
+    "steps": [
+      { "activate": "Kaya, Orzhov Usurper", "ability": 1, "targets": ["Walking Ballista"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_lacks": ["Walking Ballista"], "exile": ["Walking Ballista"] } ],
+      "counters": { "Kaya, Orzhov Usurper": { "Loyalty": 2 } }
+    }
+  },
+  {
+    "name": "ruling: a token has no mana cost, so -1 can exile it",
+    "players": [
+      { "hand": ["Dragon Fodder"], "battlefield": ["Mountain", "Mountain", "Mountain", "Kaya, Orzhov Usurper"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dragon Fodder" },
+      { "resolve": true },
+      { "activate": "Kaya, Orzhov Usurper", "ability": 1, "targets": ["Goblin"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Kaya, Orzhov Usurper", "Goblin"], "graveyard": ["Dragon Fodder"] },
+        {}
+      ],
+      "counters": { "Kaya, Orzhov Usurper": { "Loyalty": 2 } }
+    }
+  },
+  {
+    "name": "ruling: -5 gains life equal to the cards the target owns in exile, not the ones its controller owns",
+    "players": [
+      { "battlefield": [ { "name": "Kaya, Orzhov Usurper", "counters": { "loyalty": 5 } } ], "exile": ["Plains"] },
+      { "exile": ["Grizzly Bears", "Island", "Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Kaya, Orzhov Usurper", "ability": 2, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 23 }, { "life": 17 } ]
+    }
+  }
+]

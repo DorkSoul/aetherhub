@@ -1,0 +1,49 @@
+{
+  "name": "Transmute Artifact",
+  "mana_cost": "{U}{U}",
+  "types": ["Sorcery"],
+  "colors": ["U"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "types": ["Artifact"] }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "AnyRememberedIs", "filter": { "types": ["Artifact"] } },
+          "then": [
+            { "type": "StoreRemembered", "slot": 0 },
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Library",
+              "filter": { "types": ["Artifact"] },
+              "min": 0,
+              "max": 1,
+              "then": [
+                {
+                  "type": "If",
+                  "cond": { "type": "CompareAmounts", "a": { "type": "ManaValueOf", "of": { "type": "Remembered" } }, "op": "Le", "b": { "type": "ManaValueOf", "of": { "type": "Stored", "slot": 0 } } },
+                  "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" } ],
+                  "else": [
+                    {
+                      "type": "Unless",
+                      "payer": { "type": "You" },
+                      "cost": [
+                        { "type": "ManaAmount", "amount": { "type": "Minus", "a": { "type": "ManaValueOf", "of": { "type": "Remembered" } }, "b": { "type": "ManaValueOf", "of": { "type": "Stored", "slot": 0 } } } }
+                      ],
+                      "effects": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard" } ],
+                      "if_paid": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" } ]
+                    }
+                  ]
+                }
+              ]
+            },
+            { "type": "Shuffle", "who": { "type": "You" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Sacrifice an artifact. If you do, search your library for an artifact card. If that card's mana value is less than or equal to the sacrificed artifact's mana value, put it onto the battlefield. If it's greater, you may pay {X}, where X is the difference. If you do, put it onto the battlefield. If you don't, put it into its owner's graveyard. Then shuffle."
+}

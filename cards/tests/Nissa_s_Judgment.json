@@ -1,0 +1,150 @@
+[
+  {
+    "name": "support puts counters on own creature, which then deals damage equal to its power",
+    "players": [
+      {
+        "hand": [
+          "Nissa's Judgment"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nissa's Judgment",
+        "targets": [
+          "Grizzly Bears",
+          "Llanowar Elves",
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Llanowar Elves"
+          ],
+          "graveyard": [
+            "Nissa's Judgment"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Hill Giant"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "+1/+1": 1
+        },
+        "Llanowar Elves": {
+          "+1/+1": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "support can target a creature you don't control; the opponent's creature still takes damage from creatures with counters",
+    "players": [
+      {
+        "hand": [
+          "Nissa's Judgment"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "battlefield": [
+          "Serra Angel",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nissa's Judgment",
+        "targets": [
+          "Hill Giant",
+          "Grizzly Bears",
+          "Serra Angel"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant",
+            "Serra Angel"
+          ]
+        }
+      ],
+      "counters": {
+        "Hill Giant": {
+          "+1/+1": 1
+        },
+        "Grizzly Bears": {
+          "+1/+1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: a support target can also be the damage target (counter then 5 damage kills the 4/4)",
+    "players": [ { "hand": ["Nissa's Judgment"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", { "name": "Llanowar Elves", "counters": { "+1/+1": 1 } }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Nissa's Judgment", "targets": ["Hill Giant", "Grizzly Bears", "Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Llanowar Elves"] }, { "graveyard": ["Hill Giant"] } ], "pt": { "Grizzly Bears": [3, 3] } }
+  },
+  {
+    "name": "ruling: support cannot put two counters on the same creature (illegal target choice)",
+    "players": [ { "hand": ["Nissa's Judgment"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Llanowar Elves"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Nissa's Judgment", "targets": ["Grizzly Bears", "Grizzly Bears", "Hill Giant"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Nissa's Judgment"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: if an opponent kills one target in response, the spell still resolves for the legal targets",
+    "players": [ { "hand": ["Nissa's Judgment"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Llanowar Elves"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] } ],
+    "steps": [ { "cast": "Nissa's Judgment", "targets": ["Grizzly Bears", "Llanowar Elves", "Hill Giant"] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] }, { "pass": true, "player": 1 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Llanowar Elves"] }, { "graveyard": ["Hill Giant", "Lightning Bolt"] } ], "counters": { "Grizzly Bears": { "+1/+1": 1 }, "Llanowar Elves": { "+1/+1": 1 } } }
+  }
+]

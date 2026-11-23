@@ -1,0 +1,64 @@
+[
+  {
+    "name": "you control the enchanted creature and it gets +0/+1",
+    "players": [
+      { "hand": ["Binding Grasp"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Binding Grasp", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Binding Grasp": "Grizzly Bears" },
+      "players": [{ "battlefield": ["Island", "Island", "Island", "Island", "Binding Grasp", "Grizzly Bears"] }, { "battlefield": [] }],
+      "pt": { "Grizzly Bears": [2, 3] }
+    }
+  },
+  {
+    "name": "cannot be cast with only three mana",
+    "players": [
+      { "hand": ["Binding Grasp"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Binding Grasp", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Binding Grasp"] }, { "battlefield": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "upkeep: paying 1U keeps the Aura and the creature",
+    "players": [
+      { "hand": ["Binding Grasp"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Binding Grasp", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "attached": { "Binding Grasp": "Grizzly Bears" },
+      "players": [{ "battlefield_has": ["Binding Grasp", "Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "upkeep: declining to pay sacrifices the Aura and returns the creature",
+    "players": [
+      { "hand": ["Binding Grasp"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Binding Grasp", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Binding Grasp", "Grizzly Bears"], "graveyard": ["Binding Grasp"] }, { "battlefield": ["Grizzly Bears"] }]
+    }
+  }
+]

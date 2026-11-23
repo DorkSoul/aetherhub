@@ -1,0 +1,85 @@
+[
+  {
+    "name": "kicked with offspring makes a 1/1 token copy",
+    "players": [
+      { "hand": ["Steelburr Champion"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Steelburr Champion", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Steelburr Champion", "Steelburr Champion"] }, {} ]
+    }
+  },
+  {
+    "name": "an opponent's noncreature spell puts a +1/+1 counter on it",
+    "players": [
+      { "battlefield": ["Steelburr Champion"] },
+      { "hand": ["Stench of Decay"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Stench of Decay", "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Steelburr Champion": { "p1p1": 1 } },
+      "pt": { "Steelburr Champion": [1, 1] }
+    }
+  },
+  {
+    "name": "your own noncreature spell does not trigger it",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Steelburr Champion", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Giant Growth", "targets": ["Steelburr Champion"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Steelburr Champion": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: the +1/+1 counter trigger from an opponent's spell resolves even when that spell is countered",
+    "players": [
+      { "battlefield": ["Steelburr Champion", "Island", "Island"], "hand": ["Prohibit"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Prohibit", "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Steelburr Champion"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "pt": { "Steelburr Champion": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: the offspring token is still made if the original leaves before the offspring trigger resolves",
+    "players": [
+      { "hand": ["Steelburr Champion"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Steelburr Champion", "answers": [true] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Steelburr Champion"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Steelburr Champion"], "graveyard_has": ["Steelburr Champion"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  }
+]

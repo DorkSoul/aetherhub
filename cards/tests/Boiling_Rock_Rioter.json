@@ -1,0 +1,138 @@
+[
+  {
+    "name": "tapping an untapped Ally exiles a card from a graveyard",
+    "players": [
+      {
+        "battlefield": ["Boiling Rock Rioter", "Ally 1-1"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Boiling Rock Rioter", "ability": 0, "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Boiling Rock Rioter", "Ally 1-1"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "attacking casts an Ally exiled with it, paying its mana cost (firebending R pays part)",
+    "players": [
+      {
+        "battlefield": ["Boiling Rock Rioter", "Ally 1-1", "Mountain", "Mountain"],
+        "graveyard": ["Iroh, Firebending Instructor"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Boiling Rock Rioter", "ability": 0, "targets": ["Iroh, Firebending Instructor"], "answers": [1] },
+      { "resolve": true },
+      { "attack": [ { "card": "Boiling Rock Rioter", "at": "p1" } ] },
+      { "resolve": true, "answers": ["Iroh, Firebending Instructor"] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Boiling Rock Rioter", "Iroh, Firebending Instructor"], "exile": [] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "a card not exiled with it cannot be cast on attack",
+    "players": [
+      {
+        "battlefield": ["Boiling Rock Rioter", "Mountain", "Mountain", "Mountain"],
+        "exile": ["Iroh, Firebending Instructor"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Boiling Rock Rioter", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Iroh, Firebending Instructor"], "battlefield_lacks": ["Iroh, Firebending Instructor"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a summoning-sick Rioter can tap itself to pay the Ally cost (no {T} symbol)",
+    "players": [
+      { "battlefield": [{ "name": "Boiling Rock Rioter", "sick": true }] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Boiling Rock Rioter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Boiling Rock Rioter"] }, { "exile": ["Grizzly Bears"] }],
+      "tapped": { "Boiling Rock Rioter": true }
+    }
+  },
+  {
+    "name": "ruling: firebending R can pay for an instant cast during combat",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Boiling Rock Rioter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Boiling Rock Rioter", "at": "p1" } ] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt"] }, { "life": 14 }]
+    }
+  },
+  {
+    "name": "ruling: firebending R is still available after combat damage, until end of combat",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Boiling Rock Rioter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Boiling Rock Rioter", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "EndCombat" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt"] }, { "life": 14 }]
+    }
+  },
+  {
+    "name": "ruling: unused firebending R is gone in the second main phase",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Boiling Rock Rioter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Boiling Rock Rioter", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Lightning Bolt"] }, { "life": 17 }]
+    }
+  }
+]

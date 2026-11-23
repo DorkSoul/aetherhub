@@ -1,0 +1,157 @@
+[
+  {
+    "name": "infect: unblocked flyer gives poison, not life loss",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Plague Stinger",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Plague Stinger",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20,
+          "poison": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "needs {1}{B}",
+    "players": [
+      {
+        "hand": [
+          "Plague Stinger"
+        ],
+        "battlefield": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Plague Stinger",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Plague Stinger"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: infect damage to a planeswalker removes loyalty, with no poison",
+    "players": [
+      { "battlefield": [ { "name": "Plague Stinger", "sick": false } ] },
+      { "battlefield": ["Ajani Goldmane"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Stinger", "at": "Ajani Goldmane" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20, "poison": 0 }
+      ],
+      "counters": {
+        "Ajani Goldmane": { "Loyalty": 3 }
+      }
+    }
+  },
+  {
+    "name": "ruling: prevented infect damage gives no poison counters",
+    "players": [
+      { "battlefield": [ { "name": "Plague Stinger", "sick": false } ] },
+      { "hand": ["Fog"], "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Stinger", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Fog", "player": 1 },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20, "poison": 0, "graveyard": ["Fog"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: ten poison counters loses the game",
+    "players": [
+      { "battlefield": [ { "name": "Plague Stinger", "sick": false } ] },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Stinger", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 0,
+      "players": [
+        {},
+        { "poison": 10 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: -1/-1 counters from infect stay on the creature after the turn ends",
+    "players": [
+      { "battlefield": [ { "name": "Plague Stinger", "sick": false } ] },
+      { "battlefield": ["World Breaker"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Stinger", "at": "p1" } ] },
+      { "block": [ { "blocker": "World Breaker", "attacker": "Plague Stinger" } ] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": {
+        "World Breaker": { "-1/-1": 1 }
+      },
+      "pt": {
+        "World Breaker": [4, 6]
+      }
+    }
+  }
+]

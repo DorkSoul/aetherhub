@@ -1,0 +1,314 @@
+[
+  {
+    "name": "opponent's creature dying is exiled and Slime gets counters equal to its power",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Ravenous Slime"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Ravenous Slime": [
+          3,
+          3
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "counters use the dying creature's power, not toughness or Slime's own",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Ravenous Slime"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Ravenous Slime": [
+          4,
+          4
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "exile": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "your own creature dying is not replaced",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Ravenous Slime",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Ravenous Slime": [
+          1,
+          1
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Grizzly Bears"
+          ],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "power 2 or less creatures can't block it",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ravenous Slime",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Ravenous Slime",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Grizzly Bears",
+            "attacker": "Ravenous Slime"
+          }
+        ],
+        "illegal": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "a creature with power 3 or more can block it",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ravenous Slime",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Ravenous Slime",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Ravenous Slime"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Ravenous Slime"
+          ]
+        },
+        {
+          "life": 20,
+          "battlefield": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a power-2 creature's block is dropped: the 1/1 Slime is unblocked, a power-3 creature blocks the other attacker",
+    "players": [
+      { "battlefield": [ { "name": "Ravenous Slime", "sick": false }, { "name": "Walking Corpse", "sick": false } ] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ravenous Slime", "at": "p1" }, { "card": "Walking Corpse", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Ravenous Slime" }, { "blocker": "Hill Giant", "attacker": "Walking Corpse" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Ravenous Slime"] }, { "life": 19 } ] }
+  },
+  {
+    "name": "ruling: an exiled creature counts the power it had when it died (pumped to 5)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Giant Growth"], "battlefield": ["Mountain", "Mountain", "Forest", "Ravenous Slime"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Ravenous Slime": [6, 6] },
+      "players": [ { "graveyard": ["Lightning Bolt", "Lightning Bolt", "Giant Growth"] }, { "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: a dying token is exiled instead and still gives Slime counters",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Ravenous Slime"] },
+      { "battlefield": ["Fish 1-1 Unblockable"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Fish 1-1 Unblockable"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Ravenous Slime": [2, 2] },
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "battlefield_lacks": ["Fish 1-1 Unblockable"] } ]
+    }
+  },
+  {
+    "name": "ruling: a blocked Slime stays blocked when the blocker's power drops below 3",
+    "players": [
+      { "hand": ["Tragic Slip"], "battlefield": [ { "name": "Ravenous Slime", "sick": false }, "Swamp" ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ravenous Slime", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Ravenous Slime" } ] },
+      { "cast": "Tragic Slip", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Ravenous Slime"] }, { "life": 20, "battlefield_has": ["Hill Giant"] } ]
+    }
+  }
+]

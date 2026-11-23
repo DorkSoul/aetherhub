@@ -1,0 +1,80 @@
+[
+  {"name": "regeneration shield saves it from lethal combat damage and taps it",
+   "players": [
+     {"battlefield": ["Hill Giant"]},
+     {"battlefield": ["Blight Mamba", "Forest", "Forest"]}
+   ],
+   "steps": [
+     {"attack": [{"card": "Hill Giant", "at": "p1"}]},
+     {"block": [{"blocker": "Blight Mamba", "attacker": "Hill Giant"}]},
+     {"pass": true},
+     {"activate": "Blight Mamba", "ability": 0, "player": 1},
+     {"resolve": true},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {
+     "tapped": {"Blight Mamba": true},
+     "players": [{"battlefield_has": ["Hill Giant"]}, {"battlefield_has": ["Blight Mamba"]}]
+   }
+  },
+  {"name": "regeneration needs {1}{G}",
+   "players": [
+     {"battlefield": ["Blight Mamba", "Forest"]},
+     {}
+   ],
+   "steps": [
+     {"activate": "Blight Mamba", "ability": 0, "illegal": true}
+   ],
+   "expect": {
+     "players": [{"battlefield_has": ["Blight Mamba"]}, {}]
+   }
+  },
+  {"name": "ruling: infect -1/-1 counters stay on the creature after it regenerates and the turn ends",
+   "players": [
+     {"battlefield": ["Hill Giant"]},
+     {"battlefield": ["Blight Mamba", "Forest", "Forest"]}
+   ],
+   "steps": [
+     {"attack": [{"card": "Hill Giant", "at": "p1"}]},
+     {"block": [{"blocker": "Blight Mamba", "attacker": "Hill Giant"}]},
+     {"pass": true},
+     {"activate": "Blight Mamba", "ability": 0, "player": 1},
+     {"resolve": true},
+     {"advance_to": "Main2"},
+     {"advance_to": "End"}
+   ],
+   "expect": {
+     "counters": {"Hill Giant": {"m1m1": 1}},
+     "pt": {"Hill Giant": [2, 2]},
+     "players": [{"battlefield_has": ["Hill Giant"]}, {"battlefield_has": ["Blight Mamba"]}]
+   }
+  },
+  {"name": "ruling: a player with ten or more poison counters loses (state-based action)",
+   "players": [
+     {"battlefield": ["Blight Mamba"]},
+     {"poison": 9}
+   ],
+   "steps": [
+     {"attack": [{"card": "Blight Mamba", "at": "p1"}]},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {
+     "winner": 0,
+     "players": [{}, {"poison": 10}]
+   }
+  },
+  {"name": "ruling: infect damage to a planeswalker removes loyalty and gives no poison counters",
+   "players": [
+     {"battlefield": ["Blight Mamba"]},
+     {"battlefield": [{"name": "Saheeli Rai", "counters": {"Loyalty": 3}}]}
+   ],
+   "steps": [
+     {"attack": [{"card": "Blight Mamba", "at": "Saheeli Rai"}]},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {
+     "counters": {"Saheeli Rai": {"Loyalty": 2}},
+     "players": [{}, {"poison": 0}]
+   }
+  }
+]

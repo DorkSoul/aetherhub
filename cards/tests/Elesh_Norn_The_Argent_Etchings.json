@@ -1,0 +1,131 @@
+[
+  {
+    "name": "opponent's Bolt at me: opponent can't pay {1}, so loses 2",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 17 }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "opponent's Bolt at me: opponent pays {1}, no life loss",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [{ "life": 17 }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "opponent's Bolt at my creature: trigger also applies to damage to a permanent I control",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "graveyard": ["Grizzly Bears"] }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "sacrifice three other creatures: returns transformed as The Argent Etchings",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Elesh Norn // The Argent Etchings", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["The Argent Etchings"], "graveyard": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "chapter I: incubate 2 five times, then transform each Incubator",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Elesh Norn // The Argent Etchings", "ability": 0 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Phyrexian": [2, 2] }
+    }
+  },
+  {
+    "name": "my own Bolt at the opponent: no trigger",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Elesh Norn // The Argent Etchings", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, { "life": 17 }]
+    }
+  },
+  {
+    "name": "ruling: Arc Trail deals damage to my creature and to me, so Elesh triggers once per permanent (2 triggers, 4 life)",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings", "Grizzly Bears"] },
+      { "hand": ["Arc Trail"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Arc Trail", "player": 1, "targets": ["Grizzly Bears", "p0"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 19, "graveyard": ["Grizzly Bears"] }, { "life": 16 }]
+    }
+  },
+  {
+    "name": "ruling: three opposing blockers each deal damage to my attacker, so Elesh triggers three times (6 life)",
+    "players": [
+      { "battlefield": ["Elesh Norn // The Argent Etchings", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears", "Serra Angel", "Prodigal Sorcerer"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }] },
+      {
+        "block": [
+          { "blocker": "Grizzly Bears", "attacker": "Hill Giant" },
+          { "blocker": "Serra Angel", "attacker": "Hill Giant" },
+          { "blocker": "Prodigal Sorcerer", "attacker": "Hill Giant" }
+        ]
+      },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "graveyard": ["Hill Giant"] }, { "life": 14 }]
+    }
+  }
+]

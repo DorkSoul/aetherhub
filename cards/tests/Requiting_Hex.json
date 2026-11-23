@@ -1,0 +1,221 @@
+[
+  {
+    "name": "unkicked: destroy a mana value 2 creature, no life gained",
+    "players": [
+      {
+        "hand": [
+          "Requiting Hex"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Requiting Hex",
+        "targets": [
+          "Llanowar Elves"
+        ],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "battlefield": [
+            "Swamp",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "kicked (blight 1 on own creature): destroy and gain 2 life",
+    "players": [
+      {
+        "hand": [
+          "Requiting Hex"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Requiting Hex",
+        "targets": [
+          "Llanowar Elves"
+        ],
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "battlefield": [
+            "Swamp",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "target must have mana value 2 or less",
+    "players": [
+      {
+        "hand": [
+          "Requiting Hex"
+        ],
+        "battlefield": [
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Requiting Hex",
+        "targets": [
+          "Hill Giant"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: blight 1 onto a 1/1 kills it; the spell still destroys its target and gains life",
+    "players": [
+      { "hand": ["Requiting Hex"], "battlefield": ["Swamp", "Llanowar Elves"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Requiting Hex", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 22, "battlefield_has": ["Swamp"], "graveyard": ["Llanowar Elves", "Requiting Hex"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a +1/+1 and a -1/-1 counter annihilate, leaving only the +1/+1 counters",
+    "players": [
+      { "hand": ["Requiting Hex"], "battlefield": ["Swamp", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 2 } }] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Requiting Hex", "targets": ["Llanowar Elves"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 22, "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": ["Llanowar Elves"] }
+      ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: if the target becomes illegal in response, nothing happens and no life is gained although blight was paid",
+    "players": [
+      { "hand": ["Requiting Hex"], "battlefield": ["Swamp", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Requiting Hex", "targets": ["Llanowar Elves"], "answers": [true] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": ["Llanowar Elves", "Lightning Bolt"] }
+      ],
+      "pt": { "Grizzly Bears": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: X counts as 0 in mana value, so Walking Ballista with X paid is a legal target",
+    "players": [
+      { "hand": ["Requiting Hex"], "battlefield": ["Swamp", "Grizzly Bears"] },
+      { "battlefield": [ { "name": "Walking Ballista", "counters": { "PlusOnePlusOne": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Requiting Hex", "targets": ["Walking Ballista"], "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard": ["Walking Ballista"] }
+      ]
+    }
+  }
+]

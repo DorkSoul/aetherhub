@@ -1,0 +1,217 @@
+[
+  {
+    "name": "counter unless paid 1: controller cannot pay",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Spell Snip"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Spell Snip",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard": [
+            "Spell Snip"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "controller pays 1: the spell resolves",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Spell Snip"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Spell Snip",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard": [
+            "Spell Snip"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cycling for 2 draws a card",
+    "players": [
+      {},
+      {
+        "hand": [
+          "Spell Snip"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "activate": "Spell Snip",
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Spell Snip"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Stifle can counter cycling (an activated ability), so no card is drawn",
+    "players": [
+      {
+        "hand": ["Stifle"],
+        "battlefield": ["Island", "Island"]
+      },
+      {
+        "hand": ["Spell Snip"],
+        "battlefield": ["Island", "Island"],
+        "library": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Spell Snip", "player": 1 },
+      { "cast": "Stifle", "targets": [ { "stack": "Spell Snip" } ] },
+      { "pass": true, "player": 1 },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Stifle"] },
+        { "hand_count": 0, "graveyard": ["Spell Snip"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell counter cannot target cycling (an ability), so Counterspell has no legal target",
+    "players": [
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island", "Island"]
+      },
+      {
+        "hand": ["Spell Snip"],
+        "battlefield": ["Island", "Island"],
+        "library": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Spell Snip", "player": 1 },
+      { "cast": "Counterspell", "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Counterspell"] },
+        { "hand": ["Grizzly Bears"], "graveyard": ["Spell Snip"] }
+      ]
+    }
+  }
+]

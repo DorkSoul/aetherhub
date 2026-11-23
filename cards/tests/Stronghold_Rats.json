@@ -1,0 +1,141 @@
+[
+  {
+    "name": "combat damage to a player makes each player discard",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Stronghold Rats"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Stronghold Rats",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [],
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "hand": [],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "has shadow",
+    "players": [
+      {
+        "battlefield": [
+          "Stronghold Rats"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "keywords": {
+        "Stronghold Rats": [
+          "Shadow"
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: each player chooses their own discard; both discards happen",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Lightning Bolt"],
+        "battlefield": ["Stronghold Rats"]
+      },
+      {
+        "hand": ["Grizzly Bears", "Forest"]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Stronghold Rats", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [["Grizzly Bears"], ["Forest"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"], "graveyard": ["Grizzly Bears"] },
+        { "hand": ["Grizzly Bears"], "graveyard": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature blocked by a shadow creature stays blocked after losing shadow, and still deals and takes combat damage",
+    "players": [
+      {
+        "hand": ["Turn to Frog"],
+        "battlefield": ["Stronghold Rats", "Island", "Island"]
+      },
+      {
+        "battlefield": ["Dauthi Slayer"]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Stronghold Rats", "at": "p1" } ] },
+      { "block": [ { "blocker": "Dauthi Slayer", "attacker": "Stronghold Rats" } ] },
+      { "cast": "Turn to Frog", "targets": ["Stronghold Rats"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Stronghold Rats"] },
+        { "life": 20, "battlefield_has": ["Dauthi Slayer"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature with shadow and flying can be blocked only by a creature with both; shadow alone cannot block it",
+    "players": [
+      { "battlefield": ["Stronghold Overseer"] },
+      { "battlefield": ["Stronghold Rats"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Stronghold Overseer", "at": "p1" } ] },
+      { "block": [ { "blocker": "Stronghold Rats", "attacker": "Stronghold Overseer" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 15 }
+      ]
+    }
+  }
+]

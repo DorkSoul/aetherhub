@@ -1,0 +1,144 @@
+[
+  {
+    "name": "gets a +1/+1 counter at your end step after your own permanent card went to your graveyard this turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          "Mountain",
+          { "name": "Child of the Volcano", "sick": false },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Child of the Volcano": { "p1p1": 1 } },
+      "pt": { "Child of the Volcano": [4, 4] }
+    }
+  },
+  {
+    "name": "an opponent's permanent going to their graveyard does not count as you descending",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          "Mountain",
+          { "name": "Child of the Volcano", "sick": false }
+        ]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "pt": { "Child of the Volcano": [3, 3] }
+    }
+  },
+  {
+    "name": "no descend this turn: no counter at the end step",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Child of the Volcano", "sick": false }
+        ]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "pt": { "Child of the Volcano": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: a token going to the graveyard does not count as descending",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Child of the Volcano", "sick": false }, "Treasure"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "hand": [] }, { "graveyard": ["Grizzly Bears"] } ],
+      "pt": { "Child of the Volcano": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: a permanent put into your graveyard before Child was cast still counts as descending",
+    "players": [
+      { "hand": ["Lightning Bolt", "Child of the Volcano"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Child of the Volcano" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Child of the Volcano"], "graveyard": ["Grizzly Bears", "Lightning Bolt"] }, {} ],
+      "counters": { "Child of the Volcano": { "p1p1": 1 } },
+      "pt": { "Child of the Volcano": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a descended card that later leaves the graveyard still lets the end step trigger happen",
+    "players": [
+      { "hand": ["Lightning Bolt", "Shadows' Verdict"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", { "name": "Child of the Volcano", "sick": false }, "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Shadows' Verdict" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Grizzly Bears"], "battlefield_has": ["Child of the Volcano"] }, {} ],
+      "counters": { "Child of the Volcano": { "p1p1": 1 } },
+      "pt": { "Child of the Volcano": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: descending several times in one turn still gives only one counter",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", { "name": "Child of the Volcano", "sick": false }, "Grizzly Bears", "Typhoid Rats"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Typhoid Rats"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Typhoid Rats"] }, {} ],
+      "counters": { "Child of the Volcano": { "p1p1": 1 } },
+      "pt": { "Child of the Volcano": [4, 4] }
+    }
+  }
+]

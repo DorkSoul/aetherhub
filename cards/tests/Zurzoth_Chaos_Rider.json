@@ -1,0 +1,75 @@
+[
+ {
+  "name": "an opponent drawing their first card on my turn gives me one Devil token (not one per card)",
+  "players": [
+   { "battlefield": ["Zurzoth, Chaos Rider", { "name": "Dack Fayden", "counters": { "loyalty": 3 } }] },
+   {}
+  ],
+  "steps": [ { "activate": "Dack Fayden", "ability": 0, "targets": ["p1"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "battlefield": ["Zurzoth, Chaos Rider", "Dack Fayden", "Devil"] }, {} ] }
+ },
+ {
+  "name": "my own draws and an opponent's draw on their own turn make no Devil",
+  "players": [ { "battlefield": ["Zurzoth, Chaos Rider"] }, {} ],
+  "steps": [ { "advance_to": "Main1" } ],
+  "expect": { "players": [ { "battlefield": ["Zurzoth, Chaos Rider"] }, {} ], "turn": 2 }
+ },
+ {
+  "name": "Zurzoth attacking a player: you and that player each draw a card, then discard one at random",
+  "players": [ { "battlefield": [{ "name": "Zurzoth, Chaos Rider", "sick": false }] }, {} ],
+  "steps": [ { "attack": [{ "card": "Zurzoth, Chaos Rider", "at": "p1" }] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard": ["Forest"] }, { "hand_count": 0, "graveyard": ["Forest"] } ] }
+ },
+ {
+  "name": "two Devils attacking the same player trigger it only once",
+  "players": [ { "battlefield": [{ "name": "Zurzoth, Chaos Rider", "sick": false }, { "name": "Devil", "sick": false }] }, {} ],
+  "steps": [ { "attack": [{ "card": "Zurzoth, Chaos Rider", "at": "p1" }, { "card": "Devil", "at": "p1" }] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard": ["Forest"] }, { "hand_count": 0, "graveyard": ["Forest"] } ] }
+ },
+ {
+  "name": "attackers that aren't Devils don't trigger it",
+  "players": [ { "battlefield": ["Zurzoth, Chaos Rider", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+  "steps": [ { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard": [] }, { "hand_count": 0, "graveyard": [] } ] }
+ },
+ {
+  "name": "a Devil attacking only a planeswalker doesn't trigger it",
+  "players": [ { "battlefield": [{ "name": "Zurzoth, Chaos Rider", "sick": false }] }, { "battlefield": [{ "name": "Dack Fayden", "counters": { "loyalty": 3 } }] } ],
+  "steps": [ { "attack": [{ "card": "Zurzoth, Chaos Rider", "at": "Dack Fayden" }] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard": [] }, { "hand_count": 0, "graveyard": [] } ] }
+ },
+ {
+  "name": "ruling: a card put into an opponent's hand without drawing (Unsummon on their own creature on my turn) makes no Devil",
+  "players": [
+   { "battlefield": ["Zurzoth, Chaos Rider"] },
+   { "hand": ["Unsummon"], "battlefield": ["Island", "Grizzly Bears"] }
+  ],
+  "steps": [ { "pass": true }, { "cast": "Unsummon", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield": ["Zurzoth, Chaos Rider"] }, { "hand": ["Grizzly Bears"], "battlefield": ["Island"] } ] }
+ },
+ {
+  "name": "ruling: a Devil attacking a planeswalker and a non-Devil attacking the player cause no draw or discard",
+  "players": [
+   { "battlefield": [{ "name": "Zurzoth, Chaos Rider", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+   { "battlefield": [{ "name": "Dack Fayden", "counters": { "loyalty": 3 } }] }
+  ],
+  "steps": [ { "attack": [{ "card": "Zurzoth, Chaos Rider", "at": "Dack Fayden" }, { "card": "Grizzly Bears", "at": "p1" }] }, { "resolve": true, "auto": true }, { "advance_to": "Main2", "auto": true } ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard": [] }, { "life": 18, "hand_count": 0, "graveyard": [] } ] }
+ },
+ {
+  "name": "ruling: lethal damage to a Devil and lethal life loss at the same time: I lose before its death trigger goes on the stack",
+  "players": [
+   { "life": 1, "battlefield": ["Zurzoth, Chaos Rider", "Devil"] },
+   { "battlefield": [{ "name": "Aurochs", "sick": false }] }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "attack": [{ "card": "Aurochs", "at": "p0" }], "player": 1 },
+   { "pass": true, "player": 1 },
+   { "block": [{ "blocker": "Devil", "attacker": "Aurochs" }], "player": 0 },
+   { "advance_to": "Main2", "auto": true }
+  ],
+  "expect": { "winner": 1 }
+ }
+]

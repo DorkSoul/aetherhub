@@ -1,0 +1,81 @@
+[
+  {
+    "name": "two counters then destroy a small creature",
+    "players": [
+      { "hand": ["Dimension X Pizzasaur"], "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Grizzly Bears"] },
+      { "battlefield": ["Llanowar Elves", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Dimension X Pizzasaur" },
+      { "resolve": true, "targets": ["Grizzly Bears"], "answers": ["Llanowar Elves"] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 2 } },
+      "players": [
+        { "battlefield_has": ["Dimension X Pizzasaur", "Grizzly Bears"] },
+        { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "counters already on other permanents raise the limit",
+    "players": [
+      { "hand": ["Dimension X Pizzasaur"], "battlefield": ["Swamp", "Mountain", "Forest", "Island", { "name": "Grizzly Bears", "counters": { "p1p1": 2 } }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Dimension X Pizzasaur" },
+      { "resolve": true, "targets": ["Grizzly Bears"], "answers": ["Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dimension X Pizzasaur", "Grizzly Bears"] },
+        { "graveyard_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "creature above the limit is not a legal target",
+    "players": [
+      { "hand": ["Dimension X Pizzasaur"], "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Dimension X Pizzasaur" },
+      { "resolve": true, "targets": ["Grizzly Bears"], "answers": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": { "players": [{}, { "battlefield_has": ["Hill Giant"] }] }
+  },
+  {
+    "name": "sacrifice drains 3",
+    "players": [
+      { "battlefield": ["Dimension X Pizzasaur", "Swamp", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dimension X Pizzasaur" },
+      { "resolve": true }
+    ],
+    "expect": {
+      
+      "players": [{ "graveyard_has": ["Dimension X Pizzasaur"], "life": 23 }, { "life": 17 }]
+    }
+  },
+  {
+    "name": "ruling: the reflexive destroy target is chosen after the counters are placed, so the creature that just got them can be destroyed",
+    "players": [
+      { "hand": ["Dimension X Pizzasaur"], "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dimension X Pizzasaur" },
+      { "resolve": true, "targets": ["Grizzly Bears"], "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dimension X Pizzasaur"], "graveyard_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

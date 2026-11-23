@@ -1,0 +1,142 @@
+[
+  {
+    "name": "other Dragons get +1/+1",
+    "players": [
+      {
+        "battlefield": [
+          "Stormscale Scion",
+          "Shivan Dragon"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": {
+        "Shivan Dragon": [
+          6,
+          6
+        ],
+        "Stormscale Scion": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "non-Dragons get nothing",
+    "players": [
+      {
+        "battlefield": [
+          "Stormscale Scion",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a countered spell still counts for storm",
+    "players": [
+      { "hand": ["Lightning Bolt", "Stormscale Scion"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "cast": "Stormscale Scion" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Stormscale Scion", "Stormscale Scion", "Stormscale Scion"] },
+        { "life": 20, "graveyard": ["Counterspell"], "battlefield": ["Island", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: storm copies are not cast and are not counted by a later storm spell",
+    "players": [
+      { "hand": ["Lightning Bolt", "Stormscale Scion", "Stormscale Scion"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Stormscale Scion" },
+      { "resolve": true },
+      { "cast": "Stormscale Scion" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Stormscale Scion", "Stormscale Scion", "Stormscale Scion", "Stormscale Scion", "Stormscale Scion"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering one storm copy leaves the original spell to resolve",
+    "players": [
+      { "hand": ["Lightning Bolt", "Stormscale Scion"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Stormscale Scion" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Stormscale Scion" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Stormscale Scion"] },
+        { "life": 17, "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the storm trigger means no copies are put onto the stack",
+    "players": [
+      { "hand": ["Lightning Bolt", "Stormscale Scion"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Tale's End"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Stormscale Scion" },
+      { "pass": true },
+      { "cast": "Tale's End", "player": 1, "answers": [[0]], "targets": [{ "stack": "Stormscale Scion" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Stormscale Scion"] },
+        { "life": 17, "graveyard": ["Tale's End"] }
+      ]
+    }
+  }
+]

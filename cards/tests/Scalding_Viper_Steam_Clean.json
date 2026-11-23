@@ -1,0 +1,172 @@
+[
+  {
+    "name": "opponent casting a spell with mana value 3 or less pings that player for 1",
+    "players": [
+      {
+        "battlefield": [
+          "Scalding Viper // Steam Clean"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 17
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "your own spells do not trigger it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Scalding Viper // Steam Clean",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "Steam Clean returns a nonland permanent to its owner's hand and the card is exiled on adventure",
+    "players": [
+      {
+        "hand": [
+          "Scalding Viper // Steam Clean"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Scalding Viper // Steam Clean",
+        "face": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Scalding Viper // Steam Clean"
+          ]
+        },
+        {
+          "battlefield": [],
+          "hand": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after the Adventure resolves, the creature can be cast from exile in the same main phase",
+    "players": [
+      { "hand": ["Scalding Viper // Steam Clean"], "battlefield": ["Island", "Island", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Scalding Viper // Steam Clean", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Scalding Viper // Steam Clean" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Scalding Viper // Steam Clean"], "exile": [] }, { "hand": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: an Adventure whose targets are all illegal goes to the graveyard, not exile",
+    "players": [
+      { "hand": ["Scalding Viper // Steam Clean"], "battlefield": ["Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Scalding Viper // Steam Clean", "face": true, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Scalding Viper // Steam Clean"], "exile": [] }, { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: the creature cast from exile follows sorcery timing (not in combat)",
+    "players": [
+      { "hand": ["Scalding Viper // Steam Clean"], "battlefield": ["Island", "Island", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Scalding Viper // Steam Clean", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Scalding Viper // Steam Clean", "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Scalding Viper // Steam Clean"] }, { "hand": ["Grizzly Bears"] } ] }
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "name": "a noncreature artifact becomes an artifact creature with P/T equal to its mana value",
+    "players": [
+      { "hand": ["Animate Artifact"], "battlefield": ["Island", "Island", "Island", "Island", "Thran Dynamo"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Animate Artifact", "targets": ["Thran Dynamo"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Thran Dynamo": [4, 4] },
+      "attached": { "Animate Artifact": "Thran Dynamo" }
+    }
+  },
+  {
+    "name": "an artifact that already is a creature keeps its own power and toughness",
+    "players": [
+      { "hand": ["Animate Artifact"], "battlefield": ["Island", "Island", "Island", "Island", "Juggernaut"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Animate Artifact", "targets": ["Juggernaut"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Juggernaut": [5, 3] },
+      "attached": { "Animate Artifact": "Juggernaut" }
+    }
+  },
+  {
+    "name": "it can enchant an opponent's artifact, which then has power and toughness equal to its mana value",
+    "players": [
+      { "hand": ["Animate Artifact"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Animate Artifact", "targets": ["Sol Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Sol Ring": [1, 1] }
+    }
+  },
+  {
+    "name": "it can't enchant a nonartifact permanent",
+    "players": [
+      { "hand": ["Animate Artifact"], "battlefield": ["Island", "Island", "Island", "Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Animate Artifact", "targets": ["Forest"], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: an artifact that came under its controller's control this turn can't attack once it is a creature",
+    "players": [
+      { "hand": ["Thran Dynamo", "Animate Artifact"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Thran Dynamo" },
+      { "resolve": true },
+      { "cast": "Animate Artifact", "targets": ["Thran Dynamo"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Thran Dynamo", "at": "p1" }], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, { "life": 20 }],
+      "pt": { "Thran Dynamo": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: an artifact that has been under its controller's control since the start of the turn can attack once it is a creature",
+    "players": [
+      { "hand": ["Animate Artifact"], "battlefield": ["Island", "Island", "Island", "Island", "Thran Dynamo"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Animate Artifact", "targets": ["Thran Dynamo"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Thran Dynamo", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 16 }],
+      "pt": { "Thran Dynamo": [4, 4] }
+    }
+  }
+]

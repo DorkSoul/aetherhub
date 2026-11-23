@@ -1,0 +1,256 @@
+[
+ {
+  "name": "impending: creates a tapped Everywhere land",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Hauntwoods"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Hauntwoods",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Overlord of the Hauntwoods": {
+     "time": 4
+    }
+   },
+   "tapped": {
+    "Everywhere": true
+   },
+   "players": [
+    {
+     "battlefield": [
+      "Forest",
+      "Forest",
+      "Forest",
+      "Overlord of the Hauntwoods",
+      "Everywhere"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Everywhere taps for any color (every basic land type)",
+  "players": [
+   {
+    "battlefield": [
+     "Everywhere"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Everywhere",
+    "color": "U"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "U": 1
+     }
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "hard cast: 6/5",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Hauntwoods"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Hauntwoods"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Overlord of the Hauntwoods": [
+     6,
+     5
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Everywhere"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "impending: end step removes one time counter",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Hauntwoods"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Hauntwoods",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Overlord of the Hauntwoods": {
+     "time": 3
+    }
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Overlord of the Hauntwoods",
+      "Everywhere"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "attack creates a tapped Everywhere land",
+  "players": [
+   {
+    "battlefield": [
+     "Overlord of the Hauntwoods"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Overlord of the Hauntwoods",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Everywhere": true
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Everywhere"
+     ]
+    },
+    {
+     "life": 14
+    }
+   ]
+  }
+ },
+ {
+  "name": "impending (time counters): not a creature, so Doom Blade has no creature to target",
+  "players": [
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", { "name": "Overlord of the Hauntwoods", "counters": { "time": 4 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Doom Blade", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Doom Blade"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: an impending spell is still a spell and can be countered",
+  "players": [
+   { "hand": ["Overlord of the Hauntwoods"], "battlefield": ["Forest", "Forest", "Forest"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Overlord of the Hauntwoods", "alt": 0 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Overlord of the Hauntwoods" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Overlord of the Hauntwoods"], "battlefield_lacks": ["Everywhere"] }, { "graveyard": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: impending can only be paid when the creature could be cast (not during combat)",
+  "players": [ { "hand": ["Overlord of the Hauntwoods"], "battlefield": ["Forest", "Forest", "Forest"] }, {} ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Overlord of the Hauntwoods", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Overlord of the Hauntwoods"] }, {} ]
+  }
+ }
+]

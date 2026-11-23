@@ -1,0 +1,83 @@
+[
+  {
+    "name": "mode +1/+1: exile an instant from my graveyard and pay {1}; this gets +1/+1 until end of turn",
+    "players": [
+      { "battlefield": ["Disciple of the Ring", "Island"], "graveyard": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Disciple of the Ring", "ability": 0 },
+      { "resolve": true, "answers": [[1]] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt"], "battlefield_has": ["Disciple of the Ring"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Disciple of the Ring": [4, 5] }
+    }
+  },
+  {
+    "name": "the +1/+1 wears off at end of turn",
+    "players": [
+      { "battlefield": ["Disciple of the Ring", "Island"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Disciple of the Ring", "ability": 0 },
+      { "resolve": true, "answers": [[1]] },
+      { "advance_to": "Cleanup", "auto": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Disciple of the Ring"] }, {}],
+      "pt": { "Disciple of the Ring": [3, 4] }
+    }
+  },
+  {
+    "name": "mode tap target creature: taps the only creature",
+    "players": [
+      { "battlefield": ["Disciple of the Ring", "Island"], "graveyard": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Disciple of the Ring", "ability": 0 },
+      { "resolve": true, "answers": [[2], "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_has": ["Grizzly Bears"] }],
+      "tapped": { "Grizzly Bears": true, "Disciple of the Ring": false }
+    }
+  },
+  {
+    "name": "needs an instant or sorcery in my graveyard to activate",
+    "players": [
+      { "battlefield": ["Disciple of the Ring", "Island"], "graveyard": ["Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Disciple of the Ring", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "counter mode: opponent cannot pay {2}, so their noncreature spell is countered",
+    "players": [
+      { "battlefield": ["Disciple of the Ring", "Island", "Island"], "graveyard": ["Lightning Bolt"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Disciple of the Ring"] },
+      { "activate": "Disciple of the Ring", "ability": 0 },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Disciple of the Ring"], "exile": ["Lightning Bolt"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

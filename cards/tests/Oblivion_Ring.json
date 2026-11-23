@@ -1,0 +1,226 @@
+[
+  {
+    "name": "exiles a creature",
+    "players": [
+      {
+        "hand": [
+          "Oblivion Ring"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Oblivion Ring"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Oblivion Ring"
+          ]
+        },
+        {
+          "battlefield": [],
+          "exile": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "creature returns when it leaves",
+    "players": [
+      {
+        "hand": [
+          "Oblivion Ring"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Forest"
+        ],
+        "hand": [
+          "Nature's Claim"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Oblivion Ring"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Nature's Claim",
+        "targets": [
+          "Oblivion Ring"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Oblivion Ring"
+          ],
+          "life": 24
+        },
+        {
+          "battlefield": [
+            "Grizzly Bears",
+            "Forest"
+          ],
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "exiles an artifact",
+    "players": [
+      {
+        "hand": [
+          "Oblivion Ring"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Sol Ring"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Oblivion Ring"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield": [],
+          "exile": [
+            "Sol Ring"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if Oblivion Ring leaves before its exile resolves, the creature is still exiled for good",
+    "players": [
+      { "hand": ["Oblivion Ring"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "hand": ["Nature's Claim"], "battlefield": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Oblivion Ring" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "pass": true },
+      { "player": 1, "cast": "Nature's Claim", "targets": ["Oblivion Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Oblivion Ring"] },
+        { "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Aura attached to the exiled creature goes to its owner's graveyard",
+    "players": [
+      { "hand": ["Pacifism", "Oblivion Ring"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Oblivion Ring" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Pacifism"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: equipment attached to the exiled creature stays on the battlefield",
+    "players": [
+      { "hand": ["Oblivion Ring"], "battlefield": ["Sword of Hours", "Grizzly Bears", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sword of Hours", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Oblivion Ring" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sword of Hours", "Oblivion Ring"], "exile": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature returning when Oblivion Ring leaves has no counters",
+    "players": [
+      { "hand": ["Oblivion Ring"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "hand": ["Nature's Claim"], "battlefield": [{ "name": "Grizzly Bears", "counters": { "+1/+1": 2 } }, "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Oblivion Ring" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Nature's Claim", "targets": ["Oblivion Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

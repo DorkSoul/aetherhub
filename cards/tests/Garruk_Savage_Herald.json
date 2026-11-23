@@ -1,0 +1,388 @@
+[
+ {
+  "name": "+1 puts a creature card on top into hand",
+  "players": [
+   {
+    "battlefield": [
+     "Garruk, Savage Herald"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "library_count": 1
+    },
+    {}
+   ],
+   "counters": {
+    "Garruk, Savage Herald": {
+     "loyalty": 6
+    }
+   }
+  }
+ },
+ {
+  "name": "+1 with a noncreature on top puts it on the bottom, nothing to hand",
+  "players": [
+   {
+    "battlefield": [
+     "Garruk, Savage Herald"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [],
+     "library_count": 2
+    },
+    {}
+   ],
+   "counters": {
+    "Garruk, Savage Herald": {
+     "loyalty": 6
+    }
+   }
+  }
+ },
+ {
+  "name": "-2: creature you control deals damage equal to its power to another creature",
+  "players": [
+   {
+    "battlefield": [
+     "Garruk, Savage Herald",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    },
+    {
+     "graveyard_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "counters": {
+    "Garruk, Savage Herald": {
+     "loyalty": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "-2 needs another creature: illegal when the only creature is your own",
+  "players": [
+   {
+    "battlefield": [
+     "Garruk, Savage Herald",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Garruk, Savage Herald": {
+     "loyalty": 5
+    }
+   }
+  }
+ },
+ {
+  "name": "-7 is not possible with only 5 loyalty",
+  "players": [
+   {
+    "battlefield": [
+     "Garruk, Savage Herald",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 2,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Garruk, Savage Herald": {
+     "loyalty": 5
+    }
+   }
+  }
+ },
+ {
+  "name": "-7 at 7 loyalty: Garruk dies at 0 and the creature keeps its board presence",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Garruk, Savage Herald",
+      "counters": {
+       "loyalty": 7
+      }
+     },
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 2
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Garruk, Savage Herald"
+     ],
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-7: a blocked creature you control assigns its combat damage to the player instead of the blocker",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Garruk, Savage Herald",
+      "counters": {
+       "loyalty": 7
+      }
+     },
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Garruk, Savage Herald",
+    "ability": 2
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Hill Giant"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17,
+     "battlefield": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "without -7 a blocked creature deals no damage to the player",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Garruk, Savage Herald",
+      "counters": {
+       "loyalty": 7
+      }
+     },
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Hill Giant"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: -2 whose creature target is illegal on resolution deals no damage",
+  "players": [
+   { "battlefield": [{ "name": "Garruk, Savage Herald", "counters": { "loyalty": 5 } }, { "name": "Hill Giant", "sick": false }] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Garruk, Savage Herald", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Hill Giant"] },
+    { "graveyard_has": ["Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] }
+   ],
+   "counters": { "Garruk, Savage Herald": { "loyalty": 3 } }
+  }
+ },
+ {
+  "name": "ruling: a creature that enters after -7 resolves does not gain the damage assignment ability",
+  "players": [
+   { "hand": ["Lightning Serpent"], "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Garruk, Savage Herald", "counters": { "loyalty": 7 } }, { "name": "Hill Giant", "sick": false }] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Garruk, Savage Herald", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Lightning Serpent", "answers": [2] },
+   { "resolve": true },
+   { "attack": [{ "card": "Lightning Serpent", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Lightning Serpent" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 18 }
+   ]
+  }
+ }
+]

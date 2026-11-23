@@ -1,0 +1,120 @@
+[
+  {
+    "name": "enters tapped without a Mountain",
+    "players": [
+      {
+        "hand": [
+          "Arena of Glory"
+        ],
+        "battlefield": [
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Arena of Glory"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Arena of Glory": true
+      }
+    }
+  },
+  {
+    "name": "enters untapped with a Mountain",
+    "players": [
+      {
+        "hand": [
+          "Arena of Glory"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Arena of Glory"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Arena of Glory": false
+      }
+    }
+  },
+  {
+    "name": "a tapped land untaps in the next untap step when not exerted",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Arena of Glory",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Arena of Glory": false
+      }
+    }
+  },
+  {
+    "name": "ruling: each creature spell paid with the exert mana gains haste",
+    "players": [
+      { "hand": ["Dwarven Grunt", "Dwarven Pony"], "battlefield": ["Mountain", "Arena of Glory"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Mountain" },
+      { "tap_for_mana": "Arena of Glory", "ability": 2 },
+      { "cast": "Dwarven Grunt" },
+      { "resolve": true },
+      { "cast": "Dwarven Pony" },
+      { "resolve": true },
+      { "attack": [ { "card": "Dwarven Grunt", "at": "p1" }, { "card": "Dwarven Pony", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "ruling: the exert mana can pay for a noncreature spell",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Arena of Glory"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Mountain" },
+      { "tap_for_mana": "Arena of Glory", "ability": 2 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"], "restricted_pool": { "R": 1 } }, { "life": 17 } ]
+    }
+  }
+]

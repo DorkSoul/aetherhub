@@ -1,0 +1,115 @@
+[
+  {
+    "name": "prowl {1}{B} after a Goblin dealt combat damage to a player; it can't block",
+    "players": [
+      {
+        "hand": ["Auntie's Snitch"],
+        "battlefield": ["Swamp", "Swamp", "Goblin Piker"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Goblin Piker", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Auntie's Snitch", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Auntie's Snitch", "Goblin Piker"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "prowl is illegal when only a non-Goblin non-Rogue dealt combat damage",
+    "players": [
+      {
+        "hand": ["Auntie's Snitch"],
+        "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Auntie's Snitch", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2 },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "in graveyard: a Goblin dealing combat damage to a player lets you return it to hand",
+    "players": [
+      {
+        "graveyard": ["Auntie's Snitch"],
+        "battlefield": ["Goblin Piker"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Goblin Piker", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "graveyard": [] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "can't block: the Snitch's block is dropped, so the Hill Giant hits for 3",
+    "players": [
+      { "battlefield": ["Auntie's Snitch", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Goblin Piker"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Goblin Piker", "at": "p0" } ] },
+      { "block": [ { "blocker": "Auntie's Snitch", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Goblin Piker" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Goblin's damage returns Snitch from the graveyard, then it can be cast for prowl that turn",
+    "players": [
+      { "graveyard": ["Auntie's Snitch"], "battlefield": ["Swamp", "Swamp", "Goblin Piker"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Goblin Piker", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] },
+      { "resolve": true },
+      { "cast": "Auntie's Snitch", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Auntie's Snitch", "Goblin Piker"], "graveyard": [] },
+        { "life": 18 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,104 @@
+[
+  {
+    "name": "attacking creature gets a shield counter; combat damage to a player removes it and draws",
+    "players": [
+      {
+        "battlefield": [
+          "Family's Favor",
+          { "name": "Grizzly Bears", "sick": false }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "life": 18 }
+      ],
+      "counters": {
+        "Grizzly Bears": { "Shield": 0 }
+      }
+    }
+  },
+  {
+    "name": "blocked attacker keeps its shield counter and draws nothing",
+    "players": [
+      {
+        "battlefield": [
+          "Family's Favor",
+          { "name": "Hill Giant", "sick": false }
+        ]
+      },
+      {
+        "battlefield": ["Wall of Frost"]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Wall of Frost", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        { "life": 20 }
+      ],
+      "counters": {
+        "Hill Giant": { "Shield": 1 }
+      }
+    }
+  },
+  {
+    "name": "no attack means no shield counter",
+    "players": [
+      {
+        "battlefield": [
+          "Family's Favor",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": { "Shield": 0 }
+      }
+    }
+  },
+  {
+    "name": "ruling: with two shield counters, damage is prevented and only one counter is removed",
+    "players": [
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "Shield": 2 } } ] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "counters": { "Grizzly Bears": { "Shield": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a shield counter does not stop the creature being sacrificed",
+    "players": [
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "Shield": 1 } } ] },
+      { "hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Diabolic Edict", "targets": ["p0"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Diabolic Edict"] } ]
+    }
+  }
+]

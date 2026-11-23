@@ -1,0 +1,477 @@
+[
+  {
+    "name": "chosen opponent draws the named card: sacrifice and 10 damage",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "advance_to": "Draw"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Booby Trap"
+          ]
+        },
+        {
+          "life": 10,
+          "hand": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "drawing a different card does nothing",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "advance_to": "Draw"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Booby Trap"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "the controller drawing the named card does not trigger it",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Forest"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "advance_to": "Draw"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Draw"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Booby Trap"
+          ],
+          "hand": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a multi-card draw triggers once, after the draw, when the named card is the second one drawn",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap",
+          "Sign in Blood"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "cast": "Sign in Blood",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Booby Trap"
+          ],
+          "battlefield_lacks": [
+            "Booby Trap"
+          ]
+        },
+        {
+          "life": 8,
+          "hand_count": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the last trigger leaves Booby Trap on the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap",
+          "Sign in Blood"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Stifle"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "cast": "Sign in Blood",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Stifle",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Booby Trap"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Booby Trap"
+          ]
+        },
+        {
+          "life": 18,
+          "graveyard_has": [
+            "Stifle"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the artifact left the battlefield before its trigger resolves, no damage",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap",
+          "Sign in Blood",
+          "Disenchant"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Plains",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "cast": "Sign in Blood",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Disenchant",
+        "targets": [
+          "Booby Trap"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Booby Trap",
+            "Disenchant"
+          ],
+          "battlefield_lacks": [
+            "Booby Trap"
+          ]
+        },
+        {
+          "life": 18,
+          "hand_count": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: each draw of the named card triggers, but only the first one deals damage",
+    "players": [
+      {
+        "hand": [
+          "Booby Trap",
+          "Sign in Blood"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Booby Trap"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "cast": "Sign in Blood",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Booby Trap"
+          ],
+          "battlefield_lacks": [
+            "Booby Trap"
+          ]
+        },
+        {
+          "life": 8,
+          "hand_count": 2
+        }
+      ]
+    }
+  }
+]

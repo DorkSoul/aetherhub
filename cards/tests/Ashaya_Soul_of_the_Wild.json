@@ -1,0 +1,149 @@
+[
+  {
+    "name": "P/T counts lands including itself and other nontoken creatures",
+    "players": [
+      {
+        "battlefield": [
+          "Ashaya, Soul of the Wild",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": {
+        "Ashaya, Soul of the Wild": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "another nontoken creature is a Forest land that taps for G",
+    "players": [
+      {
+        "battlefield": [
+          "Ashaya, Soul of the Wild",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Grizzly Bears"
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Ashaya, Soul of the Wild": [
+          3,
+          3
+        ],
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      },
+      "players": [
+        {
+          "pool": {
+            "G": 1
+          }
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "creature tokens are not affected",
+    "players": [
+      {
+        "battlefield": [
+          "Ashaya, Soul of the Wild",
+          "Forest",
+          "Egg 0-1 Defender"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": {
+        "Ashaya, Soul of the Wild": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "opponent creatures are not affected",
+    "players": [
+      {
+        "battlefield": [
+          "Ashaya, Soul of the Wild",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [],
+    "expect": {
+      "pt": {
+        "Ashaya, Soul of the Wild": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: nonlethal damage becomes lethal when a land leaves the battlefield this turn",
+    "players": [
+      { "battlefield": ["Ashaya, Soul of the Wild", "Ghost Quarter", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Ashaya, Soul of the Wild"] },
+      { "resolve": true },
+      { "activate": "Ghost Quarter", "targets": ["Forest"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Ashaya, Soul of the Wild", "Ghost Quarter"] }, { "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: a creature card in hand cannot be played as a land",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Ashaya, Soul of the Wild", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: Ashaya counts itself among the lands it is affected by",
+    "players": [ { "battlefield": ["Ashaya, Soul of the Wild", "Forest", "Forest"] }, {} ],
+    "steps": [],
+    "expect": { "pt": { "Ashaya, Soul of the Wild": [3, 3] } }
+  },
+  {
+    "name": "ruling: a nontoken creature that is a Forest has the intrinsic {T}: Add {G} ability",
+    "players": [ { "battlefield": ["Ashaya, Soul of the Wild", "Grizzly Bears"] }, {} ],
+    "steps": [ { "tap_for_mana": "Grizzly Bears" } ],
+    "expect": { "players": [ { "pool": { "G": 1 } }, {} ] }
+  }
+]

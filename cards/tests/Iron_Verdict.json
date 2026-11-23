@@ -1,0 +1,39 @@
+[
+ {"name": "deals 5 damage to a tapped creature",
+  "players": [{"hand": ["Iron Verdict"], "battlefield": ["Plains", "Plains", "Plains"]}, {"battlefield": [{"name": "Grizzly Bears", "tapped": true}]}],
+  "steps": [
+   {"cast": "Iron Verdict", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Iron Verdict"]}, {"graveyard": ["Grizzly Bears"]}]}
+ },
+ {"name": "an untapped creature is not a legal target",
+  "players": [{"hand": ["Iron Verdict"], "battlefield": ["Plains", "Plains", "Plains"]}, {"battlefield": ["Grizzly Bears"]}],
+  "steps": [
+   {"cast": "Iron Verdict", "targets": ["Grizzly Bears"], "illegal": true}
+  ],
+  "expect": {"players": [{"hand": ["Iron Verdict"]}, {"battlefield_has": ["Grizzly Bears"]}]}
+ },
+ {"name": "foretell for 2, then cast for W on a later turn (opponent's turn)",
+  "players": [{"hand": ["Iron Verdict"], "battlefield": ["Plains", "Plains", "Plains", {"name": "Grizzly Bears", "tapped": true}]}, {}],
+  "steps": [
+   {"activate": "Iron Verdict", "ability": 0},
+   {"resolve": true},
+   {"cast": "Iron Verdict", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true},
+   {"advance_to": "Upkeep"},
+   {"pass": true, "player": 1},
+   {"cast": "Iron Verdict", "alt": 0, "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"exile": [], "graveyard": ["Iron Verdict", "Grizzly Bears"]}, {}]}
+ },
+ {"name": "ruling: foretelling is a special action, so it can be taken in response to my own spell",
+  "players": [{"hand": ["Iron Verdict", "Lightning Bolt"], "battlefield": ["Mountain", "Plains", "Plains"]}, {}],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["p1"]},
+   {"activate": "Iron Verdict", "ability": 0},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"hand": [], "exile": ["Iron Verdict"]}, {"life": 17}]}
+ }
+]

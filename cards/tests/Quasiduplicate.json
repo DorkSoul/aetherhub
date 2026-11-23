@@ -1,0 +1,175 @@
+[
+ {
+  "name": "creates a token copy of a creature you control (ETB triggers fire)",
+  "players": [
+   {
+    "hand": [
+     "Quasiduplicate"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Prosperous Pirates"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Quasiduplicate",
+    "targets": [
+     "Prosperous Pirates"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Treasure",
+      "Prosperous Pirates"
+     ],
+     "graveyard": [
+      "Quasiduplicate"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "jump-start: cast from graveyard by discarding a card, then exile it",
+  "players": [
+   {
+    "graveyard": [
+     "Quasiduplicate"
+    ],
+    "hand": [
+     "Island"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Quasiduplicate",
+    "alt": 0,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "answers": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Quasiduplicate"
+     ],
+     "hand": [],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "cannot target a creature an opponent controls",
+  "players": [
+   {
+    "hand": [
+     "Quasiduplicate"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Quasiduplicate",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Quasiduplicate"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a jump-start spell that is countered is still exiled",
+  "players": [
+   {
+    "graveyard": ["Quasiduplicate"],
+    "hand": ["Island"],
+    "battlefield": ["Island", "Island", "Island", "Grizzly Bears"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   {"cast": "Quasiduplicate", "alt": 0, "targets": ["Grizzly Bears"]},
+   {"cast": "Counterspell", "player": 1, "targets": [{"stack": "Quasiduplicate"}]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"exile": ["Quasiduplicate"], "graveyard_has": ["Island"], "battlefield_has": ["Grizzly Bears"]},
+    {"graveyard": ["Counterspell"]}
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "ruling: jump-start follows sorcery timing (not castable in combat)",
+  "players": [
+   {
+    "graveyard": ["Quasiduplicate"],
+    "hand": ["Island"],
+    "battlefield": ["Island", "Island", "Island", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   {"advance_to": "BeginCombat"},
+   {"cast": "Quasiduplicate", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Quasiduplicate"]},
+    {}
+   ]
+  }
+ }
+]

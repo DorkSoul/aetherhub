@@ -1,0 +1,77 @@
+[
+ {
+  "name": "opponent sacrifices their creature with the greatest mana value",
+  "players": [
+   { "hand": ["Riveteers Charm"], "battlefield": ["Swamp", "Mountain", "Forest"] },
+   { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Riveteers Charm", "targets": ["p1"], "answers": [0] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Riveteers Charm"] }, { "battlefield": ["Grizzly Bears"], "graveyard": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "exiles the top three cards; they can be played until your next end step",
+  "players": [
+   { "hand": ["Riveteers Charm"], "battlefield": ["Swamp", "Mountain", "Forest"], "library": ["Island", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Riveteers Charm", "answers": [1] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Riveteers Charm"], "exile": ["Island", "Plains", "Forest"] }, {} ] }
+ },
+ {
+  "name": "exiles target player's graveyard",
+  "players": [
+   { "hand": ["Riveteers Charm"], "battlefield": ["Swamp", "Mountain", "Forest"] },
+   { "graveyard": ["Lightning Bolt", "Divination"] }
+  ],
+  "steps": [
+   { "cast": "Riveteers Charm", "targets": ["p1"], "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Riveteers Charm"] }, { "graveyard": [], "exile": ["Lightning Bolt", "Divination"] } ] }
+ },
+ {
+  "name": "ruling: with a tie for greatest mana value, the opponent chooses which creature is sacrificed as it resolves",
+  "players": [
+   { "hand": ["Riveteers Charm"], "battlefield": ["Swamp", "Mountain", "Forest"] },
+   { "battlefield": ["Grizzly Bears", "Elvish Visionary"] }
+  ],
+  "steps": [
+   { "cast": "Riveteers Charm", "targets": ["p1"], "answers": [0] },
+   { "resolve": true, "answers": ["Elvish Visionary"] }
+  ],
+  "expect": { "players": [ { "graveyard": ["Riveteers Charm"] }, { "battlefield": ["Grizzly Bears"], "graveyard": ["Elvish Visionary"] } ] }
+ },
+ {
+  "name": "ruling: a land exiled by the charm can be played as the land drop in the main phase",
+  "players": [
+   { "hand": ["Riveteers Charm"], "battlefield": ["Swamp", "Mountain", "Forest"], "library": ["Island", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Riveteers Charm", "answers": [1] },
+   { "resolve": true },
+   { "play_land": "Island" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Island"], "exile": ["Plains", "Forest"] }, {} ] }
+ },
+ {
+  "name": "ruling: an exiled land cannot be played once a land was already played this turn",
+  "players": [
+   { "hand": ["Riveteers Charm", "Mountain"], "battlefield": ["Swamp", "Mountain", "Forest"], "library": ["Island", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Mountain" },
+   { "cast": "Riveteers Charm", "answers": [1] },
+   { "resolve": true },
+   { "play_land": "Island", "illegal": true }
+  ],
+  "expect": { "players": [ { "exile": ["Island", "Plains", "Forest"], "battlefield_lacks": ["Island"] }, {} ] }
+ }
+]

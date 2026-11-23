@@ -1,0 +1,68 @@
+[
+ {
+  "name": "X=2 enters with two counters",
+  "players": [
+   { "hand": ["Phyrexian Marauder"], "battlefield": ["Mountain", "Mountain"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Phyrexian Marauder", "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Phyrexian Marauder": { "p1p1": 2 } },
+   "pt": { "Phyrexian Marauder": [2, 2] }
+  }
+ },
+ {
+  "name": "attacks only when paying one per counter (paid)",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Phyrexian Marauder", "counters": { "p1p1": 2 } }] },
+   { }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Phyrexian Marauder", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 18 } ],
+   "tapped": { "Phyrexian Marauder": true }
+  }
+ },
+ {
+  "name": "can't attack when it would need more mana than available",
+  "players": [
+   { "battlefield": ["Mountain", { "name": "Phyrexian Marauder", "counters": { "p1p1": 2 } }] },
+   { }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Phyrexian Marauder", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20 } ],
+   "tapped": { "Phyrexian Marauder": false }
+  }
+ },
+ {
+  "name": "can't block: the Marauder blocker is dropped, so Hill Giant hits me",
+  "players": [
+   { "battlefield": [{ "name": "Phyrexian Marauder", "counters": { "p1p1": 2 } }, "Centaur Courser"] },
+   { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "block": [ { "blocker": "Phyrexian Marauder", "attacker": "Hill Giant" }, { "blocker": "Centaur Courser", "attacker": "Grizzly Bears" } ], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "battlefield_has": ["Phyrexian Marauder", "Centaur Courser"] },
+    {}
+   ]
+  }
+ }
+]

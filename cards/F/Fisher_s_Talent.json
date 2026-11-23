@@ -1,0 +1,66 @@
+{
+  "name": "Fisher's Talent",
+  "mana_cost": "{2}{G}{U}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "colors": ["G", "U"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        { "type": "RevealTop", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "RememberedIs", "filter": { "types": ["Land"] } },
+          "then": [
+            {
+              "type": "May",
+              "who": { "type": "You" },
+              "effects": [ { "type": "CreateToken", "token": "Fish", "n": { "type": "Fixed", "n": 1 } } ]
+            }
+          ]
+        },
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{G}{U}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Replace",
+      "what": { "type": "CreateTokens", "who": "You", "subtypes": ["Fish"], "instead_token": "Shark 3-3" },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 }
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{2}{G}{U}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Replace",
+      "what": { "type": "CreateTokens", "who": "You", "subtypes": ["Shark"], "instead_token": "Octopus 8-8" },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 }
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nAt the beginning of your upkeep, look at the top card of your library. You may reveal it if it's a land card. Create a 1/1 blue Fish creature token if you revealed it this way. Then draw a card.\n{G}{U}: Level 2\nIf you would create a Fish token, create a 3/3 blue Shark creature token instead.\n{2}{G}{U}: Level 3\nIf you would create a Shark token, create an 8/8 blue Octopus creature token instead."
+}

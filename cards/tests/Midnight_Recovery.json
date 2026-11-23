@@ -1,0 +1,92 @@
+[
+  {
+    "name": "returns a creature card from my graveyard to hand; no creature to encode on",
+    "players": [
+      { "hand": ["Midnight Recovery"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Midnight Recovery", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard": ["Midnight Recovery"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "encoded on Hill Giant: the spell is exiled instead of going to the graveyard",
+    "players": [
+      { "hand": ["Midnight Recovery"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Hill Giant"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Midnight Recovery", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "exile": ["Midnight Recovery"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot target a creature card in the opponent's graveyard",
+    "players": [
+      { "hand": ["Midnight Recovery"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Midnight Recovery", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Midnight Recovery"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cipher copy is cast during the trigger's resolution (ignores timing), targeting my other creature card",
+    "players": [
+      { "hand": ["Midnight Recovery"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Hill Giant"], "graveyard": ["Grizzly Bears", "Mulldrifter"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Midnight Recovery", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[0]] },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "exile": ["Midnight Recovery"], "graveyard": [] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the cipher copy means it is never cast (Mulldrifter stays in the graveyard)",
+    "players": [
+      { "hand": ["Midnight Recovery"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Hill Giant"], "graveyard": ["Grizzly Bears", "Mulldrifter"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Midnight Recovery", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[0]] },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "exile": ["Midnight Recovery"], "graveyard_has": ["Mulldrifter"] },
+        { "life": 17 }
+      ]
+    }
+  }
+]

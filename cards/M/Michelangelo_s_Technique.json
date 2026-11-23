@@ -1,0 +1,162 @@
+{
+ "name": "Michelangelo's Technique",
+ "mana_cost": "{4}{G}",
+ "types": [
+  "Sorcery"
+ ],
+ "abilities": [
+  {
+   "type": "Static",
+   "effect": {
+    "type": "CastAsThoughFlash",
+    "filter": {
+     "this": true
+    },
+    "whose": "You"
+   }
+  },
+  {
+   "type": "CastOnlyIf",
+   "condition": {
+    "type": "AnyOf",
+    "cs": [
+     {
+      "type": "SorcerySpeed"
+     },
+     {
+      "type": "CastWithAlt",
+      "index": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "AlternativeCost",
+   "cost": [
+    {
+     "type": "Mana",
+     "cost": "{3}{G}"
+    },
+    {
+     "type": "ReturnToHand",
+     "n": 1,
+     "filter": {
+      "types": [
+       "Creature"
+      ],
+      "controller": "You",
+      "attacking": true,
+      "unblocked": true
+     }
+    }
+   ],
+   "condition": {
+    "type": "InStep",
+    "step": "DeclareBlockers"
+   },
+   "exile_after": false,
+   "flash": true
+  },
+  {
+   "type": "Spell",
+   "effects": [
+    {
+     "type": "LookAtTop",
+     "who": {
+      "type": "You"
+     },
+     "n": {
+      "type": "Fixed",
+      "n": 8
+     },
+     "all": true,
+     "take": 8,
+     "rest": "Exile",
+     "filter": {},
+     "to": "Exile"
+    },
+    {
+     "type": "Choose",
+     "who": {
+      "type": "You"
+     },
+     "zone": "Exile",
+     "filter": {
+      "exiled_with_this": true,
+      "types": [
+       "Creature"
+      ],
+      "mana_value": {
+       "op": "Le",
+       "n": 6
+      }
+     },
+     "min": 0,
+     "max": 1,
+     "then": [
+      {
+       "type": "Move",
+       "what": {
+        "type": "Remembered"
+       },
+       "to": "Battlefield",
+       "remember": true
+      },
+      {
+       "type": "Choose",
+       "who": {
+        "type": "You"
+       },
+       "zone": "Exile",
+       "filter": {
+        "exiled_with_this": true,
+        "types": [
+         "Creature"
+        ],
+        "mana_value_vs": {
+         "op": "Le",
+         "amount": {
+          "type": "Minus",
+          "a": {
+           "type": "Fixed",
+           "n": 6
+          },
+          "b": {
+           "type": "ManaValueOf",
+           "of": {
+            "type": "Remembered"
+           }
+          }
+         }
+        }
+       },
+       "min": 0,
+       "max": 1,
+       "then": [
+        {
+         "type": "Move",
+         "what": {
+          "type": "Remembered"
+         },
+         "to": "Battlefield"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "Move",
+     "what": {
+      "type": "All",
+      "zone": "Exile",
+      "filter": {
+       "exiled_with_this": true
+      }
+     },
+     "to": "Library"
+    }
+   ]
+  }
+ ],
+ "oracle_text": "Sneak {3}{G} (You may cast this spell for {3}{G} if you also return an unblocked attacker you control to hand during the declare blockers step.)\nLook at the top eight cards of your library. Put up to two creature cards with total mana value 6 or less from among them onto the battlefield and the rest on the bottom of your library in a random order."
+}

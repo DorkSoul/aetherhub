@@ -1,0 +1,62 @@
+[
+  {
+    "name": "taps for black mana",
+    "players": [
+      { "battlefield": ["The Soul Stone"] },
+      {}
+    ],
+    "steps": [ { "tap_for_mana": "The Soul Stone" } ],
+    "expect": { "players": [ { "pool": { "B": 1 } }, {} ] }
+  },
+  {
+    "name": "harness exiles a creature as a cost and starts the upkeep reanimation",
+    "players": [
+      {
+        "battlefield": ["The Soul Stone", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "graveyard": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Soul Stone", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "auto": true },
+      { "advance_to": "Upkeep", "auto": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Soul Stone", "Hill Giant"], "exile": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "before it is harnessed nothing is returned at upkeep",
+    "players": [
+      { "battlefield": ["The Soul Stone"], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "Upkeep", "auto": true }, { "advance_to": "Upkeep", "auto": true } ],
+    "expect": { "players": [ { "graveyard": ["Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "ruling: a copy of a harnessed Soul Stone is not harnessed, so its upkeep ability does nothing (the original still returns Hill Giant)",
+    "players": [
+      { "battlefield": ["The Soul Stone", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"], "graveyard": ["Hill Giant"] },
+      { "hand": ["Copy Artifact"], "battlefield": ["Island", "Island"], "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "The Soul Stone", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "player": 1, "cast": "Copy Artifact" },
+      { "resolve": true, "answers": [0] },
+      { "advance_to": "Upkeep", "auto": true },
+      { "advance_to": "Upkeep", "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Soul Stone", "Hill Giant"], "exile": ["Grizzly Bears"] },
+        { "battlefield_has": ["The Soul Stone"], "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,75 @@
+[
+ {
+  "name": "power counts the card types in your graveyard only",
+  "players": [
+   { "battlefield": ["Nethergoyf"], "graveyard": ["Lightning Bolt", "Grizzly Bears", "Grizzly Bears"] },
+   { "graveyard": ["Sol Ring"] }
+  ],
+  "steps": [],
+  "expect": { "pt": { "Nethergoyf": [2, 3] } }
+ },
+ {
+  "name": "empty graveyard: 0/1",
+  "players": [ { "battlefield": ["Nethergoyf"] }, {} ],
+  "steps": [],
+  "expect": { "pt": { "Nethergoyf": [0, 1] } }
+ },
+ {
+  "name": "escape: exile cards with four card types among them",
+  "players": [
+   { "graveyard": ["Nethergoyf", "Lightning Bolt", "Grizzly Bears", "Sol Ring", "Forest", "Forest"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nethergoyf", "alt": 0, "answers": [["Lightning Bolt", "Grizzly Bears", "Sol Ring", "Forest"]] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Nethergoyf"], "graveyard": ["Forest"], "exile": ["Lightning Bolt", "Grizzly Bears", "Sol Ring", "Forest"] }, {} ], "pt": { "Nethergoyf": [1, 2] } }
+ },
+ {
+  "name": "escape is not possible with only three card types among the other cards",
+  "players": [
+   { "graveyard": ["Nethergoyf", "Lightning Bolt", "Grizzly Bears", "Sol Ring"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [ { "cast": "Nethergoyf", "alt": 0, "illegal": true } ],
+  "expect": {}
+ },
+ {
+  "name": "ruling: card types, not cards (six creature and artifact cards give 2/3)",
+  "players": [
+   { "battlefield": ["Nethergoyf"], "graveyard": ["Sol Ring", "Sol Ring", "Sol Ring", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [],
+  "expect": { "pt": { "Nethergoyf": [2, 3] } }
+ },
+ {
+  "name": "ruling: supertypes and subtypes are not card types (Forest and a legendary creature give 2/3)",
+  "players": [
+   { "battlefield": ["Nethergoyf"], "graveyard": ["Forest", "Forest", "Isamaru, Hound of Konda"] },
+   {}
+  ],
+  "steps": [],
+  "expect": { "pt": { "Nethergoyf": [2, 3] } }
+ },
+ {
+  "name": "ruling: an escaped creature enters the battlefield and can later die and return to the graveyard",
+  "players": [
+   { "graveyard": ["Nethergoyf", "Grizzly Bears", "Sol Ring", "Shock", "Forest"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nethergoyf", "alt": 0, "answers": [["Grizzly Bears", "Sol Ring", "Shock", "Forest"]] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Nethergoyf"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Nethergoyf", "Lightning Bolt"], "battlefield_lacks": ["Nethergoyf"], "exile": ["Grizzly Bears", "Sol Ring", "Shock", "Forest"] },
+    {}
+   ]
+  }
+ }
+]

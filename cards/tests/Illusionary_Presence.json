@@ -1,0 +1,49 @@
+[
+  { "name": "ruling: with one age counter, the next upkeep costs {U}{U}; two Islands pay it",
+    "players": [ { "battlefield": [ {"name": "Illusionary Presence", "counters": {"age": 1}}, "Island", "Island" ] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": ["Swamp", true] } ],
+    "expect": { "counters": { "Illusionary Presence": { "age": 2 } }, "players": [ { "battlefield_has": ["Illusionary Presence"] }, {} ] } },
+  { "name": "ruling: with two age counters one Island cannot pay part of the cost, so it is sacrificed",
+    "players": [ { "battlefield": [ {"name": "Illusionary Presence", "counters": {"age": 1}}, "Island" ] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": ["Swamp"] } ],
+    "expect": { "players": [ { "graveyard_has": ["Illusionary Presence"] }, {} ] } },
+  { "name": "chosen basic land type: unblockable while the defending player controls a Swamp",
+    "players": [ { "battlefield": ["Illusionary Presence", "Island"] }, { "battlefield": ["Swamp", "Hill Giant"] } ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": ["Swamp", true] },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Illusionary Presence", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Illusionary Presence" } ], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "counters": { "Illusionary Presence": { "age": 1 } }, "players": [ {}, { "life": 18 } ] } },
+  { "name": "boundary: a land type the defender does not control does not stop blockers",
+    "players": [ { "battlefield": ["Illusionary Presence", "Island"] }, { "battlefield": ["Swamp", "Hill Giant"] } ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": ["Forest", true] },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Illusionary Presence", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Illusionary Presence" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Illusionary Presence"] }, { "battlefield_has": ["Hill Giant"] } ] } },
+  { "name": "any land type can be chosen, including a nonbasic one such as Gate",
+    "players": [ { "battlefield": ["Illusionary Presence", "Island"] }, { "battlefield": ["Azorius Guildgate", "Hill Giant"] } ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": ["Gate", true] },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Illusionary Presence", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Illusionary Presence" } ], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "cumulative upkeep: not paying sacrifices it",
+    "players": [ { "battlefield": ["Illusionary Presence"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": ["Swamp"] } ],
+    "expect": { "players": [ { "graveyard_has": ["Illusionary Presence"] }, {} ] } }
+]

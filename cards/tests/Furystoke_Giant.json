@@ -1,0 +1,22 @@
+[
+  { "name": "ETB gives other creatures you control the tap ability until end of turn",
+    "players": [ { "hand": ["Furystoke Giant"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] }, { "battlefield": ["Savannah Lions"] } ],
+    "steps": [ { "cast": "Furystoke Giant" }, { "resolve": true }, { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "the Giant itself does not get the ability",
+    "players": [ { "battlefield": ["Furystoke Giant"] }, { "battlefield": ["Savannah Lions"] } ],
+    "steps": [ { "activate": "Furystoke Giant", "ability": 32768, "illegal": true } ],
+    "expect": { "players": [ {}, { "life": 20 } ] } },
+  { "name": "persist returns it with a -1/-1 counter when it dies",
+    "players": [ { "battlefield": ["Furystoke Giant", "Mountain"] }, { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] } ],
+    "steps": [ { "pass": true }, { "cast": "Terror", "targets": ["Furystoke Giant"], "player": 1 }, { "resolve": true } ],
+    "expect": { "counters": { "Furystoke Giant": { "m1m1": 1 } }, "pt": { "Furystoke Giant": [2, 2] }, "players": [ { "graveyard": [] }, { "graveyard": ["Terror"] } ] } },
+  { "name": "ruling: a persist creature that already has a -1/-1 counter stays in the graveyard when it dies again",
+    "players": [ { "battlefield": ["Furystoke Giant", "Mountain"] }, { "hand": ["Terror", "Terror"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] } ],
+    "steps": [ { "pass": true }, { "cast": "Terror", "targets": ["Furystoke Giant"], "player": 1 }, { "resolve": true }, { "pass": true }, { "cast": "Terror", "targets": ["Furystoke Giant"], "player": 1 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Furystoke Giant"], "battlefield_lacks": ["Furystoke Giant"] }, { "graveyard_has": ["Terror"] } ] } },
+  { "name": "ruling: the returned Giant is a new object, so its ETB gives my other creatures the tap ability again",
+    "players": [ { "battlefield": ["Furystoke Giant", "Grizzly Bears"] }, { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] } ],
+    "steps": [ { "pass": true }, { "cast": "Terror", "targets": ["Furystoke Giant"], "player": 1 }, { "resolve": true }, { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "life": 18 } ] } }
+]

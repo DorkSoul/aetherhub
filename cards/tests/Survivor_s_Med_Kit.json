@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Stimpak mode draws a card for {1},{T}",
+    "players": [
+      { "library": ["Forest", "Island"], "battlefield": ["Island", "Survivor's Med Kit"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Survivor's Med Kit", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "battlefield_has": ["Survivor's Med Kit"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Fancy Lads Snack Cakes mode creates a Food token",
+    "players": [
+      { "battlefield": ["Island", "Survivor's Med Kit"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Survivor's Med Kit", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Food", "Survivor's Med Kit"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a mode already chosen can't be chosen again (only the other modes remain)",
+    "players": [
+      { "library": ["Forest", "Island"], "battlefield": ["Island", "Island", "Survivor's Med Kit"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Survivor's Med Kit", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "activate": "Survivor's Med Kit", "ability": 0, "illegal": true },
+      { "activate": "Survivor's Med Kit", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Food", "Survivor's Med Kit"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "RadAway mode sacrifices the artifact",
+    "players": [
+      { "battlefield": ["Island", "Survivor's Med Kit"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Survivor's Med Kit", "ability": 2, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Survivor's Med Kit"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: rad counters mill in the precombat main phase; each nonland milled costs 1 life and 1 rad counter",
+    "players": [{}, { "rad": 2, "library": ["Island", "Forest", "Hill Giant", "Grizzly Bears"] }],
+    "steps": [{ "advance_to": "Main2" }, { "advance_to": "Main1", "player": 1 }],
+    "expect": { "players": [{}, { "life": 19, "rad": 1, "graveyard_has": ["Forest", "Hill Giant"] }] }
+  },
+  {
+    "name": "ruling: rad counters stay through the end step; milling only lands costs no life or rad",
+    "players": [{}, { "rad": 2, "library": ["Island", "Forest", "Island", "Forest"] }],
+    "steps": [{ "advance_to": "Main2" }, { "advance_to": "Main1", "player": 1 }, { "advance_to": "End" }],
+    "expect": { "players": [{}, { "life": 20, "rad": 2, "graveyard_has": ["Forest", "Island"] }] }
+  },
+  {
+    "name": "ruling: fewer cards in the library than rad counters: mill what is there, 1 life and 1 counter per nonland",
+    "players": [{}, { "rad": 3, "library": ["Island", "Hill Giant"] }],
+    "steps": [{ "advance_to": "Main2" }, { "advance_to": "Main1", "player": 1 }],
+    "expect": { "players": [{}, { "life": 19, "rad": 2, "graveyard_has": ["Hill Giant"] }] }
+  }
+]

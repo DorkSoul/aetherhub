@@ -1,0 +1,80 @@
+[
+  {
+    "name": "kicked: deals 2 damage and exiles a creature that would die",
+    "players": [
+      { "hand": ["Scorching Lava"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Scorching Lava", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Scorching Lava"] },
+        { "exile": ["Grizzly Bears"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "unkicked: deals 2 damage and the creature goes to the graveyard",
+    "players": [
+      { "hand": ["Scorching Lava"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Scorching Lava", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Scorching Lava"] },
+        { "graveyard": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "kicked: a regeneration shield does not save the creature",
+    "players": [
+      { "hand": ["Scorching Lava"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Swamp", "Drudge Skeletons"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Drudge Skeletons", "player": 1, "ability": 0 },
+      { "resolve": true },
+      { "cast": "Scorching Lava", "targets": ["Drudge Skeletons"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Scorching Lava"] },
+        { "exile": ["Drudge Skeletons"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a copy of a kicked spell is kicked, so the copy exiles the creature",
+    "players": [
+      { "hand": ["Scorching Lava", "Twincast"], "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Scorching Lava", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "cast": "Twincast", "targets": [{ "stack": "Scorching Lava" }] },
+      { "pass": true },
+      { "pass": true, "player": 1, "auto": true },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Scorching Lava", "Twincast"] },
+        { "exile": ["Grizzly Bears"], "graveyard": [] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

@@ -1,0 +1,157 @@
+[
+  {
+    "name": "X=2 enters with two +1/+1 counters and mills four",
+    "players": [
+      {
+        "hand": ["The Master of Keys"],
+        "battlefield": ["Plains", "Island", "Swamp", "Forest", "Forest"],
+        "library": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Master of Keys", "answers": [2] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "The Master of Keys": { "p1p1": 2 } },
+      "pt": { "The Master of Keys": [5, 5] },
+      "players": [
+        { "graveyard": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "X=0 enters as a 3/3 and mills nothing",
+    "players": [
+      {
+        "hand": ["The Master of Keys"],
+        "battlefield": ["Plains", "Island", "Swamp"],
+        "library": ["Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Master of Keys", "answers": [0] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "The Master of Keys": [3, 3] },
+      "players": [
+        { "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "escape: enchantment card in graveyard is castable exiling three other cards",
+    "players": [
+      {
+        "graveyard": ["Ghostly Prison", "Shock", "Shock", "Shock"],
+        "battlefield": ["The Master of Keys", "Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghostly Prison", "alt": 100 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Ghostly Prison", "The Master of Keys"],
+          "graveyard": [],
+          "exile": ["Shock", "Shock", "Shock"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "escape needs three other cards in the graveyard",
+    "players": [
+      {
+        "graveyard": ["Ghostly Prison", "Shock", "Shock"],
+        "battlefield": ["The Master of Keys", "Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghostly Prison", "alt": 100, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Ghostly Prison", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-enchantment cards in graveyard do not gain escape",
+    "players": [
+      {
+        "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock"],
+        "battlefield": ["The Master of Keys", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "alt": 100, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Master killed in response to its ETB trigger still mills twice X (four cards)",
+    "players": [
+      { "hand": ["The Master of Keys"], "battlefield": ["Plains", "Island", "Swamp", "Forest", "Forest"], "library": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Island"] }
+    ],
+    "steps": [
+      { "cast": "The Master of Keys", "answers": [2] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["The Master of Keys"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["The Master of Keys", "Mountain", "Mountain", "Mountain", "Mountain"] },
+        { "graveyard_has": ["Murder"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: escape card put into your graveyard on your turn can be cast right away, and can escape again",
+    "players": [
+      {
+        "hand": ["Naturalize"],
+        "graveyard": ["Ghostly Prison", "Shock", "Shock", "Shock", "Shock", "Shock", "Shock"],
+        "battlefield": ["The Master of Keys", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghostly Prison", "alt": 100, "answers": [["Shock", "Shock", "Shock"]] },
+      { "resolve": true },
+      { "cast": "Naturalize", "targets": ["Ghostly Prison"] },
+      { "resolve": true },
+      { "cast": "Ghostly Prison", "alt": 100, "answers": [["Shock", "Shock", "Shock"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ghostly Prison", "The Master of Keys"], "exile": ["Shock", "Shock", "Shock", "Shock", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  }
+]

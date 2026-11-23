@@ -1,0 +1,246 @@
+[
+  {
+    "name": "ETB: target creature with power <= Khenra's power can't block this turn",
+    "players": [
+      {
+        "hand": [
+          "Earthshaker Khenra"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Earthshaker Khenra"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Earthshaker Khenra"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "keywords": {
+        "Grizzly Bears": [
+          "CantBlock"
+        ]
+      }
+    }
+  },
+  {
+    "name": "ETB: a creature with power greater than Khenra's is not a legal target",
+    "players": [
+      {
+        "hand": [
+          "Earthshaker Khenra"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Earthshaker Khenra"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Earthshaker Khenra"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ],
+      "pt": {
+        "Earthshaker Khenra": [
+          2,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "eternalize {4}{R}{R}: exile from the graveyard for a 4/4 black Zombie token copy",
+    "players": [
+      {
+        "graveyard": [
+          "Earthshaker Khenra"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Earthshaker Khenra",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Earthshaker Khenra"
+          ],
+          "exile": [
+            "Earthshaker Khenra"
+          ],
+          "graveyard": []
+        },
+        {}
+      ],
+      "pt": {
+        "Earthshaker Khenra": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "eternalize needs {4}{R}{R}: five lands is not enough",
+    "players": [
+      {
+        "graveyard": [
+          "Earthshaker Khenra"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Earthshaker Khenra",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Earthshaker Khenra"
+          ],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: target stays unable to block after its power rises (Giant Growth)",
+    "players": [
+      { "hand": ["Earthshaker Khenra", "Giant Growth"], "battlefield": ["Mountain", "Mountain", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Earthshaker Khenra" },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Earthshaker Khenra", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Earthshaker Khenra" } ], "player": 1, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Earthshaker Khenra"] },
+        { "life": 18, "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "keywords": { "Grizzly Bears": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "ruling: eternalize exiles the card as the ability is activated, before it resolves",
+    "players": [
+      { "graveyard": ["Earthshaker Khenra"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Earthshaker Khenra", "ability": 0 }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Earthshaker Khenra"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the eternalized token has the copied ETB trigger and can make a creature unable to block",
+    "players": [
+      { "graveyard": ["Earthshaker Khenra"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Earthshaker Khenra", "ability": 0 },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Earthshaker Khenra"], "exile": ["Earthshaker Khenra"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "keywords": { "Grizzly Bears": ["CantBlock"] },
+      "pt": { "Earthshaker Khenra": [4, 4] }
+    }
+  }
+]

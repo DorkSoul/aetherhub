@@ -1,0 +1,237 @@
+[
+ {
+  "name": "cycling an instant exiles until an instant and casts it free; the others go to the bottom",
+  "players": [
+   {
+    "hand": [
+     "Renewed Faith"
+    ],
+    "battlefield": [
+     "Unpredictable Cyclone",
+     "Plains",
+     "Plains"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Renewed Faith",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "p1"
+    ],
+    "answers": [
+     false,
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0,
+     "graveyard": [
+      "Renewed Faith",
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining the free cast puts the exiled card on the bottom and nothing is drawn",
+  "players": [
+   {
+    "hand": [
+     "Renewed Faith"
+    ],
+    "battlefield": [
+     "Unpredictable Cyclone",
+     "Plains",
+     "Plains"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Renewed Faith",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false,
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0,
+     "graveyard": [
+      "Renewed Faith"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "an ordinary draw is not replaced",
+  "players": [
+   {
+    "hand": [
+     "Divination"
+    ],
+    "battlefield": [
+     "Unpredictable Cyclone",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cycling {2}: discard it from hand and draw a card",
+  "players": [
+   { "hand": ["Unpredictable Cyclone"], "battlefield": ["Swamp", "Swamp"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Unpredictable Cyclone", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Grizzly Bears"], "graveyard": ["Unpredictable Cyclone"] }, {} ]
+  }
+ },
+ {
+  "name": "cycling needs {2}: with one land it is illegal",
+  "players": [
+   { "hand": ["Unpredictable Cyclone"], "battlefield": ["Swamp"], "library": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Unpredictable Cyclone", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Unpredictable Cyclone"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the free cast of an {X} spell uses X = 0 (Walking Ballista dies)",
+  "players": [
+   { "hand": ["Barkhide Mauler"], "battlefield": ["Unpredictable Cyclone", "Forest", "Forest"], "library": ["Walking Ballista", "Forest"], "exact_library": true },
+   {}
+  ],
+  "steps": [
+   { "activate": "Barkhide Mauler", "ability": 0 },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Barkhide Mauler", "Walking Ballista"], "battlefield_lacks": ["Walking Ballista"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: if the entire library has no matching card, it is put back in random order and nothing is drawn",
+  "players": [
+   { "hand": ["Barkhide Mauler"], "battlefield": ["Unpredictable Cyclone", "Forest", "Forest"], "library": ["Forest", "Plains"], "exact_library": true },
+   {}
+  ],
+  "steps": [
+   { "activate": "Barkhide Mauler", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0, "library_count": 2, "graveyard_has": ["Barkhide Mauler"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a kicker cost is an additional cost and must be paid on the free cast",
+  "players": [
+   { "hand": ["Renewed Faith"], "battlefield": ["Unpredictable Cyclone", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Burst Lightning"], "exact_library": true },
+   {}
+  ],
+  "steps": [
+   { "activate": "Renewed Faith", "ability": 0 },
+   { "resolve": true, "targets": ["p1"], "answers": [false, true, true] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Renewed Faith", "Burst Lightning"] }, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ruling: the exiled card is cast as part of the cycling resolution, ignoring its timing (a creature at the opponent's end step)",
+  "players": [
+   {},
+   { "hand": ["Barkhide Mauler"], "battlefield": ["Unpredictable Cyclone", "Forest", "Forest"], "library": ["Grizzly Bears"], "exact_library": true }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "pass": true },
+   { "activate": "Barkhide Mauler", "ability": 0, "player": 1 },
+   { "resolve": true, "answers": [true], "player": 1 }
+  ],
+  "expect": {
+   "players": [ {}, { "battlefield_has": ["Grizzly Bears", "Unpredictable Cyclone"] } ]
+  }
+ },
+ {
+  "name": "ruling: a multitype card stops at the first exiled card sharing ANY of its types",
+  "players": [
+   { "hand": ["Architects of Will"], "battlefield": ["Unpredictable Cyclone", "Island"], "library": ["Lightning Bolt", "Ozolith, the Shattered Spire", "Grizzly Bears"], "exact_library": true },
+   {}
+  ],
+  "steps": [
+   { "activate": "Architects of Will", "ability": 0 },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Ozolith, the Shattered Spire"], "library_top": ["Grizzly Bears"], "library_count": 2 }, {} ]
+  }
+ }
+]

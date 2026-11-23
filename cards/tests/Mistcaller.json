@@ -1,0 +1,96 @@
+[
+  {
+    "name": "sacrificed: a creature put onto the battlefield without being cast is exiled instead",
+    "players": [
+      {
+        "hand": ["Gruesome Encore"],
+        "battlefield": ["Mistcaller", "Swamp", "Swamp", "Island"]
+      },
+      {
+        "graveyard": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Mistcaller", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Gruesome Encore", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Mistcaller", "Gruesome Encore"] },
+        { "exile": ["Grizzly Bears"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "not sacrificed: a creature put onto the battlefield from a graveyard enters normally",
+    "players": [
+      {
+        "hand": ["Gruesome Encore"],
+        "battlefield": ["Mistcaller", "Swamp", "Swamp", "Island"]
+      },
+      {
+        "graveyard": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Gruesome Encore", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Grizzly Bears", "Island", "Mistcaller", "Swamp", "Swamp"] },
+        { "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "sacrificed: a creature cast from hand still enters the battlefield",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Mistcaller", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mistcaller", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Forest", "Forest", "Grizzly Bears"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature cast from the graveyard (mayhem) is not exiled",
+    "players": [
+      {
+        "hand": ["Faithless Looting", "Raging Goblinoids"],
+        "battlefield": ["Mistcaller", "Mountain", "Mountain", "Swamp", "Swamp"],
+        "library": ["Island", "Swamp", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mistcaller", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Raging Goblinoids", "Island"]] },
+      { "cast": "Raging Goblinoids", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Raging Goblinoids"], "graveyard_has": ["Mistcaller"] },
+        {}
+      ],
+      "pt": { "Raging Goblinoids": [5, 4] }
+    }
+  }
+]

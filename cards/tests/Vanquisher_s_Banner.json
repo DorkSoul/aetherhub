@@ -1,0 +1,63 @@
+[
+  {
+    "name": "chosen type gets +1/+1 and others do not",
+    "players": [
+      { "hand": ["Vanquisher's Banner"], "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Grizzly Bears","Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Vanquisher's Banner" },
+      { "resolve": true, "answers": ["Bear"] }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [3,3], "Hill Giant": [3,3] } }
+  },
+  {
+    "name": "casting a creature of the chosen type draws, other types do not",
+    "players": [
+      { "hand": ["Vanquisher's Banner","Grizzly Bears","Hill Giant"],
+        "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Forest","Forest","Mountain","Mountain","Mountain","Mountain","Forest","Forest","Forest","Forest"] }
+    ],
+    "steps": [
+      { "cast": "Vanquisher's Banner" },
+      { "resolve": true, "answers": ["Bear"] },
+      { "cast": "Hill Giant" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1 } ], "pt": { "Grizzly Bears": [3,3], "Hill Giant": [3,3] } }
+  },
+  {
+    "name": "ruling: the cast trigger still draws when the creature spell is countered",
+    "players": [
+      { "hand": ["Vanquisher's Banner","Grizzly Bears"],
+        "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Forest","Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island","Island"] }
+    ],
+    "steps": [
+      { "cast": "Vanquisher's Banner" },
+      { "resolve": true, "answers": ["Bear"] },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Counterspell"] } ] }
+  },
+  {
+    "name": "ruling: nonlethal damage on a creature of the chosen type becomes lethal when Banner leaves",
+    "players": [
+      { "hand": ["Vanquisher's Banner","Shock","Naturalize"],
+        "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Forest","Forest","Mountain","Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Vanquisher's Banner" },
+      { "resolve": true, "answers": ["Bear"] },
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Naturalize", "targets": ["Vanquisher's Banner"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears", "Vanquisher's Banner"] }, {} ] }
+  }
+]

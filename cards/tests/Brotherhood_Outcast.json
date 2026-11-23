@@ -1,0 +1,145 @@
+[
+  {
+    "name": "mode 1 returns a mana value 3 or less Equipment from your graveyard to the battlefield",
+    "players": [
+      {
+        "hand": ["Brotherhood Outcast"],
+        "graveyard": ["Bonesplitter"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Brotherhood Outcast" },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Brotherhood Outcast", "Bonesplitter"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "mode 1 cannot return an Equipment with mana value 4 or more (it stays in the graveyard)",
+    "players": [
+      {
+        "hand": ["Brotherhood Outcast"],
+        "graveyard": ["Batterskull"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Brotherhood Outcast" },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Brotherhood Outcast"], "graveyard": ["Batterskull"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "mode 2 puts a shield counter on target creature",
+    "players": [
+      {
+        "hand": ["Brotherhood Outcast"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Brotherhood Outcast" },
+      { "resolve": true, "answers": [[1], "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Brotherhood Outcast"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "counters": { "Grizzly Bears": { "Shield": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a shield counter prevents the first damage and is removed; the next Bolt kills",
+    "players": [
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 1 } }] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt", "Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a shield counter also stops destruction (Murder): the creature survives and the shield is gone",
+    "players": [
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 1 } }] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Grizzly Bears"] },
+        { "graveyard": ["Murder"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a shield counter does not stop a sacrifice (Diabolic Edict)",
+    "players": [
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 1 } }] },
+      { "hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Diabolic Edict", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Diabolic Edict"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two shield counters only one is removed per damage event (two Bolts leave it alive)",
+    "players": [
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 2 } }] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt", "Lightning Bolt"] }
+      ]
+    }
+  }
+]

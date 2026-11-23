@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Animate Dead can't return a creature card from a graveyard",
+    "players": [ { "hand": ["Animate Dead"], "battlefield": ["Kunoros, Hound of Athreos", "Swamp", "Island"] }, { "graveyard": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Animate Dead", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Hill Giant"] }, { "graveyard": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "players can't cast spells from graveyards",
+    "players": [ { "hand": ["Flashback"], "battlefield": ["Kunoros, Hound of Athreos", "Mountain", "Island", "Swamp", "Forest"], "graveyard": ["Lightning Bolt"] }, {} ],
+    "steps": [ { "cast": "Flashback", "targets": ["Lightning Bolt"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Flashback", "Lightning Bolt"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "spells can still be cast from hand",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Kunoros, Hound of Athreos", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "flashback from our graveyard is illegal while Kunoros is on the battlefield",
+    "players": [ { "battlefield": ["Kunoros, Hound of Athreos", "Island", "Island", "Island"], "graveyard": ["Think Twice"] }, {} ],
+    "steps": [ { "cast": "Think Twice", "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Think Twice"], "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "control: without Kunoros the same flashback works",
+    "players": [ { "battlefield": ["Island", "Island", "Island"], "graveyard": ["Think Twice"] }, {} ],
+    "steps": [ { "cast": "Think Twice" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "exile": ["Think Twice"] }, {} ] }
+  },
+  {
+    "name": "opponent cannot cast a flashback spell from their graveyard while Kunoros is out",
+    "players": [ { "battlefield": ["Kunoros, Hound of Athreos"] }, { "battlefield": ["Island", "Island", "Island"], "graveyard": ["Think Twice"] } ],
+    "steps": [ { "pass": true }, { "cast": "Think Twice", "player": 1, "illegal": true } ],
+    "expect": { "players": [ {}, { "graveyard": ["Think Twice"] } ] }
+  },
+  {
+    "name": "ruling: a land can still be played from the graveyard with Crucible of Worlds while Kunoros is out",
+    "players": [ { "battlefield": ["Kunoros, Hound of Athreos", "Crucible of Worlds"], "graveyard": ["Forest"] }, {} ],
+    "steps": [ { "play_land": "Forest" } ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"], "graveyard": [] }, {} ] }
+  }
+]

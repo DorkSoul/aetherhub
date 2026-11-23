@@ -1,0 +1,348 @@
+[
+ {
+  "name": "attacks only when the defending player controls an Island",
+  "players": [
+   {
+    "battlefield": [
+     "Marjhan",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Marjhan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Marjhan"
+     ]
+    },
+    {
+     "life": 12
+    }
+   ]
+  }
+ },
+ {
+  "name": "sacrificed when you control no Islands",
+  "players": [
+   {
+    "battlefield": [
+     "Marjhan"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Marjhan"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "upkeep: pay UU and sacrifice a creature to untap it",
+  "players": [
+   {
+    "battlefield": [
+     "Marjhan",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Marjhan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "activate": "Marjhan",
+    "ability": 0,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Marjhan"
+     ],
+     "graveyard": [
+      "Grizzly Bears"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 12
+    }
+   ]
+  }
+ },
+ {
+  "name": "untap ability is not usable outside your upkeep",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Marjhan",
+      "tapped": true
+     },
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Marjhan",
+    "ability": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Marjhan"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Marjhan": true
+   }
+  }
+ },
+ {
+  "name": "UU, pay: -1/-0 to itself and 1 damage to an attacking creature without flying",
+  "players": [
+   {
+    "battlefield": [
+     "Marjhan",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Savannah Lions",
+      "sick": false
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Savannah Lions",
+      "at": "p0"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "activate": "Marjhan",
+    "ability": 1,
+    "targets": [
+     "Savannah Lions"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "battlefield_has": [
+      "Marjhan"
+     ]
+    },
+    {
+     "graveyard": [
+      "Savannah Lions"
+     ]
+    }
+   ],
+   "pt": {
+    "Marjhan": [7, 8]
+   }
+  }
+ },
+ {
+  "name": "doesn't untap during your untap step",
+  "players": [
+   { "battlefield": ["Island", { "name": "Marjhan", "tapped": true }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Marjhan"] }, {} ],
+   "tapped": { "Marjhan": true }
+  }
+ },
+ {
+  "name": "can't attack unless the defending player controls an Island",
+  "players": [
+   { "battlefield": ["Island", "Marjhan", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Marjhan", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 18 } ]
+  }
+ },
+ {
+  "name": "can attack when the defending player controls an Island",
+  "players": [
+   { "battlefield": ["Island", "Marjhan"] },
+   { "battlefield": ["Island"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Marjhan", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 12 } ]
+  }
+ },
+ {
+  "name": "ruling: the upkeep untap can be activated again in the same upkeep",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Marjhan", "tapped": true },
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "advance_to": "End" },
+   { "advance_to": "Upkeep" },
+   { "activate": "Marjhan", "ability": 0, "answers": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Marjhan", "ability": 0, "answers": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Marjhan"],
+     "graveyard": ["Grizzly Bears", "Grizzly Bears"],
+     "battlefield_lacks": ["Grizzly Bears"]
+    },
+    {}
+   ],
+   "tapped": { "Marjhan": false }
+  }
+ }
+]

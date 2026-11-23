@@ -1,0 +1,189 @@
+[
+ {
+  "name": "from hand: copies a spell you control once",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Increasing Vengeance"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Increasing Vengeance",
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 14
+    }
+   ]
+  }
+ },
+ {
+  "name": "flashback: copies the spell twice",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Increasing Vengeance"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Increasing Vengeance",
+    "alt": 0,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Increasing Vengeance"
+     ]
+    },
+    {
+     "life": 11
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy of Fling copies the sacrificed creature's power (3 + 3 damage)",
+  "players": [
+   { "hand": ["Fling", "Increasing Vengeance"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Fling", "targets": ["p1"] },
+   { "cast": "Increasing Vengeance", "targets": [{ "stack": "Fling" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Fling", "Increasing Vengeance", "Hill Giant"] }, { "life": 14 } ] }
+ },
+ {
+  "name": "ruling: a copy of Starstorm (no targets) keeps X=2, so the 3/3 Hill Giant takes 4 and dies",
+  "players": [
+   { "hand": ["Starstorm", "Increasing Vengeance"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Starstorm", "answers": [2] },
+   { "cast": "Increasing Vengeance", "targets": [{ "stack": "Starstorm" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Starstorm", "Increasing Vengeance", "Hill Giant"] }, {} ] }
+ },
+ {
+  "name": "ruling: a copy is not cast, so Young Pyromancer triggers only for the two real spells",
+  "players": [
+   { "hand": ["Lightning Bolt", "Increasing Vengeance"], "battlefield": ["Mountain", "Mountain", "Mountain", "Young Pyromancer"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Increasing Vengeance", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Mountain", "Mountain", "Mountain", "Young Pyromancer", "Elemental", "Elemental"] },
+    { "life": 14 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy of a modal spell has the same mode (2 damage twice kills the 3/3 Hill Giant)",
+  "players": [
+   { "hand": ["Izzet Charm", "Increasing Vengeance"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Izzet Charm", "answers": [1], "targets": ["Hill Giant"] },
+   { "cast": "Increasing Vengeance", "targets": [{ "stack": "Izzet Charm" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Izzet Charm", "Increasing Vengeance"] }, { "graveyard": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "ruling: a flashback Increasing Vengeance that is countered is exiled; the original Bolt still resolves",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Increasing Vengeance"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Increasing Vengeance", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Increasing Vengeance" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "exile": ["Increasing Vengeance"], "graveyard": ["Lightning Bolt"] }, { "life": 17, "graveyard": ["Counterspell"] } ] }
+ },
+ {
+  "name": "ruling: a discarded Increasing Vengeance can still be cast from the graveyard with flashback (three Bolts, 11 life)",
+  "players": [
+   { "hand": ["Careful Study", "Increasing Vengeance", "Lightning Bolt"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Careful Study" },
+   { "resolve": true, "answers": [["Increasing Vengeance", "Forest"]] },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Increasing Vengeance", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "exile": ["Increasing Vengeance"] }, { "life": 11 } ] }
+ }
+]

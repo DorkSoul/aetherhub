@@ -1,0 +1,91 @@
+[
+  {
+    "name": "{G}: target creature must block it this turn if able",
+    "players": [
+      { "battlefield": ["Sisters of Stone Death", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sisters of Stone Death", "at": "p1" } ] },
+      { "activate": "Sisters of Stone Death", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Sisters of Stone Death" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20, "graveyard_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "{B}{G}: exile target creature blocking it",
+    "players": [
+      { "battlefield": ["Sisters of Stone Death", "Forest", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sisters of Stone Death", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Sisters of Stone Death" } ] },
+      { "activate": "Sisters of Stone Death", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20, "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "{B}{G}: a creature that is neither blocking nor blocked by it is not a legal target",
+    "players": [
+      { "battlefield": ["Sisters of Stone Death", "Forest", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Sisters of Stone Death", "ability": 1, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "{2}{B}: put a creature card exiled with it onto the battlefield under your control",
+    "players": [
+      { "battlefield": ["Sisters of Stone Death", "Forest", "Swamp", "Swamp", "Swamp", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sisters of Stone Death", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Sisters of Stone Death" } ] },
+      { "activate": "Sisters of Stone Death", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "activate": "Sisters of Stone Death", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sisters of Stone Death", "Grizzly Bears"] }, { "exile": [] } ]
+    }
+  },
+  {
+    "name": "ruling: {2}{B} returns a creature exiled by the ability even after turns have passed",
+    "players": [
+      { "battlefield": ["Sisters of Stone Death", "Forest", "Swamp", "Swamp", "Swamp", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sisters of Stone Death", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Sisters of Stone Death" } ] },
+      { "activate": "Sisters of Stone Death", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "activate": "Sisters of Stone Death", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sisters of Stone Death", "Grizzly Bears"] }, { "exile": [] } ]
+    }
+  }
+]

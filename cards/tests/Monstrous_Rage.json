@@ -1,0 +1,135 @@
+[
+  {
+    "name": "+2/+0 and a Monster Role on your creature",
+    "players": [
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Monstrous Rage"], "battlefield_has": ["Monster Role", "Grizzly Bears"] },
+        {}
+      ],
+      "attached": { "Monster Role": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [5, 3] }
+    }
+  },
+  {
+    "name": "the Role goes on an opponent's creature when that is the target",
+    "players": [
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Monstrous Rage"], "battlefield_has": ["Monster Role"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "attached": { "Monster Role": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "needs a creature target to cast",
+    "players": [
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Monstrous Rage"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second Monster Role replaces the first (only the newest stays)",
+    "players": [
+      { "hand": ["Monstrous Rage", "Monstrous Rage"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Monstrous Rage"], "battlefield_has": ["Monster Role", "Grizzly Bears"] },
+        {}
+      ],
+      "attached": { "Monster Role": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [7, 3] }
+    }
+  },
+  {
+    "name": "ruling: Roles controlled by different players can both attach to one creature",
+    "players": [
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Monstrous Rage", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Monster Role", "Grizzly Bears"] },
+        { "graveyard_has": ["Monstrous Rage"] }
+      ],
+      "pt": { "Grizzly Bears": [8, 4] }
+    }
+  },
+  {
+    "name": "ruling: a Role is a colorless Aura Role token",
+    "players": [
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Monster Role", "Grizzly Bears"] },
+        {}
+      ],
+      "subtypes": { "Monster Role": ["Aura", "Role"] },
+      "colors": { "Monster Role": [] }
+    }
+  },
+  {
+    "name": "ruling: no Role if the targeted creature is gone when the spell resolves",
+    "players": [
+      { "hand": ["Monstrous Rage"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Monstrous Rage", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Monstrous Rage", "Grizzly Bears"], "battlefield_lacks": ["Monster Role"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

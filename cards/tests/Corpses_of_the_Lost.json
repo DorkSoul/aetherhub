@@ -1,0 +1,127 @@
+[
+  {
+    "name": "Skeletons you control get +1/+0 and haste",
+    "players": [
+      { "battlefield": ["Corpses of the Lost", "Manor Skeleton"] },
+      { "battlefield": ["Manor Skeleton"] }
+    ],
+    "steps": [],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Manor Skeleton": [2, 1] },
+      "keywords": { "Manor Skeleton": ["Haste"] }
+    }
+  },
+  {
+    "name": "enters and creates a 2/2 Skeleton Pirate token",
+    "players": [
+      { "hand": ["Corpses of the Lost"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Corpses of the Lost" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Corpses of the Lost", "Skeleton Pirate 2-2 Black"] }, {}]
+    }
+  },
+  {
+    "name": "descended this turn: may pay 1 life to return it to hand",
+    "players": [
+      {
+        "battlefield": ["Corpses of the Lost", "Mind Stone", "Plains"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mind Stone", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End", "answers": [true] }
+    ],
+    "expect": {
+      "players": [{ "life": 19, "battlefield_lacks": ["Corpses of the Lost"], "hand_count": 2 }, {}]
+    }
+  },
+  {
+    "name": "descended but declining the payment keeps it on the battlefield",
+    "players": [
+      {
+        "battlefield": ["Corpses of the Lost", "Mind Stone", "Plains"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mind Stone", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End", "answers": [false] }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "battlefield_has": ["Corpses of the Lost"] }, {}]
+    }
+  },
+  {
+    "name": "no descend this turn: the end step trigger does nothing",
+    "players": [
+      { "battlefield": ["Corpses of the Lost", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "battlefield_has": ["Corpses of the Lost"] }, {}]
+    }
+  },
+  {
+    "name": "Skeletons have haste: a summoning-sick Restless Dead (2/1 with the static) attacks for 2",
+    "players": [
+      { "battlefield": ["Corpses of the Lost", { "name": "Restless Dead", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Restless Dead", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: a Skeleton token dying does not descend (tokens are not cards), so the end step does nothing",
+    "players": [ { "hand": ["Corpses of the Lost", "Shock"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Corpses of the Lost" },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Skeleton Pirate 2-2 Black"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "life": 20, "battlefield_has": ["Corpses of the Lost"], "graveyard_has": ["Shock"] }, {} ] }
+  },
+  {
+    "name": "ruling: a permanent put into the graveyard before Corpses entered still counts: the end step trigger works",
+    "players": [ { "hand": ["Shock", "Corpses of the Lost"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Corpses of the Lost" },
+      { "resolve": true },
+      { "advance_to": "End", "answers": [true] }
+    ],
+    "expect": { "players": [ { "life": 19, "hand": ["Corpses of the Lost"], "battlefield_lacks": ["Corpses of the Lost"] }, {} ] }
+  },
+  {
+    "name": "ruling: several permanent cards put into the graveyard in one turn give a single end step trigger",
+    "players": [ { "hand": ["Shock", "Shock"], "battlefield": ["Corpses of the Lost", "Grizzly Bears", "Llanowar Elves", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "advance_to": "End", "answers": [true] }
+    ],
+    "expect": { "players": [ { "life": 19, "hand": ["Corpses of the Lost"], "graveyard_has": ["Grizzly Bears", "Llanowar Elves"] }, {} ] }
+  }
+]

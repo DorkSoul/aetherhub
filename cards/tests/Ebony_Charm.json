@@ -1,0 +1,64 @@
+[
+  {
+    "name": "mode 1: opponent loses 1, you gain 1",
+    "players": [ { "hand": ["Ebony Charm"], "battlefield": ["Swamp"] }, {} ],
+    "steps": [
+      { "cast": "Ebony Charm", "answers": [0], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 21 }, { "life": 19 } ] }
+  },
+  {
+    "name": "mode 2: exile up to three cards from a graveyard (own)",
+    "players": [
+      { "hand": ["Ebony Charm"], "battlefield": ["Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ebony Charm", "answers": [1], "targets": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Ebony Charm"], "exile": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] }, {} ] }
+  },
+  {
+    "name": "mode 2: exile a single card from an opponent's graveyard (up to three)",
+    "players": [
+      { "hand": ["Ebony Charm"], "battlefield": ["Swamp"] },
+      { "graveyard": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Ebony Charm", "answers": [2], "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "graveyard": ["Grizzly Bears"], "exile": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "mode 3: fear creature can't be blocked by a nonblack nonartifact creature",
+    "players": [
+      { "hand": ["Ebony Charm"], "battlefield": ["Swamp", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Ebony Charm", "answers": [3], "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "player": 1, "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: targets are chosen on cast; a card put into the graveyard afterwards is not exiled",
+    "players": [
+      { "hand": ["Ebony Charm", "Lightning Bolt"], "battlefield": ["Swamp", "Mountain"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ebony Charm", "answers": [1], "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Ebony Charm", "Lightning Bolt"], "exile": ["Grizzly Bears"] }, { "life": 17 } ] }
+  }
+]

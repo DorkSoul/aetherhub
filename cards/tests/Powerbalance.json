@@ -1,0 +1,80 @@
+[
+ {
+  "name": "casts the revealed card free when mana values match",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Powerbalance"], "library": ["Lightning Bolt"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true, "answers": [true, true, "p1"] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "library_count": 0 },
+    { "life": 17, "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "no cast and the card stays on top when mana values differ",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Powerbalance"], "library": ["Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "library_count": 1, "battlefield_lacks": ["Grizzly Bears"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "declining the cast puts the revealed card back on top",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Powerbalance"], "library": ["Lightning Bolt"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true, "answers": [true, false] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "library_count": 1 },
+    { "life": 20, "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a revealed X card is cast with X=0 (Fireball is mana value 1)",
+  "players": [ { "battlefield": ["Powerbalance"], "library": ["Fireball"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true, "answers": [true, true, "p1"] } ],
+  "expect": { "players": [ { "life": 17, "graveyard": ["Fireball"] }, { "life": 20, "graveyard": ["Lightning Bolt"] } ] }
+ },
+ {
+  "name": "ruling: an opponent's X spell uses its chosen X for mana value (Fireball X=3 matches Hill Giant)",
+  "players": [ { "battlefield": ["Powerbalance"], "library": ["Hill Giant"] }, { "hand": ["Fireball"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] } ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Fireball", "player": 1, "targets": ["p0"], "answers": [3] }, { "resolve": true, "answers": [true, true] } ],
+  "expect": { "players": [ { "life": 17, "battlefield_has": ["Powerbalance", "Hill Giant"] }, { "graveyard": ["Fireball"] } ] }
+ },
+ {
+  "name": "ruling: the revealed creature is cast on the opponent's turn (timing restrictions ignored)",
+  "players": [ { "battlefield": ["Powerbalance"], "library": ["Grizzly Bears"] }, { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] } ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Grizzly Bears", "player": 1 }, { "resolve": true, "answers": [true, true] } ],
+  "expect": { "players": [ { "battlefield_has": ["Powerbalance", "Grizzly Bears"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: the free cast takes no alternative cost (revealed Nulldrifter stays on the battlefield)",
+  "players": [ { "battlefield": ["Powerbalance"], "library": ["Nulldrifter"] }, { "hand": ["Nulldrifter"], "battlefield": ["Island", "Forest", "Forest"] } ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Nulldrifter", "player": 1, "alt": 0 }, { "resolve": true, "answers": [true, true] }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Powerbalance", "Nulldrifter"] }, { "graveyard": ["Nulldrifter"] } ] }
+ }
+]

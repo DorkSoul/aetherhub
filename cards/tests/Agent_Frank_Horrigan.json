@@ -1,0 +1,203 @@
+[
+ {
+  "name": "attacking creature keeps its toughness and the attack trigger resolves",
+  "players": [
+   {
+    "battlefield": [
+     "Agent Frank Horrigan"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Agent Frank Horrigan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Agent Frank Horrigan": [8, 6]
+   },
+   "players": [
+    {},
+    {
+     "life": 12
+    }
+   ]
+  }
+ },
+  {
+    "name": "ETB: proliferate twice adds two counters to a permanent that has one",
+    "players": [
+      {
+        "hand": ["Agent Frank Horrigan"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest", { "name": "Grizzly Bears", "counters": { "+1/+1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Agent Frank Horrigan" },
+      { "resolve": true },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Agent Frank Horrigan", "Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [5, 5], "Agent Frank Horrigan": [8, 6] }
+    }
+  },
+  {
+    "name": "indestructible after attacking: Murder does not destroy Frank in the second main phase",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Agent Frank Horrigan", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Agent Frank Horrigan", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Murder", "targets": ["Agent Frank Horrigan"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Agent Frank Horrigan"], "graveyard_has": ["Murder"] }, { "life": 12 } ],
+      "keywords": { "Agent Frank Horrigan": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "before attacking Frank is not indestructible: Murder destroys it in the first main phase",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Agent Frank Horrigan", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Murder", "targets": ["Agent Frank Horrigan"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Agent Frank Horrigan"], "battlefield_lacks": ["Agent Frank Horrigan"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: proliferate gives a permanent one of each counter kind it already has",
+    "players": [
+      { "battlefield": ["Agent Frank Horrigan", { "name": "Grizzly Bears", "counters": { "p1p1": 1, "charge": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Agent Frank Horrigan", "at": "p1" } ] },
+      { "resolve": true, "answers": [["Grizzly Bears"], ["Grizzly Bears"]] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 3, "charge": 3 } },
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: Frank is indestructible as soon as it is declared an attacker (Murder in combat fails)",
+    "players": [
+      { "battlefield": ["Agent Frank Horrigan"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Agent Frank Horrigan", "at": "p1" } ] },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Murder", "targets": ["Agent Frank Horrigan"] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Agent Frank Horrigan"] }, { "life": 12, "graveyard_has": ["Murder"] } ]
+    }
+  },
+  {
+    "name": "ruling: proliferate may add counters to an opponent's permanent",
+    "players": [
+      { "battlefield": ["Agent Frank Horrigan"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Agent Frank Horrigan", "at": "p1" } ] },
+      { "resolve": true, "answers": [["Grizzly Bears"], []] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 2 } },
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: proliferate may choose nothing",
+    "players": [
+      { "battlefield": ["Agent Frank Horrigan", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Agent Frank Horrigan", "at": "p1" } ] },
+      { "resolve": true, "answers": [[], []] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: the two proliferations need not choose the same permanents",
+    "players": [
+      { "battlefield": ["Agent Frank Horrigan", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, { "name": "Savannah Lions", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Agent Frank Horrigan", "at": "p1" } ] },
+      { "resolve": true, "answers": [["Grizzly Bears"], ["Savannah Lions"]] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 2 }, "Savannah Lions": { "p1p1": 2 } },
+      "pt": { "Grizzly Bears": [4, 4], "Savannah Lions": [4, 3] }
+    }
+  }
+]

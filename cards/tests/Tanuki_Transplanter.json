@@ -1,0 +1,125 @@
+[
+  { "name": "attacking Tanuki adds G equal to its power until end of turn",
+    "players": [ { "battlefield": [ { "name": "Tanuki Transplanter", "sick": false } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Tanuki Transplanter", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "pool": { "G": 2 } }, {} ] } },
+  { "name": "the mana from the attack trigger stays in the pool through combat and into main phase 2",
+    "players": [ { "battlefield": [ { "name": "Tanuki Transplanter", "sick": false } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Tanuki Transplanter", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "pool": { "G": 2 } }, {} ] } },
+  { "name": "another creature attacking (Tanuki not attacking) adds no mana",
+    "players": [ { "battlefield": [ "Tanuki Transplanter", { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "pool": {} }, {} ] } },
+  { "name": "equipped creature attacking adds G equal to its power",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Forest", "Tanuki Transplanter", { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+    "steps": [
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "pool": { "G": 2 } }, {} ],
+      "attached": { "Tanuki Transplanter": "Grizzly Bears" } } },
+  { "name": "reconfigure needs {3}: two Forests cannot attach it",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Tanuki Transplanter", "Grizzly Bears" ] }, {} ],
+    "steps": [
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Tanuki Transplanter", "Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] } } },
+  { "name": "unattach {3}: the equipped Tanuki becomes a creature again and Bears keeps its size",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Tanuki Transplanter", "Grizzly Bears" ] }, {} ],
+    "steps": [
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Tanuki Transplanter", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Tanuki Transplanter", "Grizzly Bears"] }, {} ],
+      "pt": { "Tanuki Transplanter": [2, 4], "Grizzly Bears": [2, 2] } } },
+  { "name": "while attached it isn't a creature: the attached Tanuki is an Equipment with no Dog subtype",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Forest", "Tanuki Transplanter", "Grizzly Bears" ] }, {} ],
+    "steps": [
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Tanuki Transplanter", "Grizzly Bears"] }, {} ],
+      "attached": { "Tanuki Transplanter": "Grizzly Bears" },
+      "subtypes": { "Tanuki Transplanter": ["Equipment"] },
+      "not_subtypes": { "Tanuki Transplanter": ["Dog"] } } }
+,
+  { "name": "ruling: the attack trigger uses power as it resolves (Giant Growth in response makes it add G 5)",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": ["Forest", "Forest", { "name": "Tanuki Transplanter", "sick": false }] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Tanuki Transplanter", "at": "p1" } ] },
+      { "cast": "Giant Growth", "targets": ["Tanuki Transplanter"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "pool": { "G": 5 } }, {} ] } },
+  { "name": "ruling: if Tanuki leaves the battlefield before its attack trigger resolves, last known power is used (Murder: G 2)",
+    "players": [ { "battlefield": [ { "name": "Tanuki Transplanter", "sick": false } ] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [
+      { "attack": [ { "card": "Tanuki Transplanter", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Tanuki Transplanter"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "pool": { "G": 2 }, "graveyard_has": ["Tanuki Transplanter"] }, {} ] } },
+  { "name": "ruling: reconfigure while Tanuki is tapped from attacking; attaching does not untap it",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Forest", { "name": "Tanuki Transplanter", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Tanuki Transplanter", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Tanuki Transplanter", "Grizzly Bears"] }, {} ],
+      "attached": { "Tanuki Transplanter": "Grizzly Bears" },
+      "tapped": { "Tanuki Transplanter": true } } },
+  { "name": "ruling: Rancor on Tanuki becomes unattached when Tanuki stops being a creature, so Rancor returns to hand",
+    "players": [ { "hand": ["Rancor"], "battlefield": [ "Forest", "Forest", "Forest", "Forest", { "name": "Tanuki Transplanter", "sick": false }, "Grizzly Bears" ] }, {} ],
+    "steps": [
+      { "cast": "Rancor", "targets": ["Tanuki Transplanter"] },
+      { "resolve": true },
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": ["Rancor"], "battlefield_has": ["Tanuki Transplanter", "Grizzly Bears"], "battlefield_lacks": ["Rancor"] }, {} ],
+      "attached": { "Tanuki Transplanter": "Grizzly Bears" } } },
+  { "name": "ruling: reconfigure targeting Tanuki itself does nothing (it stays an unattached creature)",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Forest", { "name": "Tanuki Transplanter", "sick": false } ] }, {} ],
+    "steps": [
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Tanuki Transplanter"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Tanuki Transplanter"] }, {} ], "pt": { "Tanuki Transplanter": [2, 4] }, "attached": {} } },
+  { "name": "ruling: an attached Tanuki does not become tapped when the creature it is attached to attacks",
+    "players": [ { "battlefield": [ "Forest", "Forest", "Forest", { "name": "Tanuki Transplanter", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+    "steps": [
+      { "activate": "Tanuki Transplanter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ],
+      "attached": { "Tanuki Transplanter": "Grizzly Bears" },
+      "tapped": { "Grizzly Bears": true, "Tanuki Transplanter": false } } }
+]

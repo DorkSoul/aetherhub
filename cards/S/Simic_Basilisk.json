@@ -1,0 +1,126 @@
+{
+  "name": "Simic Basilisk",
+  "mana_cost": "{4}{G}{G}",
+  "types": [
+    "Creature"
+  ],
+  "subtypes": [
+    "Basilisk",
+    "Mutant"
+  ],
+  "power": 0,
+  "toughness": 0,
+  "abilities": [
+    {
+      "type": "EntersWithCounters",
+      "kind": "PlusOnePlusOne",
+      "n": {
+        "type": "Fixed",
+        "n": 3
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "EntersBattlefield",
+        "filter": {
+          "types": [
+            "Creature"
+          ],
+          "other": true
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "SourceHasCounter",
+            "kind": "PlusOnePlusOne",
+            "at_least": 1
+          },
+          "then": [
+            {
+              "type": "RemoveCounters",
+              "what": {
+                "type": "This"
+              },
+              "kind": "PlusOnePlusOne",
+              "n": {
+                "type": "Fixed",
+                "n": 1
+              }
+            },
+            {
+              "type": "AddCounters",
+              "what": {
+                "type": "TriggerObject"
+              },
+              "kind": "PlusOnePlusOne",
+              "n": {
+                "type": "Fixed",
+                "n": 1
+              }
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        {
+          "type": "Mana",
+          "cost": "{1}{G}"
+        }
+      ],
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "types": [
+                "Creature"
+              ],
+              "has_counter": "PlusOnePlusOne"
+            }
+          },
+          "label": "target creature with a +1/+1 counter on it"
+        }
+      ],
+      "effects": [
+        {
+          "type": "AddTrigger",
+          "trigger": {
+            "type": "DealsDamage",
+            "combat": true,
+            "to": "Creature",
+            "filter": {}
+          },
+          "effects": [
+            {
+              "type": "Delayed",
+              "at": "EndOfCombat",
+              "effects": [
+                {
+                  "type": "Destroy",
+                  "what": {
+                    "type": "TriggerObject"
+                  }
+                }
+              ]
+            }
+          ],
+          "once": false,
+          "until": "EndOfTurn",
+          "bind": {
+            "type": "Target",
+            "idx": 0
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Graft 3 (This creature enters with three +1/+1 counters on it. Whenever another creature enters, you may move a +1/+1 counter from this creature onto it.)\n{1}{G}: Until end of turn, target creature with a +1/+1 counter on it gains \"Whenever this creature deals combat damage to a creature, destroy that creature at end of combat.\""
+}

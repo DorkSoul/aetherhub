@@ -1,0 +1,255 @@
+[
+ {
+  "name": "a creature I control fights: draw a card",
+  "players": [
+   {
+    "hand": [
+     "Prey Upon"
+    ],
+    "battlefield": [
+     "Neyith of the Dire Hunt",
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1",
+    "answers": [
+     [
+      "Neyith of the Dire Hunt"
+     ],
+     false
+    ]
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Prey Upon",
+    "targets": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "my attackers become blocked: one card for the whole block",
+  "players": [
+   {
+    "battlefield": [
+     "Neyith of the Dire Hunt",
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     },
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Serra Angel",
+     "Giant Spider"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1",
+    "answers": [
+     [
+      "Neyith of the Dire Hunt"
+     ],
+     false
+    ]
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     },
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ],
+    "answers": [
+     [
+      "Neyith of the Dire Hunt"
+     ],
+     false
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Serra Angel",
+      "attacker": "Hill Giant"
+     },
+     {
+      "blocker": "Giant Spider",
+      "attacker": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "nothing happens, no draw",
+  "players": [
+   {
+    "battlefield": [
+     "Neyith of the Dire Hunt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "pay {2}{R/G}: double a creature's power",
+  "players": [
+   {
+    "battlefield": [
+     "Neyith of the Dire Hunt",
+     "Grizzly Bears",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat",
+    "answers": [
+     [
+      "Grizzly Bears"
+     ],
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: a target that cannot be blocked by any creature (all tapped) is not blocked, so no draw",
+  "players": [
+   { "battlefield": ["Neyith of the Dire Hunt", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest", "Forest"] },
+   { "battlefield": [{ "name": "Serra Angel", "tapped": true }] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "answers": [["Grizzly Bears"], true] },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0 }, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ruling: combat damage is not fighting: an unblocked creature's damage draws nothing",
+  "players": [
+   { "battlefield": ["Neyith of the Dire Hunt", { "name": "Grizzly Bears", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "answers": [["Grizzly Bears"], false] },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0 }, { "life": 18 } ]
+  }
+ },
+ {
+  "name": "ruling: the doubled power is fixed when it applies: a later +3/+3 adds to the doubled 4/2, giving 7/5",
+  "players": [
+   { "battlefield": ["Neyith of the Dire Hunt", "Grizzly Bears", "Forest", "Forest", "Forest", "Forest"], "hand": ["Giant Growth"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "answers": [["Grizzly Bears"], true] },
+   { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [7, 5] }
+  }
+ },
+ {
+  "name": "ruling: the must-be-blocked creature needs only one blocker; the other creature may stay out of the block",
+  "players": [
+   { "battlefield": ["Neyith of the Dire Hunt", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Giant Spider", "Serra Angel"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "answers": [["Grizzly Bears"], true] },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "block": [{ "blocker": "Giant Spider", "attacker": "Grizzly Bears" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 }, {} ]
+  }
+ }
+]

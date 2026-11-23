@@ -1,0 +1,178 @@
+[
+ {
+  "name": "cast normally it is a 4/1 creature",
+  "players": [
+   { "hand": ["Spirespine"], "battlefield": ["Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Spirespine" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Spirespine": [4, 1] }
+  }
+ },
+ {
+  "name": "bestowed on Grizzly Bears: the Bears are 6/3",
+  "players": [
+   { "hand": ["Spirespine"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [6, 3] }
+  }
+ },
+ {
+  "name": "a creature that must block refuses to block: the block is illegal",
+  "players": [
+   { "battlefield": ["Spirespine"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ] },
+   { "block": [], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20 }, {} ]
+  }
+ },
+ {
+   "name": "Spirespine blocks each combat if able: with no block declared it still blocks and dies",
+   "players": [
+    { "battlefield": ["Savannah Lions"] },
+    { "battlefield": ["Spirespine"] }
+   ],
+   "steps": [
+    { "attack": [ { "card": "Savannah Lions", "at": "p1" } ] },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [ { "life": 20 }, { "graveyard": ["Spirespine"] } ]
+   }
+  },
+  {
+   "name": "bestowed on Grizzly Bears: the enchanted Bears must block the attacker",
+   "players": [
+    { "hand": ["Spirespine"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Savannah Lions"] },
+    { "battlefield": ["Grizzly Bears"] }
+   ],
+   "steps": [
+    { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "attack": [ { "card": "Savannah Lions", "at": "p1" } ] },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [ { "graveyard": ["Savannah Lions"] }, { "battlefield": ["Grizzly Bears"], "life": 20 } ]
+   }
+  },
+  {
+   "name": "ruling: bestowed creature dies, the Aura stays on the battlefield as an enchantment creature you control",
+   "players": [
+    { "hand": ["Spirespine", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Mountain", "Grizzly Bears"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Spirespine"], "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] },
+     {}
+    ],
+    "pt": { "Spirespine": [4, 1] }
+   }
+  },
+  {
+   "name": "ruling: bestow target becomes illegal in response, Spirespine resolves as a creature spell",
+   "players": [
+    { "hand": ["Spirespine"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+    { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+    { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "pass": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+    { "pass": true },
+    { "pass": true, "player": 1 },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Spirespine"], "graveyard_has": ["Grizzly Bears"] },
+     { "graveyard_has": ["Lightning Bolt"] }
+    ],
+    "pt": { "Spirespine": [4, 1] }
+   }
+  },
+  {
+   "name": "ruling: bestow target is an opponent's creature that becomes illegal, Spirespine enters under your control",
+   "players": [
+    { "hand": ["Spirespine"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+    { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+   ],
+   "steps": [
+    { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "pass": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+    { "pass": true },
+    { "pass": true, "player": 1 },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Spirespine"] },
+     { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+    ]
+   }
+  },
+  {
+   "name": "ruling: bestowed on an opponent's creature, you still control the Aura",
+   "players": [
+    { "hand": ["Spirespine"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+    { "battlefield": ["Grizzly Bears"] }
+   ],
+   "steps": [
+    { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Spirespine"] },
+     { "battlefield_has": ["Grizzly Bears"] }
+    ],
+    "attached": { "Spirespine": "Grizzly Bears" },
+    "pt": { "Grizzly Bears": [6, 3] }
+   }
+  },
+  {
+   "name": "ruling: Aura unattached when its creature dies can attack the next turn if under your control since your turn began",
+   "players": [
+    { "hand": ["Spirespine", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Mountain", "Grizzly Bears"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Spirespine", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "attack": [ { "card": "Spirespine", "at": "p1" } ] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [ {}, { "life": 16 } ]
+   }
+  }
+ ]

@@ -1,0 +1,321 @@
+[
+  {
+    "name": "damage to you is dealt to the chosen creature instead (creature dies)",
+    "players": [
+      {
+        "hand": [
+          "Gideon's Sacrifice"
+        ],
+        "battlefield": [
+          "Plains",
+          "Hill Giant"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Gideon's Sacrifice"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "battlefield": [
+            "Plains"
+          ],
+          "graveyard": [
+            "Gideon's Sacrifice",
+            "Hill Giant"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "damage to a permanent you control is redirected to the chosen creature",
+    "players": [
+      {
+        "hand": [
+          "Gideon's Sacrifice"
+        ],
+        "battlefield": [
+          "Plains",
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Gideon's Sacrifice"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Hill Giant"
+          ]
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Hill Giant"
+          ],
+          "life": 20
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "damage to an opponent's permanent is not redirected",
+    "players": [
+      {
+        "hand": [
+          "Gideon's Sacrifice",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain",
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Gideon's Sacrifice"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ],
+          "life": 20
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "battlefield": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "after the chosen creature left the battlefield, damage is not redirected",
+    "players": [
+      {
+        "hand": [
+          "Gideon's Sacrifice",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain",
+          "Hill Giant"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Gideon's Sacrifice"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 17,
+          "battlefield": [
+            "Mountain",
+            "Plains"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+ {
+  "name": "ruling: with no creature or planeswalker to choose, Gideon's Sacrifice does nothing and later damage is not redirected",
+  "players": [
+   { "hand": ["Gideon's Sacrifice"], "battlefield": ["Plains"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Gideon's Sacrifice" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "battlefield": ["Plains"], "graveyard": ["Gideon's Sacrifice"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: damage dealt before Gideon's Sacrifice resolves is not redirected",
+  "players": [
+   { "hand": ["Gideon's Sacrifice"], "battlefield": ["Plains", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true },
+   { "cast": "Gideon's Sacrifice" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "battlefield_has": ["Grizzly Bears"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: more combat damage than the chosen creature's toughness is redirected to it, all dealt at once",
+  "players": [
+   { "hand": ["Gideon's Sacrifice"], "battlefield": ["Plains", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant", "Savannah Lions", "Mountain"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "advance_to": "BeginCombat" },
+   { "attack": [{ "card": "Hill Giant", "at": "p0" }, { "card": "Savannah Lions", "at": "p0" }], "player": 1 },
+   { "block": [], "player": 0 },
+   { "pass": true, "player": 1 },
+   { "cast": "Gideon's Sacrifice" },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Gideon's Sacrifice", "Grizzly Bears"] },
+    { "battlefield_has": ["Hill Giant", "Savannah Lions"] }
+   ]
+  }
+ },
+  {"name": "another spell resolving later in the turn does not stop the redirection", "players": [{"hand": ["Gideon's Sacrifice", "Time and Tide"], "battlefield": ["Plains", "Island", "Island", "Hill Giant"]}, {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}], "steps": [{"cast": "Gideon's Sacrifice"}, {"resolve": true}, {"cast": "Time and Tide"}, {"resolve": true}, {"pass": true}, {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"]}, {"resolve": true}], "expect": {"players": [{"life": 20, "graveyard": ["Gideon's Sacrifice", "Time and Tide", "Hill Giant"]}, {"graveyard": ["Lightning Bolt"]}]}}
+]

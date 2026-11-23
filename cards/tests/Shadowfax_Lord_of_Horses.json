@@ -1,0 +1,263 @@
+[
+  {
+    "name": "attacks: put a creature card with lesser power from hand onto the battlefield tapped and attacking",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Shadowfax, Lord of Horses"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Shadowfax, Lord of Horses",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "answers": [
+          true,
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Shadowfax, Lord of Horses"
+          ],
+          "hand": []
+        },
+        {
+          "life": 14
+        }
+      ]
+    }
+  },
+  {
+    "name": "declining the may leaves the creature card in hand",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Shadowfax, Lord of Horses"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Shadowfax, Lord of Horses",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "hand": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "a creature card with equal or greater power cannot be put onto the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Shivan Dragon"
+        ],
+        "battlefield": [
+          "Shadowfax, Lord of Horses"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Shadowfax, Lord of Horses",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Shivan Dragon"
+          ],
+          "hand": [
+            "Shivan Dragon"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "horses you control have haste: Shadowfax attacks the turn it is cast",
+    "players": [
+      {
+        "hand": [
+          "Shadowfax, Lord of Horses"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Shadowfax, Lord of Horses"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Shadowfax, Lord of Horses",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Shadowfax, Lord of Horses"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "horses you control have haste: a Horse cast this turn attacks with the other creatures",
+    "players": [
+      {
+        "hand": ["Shield Mare"],
+        "battlefield": ["Plains", "Plains", "Plains", "Shadowfax, Lord of Horses", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Shield Mare"},
+      {"resolve": true},
+      {"advance_to": "BeginCombat"},
+      {"attack": [{"card": "Shield Mare", "at": "p1"}, {"card": "Grizzly Bears", "at": "p1"}]},
+      {"block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Shield Mare", "Shadowfax, Lord of Horses"]},
+        {"life": 16}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the trigger uses Shadowfax's power as it last existed after Shadowfax died in response",
+    "players": [
+      {"hand": ["Grizzly Bears"], "battlefield": ["Shadowfax, Lord of Horses"]},
+      {"hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"]}
+    ],
+    "steps": [
+      {"advance_to": "BeginCombat"},
+      {"attack": [{"card": "Shadowfax, Lord of Horses", "at": "p1"}]},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Shadowfax, Lord of Horses"]},
+      {"pass": true, "player": 1},
+      {"pass": true},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Shadowfax, Lord of Horses"]},
+      {"pass": true, "player": 1},
+      {"pass": true},
+      {"resolve": true, "answers": [true]}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Shadowfax, Lord of Horses"]},
+        {"graveyard": ["Lightning Bolt", "Lightning Bolt"]}
+      ]
+    }
+  }
+]

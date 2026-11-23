@@ -1,0 +1,92 @@
+[
+  {
+    "name": "ETB: may cast an instant from any graveyard for free; it is exiled afterwards",
+    "players": [
+      { "hand": ["Impulsivity"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Impulsivity" },
+      { "resolve": true, "targets": ["Lightning Bolt"], "answers": [true, "p1"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Impulsivity"] }, { "exile": ["Lightning Bolt"], "life": 17 } ]
+    }
+  },
+  {
+    "name": "declining the free cast leaves the instant in the graveyard",
+    "players": [
+      { "hand": ["Impulsivity"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Giant Growth"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Impulsivity" },
+      { "resolve": true, "targets": ["Giant Growth"], "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Giant Growth"], "battlefield_has": ["Impulsivity"] }, {} ]
+    }
+  },
+  {
+    "name": "encore from the graveyard: a hasty token copy attacks for 7",
+    "players": [
+      { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Impulsivity"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Impulsivity", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Impulsivity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 13 } ]
+    }
+  },
+  {
+    "name": "ruling: the free cast can be a sorcery while the ETB trigger is still on the stack (timing ignored)",
+    "players": [
+      { "hand": ["Impulsivity"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"], "graveyard": ["Wrath of God"] }
+    ],
+    "steps": [
+      { "cast": "Impulsivity" },
+      { "resolve": true, "targets": ["Wrath of God"], "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Impulsivity"] },
+        { "graveyard": ["Grizzly Bears"], "exile": ["Wrath of God"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the encore cost exiles the card from the graveyard (it is not left in the graveyard)",
+    "players": [
+      { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Impulsivity"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Impulsivity", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Impulsivity"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a free-cast X spell must use X=0 (Fireball deals no damage)",
+    "players": [
+      { "hand": ["Impulsivity"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "graveyard": ["Fireball"] }
+    ],
+    "steps": [
+      { "cast": "Impulsivity" },
+      { "resolve": true, "targets": ["Fireball", "p1"], "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Impulsivity"] }, { "life": 20, "exile": ["Fireball"] } ]
+    }
+  }
+]

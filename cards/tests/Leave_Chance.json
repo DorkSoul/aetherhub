@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Leave returns any number of target permanents you own to hand",
+    "players": [
+      { "hand": ["Leave"], "battlefield": ["Plains", "Grizzly Bears", "Island"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Leave", "targets": ["Grizzly Bears", "Plains"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Island"], "battlefield_lacks": ["Grizzly Bears", "Plains"], "graveyard": ["Leave"] },
+        { "battlefield": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "Leave with no targets does nothing",
+    "players": [
+      { "hand": ["Leave"], "battlefield": ["Plains", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Leave", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Plains", "Island", "Grizzly Bears"], "graveyard": ["Leave"] }, {} ]
+    }
+  },
+  {
+    "name": "Chance discards the chosen cards then draws that many, from the graveyard only",
+    "players": [
+      { "hand": ["Grizzly Bears", "Island"], "graveyard": ["Leave"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Leave", "face": true },
+      { "resolve": true, "answers": [["Grizzly Bears", "Island"]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "graveyard": ["Grizzly Bears", "Island"], "exile": ["Leave"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Chance with an empty pick draws nothing",
+    "players": [
+      { "hand": ["Grizzly Bears"], "graveyard": ["Leave"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Leave", "face": true },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "exile": ["Leave"] }, {} ]
+    }
+  },
+  {
+    "name": "Chance cannot be cast from hand",
+    "players": [
+      { "hand": ["Leave"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Leave", "face": true, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  }
+]

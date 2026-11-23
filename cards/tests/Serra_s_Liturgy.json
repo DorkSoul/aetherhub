@@ -1,0 +1,156 @@
+[
+ {
+  "name": "sacrifice with two verse counters destroys up to two artifacts/enchantments",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     {
+      "name": "Serra's Liturgy",
+      "counters": {
+       "verse": 2
+      }
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring",
+     "Mind Stone",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Serra's Liturgy",
+    "targets": [
+     "Sol Ring",
+     "Mind Stone"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Serra's Liturgy"
+     ]
+    },
+    {
+     "graveyard": [
+      "Sol Ring",
+      "Mind Stone"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "with zero verse counters only the sacrifice happens and nothing is destroyed",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     "Serra's Liturgy"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Serra's Liturgy",
+    "targets": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Serra's Liturgy"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Sol Ring"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "upkeep: may put a verse counter on it",
+  "players": [
+   {"battlefield": ["Plains", "Serra's Liturgy"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep", "answers": [true]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "counters": {"Serra's Liturgy": {"verse": 1}}
+  }
+ },
+ {
+  "name": "upkeep: declining the may adds no verse counter",
+  "players": [
+   {"battlefield": ["Plains", "Serra's Liturgy"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep", "answers": [false]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "counters": {"Serra's Liturgy": {"verse": 0}}
+  }
+ },
+ {
+  "name": "upkeep: an existing verse counter is kept and another is added",
+  "players": [
+   {"battlefield": ["Plains", {"name": "Serra's Liturgy", "counters": {"verse": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep", "answers": [true]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "counters": {"Serra's Liturgy": {"verse": 2}}
+  }
+ },
+ {
+  "name": "ruling: a declined upkeep counter cannot be added later in the turn",
+  "players": [ {"battlefield": ["Plains", "Serra's Liturgy"]}, {} ],
+  "steps": [
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep", "answers": [false]},
+   {"resolve": true},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "counters": {"Serra's Liturgy": {"verse": 0}}
+  }
+ }
+]

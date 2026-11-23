@@ -1,0 +1,184 @@
+[
+  {
+    "name": "toxic 1 on combat damage, then proliferate adds another poison counter",
+    "players": [
+      {
+        "battlefield": [
+          "Contaminant Grafter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Contaminant Grafter",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 15,
+          "poison": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "corrupted: with three poison counters on an opponent, draw a card and put a land from hand onto the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Caress of Phyrexia",
+          "Forest"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Contaminant Grafter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Caress of Phyrexia",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End",
+        "answers": [
+          "Forest"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "battlefield_has": [
+            "Forest"
+          ]
+        },
+        {
+          "poison": 3,
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "corrupted does nothing without three poison counters",
+    "players": [
+      {
+        "hand": [
+          "Forest"
+        ],
+        "battlefield": [
+          "Contaminant Grafter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: toxic counts add up across sources (toxic 1 + toxic 2 gives 3 poison counters)",
+    "players": [ { "battlefield": ["Contaminant Grafter", "Branchblight Stalker"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Contaminant Grafter", "at": "p1" }, { "card": "Branchblight Stalker", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": { "players": [ {}, { "life": 12, "poison": 3 } ] }
+  },
+  {
+    "name": "ruling: toxic gives no poison counters when the combat damage goes to a blocking creature",
+    "players": [ { "battlefield": ["Branchblight Stalker"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Branchblight Stalker", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Branchblight Stalker" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: toxic does not change the damage: 5 combat damage is 5 life plus one poison counter",
+    "players": [ { "battlefield": ["Contaminant Grafter"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Contaminant Grafter", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": { "players": [ {}, { "life": 15, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: Gratuitous Violence doubles the damage but not the poison counters",
+    "players": [ { "battlefield": ["Contaminant Grafter", "Gratuitous Violence"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Contaminant Grafter", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": { "players": [ {}, { "life": 10, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: Vorinclex doubles the poison counters placed by toxic",
+    "players": [ { "battlefield": ["Contaminant Grafter", "Vorinclex, Monstrous Raider"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Contaminant Grafter", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": { "players": [ {}, { "life": 15, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: ten poison counters lose the game as a state-based action",
+    "players": [ { "battlefield": ["Contaminant Grafter"] }, { "poison": 9 } ],
+    "steps": [
+      { "attack": [ { "card": "Contaminant Grafter", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "winner": 0 }
+  }
+]

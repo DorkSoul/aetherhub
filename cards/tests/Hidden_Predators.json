@@ -1,0 +1,22 @@
+[
+  { "name": "when an opponent controls a creature with power 4 or more it becomes a 4/4 Beast",
+    "players": [ { "battlefield": ["Hidden Predators"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [ { "advance_to": "Main2" }, { "resolve": true } ],
+    "expect": { "players": [ {}, {} ], "pt": { "Hidden Predators": [4, 4] } } },
+  { "name": "an opponent with only small creatures does not",
+    "players": [ { "battlefield": ["Hidden Predators"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Hidden Predators"] }, {} ] } },
+  { "name": "ruling: once it becomes a creature it is no longer an enchantment, so Naturalize can't target it",
+    "players": [ { "hand": ["Naturalize"], "battlefield": ["Forest", "Forest", "Hidden Predators"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [ { "advance_to": "Main2" }, { "resolve": true }, { "cast": "Naturalize", "targets": ["Hidden Predators"], "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Hidden Predators"], "hand": ["Naturalize"] }, {} ], "pt": { "Hidden Predators": [4, 4] } } },
+  { "name": "ruling: a permanent that became a creature can attack when controlled since the start of the turn",
+    "players": [ { "battlefield": ["Hidden Predators"] }, { "battlefield": [ { "name": "Serra Angel", "tapped": true } ] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "resolve": true }, { "attack": [ { "card": "Hidden Predators", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 16 } ] } },
+  { "name": "ruling: a permanent cast this turn can't attack after it becomes a creature (summoning sick)",
+    "players": [ { "battlefield": [ { "name": "Hidden Predators", "sick": true } ] }, { "battlefield": [ { "name": "Serra Angel", "tapped": true } ] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "resolve": true }, { "attack": [ { "card": "Hidden Predators", "at": "p1" } ], "illegal": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Hidden Predators"] }, { "life": 20 } ], "pt": { "Hidden Predators": [4, 4] } } }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "name": "damage dealt to it is dealt to target player",
+    "players": [
+      {
+        "battlefield": [
+          "Truefire Captain"
+        ]
+      },
+      {
+        "hand": [
+          "Shock"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Shock",
+        "targets": [
+          "Truefire Captain"
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Truefire Captain"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "still triggers when the damage is lethal",
+    "players": [
+      {
+        "battlefield": [
+          "Truefire Captain"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Truefire Captain"
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Truefire Captain"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: mentor uses the last-known power once the mentor creature has left the battlefield",
+    "players": [
+      { "battlefield": ["Truefire Captain", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Truefire Captain", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Truefire Captain"] },
+      { "resolve": true, "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Truefire Captain"] }, { "life": 17 } ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: simultaneous lethal damage to the controller and Truefire Captain means the controller loses before the trigger",
+    "players": [
+      { "life": 3, "battlefield": ["Truefire Captain"] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Truefire Captain", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 0 }, { "life": 20 } ], "winner": 1 }
+  },
+  {
+    "name": "ruling: lethal combat damage still triggers and deals that much to the target player",
+    "players": [
+      { "battlefield": ["Truefire Captain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Truefire Captain", "attacker": "Hill Giant" } ], "player": 0 },
+      { "advance_to": "Main2", "targets": ["p1"] }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Truefire Captain"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: mentor compares power again on resolution; a pump making the target 4 power stops the counter",
+    "players": [
+      { "hand": ["Water Wings"], "battlefield": ["Truefire Captain", "Grizzly Bears", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Truefire Captain", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Water Wings", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [4, 4], "Truefire Captain": [4, 3] } }
+  },
+  {
+    "name": "ruling: second mentor trigger does nothing once its target no longer has lesser power",
+    "players": [
+      { "battlefield": ["Truefire Captain", "Truefire Captain", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Truefire Captain", "at": "p1" }, { "card": "Truefire Captain", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Hill Giant": [4, 4] } }
+  }
+]

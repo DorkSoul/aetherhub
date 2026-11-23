@@ -1,0 +1,105 @@
+[
+  {
+    "name": "attacking with two non-Gideon creatures puts a +1/+1 counter on each",
+    "players": [
+      { "battlefield": ["Gideon, the Oathsworn", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4] }
+    }
+  },
+  {
+    "name": "attacking with one creature does not trigger",
+    "players": [
+      { "battlefield": ["Gideon, the Oathsworn", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "+2: becomes a 5/5 creature that's still a planeswalker; damage is prevented",
+    "players": [
+      { "battlefield": ["Gideon, the Oathsworn"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, the Oathsworn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Gideon, the Oathsworn": [5, 5] },
+      "counters": { "Gideon, the Oathsworn": { "Loyalty": 6 } }
+    }
+  },
+  {
+    "name": "-9: exiles Gideon and each creature your opponents control",
+    "players": [
+      { "battlefield": [{ "name": "Gideon, the Oathsworn", "counters": { "Loyalty": 9 } }, "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, the Oathsworn", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Gideon, the Oathsworn"], "battlefield_has": ["Grizzly Bears"] },
+        { "exile": ["Hill Giant", "Llanowar Elves"], "battlefield_lacks": ["Hill Giant", "Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "-9 needs nine loyalty",
+    "players": [
+      { "battlefield": [{ "name": "Gideon, the Oathsworn", "counters": { "Loyalty": 8 } }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, the Oathsworn", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gideon, the Oathsworn"] }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "ruling: as a creature after +2, Gideon is not a non-Gideon attacker: one other attacker does not trigger",
+    "players": [
+      { "battlefield": ["Gideon, the Oathsworn", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, the Oathsworn", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Gideon, the Oathsworn", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2], "Gideon, the Oathsworn": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: attacking Gideon gets no counter, but two non-Gideon attackers each get one",
+    "players": [
+      { "battlefield": ["Gideon, the Oathsworn", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, the Oathsworn", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Gideon, the Oathsworn", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4], "Gideon, the Oathsworn": [5, 5] }
+    }
+  }
+]

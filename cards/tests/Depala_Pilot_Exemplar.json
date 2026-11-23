@@ -1,0 +1,152 @@
+[
+  {
+    "name": "other Dwarves get +1/+1",
+    "players": [
+      {
+        "battlefield": [
+          "Depala, Pilot Exemplar",
+          "Dwarf Berserker"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Depala, Pilot Exemplar",
+            "Dwarf Berserker"
+          ]
+        }
+      ],
+      "pt": {
+        "Dwarf Berserker": [
+          3,
+          2
+        ],
+        "Depala, Pilot Exemplar": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "non-Dwarf creatures are not pumped",
+    "players": [
+      {
+        "battlefield": [
+          "Depala, Pilot Exemplar",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "becomes tapped by attacking: pay X=2 to take the Vehicle Demonic Junker, the Bears go to the bottom",
+    "players": [
+      { "battlefield": ["Depala, Pilot Exemplar", "Mountain", "Plains"], "library": ["Demonic Junker", "Grizzly Bears", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Depala, Pilot Exemplar", "at": "p1" } ] },
+      { "resolve": true, "answers": [true, 2] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Demonic Junker"], "library_top": ["Island"], "library_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "becomes tapped but declines to pay: nothing is revealed",
+    "players": [
+      { "battlefield": ["Depala, Pilot Exemplar", "Mountain", "Plains"], "library": ["Demonic Junker", "Grizzly Bears", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Depala, Pilot Exemplar", "at": "p1" } ] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "hand": [], "library_top": ["Demonic Junker", "Grizzly Bears", "Island"], "library_count": 3 }, {} ]
+    }
+  },
+  {
+    "name": "a crewed Vehicle creature gets +1/+1 from Depala",
+    "players": [
+      {
+        "battlefield": [
+          {"name": "Depala, Pilot Exemplar", "sick": false, "tapped": true},
+          "Big Wheel",
+          {"name": "Grizzly Bears", "sick": false}
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Big Wheel", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": {
+        "Big Wheel": [5, 5]
+      }
+    }
+  },
+  {
+    "name": "ruling: an effect that taps an untapped Depala triggers its ability (Frost Breath, pay X=2)",
+    "players": [
+      { "hand": ["Frost Breath"], "battlefield": ["Depala, Pilot Exemplar", "Island", "Mountain", "Plains", "Swamp", "Forest"], "library": ["Demonic Junker", "Grizzly Bears", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Frost Breath", "targets": ["Depala, Pilot Exemplar"] },
+      { "resolve": true, "answers": [true, 2] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Depala, Pilot Exemplar": true },
+      "players": [ { "hand": ["Demonic Junker"], "library_top": ["Island"], "library_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: an effect that taps an already tapped Depala does not trigger its ability",
+    "players": [
+      { "hand": ["Frost Breath"], "battlefield": [{"name": "Depala, Pilot Exemplar", "tapped": true}, "Island", "Mountain", "Plains"], "library": ["Demonic Junker", "Grizzly Bears", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Frost Breath", "targets": ["Depala, Pilot Exemplar"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "stack_empty": true,
+      "players": [ { "hand": [], "library_top": ["Demonic Junker", "Grizzly Bears", "Island"], "library_count": 3 }, {} ]
+    }
+  }
+]

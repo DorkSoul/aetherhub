@@ -1,0 +1,99 @@
+[
+  {
+    "name": "cloaks two of the top five as face-down 2/2s",
+    "players": [
+      { "hand": ["Hide in Plain Sight"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears", "Island", "Forest", "Serra Angel", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hide in Plain Sight" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Serra Angel"]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Serra Angel"], "battlefield_lacks": ["Island", "Plains"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2], "Serra Angel": [2, 2] }
+    }
+  },
+  {
+    "name": "only the two chosen cards are cloaked; the sixth card stays in the library",
+    "players": [
+      { "hand": ["Hide in Plain Sight"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Island", "Forest", "Plains", "Mountain", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hide in Plain Sight" },
+      { "resolve": true, "answers": [["Island", "Forest"]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Island", "Forest"], "battlefield_lacks": ["Grizzly Bears", "Mountain"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a cloaked creature has ward {2}; an opponent who cannot pay it has the Shock countered",
+    "players": [
+      { "hand": ["Hide in Plain Sight"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears", "Island", "Forest", "Serra Angel", "Plains"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Hide in Plain Sight" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Serra Angel"]] },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Serra Angel"] }, { "graveyard": ["Shock"], "life": 20 } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: a cloaked creature's ward {2} is paid by the opponent, and then the Shock kills it",
+    "players": [
+      { "hand": ["Hide in Plain Sight"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears", "Island", "Forest", "Serra Angel", "Plains"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Hide in Plain Sight" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Serra Angel"]] },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Grizzly Bears", "Hide in Plain Sight"] }, { "graveyard": ["Shock"], "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: turning a cloaked creature card face up is a special action that pays its mana cost and does not use the stack",
+    "players": [
+      { "hand": ["Hide in Plain Sight"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Island", "Island", "Island"], "library": ["Serra Angel", "Island", "Forest", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hide in Plain Sight" },
+      { "resolve": true, "answers": [["Serra Angel", "Island"]] },
+      { "activate": "Serra Angel" }
+    ],
+    "expect": {
+      "stack_empty": true,
+      "players": [ { "battlefield_has": ["Serra Angel"] }, {} ],
+      "pt": { "Serra Angel": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a cloaked instant or sorcery card can never be turned face up",
+    "players": [
+      { "hand": ["Hide in Plain Sight"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Forest", "Island", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hide in Plain Sight" },
+      { "resolve": true, "answers": [["Lightning Bolt", "Forest"]] },
+      { "activate": "Lightning Bolt", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Lightning Bolt", "Forest"] }, {} ],
+      "pt": { "Lightning Bolt": [2, 2] }
+    }
+  }
+]

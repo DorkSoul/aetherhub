@@ -1,0 +1,89 @@
+[
+ {"name": "counters the spell and its controller cannot cast spells this turn",
+  "players": [
+   {"hand": ["Giant Growth", "Lightning Bolt"], "battlefield": ["Forest", "Mountain", "Grizzly Bears"]},
+   {"hand": ["Render Silent"], "battlefield": ["Plains", "Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Giant Growth", "targets": ["Grizzly Bears"]},
+   {"cast": "Render Silent", "targets": [{"stack": "Giant Growth"}], "player": 1},
+   {"resolve": true},
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true}
+  ],
+  "expect": {
+   "players": [{"graveyard": ["Giant Growth"], "hand": ["Lightning Bolt"]}, {"graveyard": ["Render Silent"]}],
+   "pt": {"Grizzly Bears": [2, 2]}
+  }},
+ {"name": "the restriction only binds the spell's controller: the other player can still cast",
+  "players": [
+   {"hand": ["Giant Growth"], "battlefield": ["Forest", "Grizzly Bears"]},
+   {"hand": ["Render Silent", "Lightning Bolt"], "battlefield": ["Plains", "Island", "Island", "Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Giant Growth", "targets": ["Grizzly Bears"]},
+   {"cast": "Render Silent", "targets": [{"stack": "Giant Growth"}], "player": 1},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Giant Growth", "Grizzly Bears"]}, {"graveyard": ["Render Silent", "Lightning Bolt"]}]}},
+ {"name": "ruling: Render Silent needs a spell to target; with nothing on the stack it cannot be cast",
+  "players": [{"hand": ["Render Silent"], "battlefield": ["Plains", "Island", "Island"]}, {}],
+  "steps": [{"cast": "Render Silent", "illegal": true}],
+  "expect": {"players": [{"hand": ["Render Silent"]}, {}]}},
+ {"name": "ruling: the affected player can still play a land",
+  "players": [
+   {"hand": ["Lightning Bolt", "Forest", "Grizzly Bears"], "battlefield": ["Mountain", "Forest", "Forest"]},
+   {"hand": ["Render Silent"], "battlefield": ["Plains", "Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["p1"]},
+   {"cast": "Render Silent", "targets": [{"stack": "Lightning Bolt"}], "player": 1},
+   {"resolve": true},
+   {"play_land": "Forest"},
+   {"cast": "Grizzly Bears", "illegal": true}
+  ],
+  "expect": {"players": [{"hand": ["Grizzly Bears"], "battlefield_has": ["Forest"], "graveyard": ["Lightning Bolt"]}, {"graveyard": ["Render Silent"], "life": 20}]}},
+ {"name": "ruling: a spell can be cast in response to Render Silent, before it resolves",
+  "players": [
+   {"hand": ["Giant Growth", "Lightning Bolt"], "battlefield": ["Forest", "Mountain", "Grizzly Bears"]},
+   {"hand": ["Render Silent"], "battlefield": ["Plains", "Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Giant Growth", "targets": ["Grizzly Bears"]},
+   {"cast": "Render Silent", "targets": [{"stack": "Giant Growth"}], "player": 1},
+   {"pass": true, "player": 1},
+   {"cast": "Lightning Bolt", "targets": ["p1"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard_has": ["Giant Growth", "Lightning Bolt"]}, {"life": 17, "graveyard_has": ["Render Silent"]}], "pt": {"Grizzly Bears": [2, 2]}}},
+ {"name": "ruling: a spell countered first leaves Render Silent with an illegal target; it does nothing and its controller can still cast",
+  "players": [
+   {"hand": ["Render Silent", "Counterspell"], "battlefield": ["Plains", "Island", "Island", "Island", "Island"]},
+   {"hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"cast": "Lightning Bolt", "targets": ["p0"], "player": 1},
+   {"cast": "Render Silent", "targets": [{"stack": "Lightning Bolt"}]},
+   {"cast": "Counterspell", "targets": [{"stack": "Lightning Bolt"}]},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "targets": ["p0"], "player": 1},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"life": 17, "graveyard_has": ["Counterspell", "Render Silent"]}, {"graveyard_has": ["Lightning Bolt"]}]}},
+ {"name": "ruling: a can't-be-countered spell is not countered, but its controller still cannot cast spells this turn",
+  "players": [
+   {"hand": ["Wreak Havoc", "Grizzly Bears"], "battlefield": ["Mountain", "Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {"hand": ["Render Silent"], "battlefield": ["Plains", "Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Wreak Havoc", "targets": ["Plains"]},
+   {"cast": "Render Silent", "targets": [{"stack": "Wreak Havoc"}], "player": 1},
+   {"resolve": true},
+   {"cast": "Grizzly Bears", "illegal": true}
+  ],
+  "expect": {"players": [{"hand": ["Grizzly Bears"], "graveyard": ["Wreak Havoc"]}, {"graveyard_has": ["Render Silent", "Plains"]}]}}
+]

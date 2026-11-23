@@ -1,0 +1,152 @@
+[
+  {
+    "name": "creatures you control get +1/+0",
+    "players": [
+      { "battlefield": ["Domri, Anarch of Bolas", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 2] }
+    }
+  },
+  {
+    "name": "+1 adds R or G and makes creature spells uncounterable this turn",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Domri, Anarch of Bolas", "Forest", "Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 0 },
+      { "resolve": true, "answers": [[1]] },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears", "Domri, Anarch of Bolas"] }, { "graveyard_has": ["Counterspell"] }]
+    }
+  },
+  {
+    "name": "+1 does not protect noncreature spells from counters",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Domri, Anarch of Bolas", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 0 },
+      { "resolve": true, "answers": [[0]] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Lightning Bolt"] }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "-2: your creature fights an opposing creature with the +1/+0 bonus",
+    "players": [
+      { "battlefield": ["Domri, Anarch of Bolas", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 1, "targets": ["Hill Giant", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Hill Giant"] }, { "graveyard_has": ["Grizzly Bears"] }],
+      "counters": { "Domri, Anarch of Bolas": { "loyalty": 1 } },
+      "pt": { "Hill Giant": [4, 3] }
+    }
+  },
+  {
+    "name": "ruling: the +1 is a loyalty ability that uses the stack; its mana comes only when it resolves",
+    "players": [
+      { "battlefield": ["Domri, Anarch of Bolas", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 0 }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "counters": { "Domri, Anarch of Bolas": { "loyalty": 4 } },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ruling: loyalty abilities are sorcery-speed only, so the +1 is illegal at the beginning of combat",
+    "players": [
+      { "battlefield": ["Domri, Anarch of Bolas", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Domri, Anarch of Bolas", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Domri, Anarch of Bolas": { "loyalty": 3 } },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ruling: after the +1 resolves, every creature spell this turn is uncounterable, not just the one paid for with its mana",
+    "players": [
+      { "hand": ["Grizzly Bears", "Llanowar Elves"], "battlefield": ["Domri, Anarch of Bolas", "Forest", "Forest"] },
+      { "hand": ["Counterspell", "Counterspell"], "battlefield": ["Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 0 },
+      { "resolve": true, "answers": [[1]] },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true },
+      { "cast": "Llanowar Elves" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Llanowar Elves" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Llanowar Elves", "Domri, Anarch of Bolas"] }, { "graveyard_has": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: if the opponent kills their own targeted creature in response, the -2 fight does no damage to my creature",
+    "players": [
+      { "battlefield": ["Domri, Anarch of Bolas", "Grizzly Bears"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 1, "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard_has": ["Hill Giant", "Murder"] } ],
+      "pt": { "Grizzly Bears": [3, 2] },
+      "counters": { "Domri, Anarch of Bolas": { "loyalty": 1 } }
+    }
+  },
+  {
+    "name": "ruling: if Domri leaves before the -2 resolves, the fighting creature gets no +1/+0",
+    "players": [
+      { "battlefield": ["Domri, Anarch of Bolas", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Domri, Anarch of Bolas", "ability": 1, "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Domri, Anarch of Bolas"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Domri, Anarch of Bolas"] }, { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Lightning Bolt"] } ],
+      "pt": { "Hill Giant": [3, 3] }
+    }
+  }
+]

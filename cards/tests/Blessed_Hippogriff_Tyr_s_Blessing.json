@@ -1,0 +1,103 @@
+[
+  {
+    "name": "attack trigger gives another attacker without flying flying",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blessed Hippogriff // Tyr's Blessing", "sick": false },
+          { "name": "Grizzly Bears", "sick": false }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Blessed Hippogriff // Tyr's Blessing", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Flying"] }
+    }
+  },
+  {
+    "name": "Tyr's Blessing gives target creature indestructible until end of turn",
+    "players": [
+      { "hand": ["Blessed Hippogriff // Tyr's Blessing"], "battlefield": ["Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blessed Hippogriff // Tyr's Blessing", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Blessed Hippogriff // Tyr's Blessing"] }, {} ],
+      "keywords": { "Grizzly Bears": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "ruling: an Adventure that is countered goes to the graveyard, not exile, and can't be cast later",
+    "players": [
+      { "hand": ["Blessed Hippogriff // Tyr's Blessing"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Blessed Hippogriff // Tyr's Blessing", "face": true, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Tyr's Blessing" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Blessed Hippogriff // Tyr's Blessing"], "exile": [] }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: a resolved Adventure is exiled, and the creature can be cast from exile later as a permanent spell",
+    "players": [
+      { "hand": ["Blessed Hippogriff // Tyr's Blessing"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blessed Hippogriff // Tyr's Blessing", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Blessed Hippogriff // Tyr's Blessing" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": [], "battlefield_has": ["Blessed Hippogriff // Tyr's Blessing"] }, {} ],
+      "keywords": { "Grizzly Bears": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "ruling: the creature cast from exile is a permanent spell, so it can't be cast in the end step",
+    "players": [
+      { "hand": ["Blessed Hippogriff // Tyr's Blessing"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blessed Hippogriff // Tyr's Blessing", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "cast": "Blessed Hippogriff // Tyr's Blessing", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Blessed Hippogriff // Tyr's Blessing"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the Adventure half is an instant, so Tyr's Blessing can be cast on the opponent's turn",
+    "players": [
+      { "hand": ["Blessed Hippogriff // Tyr's Blessing"], "battlefield": ["Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Blessed Hippogriff // Tyr's Blessing", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Blessed Hippogriff // Tyr's Blessing"] }, {} ],
+      "keywords": { "Grizzly Bears": ["Indestructible"] }
+    }
+  }
+]

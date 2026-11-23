@@ -1,0 +1,134 @@
+[
+  {
+    "name": "costs RR with six instants/sorceries in the graveyard; discards hand then draws three",
+    "players": [
+      {
+        "hand": [
+          "Bedlam Reveler",
+          "Forest",
+          "Forest"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "graveyard": [
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bedlam Reveler"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 3,
+          "graveyard_has": [
+            "Forest",
+            "Forest"
+          ],
+          "battlefield": [
+            "Mountain",
+            "Mountain",
+            "Bedlam Reveler"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "five cards in the graveyard is not enough for two mana",
+    "players": [
+      {
+        "hand": [
+          "Bedlam Reveler"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "graveyard": [
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bedlam Reveler",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Bedlam Reveler"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the RR is not reduced; one Mountain and two Forests cannot pay it",
+    "players": [
+      {
+        "hand": ["Bedlam Reveler"],
+        "battlefield": ["Forest", "Forest", "Mountain"],
+        "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [ { "cast": "Bedlam Reveler", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Bedlam Reveler"] }, {} ] }
+  },
+  {
+    "name": "ruling: with no cards in hand the enters ability just draws three",
+    "players": [
+      {
+        "hand": ["Bedlam Reveler"],
+        "battlefield": ["Mountain", "Mountain"],
+        "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [ { "cast": "Bedlam Reveler" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 3, "battlefield_has": ["Bedlam Reveler"] }, {} ] }
+  },
+  {
+    "name": "ruling: prowess resolves even when the spell it triggered on is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Bedlam Reveler"] },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Cancel", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Bedlam Reveler"], "graveyard_has": ["Lightning Bolt"] }, { "life": 20, "graveyard_has": ["Cancel"] } ],
+      "pt": { "Bedlam Reveler": [4, 5] }
+    }
+  }
+]

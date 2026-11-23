@@ -1,0 +1,87 @@
+{
+  "name": "Depthshaker Titan",
+  "mana_cost": "{5}{R}{R}",
+  "types": ["Artifact", "Creature"],
+  "subtypes": ["Robot"],
+  "power": 5,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Artifact"], "not_types": ["Creature"], "controller": "You" } },
+          "min": 0,
+          "max": 255,
+          "label": "any number of noncreature artifacts you control"
+        }
+      ],
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "Targets" },
+          "effects": [
+            {
+              "type": "Animate",
+              "what": { "type": "Remembered" },
+              "power": 3,
+              "toughness": 3,
+              "add_types": ["Creature"],
+              "duration": "UntilEndOfTurn"
+            },
+            {
+              "type": "Delayed",
+              "at": "NextEndStep",
+              "effects": [
+                {
+                  "type": "Sacrifice",
+                  "who": { "type": "You" },
+                  "filter": { "among_remembered": true },
+                  "n": { "type": "Fixed", "n": 1 }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantKeyword",
+        "affects": { "all_types": ["Artifact", "Creature"], "controller": "You" },
+        "keyword": "Trample"
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantKeyword",
+        "affects": { "all_types": ["Artifact", "Creature"], "controller": "You" },
+        "keyword": "Haste"
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "all_types": ["Artifact", "Creature"], "controller": "You" },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "Attacks", "filter": { "this": true } },
+          "effects": [
+            {
+              "type": "Pump",
+              "what": { "type": "This" },
+              "power": { "type": "OpponentsAttacked" },
+              "toughness": { "type": "OpponentsAttacked" },
+              "duration": "UntilEndOfTurn"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "oracle_text": "When this creature enters, any number of target noncreature artifacts you control become 3/3 artifact creatures. Sacrifice them at the beginning of the next end step.\nEach artifact creature you control has melee, trample, and haste. (Whenever a creature with melee attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)"
+}

@@ -1,0 +1,224 @@
+[
+  {
+    "name": "end step: decline to pay",
+    "players": [
+      {
+        "battlefield": [
+          "Necrodominance"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End",
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "own cards go to exile instead of graveyard, opponent's do not",
+    "players": [
+      {
+        "battlefield": [
+          "Necrodominance",
+          "Mountain",
+          "Mountain"
+        ],
+        "hand": [
+          "Shock"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Shock",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [],
+          "exile": [
+            "Shock"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "draw step is skipped",
+    "players": [
+      {},
+      {
+        "battlefield": [
+          "Necrodominance"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Draw"
+      },
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        {},
+        {
+          "hand_count": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "max hand size 5: at cleanup a 7-card hand is cut to 5",
+    "players": [
+      {
+        "battlefield": ["Necrodominance"],
+        "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "auto": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 5 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Spellbook entering after Necrodominance removes the hand size limit",
+    "players": [
+      {
+        "battlefield": ["Necrodominance", "Spellbook"],
+        "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "auto": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 7 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Necrodominance entering after Spellbook restores the limit of five",
+    "players": [
+      {
+        "battlefield": ["Spellbook", "Necrodominance"],
+        "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "auto": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 5 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature exiled instead of dying does not trigger Blood Artist",
+    "players": [
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Necrodominance", "Blood Artist", "Grizzly Bears", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "exile": ["Grizzly Bears", "Shock"], "battlefield": ["Necrodominance", "Blood Artist", "Mountain"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: hand size is only checked at your cleanup, so the end step keeps seven cards",
+    "players": [
+      {
+        "battlefield": ["Necrodominance"],
+        "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 7 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Necrodominance destroyed by your Disenchant is exiled and the spell goes to the graveyard",
+    "players": [
+      {
+        "hand": ["Disenchant"],
+        "battlefield": ["Necrodominance", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Disenchant", "targets": ["Necrodominance"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Necrodominance"], "graveyard": ["Disenchant"] },
+        {}
+      ]
+    }
+  }
+]

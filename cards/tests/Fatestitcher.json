@@ -1,0 +1,70 @@
+[
+ {"name": "tap another target permanent",
+  "players": [{"battlefield": [{"name": "Fatestitcher", "sick": false}, "Mountain"]}, {"battlefield": ["Grizzly Bears"]}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 0, "targets": ["Grizzly Bears"]},
+   {"resolve": true, "answers": [0]}
+  ],
+  "expect": {"tapped": {"Grizzly Bears": true}}
+ },
+ {"name": "untap another target permanent",
+  "players": [{"battlefield": [{"name": "Fatestitcher", "sick": false}]}, {"battlefield": [{"name": "Grizzly Bears", "tapped": true}]}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 0, "targets": ["Grizzly Bears"]},
+   {"resolve": true, "answers": [1]}
+  ],
+  "expect": {"tapped": {"Grizzly Bears": false}}
+ },
+ {"name": "unearth {U}: returns with haste so its tap ability works at once, then is exiled at the end step",
+  "players": [{"graveyard": ["Fatestitcher"], "battlefield": ["Island"]}, {"battlefield": ["Grizzly Bears"]}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 1},
+   {"resolve": true},
+   {"activate": "Fatestitcher", "ability": 0, "targets": ["Grizzly Bears"]},
+   {"resolve": true, "answers": [0]},
+   {"advance_to": "End"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"exile": ["Fatestitcher"], "battlefield_lacks": ["Fatestitcher"]}, {}], "tapped": {"Grizzly Bears": true}}
+ },
+ {"name": "ruling: unearth does nothing if the card is removed from the graveyard before it resolves",
+  "players": [{"graveyard": ["Fatestitcher"], "battlefield": ["Island"]}, {"battlefield": ["Tormod's Crypt"]}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 1},
+   {"pass": true},
+   {"activate": "Tormod's Crypt", "player": 1, "targets": ["p0"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"exile": ["Fatestitcher"], "battlefield_lacks": ["Fatestitcher"]}, {"graveyard": ["Tormod's Crypt"]}]}
+ },
+ {"name": "ruling: a creature returned by unearth is exiled instead when it would leave the battlefield",
+  "players": [{"hand": ["Lightning Bolt"], "graveyard": ["Fatestitcher"], "battlefield": ["Island", "Mountain"]}, {}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 1},
+   {"resolve": true},
+   {"cast": "Lightning Bolt", "targets": ["Fatestitcher"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"exile": ["Fatestitcher"], "graveyard": ["Lightning Bolt"]}, {}]}
+ },
+ {"name": "ruling: Stifle can counter the unearth ability, leaving the creature in the graveyard",
+  "players": [{"graveyard": ["Fatestitcher"], "battlefield": ["Island"]}, {"hand": ["Stifle"], "battlefield": ["Island", "Island"]}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 1},
+   {"pass": true},
+   {"cast": "Stifle", "player": 1, "targets": [{"stack": "Fatestitcher"}]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Fatestitcher"]}, {"graveyard": ["Stifle"]}]}
+ },
+ {"name": "ruling: Remove Soul cannot counter an unearth ability (it is not a spell)",
+  "players": [{"graveyard": ["Fatestitcher"], "battlefield": ["Island"]}, {"hand": ["Remove Soul"], "battlefield": ["Island", "Island"]}],
+  "steps": [
+   {"activate": "Fatestitcher", "ability": 1},
+   {"pass": true},
+   {"cast": "Remove Soul", "player": 1, "targets": [{"stack": "Fatestitcher"}], "illegal": true},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Fatestitcher"]}, {"hand": ["Remove Soul"]}]}
+ }
+]

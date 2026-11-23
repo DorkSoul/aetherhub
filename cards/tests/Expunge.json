@@ -1,0 +1,155 @@
+[
+  {
+    "name": "destroys a nonblack nonartifact creature",
+    "players": [
+      {
+        "hand": [
+          "Expunge"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Expunge",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Expunge"
+          ]
+        },
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot target a black creature",
+    "players": [
+      {
+        "hand": [
+          "Expunge"
+        ],
+        "battlefield": []
+      },
+      {
+        "battlefield": [
+          "Expedition Skulker"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Expunge",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Expunge"
+          ]
+        },
+        {
+          "battlefield": [
+            "Expedition Skulker"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cycling {2} from hand draws a card",
+    "players": [
+      {
+        "hand": [
+          "Expunge"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Expunge"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Expunge"
+          ],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Stifle counters the cycling ability; Expunge is discarded but no card is drawn",
+    "players": [
+      { "hand": ["Expunge"], "battlefield": ["Swamp", "Swamp"] },
+      { "hand": ["Stifle"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "activate": "Expunge" },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Expunge" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Expunge"] },
+        { "graveyard_has": ["Stifle"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Remove Soul cannot counter cycling (cycling is not a spell)",
+    "players": [
+      { "hand": ["Expunge"], "battlefield": ["Swamp", "Swamp"] },
+      { "hand": ["Remove Soul"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Expunge" },
+      { "pass": true },
+      { "cast": "Remove Soul", "player": 1, "illegal": true, "targets": [{ "stack": "Expunge" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard_has": ["Expunge"] },
+        {}
+      ]
+    }
+  }
+]

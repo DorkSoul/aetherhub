@@ -1,0 +1,64 @@
+[
+  {
+    "name": "ETB creates two Food tokens",
+    "players": [ { "hand": ["Bill the Pony"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }, {} ],
+    "steps": [ { "cast": "Bill the Pony" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Bill the Pony", "Food", "Food"] }, {} ]
+    }
+  },
+  {
+    "name": "sacrifice a Food: creature assigns damage equal to its toughness",
+    "players": [ { "battlefield": ["Bill the Pony", { "name": "Food" }] }, {} ],
+    "steps": [
+      { "activate": "Bill the Pony", "ability": 0, "targets": ["Bill the Pony"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Bill the Pony", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Bill the Pony": [1, 4] },
+      "players": [ { "battlefield_lacks": ["Food"] }, { "life": 16 } ]
+    }
+  },
+  {
+    "name": "without sacrificing a Food, combat damage uses power",
+    "players": [ { "battlefield": ["Bill the Pony"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Bill the Pony", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "ruling: the toughness damage mode does not change fight damage: Prey Upon uses Bill's power (1)",
+    "players": [ { "hand": ["Prey Upon"], "battlefield": ["Bill the Pony", "Forest", { "name": "Food" }] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "activate": "Bill the Pony", "ability": 0, "targets": ["Bill the Pony"] },
+      { "resolve": true },
+      { "cast": "Prey Upon", "targets": ["Bill the Pony", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Bill the Pony"], "battlefield_lacks": ["Food"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: a Food creature (Tough Cookie) can be sacrificed to Bill's ability, and then combat damage uses toughness (4)",
+    "players": [ { "battlefield": ["Bill the Pony", { "name": "Tough Cookie" }] }, {} ],
+    "steps": [
+      { "activate": "Bill the Pony", "ability": 0, "targets": ["Bill the Pony"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Bill the Pony", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Tough Cookie"] }, { "life": 16 } ]
+    }
+  }
+]

@@ -1,0 +1,113 @@
+[
+  {
+    "name": "exiles a random instant/sorcery MV<=3 from the graveyard and may cast it free",
+    "players": [
+      {
+        "hand": ["Storm of Memories"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Storm of Memories" },
+      { "resolve": true, "answers": [true, "p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt"], "graveyard": ["Storm of Memories"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "declining the free cast leaves the exiled card in exile",
+    "players": [
+      {
+        "hand": ["Storm of Memories"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Storm of Memories" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt"], "graveyard": ["Storm of Memories"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "no instant or sorcery with mana value 3 or less in the graveyard: nothing exiled",
+    "players": [
+      {
+        "hand": ["Storm of Memories"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Storm of Memories" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [], "graveyard": ["Grizzly Bears", "Storm of Memories"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the original and its copy each exile a card and cast it free (one copy per earlier spell this turn)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Storm of Memories"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island"],
+        "graveyard": ["Lightning Bolt", "Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Storm of Memories" },
+      { "resolve": true, "answers": [true, "p1", true, "p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Storm of Memories"], "exile": ["Lightning Bolt", "Lightning Bolt"] },
+        { "life": 11 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered spell still counts for storm, so the copy casts a second spell",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Storm of Memories"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island"],
+        "graveyard": ["Lightning Bolt", "Lightning Bolt"]
+      },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "cast": "Storm of Memories" },
+      { "resolve": true, "answers": [true, "p1", true, "p1", true, "p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Storm of Memories"], "exile": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+        { "life": 11 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,265 @@
+[
+ {
+  "name": "with five enchantments, other non-Aura enchantments are creatures with P/T equal to mana value",
+  "players": [
+   {
+    "battlefield": [
+     "Starfield of Nyx",
+     "Oblivion Ring",
+     "Glorious Anthem",
+     "Intangible Virtue",
+     "Phyrexian Arena",
+     "Rhystic Study"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Glorious Anthem": [
+     4,
+     4
+    ],
+    "Oblivion Ring": [
+     4,
+     4
+    ],
+    "Phyrexian Arena": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "with fewer than five enchantments nothing happens",
+  "players": [
+   {
+    "battlefield": [
+     "Starfield of Nyx",
+     "Glorious Anthem"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {}
+ },
+ {
+  "name": "upkeep: return an enchantment card from the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Starfield of Nyx"
+    ],
+    "graveyard": [
+     "Glorious Anthem"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "turn": 3
+  }
+ },
+ {
+  "name": "ruling: an Aura returned with no legal creature to enchant stays in the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Starfield of Nyx"
+    ],
+    "graveyard": [
+     "Pacifism"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Pacifism"
+     ],
+     "battlefield_lacks": [
+      "Pacifism"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an Aura returned by Starfield can enchant a hexproof creature the opponent controls",
+  "players": [
+   {
+    "battlefield": [
+     "Starfield of Nyx"
+    ],
+    "graveyard": [
+     "Pacifism"
+    ]
+   },
+   {
+    "battlefield": [
+     "Slippery Bogle"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Starfield of Nyx",
+      "Pacifism"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Slippery Bogle"
+     ]
+    }
+   ],
+   "attached": {
+    "Pacifism": "Slippery Bogle"
+   }
+  }
+ },
+ {
+  "name": "ruling: a long-controlled enchantment that is a creature can attack",
+  "players": [
+   {
+    "battlefield": [
+     "Starfield of Nyx",
+     "Oblivion Ring",
+     "Intangible Virtue",
+     "Phyrexian Arena",
+     "Rhystic Study"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Phyrexian Arena",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an enchantment cast this turn that becomes a creature cannot attack",
+  "players": [
+   {
+    "hand": [
+     "Rhystic Study"
+    ],
+    "battlefield": [
+     "Starfield of Nyx",
+     "Oblivion Ring",
+     "Intangible Virtue",
+     "Phyrexian Arena",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rhystic Study"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Rhystic Study",
+      "at": "p1"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Rhystic Study"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ }
+]

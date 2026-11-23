@@ -1,0 +1,96 @@
+[
+  {
+    "name": "enchanted creature gets -2/-0",
+    "players": [
+      { "hand": ["Mystic Subdual"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Mystic Subdual", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Serra Angel"] } ],
+      "pt": { "Serra Angel": [2, 4] },
+      "attached": { "Mystic Subdual": "Serra Angel" }
+    }
+  },
+  {
+    "name": "cannot be cast without enough mana",
+    "players": [
+      { "hand": ["Mystic Subdual"], "battlefield": ["Island"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Mystic Subdual", "targets": ["Serra Angel"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "enchanted creature loses its mana ability: a G spell cannot be paid with its mana",
+    "players": [
+      { "hand": ["Mystic Subdual", "Giant Growth"], "battlefield": ["Island", "Island", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mystic Subdual", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Llanowar Elves"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Giant Growth"] }, {} ],
+      "pt": { "Llanowar Elves": [-1, 1] }
+    }
+  },
+  {
+    "name": "control: without the aura the Elves' mana pays for Giant Growth",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Island", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": [] }, {} ],
+      "pt": { "Llanowar Elves": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: Tarmogoyf loses its CDA, so its base is the printed 0/1 and Subdual makes it -2/1",
+    "players": [
+      { "hand": ["Mystic Subdual"], "battlefield": ["Island", "Island", "Tarmogoyf"], "graveyard": ["Lightning Bolt", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mystic Subdual", "targets": ["Tarmogoyf"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Tarmogoyf": [-2, 1] }
+    }
+  },
+  {
+    "name": "ruling: an ability gained after Subdual is attached is kept (protection from black from Blessed Breath)",
+    "players": [
+      { "hand": ["Mystic Subdual", "Blessed Breath"], "battlefield": ["Island", "Island", "Plains", "Grizzly Bears"] },
+      { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Mystic Subdual", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Blessed Breath", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [2] },
+      { "pass": true },
+      { "cast": "Terror", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [0, 2] }
+    }
+  }
+]

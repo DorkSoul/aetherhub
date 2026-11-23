@@ -1,0 +1,230 @@
+[
+  {
+    "name": "an entering creature's ETB draw triggers an additional time",
+    "players": [
+      {
+        "hand": [
+          "Mulldrifter"
+        ],
+        "battlefield": [
+          "Virtue of Knowledge // Vantress Visions",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mulldrifter"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mulldrifter"
+          ],
+          "hand_count": 4
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without Virtue of Knowledge the ETB draw triggers once",
+    "players": [
+      {
+        "hand": [
+          "Mulldrifter"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mulldrifter"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mulldrifter"
+          ],
+          "hand_count": 2
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Vantress Visions copies the Mulldrifter ETB trigger: draws two more",
+    "players": [
+      {
+        "hand": [
+          "Mulldrifter",
+          "Virtue of Knowledge // Vantress Visions"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mulldrifter"
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Virtue of Knowledge // Vantress Visions",
+        "face": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mulldrifter"
+          ],
+          "hand_count": 4
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two Virtues of Knowledge, an entering creature's ETB draw triggers three times",
+    "players": [
+      {
+        "hand": ["Mulldrifter"],
+        "battlefield": ["Virtue of Knowledge // Vantress Visions", "Virtue of Knowledge // Vantress Visions", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mulldrifter" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mulldrifter"], "hand_count": 6 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered Adventure goes to the graveyard, not exile, so it can't be cast as a permanent later",
+    "players": [
+      {
+        "hand": ["Mulldrifter", "Virtue of Knowledge // Vantress Visions"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Mulldrifter" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Virtue of Knowledge // Vantress Visions", "face": true },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Vantress Visions" }] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [], "graveyard_has": ["Virtue of Knowledge // Vantress Visions"] },
+        { "hand_count": 0 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Adventure card cast from exile as a permanent follows sorcery timing (not in combat)",
+    "players": [
+      {
+        "hand": ["Mulldrifter", "Virtue of Knowledge // Vantress Visions"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mulldrifter" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Virtue of Knowledge // Vantress Visions", "face": true },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Virtue of Knowledge // Vantress Visions", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Virtue of Knowledge // Vantress Visions"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the same Adventure card can be cast from exile as a permanent in the main phase",
+    "players": [
+      {
+        "hand": ["Mulldrifter", "Virtue of Knowledge // Vantress Visions"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mulldrifter" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Virtue of Knowledge // Vantress Visions", "face": true },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Virtue of Knowledge // Vantress Visions" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mulldrifter", "Virtue of Knowledge // Vantress Visions"] },
+        {}
+      ]
+    }
+  }
+]

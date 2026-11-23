@@ -1,0 +1,143 @@
+[
+  {
+    "name": "cannot be blocked by a creature with power 3 or greater (Hero of Bladehold cannot block it)",
+    "players": [
+      {
+        "battlefield": [
+          "Lydia Frye"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hero of Bladehold"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Lydia Frye",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "can be blocked by a creature with power 2",
+    "players": [
+      {
+        "battlefield": [
+          "Lydia Frye"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Lydia Frye",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": [
+          {
+            "blocker": "Grizzly Bears",
+            "attacker": "Lydia Frye"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "end step: a tapped Assassin (Lydia itself) surveils 1, so the chosen top card goes to the graveyard",
+    "players": [ { "battlefield": [ { "name": "Lydia Frye", "tapped": true } ], "library": ["Forest", "Island"] }, {} ],
+    "steps": [ { "advance_to": "End", "answers": ["Forest"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Forest"], "library_top": ["Island"] }, {} ] }
+  },
+  {
+    "name": "end step: an untapped Assassin surveils 0, so nothing is looked at",
+    "players": [ { "battlefield": ["Lydia Frye"], "library": ["Forest", "Island"] }, {} ],
+    "steps": [ { "advance_to": "End" } ],
+    "expect": { "players": [ { "library_top": ["Forest"], "graveyard": [] }, {} ] }
+  },
+  {
+    "name": "power-3 Hero of Bladehold may not block Lydia, so it cannot block her even when a second attacker is declared",
+    "players": [
+      { "battlefield": ["Lydia Frye", "Savannah Lions"] },
+      { "battlefield": ["Hero of Bladehold"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Lydia Frye", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hero of Bladehold", "attacker": "Lydia Frye" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Lydia Frye", "Savannah Lions"] },
+        { "life": 15, "battlefield_has": ["Hero of Bladehold"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: once blocked, Lydia stays blocked even when the blocker's power rises to 5 (Giant Growth), so no damage reaches the player",
+    "players": [
+      { "battlefield": ["Lydia Frye"] },
+      { "battlefield": ["Grizzly Bears", "Forest"], "hand": ["Giant Growth"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Lydia Frye", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Lydia Frye" } ] },
+      { "pass": true },
+      { "cast": "Giant Growth", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lydia Frye"] },
+        { "life": 20, "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

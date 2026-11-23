@@ -1,0 +1,89 @@
+[
+  {
+    "name": "equipped creature gets +2/+1 and the equipment is attached",
+    "players": [
+      { "hand": [], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Heartseeker"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "activate": "Heartseeker", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Grizzly Bears": [4, 3] },
+      "attached": { "Heartseeker": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "equip costs five: four Plains cannot pay for it",
+    "players": [
+      { "hand": [], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Heartseeker"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "activate": "Heartseeker", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "attached": {}
+    }
+  },
+  {
+    "name": "equipped creature taps and unattaches Heartseeker to destroy target creature",
+    "players": [
+      { "hand": [], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Heartseeker"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "activate": "Heartseeker", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Heartseeker", "Grizzly Bears"] },
+        { "graveyard": ["Serra Angel"] }
+      ],
+      "tapped": { "Grizzly Bears": true },
+      "attached": {}
+    }
+  },
+  {
+    "name": "an unequipped creature cannot use the granted destroy ability",
+    "players": [
+      { "hand": [], "battlefield": ["Grizzly Bears", "Heartseeker"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_has": ["Serra Angel"] }],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: the opponent controls Heartseeker and their equipped creature; the equipped creature's controller activates the granted ability",
+    "players": [
+      { "battlefield": ["Serra Angel"] },
+      { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }, "Heartseeker"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "player": 1, "activate": "Heartseeker", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "player": 1, "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Serra Angel"] },
+        { "battlefield_has": ["Heartseeker", "Grizzly Bears"] }
+      ],
+      "tapped": { "Grizzly Bears": true },
+      "attached": {}
+    }
+  }
+]

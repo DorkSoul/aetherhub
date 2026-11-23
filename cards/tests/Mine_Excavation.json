@@ -1,0 +1,109 @@
+[
+ {
+  "name": "returns target artifact card from a graveyard to its owner's hand",
+  "players": [
+   {
+    "hand": ["Mine Excavation"],
+    "graveyard": ["Sol Ring"],
+    "battlefield": ["Plains", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mine Excavation", "targets": ["Sol Ring"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Sol Ring"], "graveyard": ["Mine Excavation"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature card in a graveyard is not a legal target",
+  "players": [
+   {
+    "hand": ["Mine Excavation"],
+    "graveyard": ["Grizzly Bears"],
+    "battlefield": ["Plains", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mine Excavation", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Mine Excavation"], "graveyard": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "conspire: tap two white creatures to copy it, so both artifacts go back to hand",
+  "players": [
+   {
+    "hand": ["Mine Excavation"],
+    "graveyard": ["Sol Ring", "Arcane Signet"],
+    "battlefield": ["Plains", "Plains", "Serra Angel", "Savannah Lions"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mine Excavation", "targets": ["Sol Ring"], "answers": [true] },
+   { "resolve": true, "answers": [["Arcane Signet"]] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Sol Ring", "Arcane Signet"], "graveyard": ["Mine Excavation"] },
+    {}
+   ],
+   "tapped": { "Serra Angel": true, "Savannah Lions": true }
+  }
+ },
+ {
+  "name": "not conspired: only the target returns and the creatures stay untapped",
+  "players": [
+   {
+    "hand": ["Mine Excavation"],
+    "graveyard": ["Sol Ring", "Arcane Signet"],
+    "battlefield": ["Plains", "Plains", "Serra Angel", "Savannah Lions"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mine Excavation", "targets": ["Sol Ring"], "answers": [false] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Sol Ring"], "graveyard": ["Mine Excavation", "Arcane Signet"] },
+    {}
+   ],
+   "tapped": { "Serra Angel": false, "Savannah Lions": false }
+  }
+ },
+ {
+  "name": "conspire needs two creatures sharing its color: a green pair cannot pay it",
+  "players": [
+   {
+    "hand": ["Mine Excavation"],
+    "graveyard": ["Sol Ring"],
+    "battlefield": ["Plains", "Plains", "Grizzly Bears", "Llanowar Elves"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mine Excavation", "targets": ["Sol Ring"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Sol Ring"], "graveyard": ["Mine Excavation"] },
+    {}
+   ],
+   "tapped": { "Grizzly Bears": false, "Llanowar Elves": false }
+  }
+ }
+]

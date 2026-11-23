@@ -1,0 +1,104 @@
+{
+  "name": "Spry and Mighty",
+  "mana_cost": "{4}{G}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": {
+              "type": "Count",
+              "filter": { "types": ["Creature"], "controller": "You" },
+              "zone": "Battlefield"
+            },
+            "cmp": { "op": "Ge", "n": 2 }
+          },
+          "then": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Battlefield",
+              "filter": { "types": ["Creature"], "controller": "You" },
+              "min": 1,
+              "max": 1,
+              "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+            },
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Battlefield",
+              "filter": { "types": ["Creature"], "controller": "You", "not_among_stored": 0 },
+              "min": 1,
+              "max": 1,
+              "then": [ { "type": "StoreRemembered", "slot": 1 } ]
+            },
+            { "type": "Remember", "what": { "type": "Stored", "slot": 0 } },
+            { "type": "StoreRemembered", "slot": 2 },
+            { "type": "Remember", "what": { "type": "Stored", "slot": 1 } },
+            { "type": "StoreRemembered", "slot": 2, "append": true },
+            {
+              "type": "Draw",
+              "who": { "type": "You" },
+              "n": {
+                "type": "Minus",
+                "a": {
+                  "type": "Max",
+                  "a": { "type": "PowerOf", "of": { "type": "Stored", "slot": 0 } },
+                  "b": { "type": "PowerOf", "of": { "type": "Stored", "slot": 1 } }
+                },
+                "b": {
+                  "type": "Min",
+                  "a": { "type": "PowerOf", "of": { "type": "Stored", "slot": 0 } },
+                  "b": { "type": "PowerOf", "of": { "type": "Stored", "slot": 1 } }
+                }
+              }
+            },
+            {
+              "type": "Pump",
+              "what": { "type": "Stored", "slot": 2 },
+              "power": {
+                "type": "Minus",
+                "a": {
+                  "type": "Max",
+                  "a": { "type": "PowerOf", "of": { "type": "Stored", "slot": 0 } },
+                  "b": { "type": "PowerOf", "of": { "type": "Stored", "slot": 1 } }
+                },
+                "b": {
+                  "type": "Min",
+                  "a": { "type": "PowerOf", "of": { "type": "Stored", "slot": 0 } },
+                  "b": { "type": "PowerOf", "of": { "type": "Stored", "slot": 1 } }
+                }
+              },
+              "toughness": {
+                "type": "Minus",
+                "a": {
+                  "type": "Max",
+                  "a": { "type": "PowerOf", "of": { "type": "Stored", "slot": 0 } },
+                  "b": { "type": "PowerOf", "of": { "type": "Stored", "slot": 1 } }
+                },
+                "b": {
+                  "type": "Min",
+                  "a": { "type": "PowerOf", "of": { "type": "Stored", "slot": 0 } },
+                  "b": { "type": "PowerOf", "of": { "type": "Stored", "slot": 1 } }
+                }
+              },
+              "duration": "UntilEndOfTurn"
+            },
+            {
+              "type": "GrantKeyword",
+              "what": { "type": "Stored", "slot": 2 },
+              "keyword": "Trample",
+              "duration": "UntilEndOfTurn"
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose exactly two creatures you control. You draw X cards and the chosen creatures get +X/+X and gain trample until end of turn, where X is the difference between the chosen creatures' powers."
+}

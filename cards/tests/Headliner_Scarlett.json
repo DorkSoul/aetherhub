@@ -1,0 +1,33 @@
+[
+  {
+    "name": "ETB: target player's creatures can't block this turn",
+    "players": [ { "hand": ["Headliner Scarlett"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Headliner Scarlett" },
+      { "resolve": true, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "keywords": { "Grizzly Bears": ["CantBlock"] } }
+  },
+  {
+    "name": "upkeep: exile the top card, may play it this turn",
+    "players": [ { "battlefield": ["Headliner Scarlett", "Mountain"], "library": ["Island"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "play_land": "Island" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Island"] }, {} ] }
+  },
+  { "name": "ruling: the exiled card cannot be played in upkeep, only in a main phase",
+    "players": [ { "battlefield": ["Headliner Scarlett", "Mountain"], "library": ["Island"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "resolve": true }, { "play_land": "Island", "illegal": true }, { "advance_to": "Main1" }, { "play_land": "Island" } ],
+    "expect": { "players": [ { "battlefield_has": ["Island"] }, {} ] } },
+  { "name": "ruling: Scarlett leaves the battlefield: the exiled card is still playable this turn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Headliner Scarlett", "Mountain"], "library": ["Island"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Headliner Scarlett"] }, { "resolve": true }, { "advance_to": "Main1" }, { "play_land": "Island" } ],
+    "expect": { "players": [ { "battlefield_has": ["Island"], "graveyard_has": ["Headliner Scarlett", "Lightning Bolt"] }, {} ] } },
+  {"name": "ETB: a creature the target player gets later this turn can't block either", "players": [{"hand": ["Headliner Scarlett"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", {"name": "Hill Giant", "sick": false}]}, {"hand": ["Ambush Viper"], "battlefield": ["Forest", "Forest"]}], "steps": [{"cast": "Headliner Scarlett"}, {"resolve": true, "targets": ["p1"]}, {"resolve": true}, {"pass": true}, {"cast": "Ambush Viper", "player": 1}, {"resolve": true}, {"attack": [{"card": "Hill Giant", "at": "p1"}]}, {"block": [{"blocker": "Ambush Viper", "attacker": "Hill Giant"}], "illegal": true}, {"block": []}, {"advance_to": "Main2"}], "expect": {"players": [{}, {"life": 17, "battlefield_has": ["Ambush Viper"]}], "turn": 1}}
+]

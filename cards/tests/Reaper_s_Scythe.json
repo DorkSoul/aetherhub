@@ -1,0 +1,115 @@
+[
+  {
+    "name": "job select: entering creates a 1/1 Hero token and attaches the Scythe to it",
+    "players": [
+      { "hand": ["Reaper's Scythe"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reaper's Scythe" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Hero": [1, 1] },
+      "attached": { "Reaper's Scythe": "Hero" }
+    }
+  },
+  {
+    "name": "end step after the opponent lost life: one soul counter, equipped creature gets +1/+1",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Reaper's Scythe", "Grizzly Bears", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Reaper's Scythe", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "no life lost this turn: no soul counter at end step",
+    "players": [
+      { "battlefield": ["Reaper's Scythe", "Grizzly Bears", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Reaper's Scythe", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "equipped creature is an Assassin in addition to its other types",
+    "players": [
+      { "battlefield": ["Reaper's Scythe", "Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Reaper's Scythe", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Reaper's Scythe", "Grizzly Bears"] }, {} ],
+      "attached": { "Reaper's Scythe": "Grizzly Bears" },
+      "subtypes": { "Grizzly Bears": ["Assassin", "Bear"] },
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "unequipped creature is not an Assassin",
+    "players": [
+      { "battlefield": ["Reaper's Scythe", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "Main1" } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Reaper's Scythe", "Grizzly Bears"] }, {} ],
+      "not_subtypes": { "Grizzly Bears": ["Assassin"] }
+    }
+  },
+  {
+    "name": "ruling: Hero token destroyed, the Equipment stays on the battlefield",
+    "players": [
+      { "hand": ["Reaper's Scythe", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reaper's Scythe" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hero"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Reaper's Scythe"], "battlefield_lacks": ["Hero"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: paying the equip cost again moves the Equipment to another creature",
+    "players": [
+      { "battlefield": ["Reaper's Scythe", "Grizzly Bears", "Hill Giant", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Reaper's Scythe", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Reaper's Scythe", "ability": 0, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Reaper's Scythe": "Hill Giant" },
+      "subtypes": { "Hill Giant": ["Assassin"] },
+      "not_subtypes": { "Grizzly Bears": ["Assassin"] }
+    }
+  }
+]

@@ -1,0 +1,223 @@
+[
+  {
+    "name": "returns up to two permanent cards that died this turn, tapped",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Brought Back"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Plains",
+          "Plains",
+          "Grizzly Bears",
+          "Savannah Lions"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Savannah Lions"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Brought Back",
+        "targets": [
+          "Grizzly Bears",
+          "Savannah Lions"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Savannah Lions"
+          ],
+          "graveyard_has": [
+            "Lightning Bolt",
+            "Brought Back"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true,
+        "Savannah Lions": true
+      }
+    }
+  },
+  {
+    "name": "a permanent that went to the graveyard on an earlier turn is not a target",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Brought Back"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Brought Back"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "graveyard_has": [
+            "Grizzly Bears",
+            "Brought Back"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land is a permanent card, so a sacrificed Flooded Strand returns tapped (and I pay 1 life for the sacrifice)",
+    "players": [
+      {
+        "hand": ["Brought Back"],
+        "battlefield": ["Flooded Strand", "Plains", "Plains"],
+        "library": ["Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Flooded Strand" },
+      { "resolve": true, "answers": ["Island"] },
+      { "cast": "Brought Back", "targets": ["Flooded Strand"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 19,
+          "battlefield_has": ["Flooded Strand"],
+          "graveyard_has": ["Brought Back"]
+        },
+        {}
+      ],
+      "tapped": {
+        "Flooded Strand": true
+      }
+    }
+  },
+  {
+    "name": "ruling: an Aura cannot be chosen to enchant a permanent entering at the same time, so Pacifism stays in the graveyard",
+    "players": [
+      {
+        "hand": ["Pacifism", "Lightning Bolt", "Brought Back"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Brought Back", "targets": ["Grizzly Bears", "Pacifism"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears"],
+          "battlefield_lacks": ["Pacifism"],
+          "graveyard_has": ["Pacifism", "Brought Back", "Lightning Bolt"]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "ruling: a permanent countered on the stack never entered the battlefield, so Brought Back has no legal target",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Brought Back"],
+        "battlefield": ["Forest", "Plains", "Plains", "Plains"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true },
+      { "cast": "Brought Back" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": ["Grizzly Bears"],
+          "graveyard_has": ["Grizzly Bears", "Brought Back"]
+        },
+        {
+          "graveyard_has": ["Counterspell"]
+        }
+      ]
+    }
+  }
+]

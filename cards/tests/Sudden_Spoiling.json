@@ -1,0 +1,312 @@
+[
+  {
+    "name": "target player's creatures become 0/2 until end of turn",
+    "players": [
+      {
+        "hand": [
+          "Sudden Spoiling"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sudden Spoiling",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          0,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "creatures of the caster are unaffected",
+    "players": [
+      {
+        "hand": [
+          "Sudden Spoiling"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Prodigal Sorcerer"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sudden Spoiling",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Prodigal Sorcerer": [
+          1,
+          1
+        ],
+        "Grizzly Bears": [
+          0,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "effect ends at cleanup",
+    "players": [
+      {
+        "hand": [
+          "Sudden Spoiling"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sudden Spoiling",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "target player's creature loses its activated ability",
+    "players": [
+      {
+        "hand": [
+          "Sudden Spoiling"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Prodigal Sorcerer"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Sudden Spoiling",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Prodigal Sorcerer",
+        "player": 1,
+        "ability": 0,
+        "targets": [
+          "p0"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Prodigal Sorcerer": [
+          0,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "control case: Prodigal Sorcerer can use its ability without the spell",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Prodigal Sorcerer",
+            "sick": false
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "activate": "Prodigal Sorcerer",
+        "player": 1,
+        "ability": 0,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Prodigal Sorcerer": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: after it resolves, spells can be cast again (none while it is on the stack)",
+    "players": [
+      {
+        "hand": ["Sudden Spoiling", "Lightning Bolt"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Sudden Spoiling", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast in response to Bolt does not stop Bolt from resolving",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      },
+      {
+        "hand": ["Sudden Spoiling"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Sudden Spoiling", "player": 1, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17, "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": {
+        "Grizzly Bears": [0, 2]
+      }
+    }
+  },
+  {
+    "name": "ruling: counters still apply on top of the 0/2 base",
+    "players": [
+      {
+        "hand": ["Sudden Spoiling"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }
+        ]
+      }
+    ],
+    "steps": [
+      { "cast": "Sudden Spoiling", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [1, 3]
+      }
+    }
+  }
+]

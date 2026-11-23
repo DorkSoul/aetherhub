@@ -1,0 +1,53 @@
+{
+  "name": "Berserk",
+  "mana_cost": "{G}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": {
+        "type": "AnyOf",
+        "cs": [
+          { "type": "InStep", "step": "BeginCombat" },
+          { "type": "InStep", "step": "DeclareAttackers" },
+          { "type": "InStep", "step": "DeclareBlockers" },
+          { "type": "InStep", "step": "FirstStrikeDamage" }
+        ]
+      }
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        {
+          "type": "Pump",
+          "what": { "type": "Target", "idx": 0 },
+          "power": { "type": "PowerOf", "of": { "type": "Target", "idx": 0 } },
+          "toughness": { "type": "Fixed", "n": 0 },
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "GrantKeyword",
+          "what": { "type": "Target", "idx": 0 },
+          "keyword": "Trample",
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "TargetIs", "idx": 0, "filter": { "attacked_this_turn": true } },
+              "then": [ { "type": "Destroy", "what": { "type": "Target", "idx": 0 } } ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only before the combat damage step.\nTarget creature gains trample and gets +X/+0 until end of turn, where X is its power. At the beginning of the next end step, destroy that creature if it attacked this turn."
+}

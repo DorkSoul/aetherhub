@@ -1,0 +1,113 @@
+[
+  {
+    "name": "ETB returns a permanent card put into your graveyard from the battlefield this turn, then the Ring tempts you",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Samwise the Stouthearted"],
+        "battlefield": ["Mountain", "Mountain", "Plains", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Samwise the Stouthearted" },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Grizzly Bears"],
+          "graveyard": ["Lightning Bolt"],
+          "battlefield": ["Samwise the Stouthearted", "Mountain", "Mountain", "Plains"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a permanent card put into your graveyard on an earlier turn cannot be returned",
+    "players": [
+      {
+        "hand": ["Samwise the Stouthearted"],
+        "battlefield": ["Mountain", "Plains"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "cast": "Samwise the Stouthearted" },
+      { "resolve": true, "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [],
+          "graveyard": ["Grizzly Bears"],
+          "battlefield": ["Samwise the Stouthearted", "Mountain", "Plains"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second tempt replaces The Ring emblem, so there is only one emblem named The Ring",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Samwise the Stouthearted", "Samwise the Stouthearted"],
+        "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Samwise the Stouthearted" },
+      { "resolve": true, "targets": [] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Samwise the Stouthearted"] },
+      { "resolve": true },
+      { "cast": "Samwise the Stouthearted" },
+      { "resolve": true, "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [],
+          "graveyard": ["Lightning Bolt", "Samwise the Stouthearted"],
+          "battlefield_has": ["Samwise the Stouthearted"],
+          "command": ["The Ring 2"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: tempted with several creatures you must choose a Ring-bearer (the answer is required)",
+    "players": [
+      {
+        "hand": ["Samwise the Stouthearted"],
+        "battlefield": ["Plains", "Mountain", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Samwise the Stouthearted" },
+      { "resolve": true, "targets": [], "answers": [0] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Samwise the Stouthearted", "Grizzly Bears"],
+          "command": ["The Ring 1"]
+        },
+        {}
+      ]
+    }
+  }
+]

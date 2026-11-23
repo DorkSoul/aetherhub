@@ -1,0 +1,51 @@
+[
+  { "name": "equip {3} attaches; equipped creature gets +3/+3",
+    "players": [ { "battlefield": ["Saddle of the Cavalier", "Grizzly Bears", "Plains", "Plains", "Plains"] }, {} ],
+    "steps": [ { "activate": "Saddle of the Cavalier", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [5, 5] }, "attached": { "Saddle of the Cavalier": "Grizzly Bears" } } },
+  { "name": "equip needs three mana",
+    "players": [ { "battlefield": ["Saddle of the Cavalier", "Grizzly Bears", "Plains", "Plains"] }, {} ],
+    "steps": [ { "activate": "Saddle of the Cavalier", "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] } } },
+  { "name": "equipped creature can't be blocked by power 3 or less (Hill Giant's block dropped); Serra Angel can block",
+    "players": [ { "battlefield": ["Saddle of the Cavalier", "Grizzly Bears", "Savannah Lions", "Plains", "Plains", "Plains"] },
+                 { "battlefield": ["Hill Giant", "Serra Angel"] } ],
+    "steps": [
+      { "activate": "Saddle of the Cavalier", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Hill Giant", "attacker": "Grizzly Bears" },
+          { "blocker": "Serra Angel", "attacker": "Savannah Lions" }
+      ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 15 } ], "pt": { "Grizzly Bears": [5, 5] } } },
+  { "name": "equipped creature can be blocked by power 4 (Serra Angel blocks it)",
+    "players": [ { "battlefield": ["Saddle of the Cavalier", "Grizzly Bears", "Plains", "Plains", "Plains"] },
+                 { "battlefield": ["Serra Angel", "Hill Giant"] } ],
+    "steps": [
+      { "activate": "Saddle of the Cavalier", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 20, "graveyard": ["Serra Angel"] } ] } },
+  { "name": "ruling: a blocker whose power is reduced after blocking stays blocking; the equipped attacker stays blocked",
+    "players": [ { "hand": ["Chain to Memory"], "battlefield": ["Saddle of the Cavalier", "Grizzly Bears", "Plains", "Plains", "Plains", "Island"] },
+                 { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "activate": "Saddle of the Cavalier", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Chain to Memory", "targets": ["Serra Angel"] },
+      { "resolve": true, "answers": [[]] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20, "graveyard": ["Serra Angel"] } ] } }
+]

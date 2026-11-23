@@ -1,0 +1,250 @@
+[
+  {
+    "name": "taps two target creatures and stuns each, then investigates",
+    "players": [
+      {
+        "hand": [
+          "Out Cold"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Out Cold",
+        "targets": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Out Cold"
+          ],
+          "battlefield_has": [
+            "Clue"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true,
+        "Hill Giant": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "Stun": 1
+        },
+        "Hill Giant": {
+          "Stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "one target: only that creature is tapped and stunned",
+    "players": [
+      {
+        "hand": [
+          "Out Cold"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Out Cold",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Out Cold"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Hill Giant": true,
+        "Grizzly Bears": false
+      },
+      "counters": {
+        "Hill Giant": {
+          "Stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "can't be countered: opponent's Counterspell fizzles, so it still taps and stuns",
+    "players": [
+      {
+        "hand": [
+          "Out Cold"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Counterspell"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Out Cold",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Counterspell",
+        "targets": [
+          {
+            "stack": "Out Cold"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Out Cold"
+          ],
+          "battlefield_has": [
+            "Clue"
+          ]
+        },
+        {
+          "graveyard": [
+            "Counterspell"
+          ],
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "Stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: every chosen target is illegal on resolution, so nothing happens and no Clue is made",
+    "players": [
+      { "hand": ["Out Cold"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Out Cold", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Out Cold"], "battlefield_lacks": ["Clue"] },
+        { "graveyard_has": ["Grizzly Bears", "Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: choosing no targets still resolves and investigates",
+    "players": [
+      { "hand": ["Out Cold"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Out Cold", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Out Cold"], "battlefield_has": ["Clue"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: a Clue is an artifact, so Release the Gremlins can destroy it",
+    "players": [
+      { "hand": ["Out Cold", "Release the Gremlins"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Out Cold", "targets": [] },
+      { "resolve": true },
+      { "cast": "Release the Gremlins", "answers": [1], "targets": ["Clue"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Clue"], "battlefield_has": ["Gremlin 2-2 Red"], "graveyard_has": ["Release the Gremlins"] },
+        {}
+      ]
+    }
+  }
+]

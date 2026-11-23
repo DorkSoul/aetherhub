@@ -1,0 +1,132 @@
+[
+  {
+    "name": "opponent's first spell exiles top nonland card; you may cast it free",
+    "players": [
+      { "battlefield": ["Mind's Dilation"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mind's Dilation", "Grizzly Bears"], "life": 17 },
+        { "exile": [], "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "declining the free cast leaves the card exiled",
+    "players": [
+      { "battlefield": ["Mind's Dilation"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "life": 17 },
+        { "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "a land on top is exiled and not cast",
+    "players": [
+      { "battlefield": ["Mind's Dilation"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Forest"] },
+        { "exile": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "second spell of the opponent this turn does not trigger",
+    "players": [
+      { "battlefield": ["Mind's Dilation"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"], "library": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [false] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "life": 14 },
+        { "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt", "Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a free cast of an {X} card uses X = 0 (Walking Ballista dies)",
+    "players": [
+      { "battlefield": ["Mind's Dilation"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Walking Ballista"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "battlefield_lacks": ["Walking Ballista"] },
+        { "graveyard": ["Lightning Bolt", "Walking Ballista"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a free-cast instant goes to its owner's graveyard, not back to exile",
+    "players": [
+      { "battlefield": ["Mind's Dilation"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17 },
+        { "life": 17, "exile": [], "graveyard": ["Lightning Bolt", "Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a free-cast spell resolves before the spell that triggered it",
+    "players": [
+      { "battlefield": ["Mind's Dilation", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Giant Growth"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": ["Giant Growth", "Lightning Bolt"] }
+      ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  }
+]

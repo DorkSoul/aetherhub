@@ -1,0 +1,31 @@
+{
+  "name": "Hint of Insanity",
+  "mana_cost": "{2}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Player", "filter": "Any" }, "label": "target player" }
+      ],
+      "effects": [
+        { "type": "Reveal", "what": { "type": "AllOfPlayer", "player": { "type": "Target", "idx": 0 }, "zone": "Hand" } },
+        { "type": "Move", "what": { "type": "AllOfPlayer", "player": { "type": "Target", "idx": 0 }, "zone": "Hand", "filter": { "not_types": ["Land"] } }, "to": "Exile" },
+        {
+          "type": "ForEach",
+          "objects": { "type": "ExiledWithThis" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "Compare", "a": { "type": "Count", "filter": { "same_name_as": { "type": "EachObject" }, "exiled_with_this": true }, "zone": "Exile" }, "cmp": { "op": "Le", "n": 1 } },
+              "then": [ { "type": "Move", "what": { "type": "EachObject" }, "from": "Exile", "to": "Hand" } ]
+            }
+          ]
+        },
+        { "type": "Move", "what": { "type": "ExiledWithThis" }, "from": "Exile", "to": "Hand", "remember": true },
+        { "type": "Discard", "who": { "type": "Target", "idx": 0 }, "filter": { "among_remembered": true }, "n": { "type": "RememberedCount" } }
+      ]
+    }
+  ],
+  "oracle_text": "Target player reveals their hand. That player discards all nonland cards with the same name as another card in their hand."
+}

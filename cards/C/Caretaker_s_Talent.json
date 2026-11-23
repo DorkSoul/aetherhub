@@ -1,0 +1,70 @@
+{
+  "name": "Caretaker's Talent",
+  "mana_cost": "{2}{W}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "token": true, "controller": "You" } },
+      "batched": true,
+      "once_per_turn": true,
+      "effects": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{W}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "filter": { "this": true }, "kind": "Level" },
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "token": true, "controller": "You" } }, "label": "target token you control" }
+      ],
+      "effects": [
+        { "type": "CopyPermanent", "what": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 1 }, "except": [] }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{3}{W}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "Modify",
+        "affects": { "types": ["Creature"], "token": true, "controller": "You" },
+        "power": { "type": "Fixed", "n": 2 },
+        "toughness": { "type": "Fixed", "n": 2 }
+      },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 }
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nWhenever one or more tokens you control enter, draw a card. This ability triggers only once each turn.\n{W}: Level 2\nWhen this Class becomes level 2, create a token that's a copy of target token you control.\n{3}{W}: Level 3\nCreature tokens you control get +2/+2."
+}

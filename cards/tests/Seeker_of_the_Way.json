@@ -1,0 +1,205 @@
+[
+ {
+  "name": "noncreature spell: prowess and lifelink",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Seeker of the Way",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Seeker of the Way": [
+     3,
+     3
+    ]
+   },
+   "keywords": {
+    "Seeker of the Way": [
+     "Lifelink"
+    ]
+   },
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "creature spell does nothing",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Seeker of the Way",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Seeker of the Way": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "lifelink gained from the trigger gains life when it deals damage",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Seeker of the Way",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Seeker of the Way",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 23
+    },
+    {
+     "life": 14
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: playing a land does not trigger prowess",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Seeker of the Way"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "pt": { "Seeker of the Way": [2, 2] },
+   "players": [{}, {}]
+  }
+ },
+ {
+  "name": "ruling: prowess goes on the stack above the spell and resolves first",
+  "players": [
+   { "hand": ["Lightning Bolt", "Forest"], "battlefield": ["Seeker of the Way", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "play_land": "Forest", "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Seeker of the Way": [3, 3] },
+   "players": [{}, { "life": 17 }]
+  }
+ },
+ {
+  "name": "ruling: prowess still resolves after the noncreature spell is countered",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Seeker of the Way", "Mountain"] },
+   { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Seeker of the Way": [3, 3] },
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Cancel"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: lifelink from several noncreature spells is redundant (combat gain is the damage, once)",
+  "players": [
+   { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Seeker of the Way", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Seeker of the Way", "at": "p1" }] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 24 },
+    { "life": 10 }
+   ]
+  }
+ }
+]

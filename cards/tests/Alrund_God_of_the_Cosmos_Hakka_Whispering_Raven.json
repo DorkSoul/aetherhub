@@ -1,0 +1,100 @@
+[
+  {
+    "name": "Alrund gets +1/+1 for each card in your hand",
+    "players": [
+      { "hand": ["Island", "Forest", "Mountain"], "battlefield": ["Alrund, God of the Cosmos"] },
+      { "hand": ["Plains", "Plains"] }
+    ],
+    "steps": [],
+    "expect": { "pt": { "Alrund, God of the Cosmos": [4, 4] } }
+  },
+  {
+    "name": "a foretold card in exile counts too; a non-foretold exiled card does not",
+    "players": [
+      { "hand": ["Demon Bolt", "Island"], "exile": ["Grizzly Bears"], "battlefield": ["Alrund, God of the Cosmos", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Demon Bolt", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Grizzly Bears", "Demon Bolt"], "hand": ["Island"] }, {}],
+      "pt": { "Alrund, God of the Cosmos": [3, 3] }
+    }
+  },
+  {
+    "name": "end step: chosen type revealed goes to hand, the rest to the bottom",
+    "players": [
+      { "battlefield": ["Alrund, God of the Cosmos"], "library": ["Island", "Grizzly Bears", "Swamp", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": ["Land"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Island"], "library_count": 23, "library_top": ["Swamp", "Forest"] }, {}]
+    }
+  },
+  {
+    "name": "end step: both revealed cards of the chosen type go to hand",
+    "players": [
+      { "battlefield": ["Alrund, God of the Cosmos"], "library": ["Grizzly Bears", "Hill Giant", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": ["Creature"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Grizzly Bears", "Hill Giant"], "library_count": 21, "library_top": ["Forest"] }, {}],
+      "pt": { "Alrund, God of the Cosmos": [3, 3] }
+    }
+  },
+  {
+    "name": "end step: no card of the chosen type puts both on the bottom in the chosen order",
+    "players": [
+      { "battlefield": ["Alrund, God of the Cosmos"], "library": ["Island", "Swamp", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": ["Creature", [1, 0]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 0, "library_count": 23, "library_top": ["Forest"] }, {}]
+    }
+  },
+  {
+    "name": "Hakka cast as the back face is a 2/3 flyer",
+    "players": [
+      { "hand": ["Alrund, God of the Cosmos"], "battlefield": ["Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alrund, God of the Cosmos", "face": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Hakka, Whispering Raven"] }, {}],
+      "pt": { "Hakka, Whispering Raven": [2, 3] },
+      "keywords": { "Hakka, Whispering Raven": ["Flying"] }
+    }
+  },
+  {
+    "name": "Hakka returns to hand after combat damage, then scry 2",
+    "players": [
+      { "battlefield": ["Hakka, Whispering Raven"], "library": ["Island", "Swamp", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Hakka, Whispering Raven", "at": "p1" }] },
+      { "advance_to": "Main2", "answers": [["Island"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Alrund, God of the Cosmos"], "library_top": ["Swamp"] }, { "life": 18 }]
+    }
+  }
+]

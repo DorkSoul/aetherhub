@@ -1,0 +1,51 @@
+[
+  { "name": "a blocker takes 1 damage when it blocks",
+    "players": [ { "battlefield": ["Kolaghan Aspirant"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kolaghan Aspirant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Kolaghan Aspirant" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Kolaghan Aspirant"] }, { "graveyard_has": ["Hill Giant"] } ] }
+  },
+  { "name": "unblocked: no trigger, combat damage to the player",
+    "players": [ { "battlefield": ["Kolaghan Aspirant"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kolaghan Aspirant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  { "name": "ruling: trigger damage kills the blocker, attacker stays blocked and deals no combat damage",
+    "players": [ { "battlefield": ["Kolaghan Aspirant"] }, { "battlefield": ["Llanowar Elves"] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kolaghan Aspirant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Kolaghan Aspirant" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Kolaghan Aspirant"] }, { "graveyard_has": ["Llanowar Elves"], "life": 20 } ] }
+  },
+  { "name": "ruling: blocked by two creatures triggers once per blocker (both 1-toughness blockers die)",
+    "players": [ { "battlefield": ["Kolaghan Aspirant"] }, { "battlefield": ["Llanowar Elves", "Birds of Paradise"] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kolaghan Aspirant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Kolaghan Aspirant" }, { "blocker": "Birds of Paradise", "attacker": "Kolaghan Aspirant" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Kolaghan Aspirant"] }, { "graveyard_has": ["Llanowar Elves", "Birds of Paradise"], "life": 20 } ] }
+  }
+]

@@ -1,0 +1,95 @@
+[
+  {
+    "name": "creature enters with a counter after an opponent lost life",
+    "players": [
+      { "hand": ["Lightning Bolt", "Grizzly Bears"], "battlefield": ["Gev, Scaled Scorch", "Mountain", "Forest", "Forest", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "no counter when no opponent lost life this turn",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Gev, Scaled Scorch", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "casting a Lizard spell pings the opponent",
+    "players": [
+      { "hand": ["Basking Rootwalla"], "battlefield": ["Gev, Scaled Scorch", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Basking Rootwalla" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "non-Lizard spell does not ping",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Gev, Scaled Scorch", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ward-life: the opponent pays 2 life, Bolt resolves and kills Gev",
+    "players": [ { "battlefield": ["Gev, Scaled Scorch"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Gev, Scaled Scorch"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Gev, Scaled Scorch"] }, { "life": 18, "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ward-life: the opponent at 1 life cannot pay 2 life, Bolt is countered and Gev survives",
+    "players": [ { "battlefield": ["Gev, Scaled Scorch"] }, { "life": 1, "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Gev, Scaled Scorch"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Gev, Scaled Scorch"] }, { "life": 1, "graveyard_has": ["Lightning Bolt"] } ] }
+  }
+,
+  {
+    "name": "ruling: an opponent who lost life and then gained it back the same turn still counts as having lost life",
+    "players": [
+      { "hand": ["Lightning Bolt", "Healing Salve", "Grizzly Bears"], "battlefield": ["Gev, Scaled Scorch", "Mountain", "Plains", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Healing Salve", "targets": ["p1"], "answers": [0] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  }
+]

@@ -1,0 +1,131 @@
+[
+  {
+    "name": "blitz: haste, attacks, then sacrificed at end step, draws a card and returns since it dealt combat damage",
+    "players": [
+      { "hand": ["Wave of Rats"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wave of Rats", "alt": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Wave of Rats", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Wave of Rats"], "hand_count": 1 },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "normal cast has no haste: attacking is illegal",
+    "players": [
+      { "hand": ["Wave of Rats"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wave of Rats" },
+      { "resolve": true },
+      { "attack": [ { "card": "Wave of Rats", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Wave of Rats"] }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "dies without dealing combat damage this turn: stays in the graveyard",
+    "players": [
+      { "battlefield": ["Wave of Rats"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Wave of Rats"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Wave of Rats"], "battlefield_lacks": ["Wave of Rats"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature killed before the end step stays in the graveyard and is not sacrificed",
+    "players": [
+      { "hand": ["Wave of Rats"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Wave of Rats", "alt": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Wave of Rats"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Wave of Rats"], "battlefield_lacks": ["Wave of Rats"], "hand_count": 1 },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature draws a card when it dies to damage, not only when sacrificed",
+    "players": [
+      { "hand": ["Wave of Rats"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Wave of Rats", "alt": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Wave of Rats"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Wave of Rats"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature that never attacks is still sacrificed at the end step and draws",
+    "players": [
+      { "hand": ["Wave of Rats"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wave of Rats", "alt": 0 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Wave of Rats"], "battlefield_lacks": ["Wave of Rats"], "hand_count": 1 },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitz-cast Wave of Rats can be countered on the stack",
+    "players": [
+      { "hand": ["Wave of Rats"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Wave of Rats", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Wave of Rats" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Wave of Rats"], "battlefield_lacks": ["Wave of Rats"], "hand_count": 0 },
+        { "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "sacrifice after combat damage: the player can't cast noncreature spells",
+    "players": [ { "battlefield": ["Hope of Ghirapur"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hope of Ghirapur", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "activate": "Hope of Ghirapur", "targets": ["p1"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hope of Ghirapur"] }, { "life": 19 } ] }
+  },
+  {
+    "name": "no target if it dealt no combat damage",
+    "players": [ { "battlefield": ["Hope of Ghirapur"] }, {} ],
+    "steps": [ { "activate": "Hope of Ghirapur", "illegal": true } ],
+    "expect": { "players": [ {}, {} ] }
+  },
+  {
+    "name": "ruling: the affected player can still cast creature spells",
+    "players": [ { "battlefield": ["Hope of Ghirapur"] }, { "hand": ["Spectral Sailor"], "battlefield": ["Island"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hope of Ghirapur", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "activate": "Hope of Ghirapur", "targets": ["p1"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hope of Ghirapur"] }, { "battlefield_has": ["Spectral Sailor"], "life": 19 } ] }
+  },
+  {
+    "name": "ruling: a noncreature spell cast in response to the ability is not affected; a later one is stopped",
+    "players": [ { "battlefield": ["Hope of Ghirapur"] }, { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hope of Ghirapur", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "activate": "Hope of Ghirapur", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": { "players": [ { "life": 17, "graveyard_has": ["Hope of Ghirapur"] }, { "life": 19, "hand_count": 1, "graveyard_has": ["Lightning Bolt"] } ] }
+  }
+]

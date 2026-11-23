@@ -1,0 +1,27 @@
+[
+  { "name": "target land becomes a 3/3 creature until end of turn",
+    "players": [ { "hand": ["Animate Land"], "battlefield": ["Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Animate Land", "targets": ["Forest"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Animate Land"] }, {} ], "pt": { "Forest": [3, 3] } } },
+  { "name": "can target an opponent's land",
+    "players": [ { "hand": ["Animate Land"], "battlefield": ["Forest"] }, { "battlefield": ["Plains"] } ],
+    "steps": [ { "cast": "Animate Land", "targets": ["p1:Plains"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Animate Land"] }, {} ], "pt": { "Plains": [3, 3] } } },
+  { "name": "ruling: a land that came under your control this turn cannot attack once animated",
+    "players": [ { "hand": ["Animate Land"], "battlefield": [ { "name": "Forest", "sick": true }, "Llanowar Elves" ] }, {} ],
+    "steps": [
+      { "tap_for_mana": "Llanowar Elves" },
+      { "cast": "Animate Land", "targets": ["Forest"] }, { "resolve": true },
+      { "attack": [ { "card": "Forest", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": { "pt": { "Forest": [3, 3] }, "tapped": { "Forest": false }, "players": [ {}, { "life": 20 } ] } },
+  { "name": "ruling: a land controlled since the start of your turn can attack once animated",
+    "players": [ { "hand": ["Animate Land"], "battlefield": ["Forest", "Llanowar Elves"] }, {} ],
+    "steps": [
+      { "tap_for_mana": "Llanowar Elves" },
+      { "cast": "Animate Land", "targets": ["Forest"] }, { "resolve": true },
+      { "attack": [ { "card": "Forest", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "tapped": { "Forest": true }, "players": [ {}, { "life": 17 } ] } }
+]

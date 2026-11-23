@@ -1,0 +1,107 @@
+[
+ {
+  "name": "job select creates a 1/1 Hero token and attaches the Blades to it",
+  "players": [
+   { "hand": ["Ninja's Blades"], "battlefield": ["Swamp", "Island", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ninja's Blades" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Hero", "Ninja's Blades"] }, {} ],
+   "pt": { "Hero": [2, 2] }
+  }
+ },
+ {
+  "name": "equipped creature that deals combat damage draws, then discards a card and the damaged player loses that much life",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Swamp", "Island", "Grizzly Bears", "Ninja's Blades"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ninja's Blades", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2", "answers": ["Lightning Bolt"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 16 } ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "equipped creature is a Ninja in addition to its other types",
+  "players": [
+   { "battlefield": ["Swamp", "Island", "Grizzly Bears", "Ninja's Blades"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ninja's Blades", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears", "Ninja's Blades"] }, {} ],
+   "subtypes": { "Grizzly Bears": ["Ninja", "Bear"] }
+  }
+ },
+ {
+  "name": "ruling: equip cost moves the Equipment from the Hero token to another creature",
+  "players": [
+   { "hand": ["Ninja's Blades"], "battlefield": ["Swamp", "Island", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ninja's Blades" },
+   { "resolve": true },
+   { "resolve": true },
+   { "activate": "Ninja's Blades", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Hero", "Ninja's Blades", "Grizzly Bears"] }, {} ],
+   "pt": { "Hero": [1, 1], "Grizzly Bears": [3, 3] },
+   "attached": { "Ninja's Blades": "Grizzly Bears" }
+  }
+ },
+ {
+  "name": "ruling: if the Hero token is destroyed the Equipment stays on the battlefield",
+  "players": [
+   { "hand": ["Ninja's Blades", "Lightning Bolt"], "battlefield": ["Swamp", "Island", "Forest", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ninja's Blades" },
+   { "resolve": true },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Hero"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Ninja's Blades"], "battlefield_lacks": ["Hero"], "graveyard_has": ["Lightning Bolt"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a discarded card with {X} in its cost has mana value 0 (Fireball: 1 life lost, not 2)",
+  "players": [
+   { "hand": ["Fireball"], "battlefield": ["Swamp", "Island", "Grizzly Bears", "Ninja's Blades"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ninja's Blades", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2", "answers": ["Fireball"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Fireball"] }, { "life": 16 } ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ }
+]

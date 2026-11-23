@@ -1,0 +1,84 @@
+[
+  {
+    "name": "enters with two +1/+1 counters",
+    "players": [ { "hand": ["Cytoplast Manipulator"], "battlefield": ["Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Cytoplast Manipulator" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Cytoplast Manipulator"] }, {} ],
+      "counters": { "Cytoplast Manipulator": { "p1p1": 2 } },
+      "pt": { "Cytoplast Manipulator": [2, 2] }
+    }
+  },
+  {
+    "name": "graft moves a counter onto a creature that enters",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Island", { "name": "Cytoplast Manipulator", "counters": { "p1p1": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Cytoplast Manipulator", "Grizzly Bears"] }, {} ],
+      "counters": { "Cytoplast Manipulator": { "p1p1": 1 }, "Grizzly Bears": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "{U},{T} steals a creature with a +1/+1 counter until it leaves",
+    "players": [
+      { "battlefield": ["Island", "Cytoplast Manipulator"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "activate": "Cytoplast Manipulator", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Cytoplast Manipulator", "Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"] } ],
+      "tapped": { "Cytoplast Manipulator": true }
+    }
+  },
+  {
+    "name": "ruling: the stolen creature stays under your control after Cytoplast Manipulator untaps",
+    "players": [
+      { "battlefield": ["Island", "Cytoplast Manipulator"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "activate": "Cytoplast Manipulator", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "End" },
+      { "pass": true, "player": 1 },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "turn": 3,
+      "players": [ { "battlefield_has": ["Cytoplast Manipulator", "Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"] } ],
+      "tapped": { "Cytoplast Manipulator": false }
+    }
+  },
+  {
+    "name": "ruling: if Cytoplast Manipulator leaves before its ability resolves, the creature is not stolen",
+    "players": [
+      { "battlefield": ["Island", "Cytoplast Manipulator"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "activate": "Cytoplast Manipulator", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Cytoplast Manipulator"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Cytoplast Manipulator"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  }
+]

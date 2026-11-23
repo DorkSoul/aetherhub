@@ -1,0 +1,73 @@
+[
+  {
+    "name": "draws a card when a creature entered under your control this turn",
+    "players": [
+      { "hand": ["Grizzly Bears", "Thoughtweft Charge"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Thoughtweft Charge", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "library_count": 0, "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "no draw when no creature entered this turn",
+    "players": [
+      { "hand": ["Thoughtweft Charge"], "battlefield": ["Forest", "Forest", "Grizzly Bears"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Thoughtweft Charge", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "library_count": 1 }, {} ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "a non-creature permanent entering does not draw",
+    "players": [
+      { "hand": ["Forest", "Thoughtweft Charge"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "cast": "Thoughtweft Charge", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "library_count": 1 }, {} ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: illegal target on resolution means no pump and no draw",
+    "players": [
+      { "hand": ["Grizzly Bears", "Thoughtweft Charge"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Thoughtweft Charge", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "library_count": 1, "graveyard": ["Thoughtweft Charge", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

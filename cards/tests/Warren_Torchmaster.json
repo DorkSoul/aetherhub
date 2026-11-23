@@ -1,0 +1,32 @@
+[
+  { "name": "blight 1 then target creature gains haste",
+    "players": [ { "battlefield": ["Warren Torchmaster"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat", "answers": [true] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "counters": { "Warren Torchmaster": { "m1m1": 1 } }, "keywords": { "Warren Torchmaster": ["Haste"] }, "pt": { "Warren Torchmaster": [1, 1] } } },
+  { "name": "declining the blight puts no counter",
+    "players": [ { "battlefield": ["Warren Torchmaster"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat", "answers": [false] }, { "resolve": true } ],
+    "expect": { "pt": { "Warren Torchmaster": [2, 2] }, "keywords": { "Warren Torchmaster": [] } } },
+  { "name": "ruling: the reflexive target is chosen when it triggers (haste goes to Grizzly Bears, not the blighted Torchmaster)",
+    "players": [ { "battlefield": ["Warren Torchmaster", { "name": "Grizzly Bears", "sick": true }] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [true, ["Warren Torchmaster"], "Grizzly Bears"] },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ], "counters": { "Warren Torchmaster": { "m1m1": 1 } } } },
+  { "name": "ruling: blight may choose a creature that dies from the -1/-1 counter (Llanowar Elves)",
+    "players": [ { "battlefield": ["Warren Torchmaster", "Llanowar Elves"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [true, ["Llanowar Elves"], "Warren Torchmaster"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Llanowar Elves"], "battlefield_has": ["Warren Torchmaster"] }, {} ] } },
+  { "name": "ruling: a +1/+1 and a -1/-1 counter on the same creature are removed together as state-based actions",
+    "players": [ { "battlefield": ["Warren Torchmaster", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [true, ["Grizzly Bears"], "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, {} ], "counters": { "Grizzly Bears": { "p1p1": 0, "m1m1": 0 } }, "pt": { "Grizzly Bears": [2, 2] } } }
+]

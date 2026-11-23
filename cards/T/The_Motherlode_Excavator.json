@@ -1,0 +1,65 @@
+{
+  "name": "The Motherlode, Excavator",
+  "mana_cost": "{3}{R}{R}",
+  "types": ["Artifact", "Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Robot"],
+  "power": 5,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" }
+      ],
+      "effects": [
+        {
+          "type": "GainEnergy",
+          "who": { "type": "You" },
+          "n": {
+            "type": "Count",
+            "filter": { "types": ["Land"], "not_supertypes": ["Basic"] },
+            "player": { "type": "Target", "idx": 0 },
+            "zone": "Battlefield"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "MayPay",
+          "payer": { "type": "You" },
+          "cost": [ { "type": "PayEnergy", "n": 4 } ],
+          "effects": [
+            {
+              "type": "Reflexive",
+              "targets": [
+                {
+                  "what": {
+                    "type": "Permanent",
+                    "filter": {
+                      "types": ["Land"],
+                      "not_supertypes": ["Basic"],
+                      "controlled_by": { "type": "DefendingPlayer" }
+                    }
+                  },
+                  "label": "target nonbasic land defending player controls"
+                }
+              ],
+              "effects": [
+                { "type": "Destroy", "what": { "type": "Target", "idx": 0 } },
+                { "type": "LinkPlayer", "what": { "type": "DefendingPlayer" } },
+                { "type": "GrantStatic", "what": { "type": "This" }, "effect": { "type": "CantBlock", "affects": { "types": ["Creature"], "not_keywords": ["Flying"], "controlled_by_chosen_player": true } }, "duration": "UntilEndOfTurn", "dynamic": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When The Motherlode, Excavator enters, choose target opponent. You get an amount of {E} (energy counters) equal to the number of nonbasic lands that player controls.\nWhenever The Motherlode attacks, you may pay {E}{E}{E}{E}. When you do, destroy target nonbasic land defending player controls, and creatures that player controls without flying can't block this turn."
+}

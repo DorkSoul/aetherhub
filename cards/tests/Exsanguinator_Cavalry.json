@@ -1,0 +1,68 @@
+[
+  {
+    "name": "a Knight dealing combat damage to a player gets a +1/+1 counter and a Blood token",
+    "players": [{ "battlefield": ["Exsanguinator Cavalry"] }, {}],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Exsanguinator Cavalry", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Blood"] }, { "life": 18 }],
+      "pt": { "Exsanguinator Cavalry": [3, 4] },
+      "counters": { "Exsanguinator Cavalry": { "PlusOnePlusOne": 1 } }
+    }
+  },
+  {
+    "name": "a non-Knight dealing combat damage does not trigger it",
+    "players": [{ "battlefield": ["Exsanguinator Cavalry", "Grizzly Bears"] }, {}],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Blood"] }, { "life": 18 }],
+      "counters": { "Grizzly Bears": {} }
+    }
+  },
+  {
+    "name": "ruling: a Blood token sacrificed to another card's cost still counts as sacrificed (Blood Hypnotist triggers)",
+    "players": [{ "battlefield": ["Blood Hypnotist", "Anje, Maid of Dishonor", "Blood", "Swamp", "Swamp"] }, { "battlefield": ["Savannah Lions"] }],
+    "steps": [
+      { "activate": "Anje, Maid of Dishonor", "ability": 0, "answers": ["Blood", "Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Blood"], "life": 22 }, { "life": 18 }],
+      "keywords": { "Savannah Lions": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "ruling: a Blood token used to pay its own ability cannot also pay another sacrifice cost",
+    "players": [{ "hand": ["Grizzly Bears"], "battlefield": ["Anje, Maid of Dishonor", "Blood", "Swamp", "Swamp", "Swamp"] }, {}],
+    "steps": [
+      { "activate": "Blood" },
+      { "resolve": true },
+      { "activate": "Anje, Maid of Dishonor", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Blood"], "life": 20 }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "ruling: control - a lone Blood token pays Anje's sacrifice cost on its own",
+    "players": [{ "battlefield": ["Anje, Maid of Dishonor", "Blood", "Swamp", "Swamp"] }, {}],
+    "steps": [
+      { "activate": "Anje, Maid of Dishonor", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Blood"], "life": 22 }, { "life": 18 }]
+    }
+  }
+]

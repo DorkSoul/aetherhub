@@ -1,0 +1,134 @@
+[
+  {
+    "name": "opponent cannot cast an instant during your turn",
+    "players": [
+      { "hand": [], "battlefield": ["Mountain", "City of Solitude"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 20 } ] }
+  },
+  {
+    "name": "opponent cannot tap a mana rock for mana during your turn",
+    "players": [
+      { "hand": [], "battlefield": ["Plains", "City of Solitude"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "tap_for_mana": "Sol Ring", "player": 1, "illegal": true }
+    ],
+    "expect": { "tapped": { "Sol Ring": false } }
+  },
+  {
+    "name": "you can cast an instant during your own turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "City of Solitude"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 17 } ] }
+  },
+  {
+    "name": "you can tap a mana rock during your own turn",
+    "players": [
+      { "battlefield": ["Plains", "City of Solitude", "Sol Ring"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Sol Ring" }
+    ],
+    "expect": { "tapped": { "Sol Ring": true } }
+  },
+  {
+    "name": "opponent cannot respond with an instant during your turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "City of Solitude"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 17 } ], "stack_empty": true }
+  },
+  {
+    "name": "you cannot respond with an instant during the opponent's turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "City of Solitude"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17 }, { "life": 20 } ], "stack_empty": true }
+  },
+  {
+    "name": "opponent cannot tap a mana rock in response during your turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "City of Solitude"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "tap_for_mana": "Sol Ring", "player": 1, "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 17 } ], "tapped": { "Sol Ring": false } }
+  },
+  {
+    "name": "you cannot tap your mana rock during the opponent's turn",
+    "players": [
+      { "battlefield": ["Sol Ring", "City of Solitude"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "pass": true, "player": 1 },
+      { "tap_for_mana": "Sol Ring", "illegal": true }
+    ],
+    "expect": { "tapped": { "Sol Ring": false } }
+  },
+  {
+    "name": "ruling: triggered abilities still trigger during the opponent's turn (they are not activated)",
+    "players": [
+      { "battlefield": ["City of Solitude"] },
+      { "battlefield": [ { "name": "Dreadhorde Butcher", "sick": false } ] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Dreadhorde Butcher", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Dreadhorde Butcher": { "PlusOnePlusOne": 1 } },
+      "players": [ { "life": 19 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a land's mana ability cannot be activated during the opponent's turn",
+    "players": [ { "battlefield": ["Plains", "City of Solitude"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "pass": true, "player": 1 },
+      { "tap_for_mana": "Plains", "illegal": true }
+    ],
+    "expect": { "tapped": { "Plains": false } }
+  }
+]

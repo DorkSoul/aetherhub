@@ -1,0 +1,59 @@
+[
+ {
+  "name": "ETB: draw a card for each other permanent with mana value 3 or greater (Hill Giant counts, Grizzly Bears does not)",
+  "players": [
+   { "hand": ["Keruga, the Macrosage"], "battlefield": ["Hill Giant", "Grizzly Bears", "Island", "Island", "Forest", "Forest", "Forest"], "library": ["Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Keruga, the Macrosage" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "battlefield_has": ["Keruga, the Macrosage", "Hill Giant", "Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ETB: Keruga does not count itself when no other permanent has mana value 3 or more",
+  "players": [
+   { "hand": ["Keruga, the Macrosage"], "battlefield": ["Grizzly Bears", "Island", "Island", "Forest", "Forest", "Forest"], "library": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Keruga, the Macrosage" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "battlefield_has": ["Keruga, the Macrosage"] },
+    {}
+   ]
+  }
+ },
+  {"name": "companion: pay {3} to put it from the sideboard into your hand", "players": [{"battlefield": ["Forest", "Forest", "Forest"], "sideboard": ["Keruga, the Macrosage"], "companion": "Keruga, the Macrosage"}, {}], "steps": [{"companion": "Keruga, the Macrosage"}], "expect": {"players": [{"hand": ["Keruga, the Macrosage"], "sideboard": []}, {}]}},
+ {"name": "ruling: a Walking Ballista with X=2 on the battlefield has mana value 0, so it is not counted (no draw)",
+  "players": [ { "hand": ["Walking Ballista", "Keruga, the Macrosage"], "battlefield": ["Forest","Forest","Forest","Forest","Forest","Forest","Forest","Forest","Forest"], "library": ["Forest","Forest","Forest"] }, {} ],
+  "steps": [ { "cast": "Walking Ballista", "answers": [2] }, { "resolve": true }, { "cast": "Keruga, the Macrosage" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 0, "battlefield_has": ["Walking Ballista", "Keruga, the Macrosage"] }, {} ] } },
+ {"name": "ruling: a token that is not a copy has mana value 0, so a Treasure does not count (no draw)",
+  "players": [ { "hand": ["Keruga, the Macrosage"], "battlefield": ["Treasure", "Grizzly Bears", "Forest","Forest","Forest","Forest","Forest"], "library": ["Forest","Forest"] }, {} ],
+  "steps": [ { "cast": "Keruga, the Macrosage" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 0, "battlefield_has": ["Keruga, the Macrosage", "Treasure"] }, {} ] } },
+ {"name": "ruling: the companion special action uses no stack, so the card can be cast right after paying {3}",
+  "players": [ { "battlefield": ["Forest","Forest","Forest","Forest","Forest","Forest","Forest","Forest"], "sideboard": ["Keruga, the Macrosage"], "companion": "Keruga, the Macrosage" }, {} ],
+  "steps": [ { "companion": "Keruga, the Macrosage" }, { "cast": "Keruga, the Macrosage" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Keruga, the Macrosage"], "sideboard": [] }, {} ] } },
+ {"name": "ruling: the {3} companion payment needs three mana (two lands: illegal)",
+  "players": [ { "battlefield": ["Forest","Forest"], "sideboard": ["Keruga, the Macrosage"], "companion": "Keruga, the Macrosage" }, {} ],
+  "steps": [ { "companion": "Keruga, the Macrosage", "illegal": true } ],
+  "expect": { "players": [ { "hand": [], "sideboard": ["Keruga, the Macrosage"] }, {} ] } },
+ {"name": "ruling: a companion put into hand is an ordinary card: countered, it goes to the graveyard and stays in the game",
+  "players": [ { "battlefield": ["Forest","Forest","Forest","Forest","Forest","Forest","Forest","Forest"], "sideboard": ["Keruga, the Macrosage"], "companion": "Keruga, the Macrosage" }, { "hand": ["Counterspell"], "battlefield": ["Island","Island"] } ],
+  "steps": [ { "companion": "Keruga, the Macrosage" }, { "cast": "Keruga, the Macrosage" }, { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Keruga, the Macrosage" } ] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Keruga, the Macrosage"], "sideboard": [] }, { "graveyard": ["Counterspell"] } ] } }
+]

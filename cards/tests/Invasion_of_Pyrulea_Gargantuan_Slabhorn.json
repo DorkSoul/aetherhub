@@ -1,0 +1,119 @@
+[
+ {
+  "name": "enters with 4 defense; a land on top after the scry draws a card",
+  "players": [
+   { "hand": ["Invasion of Pyrulea // Gargantuan Slabhorn"], "battlefield": ["Forest", "Island"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [ { "cast": "Invasion of Pyrulea // Gargantuan Slabhorn" }, { "resolve": true, "auto": true } ],
+  "expect": {
+   "players": [ { "hand_count": 1, "hand": ["Forest"] }, {} ],
+   "counters": { "Invasion of Pyrulea // Gargantuan Slabhorn": { "Defense": 4 } }
+  }
+ },
+ {
+  "name": "a nonland, single-faced card on top draws nothing",
+  "players": [
+   { "hand": ["Invasion of Pyrulea // Gargantuan Slabhorn"], "battlefield": ["Forest", "Island"], "library": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [ { "cast": "Invasion of Pyrulea // Gargantuan Slabhorn" }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "hand_count": 0, "library_top": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "a double-faced card on top draws a card",
+  "players": [
+   { "hand": ["Invasion of Pyrulea // Gargantuan Slabhorn"], "battlefield": ["Forest", "Island"], "library": ["Invasion of Belenon // Belenon War Anthem", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [ { "cast": "Invasion of Pyrulea // Gargantuan Slabhorn" }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "hand": ["Invasion of Belenon // Belenon War Anthem"] }, {} ] }
+ },
+ {
+  "name": "defeated, it returns as a 4/4 trampler (5/5 with the other back face's anthem); another transformed permanent gets trample too",
+  "players": [
+   { "battlefield": [
+      { "name": "Invasion of Pyrulea // Gargantuan Slabhorn", "counters": { "Defense": 1 } },
+      { "name": "Invasion of Belenon // Belenon War Anthem", "counters": { "Defense": 1 } },
+      { "name": "Hill Giant", "sick": false },
+      { "name": "Goblin Piker", "sick": false }
+     ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [
+      { "card": "Hill Giant", "at": "Invasion of Pyrulea // Gargantuan Slabhorn" },
+      { "card": "Goblin Piker", "at": "Invasion of Belenon // Belenon War Anthem" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "pt": { "Gargantuan Slabhorn": [5, 5] },
+   "keywords": { "Gargantuan Slabhorn": ["Trample"], "Belenon War Anthem": ["Trample"] }
+  }
+ },
+ {
+  "name": "back-face Ward {2}: 4 Swamps leave 1 spare after Murder, cannot pay the ward, Murder is countered",
+  "players": [
+   { "battlefield": ["Gargantuan Slabhorn"] },
+   { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [ { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Gargantuan Slabhorn"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Gargantuan Slabhorn"] }, { "graveyard_has": ["Murder"] } ] }
+ },
+ {
+  "name": "back-face Ward {2}: 5 Swamps pay Murder and the ward, Murder destroys the 4/4",
+  "players": [
+   { "battlefield": ["Gargantuan Slabhorn"] },
+   { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [ { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Gargantuan Slabhorn"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "graveyard_has": ["Invasion of Pyrulea // Gargantuan Slabhorn"] }, {} ] }
+ },
+ {
+  "name": "other transformed permanent (Disciples of the Inferno, no ward of its own) gets Ward {2}: 3 Swamps cannot pay it, Murder is countered",
+  "players": [
+   { "battlefield": ["Gargantuan Slabhorn", "Disciples of the Inferno"] },
+   { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [ { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Disciples of the Inferno"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Disciples of the Inferno"] }, { "graveyard_has": ["Murder"] } ] }
+ },
+ {
+  "name": "ruling: combat damage to a battle removes that many defense counters (3 of 4 leaves 1)",
+  "players": [
+   { "battlefield": [
+      { "name": "Invasion of Pyrulea // Gargantuan Slabhorn", "counters": { "Defense": 4 } },
+      { "name": "Hill Giant", "sick": false }
+     ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [{ "card": "Hill Giant", "at": "Invasion of Pyrulea // Gargantuan Slabhorn" }] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "counters": { "Invasion of Pyrulea // Gargantuan Slabhorn": { "Defense": 1 } },
+   "players": [{ "battlefield_has": ["Invasion of Pyrulea // Gargantuan Slabhorn"] }, {}]
+  }
+ },
+ {
+  "name": "ruling: a battle is a legal target for any-target damage; Lightning Bolt removes 3 defense counters",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": [
+      { "name": "Invasion of Pyrulea // Gargantuan Slabhorn", "counters": { "Defense": 4 } },
+      "Mountain"
+     ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Invasion of Pyrulea // Gargantuan Slabhorn"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Invasion of Pyrulea // Gargantuan Slabhorn": { "Defense": 1 } },
+   "players": [{ "graveyard": ["Lightning Bolt"] }, {}]
+  }
+ }
+]

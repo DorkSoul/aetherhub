@@ -1,0 +1,44 @@
+[
+ {
+  "name": "plain cast: tap mode taps the target",
+  "players": [ { "hand": ["Psychic Puppetry"], "battlefield": ["Island", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Psychic Puppetry", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [[0]] } ],
+  "expect": { "tapped": { "Grizzly Bears": true }, "players": [ { "hand": [] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "plain cast: untap mode untaps a tapped target",
+  "players": [ { "hand": ["Psychic Puppetry"], "battlefield": ["Island", "Island"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+  "steps": [ { "cast": "Psychic Puppetry", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [[1]] } ],
+  "expect": { "tapped": { "Grizzly Bears": false }, "players": [ { "hand": [] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "choosing neither mode does nothing",
+  "players": [ { "hand": ["Psychic Puppetry"], "battlefield": ["Island", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Psychic Puppetry", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [[]] } ],
+  "expect": { "tapped": { "Grizzly Bears": false }, "players": [ { "hand": [] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "spliced onto Glacial Ray: Glacial deals 2 and the spliced Puppetry taps the target",
+  "players": [ { "hand": ["Glacial Ray", "Psychic Puppetry"], "battlefield": ["Mountain", "Island", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Glacial Ray", "targets": ["p1", "Grizzly Bears"], "answers": [true] }, { "resolve": true, "answers": [[0]] } ],
+  "expect": { "tapped": { "Grizzly Bears": true }, "players": [ { "hand": ["Psychic Puppetry"] }, { "life": 18, "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "declining the splice: Glacial Ray alone, Puppetry's tap does not happen",
+  "players": [ { "hand": ["Glacial Ray", "Psychic Puppetry"], "battlefield": ["Mountain", "Island", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Glacial Ray", "targets": ["p1"], "answers": [false] }, { "resolve": true } ],
+  "expect": { "tapped": { "Grizzly Bears": false }, "players": [ { "hand": ["Psychic Puppetry"] }, { "life": 18, "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: the spliced Puppetry may target something other than Glacial Ray's target (untap mode untaps the creature)",
+  "players": [ { "hand": ["Glacial Ray", "Psychic Puppetry"], "battlefield": ["Mountain", "Island", "Island"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+  "steps": [ { "cast": "Glacial Ray", "targets": ["p1", "Grizzly Bears"], "answers": [true] }, { "resolve": true, "answers": [[1]] } ],
+  "expect": { "tapped": { "Grizzly Bears": false }, "players": [ { "hand": ["Psychic Puppetry"] }, { "life": 18, "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: if all targets are illegal on resolution the spell does nothing (Bolt kills the only target in response)",
+  "players": [ { "hand": ["Psychic Puppetry", "Lightning Bolt"], "battlefield": ["Island", "Island", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Psychic Puppetry", "targets": ["Grizzly Bears"] }, { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "pass": true }, { "pass": true }, { "pass": true }, { "pass": true, "player": 1 } ],
+  "expect": { "players": [ { "hand": [], "graveyard": ["Psychic Puppetry", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ] }
+ }
+]

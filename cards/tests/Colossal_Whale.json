@@ -1,0 +1,282 @@
+[
+ {
+  "name": "attack trigger exiles a creature of the defending player",
+  "players": [
+   {
+    "battlefield": [
+     "Colossal Whale"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Colossal Whale",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears",
+     true
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Colossal Whale"
+     ]
+    },
+    {
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Hill Giant"
+     ],
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining the optional trigger exiles nothing",
+  "players": [
+   {
+    "battlefield": [
+     "Colossal Whale"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Colossal Whale",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "exile": [],
+     "battlefield": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "exiled creature returns when the Whale leaves the battlefield",
+  "players": [
+   {
+    "battlefield": [
+     "Colossal Whale"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Plains"
+    ],
+    "hand": [
+     "Swords to Plowshares"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Colossal Whale",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Swords to Plowshares",
+    "player": 1,
+    "targets": [
+     "Colossal Whale"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Colossal Whale"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "islandwalk: can't be blocked if defending player controls an Island",
+  "players": [
+   {
+    "battlefield": [
+     "Colossal Whale"
+    ]
+   },
+   {
+    "battlefield": [
+     "Island",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Colossal Whale",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Colossal Whale"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "ruling: the Whale leaves before its attack trigger resolves, so nothing is exiled",
+  "players": [
+   { "battlefield": ["Colossal Whale", "Tel-Jilad Stylus"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Colossal Whale", "at": "p1" } ] },
+   { "activate": "Tel-Jilad Stylus", "ability": 0, "targets": ["Colossal Whale"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Colossal Whale"] },
+    { "battlefield": ["Grizzly Bears"], "exile": [] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an Aura on the exiled creature goes to its owner's graveyard",
+  "players": [
+   { "hand": ["Claustrophobia"], "battlefield": ["Colossal Whale", "Island", "Island", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Claustrophobia", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Colossal Whale", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Claustrophobia"], "battlefield_has": ["Colossal Whale"] },
+    { "exile": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

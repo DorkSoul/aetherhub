@@ -1,0 +1,83 @@
+{
+  "name": "Frodo, Sauron's Bane",
+  "mana_cost": "{W}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Halfling", "Citizen"],
+  "power": 1,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{W/B}{W/B}" }],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "this": true, "subtypes": ["Citizen"] }, "zone": "Battlefield" },
+            "cmp": { "op": "Ge", "n": 1 }
+          },
+          "then": [
+            {
+              "type": "Animate",
+              "what": { "type": "This" },
+              "set_subtypes": ["Halfling", "Scout"],
+              "power": 2,
+              "toughness": 3,
+              "keywords": ["Lifelink"],
+              "duration": "Forever"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{B}{B}{B}" }],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "this": true, "subtypes": ["Scout"] }, "zone": "Battlefield" },
+            "cmp": { "op": "Ge", "n": 1 }
+          },
+          "then": [
+            {
+              "type": "Animate",
+              "what": { "type": "This" },
+              "set_subtypes": ["Halfling", "Rogue"],
+              "duration": "Forever"
+            },
+            {
+              "type": "GrantStatic",
+              "what": { "type": "This" },
+              "effect": {
+                "type": "GrantAbility",
+                "affects": { "this": true },
+                "ability": {
+                  "type": "Triggered",
+                  "trigger": {
+                    "type": "CombatDamageToPlayer",
+                    "filter": { "this": true }
+                  },
+                  "effects": [
+                    {
+                      "type": "If",
+                      "cond": { "type": "RingTempted", "at_least": 4 },
+                      "then": [{ "type": "LoseGame", "who": { "type": "TriggerPlayer" } }],
+                      "else": [{ "type": "RingTempts" }]
+                    }
+                  ]
+                }
+              },
+              "duration": "Forever"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{W/B}{W/B}: If Frodo is a Citizen, it becomes a Halfling Scout with base power and toughness 2/3 and lifelink.\n{B}{B}{B}: If Frodo is a Scout, it becomes a Halfling Rogue with \"Whenever this creature deals combat damage to a player, that player loses the game if the Ring has tempted you four or more times this game. Otherwise, the Ring tempts you.\""
+}

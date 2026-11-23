@@ -1,0 +1,129 @@
+[
+  {
+    "name": "unkicked, mode 1: opponent discards two cards they choose",
+    "players": [
+      { "hand": ["Inscription of Ruin"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Forest", "Mountain", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [0], "targets": ["p1"] },
+      { "resolve": true, "answers": [["Forest", "Mountain"]] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Inscription of Ruin"] },
+        { "hand": ["Island"], "graveyard": ["Forest", "Mountain"] }
+      ]
+    }
+  },
+  {
+    "name": "unkicked, mode 2: return a mana value 2 creature card from your graveyard (Grizzly Bears, mv 2 is legal)",
+    "players": [
+      { "hand": ["Inscription of Ruin"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [1], "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Inscription of Ruin"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "unkicked, mode 3: destroy a creature with mana value 3 or less (Grizzly Bears, mv 2)",
+    "players": [
+      { "hand": ["Inscription of Ruin"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [2], "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Inscription of Ruin"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "kicked (7 mana): choose any number; return Llanowar Elves and destroy Grizzly Bears",
+    "players": [
+      {
+        "hand": ["Inscription of Ruin"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Plains", "Plains", "Plains", "Plains"],
+        "graveyard": ["Llanowar Elves"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [true, [1, 2]], "targets": ["Llanowar Elves", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Llanowar Elves"], "graveyard": ["Inscription of Ruin"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: kicked with all three modes performs them in order (discard two, return Llanowar Elves, destroy Grizzly Bears)",
+    "players": [
+      { "hand": ["Inscription of Ruin"], "battlefield": ["Swamp", "Swamp", "Swamp", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Llanowar Elves"] },
+      { "hand": ["Forest", "Mountain"], "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [true, [0, 1, 2]], "targets": ["p1", "Llanowar Elves", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Llanowar Elves"], "graveyard": ["Inscription of Ruin"] },
+        { "hand": [], "battlefield": [], "graveyard": ["Forest", "Mountain", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an illegal target does not stop the other modes (opponent Bolts their own Bears in response; Llanowar Elves still returns)",
+    "players": [
+      { "hand": ["Inscription of Ruin"], "battlefield": ["Swamp", "Swamp", "Swamp", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Llanowar Elves"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [true, [1, 2]], "targets": ["Llanowar Elves", "Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Llanowar Elves"], "graveyard": ["Inscription of Ruin"] },
+        { "graveyard": ["Lightning Bolt", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: X in mana cost counts as 0 in the graveyard, so Walking Ballista (mv 0) is a legal return target",
+    "players": [
+      { "hand": ["Inscription of Ruin"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Walking Ballista"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Inscription of Ruin", "answers": [1], "targets": ["Walking Ballista"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Inscription of Ruin", "Walking Ballista"] },
+        {}
+      ]
+    }
+  }
+]

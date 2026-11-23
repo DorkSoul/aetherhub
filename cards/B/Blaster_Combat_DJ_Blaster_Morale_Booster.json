@@ -1,0 +1,152 @@
+{
+  "name": "Blaster, Combat DJ // Blaster, Morale Booster",
+  "mana_cost": "{3}{R}{G}",
+  "types": ["Artifact", "Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Robot"],
+  "colors": ["R", "G"],
+  "power": 3,
+  "toughness": 3,
+  "layout": "Transform",
+  "abilities": [
+    {
+      "type": "Replace",
+      "what": {
+        "type": "EntersWithCounters",
+        "filter": {
+          "types": ["Artifact"],
+          "controller": "You",
+          "other": true,
+          "token": false,
+          "any_of": [ { "types": ["Creature"] }, { "subtypes": ["Vehicle"] } ]
+        },
+        "kind": "PlusOnePlusOne",
+        "n": { "type": "Fixed", "n": 1 }
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": {
+          "types": ["Artifact"],
+          "controller": "You",
+          "other": true,
+          "token": false,
+          "any_of": [ { "types": ["Creature"] }, { "subtypes": ["Vehicle"] } ]
+        },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "Dies", "filter": { "this": true } },
+          "optional": true,
+          "targets": [
+            {
+              "what": { "type": "Permanent", "filter": { "all_types": ["Artifact", "Creature"] } },
+              "label": "target artifact creature"
+            }
+          ],
+          "effects": [
+            {
+              "type": "AddCounters",
+              "kind": "PlusOnePlusOne",
+              "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } },
+              "what": { "type": "Target", "idx": 0 }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "CounterAdded",
+        "filter": { "this": true },
+        "kind": "PlusOnePlusOne"
+      },
+      "effects": [
+        { "type": "Transform", "what": { "type": "This" } }
+      ]
+    }
+  ],
+  "oracle_text": "More Than Meets the Eye {1}{R}{G} (You may cast this card converted for {1}{R}{G}.)\nOther nontoken artifact creatures and Vehicles you control have modular 1. (They enter with an additional +1/+1 counter on them. When they die, you may put their +1/+1 counters on target artifact creature.)\nWhenever you put one or more +1/+1 counters on Blaster, convert it.",
+  "back": {
+    "name": "Blaster, Morale Booster",
+    "types": ["Artifact"],
+    "supertypes": ["Legendary"],
+    "power": null,
+    "toughness": null,
+    "abilities": [
+      {
+        "type": "AlternativeCost",
+        "cost": [ { "type": "Mana", "cost": "{1}{R}{G}" } ],
+        "from": "Hand"
+      },
+      {
+        "type": "EntersWithCounters",
+        "kind": "PlusOnePlusOne",
+        "n": { "type": "Fixed", "n": 3 }
+      },
+      {
+        "type": "Triggered",
+        "trigger": { "type": "Dies", "filter": { "this": true } },
+        "optional": true,
+        "targets": [
+          {
+            "what": { "type": "Permanent", "filter": { "all_types": ["Artifact", "Creature"] } },
+            "label": "target artifact creature"
+          }
+        ],
+        "effects": [
+          {
+            "type": "AddCounters",
+            "kind": "PlusOnePlusOne",
+            "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } },
+            "what": { "type": "Target", "idx": 0 }
+          }
+        ]
+      },
+      {
+        "type": "Activated",
+        "cost": [
+          { "type": "Mana", "cost": "{X}" },
+          { "type": "Tap" },
+          { "type": "XTimes", "cost": { "type": "RemoveCounters", "kind": "PlusOnePlusOne", "n": 1 } }
+        ],
+        "timing": "Sorcery",
+        "targets": [
+          {
+            "what": { "type": "Permanent", "filter": { "types": ["Artifact"], "other": true } },
+            "label": "another target artifact"
+          }
+        ],
+        "effects": [
+          {
+            "type": "AddCounters",
+            "kind": "PlusOnePlusOne",
+            "n": { "type": "X" },
+            "what": { "type": "Target", "idx": 0 }
+          },
+          {
+            "type": "GrantKeyword",
+            "keyword": "Haste",
+            "duration": "UntilEndOfTurn",
+            "what": { "type": "Target", "idx": 0 }
+          },
+          {
+            "type": "If",
+            "cond": {
+              "type": "Compare",
+              "a": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } },
+              "cmp": { "op": "Eq", "n": 0 }
+            },
+            "then": [
+              { "type": "Transform", "what": { "type": "This" } }
+            ],
+            "else": []
+          }
+        ]
+      }
+    ],
+    "oracle_text": "Modular 3\n{X}, {T}: Move X +1/+1 counters from Blaster onto another target artifact. That artifact gains haste until end of turn. If Blaster has no +1/+1 counters on it, convert it. Activate only as a sorcery."
+  }
+}

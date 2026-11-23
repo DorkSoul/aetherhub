@@ -1,0 +1,462 @@
+[
+  {
+    "name": "may play a land from the top of the library",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur"
+        ],
+        "library": [
+          "Forest",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Glarb, Calamity's Augur",
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot play a land that is not on top of the library",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur"
+        ],
+        "library": [
+          "Grizzly Bears",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Glarb, Calamity's Augur"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "may cast a spell with mana value 4 or greater from the top of the library",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Serra Angel"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Serra Angel"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast a top-of-library spell with mana value below 4",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Glarb, Calamity's Augur"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "{T}: surveil 2 puts the chosen card in the graveyard and keeps the other on top",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur"
+        ],
+        "library": [
+          "Grizzly Bears",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Glarb, Calamity's Augur",
+        "ability": 0
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            0
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Glarb, Calamity's Augur": true
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "library_top": [
+            "Island"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "surveil 2 keeping both cards on top leaves the library unchanged",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur"
+        ],
+        "library": [
+          "Grizzly Bears",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Glarb, Calamity's Augur",
+        "ability": 0
+      },
+      {
+        "resolve": true,
+        "answers": [
+          []
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [],
+          "library_top": [
+            "Grizzly Bears",
+            "Island"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "surveil is a tap ability: a tapped Glarb cannot surveil again",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur"
+        ],
+        "library": [
+          "Grizzly Bears",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Glarb, Calamity's Augur",
+        "ability": 0
+      },
+      {
+        "resolve": true,
+        "answers": [
+          []
+        ]
+      },
+      {
+        "activate": "Glarb, Calamity's Augur",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_top": [
+            "Grizzly Bears",
+            "Island"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a top-of-library creature keeps sorcery timing (not castable in combat)",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Serra Angel"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "cast": "Serra Angel",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_top": [
+            "Serra Angel"
+          ],
+          "battlefield_lacks": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a top-of-library land can't be played during combat",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "play_land": "Forest",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_top": [
+            "Forest"
+          ],
+          "battlefield_lacks": [
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: once the spell from the top is finished, the newly revealed top land can be played",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Serra Angel",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Serra Angel"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Serra Angel",
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an X spell on top of the library has mana value 1 (X is 0 outside the stack), so Glarb cannot cast it from there",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Fireball"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Fireball",
+        "targets": [
+          "p1"
+        ],
+        "answers": [
+          3
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Fireball"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "a card with mana value 4 or more on top of the library can be cast from there",
+    "players": [
+      {
+        "battlefield": [
+          "Glarb, Calamity's Augur",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Ancient Greenwarden"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ancient Greenwarden"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ancient Greenwarden"
+          ]
+        },
+        {}
+      ]
+    }
+  }
+]

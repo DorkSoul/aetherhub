@@ -1,0 +1,200 @@
+[
+  {
+    "name": "mode 1 untaps a nonattacking creature",
+    "players": [
+      {
+        "hand": [
+          "Ruthless Instincts"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          {
+            "name": "Grizzly Bears",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Ruthless Instincts",
+        "answers": [
+          0
+        ],
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "mode 2 pumps an attacker +2/+2 with trample after blocks",
+    "players": [
+      {
+        "hand": [
+          "Ruthless Instincts"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "cast": "Ruthless Instincts",
+        "answers": [
+          1
+        ],
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "no creature to target means it cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Ruthless Instincts"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Ruthless Instincts",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: mode 1 cannot target a creature that is attacking (the same cast on a nonattacking Bears is legal)",
+    "players": [
+      { "hand": ["Ruthless Instincts"], "battlefield": ["Forest", "Forest", "Forest", "Hill Giant", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Ruthless Instincts", "answers": [0], "targets": ["Hill Giant"], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: the same mode 1 cast on the nonattacking Grizzly Bears is legal and resolves",
+    "players": [
+      { "hand": ["Ruthless Instincts"], "battlefield": ["Forest", "Forest", "Forest", "Hill Giant", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Ruthless Instincts", "answers": [0], "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Ruthless Instincts"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: a creature targeted by mode 1 while not attacking can still attack later that turn",
+    "players": [
+      { "hand": ["Ruthless Instincts"], "battlefield": ["Forest", "Forest", "Forest", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Ruthless Instincts", "answers": [0], "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Ruthless Instincts"] }, { "life": 17 } ] }
+  }
+]

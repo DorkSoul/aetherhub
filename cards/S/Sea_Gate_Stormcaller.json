@@ -1,0 +1,52 @@
+{
+  "name": "Sea Gate Stormcaller",
+  "mana_cost": "{1}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Human", "Wizard"],
+  "power": 2,
+  "toughness": 1,
+  "abilities": [
+    { "type": "Kicker", "cost": [ { "type": "Mana", "cost": "{4}{U}" } ], "multi": false },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "AddTrigger",
+          "trigger": {
+            "type": "SpellCast",
+            "by": "You",
+            "filter": {
+              "any_of": [ { "types": ["Instant"] }, { "types": ["Sorcery"] } ],
+              "mana_value": { "op": "Le", "n": 2 }
+            }
+          },
+          "once": true,
+          "until": "EndOfTurn",
+          "effects": [ { "type": "CopySpell", "what": { "type": "TriggerObject" }, "new_targets": true } ]
+        },
+        {
+          "type": "If",
+          "cond": { "type": "Kicked" },
+          "then": [
+            {
+              "type": "AddTrigger",
+              "trigger": {
+                "type": "SpellCast",
+                "by": "You",
+                "filter": {
+                  "any_of": [ { "types": ["Instant"] }, { "types": ["Sorcery"] } ],
+                  "mana_value": { "op": "Le", "n": 2 }
+                }
+              },
+              "once": true,
+              "until": "EndOfTurn",
+              "effects": [ { "type": "CopySpell", "what": { "type": "TriggerObject" }, "new_targets": true } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Kicker {4}{U}\nWhen this creature enters, copy the next instant or sorcery spell with mana value 2 or less you cast this turn when you cast it. If this creature was kicked, copy that spell twice instead. You may choose new targets for the copies."
+}

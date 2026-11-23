@@ -1,0 +1,315 @@
+[
+ {
+  "name": "level 2 ({W}{U}) gains a level and returns up to one target nonland permanent to hand",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     "Island",
+     {
+      "name": "Monk Class",
+      "counters": {
+       "level": 1
+      }
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Monk Class",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Grizzly Bears"
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Monk Class"
+     ]
+    },
+    {
+     "hand": [
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "counters": {
+    "Monk Class": {
+     "level": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "level 2 ability is illegal while the Class is already level 2",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     "Island",
+     "Island",
+     "Island",
+     {
+      "name": "Monk Class",
+      "counters": {
+       "level": 2
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Monk Class",
+    "ability": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Monk Class": {
+     "level": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "the second spell each turn costs {1} less (the first costs full price)",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     {
+      "name": "Monk Class",
+      "counters": {
+       "level": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "second spell costs {G} with a Forest and two other lands in play",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     {
+      "name": "Monk Class",
+      "counters": {
+       "level": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "{1}{W}{U}: level 3 from level 2",
+  "players": [
+   { "battlefield": ["Plains", "Island", "Forest", { "name": "Monk Class", "counters": { "level": 2 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Monk Class", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Monk Class"] }, {} ],
+   "counters": { "Monk Class": { "level": 3 } }
+  }
+ },
+ {
+  "name": "level 3 ability is illegal at level 1",
+  "players": [
+   { "battlefield": ["Plains", "Island", "Forest", { "name": "Monk Class", "counters": { "level": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Monk Class", "ability": 1, "illegal": true }
+  ],
+  "expect": {
+   "counters": { "Monk Class": { "level": 1 } }
+  }
+ },
+ {
+  "name": "level 3: at your upkeep the top card of your library is exiled",
+  "players": [
+   { "battlefield": [{ "name": "Monk Class", "counters": { "level": 3 } }], "library": ["Grizzly Bears", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Grizzly Bears"], "hand": [] }, {} ]
+  }
+ },
+ {
+  "name": "level 2: no upkeep exile",
+  "players": [
+   { "battlefield": [{ "name": "Monk Class", "counters": { "level": 2 } }], "library": ["Grizzly Bears", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Grizzly Bears"], "exile": [] }, {} ]
+  }
+ },
+ {
+  "name": "entering the battlefield, the Class is at level 1 (counter applied on entry)",
+  "players": [
+   {
+    "hand": ["Monk Class"],
+    "battlefield": ["Plains", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Monk Class" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Monk Class"] }, {} ],
+   "counters": { "Monk Class": { "level": 1 } }
+  }
+ },
+ {
+  "name": "level 3: a card exiled by the upkeep trigger can be cast after another spell this turn",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Forest", "Forest", { "name": "Monk Class", "counters": { "level": 3 } }],
+    "library": ["Grizzly Bears", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Monk Class", "Grizzly Bears"], "exile": [] }, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: a level 3 Class keeps its earlier cost reduction (the second spell still costs {1} less)",
+  "players": [ { "hand": ["Grizzly Bears", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", { "name": "Monk Class", "counters": { "level": 3 } }] }, {} ],
+  "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true }, { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: levels are gained one at a time in the same turn (level 2 ability, then level 3 ability)",
+  "players": [ { "battlefield": ["Plains", "Plains", "Island", "Island", "Forest", { "name": "Monk Class", "counters": { "level": 1 } }] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "activate": "Monk Class", "ability": 0 }, { "resolve": true, "answers": [["Grizzly Bears"]] }, { "resolve": true }, { "activate": "Monk Class", "ability": 1 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Monk Class"] }, { "hand": ["Grizzly Bears"] } ], "counters": { "Monk Class": { "level": 3 } } }
+ },
+ {
+  "name": "ruling: two Monk Classes are cumulative (the second spell costs {2} less)",
+  "players": [ { "hand": ["Lightning Bolt", "Shimmercreep"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", { "name": "Monk Class", "counters": { "level": 1 } }, { "name": "Monk Class", "counters": { "level": 1 } }] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "cast": "Shimmercreep" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Shimmercreep"] }, {} ] }
+ },
+ {
+  "name": "ruling: a Class cast as your first spell discounts your second spell this turn",
+  "players": [ { "hand": ["Monk Class", "Grizzly Bears"], "battlefield": ["Plains", "Island", "Forest"] }, {} ],
+  "steps": [ { "cast": "Monk Class" }, { "resolve": true }, { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Monk Class", "Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: a Class cast as your second spell gives no discount to the third spell (its bonus waits for next turn)",
+  "players": [ { "hand": ["Lightning Bolt", "Monk Class", "Grizzly Bears"], "battlefield": ["Mountain", "Plains", "Island", "Forest"] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "cast": "Monk Class" }, { "resolve": true }, { "cast": "Grizzly Bears", "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Monk Class"] }, {} ] }
+ },
+ {
+  "name": "ruling: a level 3 Class cannot activate its level 2 ability (levels must match)",
+  "players": [ { "battlefield": ["Plains", "Island", { "name": "Monk Class", "counters": { "level": 3 } }] }, {} ],
+  "steps": [ { "activate": "Monk Class", "ability": 0, "illegal": true } ],
+  "expect": { "counters": { "Monk Class": { "level": 3 } } }
+ }
+]

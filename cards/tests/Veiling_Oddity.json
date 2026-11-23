@@ -1,0 +1,225 @@
+[
+  {
+    "name": "suspend 4 for {1}{U}: exiled with four time counters",
+    "players": [
+      {
+        "hand": [
+          "Veiling Oddity"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Veiling Oddity"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Veiling Oddity"
+          ],
+          "hand": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "suspend needs {1}{U}: one land is not enough",
+    "players": [
+      {
+        "hand": [
+          "Veiling Oddity"
+        ],
+        "battlefield": [
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Veiling Oddity",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Veiling Oddity"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "last time counter removed from exile: creatures can't be blocked this turn",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Veiling Oddity",
+            "counters": {
+              "Time": 1
+            }
+          }
+        ],
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "control: not the last time counter, so the attacker can still be blocked",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Veiling Oddity",
+            "counters": {
+              "Time": 2
+            }
+          }
+        ],
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the free cast leaves the card exiled, no longer suspended",
+    "players": [
+      { "exile": [ { "name": "Veiling Oddity", "counters": { "Time": 1 } } ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Veiling Oddity"], "battlefield_lacks": ["Veiling Oddity"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: suspend-cast Oddity has haste and, as the last-counter effect applies to creatures entering later, can't be blocked",
+    "players": [
+      { "exile": [ { "name": "Veiling Oddity", "counters": { "Time": 1 } } ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "attack": [ { "card": "Veiling Oddity", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Veiling Oddity" } ], "player": 1, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18 }
+      ]
+    }
+  }
+]

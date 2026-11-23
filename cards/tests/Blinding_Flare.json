@@ -1,0 +1,97 @@
+[
+  {
+    "name": "two targets cost {R} + {R}: both creatures can't block",
+    "players": [
+      { "hand": ["Blinding Flare"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blinding Flare", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Blinding Flare"] }, {} ],
+      "keywords": { "Grizzly Bears": ["CantBlock"], "Hill Giant": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "one target costs just {R}: the other creature can still block",
+    "players": [
+      { "hand": ["Blinding Flare"], "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blinding Flare", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "strive: the second target costs {R} more, so with two Mountains Shock has no mana left",
+    "players": [
+      { "hand": ["Blinding Flare", "Shock"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Blinding Flare", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Shock"] }, { "life": 20 } ],
+      "keywords": { "Grizzly Bears": ["CantBlock"], "Hill Giant": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "ruling: zero targets is legal and the spell just resolves",
+    "players": [
+      { "hand": ["Blinding Flare"], "battlefield": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blinding Flare" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Blinding Flare"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: one target dies in response, the spell still resolves for the other",
+    "players": [
+      { "hand": ["Blinding Flare", "Shock"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Blinding Flare", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Blinding Flare", "Shock"] },
+        { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] }
+      ],
+      "keywords": { "Hill Giant": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "ruling: can target a creature you control",
+    "players": [
+      { "hand": ["Blinding Flare"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Blinding Flare", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Blinding Flare"] }, {} ],
+      "keywords": { "Grizzly Bears": ["CantBlock"] }
+    }
+  }
+]

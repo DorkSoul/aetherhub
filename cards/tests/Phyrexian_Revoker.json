@@ -1,0 +1,112 @@
+[
+ {
+  "name": "ruling: a triggered ability of a source with the chosen name still triggers (Witching Well scry)",
+  "players": [ { "hand": ["Phyrexian Revoker", "Witching Well"], "battlefield": ["Plains", "Plains", "Island"], "library": ["Lightning Bolt", "Grizzly Bears"] }, {} ],
+  "steps": [ { "cast": "Phyrexian Revoker" }, { "resolve": true, "answers": ["Witching Well"] }, { "cast": "Witching Well" }, { "resolve": true, "answers": [["Lightning Bolt"]] } ],
+  "expect": { "players": [ { "battlefield_has": ["Phyrexian Revoker", "Witching Well"], "library_top": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: cycling a card with the chosen name can't be activated from hand",
+  "players": [ { "hand": ["Phyrexian Revoker", "Barkhide Mauler"], "battlefield": ["Plains", "Plains", "Plains", "Plains"], "library": ["Forest", "Swamp"] }, {} ],
+  "steps": [ { "cast": "Phyrexian Revoker" }, { "resolve": true, "answers": ["Barkhide Mauler"] }, { "activate": "Barkhide Mauler", "ability": 0, "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Barkhide Mauler"], "library_top": ["Forest", "Swamp"] }, {} ] }
+ },
+ {
+  "name": "ruling: with a different name chosen, cycling from hand still works",
+  "players": [ { "hand": ["Phyrexian Revoker", "Barkhide Mauler"], "battlefield": ["Plains", "Plains", "Plains", "Plains"], "library": ["Forest", "Swamp"] }, {} ],
+  "steps": [ { "cast": "Phyrexian Revoker" }, { "resolve": true, "answers": ["Phyrexian Revoker"] }, { "activate": "Barkhide Mauler", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "hand": ["Forest"], "graveyard": ["Barkhide Mauler"] }, {} ] }
+ },
+ {
+  "name": "the chosen name's activated abilities can't be activated",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Revoker"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Bonesplitter",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Revoker"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Bonesplitter"
+    ]
+   },
+   {
+    "activate": "Bonesplitter",
+    "ability": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "a card name that is not the chosen one can still be equipped",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Revoker"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Bonesplitter",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Revoker"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "activate": "Bonesplitter",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     2
+    ]
+   },
+   "attached": {
+    "Bonesplitter": "Grizzly Bears"
+   }
+  }
+ }
+]

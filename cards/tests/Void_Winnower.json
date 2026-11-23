@@ -1,0 +1,290 @@
+[
+ {
+  "name": "opponents can cast odd-MV spells (Lightning Bolt)",
+  "players": [
+   {
+    "battlefield": [
+     "Void Winnower"
+    ],
+    "life": 20
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponents can't cast even-MV spells (Grizzly Bears MV 2, Hill Giant MV 4)",
+  "players": [
+   {
+    "battlefield": [
+     "Void Winnower"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Mountain",
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "player": 1,
+    "illegal": true
+   },
+   {
+    "cast": "Hill Giant",
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "hand": [
+      "Grizzly Bears",
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "you can cast even-MV spells",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Void Winnower",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "even-MV creatures can't block, odd ones can",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Void Winnower",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Llanowar Elves"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Void Winnower",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Void Winnower"
+     }
+    ],
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "control: an odd-MV creature may block (and dies to the 11/9)",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Void Winnower",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Llanowar Elves"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Void Winnower",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Llanowar Elves",
+      "attacker": "Void Winnower"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20,
+     "battlefield": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "opponent's own turn: they cannot cast even-MV Grizzly Bears",
+  "players": [ { "battlefield": ["Void Winnower"] }, { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] } ],
+  "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Main1", "player": 1 }, { "cast": "Grizzly Bears", "player": 1, "illegal": true } ],
+  "expect": { "players": [ {}, { "battlefield_lacks": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "even-MV Grizzly Bears cannot block: it is dropped from the double block, Llanowar Elves alone is a legal blocker and the Bears survive",
+  "players": [ { "battlefield": [ { "name": "Void Winnower", "sick": false } ] }, { "battlefield": ["Grizzly Bears", "Llanowar Elves"] } ],
+  "steps": [ { "attack": [ { "card": "Void Winnower", "at": "p1" } ] }, { "block": [ { "blocker": "Grizzly Bears", "attacker": "Void Winnower" }, { "blocker": "Llanowar Elves", "attacker": "Void Winnower" } ], "player": 1 }, { "advance_to": "Main2" } ],
+  "expect": { "players": [ {}, { "life": 20, "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: a cost reduction does not change mana value: Fact or Fiction (MV 4, reduced to 3 mana) is still illegal for the opponent",
+  "players": [ { "battlefield": ["Void Winnower"] }, { "hand": ["Fact or Fiction"], "battlefield": ["Goblin Electromancer", "Island", "Island", "Island"] } ],
+  "steps": [ { "pass": true }, { "cast": "Fact or Fiction", "player": 1, "illegal": true } ],
+  "expect": { "players": [ {}, { "hand": ["Fact or Fiction"] } ] }
+ },
+ {
+  "name": "control: without Void Winnower the reduced Fact or Fiction (3 mana) is castable",
+  "players": [ {}, { "hand": ["Fact or Fiction"], "battlefield": ["Goblin Electromancer", "Island", "Island", "Island"] } ],
+  "steps": [ { "pass": true }, { "cast": "Fact or Fiction", "player": 1 }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ {}, { "graveyard_has": ["Fact or Fiction"] } ] }
+ },
+ {
+  "name": "ruling: a face-down creature has mana value 0 and can't block: the attacker's damage goes through",
+  "players": [ { "battlefield": [{ "name": "Void Winnower", "sick": false }] }, { "battlefield": [{ "name": "Grizzly Bears", "face_down": true }] } ],
+  "steps": [
+   { "attack": [{ "card": "Void Winnower", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Void Winnower" }], "player": 1, "illegal": true },
+   { "block": [], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 9 } ] }
+ },
+ {
+  "name": "ruling: X creatures on the battlefield have X = 0: Endless One with two counters (MV 0) can't block",
+  "players": [ { "battlefield": [{ "name": "Void Winnower", "sick": false }] }, { "battlefield": [{ "name": "Endless One", "counters": { "p1p1": 2 } }] } ],
+  "steps": [
+   { "attack": [{ "card": "Void Winnower", "at": "p1" }] },
+   { "block": [{ "blocker": "Endless One", "attacker": "Void Winnower" }], "player": 1, "illegal": true },
+   { "block": [], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 9 } ], "pt": { "Endless One": [2, 2] } }
+ },
+ {
+  "name": "ruling: Mistcutter Hydra on the battlefield has X = 0 (MV 1), so it can block",
+  "players": [ { "battlefield": [{ "name": "Void Winnower", "sick": false }] }, { "battlefield": [{ "name": "Mistcutter Hydra", "counters": { "p1p1": 2 } }] } ],
+  "steps": [
+   { "attack": [{ "card": "Void Winnower", "at": "p1" }] },
+   { "block": [{ "blocker": "Mistcutter Hydra", "attacker": "Void Winnower" }], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 20, "battlefield_lacks": ["Mistcutter Hydra"] } ] }
+ },
+ {
+  "name": "control: without Void Winnower, the opponent's Endless One with X=5 is castable",
+  "players": [ {}, { "hand": ["Endless One"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] } ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Endless One", "player": 1, "answers": [5] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Endless One"] } ], "pt": { "Endless One": [5, 5] } }
+ }
+]

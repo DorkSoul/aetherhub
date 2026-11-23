@@ -1,0 +1,323 @@
+[
+  {
+    "name": "as it enters it exiles the chosen instant: power and toughness equal its mana value",
+    "players": [
+      {
+        "hand": [
+          "Living Lore"
+        ],
+        "graveyard": [
+          "Lightning Bolt",
+          "Divination"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Living Lore"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Divination"
+        ]
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Living Lore": [
+          3,
+          3
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "exile": [
+            "Divination"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a different choice gives a different size",
+    "players": [
+      {
+        "hand": [
+          "Living Lore"
+        ],
+        "graveyard": [
+          "Lightning Bolt",
+          "Divination"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Living Lore"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Living Lore": [
+          1,
+          1
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Divination"
+          ],
+          "exile": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "only instant and sorcery cards qualify: with none it is a 0/0 and dies",
+    "players": [
+      {
+        "hand": [
+          "Living Lore"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Living Lore"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Living Lore"
+          ],
+          "graveyard": [
+            "Grizzly Bears",
+            "Living Lore"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "combat damage: sacrifice it and cast the exiled Lightning Bolt for free (1 combat damage + 3)",
+    "players": [
+      {
+        "hand": [
+          "Living Lore"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Living Lore"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "attack": [
+          {
+            "card": "Living Lore",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "EndCombat",
+        "answers": [
+          true,
+          true,
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Living Lore"
+          ],
+          "graveyard": [
+            "Living Lore",
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "declining the sacrifice keeps it on the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Living Lore"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Living Lore"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "attack": [
+          {
+            "card": "Living Lore",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "EndCombat",
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Living Lore"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no instant or sorcery in the graveyard it enters as a 0/0 and dies",
+    "players": [
+      { "hand": ["Living Lore"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Living Lore" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Living Lore"], "graveyard": ["Living Lore"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: blocking on the opponent's turn, the exiled sorcery can still be cast free",
+    "players": [
+      { "hand": ["Living Lore"], "graveyard": ["Divination"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Living Lore" },
+      { "resolve": true, "answers": ["Divination"] },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Living Lore", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "advance_to": "EndCombat", "answers": [true, true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Living Lore"], "graveyard": ["Living Lore", "Divination"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

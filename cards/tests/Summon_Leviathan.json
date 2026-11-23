@@ -1,0 +1,241 @@
+[
+ {
+  "name": "chapter I returns every other creature to hand, not itself",
+  "players": [
+   {
+    "hand": [
+     "Summon: Leviathan"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Summon: Leviathan"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "hand": [
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "counters": {
+    "Summon: Leviathan": {
+     "lore": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "chapter II: a Leviathan attacking draws a card this turn",
+  "players": [
+   {
+    "hand": [
+     "Summon: Leviathan"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Summon: Leviathan"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Summon: Leviathan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {
+     "life": 14
+    }
+   ],
+   "counters": {
+    "Summon: Leviathan": {
+     "lore": 2
+    }
+   }
+  }
+ },
+  {
+   "name": "chapter III: a Merfolk (Leviathan-type) attacking draws a card this turn",
+   "players": [
+    { "battlefield": [ { "name": "Summon: Leviathan", "counters": { "lore": 2 } }, "Arctic Merfolk" ] },
+    {}
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "resolve": true },
+    { "attack": [ { "card": "Arctic Merfolk", "at": "p1" } ] },
+    { "resolve": true },
+    { "advance_to": "Main2" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [ { "hand_count": 2, "graveyard": ["Summon: Leviathan"] }, {} ]
+   }
+  },
+  {
+   "name": "chapter III: a creature that is not a Leviathan-type attacking draws nothing",
+   "players": [
+    { "battlefield": [ { "name": "Summon: Leviathan", "counters": { "lore": 2 } }, "Grizzly Bears" ] },
+    {}
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "resolve": true },
+    { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+    { "resolve": true },
+    { "advance_to": "Main2" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [ { "hand_count": 1 }, {} ]
+   }
+  },
+  {
+   "name": "ward {2}: opponent has only 2 mana for Doom Blade, cannot pay the ward, Doom Blade is countered",
+   "players": [
+    { "battlefield": ["Summon: Leviathan"] },
+    { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+   ],
+   "steps": [
+    { "pass": true },
+    { "cast": "Doom Blade", "player": 1, "targets": ["Summon: Leviathan"] },
+    { "resolve": true, "auto": true }
+   ],
+   "expect": {
+    "players": [ { "battlefield_has": ["Summon: Leviathan"] }, { "graveyard_has": ["Doom Blade"], "life": 20 } ]
+   }
+  },
+  {
+   "name": "ward {2}: opponent pays 2 spare mana, Doom Blade destroys it",
+   "players": [
+    { "battlefield": ["Summon: Leviathan"] },
+    { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }
+   ],
+   "steps": [
+    { "pass": true },
+    { "cast": "Doom Blade", "player": 1, "targets": ["Summon: Leviathan"] },
+    { "resolve": true, "auto": true }
+   ],
+   "expect": {
+    "players": [ { "graveyard_has": ["Summon: Leviathan"] }, { "life": 20 } ]
+   }
+  },
+  {
+   "name": "ruling: a Saga with lore 2 stays on the battlefield until chapter III",
+   "players": [
+    { "battlefield": [ { "name": "Summon: Leviathan", "counters": { "lore": 1 } } ] },
+    {}
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [ { "battlefield_has": ["Summon: Leviathan"] }, {} ],
+    "counters": { "Summon: Leviathan": { "lore": 2 } }
+   }
+  },
+  {
+   "name": "ruling: ward still applies at lore 2 (non-chapter ability); Doom Blade with 2 mana is countered",
+   "players": [
+    { "battlefield": [ { "name": "Summon: Leviathan", "counters": { "lore": 2 } } ] },
+    { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+   ],
+   "steps": [
+    { "pass": true },
+    { "cast": "Doom Blade", "player": 1, "targets": ["Summon: Leviathan"] },
+    { "resolve": true, "auto": true }
+   ],
+   "expect": {
+    "players": [ { "battlefield_has": ["Summon: Leviathan"] }, { "graveyard_has": ["Doom Blade"], "life": 20 } ]
+   }
+  },
+  {
+   "name": "ruling: lore 3 triggers chapter III only; chapter I does not trigger again (Grizzly Bears stays)",
+   "players": [
+    { "battlefield": [ { "name": "Summon: Leviathan", "counters": { "lore": 2 } }, "Grizzly Bears" ] },
+    {}
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Summon: Leviathan"] }, {} ]
+   }
+  }
+]

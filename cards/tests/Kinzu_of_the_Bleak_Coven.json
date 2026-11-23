@@ -1,0 +1,170 @@
+[
+  {
+    "name": "pay 2 life to exile a dying creature and get a 1/1 toxic copy",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Kinzu of the Bleak Coven",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 18,
+          "battlefield": [
+            "Mountain",
+            "Kinzu of the Bleak Coven",
+            "Grizzly Bears"
+          ],
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "declining keeps the creature in the graveyard",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Kinzu of the Bleak Coven",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "graveyard": [
+            "Lightning Bolt",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the token copies the dead Arcbound Fiend; its enters-with counters apply but the Fiend's counters are not copied",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Kinzu of the Bleak Coven", { "name": "Arcbound Fiend", "counters": { "p1p1": 3 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Arcbound Fiend"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "battlefield_has": ["Kinzu of the Bleak Coven", "Arcbound Fiend"], "exile": ["Arcbound Fiend"] },
+        {}
+      ],
+      "counters": { "Arcbound Fiend": { "p1p1": 3 } },
+      "pt": { "Arcbound Fiend": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a player with ten poison counters loses at once (the token's toxic poison ends the game)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Kinzu of the Bleak Coven", "Grizzly Bears"] },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0:Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "poison": 10 } ], "winner": 0 }
+  },
+  {
+    "name": "ruling: toxic 1 gives one poison counter and the damage still costs life (token hits for 1)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Kinzu of the Bleak Coven", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0:Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 19, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: toxic has no effect on combat damage dealt to a creature: a blocked token gives no poison",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Kinzu of the Bleak Coven", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0:Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "p0:Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "p1:Grizzly Bears", "attacker": "p0:Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18 }, { "life": 20, "poison": 0, "battlefield_has": ["Grizzly Bears"] } ] }
+  }
+]

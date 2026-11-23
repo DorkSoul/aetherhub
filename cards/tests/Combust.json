@@ -1,0 +1,99 @@
+[
+  {
+    "name": "5 damage kills a blue creature",
+    "players": [
+      { "hand": ["Combust"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Air Elemental"] }
+    ],
+    "steps": [
+      { "cast": "Combust", "targets": ["Air Elemental"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "graveyard": ["Combust"] }, { "graveyard": ["Air Elemental"] }] }
+  },
+  {
+    "name": "a red or green creature is not a legal target",
+    "players": [
+      { "hand": ["Combust"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Combust", "targets": ["Grizzly Bears"], "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: Counterspell targeting Combust resolves but cannot counter it; the damage still happens",
+    "players": [
+      { "hand": ["Combust"], "battlefield": ["Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Air Elemental"] }
+    ],
+    "steps": [
+      { "cast": "Combust", "targets": ["Air Elemental"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Combust" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Combust"] },
+        { "graveyard": ["Counterspell", "Air Elemental"], "battlefield_lacks": ["Air Elemental"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a prevention effect cast in response does not reduce Combust's damage",
+    "players": [
+      { "hand": ["Combust"], "battlefield": ["Mountain", "Mountain"] },
+      { "hand": ["Healing Salve"], "battlefield": ["Plains", "Air Elemental"] }
+    ],
+    "steps": [
+      { "cast": "Combust", "targets": ["Air Elemental"] },
+      { "cast": "Healing Salve", "player": 1, "answers": [1], "targets": ["Air Elemental"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Combust"] },
+        { "graveyard": ["Healing Salve", "Air Elemental"], "battlefield_lacks": ["Air Elemental"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that can regenerate survives Combust's lethal damage",
+    "players": [
+      { "hand": ["Combust"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Revered Dead", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Combust", "targets": ["Revered Dead"] },
+      { "pass": true },
+      { "activate": "Revered Dead", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Combust"] },
+        { "battlefield_has": ["Revered Dead"] }
+      ],
+      "tapped": { "Revered Dead": true }
+    }
+  },
+  {
+    "name": "ruling: a damage-doubling replacement effect still applies to Combust",
+    "players": [
+      { "hand": ["Furnace of Rath", "Combust"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Guardian Lions"] }
+    ],
+    "steps": [
+      { "cast": "Furnace of Rath" },
+      { "resolve": true },
+      { "cast": "Combust", "targets": ["Guardian Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Combust"] },
+        { "graveyard": ["Guardian Lions"] }
+      ]
+    }
+  }
+]

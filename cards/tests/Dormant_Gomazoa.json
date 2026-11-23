@@ -1,0 +1,267 @@
+[
+ {
+  "name": "enters tapped",
+  "players": [
+   {
+    "hand": [
+     "Dormant Gomazoa"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dormant Gomazoa"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Dormant Gomazoa"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Dormant Gomazoa": true
+   }
+  }
+ },
+ {
+  "name": "does not untap during your untap step",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Dormant Gomazoa",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Dormant Gomazoa": true
+   }
+  }
+ },
+ {
+  "name": "targeted by your spell, you may untap it",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Dormant Gomazoa",
+      "tapped": true
+     },
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {}
+   ],
+   "tapped": {
+    "Dormant Gomazoa": false
+   }
+  }
+ },
+ {
+  "name": "targeted by your spell, decline to untap",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Dormant Gomazoa",
+      "tapped": true
+     },
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {}
+   ],
+   "tapped": {
+    "Dormant Gomazoa": true
+   }
+  }
+ },
+ {
+  "name": "opponent's spell targeting you, you may untap it",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Dormant Gomazoa",
+      "tapped": true
+     }
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {}
+   ],
+   "tapped": {
+    "Dormant Gomazoa": false
+   }
+  }
+ },
+ {
+  "name": "stays tapped through your next untap step",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Dormant Gomazoa",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Dormant Gomazoa": true
+   }
+  }
+ },
+ {
+  "name": "ruling: a spell that draws cards without targeting does not untap Gomazoa",
+  "players": [
+   { "battlefield": [ { "name": "Dormant Gomazoa", "tapped": true } ] },
+   { "hand": ["Brainstorm"], "battlefield": ["Island"], "library": ["Island", "Mountain", "Forest", "Swamp"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "cast": "Brainstorm" },
+   { "resolve": true, "answers": ["Island", "Forest"] }
+  ],
+  "expect": {
+   "players": [ {}, { "hand_count": 1 } ],
+   "tapped": { "Dormant Gomazoa": true }
+  }
+ },
+ {
+  "name": "ruling: an opponent's ability targeting you does not untap Gomazoa",
+  "players": [
+   { "battlefield": [ { "name": "Dormant Gomazoa", "tapped": true } ], "library": ["Forest"] },
+   { "battlefield": ["Thought Dissector", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "activate": "Thought Dissector", "ability": 0, "targets": ["p0"], "answers": [1] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20, "graveyard": ["Forest"] }, {} ],
+   "tapped": { "Dormant Gomazoa": true }
+  }
+ }
+]

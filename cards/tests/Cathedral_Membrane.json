@@ -1,0 +1,80 @@
+[
+  {
+    "name": "dies in combat: 6 damage to the creature it blocked",
+    "players": [
+      { "battlefield": ["Craw Wurm"] },
+      { "battlefield": ["Cathedral Membrane"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Craw Wurm", "at": "p1" } ] },
+      { "block": [ { "blocker": "Cathedral Membrane", "attacker": "Craw Wurm" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Craw Wurm"] },
+        { "battlefield_lacks": ["Cathedral Membrane"] }
+      ]
+    }
+  },
+  {
+    "name": "survives combat: no trigger, blocked creature lives",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Cathedral Membrane"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Cathedral Membrane", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "battlefield_has": ["Cathedral Membrane"] }
+      ]
+    }
+  },
+  {
+    "name": "dies outside combat: no damage trigger",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Cathedral Membrane"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Cathedral Membrane"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "battlefield_lacks": ["Cathedral Membrane"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: {W/P} paid with 2 life when no white mana is available",
+    "players": [ { "hand": ["Cathedral Membrane"], "battlefield": ["Swamp"] }, {} ],
+    "steps": [ { "cast": "Cathedral Membrane" }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 18, "battlefield_has": ["Cathedral Membrane"] }, {} ] }
+  },
+  {
+    "name": "ruling: at 1 life the 2-life payment for {W/P} is not allowed",
+    "players": [ { "hand": ["Cathedral Membrane"], "battlefield": ["Swamp"] }, {} ],
+    "steps": [ { "set_life": 1, "player": 0 }, { "cast": "Cathedral Membrane", "illegal": true } ],
+    "expect": { "players": [ { "life": 1, "hand": ["Cathedral Membrane"] }, {} ] }
+  },
+  {
+    "name": "ruling: dies to non-combat damage during combat still deals 6 to the creature it blocked",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Craw Wurm", "Mountain"] }, { "battlefield": ["Cathedral Membrane"] } ],
+    "steps": [
+      { "attack": [ { "card": "Craw Wurm", "at": "p1" } ] },
+      { "block": [ { "blocker": "Cathedral Membrane", "attacker": "Craw Wurm" } ] },
+      { "cast": "Lightning Bolt", "targets": ["Cathedral Membrane"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Craw Wurm"] }, { "battlefield_lacks": ["Cathedral Membrane"] } ] }
+  }
+]

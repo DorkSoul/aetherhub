@@ -1,0 +1,192 @@
+[
+  {
+    "name": "exiles one creature of each opponent",
+    "players": [
+      {
+        "hand": [
+          "Haytham Kenway"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Haytham Kenway"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant",
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Haytham Kenway",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield": [],
+          "exile": [
+            "Hill Giant"
+          ]
+        },
+        {
+          "battlefield": [],
+          "exile": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "other Knights get +2/+2 but not Haytham or non-Knights",
+    "players": [
+      {
+        "hand": [
+          "Haytham Kenway"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Island",
+          "Island",
+          "Basri's Lieutenant",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Haytham Kenway"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Basri's Lieutenant": [
+          5,
+          6
+        ],
+        "Haytham Kenway": [
+          3,
+          3
+        ],
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "creature returns when Haytham leaves",
+    "players": [
+      {
+        "hand": [
+          "Haytham Kenway"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Island",
+          "Island",
+          "Plains"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Hill Giant",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Haytham Kenway"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Haytham Kenway"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Haytham Kenway"
+          ]
+        },
+        {
+          "battlefield": [
+            "Hill Giant",
+            "Mountain"
+          ],
+          "exile": []
+        }
+      ]
+    }
+  },
+  { "name": "protection from Assassins: an Assassin's declared block on Haytham is dropped, Haytham hits for 3",
+    "players": [ { "battlefield": ["Haytham Kenway"] }, { "battlefield": ["Brotherhood Spy", "Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Haytham Kenway", "at": "p1" } ] }, { "block": [ { "blocker": "Brotherhood Spy", "attacker": "Haytham Kenway" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "other Knights have protection from Assassins: Basri's Lieutenant (5 power) is unblocked by the Assassin",
+    "players": [ { "battlefield": ["Haytham Kenway", "Basri's Lieutenant"] }, { "battlefield": ["Brotherhood Spy", "Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Basri's Lieutenant", "at": "p1" } ] }, { "block": [ { "blocker": "Brotherhood Spy", "attacker": "Basri's Lieutenant" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 15 } ] } },
+  { "name": "ruling: an Aura on the exiled creature goes to its owner's graveyard",
+    "players": [ { "hand": ["Pacifism", "Haytham Kenway"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Island", "Island"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Pacifism", "targets": ["Hill Giant"] }, { "resolve": true }, { "cast": "Haytham Kenway" }, { "resolve": true, "targets": ["Hill Giant"] } ],
+    "expect": { "players": [ { "battlefield_has": ["Haytham Kenway"], "graveyard_has": ["Pacifism"] }, { "exile": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"] } ] } },
+  { "name": "ruling: if Haytham leaves before its exile trigger resolves, the creature is not exiled",
+    "players": [ { "hand": ["Haytham Kenway"], "battlefield": ["Plains", "Plains", "Island", "Island"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Hill Giant", "Mountain"] } ],
+    "steps": [ { "cast": "Haytham Kenway" }, { "pass": true }, { "pass": true, "player": 1, "targets": ["Hill Giant"] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Haytham Kenway"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Haytham Kenway"] }, { "battlefield_has": ["Hill Giant"], "exile": [], "graveyard_has": ["Lightning Bolt"] } ] } }
+]

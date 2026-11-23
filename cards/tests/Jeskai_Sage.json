@@ -1,0 +1,70 @@
+[
+  {
+    "name": "prowess resolves first, then dying draws a card",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Jeskai Sage"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Jeskai Sage"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard_has": ["Jeskai Sage", "Lightning Bolt"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a creature spell does not trigger prowess",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Jeskai Sage"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Jeskai Sage": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: prowess still resolves after its spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Jeskai Sage"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Counterspell"] }
+      ],
+      "pt": { "Jeskai Sage": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: playing a land does not trigger prowess",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Jeskai Sage"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "pt": { "Jeskai Sage": [1, 1] }
+    }
+  }
+]

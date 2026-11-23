@@ -1,0 +1,85 @@
+[
+  {
+    "name": "as it enters you lose life equal to your life total but do not lose the game",
+    "players": [
+      { "hand": ["Lich"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lich" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 0, "battlefield_has": ["Lich"] }, {} ], "winner": -1 }
+  },
+  {
+    "name": "gaining life draws that many cards instead",
+    "players": [
+      { "hand": ["Revitalize"], "battlefield": ["Lich", "Plains", "Island"], "library": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Revitalize" },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20, "hand_count": 4, "library_count": 2, "graveyard": ["Revitalize"] } ], "winner": -1 }
+  },
+  {
+    "name": "damage makes you sacrifice that many nontoken permanents",
+    "players": [
+      { "battlefield": ["Lich", "Swamp", "Mountain"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true, "answers": [["Swamp", "Mountain"]] }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield": ["Lich"] }, {} ], "winner": -1 }
+  },
+  {
+    "name": "can't sacrifice enough permanents: you lose the game",
+    "players": [
+      { "battlefield": ["Lich"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "winner": 1 }
+  },
+  {
+    "name": "when Lich is put into a graveyard from the battlefield you lose the game",
+    "players": [
+      { "battlefield": ["Lich"] },
+      { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Disenchant", "player": 1, "targets": ["Lich"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "winner": 1 }
+  },
+  {
+    "name": "ruling: life total can go negative while Lich is on the battlefield",
+    "players": [
+      { "hand": ["Lich"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Lich" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true, "answers": [["Swamp", "Swamp"]] }
+    ],
+    "expect": { "players": [ { "life": -2, "battlefield_has": ["Lich"] }, {} ], "winner": -1 }
+  }
+]

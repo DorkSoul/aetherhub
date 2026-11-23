@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Indulge makes a tapped and attacking Citizen per attacker, then Excess makes a Treasure per damaging creature",
+    "players": [
+      {
+        "hand": ["Indulge"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Indulge" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Indulge", "face": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Indulge"], "battlefield_has": ["Citizen 1-1 GW", "Treasure"] },
+        { "life": 13 }
+      ]
+    }
+  },
+  {
+    "name": "Excess with no combat damage makes nothing",
+    "players": [
+      {
+        "graveyard": ["Indulge"],
+        "battlefield": ["Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Indulge", "face": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Indulge"], "battlefield_lacks": ["Treasure"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Excess counts a creature that dealt combat damage and then died",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "graveyard": ["Indulge"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Indulge", "face": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Indulge"], "battlefield": ["Mountain", "Mountain", "Mountain", "Hill Giant", "Treasure", "Treasure"] },
+        { "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "Excess cannot be cast from hand",
+    "players": [
+      { "hand": ["Indulge"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Indulge", "face": true, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Indulge"] },
+        {}
+      ]
+    }
+  }
+]

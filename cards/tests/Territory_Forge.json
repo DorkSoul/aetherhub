@@ -1,0 +1,84 @@
+[
+  {
+    "name": "cast it: exile target artifact on the battlefield",
+    "players": [
+      {
+        "hand": ["Territory Forge"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Sol Ring"]
+      }
+    ],
+    "steps": [
+      { "cast": "Territory Forge" },
+      { "resolve": true, "targets": ["Sol Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Territory Forge"] },
+        { "exile": ["Sol Ring"], "battlefield": [] }
+      ]
+    }
+  },
+  {
+    "name": "Territory Forge gains the activated abilities of the exiled artifact",
+    "players": [
+      {
+        "hand": ["Territory Forge"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Sol Ring"]
+      }
+    ],
+    "steps": [
+      { "cast": "Territory Forge" },
+      { "resolve": true, "targets": ["Sol Ring"] },
+      { "resolve": true },
+      { "tap_for_mana": "Territory Forge" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Territory Forge"], "pool": { "C": 2 } },
+        { "exile": ["Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "without an exiled card Territory Forge has no granted activated ability",
+    "players": [
+      {
+        "battlefield": ["Territory Forge", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Territory Forge", "ability": 32768, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Territory Forge", "Mountain"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: gains only activated abilities, not the triggered ability of the exiled artifact",
+    "players": [
+      { "hand": ["Territory Forge", "Shatter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Magnetic Mine", "Magic Pot"] }
+    ],
+    "steps": [
+      { "cast": "Territory Forge" },
+      { "resolve": true, "targets": ["Magnetic Mine"] },
+      { "resolve": true },
+      { "cast": "Shatter", "targets": ["Magic Pot"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Territory Forge"] },
+        { "life": 20, "exile": ["Magnetic Mine"], "graveyard": ["Magic Pot"] }
+      ]
+    }
+  }
+]

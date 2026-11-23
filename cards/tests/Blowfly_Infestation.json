@@ -1,0 +1,153 @@
+[
+  {
+    "name": "creature that died with a -1/-1 counter: put a -1/-1 counter on target creature",
+    "players": [
+      {
+        "hand": [
+          "Bloodied Ghost",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Blowfly Infestation",
+          "Swamp",
+          "Swamp",
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Bloodied Ghost"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Bloodied Ghost"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Bloodied Ghost"
+          ]
+        },
+        {
+          "graveyard": []
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "minus1minus1": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "creature without a -1/-1 counter dying does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Blowfly Infestation",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ],
+      "pt": {
+        "Hill Giant": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a creature with two -1/-1 counters dies, and Blowfly still puts only one counter on the target",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Blowfly Infestation", "Mountain"] },
+      { "battlefield": [ { "name": "Hill Giant", "counters": { "minus1minus1": 2 } }, "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Hill Giant"] } ],
+      "counters": { "Grizzly Bears": { "minus1minus1": 1 } },
+      "pt": { "Grizzly Bears": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: the trigger is mandatory, so with no opposing creature it must target your own creature",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Blowfly Infestation", "Mountain", { "name": "Hill Giant", "counters": { "minus1minus1": 1 } }, "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt", "Hill Giant"] }, {} ],
+      "counters": { "Grizzly Bears": { "minus1minus1": 1 } },
+      "pt": { "Grizzly Bears": [1, 1] }
+    }
+  }
+]

@@ -1,0 +1,199 @@
+[
+  {
+    "name": "discarding a card lets you draw two",
+    "players": [
+      {
+        "hand": [
+          "Pursue the Past",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Pursue the Past"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "hand_count": 2,
+          "graveyard_has": [
+            "Grizzly Bears",
+            "Pursue the Past"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the discard draws nothing",
+    "players": [
+      {
+        "hand": [
+          "Pursue the Past",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Pursue the Past"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "hand_count": 1,
+          "graveyard_has": [
+            "Pursue the Past"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "with an empty hand there is nothing to discard and no draw",
+    "players": [
+      {
+        "hand": [
+          "Pursue the Past"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Pursue the Past"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "hand_count": 0,
+          "graveyard_has": [
+            "Pursue the Past"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback from the graveyard is exiled afterwards",
+    "players": [
+      {
+        "graveyard": [
+          "Pursue the Past"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Pursue the Past",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "graveyard": [],
+          "exile": [
+            "Pursue the Past"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a flashback spell that is countered is still exiled",
+    "players": [
+      { "graveyard": ["Pursue the Past"], "battlefield": ["Mountain", "Plains", "Forest", "Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Pursue the Past", "alt": 0 },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Pursue the Past" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "graveyard": [], "exile": ["Pursue the Past"] }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing, so it cannot be cast in combat",
+    "players": [
+      { "graveyard": ["Pursue the Past"], "battlefield": ["Mountain", "Plains", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Pursue the Past", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "graveyard": ["Pursue the Past"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a card with flashback put into the graveyard this turn can be cast right away",
+    "players": [
+      { "hand": ["Pursue the Past"], "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pursue the Past" },
+      { "resolve": true },
+      { "cast": "Pursue the Past", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 24, "graveyard": [], "exile": ["Pursue the Past"] }, {} ]
+    }
+  }
+]

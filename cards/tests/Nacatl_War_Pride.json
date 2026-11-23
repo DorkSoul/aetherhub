@@ -1,0 +1,56 @@
+[
+ { "name": "attack makes a tapped attacking copy per creature the defending player controls, exiled at end step",
+   "players": [ { "battlefield": ["Nacatl War-Pride"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, { "name": "Goblin Piker", "tapped": true } ] } ],
+   "steps": [
+     { "attack": [ { "card": "Nacatl War-Pride", "at": "p1" } ] },
+     { "resolve": true },
+     { "advance_to": "Main2" },
+     { "advance_to": "End" },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "battlefield": ["Nacatl War-Pride"], "exile": [] }, { "life": 11, "battlefield": ["Grizzly Bears", "Goblin Piker"] } ] } },
+ { "name": "no creatures on the defending side means no copies",
+   "players": [ { "battlefield": ["Nacatl War-Pride"] }, { "battlefield": ["Forest"] } ],
+   "steps": [
+     { "attack": [ { "card": "Nacatl War-Pride", "at": "p1" } ] },
+     { "resolve": true },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "battlefield": ["Nacatl War-Pride"] }, { "life": 17 } ] } },
+ { "name": "can't be blocked by more than one creature (copies included)",
+   "players": [ { "battlefield": ["Nacatl War-Pride"] }, { "battlefield": ["Forest", "Grizzly Bears", "Goblin Piker"] } ],
+   "steps": [
+     { "attack": [ { "card": "Nacatl War-Pride", "at": "p1" } ] },
+     { "resolve": true },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nacatl War-Pride" }, { "blocker": "Goblin Piker", "attacker": "Nacatl War-Pride" } ], "illegal": true }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Nacatl War-Pride"] }, { "battlefield_has": ["Grizzly Bears", "Goblin Piker"] } ] } },
+ { "name": "must be blocked if able: the lone blocker must block one of the attackers (3 damage gets through, the blocker dies)",
+   "players": [ { "battlefield": [ { "name": "Nacatl War-Pride", "sick": false } ] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+     { "attack": [ { "card": "Nacatl War-Pride", "at": "p1" } ] },
+     { "resolve": true },
+     { "block": [] },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Nacatl War-Pride"] }, { "life": 17, "graveyard_has": ["Grizzly Bears"] } ] } },
+ { "name": "max one blocker: a second blocker on it is dropped, so the first blocker alone is the only one (War-Pride survives the 2 damage)",
+   "players": [ { "battlefield": [ { "name": "Nacatl War-Pride", "sick": false } ] }, { "battlefield": ["Grizzly Bears", "Goblin Piker"] } ],
+   "steps": [
+     { "attack": [ { "card": "Nacatl War-Pride", "at": "p1" } ] },
+     { "resolve": true },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nacatl War-Pride" }, { "blocker": "Goblin Piker", "attacker": "Nacatl War-Pride" } ] },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Nacatl War-Pride"] }, { "graveyard_has": ["Grizzly Bears"] } ] } },
+ { "name": "ruling: the tokens still enter as copies when the attacking War-Pride has already left the battlefield",
+   "players": [ { "battlefield": ["Nacatl War-Pride"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "tapped": true }] } ],
+   "steps": [
+     { "attack": [ { "card": "Nacatl War-Pride", "at": "p1" } ] },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "player": 1, "targets": ["Nacatl War-Pride"] },
+     { "resolve": true },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "graveyard_has": ["Nacatl War-Pride"], "battlefield_has": ["Nacatl War-Pride"] }, { "life": 17 } ] } }
+]

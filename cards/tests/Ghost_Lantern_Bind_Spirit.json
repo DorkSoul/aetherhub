@@ -1,0 +1,104 @@
+[
+  {
+    "name": "Bind Spirit returns a creature card from graveyard to hand, then the card is exiled",
+    "players": [
+      { "hand": ["Ghost Lantern // Bind Spirit"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghost Lantern // Bind Spirit", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "exile": ["Ghost Lantern // Bind Spirit"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "equip {1} attaches the Lantern to a creature you control",
+    "players": [
+      { "battlefield": ["Ghost Lantern // Bind Spirit", "Grizzly Bears", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ghost Lantern // Bind Spirit", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Ghost Lantern // Bind Spirit": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "a creature you control dying puts a +1/+1 counter on the equipped creature",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Ghost Lantern // Bind Spirit", "Grizzly Bears", "Hill Giant", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ghost Lantern // Bind Spirit", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Hill Giant", "Lightning Bolt"] }, {} ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "an opponent's creature dying does not put a counter on the equipped creature",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Ghost Lantern // Bind Spirit", "Grizzly Bears", "Island", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Ghost Lantern // Bind Spirit", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Hill Giant"] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: a card exiled by Bind Spirit can later be cast as the permanent Ghost Lantern",
+    "players": [
+      { "hand": ["Ghost Lantern // Bind Spirit"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghost Lantern // Bind Spirit", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Ghost Lantern // Bind Spirit" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ghost Lantern // Bind Spirit"], "exile": [], "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an adventurer card in a graveyard uses its permanent mana value (Ghost Lantern is MV 1)",
+    "players": [
+      { "battlefield": ["Geth, Lord of the Vault", "Swamp", "Swamp"] },
+      { "graveyard": ["Ghost Lantern // Bind Spirit"] }
+    ],
+    "steps": [
+      { "activate": "Geth, Lord of the Vault", "targets": ["Ghost Lantern // Bind Spirit"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ghost Lantern // Bind Spirit"] },
+        { "library_count": 19 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "name": "Wall of Caltrops",
+  "mana_cost": "{1}{W}",
+  "types": ["Creature"],
+  "subtypes": ["Wall"],
+  "power": 2,
+  "toughness": 1,
+  "keywords": ["Defender"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Blocks", "filter": { "this": true } },
+      "effects": [
+        { "type": "Remember", "what": { "type": "TriggerObject" } },
+        { "type": "StoreRemembered", "slot": 0 },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": {
+              "type": "Count",
+              "filter": { "types": ["Creature"], "subtypes": ["Wall"], "other": true, "blocking_stored": 0 },
+              "zone": "Battlefield"
+            },
+            "cmp": { "op": "Ge", "n": 1 }
+          },
+          "then": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "Compare",
+                "a": {
+                  "type": "Minus",
+                  "a": { "type": "Count", "filter": { "types": ["Creature"], "blocking_stored": 0 }, "zone": "Battlefield" },
+                  "b": { "type": "Count", "filter": { "types": ["Creature"], "subtypes": ["Wall"], "blocking_stored": 0 }, "zone": "Battlefield" }
+                },
+                "cmp": { "op": "Eq", "n": 0 }
+              },
+              "then": [
+                { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Banding", "duration": "UntilEndOfTurn" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Defender (This creature can't attack.)\nWhenever this creature blocks a creature, if at least one other Wall creature is blocking that creature and no non-Wall creatures are blocking that creature, this creature gains banding until end of turn. (If any creatures with banding you control are blocking a creature, you divide that creature's combat damage, not its controller, among any of the creatures it's being blocked by.)"
+}

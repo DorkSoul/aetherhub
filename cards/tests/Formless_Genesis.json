@@ -1,0 +1,128 @@
+[
+  {
+    "name": "retrace: discard a land, X = land cards in your graveyard",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Forest", "Forest", "Forest"], "graveyard": ["Formless Genesis", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formless Genesis", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Formless Genesis", "Island", "Forest", "Plains"], "battlefield_has": ["Shapeshifter 0-0 Colorless Changeling Deathtouch"] },
+        {}
+      ],
+      "pt": { "Shapeshifter 0-0 Colorless Changeling Deathtouch": [3, 3] }
+    }
+  },
+  {
+    "name": "retrace needs a land card in hand to discard",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest"], "graveyard": ["Formless Genesis"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formless Genesis", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Formless Genesis"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: retrace is cast at sorcery speed: illegal while a spell is on the stack, legal once the stack is empty",
+    "players": [
+      { "hand": ["Lightning Bolt", "Island"], "battlefield": ["Mountain", "Forest", "Forest", "Forest"], "graveyard": ["Formless Genesis", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Formless Genesis", "alt": 0, "illegal": true },
+      { "resolve": true },
+      { "cast": "Formless Genesis", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard_has": ["Formless Genesis", "Lightning Bolt", "Island"], "battlefield_has": ["Shapeshifter 0-0 Colorless Changeling Deathtouch"] },
+        { "life": 17 }
+      ],
+      "pt": { "Shapeshifter 0-0 Colorless Changeling Deathtouch": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: changeling makes the token an Elf, so Elvish Archdruid's +1/+1 applies",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Forest", "Forest", "Forest", "Elvish Archdruid"], "graveyard": ["Formless Genesis", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formless Genesis", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Elvish Archdruid", "Shapeshifter 0-0 Colorless Changeling Deathtouch"] },
+        {}
+      ],
+      "pt": { "Shapeshifter 0-0 Colorless Changeling Deathtouch": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a retrace spell countered goes back to the graveyard and no token is made",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Forest", "Forest", "Forest"], "graveyard": ["Formless Genesis"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Formless Genesis", "alt": 0 },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Formless Genesis" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Formless Genesis", "Island"], "battlefield_lacks": ["Shapeshifter 0-0 Colorless Changeling Deathtouch"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: after it resolves the active player may cast retrace again right away from the graveyard",
+    "players": [
+      { "hand": ["Island", "Island"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Formless Genesis", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formless Genesis", "alt": 0, "answers": ["Island"] },
+      { "resolve": true },
+      { "cast": "Formless Genesis", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard_has": ["Formless Genesis", "Island"], "battlefield_has": ["Shapeshifter 0-0 Colorless Changeling Deathtouch"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a retrace cast still pays its mana cost in addition to discarding a land",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Forest", "Forest"], "graveyard": ["Formless Genesis"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Formless Genesis", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Formless Genesis"], "hand": ["Island"] },
+        {}
+      ]
+    }
+  }
+]

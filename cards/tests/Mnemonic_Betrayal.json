@@ -1,0 +1,98 @@
+[
+  {
+    "name": "exiles the opponent's graveyard; cast the Bolt this turn paying red with a Swamp",
+    "players": [
+      { "hand": ["Mnemonic Betrayal"], "battlefield": ["Island", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Mnemonic Betrayal" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Mnemonic Betrayal"] },
+        { "life": 17, "graveyard": ["Lightning Bolt"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "lands from the graveyard cannot be played",
+    "players": [
+      { "hand": ["Mnemonic Betrayal"], "battlefield": ["Island", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Mnemonic Betrayal" },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Mnemonic Betrayal"] },
+        { "exile": ["Forest"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "cards not cast are returned to their owner's graveyard at the next end step",
+    "players": [
+      { "hand": ["Mnemonic Betrayal"], "battlefield": ["Island", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Mnemonic Betrayal" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Mnemonic Betrayal"] },
+        { "graveyard": ["Lightning Bolt"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery cast from the exiled graveyard is still limited to a main phase with an empty stack",
+    "players": [
+      { "hand": ["Mnemonic Betrayal"], "battlefield": ["Island", "Island", "Island", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Divination"] }
+    ],
+    "steps": [
+      { "cast": "Mnemonic Betrayal" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Mnemonic Betrayal"] },
+        { "exile": ["Divination"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a permanent spell cast from the exiled graveyard stays on the battlefield at the end step",
+    "players": [
+      { "hand": ["Mnemonic Betrayal"], "battlefield": ["Island", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Mnemonic Betrayal" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Mnemonic Betrayal"], "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": [], "exile": [] }
+      ]
+    }
+  }
+]

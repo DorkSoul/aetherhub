@@ -1,0 +1,156 @@
+[
+  {
+    "name": "gaining life adds a charge counter",
+    "players": [
+      {
+        "hand": [
+          "Swords to Plowshares"
+        ],
+        "battlefield": [
+          "Excalibur II",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Swords to Plowshares",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Excalibur II": {
+          "charge": 1
+        }
+      },
+      "players": [
+        {
+          "life": 22
+        }
+      ]
+    }
+  },
+  {
+    "name": "equipped creature gets +1/+1 per counter",
+    "players": [
+      {
+        "hand": [
+          "Swords to Plowshares"
+        ],
+        "battlefield": [
+          {
+            "name": "Excalibur II",
+            "counters": {
+              "charge": 2
+            }
+          },
+          "Plains",
+          "Plains",
+          "Plains",
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Excalibur II",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Hill Giant": [
+          5,
+          5
+        ]
+      },
+      "attached": {
+        "Excalibur II": "Hill Giant"
+      },
+      "counters": {
+        "Excalibur II": {
+          "charge": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "with no creature on the battlefield equip has no legal target",
+    "players": [
+      {
+        "battlefield": ["Excalibur II", "Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Excalibur II",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Excalibur II"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: each lifelink creature's combat damage is a separate life gain event (one counter per creature)",
+    "players": [
+      {
+        "battlefield": ["Excalibur II", "Vampire Nighthawk", "Vampire Nighthawk"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Vampire Nighthawk", "at": "p1" }, { "card": "Vampire Nighthawk", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Excalibur II": { "charge": 2 } },
+      "players": [ { "life": 24 }, { "life": 16 } ]
+    }
+  },
+  {
+    "name": "ruling: the equipped creature dies at the same time as the lifelink gain; Excalibur II still gets its counter",
+    "players": [
+      {
+        "battlefield": ["Excalibur II", "Plains", "Plains", "Plains", "Vampire Nighthawk", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "activate": "Excalibur II", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Vampire Nighthawk", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "player": 1, "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Excalibur II": { "charge": 1 } },
+      "players": [ { "life": 22, "graveyard": ["Grizzly Bears"] }, {} ]
+    }
+  }
+]

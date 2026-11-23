@@ -1,0 +1,163 @@
+[
+  {
+    "name": "second spell this turn: exile the top card, playable until your next turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Island"] }, { "life": 14 }]
+    }
+  },
+  {
+    "name": "first spell this turn does not trigger it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain"], "library": ["Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": [] }, { "life": 17 }]
+    }
+  },
+  {
+    "name": "copy ability is illegal without three spells cast this turn",
+    "players": [
+      { "battlefield": ["Stella Lee, Wild Card"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Stella Lee, Wild Card", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "tapped": { "Stella Lee, Wild Card": false }
+    }
+  },
+  {
+    "name": "{T}: with three spells cast, copies the Bolt on the stack, so it deals 3 extra damage",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Stella Lee, Wild Card", "ability": 0 }, { "resolve": true },
+      { "resolve": true }, { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 0 }, { "life": 8 }],
+      "tapped": { "Stella Lee, Wild Card": true }
+    }
+  },
+  {
+    "name": "copy ability needs three spells: with only two cast, a Bolt on the stack is not copied",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "activate": "Stella Lee, Wild Card", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 14 }],
+      "tapped": { "Stella Lee, Wild Card": false }
+    }
+  },
+  {
+    "name": "ruling: the copy can be given new targets",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Stella Lee, Wild Card", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 11, "graveyard_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: the copy of an X spell has the same X",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Blaze"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "resolve": true },
+      { "cast": "Blaze", "targets": ["p1"], "answers": [2] },
+      { "activate": "Stella Lee, Wild Card", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 10 } ]
+    }
+  },
+  {
+    "name": "ruling: Stella Lee cast as the first spell makes the next spell the second",
+    "players": [
+      { "hand": ["Stella Lee, Wild Card", "Lightning Bolt"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Stella Lee, Wild Card" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Island"] }, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "ruling: the card exiled by Stella Lee can be played as a land in your main phase",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "resolve": true },
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Island"], "exile": [] }, { "life": 14 } ]
+    }
+  },
+  {
+    "name": "ruling: the card exiled by Stella Lee cannot be played as a land while a spell is on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Stella Lee, Wild Card", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "play_land": "Island", "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Island"] }, { "life": 11 } ]
+    }
+  }
+]

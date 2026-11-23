@@ -1,0 +1,43 @@
+{
+  "name": "Temur Charm",
+  "mana_cost": "{G}{U}{R}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 1,
+      "choose_max": 1,
+      "modes": [
+        {
+          "text": "Target creature you control gets +1/+1 until end of turn. It fights target creature you don't control.",
+          "targets": [
+            { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "creature you control" },
+            { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "Opponent" } }, "label": "creature you don't control" }
+          ],
+          "effects": [
+            { "type": "Pump", "what": { "type": "Target", "idx": 0 }, "power": { "type": "Fixed", "n": 1 }, "toughness": { "type": "Fixed", "n": 1 }, "duration": "UntilEndOfTurn" },
+            { "type": "Fight", "a": { "type": "Target", "idx": 0 }, "b": { "type": "Target", "idx": 1 } }
+          ]
+        },
+        {
+          "text": "Counter target spell unless its controller pays {3}.",
+          "targets": [ { "what": { "type": "Spell", "filter": {} }, "label": "target spell" } ],
+          "effects": [ { "type": "CounterSpell", "what": { "type": "Target", "idx": 0 }, "unless_pays": [ { "type": "Mana", "cost": "{3}" } ] } ]
+        },
+        {
+          "text": "Creatures with power 3 or less can't block this turn.",
+          "effects": [
+            {
+              "type": "GrantStatic",
+              "what": { "type": "This" },
+              "effect": { "type": "CantBlock", "affects": { "types": ["Creature"], "power": { "op": "Le", "n": 3 } } },
+              "duration": "UntilEndOfTurn",
+              "dynamic": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose one —\n• Target creature you control gets +1/+1 until end of turn. It fights target creature you don't control.\n• Counter target spell unless its controller pays {3}.\n• Creatures with power 3 or less can't block this turn."
+}

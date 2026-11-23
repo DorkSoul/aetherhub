@@ -1,0 +1,93 @@
+[
+  { "name": "job select: entering creates a 1/1 Hero, attaches the Rod to it, and the Hero is a 2/1 Wizard",
+    "players": [ { "hand": ["Black Mage's Rod"], "battlefield": ["Swamp", "Island"] }, {} ],
+    "steps": [ { "cast": "Black Mage's Rod" }, { "resolve": true } ],
+    "expect": {
+      "attached": { "Black Mage's Rod": "Hero" },
+      "pt": { "Hero": [2, 1] },
+      "players": [ { "battlefield_has": ["Hero", "Black Mage's Rod"] }, {} ]
+    } },
+  { "name": "equipped creature: casting a noncreature spell deals 1 damage to each opponent before the spell resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Black Mage's Rod", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Black Mage's Rod", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Black Mage's Rod": "Grizzly Bears" },
+      "players": [ {}, { "life": 16 } ]
+    } },
+  { "name": "equipped creature: casting a creature spell does not trigger the granted ability",
+    "players": [
+      { "hand": ["Black Mage's Rod", "Grizzly Bears"], "battlefield": ["Swamp", "Island", "Forest", "Forest"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "cast": "Black Mage's Rod" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 20 } ]
+    } },
+  { "name": "job select: the Hero is also a Wizard",
+    "players": [ { "hand": ["Black Mage's Rod"], "battlefield": ["Swamp", "Island"] }, {} ],
+    "steps": [ { "cast": "Black Mage's Rod" }, { "resolve": true } ],
+    "expect": {
+      "subtypes": { "Hero": ["Wizard"] },
+      "players": [ {}, {} ]
+    } },
+  { "name": "ruling: the granted trigger resolves before the spell and still resolves when that spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Black Mage's Rod", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Black Mage's Rod", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"] },
+        { "life": 19, "graveyard_has": ["Counterspell"] }
+      ]
+    } },
+  { "name": "ruling: paying the equip cost moves the Rod from the Hero token to another creature; the Hero becomes 1/1",
+    "players": [ { "hand": ["Black Mage's Rod"], "battlefield": ["Swamp", "Island", "Forest", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Black Mage's Rod" },
+      { "resolve": true },
+      { "activate": "Black Mage's Rod", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Black Mage's Rod": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [3, 2], "Hero": [1, 1] },
+      "players": [ { "battlefield_has": ["Hero", "Grizzly Bears", "Black Mage's Rod"] }, {} ]
+    } },
+  { "name": "ruling: destroying the Hero token leaves the Equipment on the battlefield",
+    "players": [
+      { "hand": ["Black Mage's Rod"], "battlefield": ["Swamp", "Island"] },
+      { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Black Mage's Rod" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Terror", "targets": ["Hero"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Black Mage's Rod"], "battlefield_lacks": ["Hero"] }, {} ]
+    } }
+]

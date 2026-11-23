@@ -1,0 +1,338 @@
+[
+ {
+  "name": "attack grants flashback to the targeted instant until end of turn; cast it from graveyard and it is exiled",
+  "players": [
+   {
+    "battlefield": [
+     "Sphinx of Forgotten Lore",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sphinx of Forgotten Lore",
+      "at": "p1"
+     }
+    ],
+    "auto": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Lightning Bolt"
+     ],
+     "battlefield_has": [
+      "Sphinx of Forgotten Lore"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "flashback only applies to the targeted card, not another instant or sorcery in the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Sphinx of Forgotten Lore",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Shock"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sphinx of Forgotten Lore",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Shock"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "the flashback permission ends at the end of the turn",
+  "players": [
+   {
+    "battlefield": [
+     "Sphinx of Forgotten Lore",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sphinx of Forgotten Lore",
+      "at": "p1"
+     }
+    ],
+    "auto": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a flashback spell that is countered is still exiled",
+  "players": [
+   {
+    "battlefield": [
+     "Sphinx of Forgotten Lore",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sphinx of Forgotten Lore",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Lightning Bolt"
+     ],
+     "battlefield_has": [
+      "Sphinx of Forgotten Lore"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ],
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery flashback cannot be cast during combat",
+  "players": [
+   {
+    "battlefield": [
+     "Sphinx of Forgotten Lore",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "graveyard": [
+     "Divination"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sphinx of Forgotten Lore",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Divination",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Divination"
+     ],
+     "hand_count": 0
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery flashback can be cast in the second main phase, then it is exiled",
+  "players": [
+   {
+    "battlefield": [
+     "Sphinx of Forgotten Lore",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "graveyard": [
+     "Divination"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sphinx of Forgotten Lore",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Divination"
+     ],
+     "hand_count": 2
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ }
+]

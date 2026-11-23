@@ -1,0 +1,191 @@
+[
+  {
+    "name": "opponent's Bolt: they decline to sacrifice and lose 3 life",
+    "players": [
+      { "battlefield": ["Archfiend of Spite"] },
+      { "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant", "Savannah Lions"], "hand": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Archfiend of Spite"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Archfiend of Spite"] },
+        { "life": 17, "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant", "Savannah Lions"] }
+      ]
+    }
+  },
+  {
+    "name": "opponent's Bolt: they sacrifice 3 permanents and keep their life",
+    "players": [
+      { "battlefield": ["Archfiend of Spite"] },
+      { "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant", "Savannah Lions"], "hand": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Archfiend of Spite"] },
+      { "resolve": true, "answers": [true, [0, 1, 2]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Archfiend of Spite"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "opponent has fewer permanents than the damage: they must lose the life",
+    "players": [
+      { "battlefield": ["Archfiend of Spite"] },
+      { "battlefield": ["Mountain", "Grizzly Bears"], "hand": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Archfiend of Spite"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Archfiend of Spite"] },
+        { "life": 17, "battlefield": ["Mountain", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "damage from your own source does nothing",
+    "players": [
+      { "battlefield": ["Archfiend of Spite", "Mountain", "Grizzly Bears"], "hand": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Archfiend of Spite"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield": ["Archfiend of Spite", "Mountain", "Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "madness: discarded to Wild Guess it can be cast for {3}{B}{B}",
+    "players": [
+      { "hand": ["Wild Guess", "Archfiend of Spite"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Archfiend of Spite"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: lethal damage still triggers; the second Bolt kills it and the opponent loses 3 again",
+    "players": [
+      { "battlefield": ["Archfiend of Spite"] },
+      { "battlefield": ["Mountain", "Mountain", "Grizzly Bears", "Hill Giant"], "hand": ["Lightning Bolt", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Archfiend of Spite"] },
+      { "resolve": true, "answers": [false] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Archfiend of Spite"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Archfiend of Spite"] },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the player may decline to sacrifice even when the life loss would take them below zero",
+    "players": [
+      { "battlefield": ["Archfiend of Spite"] },
+      { "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant", "Savannah Lions"], "hand": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "set_life": 2, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Archfiend of Spite"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Archfiend of Spite"] },
+        { "life": -1 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blocked attacker that dies to the same damage still makes its controller lose 2 life",
+    "start": "End",
+    "players": [
+      { "battlefield": ["Archfiend of Spite"] },
+      { "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [ { "blocker": "Archfiend of Spite", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Archfiend of Spite"] },
+        { "life": 18, "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: madness; declining the cast puts the discarded card into the graveyard",
+    "players": [
+      { "hand": ["Wild Guess", "Archfiend of Spite"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Archfiend of Spite"], "battlefield_lacks": ["Archfiend of Spite"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a milled card (not discarded) goes to the graveyard without madness",
+    "players": [
+      {
+        "hand": ["Dogmeat, Ever Loyal"],
+        "battlefield": ["Plains", "Forest", "Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"],
+        "library": ["Archfiend of Spite", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dogmeat, Ever Loyal" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Archfiend of Spite"], "battlefield_lacks": ["Archfiend of Spite"] },
+        {}
+      ]
+    }
+  }
+]

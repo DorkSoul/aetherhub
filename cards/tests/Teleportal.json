@@ -1,0 +1,80 @@
+[
+  {
+    "name": "single target gets +1/+0 and can't be blocked this turn",
+    "players": [
+      { "hand": ["Teleportal"], "battlefield": ["Island", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Teleportal", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 2] },
+      "players": [ {}, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "single target does not affect other creatures you control",
+    "players": [
+      { "hand": ["Teleportal"], "battlefield": ["Island", "Mountain", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Teleportal", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 2], "Savannah Lions": [2, 1] }
+    }
+  },
+  {
+    "name": "overload gives each creature you control +1/+0 and unblockable",
+    "players": [
+      { "hand": ["Teleportal"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Teleportal", "alt": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Savannah Lions" }], "illegal": true },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 2], "Savannah Lions": [3, 1] },
+      "players": [ {}, { "life": 14 } ]
+    }
+  },
+  {
+    "name": "overload does not pump or unblock opposing creatures",
+    "players": [
+      { "hand": ["Teleportal"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Teleportal", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: overload has no targets, so it can be cast with no creature you control",
+    "players": [ { "hand": ["Teleportal"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Teleportal", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Teleportal"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: without overload Teleportal needs a creature you control as its target",
+    "players": [ { "hand": ["Teleportal"], "battlefield": ["Island", "Mountain"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Teleportal", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Teleportal"] }, {} ] }
+  }
+]

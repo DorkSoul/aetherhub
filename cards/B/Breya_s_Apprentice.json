@@ -1,0 +1,64 @@
+{
+  "name": "Breya's Apprentice",
+  "mana_cost": "{2}{R}",
+  "types": ["Artifact", "Creature"],
+  "subtypes": ["Human", "Artificer"],
+  "power": 2,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "CreateToken", "token": "Thopter", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Tap" },
+        { "type": "Sacrifice", "filter": { "types": ["Artifact"], "controller": "You" }, "n": 1 }
+      ],
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Exile the top card of your library. Until the end of your next turn, you may play that card.",
+              "effects": [
+                { "type": "LookAtTop", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 }, "take": 1, "must": true, "filter": {}, "rest": "Library", "to": "Exile" },
+                { "type": "GrantPlayFromExile", "what": { "type": "Remembered" }, "window": "EndOfYourNextTurn" }
+              ]
+            },
+            {
+              "text": "Target creature gets +2/+0 until end of turn.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    {
+                      "what": { "type": "Permanent", "filter": { "types": ["Creature"] } },
+                      "label": "target creature"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "Pump",
+                      "what": { "type": "Target", "idx": 0 },
+                      "power": { "type": "Fixed", "n": 2 },
+                      "toughness": { "type": "Fixed", "n": 0 },
+                      "duration": "UntilEndOfTurn"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When this creature enters, create a 1/1 colorless Thopter artifact creature token with flying.\n{T}, Sacrifice an artifact: Choose one —\n• Exile the top card of your library. Until the end of your next turn, you may play that card.\n• Target creature gets +2/+0 until end of turn."
+}

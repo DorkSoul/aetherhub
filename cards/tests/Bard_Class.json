@@ -1,0 +1,81 @@
+[
+  {"name": "level 1: legendary creatures enter with a +1/+1 counter",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": ["Bard Class", "Mountain", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [{"cast": "Bruse Tarl, Roving Rancher"}, {"resolve": true}],
+   "expect": {"players": [{"battlefield_has": ["Bruse Tarl, Roving Rancher"], "hand": []}, {}],
+              "counters": {"Bruse Tarl, Roving Rancher": {"p1p1": 1}}}
+  },
+  {"name": "level 1: legendary spells are not reduced",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": ["Bard Class", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [{"cast": "Bruse Tarl, Roving Rancher", "illegal": true}],
+   "expect": {}
+  },
+  {"name": "level 2 reduces only the colored mana of legendary spells",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": ["Bard Class", "Mountain", "Forest", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [
+     {"activate": "Bard Class", "ability": 0},
+     {"resolve": true},
+     {"cast": "Bruse Tarl, Roving Rancher"},
+     {"resolve": true}
+   ],
+   "expect": {"players": [{"battlefield_has": ["Bruse Tarl, Roving Rancher"], "hand": []}, {}]}
+  },
+  {"name": "level 2 does not reduce generic mana",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": ["Bard Class", "Mountain", "Forest", "Plains", "Plains"]}, {}],
+   "steps": [
+     {"activate": "Bard Class", "ability": 0},
+     {"resolve": true},
+     {"cast": "Bruse Tarl, Roving Rancher", "illegal": true}
+   ],
+   "expect": {}
+  },
+  {"name": "level 3: casting a legendary spell exiles the top two cards (Bruse also exiles one) to play this turn",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": [{"name": "Bard Class", "counters": {"Level": 2}}, "Plains", "Plains", "Plains"], "library": ["Forest", "Island"]}, {}],
+   "steps": [
+     {"cast": "Bruse Tarl, Roving Rancher"},
+     {"resolve": true}
+   ],
+   "expect": {"players": [{"exile": ["Forest", "Forest", "Island"]}, {}]}
+  },
+  {"name": "level 3 costs {3}{R}{G} and is gained from level 2",
+   "players": [{"battlefield": [{"name": "Bard Class", "counters": {"Level": 1}}, "Mountain", "Forest", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [{"activate": "Bard Class", "ability": 1}, {"resolve": true}],
+   "expect": {"counters": {"Bard Class": {"level": 2}}}},
+  {"name": "level 3 is not gained from level 1 without level 2",
+   "players": [{"battlefield": ["Bard Class", "Mountain", "Forest", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [{"activate": "Bard Class", "ability": 1, "illegal": true}],
+   "expect": {"players": [{"battlefield_has": ["Bard Class"]}, {}]}},
+  {"name": "level 2 removes the green pip of a legendary spell: Ayula costs {1} with no Forest",
+   "players": [{"hand": ["Ayula, Queen Among Bears"], "battlefield": [{"name": "Bard Class", "counters": {"level": 1}}, "Mountain", "Plains"]}, {}],
+   "steps": [{"cast": "Ayula, Queen Among Bears"}, {"resolve": true}],
+   "expect": {"players": [{"battlefield_has": ["Ayula, Queen Among Bears"], "hand": []}, {}]}},
+  {"name": "ruling: a level 2 Class keeps the level 1 legendary-creature counter ability",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": [{"name": "Bard Class", "counters": {"Level": 1}}, "Mountain", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [{"cast": "Bruse Tarl, Roving Rancher"}, {"resolve": true}],
+   "expect": {"players": [{"battlefield_has": ["Bruse Tarl, Roving Rancher"], "hand": []}, {}],
+              "counters": {"Bruse Tarl, Roving Rancher": {"p1p1": 1}}}
+  },
+  {"name": "ruling: the level 1 ability cannot be activated again once the Class is level 2",
+   "players": [{"battlefield": [{"name": "Bard Class", "counters": {"Level": 1}}, "Mountain", "Forest"]}, {}],
+   "steps": [{"activate": "Bard Class", "ability": 0, "illegal": true}],
+   "expect": {"players": [{"battlefield_has": ["Bard Class"]}, {}], "counters": {"Bard Class": {"level": 1}}}
+  },
+  {"name": "ruling: with two Bard Classes, a legendary creature enters with two +1/+1 counters",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": ["Bard Class", "Bard Class", "Mountain", "Plains", "Plains", "Plains"]}, {}],
+   "steps": [{"cast": "Bruse Tarl, Roving Rancher"}, {"resolve": true}],
+   "expect": {"players": [{"battlefield_has": ["Bruse Tarl, Roving Rancher"]}, {}],
+              "counters": {"Bruse Tarl, Roving Rancher": {"p1p1": 2}}}
+  },
+  {"name": "ruling: cards exiled by the level 3 ability and not played stay exiled on later turns",
+   "players": [{"hand": ["Bruse Tarl, Roving Rancher"], "battlefield": [{"name": "Bard Class", "counters": {"Level": 2}}, "Plains", "Plains", "Plains"], "library": ["Forest", "Island"]}, {}],
+   "steps": [
+     {"cast": "Bruse Tarl, Roving Rancher"},
+     {"resolve": true},
+     {"advance_to": "End"},
+     {"advance_to": "Main1"},
+     {"advance_to": "End"},
+     {"advance_to": "Main1"}
+   ],
+   "expect": {"players": [{"exile": ["Forest", "Forest", "Island"]}, {}]}
+  }
+]

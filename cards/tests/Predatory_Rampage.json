@@ -1,0 +1,61 @@
+[
+  { "name": "your creatures get +3/+3 and the opposing creature must block",
+    "players": [ { "hand": ["Predatory Rampage"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Predatory Rampage" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Predatory Rampage"] }, { "graveyard": ["Hill Giant"] } ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    } },
+  { "name": "opposing creature must block even when a pumped attacker is a different creature",
+    "players": [ { "hand": ["Predatory Rampage"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Predatory Rampage" },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Predatory Rampage"] }, { "graveyard": ["Grizzly Bears"] } ],
+      "pt": { "Hill Giant": [6, 6] }
+    } },
+{ "name": "ruling: a creature that enters after Predatory Rampage resolves does not get +3/+3",
+  "players": [
+    { "hand": ["Predatory Rampage", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Hill Giant"] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Predatory Rampage" },
+    { "resolve": true },
+    { "cast": "Grizzly Bears" },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+    "pt": { "Hill Giant": [6, 6], "Grizzly Bears": [2, 2] }
+  } },
+{ "name": "ruling: a tapped opposing creature does not block even though it must block if able",
+  "players": [
+    { "hand": ["Predatory Rampage"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Hill Giant"] },
+    { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+  ],
+  "steps": [
+    { "cast": "Predatory Rampage" },
+    { "resolve": true },
+    { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+    { "block": [] },
+    { "advance_to": "Main2" }
+  ],
+  "expect": {
+    "players": [ { "graveyard": ["Predatory Rampage"] }, { "life": 14, "battlefield_has": ["Grizzly Bears"] } ],
+    "pt": { "Hill Giant": [6, 6] }
+  } }
+]

@@ -1,0 +1,59 @@
+{
+  "name": "Caldaia Guardian",
+  "mana_cost": "{3}{G}",
+  "types": ["Creature"],
+  "subtypes": ["Human", "Soldier"],
+  "power": 4,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Dies",
+        "filter": {
+          "any_of": [
+            { "this": true },
+            { "types": ["Creature"], "controller": "You", "other": true, "mana_value": { "op": "Ge", "n": 4 } }
+          ]
+        }
+      },
+      "effects": [
+        { "type": "CreateToken", "token": "Citizen 1-1 GW", "n": { "type": "Fixed", "n": 2 }, "controller": { "type": "You" }, "tapped": false, "attacking": false }
+      ]
+    },
+    {
+      "type": "AlternativeCost",
+      "cost": [ { "type": "Mana", "cost": "{2}{G}" } ],
+      "from": "Hand"
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "condition": { "type": "CastWithAlt", "index": null },
+      "effects": [
+        { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Haste", "duration": "Forever" },
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [
+            { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "this": true }, "n": { "type": "Fixed", "n": 1 } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "condition": { "type": "CastWithAlt", "index": null },
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "this": true },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "Dies", "filter": { "this": true } },
+          "effects": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+        }
+      }
+    }
+  ],
+  "oracle_text": "Whenever this creature or another creature you control with mana value 4 or greater dies, create two 1/1 green and white Citizen creature tokens.\nBlitz {2}{G} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)"
+}

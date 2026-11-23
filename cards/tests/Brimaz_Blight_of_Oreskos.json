@@ -1,0 +1,72 @@
+[
+  {
+    "name": "casting a Phyrexian creature spell incubates its mana value",
+    "players": [{ "hand": ["Phyrexian Rager"], "battlefield": ["Brimaz, Blight of Oreskos", "Swamp", "Plains", "Plains"] }, {}],
+    "steps": [{ "cast": "Phyrexian Rager" }, { "resolve": true }],
+    "expect": {
+      "players": [{ "battlefield_has": ["Brimaz, Blight of Oreskos", "Phyrexian Rager", "Incubator"] }, {}],
+      "counters": { "Incubator": { "p1p1": 3 } }
+    }
+  },
+  {
+    "name": "casting an artifact creature spell incubates (mana value 0 here)",
+    "players": [{ "hand": ["Ornithopter"], "battlefield": ["Brimaz, Blight of Oreskos"] }, {}],
+    "steps": [{ "cast": "Ornithopter" }, { "resolve": true }],
+    "expect": { "players": [{ "battlefield_has": ["Ornithopter", "Incubator"] }, {}] }
+  },
+  {
+    "name": "casting a non-Phyrexian, non-artifact creature does not incubate",
+    "players": [{ "hand": ["Grizzly Bears"], "battlefield": ["Brimaz, Blight of Oreskos", "Forest", "Forest"] }, {}],
+    "steps": [{ "cast": "Grizzly Bears" }, { "resolve": true }],
+    "expect": { "players": [{ "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Incubator"] }, {}] }
+  },
+  {
+    "name": "end step proliferates when a Phyrexian you controlled died this turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Brimaz, Blight of Oreskos", "Mountain", "Phyrexian Rager", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Phyrexian Rager"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt", "Phyrexian Rager"] }, {}],
+      "counters": { "Grizzly Bears": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "end step does not proliferate when no Phyrexian died this turn",
+    "players": [
+      {
+        "battlefield": ["Brimaz, Blight of Oreskos", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [{ "advance_to": "End" }],
+    "expect": { "players": [{ "battlefield_has": ["Grizzly Bears"] }, {}], "counters": { "Grizzly Bears": { "p1p1": 1 } } }
+  },
+  {
+    "name": "ruling: a Phyrexian dying during the end step does not make the end-step ability proliferate (checked as the step began)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Brimaz, Blight of Oreskos", "Mountain", "Phyrexian Rager", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Lightning Bolt", "targets": ["Phyrexian Rager"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt", "Phyrexian Rager"] }, {}],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } }
+    }
+  }
+]

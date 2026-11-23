@@ -1,0 +1,99 @@
+[
+  {
+    "name": "paying X puts X +1/+1 counters on it when targeted by your spell",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Hero of Leina Tower", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Hero of Leina Tower"] },
+      { "resolve": true, "answers": [3, true] }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Hero of Leina Tower"] }, {}],
+      "counters": { "Hero of Leina Tower": { "p1p1": 3 } },
+      "pt": { "Hero of Leina Tower": [7, 7] }
+    }
+  },
+  {
+    "name": "declining to pay puts no counters",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Hero of Leina Tower", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Hero of Leina Tower"] },
+      { "resolve": true, "answers": [3, false] }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Hero of Leina Tower": [4, 4] }
+    }
+  },
+  {
+    "name": "cannot pay X with no mana left: no counters",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Hero of Leina Tower", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Hero of Leina Tower"] },
+      { "resolve": true, "answers": [2] }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Hero of Leina Tower": [4, 4] }
+    }
+  },
+  {
+    "name": "a spell that targets another creature does not trigger it",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Hero of Leina Tower", "Grizzly Bears", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Hero of Leina Tower": [1, 1], "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: the heroic trigger resolves before the spell that caused it",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Hero of Leina Tower", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Hero of Leina Tower"] },
+      { "pass": true },
+      { "pass": true, "answers": [3, true] }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "stack_empty": false,
+      "pt": { "Hero of Leina Tower": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a copy of the targeting spell does not trigger heroic again",
+    "players": [
+      { "hand": ["Giant Growth", "Twincast"], "battlefield": ["Hero of Leina Tower", "Forest", "Forest", "Forest", "Forest", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Hero of Leina Tower"] },
+      { "cast": "Twincast", "targets": [{ "stack": "Giant Growth" }] },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true, "answers": [3, true] }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Hero of Leina Tower"] }, {}],
+      "counters": { "Hero of Leina Tower": { "p1p1": 3 } },
+      "pt": { "Hero of Leina Tower": [10, 10] }
+    }
+  }
+]

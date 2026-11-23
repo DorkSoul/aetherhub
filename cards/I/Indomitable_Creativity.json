@@ -1,0 +1,49 @@
+{
+  "name": "Indomitable Creativity",
+  "mana_cost": "{X}{R}{R}{R}",
+  "types": ["Sorcery"],
+  "colors": ["R"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "any_of": [ { "types": ["Artifact"] }, { "types": ["Creature"] } ] } },
+          "min": 1,
+          "max": 1,
+          "max_x": true,
+          "exact_x": true,
+          "label": "X target artifacts and/or creatures"
+        }
+      ],
+      "effects": [
+        { "type": "Destroy", "what": { "type": "Targets" }, "remember": true },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 1, "append": false },
+        {
+          "type": "ForEach",
+          "objects": { "type": "Stored", "slot": 0 },
+          "effects": [
+            {
+              "type": "RevealUntil",
+              "who": { "type": "ControllerOf", "of": { "type": "EachObject" } },
+              "filter": { "any_of": [ { "types": ["Artifact"] }, { "types": ["Creature"] } ] },
+              "count": { "type": "Fixed", "n": 1 },
+              "to": "Exile",
+              "rest": "Library"
+            },
+            { "type": "StoreRemembered", "slot": 1, "append": true }
+          ]
+        },
+        { "type": "Move", "what": { "type": "Stored", "slot": 1 }, "to": "Battlefield" },
+        {
+          "type": "ForEach",
+          "objects": { "type": "Stored", "slot": 0 },
+          "effects": [ { "type": "Shuffle", "who": { "type": "ControllerOf", "of": { "type": "EachObject" } } } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Destroy X target artifacts and/or creatures. For each permanent destroyed this way, its controller reveals cards from the top of their library until an artifact or creature card is revealed and exiles that card. Those players put the exiled cards onto the battlefield, then shuffle."
+}

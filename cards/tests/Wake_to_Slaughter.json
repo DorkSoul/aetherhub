@@ -1,0 +1,99 @@
+[
+ { "name": "opponent picks one target to return to hand, the other returns to the battlefield with haste",
+   "players": [
+    { "hand": ["Wake to Slaughter"], "graveyard": ["Grizzly Bears", "Hill Giant"], "battlefield": ["Swamp", "Mountain", "Island", "Island", "Island"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Wake to Slaughter", "targets": ["Grizzly Bears", "Hill Giant"] },
+    { "resolve": true, "answers": [["Grizzly Bears"]] }
+   ],
+   "expect": {
+    "players": [
+     { "hand": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"], "graveyard": ["Wake to Slaughter"] },
+     {}
+    ],
+    "keywords": { "Hill Giant": ["Haste"] }
+   } },
+ { "name": "the returned creature is exiled at the beginning of the next end step",
+   "players": [
+    { "hand": ["Wake to Slaughter"], "graveyard": ["Grizzly Bears", "Hill Giant"], "battlefield": ["Swamp", "Mountain", "Island", "Island", "Island"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Wake to Slaughter", "targets": ["Grizzly Bears", "Hill Giant"] },
+    { "resolve": true, "answers": [["Hill Giant"]] },
+    { "advance_to": "End" }
+   ],
+   "expect": {
+    "players": [
+     { "hand": ["Hill Giant"], "exile": ["Grizzly Bears"] },
+     {}
+    ]
+   } },
+ { "name": "with only one target the opponent has no choice and the card returns to hand",
+   "players": [
+    { "hand": ["Wake to Slaughter"], "graveyard": ["Grizzly Bears"], "battlefield": ["Swamp", "Mountain", "Island", "Island", "Island"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Wake to Slaughter", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "hand": ["Grizzly Bears"] },
+     {}
+    ]
+   } },
+ { "name": "flashback: cast from the graveyard for its flashback cost and then exile it",
+   "players": [
+    { "graveyard": ["Wake to Slaughter", "Grizzly Bears"], "battlefield": ["Swamp", "Mountain", "Island", "Island", "Island", "Island"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Wake to Slaughter", "alt": 0, "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "hand": ["Grizzly Bears"], "exile": ["Wake to Slaughter"] },
+     {}
+    ]
+   } },
+ { "name": "ruling: flashback is a sorcery, so it can't be cast during combat",
+   "players": [
+    { "graveyard": ["Wake to Slaughter", "Grizzly Bears"], "battlefield": ["Swamp", "Mountain", "Island", "Island", "Island", "Island"] },
+    {}
+   ],
+   "steps": [
+    { "advance_to": "BeginCombat" },
+    { "cast": "Wake to Slaughter", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard_has": ["Wake to Slaughter", "Grizzly Bears"], "exile": [] },
+     {}
+    ]
+   } },
+  { "name": "cast twice in one turn (hand, then flashback): each end-step trigger exiles the creature its own spell returned",
+   "players": [
+    { "hand": ["Wake to Slaughter"], "graveyard": ["Grizzly Bears", "Hill Giant", "Gray Ogre", "Craw Wurm"], "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Wake to Slaughter", "targets": ["Grizzly Bears", "Hill Giant"] },
+    { "resolve": true, "answers": [["Grizzly Bears"]] },
+    { "cast": "Wake to Slaughter", "alt": 0, "targets": ["Gray Ogre", "Craw Wurm"] },
+    { "resolve": true, "answers": [["Gray Ogre"]] },
+    { "advance_to": "End" },
+    { "resolve": true },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "hand": ["Grizzly Bears", "Gray Ogre"], "exile": ["Hill Giant", "Craw Wurm", "Wake to Slaughter"] },
+     {}
+    ]
+   } }
+]

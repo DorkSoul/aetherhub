@@ -1,0 +1,116 @@
+[
+ {
+  "name": "{R},{T}: exiles an instant or sorcery card from your graveyard",
+  "players": [
+   { "hand": [], "battlefield": ["Izzet Chemister", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Izzet Chemister", "ability": 0, "targets": ["Lightning Bolt"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"], "graveyard": [] }, {}
+   ],
+   "tapped": { "Izzet Chemister": true }
+  }
+ },
+ {
+  "name": "{R},{T}: a creature card in your graveyard cannot be exiled",
+  "players": [
+   { "battlefield": ["Izzet Chemister", "Mountain"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Izzet Chemister", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears"], "exile": [] }, {}
+   ]
+  }
+ },
+ {
+  "name": "{1}{R},{T}, sacrifice: cast the cards exiled with it without paying their mana costs",
+  "players": [
+   { "hand": [], "battlefield": ["Izzet Chemister", "Mountain", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Izzet Chemister", "ability": 0, "targets": ["Lightning Bolt"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "activate": "Izzet Chemister", "ability": 1 },
+   { "resolve": true, "answers": [true, "Grizzly Bears"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": [], "graveyard_has": ["Izzet Chemister"], "exile": [] },
+    { "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "a card exiled by another permanent cannot be cast through Izzet Chemister",
+  "players": [
+   { "battlefield": ["Izzet Chemister", "Mountain", "Mountain"], "exile": ["Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Izzet Chemister", "ability": 1 },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"] }, {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card not cast when the sacrifice ability resolves stays exiled and can't be cast later",
+  "players": [
+   { "hand": [], "battlefield": ["Izzet Chemister", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Izzet Chemister", "ability": 0, "targets": ["Lightning Bolt"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "activate": "Izzet Chemister", "ability": 1 },
+   { "resolve": true, "answers": [false] },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"], "graveyard_has": ["Izzet Chemister"] }, {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: if Izzet Chemister leaves before its sacrifice ability, the exiled card is lost",
+  "players": [
+   { "battlefield": ["Izzet Chemister", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   { "hand": ["Shock", "Shock"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "activate": "Izzet Chemister", "ability": 0, "targets": ["Lightning Bolt"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Izzet Chemister"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Izzet Chemister"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"], "graveyard_has": ["Izzet Chemister"] }, {}
+   ]
+  }
+ }
+]

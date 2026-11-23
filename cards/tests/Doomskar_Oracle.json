@@ -1,0 +1,179 @@
+[
+  {
+    "name": "gains 2 life when you cast your second spell in a turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Doomskar Oracle", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 22 },
+        { "life": 14 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "the first spell of the turn does not gain life",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Doomskar Oracle", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 17 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "foretell pays {2} and exiles the card face down from hand",
+    "players": [
+      {
+        "hand": ["Doomskar Oracle"],
+        "battlefield": ["Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Doomskar Oracle", "ability": 0},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 0, "exile": ["Doomskar Oracle"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "foretold card is cast from exile for {W} on a later turn",
+    "players": [
+      {
+        "hand": ["Doomskar Oracle"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Doomskar Oracle", "ability": 0},
+      {"resolve": true},
+      {"advance_to": "Upkeep"},
+      {"advance_to": "Upkeep"},
+      {"advance_to": "Main1"},
+      {"cast": "Doomskar Oracle", "alt": 0},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Doomskar Oracle"], "exile": []},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the trigger happens only once per turn, not on a third spell",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Doomskar Oracle", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 22 },
+        { "life": 11 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: a first spell still on the stack counts toward the second spell",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Doomskar Oracle", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 22 },
+        { "life": 14 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: a creature cast as your second spell does not trigger for itself",
+    "players": [
+      { "hand": ["Lightning Bolt", "Doomskar Oracle"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Doomskar Oracle" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Doomskar Oracle"] },
+        { "life": 17 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: foretell is a special action usable while a spell is on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt", "Doomskar Oracle"], "battlefield": ["Mountain", "Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Doomskar Oracle", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "exile": ["Doomskar Oracle"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a foretold creature cannot be cast later in the same turn",
+    "players": [
+      { "hand": ["Doomskar Oracle"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Doomskar Oracle", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Doomskar Oracle", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Doomskar Oracle"] }, {}]
+    }
+  }
+]

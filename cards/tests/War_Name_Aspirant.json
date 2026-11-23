@@ -1,0 +1,75 @@
+[
+ {
+  "name": "raid: enters with a +1/+1 counter after you attacked this turn",
+  "players": [ { "hand": ["War-Name Aspirant"], "battlefield": ["Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "cast": "War-Name Aspirant" },
+   { "resolve": true }
+  ],
+  "expect": { "pt": { "War-Name Aspirant": [3, 2] }, "counters": { "War-Name Aspirant": { "p1p1": 1 } } }
+ },
+ {
+  "name": "without raid it enters as a 2/1",
+  "players": [ { "hand": ["War-Name Aspirant"], "battlefield": ["Mountain", "Mountain"] }, {} ],
+  "steps": [
+   { "cast": "War-Name Aspirant" },
+   { "resolve": true }
+  ],
+  "expect": { "pt": { "War-Name Aspirant": [2, 1] } }
+ },
+ {
+  "name": "power 1 or less cannot block it: the Elves' block is dropped, Aspirant deals 2",
+  "players": [ { "battlefield": [ { "name": "War-Name Aspirant", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] }, { "battlefield": [ { "name": "Llanowar Elves", "sick": false }, { "name": "Hill Giant", "sick": false } ] } ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "War-Name Aspirant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Llanowar Elves", "attacker": "War-Name Aspirant" }, { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18, "battlefield_has": ["Llanowar Elves"] } ] }
+ },
+ {
+  "name": "raid still counts when the attacker died in combat before Main2",
+  "players": [ { "hand": ["War-Name Aspirant"], "battlefield": ["Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false } ] }, { "battlefield": [ { "name": "Hill Giant", "sick": false } ] } ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2" },
+   { "cast": "War-Name Aspirant" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, {} ], "pt": { "War-Name Aspirant": [3, 2] }, "counters": { "War-Name Aspirant": { "p1p1": 1 } } }
+ },
+ {
+  "name": "ruling: a block stays after the blocker's power drops to 1 (Disfigure): Aspirant deals no damage to the player",
+  "players": [
+   { "battlefield": ["Swamp", { "name": "War-Name Aspirant", "sick": false }], "hand": ["Disfigure"] },
+   { "battlefield": [ { "name": "Hill Giant", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "War-Name Aspirant", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "War-Name Aspirant" } ] },
+   { "advance_to": "CombatDamage", "hold": true },
+   { "cast": "Disfigure", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "pass": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 20, "graveyard_has": ["Hill Giant"] }
+   ]
+  }
+ }
+]

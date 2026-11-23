@@ -1,0 +1,156 @@
+[
+  {
+    "name": "enchanted creature cannot activate its mana ability",
+    "players": [
+      {
+        "hand": [
+          "Demotion"
+        ],
+        "battlefield": [
+          "Plains",
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Demotion",
+        "targets": [
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "tap_for_mana": "Llanowar Elves",
+        "color": "G",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Llanowar Elves": false
+      }
+    }
+  },
+  {
+    "name": "enchanted creature can still attack",
+    "players": [
+      {
+        "hand": [
+          "Demotion"
+        ],
+        "battlefield": [
+          "Plains",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Demotion",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature can't block: the Grizzly Bears block is dropped (Savannah Lions can block but is not declared), Hill Giant hits for 3",
+    "players": [
+      { "hand": ["Demotion"], "battlefield": ["Plains", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Demotion", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 17, "battlefield_has": ["Grizzly Bears", "Savannah Lions"] }, {} ]
+    }
+  },
+  {
+    "name": "enchanted creature's mana ability can't be activated: Llanowar Elves' G can't pay for Grizzly Bears (only two Plains otherwise)",
+    "players": [
+      { "hand": ["Demotion", "Grizzly Bears"], "battlefield": ["Plains", "Plains", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Demotion", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Llanowar Elves"] }, {} ],
+      "tapped": { "Llanowar Elves": false }
+    }
+  },
+  {
+    "name": "ruling: activated abilities of the enchanted creature cannot be activated (Puppeteer's tap ability)",
+    "players": [
+      { "hand": ["Demotion"], "battlefield": ["Plains", "Island", "Puppeteer"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Demotion", "targets": ["Puppeteer"] },
+      { "resolve": true },
+      { "activate": "Puppeteer", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Puppeteer"] }, { "battlefield_has": ["Hill Giant"] } ],
+      "tapped": { "Hill Giant": false, "Puppeteer": false }
+    }
+  },
+  {
+    "name": "ruling control: without Demotion, Puppeteer's tap ability is legal and taps Hill Giant",
+    "players": [
+      { "battlefield": ["Puppeteer", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "activate": "Puppeteer", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "tapped": { "Hill Giant": true }
+    }
+  }
+]

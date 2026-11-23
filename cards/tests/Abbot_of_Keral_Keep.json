@@ -1,0 +1,234 @@
+[
+ {
+  "name": "exiled top card is castable this turn",
+  "players": [
+   {
+    "hand": [
+     "Abbot of Keral Keep"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Abbot of Keral Keep"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Abbot of Keral Keep"
+     ],
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "the exiled card expires at end of turn",
+  "players": [
+   {
+    "hand": [
+     "Abbot of Keral Keep"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Abbot of Keral Keep"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "does not expose the card below the top",
+  "players": [
+   {
+    "hand": [
+     "Abbot of Keral Keep"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Abbot of Keral Keep"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Island",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Abbot of Keral Keep"
+     ],
+     "graveyard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: exiled land can't be played after another land was played this turn",
+  "players": [
+   { "hand": ["Abbot of Keral Keep", "Mountain"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Mountain" },
+   { "cast": "Abbot of Keral Keep" },
+   { "resolve": true },
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Abbot of Keral Keep"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: exiled land can be played when no land was played yet this turn",
+  "players": [
+   { "hand": ["Abbot of Keral Keep"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Abbot of Keral Keep" },
+   { "resolve": true },
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Abbot of Keral Keep", "Forest"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: casting a creature spell or playing a land does not trigger prowess",
+  "players": [
+   { "hand": ["Grizzly Bears", "Mountain"], "battlefield": ["Abbot of Keral Keep", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Mountain" },
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+   "pt": { "Abbot of Keral Keep": [2, 1] }
+  }
+ },
+ {
+  "name": "ruling: casting a noncreature spell triggers prowess",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Abbot of Keral Keep", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Abbot of Keral Keep"] }, { "graveyard": ["Grizzly Bears"] } ],
+   "pt": { "Abbot of Keral Keep": [3, 2] }
+  }
+ },
+ {
+  "name": "ruling: prowess resolves before the noncreature spell that triggered it",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Abbot of Keral Keep", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ],
+   "pt": { "Abbot of Keral Keep": [3, 2] }
+  }
+ },
+ {
+  "name": "ruling: the exiled Forest can still be played after Abbot leaves the battlefield",
+  "players": [
+   { "hand": ["Abbot of Keral Keep", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Abbot of Keral Keep" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Abbot of Keral Keep"] },
+   { "resolve": true },
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Forest"], "graveyard": ["Abbot of Keral Keep", "Lightning Bolt"] }, {} ]
+  }
+ }
+]

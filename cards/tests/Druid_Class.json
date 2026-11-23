@@ -1,0 +1,344 @@
+[
+  {
+    "name": "landfall: entering a land you control gains 1 life",
+    "players": [
+      {
+        "hand": [
+          "Forest"
+        ],
+        "battlefield": [
+          "Druid Class"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 21,
+          "battlefield_has": [
+            "Druid Class",
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "level 1 (no level counters): only one land per turn",
+    "players": [
+      {
+        "hand": [
+          "Forest",
+          "Forest"
+        ],
+        "battlefield": [
+          "Druid Class"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 21
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "level 2: may play an additional land each turn (two landfall triggers)",
+    "players": [
+      {
+        "hand": [
+          "Forest",
+          "Forest"
+        ],
+        "battlefield": [
+          {
+            "name": "Druid Class",
+            "counters": {
+              "Level": 1
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "battlefield_has": [
+            "Druid Class"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "level 2 activation costs {2}{G} and adds a level counter",
+    "players": [
+      {
+        "battlefield": [
+          "Druid Class",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Druid Class",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Druid Class": {
+          "Level": 1
+        }
+      },
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "level 3 is not available at level 1",
+    "players": [
+      {
+        "battlefield": [
+          "Druid Class",
+          "Forest",
+          "Mountain",
+          "Island",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Druid Class",
+        "ability": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Druid Class": {
+          "Level": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "level 3: target land you control becomes a haste creature with P/T equal to lands you control",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Druid Class",
+            "counters": {
+              "Level": 1
+            }
+          },
+          "Forest",
+          "Mountain",
+          "Island",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Druid Class",
+        "ability": 1
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Forest"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Druid Class": {
+          "Level": 2
+        }
+      },
+      "pt": {
+        "Forest": [
+          5,
+          5
+        ]
+      },
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a level 3 land creature's P/T follows the lands you control as more enter",
+    "players": [
+      {
+        "hand": ["Forest"],
+        "battlefield": [
+          {"name": "Druid Class", "counters": {"Level": 1}},
+          "Forest", "Mountain", "Island", "Plains", "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Druid Class", "ability": 1},
+      {"resolve": true, "targets": ["Forest"]},
+      {"resolve": true},
+      {"play_land": "Forest"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "pt": {"Forest": [6, 6]},
+      "players": [{"life": 21}, {}]
+    }
+  },
+  {
+    "name": "ruling: a level 2 Class cannot activate its level 2 ability again",
+    "players": [
+      {
+        "battlefield": [
+          {"name": "Druid Class", "counters": {"Level": 1}},
+          "Forest", "Forest", "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Druid Class", "ability": 0, "illegal": true}
+    ],
+    "expect": {
+      "counters": {"Druid Class": {"Level": 1}},
+      "players": [{}, {}]
+    }
+  },
+  {
+    "name": "ruling: two Druid Classes at level 2 allow three land drops, and six landfall triggers",
+    "players": [
+      {
+        "hand": ["Forest", "Forest", "Forest", "Forest"],
+        "battlefield": [
+          {"name": "Druid Class", "counters": {"Level": 1}},
+          {"name": "Druid Class", "counters": {"Level": 1}}
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {"play_land": "Forest"},
+      {"resolve": true},
+      {"resolve": true},
+      {"play_land": "Forest"},
+      {"resolve": true},
+      {"resolve": true},
+      {"play_land": "Forest"},
+      {"resolve": true},
+      {"resolve": true},
+      {"play_land": "Forest", "illegal": true}
+    ],
+    "expect": {
+      "players": [{"life": 26}, {}]
+    }
+  },
+  {
+    "name": "ruling: at level 3 the Class keeps its landfall and its extra land drop",
+    "players": [
+      {
+        "hand": ["Forest", "Forest"],
+        "battlefield": [
+          {"name": "Druid Class", "counters": {"Level": 2}}
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {"play_land": "Forest"},
+      {"resolve": true},
+      {"play_land": "Forest"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"life": 22, "battlefield_has": ["Druid Class"]}, {}]
+    }
+  },
+  {
+    "name": "ruling: a land put onto the battlefield by a spell triggers landfall",
+    "players": [
+      {
+        "hand": ["Rampant Growth"],
+        "battlefield": ["Druid Class", "Forest", "Forest"],
+        "library": ["Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Rampant Growth"},
+      {"resolve": true, "answers": ["Mountain"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"life": 21, "battlefield_has": ["Mountain"]}, {}]
+    }
+  }
+]

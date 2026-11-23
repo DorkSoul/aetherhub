@@ -1,0 +1,189 @@
+[
+ { "name": "+1: target creature gets a +1/+1 counter and the flying counter you choose",
+   "players": [ { "battlefield": ["Elspeth Resplendent", "Grizzly Bears"] }, {} ],
+   "steps": [ { "activate": "Elspeth Resplendent", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [[0]] } ],
+   "expect": { "pt": { "Grizzly Bears": [3, 3] }, "keywords": { "Grizzly Bears": ["Flying"] }, "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } } } },
+ { "name": "+1: choosing first strike gives the creature first strike and no flying",
+   "players": [ { "battlefield": ["Elspeth Resplendent", "Grizzly Bears"] }, {} ],
+   "steps": [ { "activate": "Elspeth Resplendent", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [[1]] } ],
+   "expect": { "pt": { "Grizzly Bears": [3, 3] }, "keywords": { "Grizzly Bears": ["FirstStrike"] } } },
+ { "name": "+1 with no target still works: the loyalty ability resolves and no creature changes",
+   "players": [ { "battlefield": ["Elspeth Resplendent", "Grizzly Bears"] }, {} ],
+   "steps": [ { "activate": "Elspeth Resplendent", "ability": 0 }, { "resolve": true, "answers": [[0]] } ],
+   "expect": { "pt": { "Grizzly Bears": [2, 2] } } },
+ { "name": "-3: put a permanent card with mana value 3 or less onto the battlefield with a shield counter; the rest go to the bottom",
+   "players": [ { "battlefield": ["Elspeth Resplendent"], "library": ["Lightning Bolt", "Hill Giant", "Serra Angel", "Grizzly Bears", "Forest", "Forest", "Forest"] }, {} ],
+   "steps": [ { "activate": "Elspeth Resplendent", "ability": 1 }, { "resolve": true, "answers": [0] } ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": [] }, {} ], "counters": { "Grizzly Bears": { "Shield": 1 } } } },
+ { "name": "-3: an instant or a card with mana value 4 or more is not a choice; nothing enters when none qualify",
+   "players": [ { "battlefield": ["Elspeth Resplendent"], "library": ["Lightning Bolt", "Hill Giant", "Serra Angel"] }, {} ],
+   "steps": [ { "activate": "Elspeth Resplendent", "ability": 1 }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_lacks": ["Hill Giant", "Serra Angel", "Lightning Bolt"] }, {} ] } },
+ { "name": "-7 is not available at 5 loyalty: the activation is illegal",
+   "players": [ { "battlefield": ["Elspeth Resplendent"] }, {} ],
+   "steps": [ { "activate": "Elspeth Resplendent", "ability": 2, "illegal": true } ],
+   "expect": { "players": [ { "battlefield_lacks": ["Angel 3-3 Flying"] }, {} ] } },
+{
+  "name": "-7: create five 3/3 flying Angels; Elspeth is left at 0 loyalty and dies",
+  "players": [
+    {
+      "battlefield": [
+        {
+          "name": "Elspeth Resplendent",
+          "counters": {
+            "Loyalty": 7
+          }
+        }
+      ]
+    },
+    {}
+  ],
+  "steps": [
+    {
+      "activate": "Elspeth Resplendent",
+      "ability": 2
+    },
+    {
+      "resolve": true
+    }
+  ],
+  "expect": {
+    "players": [
+      {
+        "battlefield": [
+          "Angel 3-3 Flying",
+          "Angel 3-3 Flying",
+          "Angel 3-3 Flying",
+          "Angel 3-3 Flying",
+          "Angel 3-3 Flying"
+        ],
+        "graveyard": [
+          "Elspeth Resplendent"
+        ]
+      },
+      {}
+    ]
+  }
+},
+{
+  "name": "-7 tokens are 3/3 flyers",
+  "players": [
+    {
+      "battlefield": [
+        {
+          "name": "Elspeth Resplendent",
+          "counters": {
+            "Loyalty": 7
+          }
+        }
+      ]
+    },
+    {}
+  ],
+  "steps": [
+    {
+      "activate": "Elspeth Resplendent",
+      "ability": 2
+    },
+    {
+      "resolve": true
+    }
+  ],
+  "expect": {
+    "players": [
+      {},
+      {}
+    ],
+    "keywords": {
+      "Angel 3-3 Flying": [
+        "Flying"
+      ]
+    },
+    "pt": {
+      "Angel 3-3 Flying": [
+        3,
+        3
+      ]
+    }
+  }
+},
+{
+  "name": "ruling: a shield counter is not regeneration, so Terror (can't be regenerated) only removes the shield",
+  "players": [
+    { "hand": ["Terror"], "battlefield": ["Elspeth Resplendent", "Swamp", "Swamp", { "name": "Grizzly Bears", "counters": { "Shield": 1 } }] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Terror", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      { "battlefield_has": ["Elspeth Resplendent", "Grizzly Bears"] },
+      {}
+    ],
+    "counters": { "Grizzly Bears": { "Shield": 0 } }
+  }
+},
+{
+  "name": "ruling: damage to a creature with two shield counters is prevented and only one shield is removed",
+  "players": [
+    { "hand": ["Lightning Bolt"], "battlefield": ["Elspeth Resplendent", "Mountain"] },
+    { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 2 } }] }
+  ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      {},
+      { "battlefield_has": ["Grizzly Bears"] }
+    ],
+    "counters": { "Grizzly Bears": { "Shield": 1 } }
+  }
+},
+{
+  "name": "ruling: a shield counter does not stop a creature from being sacrificed",
+  "players": [
+    { "hand": ["Diabolic Edict"], "battlefield": ["Elspeth Resplendent", "Swamp", "Swamp"] },
+    { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 1 } }] }
+  ],
+  "steps": [
+    { "cast": "Diabolic Edict", "targets": ["p1"] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      {},
+      { "graveyard": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }
+    ]
+  }
+},
+{
+  "name": "ruling: the +1 counter kind is chosen on resolution (lifelink here)",
+  "players": [ { "battlefield": ["Elspeth Resplendent", "Grizzly Bears"] }, {} ],
+  "steps": [ { "activate": "Elspeth Resplendent", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [[2]] } ],
+  "expect": { "pt": { "Grizzly Bears": [3, 3] }, "keywords": { "Grizzly Bears": ["Lifelink"] }, "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } } }
+},
+{
+  "name": "ruling: a creature that loses all abilities keeps its shield counter",
+  "players": [
+    { "hand": ["Lignify", "Terror"], "battlefield": ["Elspeth Resplendent", "Forest", "Forest", "Swamp", "Swamp"] },
+    { "battlefield": [{ "name": "Grizzly Bears", "counters": { "Shield": 1 } }] }
+  ],
+  "steps": [
+    { "cast": "Lignify", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "cast": "Terror", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      {},
+      { "battlefield_has": ["Grizzly Bears"] }
+    ],
+    "counters": { "Grizzly Bears": { "Shield": 0 } }
+  }
+}
+]

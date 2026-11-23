@@ -1,0 +1,76 @@
+[
+  {
+    "name": "enchanted creature gains shadow",
+    "players": [
+      { "hand": ["Temporal Isolation"], "battlefield": ["Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Temporal Isolation", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Temporal Isolation"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "keywords": { "Grizzly Bears": ["Shadow"] }
+    }
+  },
+  {
+    "name": "damage dealt by the enchanted creature is prevented (control: without the aura it deals 2)",
+    "players": [
+      { "hand": ["Temporal Isolation"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Temporal Isolation", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "needs a creature to enchant (no creatures on the battlefield)",
+    "players": [
+      { "hand": ["Temporal Isolation"], "battlefield": ["Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Temporal Isolation", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Temporal Isolation"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blocker that gains shadow mid-combat stays blocking, so the attacker deals no damage to the player",
+    "players": [
+      { "hand": ["Temporal Isolation"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "player": 1 },
+      { "cast": "Temporal Isolation", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "life": 20, "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  }
+]

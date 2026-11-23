@@ -1,0 +1,169 @@
+[
+  {
+    "name": "chapter I exiles the only opponent permanent with mana value 3 or greater (Grizzly Bears MV 2 is not a target)",
+    "players": [
+      {
+        "hand": ["Elspeth Conquers Death"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Hill Giant", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Elspeth Conquers Death" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Elspeth Conquers Death"] },
+        { "exile": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "chapter I has no legal target when the opponent controls only mana value 2 or less",
+    "players": [
+      {
+        "hand": ["Elspeth Conquers Death"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Elspeth Conquers Death" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Elspeth Conquers Death"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "chapter III returns a creature card from your graveyard with a +1/+1 counter, then the saga is sacrificed",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Elspeth Conquers Death", "counters": { "lore": 2 } }
+        ],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": { "PlusOnePlusOne": 1 }
+      },
+      "pt": {
+        "Grizzly Bears": [3, 3]
+      },
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Elspeth Conquers Death"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "chapter II: a noncreature spell an opponent casts costs {2} more (two Mountains are not enough for Lightning Bolt)",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Elspeth Conquers Death", "counters": { "lore": 1 } }
+        ]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Mountain"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "chapter II: with three Mountains an opponent can still cast Lightning Bolt for the increased cost",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Elspeth Conquers Death", "counters": { "lore": 1 } }
+        ]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Mountain", "Mountain"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the chapter II cost increase lasts until your next turn even after the Saga leaves the battlefield",
+    "players": [
+      { "battlefield": [{ "name": "Elspeth Conquers Death", "counters": { "lore": 1 } }] },
+      { "hand": ["Disenchant", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Disenchant", "player": 1, "targets": ["Elspeth Conquers Death"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard_has": ["Elspeth Conquers Death"] },
+        { "graveyard_has": ["Disenchant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a third lore counter triggers only chapter III, so the chapter II cost increase does not come back",
+    "players": [
+      { "battlefield": [{ "name": "Elspeth Conquers Death", "counters": { "lore": 2 } }], "graveyard": ["Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

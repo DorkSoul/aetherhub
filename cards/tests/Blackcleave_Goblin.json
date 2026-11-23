@@ -1,0 +1,45 @@
+[
+  {
+    "name": "haste: attacks the turn it is cast and deals poison damage",
+    "players": [
+      { "hand": ["Blackcleave Goblin"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blackcleave Goblin" },
+      { "resolve": true },
+      { "attack": [ { "card": "Blackcleave Goblin", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Blackcleave Goblin"] }, { "poison": 2, "life": 20 } ]
+    }
+  },
+  {
+    "name": "infect damage to a creature is -1/-1 counters, killing the 2/2 blocker and the 2/1 attacker in combat",
+    "players": [
+      { "battlefield": ["Blackcleave Goblin"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Blackcleave Goblin", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Blackcleave Goblin" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Blackcleave Goblin"] }, { "graveyard": ["Grizzly Bears"], "poison": 0 } ]
+    }
+  },
+  {
+    "name": "ruling: prevented infect damage to a player gives no poison counters (Fog)",
+    "players": [ { "battlefield": ["Blackcleave Goblin"] }, { "hand": ["Fog"], "battlefield": ["Forest"] } ],
+    "steps": [ { "attack": [ { "card": "Blackcleave Goblin", "at": "p1" } ] }, { "pass": true }, { "cast": "Fog", "player": 1 }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Blackcleave Goblin"] }, { "poison": 0, "life": 20, "graveyard": ["Fog"] } ] }
+  },
+  {
+    "name": "ruling: -1/-1 counters from infect stay on the creature after the turn ends",
+    "players": [ { "battlefield": ["Blackcleave Goblin"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Blackcleave Goblin", "at": "p1" } ] }, { "block": [ { "blocker": "Hill Giant", "attacker": "Blackcleave Goblin" } ] }, { "advance_to": "Main2" }, { "advance_to": "Main1" } ],
+    "expect": { "players": [ { "graveyard": ["Blackcleave Goblin"] }, {} ], "pt": { "Hill Giant": [1, 1] } }
+  }
+]

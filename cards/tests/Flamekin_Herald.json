@@ -1,0 +1,143 @@
+[
+  {
+    "name": "casting a commander casts a free nonland card with lesser mana value (cascade)",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Grizzly Bears"],
+        "battlefield": ["Flamekin Herald", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamekin Herald", "Grizzly Bears", "Savannah Lions"] }, {} ]
+    }
+  },
+  {
+    "name": "equal mana value is skipped; the lesser card is cast",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Hill Giant"],
+        "battlefield": ["Flamekin Herald", "Mountain", "Forest", "Forest", "Forest"],
+        "library": ["Hill Giant", "Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamekin Herald", "Hill Giant", "Savannah Lions"] }, {} ]
+    }
+  },
+  {
+    "name": "a non-commander spell does not cascade",
+    "commander": true,
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Flamekin Herald", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamekin Herald", "Grizzly Bears"], "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Herald killed in response to the commander spell; its cascade still resolves",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Grizzly Bears"],
+        "battlefield": ["Flamekin Herald", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Flamekin Herald"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Savannah Lions"], "graveyard_has": ["Flamekin Herald"] }, { "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: commander countered; its cascade still resolves",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Grizzly Bears"],
+        "battlefield": ["Flamekin Herald", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamekin Herald", "Savannah Lions"], "command": ["Grizzly Bears"] }, { "graveyard_has": ["Cancel"] } ]
+    }
+  },
+  {
+    "name": "ruling: a cascaded X spell is cast with X = 0 (Fireball deals no damage)",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Grizzly Bears"],
+        "battlefield": ["Flamekin Herald", "Forest", "Forest"],
+        "library": ["Fireball"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamekin Herald", "Grizzly Bears"], "graveyard_has": ["Fireball"] }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: declining to cast the exiled card puts it on the bottom of the library",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Grizzly Bears"],
+        "battlefield": ["Flamekin Herald", "Forest", "Forest"],
+        "library": ["Savannah Lions", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamekin Herald", "Grizzly Bears"], "battlefield_lacks": ["Savannah Lions"], "library_top": ["Forest"], "library_count": 2 }, {} ]
+    }
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "ETB returns a historic card from your graveyard to your hand",
+    "players": [ { "hand": ["Elena, Turk Recruit"], "battlefield": ["Plains", "Plains", "Plains"], "graveyard": ["Sol Ring"] }, {} ],
+    "steps": [
+      { "cast": "Elena, Turk Recruit" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Sol Ring"], "battlefield_has": ["Elena, Turk Recruit"], "graveyard": [] }, {} ],
+      "pt": { "Elena, Turk Recruit": [1, 4] }
+    }
+  },
+  {
+    "name": "a non-historic card in your graveyard is not a legal target",
+    "players": [ { "hand": ["Elena, Turk Recruit"], "battlefield": ["Plains", "Plains", "Plains"], "graveyard": ["Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Elena, Turk Recruit" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Elena, Turk Recruit"] }, {} ]
+    }
+  },
+  {
+    "name": "casting a historic spell puts a +1/+1 counter on Elena",
+    "players": [ { "hand": ["Sol Ring"], "battlefield": ["Plains", "Plains", "Elena, Turk Recruit"] }, {} ],
+    "steps": [
+      { "cast": "Sol Ring" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sol Ring", "Elena, Turk Recruit"] }, {} ],
+      "counters": { "Elena, Turk Recruit": { "p1p1": 1 } },
+      "pt": { "Elena, Turk Recruit": [2, 5] }
+    }
+  },
+  {
+    "name": "ruling: a legendary creature spell is historic, so casting it puts a +1/+1 counter on Elena",
+    "players": [ { "hand": ["Leonardo, Leader in Blue"], "battlefield": ["Plains", "Plains", "Plains", "Elena, Turk Recruit"] }, {} ],
+    "steps": [ { "cast": "Leonardo, Leader in Blue" }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Leonardo, Leader in Blue", "Elena, Turk Recruit"] }, {} ],
+      "counters": { "Elena, Turk Recruit": { "p1p1": 1 } },
+      "pt": { "Elena, Turk Recruit": [2, 5] }
+    }
+  },
+  {
+    "name": "ruling: Elena's counter trigger resolves even though the historic spell is countered",
+    "players": [ { "hand": ["Sol Ring"], "battlefield": ["Plains", "Elena, Turk Recruit"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+    "steps": [
+      { "cast": "Sol Ring" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Sol Ring" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Sol Ring"], "battlefield_has": ["Elena, Turk Recruit"] }, { "graveyard_has": ["Counterspell"] } ],
+      "counters": { "Elena, Turk Recruit": { "p1p1": 1 } },
+      "pt": { "Elena, Turk Recruit": [2, 5] }
+    }
+  }
+]

@@ -1,0 +1,83 @@
+[
+ {
+  "name": "+1: gain life equal to creatures plus planeswalkers you control",
+  "players": [
+   { "battlefield": ["Ajani, Strength of the Pride", "Grizzly Bears", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ajani, Strength of the Pride", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "life": 23 }, {}]
+  }
+ },
+ {
+  "name": "-2: create Ajani's Pridemate",
+  "players": [
+   { "battlefield": ["Ajani, Strength of the Pride"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ajani, Strength of the Pride", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "battlefield_has": ["Ajani, Strength of the Pride", "Ajani's Pridemate Token"] }, {}],
+   "pt": { "Ajani's Pridemate Token": [2, 2] }
+  }
+ },
+ {
+  "name": "0: at 15 or more life above the starting total, exile Ajani and the opponents' artifacts and creatures",
+  "players": [
+   { "battlefield": ["Ajani, Strength of the Pride"] },
+   { "battlefield": ["Grizzly Bears", "Ornithopter", "Sol Ring"] }
+  ],
+  "steps": [
+   { "set_life": 35 },
+   { "activate": "Ajani, Strength of the Pride", "ability": 2 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 35, "exile": ["Ajani, Strength of the Pride"], "battlefield_lacks": ["Ajani, Strength of the Pride"] },
+    { "battlefield_lacks": ["Grizzly Bears", "Ornithopter", "Sol Ring"], "exile": ["Grizzly Bears", "Ornithopter", "Sol Ring"] }
+   ]
+  }
+ },
+ {
+  "name": "0 at 34 life (14 above the starting total): nothing is exiled",
+  "players": [
+   { "battlefield": ["Ajani, Strength of the Pride"] },
+   { "battlefield": ["Grizzly Bears", "Ornithopter"] }
+  ],
+  "steps": [
+   { "set_life": 34 },
+   { "activate": "Ajani, Strength of the Pride", "ability": 2 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Ajani, Strength of the Pride"] },
+    { "battlefield_has": ["Grizzly Bears", "Ornithopter"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature planeswalker (Gideon Blackblade on your turn) is counted twice",
+  "players": [ { "battlefield": ["Ajani, Strength of the Pride", "Gideon Blackblade"] }, {} ],
+  "steps": [ { "activate": "Ajani, Strength of the Pride", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "life": 23 }, {} ] }
+ },
+ {
+  "name": "ruling: one lifegain event of 4 life triggers Ajani's Pridemate once",
+  "players": [ { "battlefield": ["Ajani, Strength of the Pride", "Ajani's Pridemate", "Grizzly Bears", "Grizzly Bears"] }, {} ],
+  "steps": [ { "activate": "Ajani, Strength of the Pride", "ability": 0 }, { "resolve": true }, { "resolve": true } ],
+  "expect": {
+   "players": [ { "life": 24 }, {} ],
+   "counters": { "Ajani's Pridemate": { "p1p1": 1 } },
+   "pt": { "Ajani's Pridemate": [3, 3] }
+  }
+ }
+]

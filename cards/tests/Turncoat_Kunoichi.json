@@ -1,0 +1,103 @@
+[
+  {
+    "name": "normal cast: exiles the opposing creature until Kunoichi leaves the battlefield",
+    "players": [
+      { "hand": ["Turncoat Kunoichi"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Turncoat Kunoichi" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Turncoat Kunoichi"] },
+        { "exile": ["Hill Giant"], "battlefield": [] }
+      ]
+    }
+  },
+  {
+    "name": "normal cast: the creature returns when Kunoichi leaves the battlefield",
+    "players": [
+      { "hand": ["Turncoat Kunoichi", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Turncoat Kunoichi" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Turncoat Kunoichi"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Turncoat Kunoichi"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "sneak: the exile is permanent, Hill Giant stays exiled when Kunoichi leaves",
+    "players": [
+      { "hand": ["Turncoat Kunoichi", "Lightning Bolt"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }, "Plains", "Swamp", "Swamp", "Swamp", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Turncoat Kunoichi", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Turncoat Kunoichi"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Turncoat Kunoichi"], "hand": ["Grizzly Bears"] },
+        { "exile": ["Hill Giant"], "battlefield": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sneaked creature enters tapped and attacking the same player, so it deals combat damage",
+    "players": [
+      { "hand": ["Turncoat Kunoichi"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }, "Plains", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Turncoat Kunoichi", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Turncoat Kunoichi"], "hand": ["Grizzly Bears"] },
+        { "life": 17, "exile": ["Hill Giant"] }
+      ],
+      "tapped": { "Turncoat Kunoichi": true }
+    }
+  },
+  {
+    "name": "ruling: if Kunoichi leaves before its trigger resolves, the target is not exiled",
+    "players": [
+      { "hand": ["Turncoat Kunoichi"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hill Giant", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Turncoat Kunoichi" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Turncoat Kunoichi"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Turncoat Kunoichi"] },
+        { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

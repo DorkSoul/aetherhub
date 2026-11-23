@@ -1,0 +1,85 @@
+{
+  "name": "Venser, Fervent Forger",
+  "mana_cost": "{4}{R}{R}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Sorcerer"],
+  "colors": ["R"],
+  "power": 5,
+  "toughness": 3,
+  "keywords": ["Flash"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Copy target instant or sorcery spell an opponent controls twice. You may choose new targets for the copies.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    {
+                      "what": {
+                        "type": "Spell",
+                        "filter": { "types": ["Instant", "Sorcery"], "controller": "Opponent" }
+                      },
+                      "label": "instant or sorcery spell an opponent controls"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "Repeat",
+                      "n": { "type": "Fixed", "n": 2 },
+                      "effects": [
+                        { "type": "CopySpell", "what": { "type": "Target", "idx": 0 }, "new_targets": true }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "Create two tokens that are copies of target permanent an opponent controls. They gain haste. At the beginning of the next end step, sacrifice them.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    {
+                      "what": {
+                        "type": "Permanent",
+                        "filter": { "controller": "Opponent" }
+                      },
+                      "label": "permanent an opponent controls"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "CopyPermanent",
+                      "what": { "type": "Target", "idx": 0 },
+                      "n": { "type": "Fixed", "n": 2 },
+                      "except": [ { "type": "AddKeyword", "keyword": "Haste" } ]
+                    },
+                    {
+                      "type": "Delayed",
+                      "at": "NextEndStep",
+                      "effects": [
+                        { "type": "Sacrifice", "who": { "type": "Remembered" } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flash\nWhen Venser enters, choose one —\n• Copy target instant or sorcery spell an opponent controls twice. You may choose new targets for the copies.\n• Create two tokens that are copies of target permanent an opponent controls. They gain haste. At the beginning of the next end step, sacrifice them."
+}

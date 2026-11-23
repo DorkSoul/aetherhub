@@ -1,0 +1,121 @@
+[
+ {
+  "name": "returns a permanent card and casts the discovered spell",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears"], "battlefield_has": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining the discovered card puts it into hand",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears", "Savannah Lions"], "battlefield_lacks": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "skips cards with mana value above 4 and discovers the next nonland card",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Serra Angel", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [], "battlefield_has": ["Savannah Lions"], "battlefield_lacks": ["Serra Angel"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: no creature to target means the discovered creature spell cannot be cast and goes to hand",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Pacifism"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears", "Pacifism"], "battlefield_lacks": ["Pacifism"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: mana value ignores alternative cost, so Force of Will (MV 5) is skipped by discover 4",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Force of Will", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears"], "battlefield_has": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: mana value ignores cost reduction, so a party-reduced Spoils of Adventure (MV 6) is skipped by discover 4",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Pitiless Vizier", "Drana's Silencer"], "library": ["Spoils of Adventure", "Savannah Lions"] },
+   { "life": 20 }
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears"], "battlefield_has": ["Savannah Lions"], "life": 20 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a discovered spell with X is cast with X 0 (Fireball deals no damage)",
+  "players": [
+   { "hand": ["Walk with the Ancestors"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Fireball"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Walk with the Ancestors", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true, "p1"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears"], "graveyard_has": ["Fireball"] },
+    { "life": 20 }
+   ]
+  }
+ }
+]

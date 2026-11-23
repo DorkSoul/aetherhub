@@ -1,0 +1,96 @@
+{
+  "name": "Sword of Hours",
+  "mana_cost": "{2}",
+  "types": ["Artifact"],
+  "subtypes": ["Equipment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Attacks",
+        "filter": { "attached_by_source": true }
+      },
+      "effects": [
+        {
+          "type": "AddCounters",
+          "kind": "PlusOnePlusOne",
+          "n": { "type": "Fixed", "n": 1 },
+          "what": { "type": "TriggerSource" }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "DealsCombatDamage",
+        "filter": { "attached_by_source": true }
+      },
+      "effects": [
+        {
+          "type": "RollDie",
+          "sides": 12,
+          "outcomes": [
+            {
+              "min": 1,
+              "max": 12,
+              "effects": [
+                {
+                  "type": "If",
+                  "cond": {
+                    "type": "AnyOf",
+                    "cs": [
+                      {
+                        "type": "Compare",
+                        "a": {
+                          "type": "Minus",
+                          "a": { "type": "DieRoll" },
+                          "b": { "type": "EventAmount" }
+                        },
+                        "cmp": { "n": 0, "op": "Gt" }
+                      },
+                      {
+                        "type": "Compare",
+                        "a": { "type": "DieRoll" },
+                        "cmp": { "n": 12, "op": "Eq" }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "type": "AddCounters",
+                      "kind": "PlusOnePlusOne",
+                      "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "TriggerSource" } },
+                      "what": { "type": "TriggerSource" }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{2}" }],
+      "timing": "Sorcery",
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "types": ["Creature"], "controller": "You" }
+          },
+          "label": "target creature you control"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Attach",
+          "what": { "type": "This" },
+          "to": { "type": "Target", "idx": 0 }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever equipped creature attacks, put a +1/+1 counter on it.\nWhenever equipped creature deals combat damage, roll a d12. If the result is greater than the damage dealt or the result is 12, double the number of +1/+1 counters on that creature.\nEquip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+}

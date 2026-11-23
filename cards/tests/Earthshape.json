@@ -1,0 +1,267 @@
+[
+ {
+  "name": "earthbend 3, creatures with power <= 3 get hexproof and indestructible, you get hexproof",
+  "players": [
+   {
+    "hand": [
+     "Earthshape"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Forest",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "hand": [
+     "Duress"
+    ],
+    "battlefield": [
+     "Swamp"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Earthshape",
+    "targets": [
+     "Forest"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Duress",
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Forest": [
+     3,
+     3
+    ]
+   },
+   "keywords": {
+    "Forest": [
+     "Hexproof",
+     "Indestructible"
+    ],
+    "Grizzly Bears": [
+     "Hexproof",
+     "Indestructible"
+    ],
+    "Hill Giant": [
+     "Hexproof",
+     "Indestructible"
+    ]
+   }
+  }
+ },
+ {
+  "name": "a creature with power greater than the land's power gets nothing and can still be targeted",
+  "players": [
+   {
+    "hand": [
+     "Earthshape"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Forest",
+     "Hill Giant",
+     "Craw Wurm"
+    ]
+   },
+   {
+    "hand": [
+     "Doom Blade"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Earthshape",
+    "targets": [
+     "Forest"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Doom Blade",
+    "player": 1,
+    "targets": [
+     "Craw Wurm"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest",
+      "Hill Giant"
+     ],
+     "graveyard": [
+      "Earthshape",
+      "Craw Wurm"
+     ]
+    },
+    {
+     "graveyard": [
+      "Doom Blade"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "hexproof ends at end of turn: opponent can target you next turn",
+  "players": [
+   {
+    "hand": [
+     "Earthshape"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Forest"
+    ]
+   },
+   {
+    "hand": [
+     "Duress"
+    ],
+    "battlefield": [
+     "Swamp"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Earthshape",
+    "targets": [
+     "Forest"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Duress",
+    "player": 1
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: earthbend gives the land haste, so it can attack the turn it is animated",
+  "players": [
+   { "hand": ["Earthshape"], "battlefield": ["Plains", "Plains", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Earthshape", "targets": ["Forest"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Forest", "at": "p1" }] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: an earthbent land that dies returns to the battlefield tapped under its controller",
+  "players": [
+   { "hand": ["Earthshape"], "battlefield": ["Plains", "Plains", "Plains", "Forest"] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Earthshape", "targets": ["Forest"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Forest"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"] },
+    { "graveyard_has": ["Doom Blade"] }
+   ],
+   "tapped": { "Forest": true }
+  }
+ },
+ {
+  "name": "ruling: earthbending a land that is already a creature adds three more counters and resets it to 0/0",
+  "players": [
+   { "hand": ["Earthshape", "Earthshape"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Earthshape", "targets": ["Forest"] },
+   { "resolve": true },
+   { "cast": "Earthshape", "targets": ["Forest"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "pt": { "Forest": [6, 6] }
+  }
+ },
+ {
+  "name": "ruling: an earthbent Forest is still a Forest and can tap for G",
+  "players": [
+   { "hand": ["Earthshape"], "battlefield": ["Plains", "Plains", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Earthshape", "targets": ["Forest"] },
+   { "resolve": true },
+   { "tap_for_mana": "Forest" }
+  ],
+  "expect": {
+   "players": [ { "pool": { "G": 1 } }, {} ]
+  }
+ }
+]

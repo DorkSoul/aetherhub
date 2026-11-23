@@ -1,0 +1,38 @@
+{
+  "name": "Chaos Lord",
+  "mana_cost": "{4}{R}{R}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Human"],
+  "power": 7,
+  "toughness": 7,
+  "keywords": ["FirstStrike"],
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": { "type": "AttackAsThoughHaste", "affects": { "this": true } },
+      "condition": { "type": "Not", "c": { "type": "SelIs", "what": { "type": "This" }, "filter": { "entered_this_turn": true } } }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "targets": [ { "what": { "type": "Player", "filter": "Opponent" }, "min": 1, "max": 1, "label": "target opponent" } ],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": {
+              "type": "Minus",
+              "a": { "type": "Count", "filter": {}, "zone": "Battlefield" },
+              "b": { "type": "Times", "a": { "type": "DivideBy", "a": { "type": "Count", "filter": {}, "zone": "Battlefield" }, "n": 2 }, "b": { "type": "Fixed", "n": 2 } }
+            },
+            "cmp": { "op": "Eq", "n": 0 }
+          },
+          "then": [ { "type": "GainControl", "what": { "type": "This" }, "to": { "type": "Target", "idx": 0 }, "duration": "Forever" } ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "First strike\nAt the beginning of your upkeep, target opponent gains control of this creature if the number of permanents is even.\nThis creature can attack as though it had haste unless it entered this turn."
+}

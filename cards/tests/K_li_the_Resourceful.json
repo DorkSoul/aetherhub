@@ -1,0 +1,89 @@
+[
+ {
+  "name": "another Equipment entering draws a card",
+  "players": [
+   { "hand": ["Short Sword"], "battlefield": ["Kíli the Resourceful", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Short Sword" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1, "battlefield_has": ["Short Sword"] }, {} ]
+  }
+ },
+ {
+  "name": "the draw triggers only once each turn",
+  "players": [
+   { "hand": ["Short Sword", "Short Sword"], "battlefield": ["Kíli the Resourceful", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Short Sword" },
+   { "resolve": true },
+   { "cast": "Short Sword" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 }, {} ]
+  }
+ },
+ {
+  "name": "Kíli entering does not draw (another Dwarf or Equipment only)",
+  "players": [
+   { "hand": ["Kíli the Resourceful"], "battlefield": ["Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Kíli the Resourceful" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0, "battlefield_has": ["Kíli the Resourceful"] }, {} ]
+  }
+ },
+ {
+  "name": "with an enduring story the first equip each turn costs {0}, the second does not",
+  "players": [
+   { "battlefield": ["Kíli the Resourceful", "Short Sword", "Short Sword", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Short Sword", "ability": 0, "targets": ["Kíli the Resourceful"] },
+   { "resolve": true },
+   { "activate": "Short Sword", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "attached": { "Short Sword": "Kíli the Resourceful" },
+   "pt": { "Kíli the Resourceful": [2, 3] }
+  }
+ },
+ {
+  "name": "without an enduring story the equip still costs its mana",
+  "players": [
+   { "battlefield": ["Kíli the Resourceful", "Short Sword", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Short Sword", "ability": 0, "targets": ["Kíli the Resourceful"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "pt": { "Kíli the Resourceful": [1, 2] }
+  }
+ },
+ {
+  "name": "ruling: a land that is a Saga (Urza's Saga) counts as one of the three permanents for storied",
+  "players": [ { "battlefield": ["Kíli the Resourceful", "Short Sword", "Urza's Saga"] }, {} ],
+  "steps": [ { "activate": "Short Sword", "ability": 0, "targets": ["Kíli the Resourceful"] }, { "resolve": true } ],
+  "expect": { "players": [ {}, {} ], "attached": { "Short Sword": "Kíli the Resourceful" }, "pt": { "Kíli the Resourceful": [2, 3] } }
+ },
+ {
+  "name": "ruling: a legendary artifact counts once: Kíli + Kaldra Compleat is two permanents, so no enduring story",
+  "players": [ { "battlefield": ["Kíli the Resourceful", "Kaldra Compleat", "Grizzly Bears"] }, {} ],
+  "steps": [ { "activate": "Kaldra Compleat", "targets": ["Grizzly Bears"], "illegal": true } ],
+  "expect": { "players": [ {}, {} ], "pt": { "Grizzly Bears": [2, 2] } }
+ }
+]

@@ -1,0 +1,135 @@
+[
+  {
+    "name": "return two creature cards",
+    "players": [
+      {
+        "hand": [
+          "Unmake the Graves"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Unmake the Graves",
+        "targets": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2,
+          "graveyard": [
+            "Unmake the Graves"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "one target is enough (up to two)",
+    "players": [
+      {
+        "hand": [
+          "Unmake the Graves"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Unmake the Graves",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "graveyard": [
+            "Unmake the Graves"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: convoke can tap a creature that is summoning sick",
+    "players": [
+      {
+        "hand": ["Unmake the Graves"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": true }],
+        "graveyard": ["Balduvian Berserker"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unmake the Graves", "targets": ["Balduvian Berserker"], "answers": [["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Balduvian Berserker"] }, {} ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: convoking with a blocking creature does not remove it from combat (no damage to me)",
+    "players": [
+      {
+        "hand": ["Unmake the Graves"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "graveyard": ["Balduvian Berserker"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "player": 0 },
+      { "pass": true, "player": 1 },
+      { "cast": "Unmake the Graves", "targets": ["Balduvian Berserker"], "answers": [["Grizzly Bears"]] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "hand": ["Balduvian Berserker"], "graveyard_has": ["Grizzly Bears"] },
+        { "life": 20, "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  }
+]

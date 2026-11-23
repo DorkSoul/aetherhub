@@ -1,0 +1,99 @@
+[
+  {
+    "name": "one color among permanents draws one card",
+    "players": [
+      { "battlefield": ["Soul of Ravnica", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1 }, {}],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "three colors among permanents draws three cards",
+    "players": [
+      { "battlefield": ["Soul of Ravnica", "Grizzly Bears", "Hill Giant", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 3 }, {}],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "from the graveyard exiles itself and draws for colors",
+    "players": [
+      { "graveyard": ["Soul of Ravnica"], "battlefield": ["Grizzly Bears", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "graveyard": [] }, {}],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "colors are counted as the ability resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Soul of Ravnica", "Grizzly Bears", "Hill Giant", "Mountain", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 0 },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 2, "graveyard": ["Hill Giant", "Lightning Bolt"] }, {}],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "the exile cost is paid on activation, before the ability resolves",
+    "players": [
+      { "graveyard": ["Soul of Ravnica"], "battlefield": ["Grizzly Bears", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 1 }
+    ],
+    "expect": { "players": [{ "hand_count": 0, "graveyard": [] }, {}] }
+  },
+  {
+    "name": "ruling: with no coloured permanents the graveyard ability draws no cards",
+    "players": [
+      { "graveyard": ["Soul of Ravnica"], "battlefield": ["Island", "Island", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand_count": 0, "exile": ["Soul of Ravnica"], "graveyard": [] }, {}], "stack_empty": true }
+  },
+  {
+    "name": "ruling: the graveyard ability cannot be activated from the battlefield",
+    "players": [
+      { "battlefield": ["Soul of Ravnica", "Island", "Island", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul of Ravnica", "ability": 1, "illegal": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Soul of Ravnica"] }, {}] }
+  }
+]

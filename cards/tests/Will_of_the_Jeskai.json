@@ -1,0 +1,114 @@
+[
+  {
+    "name": "mode 1: each player may discard their hand and draw five",
+    "players": [
+      { "hand": ["Will of the Jeskai", "Grizzly Bears", "Shock"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Giant Growth", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Will of the Jeskai", "answers": [0] },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 5, "graveyard_has": ["Grizzly Bears", "Shock", "Will of the Jeskai"] },
+        { "hand_count": 5, "graveyard_has": ["Giant Growth", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "mode 1: an opponent who declines keeps their hand",
+    "players": [
+      { "hand": ["Will of the Jeskai"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Giant Growth", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Will of the Jeskai", "answers": [0] },
+      { "resolve": true, "answers": [true, false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 5 },
+        { "hand": ["Giant Growth", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "mode 2: instants and sorceries in your graveyard gain flashback; they are exiled after casting",
+    "players": [
+      { "hand": ["Will of the Jeskai"], "graveyard": ["Lightning Bolt", "Shock"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Will of the Jeskai", "answers": [1] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Will of the Jeskai"], "exile": ["Lightning Bolt", "Shock"] },
+        { "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "mode 2: a creature card in your graveyard does not gain flashback",
+    "players": [
+      { "hand": ["Will of the Jeskai"], "graveyard": ["Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Will of the Jeskai", "answers": [1] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Will of the Jeskai", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "with a commander out, both modes: discard and draw, then the discarded Shock has flashback",
+    "players": [
+      { "command": ["Savannah Lions"], "hand": ["Will of the Jeskai", "Shock"], "battlefield": ["Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Will of the Jeskai", "answers": [[0, 1]] },
+      { "resolve": true, "answers": [true, true] },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Shock"], "battlefield_has": ["Savannah Lions"] },
+        { "life": 18 }
+      ]
+    },
+    "commander": true
+  },
+  {
+    "name": "ruling: a player with an empty hand may still take the discard-and-draw-five option",
+    "players": [
+      { "hand": ["Will of the Jeskai"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Will of the Jeskai", "answers": [0] },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 5 },
+        { "hand_count": 5 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "name": "blitz: haste, attacks for 3, sacrificed at end step and draws a card",
+    "players": [
+      { "hand": ["Plasma Jockey"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plasma Jockey", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Plasma Jockey", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Plasma Jockey"], "battlefield_has": [], "hand": ["Island"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "normal cast for {3}{R}: no haste, no sacrifice, no draw",
+    "players": [
+      { "hand": ["Plasma Jockey"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plasma Jockey" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Plasma Jockey"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "blitz illegal with only two mana",
+    "players": [
+      { "hand": ["Plasma Jockey"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plasma Jockey", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Plasma Jockey"] }, {} ]
+    }
+  },
+  {
+    "name": "attack trigger: target creature an opponent controls can't block this turn",
+    "players": [
+      { "hand": ["Plasma Jockey"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Plasma Jockey", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Plasma Jockey", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature killed before the end step is not sacrificed, but still draws on death",
+    "players": [
+      { "hand": ["Plasma Jockey", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plasma Jockey", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Plasma Jockey"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Plasma Jockey", "Lightning Bolt"], "battlefield_lacks": ["Plasma Jockey"], "hand": ["Island"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature need not attack; it is still sacrificed at the end step and draws",
+    "players": [
+      { "hand": ["Plasma Jockey"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plasma Jockey", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Plasma Jockey"], "battlefield_lacks": ["Plasma Jockey"], "hand": ["Island"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

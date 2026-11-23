@@ -1,0 +1,66 @@
+{
+  "name": "Plagon, Lord of the Beach",
+  "mana_cost": "{2}{U}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Starfish", "Wizard"],
+  "power": 0,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": {
+            "type": "AllOfPlayer",
+            "player": { "type": "You" },
+            "zone": "Battlefield",
+            "filter": { "types": ["Creature"] }
+          },
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "CompareAmounts",
+                "a": { "type": "ToughnessOf", "of": { "type": "EachObject" } },
+                "b": { "type": "PowerOf", "of": { "type": "EachObject" } },
+                "op": "Gt"
+              },
+              "then": [
+                { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{W/U}" }],
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "types": ["Creature"], "controller": "You" }
+          },
+          "label": "target creature you control"
+        }
+      ],
+      "effects": [
+        {
+          "type": "GrantStatic",
+          "what": { "type": "Target", "idx": 0 },
+          "effect": {
+            "type": "CombatDamageByToughness",
+            "affects": { "this": true }
+          },
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When Plagon, Lord of the Beach enters, draw a card for each creature you control with toughness greater than its power.\n{W/U}: Target creature you control assigns combat damage equal to its toughness rather than its power this turn."
+}

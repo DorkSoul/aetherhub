@@ -1,0 +1,205 @@
+[
+ {
+  "name": "equip attaches it to a creature",
+  "players": [
+   {
+    "hand": [
+     "Diviner's Wand"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Diviner's Wand"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Diviner's Wand",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Diviner's Wand": "Grizzly Bears"
+   }
+  }
+ },
+ {
+  "name": "equipped creature can pay 4 to draw and gets +1/+1 and flying",
+  "players": [
+   {
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     },
+     "Diviner's Wand"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Diviner's Wand",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Grizzly Bears",
+    "ability": 32769
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   },
+   "keywords": {
+    "Grizzly Bears": [
+     "Flying"
+    ]
+   },
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a Wizard entering may be attached to by the Equipment",
+  "players": [
+   {
+    "hand": [
+     "Snapcaster Mage"
+    ],
+    "battlefield": [
+     "Diviner's Wand",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Snapcaster Mage"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Diviner's Wand": "Snapcaster Mage"
+   }
+  }
+ },
+ {
+  "name": "a non-Wizard entering does not offer to attach the Equipment",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Diviner's Wand",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the Wizard trigger may attach the Equipment to an opponent's creature",
+  "players": [ { "battlefield": ["Diviner's Wand"] }, { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island"] } ],
+  "steps": [ { "advance_to": "Draw" }, { "advance_to": "Main1" }, { "cast": "Snapcaster Mage", "player": 1 }, { "resolve": true, "answers": [true] } ],
+  "expect": { "attached": { "Diviner's Wand": "Snapcaster Mage" } }
+ },
+ {
+  "name": "ruling: the creature's controller activates the granted draw ability and the granted draw trigger is theirs",
+  "players": [ { "battlefield": ["Diviner's Wand"] }, { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] } ],
+  "steps": [
+    { "advance_to": "Draw" }, { "advance_to": "Main1" },
+    { "cast": "Snapcaster Mage", "player": 1 }, { "resolve": true, "answers": [true] },
+    { "activate": "Snapcaster Mage", "ability": 32769, "player": 1 }, { "resolve": true }, { "resolve": true }
+  ],
+  "expect": { "pt": { "Snapcaster Mage": [3, 2] }, "keywords": { "Snapcaster Mage": ["Flying"] }, "players": [ { "hand_count": 0 }, { "hand_count": 2 } ] }
+ },
+ {
+  "name": "ruling: only the Equipment's controller can equip, so the opponent cannot equip their own creature",
+  "players": [ { "battlefield": ["Diviner's Wand"] }, { "battlefield": ["Grizzly Bears", "Island", "Island", "Island"] } ],
+  "steps": [ { "advance_to": "Draw" }, { "advance_to": "Main1" }, { "activate": "Diviner's Wand", "ability": 0, "targets": ["Grizzly Bears"], "player": 1, "illegal": true } ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: the Equipment's controller cannot equip an opponent's creature",
+  "players": [ { "battlefield": ["Diviner's Wand", "Island", "Island", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "activate": "Diviner's Wand", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true } ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ] }
+ }
+]

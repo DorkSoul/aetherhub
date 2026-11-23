@@ -1,0 +1,165 @@
+[
+  {
+    "name": "exiles all creatures and returns them at the next end step",
+    "players": [
+      {
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Planar Guide"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Planar Guide",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Planar Guide"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "needs four mana",
+    "players": [
+      {
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Planar Guide",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Planar Guide",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Planar Guide",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: creatures returning at the end step make their enters abilities trigger",
+    "players": [
+      { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Planar Guide", "Manic Vandal"] },
+      { "battlefield": ["Mana Cylix"] }
+    ],
+    "steps": [
+      { "activate": "Planar Guide", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Manic Vandal"], "exile": ["Planar Guide"] },
+        { "graveyard": ["Mana Cylix"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: activated in my end step, the creatures stay exiled until the next end step",
+    "players": [
+      { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Planar Guide"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "activate": "Planar Guide", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Planar Guide"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: activated in my end step, they return at the opponent's end step (the following turn)",
+    "players": [
+      { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Planar Guide"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "activate": "Planar Guide", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Planar Guide"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature returning from exile has no counters",
+    "players": [
+      { "hand": ["Oath of the Ancient Wood"], "battlefield": ["Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Planar Guide", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Oath of the Ancient Wood" },
+      { "resolve": true, "answers": [true], "targets": ["Grizzly Bears"] },
+      { "activate": "Planar Guide", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Oath of the Ancient Wood"], "exile": ["Planar Guide"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

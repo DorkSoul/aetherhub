@@ -1,0 +1,60 @@
+[
+ { "name": "spell cast with no mana spent is countered",
+   "players": [ { "hand": ["Ornithopter"] }, { "battlefield": ["Vexing Bauble"] } ],
+   "steps": [ { "cast": "Ornithopter" }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard": ["Ornithopter"], "battlefield_has": [] }, {} ] } },
+ { "name": "spell cast with mana spent is not countered",
+   "players": [ { "hand": ["Shivan Dragon"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Vexing Bauble"] } ],
+   "steps": [ { "cast": "Shivan Dragon" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Shivan Dragon"] }, {} ] } },
+ { "name": "{1}, {T}, sacrifice: draw a card",
+   "players": [ { "battlefield": ["Vexing Bauble", "Island"], "library": ["Forest"] }, {} ],
+   "steps": [ { "activate": "Vexing Bauble" }, { "resolve": true } ],
+   "expect": { "players": [ { "hand": ["Forest"], "graveyard": ["Vexing Bauble"] }, {} ] } },
+ {
+  "name": "ruling: a flashback spell with mana spent is not countered",
+  "players": [
+   { "graveyard": ["Think Twice"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Swamp"] },
+   { "battlefield": ["Vexing Bauble"] }
+  ],
+  "steps": [
+   { "cast": "Think Twice", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "hand": ["Forest"], "exile": ["Think Twice"], "graveyard": [] }, {}]
+  }
+ },
+ {
+  "name": "ruling: a spell cast for its mana-free alternative cost is countered",
+  "players": [
+   { "hand": ["Force of Will", "Counterspell"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Vexing Bauble"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "cast": "Force of Will", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "life": 16, "graveyard": ["Force of Will"], "exile": ["Counterspell"] }, { "graveyard": ["Lightning Bolt"] }]
+  }
+ },
+ {
+  "name": "ruling: Kambal's trigger still resolves when Vexing Bauble counters the noncreature spell",
+  "players": [
+   { "hand": ["Force of Will", "Counterspell"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Vexing Bauble", "Kambal, Consul of Allocation"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "cast": "Force of Will", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "life": 14, "graveyard": ["Force of Will"], "exile": ["Counterspell"] }, { "life": 22, "graveyard": ["Lightning Bolt"] }]
+  }
+ }
+]

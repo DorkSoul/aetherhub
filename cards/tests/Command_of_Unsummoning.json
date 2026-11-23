@@ -1,0 +1,57 @@
+[
+ { "name": "returns two attacking creatures to their owner's hand after being attacked",
+   "players": [
+    { "battlefield": [ "Island", "Island", "Island" ], "hand": ["Command of Unsummoning"] },
+    { "battlefield": [ "Hill Giant", "Grizzly Bears" ] }
+   ],
+   "steps": [
+    { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Grizzly Bears", "at": "p0" } ] },
+    { "pass": true, "player": 1 },
+    { "cast": "Command of Unsummoning", "player": 0, "targets": ["Hill Giant", "Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [ { "graveyard": ["Command of Unsummoning"] }, { "battlefield_lacks": ["Hill Giant", "Grizzly Bears"] } ]
+   }
+ },
+ { "name": "cannot be cast when no creature has attacked you this step",
+   "players": [
+    { "battlefield": [ "Island", "Island", "Island" ], "hand": ["Command of Unsummoning"] },
+    { "battlefield": [ "Hill Giant" ] }
+   ],
+   "steps": [
+    { "cast": "Command of Unsummoning", "illegal": true }
+   ],
+   "expect": {
+    "players": [ { "hand": ["Command of Unsummoning"] }, { "battlefield": ["Hill Giant"] } ]
+   }
+ },
+ { "name": "bounces only the targeted attacker and leaves the other attacker on the battlefield",
+   "players": [
+    { "battlefield": [ "Island", "Island", "Island" ], "hand": ["Command of Unsummoning"] },
+    { "battlefield": [ "Hill Giant", "Grizzly Bears" ] }
+   ],
+   "steps": [
+    { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Grizzly Bears", "at": "p0" } ] },
+    { "pass": true, "player": 1 },
+    { "cast": "Command of Unsummoning", "player": 0, "targets": ["Hill Giant"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [ { "graveyard": ["Command of Unsummoning"] }, { "battlefield_lacks": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"] } ]
+   }
+ },
+ { "name": "cannot be cast to bounce my own attacker (no creature attacked me this step)",
+   "players": [
+    { "battlefield": [ "Island", "Island", "Island", "Grizzly Bears" ], "hand": ["Command of Unsummoning"] },
+    {}
+   ],
+   "steps": [
+    { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+    { "cast": "Command of Unsummoning", "targets": ["Grizzly Bears"], "illegal": true }
+   ],
+   "expect": {
+    "players": [ { "hand": ["Command of Unsummoning"] }, {} ]
+   }
+ }
+]

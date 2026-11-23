@@ -1,0 +1,364 @@
+[
+ {
+  "name": "costs {1} less for each historic card in your graveyard",
+  "players": [
+   {
+    "hand": [
+     "The Capitoline Triad"
+    ],
+    "graveyard": [
+     "Ancient Stone Idol",
+     "Ancient Stone Idol",
+     "Ancient Stone Idol"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "The Capitoline Triad"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "The Capitoline Triad"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cannot be cast with too few historic cards in the graveyard",
+  "players": [
+   {
+    "hand": [
+     "The Capitoline Triad"
+    ],
+    "graveyard": [
+     "Ancient Stone Idol",
+     "Ancient Stone Idol"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "The Capitoline Triad",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "The Capitoline Triad"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "exiling historic cards worth 30 gives the 9/9 emblem",
+  "players": [
+   {
+    "battlefield": [
+     "The Capitoline Triad",
+     "Grizzly Bears"
+    ],
+    "graveyard": [
+     "Ancient Stone Idol",
+     "Ancient Stone Idol",
+     "Ancient Stone Idol"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "The Capitoline Triad",
+    "answers": [
+     [
+      0,
+      1,
+      2
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "command": [
+      "The Capitoline Triad Emblem"
+     ],
+     "graveyard": []
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     9,
+     9
+    ],
+    "The Capitoline Triad": [
+     9,
+     9
+    ],
+    "Hill Giant": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "nonhistoric cards cannot pay and 29 mana value is not enough",
+  "players": [
+   {
+    "battlefield": [
+     "The Capitoline Triad"
+    ],
+    "graveyard": [
+     "Ancient Stone Idol",
+     "Ancient Stone Idol",
+     "Grizzly Bears",
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "The Capitoline Triad",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "command": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "legendary and artifact cards count as historic (30 exactly)",
+  "players": [
+   {
+    "battlefield": [
+     "The Capitoline Triad"
+    ],
+    "graveyard": [
+     "The Capitoline Triad",
+     "Ancient Stone Idol",
+     "Mind Stone",
+     "Mind Stone",
+     "Mind Stone",
+     "Mind Stone",
+     "Mind Stone"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "The Capitoline Triad",
+    "answers": [
+     [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "command": [
+      "The Capitoline Triad Emblem"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an emblem created after Turn to Frog still sets 9/9 (later set effect overwrites the 1/1)",
+  "players": [
+   {
+    "hand": ["Turn to Frog"],
+    "battlefield": ["The Capitoline Triad", "Grizzly Bears", "Island", "Island"],
+    "graveyard": ["Ancient Stone Idol", "Ancient Stone Idol", "Ancient Stone Idol"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Turn to Frog", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "The Capitoline Triad", "answers": [[0, 1, 2]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["The Capitoline Triad Emblem"] },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [9, 9]
+   }
+  }
+ },
+ {
+  "name": "ruling: a +1/+1 counter still applies on top of the emblem's base 9/9 (10/10)",
+  "players": [
+   {
+    "battlefield": ["The Capitoline Triad", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }],
+    "graveyard": ["Ancient Stone Idol", "Ancient Stone Idol", "Ancient Stone Idol"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "The Capitoline Triad", "answers": [[0, 1, 2]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["The Capitoline Triad Emblem"] },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [10, 10]
+   }
+  }
+ },
+ {
+  "name": "ruling: a historic-cast trigger (Basim) resolves before the Triad, so its draw happens first",
+  "players": [
+   {
+    "hand": ["The Capitoline Triad"],
+    "battlefield": ["Basim Ibn Ishaq", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+    "graveyard": ["Ancient Stone Idol", "Ancient Stone Idol", "Ancient Stone Idol"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "The Capitoline Triad" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["The Capitoline Triad", "Basim Ibn Ishaq"], "hand_count": 1 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the historic-cast trigger still resolves when the Triad is countered",
+  "players": [
+   {
+    "hand": ["The Capitoline Triad"],
+    "battlefield": ["Basim Ibn Ishaq", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+    "graveyard": ["Ancient Stone Idol", "Ancient Stone Idol", "Ancient Stone Idol"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "The Capitoline Triad" },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "The Capitoline Triad" }] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["The Capitoline Triad"], "battlefield_has": ["Basim Ibn Ishaq"], "hand_count": 1 },
+    { "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a legendary artifact is historic once, so it reduces the cost by {1} only (8 Forests cannot pay 9)",
+  "players": [
+   {
+    "hand": ["The Capitoline Triad"],
+    "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+    "graveyard": ["Bessie, the Doctor's Roadster"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "The Capitoline Triad", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["The Capitoline Triad"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: with the legendary artifact counted once, nine Forests pay the cost of 9",
+  "players": [
+   {
+    "hand": ["The Capitoline Triad"],
+    "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+    "graveyard": ["Bessie, the Doctor's Roadster"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "The Capitoline Triad" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["The Capitoline Triad"] },
+    {}
+   ]
+  }
+ }
+]

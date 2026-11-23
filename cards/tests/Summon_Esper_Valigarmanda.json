@@ -1,0 +1,119 @@
+[
+  {
+    "name": "chapter I exiles an instant or sorcery card from each graveyard",
+    "players": [
+      { "hand": ["Summon: Esper Valigarmanda"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Lightning Bolt", "Grizzly Bears"] },
+      { "graveyard": ["Divination", "Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Summon: Esper Valigarmanda" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "exile": ["Lightning Bolt"] },
+        { "graveyard": ["Sol Ring"], "exile": ["Divination"] }
+      ],
+      "counters": { "Summon: Esper Valigarmanda": { "lore": 1 } }
+    }
+  },
+  {
+    "name": "chapter II adds R per lore counter and you may cast the exiled spell with that mana plus any other type",
+    "players": [
+      {
+        "hand": ["Summon: Esper Valigarmanda"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Divination"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summon: Esper Valigarmanda" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Divination"], "hand_count": 3, "exile": [] }, {} ],
+      "counters": { "Summon: Esper Valigarmanda": { "lore": 2 } }
+    }
+  },
+  {
+    "name": "you may decline to cast it: the card stays exiled",
+    "players": [
+      {
+        "hand": ["Summon: Esper Valigarmanda"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Divination"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summon: Esper Valigarmanda" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Divination"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "it is a 3/3 flying haste creature",
+    "players": [
+      { "hand": ["Summon: Esper Valigarmanda"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summon: Esper Valigarmanda" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Summon: Esper Valigarmanda": [3, 3] },
+      "keywords": { "Summon: Esper Valigarmanda": ["Flying", "Haste"] }
+    }
+  },
+  {
+    "name": "chapter III adds R per lore counter (3); the Saga stays",
+    "players": [
+      { "battlefield": [ { "name": "Summon: Esper Valigarmanda", "counters": { "lore": 2 } } ] },
+      {}
+    ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "pool": { "R": 3 }, "battlefield_has": ["Summon: Esper Valigarmanda"] }, {} ],
+      "counters": { "Summon: Esper Valigarmanda": { "lore": 3 } }
+    }
+  },
+  {
+    "name": "chapter IV adds R per lore counter (4), then the Saga is sacrificed",
+    "players": [
+      { "battlefield": [ { "name": "Summon: Esper Valigarmanda", "counters": { "lore": 3 } } ] },
+      {}
+    ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": { "players": [ { "pool": { "R": 4 }, "graveyard": ["Summon: Esper Valigarmanda"] }, {} ] }
+  },
+  {
+    "name": "ruling: a third lore counter fires only chapter III; chapter I does not trigger again, so the opponent's instant stays in their graveyard",
+    "players": [
+      { "battlefield": [ { "name": "Summon: Esper Valigarmanda", "counters": { "lore": 2 } } ] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "pool": { "R": 3 }, "battlefield_has": ["Summon: Esper Valigarmanda"] }, { "graveyard": ["Lightning Bolt"], "exile": [] } ],
+      "counters": { "Summon: Esper Valigarmanda": { "lore": 3 } }
+    }
+  },
+  {
+    "name": "ruling: flying and haste (printed below the chapters) apply at lore 3 as well",
+    "players": [ { "battlefield": [ { "name": "Summon: Esper Valigarmanda", "counters": { "lore": 3 } } ] }, {} ],
+    "steps": [],
+    "expect": {
+      "players": [ { "battlefield_has": ["Summon: Esper Valigarmanda"] }, {} ],
+      "pt": { "Summon: Esper Valigarmanda": [3, 3] },
+      "keywords": { "Summon: Esper Valigarmanda": ["Flying", "Haste"] }
+    }
+  }
+]

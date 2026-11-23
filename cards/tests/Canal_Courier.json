@@ -1,0 +1,78 @@
+[
+ {
+  "name": "enters and makes you the monarch (draw at your end step)",
+  "players": [
+   { "hand": ["Canal Courier"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Canal Courier" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Canal Courier"], "hand_count": 1 }, {} ] }
+ },
+ {
+  "name": "attacking different players with another creature makes it unblockable",
+  "players": [
+   { "battlefield": [ { "name": "Canal Courier", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Canal Courier", "at": "p1" }, { "card": "Grizzly Bears", "at": "p2" } ] },
+   { "resolve": true },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Canal Courier" } ], "player": 1, "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 17 }, { "life": 18 } ] }
+ },
+ {
+  "name": "attacking the same player with another creature does not make it unblockable",
+  "players": [
+   { "battlefield": [ { "name": "Canal Courier", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Canal Courier", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Canal Courier" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18 }, { "life": 20 } ] }
+ },
+ {
+  "name": "attacking alone does not make it unblockable",
+  "players": [
+   { "battlefield": [ { "name": "Canal Courier", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Canal Courier", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Canal Courier" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 20 }, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: an opponent's creature dealing combat damage to the monarch makes its controller the monarch, who then draws at their end step",
+  "players": [
+   { "hand": ["Canal Courier"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "battlefield": [ { "name": "Hill Giant", "sick": false } ] }
+  ],
+  "steps": [
+   { "cast": "Canal Courier" },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 17 }, { "hand_count": 2 } ] }
+ }
+]

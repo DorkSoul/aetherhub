@@ -1,0 +1,141 @@
+[
+ {
+  "name": "the Imp token deals 2 damage to each opponent when it dies",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Imp 2-2 Burn",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Imp 2-2 Burn"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "casting a creature spell does not trigger Judith",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Judith, Carnage Connoisseur",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "battlefield_lacks": [
+      "Imp 2-2 Burn"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "mode one: the spell gains lifelink, so Lightning Bolt gains me 3 life",
+  "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Judith, Carnage Connoisseur", "Mountain"] }, {}],
+  "steps": [{ "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true, "answers": [[0]] }, { "resolve": true }],
+  "expect": { "players": [{ "life": 23 }, { "life": 17 }] }
+ },
+ {
+  "name": "mode two: create a 2/2 Imp token instead of giving lifelink",
+  "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Judith, Carnage Connoisseur", "Mountain"] }, {}],
+  "steps": [{ "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true, "answers": [[1]] }, { "resolve": true }],
+  "expect": { "players": [{ "battlefield_has": ["Imp 2-2 Burn"], "life": 20 }, { "life": 17 }] }
+ },
+ {
+  "name": "ruling: Judith's trigger resolves before the spell and still makes the Imp when the spell is countered",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Judith, Carnage Connoisseur", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "answers": [[1]] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Imp 2-2 Burn"], "life": 20 },
+    { "graveyard_has": ["Counterspell"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: lifelink from Judith gives no life when Hard-Hitting Question only makes my creature deal the damage",
+  "players": [
+   { "hand": ["Hard-Hitting Question"], "battlefield": ["Judith, Carnage Connoisseur", "Forest", "Grizzly Bears"] },
+   { "battlefield": ["Savannah Lions"] }
+  ],
+  "steps": [
+   { "cast": "Hard-Hitting Question", "targets": ["Grizzly Bears", "Savannah Lions"] },
+   { "resolve": true, "answers": [[0]] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield_has": ["Grizzly Bears"] },
+    { "life": 20, "graveyard_has": ["Savannah Lions"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Judith's deathtouch does not apply to Hard-Hitting Question (the spell deals no damage itself): Hill Giant survives 2 damage",
+  "players": [
+   { "hand": ["Hard-Hitting Question"], "battlefield": ["Judith, Carnage Connoisseur", "Forest", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Hard-Hitting Question", "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "resolve": true, "answers": [[0]] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Hill Giant"] }
+   ]
+  }
+ }
+]

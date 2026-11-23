@@ -1,0 +1,300 @@
+[
+  {
+    "name": "first main phase: adds R or G for each Raccoon you control",
+    "players": [
+      {
+        "battlefield": [
+          "Muerra, Trash Tactician",
+          "Bakersbane Duo"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1",
+        "answers": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "R": 1,
+            "G": 1
+          }
+        },
+        {}
+      ]
+    },
+    "start": "Upkeep"
+  },
+  {
+    "name": "first main phase: Muerra is a Raccoon itself, so one mana",
+    "players": [
+      {
+        "battlefield": [
+          "Muerra, Trash Tactician"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1",
+        "answers": [
+          [
+            0
+          ]
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "R": 1
+          }
+        },
+        {}
+      ]
+    },
+    "start": "Upkeep"
+  },
+  {
+    "name": "expend 4: spending the fourth mana on a spell gains 3 life",
+    "players": [
+      {
+        "hand": [
+          "Harmonize"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Muerra, Trash Tactician"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Harmonize"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "expend 4 does not trigger when only three mana is spent",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Muerra, Trash Tactician"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "expend 8: exiles the top two cards of your library",
+    "players": [
+      {
+        "hand": [
+          "Harmonize",
+          "Harmonize"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Muerra, Trash Tactician"
+        ],
+        "library": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Harmonize"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Harmonize"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Grizzly Bears",
+            "Llanowar Elves"
+          ],
+          "life": 23
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: expend 4 already reached before Muerra entered does not trigger her ability",
+    "players": [
+      {
+        "hand": ["Harmonize", "Muerra, Trash Tactician"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Harmonize" },
+      { "resolve": true },
+      { "cast": "Muerra, Trash Tactician" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Muerra, Trash Tactician"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: expend 4 triggers once, on the mana that reaches four, even after three mana was spent earlier",
+    "players": [
+      {
+        "hand": ["Divination", "Harmonize"],
+        "battlefield": ["Island", "Island", "Island", "Forest", "Forest", "Forest", "Forest", "Muerra, Trash Tactician"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "cast": "Harmonize" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land exiled by expend 8 can be played only with an empty stack",
+    "players": [
+      {
+        "hand": ["Harmonize", "Harmonize"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Muerra, Trash Tactician"],
+        "library": ["Swamp", "Swamp", "Swamp", "Island", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Harmonize" },
+      { "resolve": true },
+      { "cast": "Harmonize" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "play_land": "Mountain", "illegal": true },
+      { "resolve": true },
+      { "play_land": "Mountain" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mountain", "Muerra, Trash Tactician"], "exile": ["Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cards exiled by expend 8 can still be played after Muerra has left the battlefield",
+    "players": [
+      {
+        "hand": ["Harmonize", "Harmonize"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Muerra, Trash Tactician"],
+        "library": ["Swamp", "Swamp", "Swamp", "Island", "Mountain"]
+      },
+      {
+        "hand": ["Terror"],
+        "battlefield": ["Swamp", "Swamp"]
+      }
+    ],
+    "steps": [
+      { "cast": "Harmonize" },
+      { "resolve": true },
+      { "cast": "Harmonize" },
+      { "pass": true },
+      { "cast": "Terror", "player": 1, "targets": ["Muerra, Trash Tactician"] },
+      { "resolve": true },
+      { "play_land": "Mountain" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mountain"], "battlefield_lacks": ["Muerra, Trash Tactician"], "graveyard_has": ["Muerra, Trash Tactician"], "exile": ["Island"] },
+        { "graveyard": ["Terror"] }
+      ]
+    }
+  }
+]

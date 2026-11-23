@@ -1,0 +1,223 @@
+[
+  {
+    "name": "+1 exiles the top card, which can be played this turn, and deals no damage",
+    "players": [
+      {
+        "battlefield": [
+          "Chandra, Fire Artisan",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Fire Artisan",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ],
+      "counters": {
+        "Chandra, Fire Artisan": {
+          "loyalty": 5
+        }
+      }
+    }
+  },
+  {
+    "name": "+1 alone does not deal damage to the opponent",
+    "players": [
+      {
+        "battlefield": [
+          "Chandra, Fire Artisan"
+        ],
+        "library": [
+          "Island"
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Fire Artisan",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ],
+      "counters": {
+        "Chandra, Fire Artisan": {
+          "loyalty": 5
+        }
+      }
+    }
+  },
+  {
+    "name": "-7 deals 7 damage to target opponent as the loyalty counters are removed",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Chandra, Fire Artisan",
+            "counters": {
+              "loyalty": 7
+            }
+          }
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Fire Artisan",
+        "ability": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Chandra, Fire Artisan"
+          ]
+        },
+        {
+          "life": 13
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Bolt takes Chandra to 0 loyalty; she dies but her trigger still deals 3 to the opponent",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Chandra, Fire Artisan", "counters": { "loyalty": 3 } }, "Mountain" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Chandra, Fire Artisan"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Chandra, Fire Artisan"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an effect that only destroys Chandra removes no loyalty counters, so no trigger",
+    "players": [
+      { "hand": ["Vindicate"], "battlefield": ["Chandra, Fire Artisan", "Plains", "Plains", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Vindicate", "targets": ["Chandra, Fire Artisan"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Vindicate", "Chandra, Fire Artisan"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can't be played once the land drop is used",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Chandra, Fire Artisan"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "activate": "Chandra, Fire Artisan", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Mountain", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Mountain"], "battlefield_has": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played in the main phase when the land drop is still available",
+    "players": [
+      { "battlefield": ["Chandra, Fire Artisan"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chandra, Fire Artisan", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Mountain" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mountain"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card exiled by Chandra can be cast only once",
+    "players": [
+      { "battlefield": ["Chandra, Fire Artisan", "Mountain"], "library": ["Lightning Bolt", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chandra, Fire Artisan", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "exile": [] },
+        { "life": 17 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,240 @@
+[
+ {
+  "name": "tap, sacrifice another creature: draw a card",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Tarrian's Journal // The Tomb of Aclazotz",
+      "sick": false
+     },
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tarrian's Journal // The Tomb of Aclazotz",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Tarrian's Journal // The Tomb of Aclazotz"
+     ],
+     "graveyard": [
+      "Grizzly Bears"
+     ],
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "{2}, tap, discard your hand: transform",
+  "players": [
+   {
+    "hand": [
+     "Shock",
+     "Opt"
+    ],
+    "battlefield": [
+     {
+      "name": "Tarrian's Journal // The Tomb of Aclazotz",
+      "sick": false
+     },
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tarrian's Journal // The Tomb of Aclazotz",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "The Tomb of Aclazotz"
+     ],
+     "graveyard": [
+      "Shock",
+      "Opt"
+     ],
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "back face: cast a creature from the graveyard, it enters with a finality counter and is a Vampire",
+  "players": [
+   {
+    "hand": [],
+    "graveyard": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     {
+      "name": "The Tomb of Aclazotz",
+      "sick": false
+     },
+     "Forest",
+     "Forest",
+     "Stromkirk Captain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "The Tomb of Aclazotz",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears",
+      "Stromkirk Captain"
+     ],
+     "graveyard": []
+    },
+    {}
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "Finality": 1
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "the permission covers one spell only",
+  "players": [
+   {
+    "graveyard": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ],
+    "battlefield": [
+     {
+      "name": "The Tomb of Aclazotz",
+      "sick": false
+     },
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "The Tomb of Aclazotz",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Hill Giant",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature cast from the graveyard with the Tomb is a Vampire",
+  "players": [ { "graveyard": ["Grizzly Bears"], "battlefield": [ { "name": "The Tomb of Aclazotz", "sick": false }, "Forest", "Forest" ] }, {} ],
+  "steps": [ { "activate": "The Tomb of Aclazotz", "ability": 0 }, { "resolve": true }, { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ], "subtypes": { "Grizzly Bears": ["Vampire"] } }
+ },
+ {
+  "name": "ruling: the cast permission is sorcery-speed: no creature cast in combat, but cast in main phase 2",
+  "players": [ { "graveyard": ["Grizzly Bears"], "battlefield": [ { "name": "The Tomb of Aclazotz", "sick": false }, "Forest", "Forest" ] }, {} ],
+  "steps": [ { "activate": "The Tomb of Aclazotz", "ability": 0 }, { "resolve": true }, { "advance_to": "BeginCombat" }, { "cast": "Grizzly Bears", "illegal": true }, { "advance_to": "Main2" }, { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": [] }, {} ] }
+ },
+ {
+  "name": "ruling: a creature with a finality counter that would die is exiled instead",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "finality": 1 } } ] } ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: a noncreature permanent with a finality counter is exiled when destroyed",
+  "players": [ { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains"] }, { "battlefield": [ { "name": "Sol Ring", "counters": { "finality": 1 } } ] } ],
+  "steps": [ { "cast": "Disenchant", "targets": ["Sol Ring"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Disenchant"] }, { "exile": ["Sol Ring"] } ] }
+ },
+ {
+  "name": "ruling: finality does not stop a permanent going from the battlefield to its owner's hand",
+  "players": [ { "hand": ["Unsummon"], "battlefield": ["Island"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "finality": 1 } } ] } ],
+  "steps": [ { "cast": "Unsummon", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ {}, { "hand": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: a creature that lost its abilities to Sludge Monster is still exiled by its finality counter",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Sludge Monster"] }, { "battlefield": [ { "name": "Serra Angel", "counters": { "finality": 1, "slime": 1 } } ] } ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["Serra Angel"] }, { "resolve": true } ],
+  "expect": { "players": [ {}, { "exile": ["Serra Angel"] } ] }
+ },
+ {
+  "name": "ruling: the transform cost is payable with an empty hand (discarding zero cards)",
+  "players": [ { "battlefield": [ { "name": "Tarrian's Journal // The Tomb of Aclazotz", "sick": false }, "Swamp", "Swamp" ] }, {} ],
+  "steps": [ { "activate": "Tarrian's Journal // The Tomb of Aclazotz", "ability": 1 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["The Tomb of Aclazotz"], "hand_count": 0 }, {} ] }
+ }
+]

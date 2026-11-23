@@ -1,0 +1,81 @@
+[
+ {
+  "name": "{1},{T}: moves a counter from a permanent you control onto another permanent",
+  "players": [
+   { "battlefield": [ "Nesting Grounds", "Island", { "name": "Grizzly Bears", "counters": { "m1m1": 1 } } ] },
+   { "battlefield": [ { "name": "Hill Giant" } ] }
+  ],
+  "steps": [
+   { "activate": "Nesting Grounds", "ability": 0, "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": { "m1m1": 0 },
+    "Hill Giant": { "m1m1": 1 }
+   }
+  }
+ },
+
+ {
+  "name": "no other mana source: can't pay {1} (Nesting Grounds can't tap for its own cost)",
+  "players": [
+   { "battlefield": [ "Nesting Grounds", { "name": "Grizzly Bears", "counters": { "m1m1": 1 } } ] },
+   { "battlefield": [ { "name": "Hill Giant" } ] }
+  ],
+  "steps": [
+   { "activate": "Nesting Grounds", "ability": 0, "targets": ["Grizzly Bears", "Hill Giant"], "illegal": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "m1m1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a +1/+1 counter moved between creatures changes both P/T as it moves",
+  "players": [
+   { "battlefield": [ "Nesting Grounds", "Island", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] },
+   { "battlefield": [ { "name": "Hill Giant" } ] }
+  ],
+  "steps": [
+   { "activate": "Nesting Grounds", "ability": 0, "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 0 }, "Hill Giant": { "p1p1": 1 } },
+   "pt": { "Grizzly Bears": [2, 2], "Hill Giant": [4, 4] }
+  }
+ },
+ {
+  "name": "ruling: a counter can be moved onto a land (a non-creature), where it does nothing to P/T",
+  "players": [
+   { "battlefield": [ "Nesting Grounds", "Island", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] },
+   { "battlefield": [ { "name": "Hill Giant" } ] }
+  ],
+  "steps": [
+   { "activate": "Nesting Grounds", "ability": 0, "targets": ["Grizzly Bears", "Nesting Grounds"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 0 }, "Nesting Grounds": { "p1p1": 1 } },
+   "pt": { "Grizzly Bears": [2, 2] },
+   "players": [ { "battlefield_has": ["Nesting Grounds"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: if one target becomes illegal, no counter is moved (Hill Giant gets nothing)",
+  "players": [
+   { "hand": [ "Shock" ], "battlefield": [ "Nesting Grounds", "Island", "Mountain", { "name": "Grizzly Bears", "counters": { "m1m1": 1 } } ] },
+   { "battlefield": [ { "name": "Hill Giant" } ] }
+  ],
+  "steps": [
+   { "activate": "Nesting Grounds", "ability": 0, "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "cast": "Shock", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Hill Giant": [3, 3] },
+   "players": [ { "graveyard_has": ["Grizzly Bears"] }, {} ]
+  }
+ }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "detained Bears can't block Hill Giant: 3 damage goes through",
+    "players": [
+      { "hand": ["Lyev Decree"], "battlefield": ["Plains", "Plains", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lyev Decree", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "two targets: both detained creatures can't block (Isperia's Skywatch too)",
+    "players": [
+      { "hand": ["Lyev Decree"], "battlefield": ["Plains", "Plains", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears", "Isperia's Skywatch"] }
+    ],
+    "steps": [
+      { "cast": "Lyev Decree", "targets": ["Grizzly Bears", "Isperia's Skywatch"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Isperia's Skywatch", "attacker": "Hill Giant" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17, "battlefield_has": ["Grizzly Bears", "Isperia's Skywatch"] } ] }
+  },
+  {
+    "name": "ruling: a detained creature's activated abilities can't be activated (opponent's Animist on my turn)",
+    "players": [
+      { "hand": ["Lyev Decree"], "battlefield": ["Plains", "Plains"] },
+      { "battlefield": ["Vastwood Animist", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Lyev Decree", "targets": ["Vastwood Animist"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Vastwood Animist", "ability": 0, "player": 1, "targets": ["Forest"], "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ], "not_subtypes": { "Forest": ["Elemental"] } }
+  },
+  {
+    "name": "control: without Lyev Decree the opponent's Animist can animate its Forest on my turn",
+    "players": [
+      { "battlefield": ["Plains", "Plains"] },
+      { "battlefield": ["Vastwood Animist", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "activate": "Vastwood Animist", "ability": 0, "player": 1, "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, {} ], "pt": { "Forest": [1, 1] } }
+  },
+  {
+    "name": "ruling: a detained creature's static ability still applies (detained Thalia makes my Bears enter tapped)",
+    "players": [
+      { "hand": ["Lyev Decree", "Grizzly Bears"], "battlefield": ["Plains", "Plains", "Forest", "Forest"] },
+      { "battlefield": ["Thalia, Heretic Cathar"] }
+    ],
+    "steps": [
+      { "cast": "Lyev Decree", "targets": ["Thalia, Heretic Cathar"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Thalia, Heretic Cathar"] } ], "tapped": { "Grizzly Bears": true } }
+  }
+]

@@ -1,0 +1,105 @@
+[
+ {
+  "name": "casting a spell on a creature gives it flying",
+  "players": [
+   {
+    "hand": [
+     "Giant Growth"
+    ],
+    "battlefield": [
+     "Storm, Windrider",
+     "Forest",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "keywords": {
+    "Hill Giant": [
+     "Flying"
+    ]
+   }
+  }
+ },
+ {
+  "name": "a spell that targets a player gives no flying",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Storm, Windrider",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "control without Storm: an opposing 3/3 attacks and deals 3 when unblocked",
+  "players": [ { "battlefield": ["Grizzly Bears"] }, { "battlefield": [ { "name": "Hill Giant", "sick": false } ] } ],
+  "steps": [
+   { "advance_to": "Main1", "player": 1 },
+   { "advance_to": "BeginCombat", "player": 1 },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "life": 17 }, {} ] }
+ },
+ {
+  "name": "flying creatures cannot attack you: the opposing Wind Drake is not declared, the 3/3 deals 3",
+  "players": [ { "battlefield": ["Storm, Windrider"] }, { "battlefield": ["Wind Drake", { "name": "Hill Giant", "sick": false }] } ],
+  "steps": [
+   { "advance_to": "Main1", "player": 1 },
+   { "advance_to": "BeginCombat", "player": 1 },
+   { "attack": [ { "card": "Wind Drake", "at": "p0" }, { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "life": 17 }, {} ] }
+ },
+ {
+  "name": "flying creatures cannot block your creatures: the Wind Drake's block is dropped, Grizzly Bears deals 2",
+  "players": [ { "battlefield": ["Storm, Windrider", "Grizzly Bears", "Hill Giant"] }, { "battlefield": ["Wind Drake", "Llanowar Elves"] } ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+   { "block": [ { "blocker": "Wind Drake", "attacker": "Grizzly Bears" }, { "blocker": "Llanowar Elves", "attacker": "Hill Giant" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18, "battlefield_has": ["Wind Drake"], "graveyard": ["Llanowar Elves"] } ] }
+ }
+]

@@ -1,0 +1,238 @@
+[
+ {
+  "name": "exiles an opponent's creature and gives the artifact ward {1}",
+  "players": [
+   {
+    "hand": [
+     "Hardlight Containment"
+    ],
+    "battlefield": [
+     "Plains",
+     "Sol Ring"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Hardlight Containment",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Hardlight Containment": "Sol Ring"
+   },
+   "players": [
+    {},
+    {
+     "battlefield": [],
+     "exile": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't enchant an artifact you don't control",
+  "players": [
+   {
+    "hand": [
+     "Hardlight Containment"
+    ],
+    "battlefield": [
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Hardlight Containment",
+    "targets": [
+     "Sol Ring"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "ward {1} on the enchanted artifact: unpaid Shatter is countered",
+  "players": [
+   {
+    "hand": [
+     "Hardlight Containment"
+    ],
+    "battlefield": [
+     "Plains",
+     "Sol Ring"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant",
+     "Mountain",
+     "Mountain"
+    ],
+    "hand": [
+     "Shatter"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Hardlight Containment",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Shatter",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Sol Ring",
+      "Hardlight Containment"
+     ]
+    },
+    {
+     "exile": [
+      "Hill Giant"
+     ],
+     "graveyard": [
+      "Shatter"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "creature returns when the Aura leaves the battlefield",
+  "players": [
+   {
+    "hand": [
+     "Hardlight Containment"
+    ],
+    "battlefield": [
+     "Plains",
+     "Sol Ring"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "hand": [
+     "Shatter"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Hardlight Containment",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Shatter",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Hardlight Containment"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the Aura leaves before its exile trigger resolves, the creature is not exiled",
+  "players": [
+   { "hand": ["Hardlight Containment", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Sol Ring"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Hardlight Containment", "targets": ["Sol Ring"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Disenchant", "targets": ["Hardlight Containment"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Hardlight Containment", "Disenchant"] }, { "battlefield": ["Hill Giant"], "exile": [] } ]
+  }
+ },
+ {
+  "name": "ruling: a creature returning when the Aura leaves is a new object, so its counters are gone",
+  "players": [
+   { "hand": ["Hardlight Containment", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Sol Ring"] },
+   { "battlefield": [ { "name": "Hill Giant", "counters": { "p1p1": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Hardlight Containment", "targets": ["Sol Ring"] },
+   { "resolve": true },
+   { "cast": "Disenchant", "targets": ["Hardlight Containment"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Hardlight Containment"] }, { "battlefield_has": ["Hill Giant"], "exile": [] } ],
+   "pt": { "Hill Giant": [3, 3] }
+  }
+ }
+]

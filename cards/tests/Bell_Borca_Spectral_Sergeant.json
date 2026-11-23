@@ -1,0 +1,59 @@
+[
+ {
+  "name": "power is 0 when nothing was exiled",
+  "players": [ { "battlefield": ["Bell Borca, Spectral Sergeant"] }, {} ],
+  "steps": [],
+  "expect": { "pt": { "Bell Borca, Spectral Sergeant": [0, 5] } }
+ },
+ {
+  "name": "upkeep: the exiled top card's mana value becomes its power",
+  "start": "Untap",
+  "players": [ { "battlefield": ["Bell Borca, Spectral Sergeant"], "library": ["Hill Giant"] }, {} ],
+  "steps": [ { "advance_to": "Upkeep" } ],
+  "expect": { "pt": { "Bell Borca, Spectral Sergeant": [4, 5] }, "players": [ { "exile": ["Hill Giant"] }, {} ] }
+ },
+ {
+  "name": "the greatest mana value among cards exiled this turn, any player's",
+  "players": [
+   { "hand": ["Swords to Plowshares"], "battlefield": ["Bell Borca, Spectral Sergeant", "Plains"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [ { "cast": "Swords to Plowshares", "targets": ["Serra Angel"] }, { "resolve": true } ],
+  "expect": { "pt": { "Bell Borca, Spectral Sergeant": [5, 5] } }
+ },
+ {
+  "name": "cards exiled before it entered are not noted",
+  "players": [
+   { "hand": ["Bell Borca, Spectral Sergeant", "Swords to Plowshares"], "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Plains"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Swords to Plowshares", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Bell Borca, Spectral Sergeant" },
+   { "resolve": true }
+  ],
+  "expect": { "pt": { "Bell Borca, Spectral Sergeant": [0, 5] } }
+ },
+ {
+  "name": "ruling: the exiled land can be played this turn while the land drop is open",
+  "start": "Untap",
+  "players": [ { "battlefield": ["Bell Borca, Spectral Sergeant"], "library": ["Forest"] }, {} ],
+  "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Main1" }, { "play_land": "Forest" } ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"] }, {} ] }
+ },
+ {
+  "name": "ruling: with the land drop already used, the exiled land can't be played",
+  "start": "Untap",
+  "players": [ { "hand": ["Mountain"], "battlefield": ["Bell Borca, Spectral Sergeant"], "library": ["Forest"] }, {} ],
+  "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Main1" }, { "play_land": "Mountain" }, { "play_land": "Forest", "illegal": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Mountain"], "exile": ["Forest"] }, {} ] }
+ },
+ {
+  "name": "ruling: an exiled card that isn't played stays in exile",
+  "start": "Untap",
+  "players": [ { "battlefield": ["Bell Borca, Spectral Sergeant"], "library": ["Forest"] }, {} ],
+  "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Main1" } ],
+  "expect": { "players": [ { "exile": ["Forest"], "battlefield_lacks": ["Forest"] }, {} ] }
+ }
+]

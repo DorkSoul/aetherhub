@@ -1,0 +1,86 @@
+[
+  {
+    "name": "entering the battlefield destroys a tapped creature an opponent controls",
+    "players": [
+      { "hand": ["U.S.S. Excelsior, Cutting Edge"], "battlefield": ["Plains", "Island", "Island", "Island"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+    ],
+    "steps": [
+      { "cast": "U.S.S. Excelsior, Cutting Edge" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "the enters trigger does nothing to an untapped creature",
+    "players": [
+      { "hand": ["U.S.S. Excelsior, Cutting Edge"], "battlefield": ["Plains", "Island", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "U.S.S. Excelsior, Cutting Edge" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": [] } ]
+    }
+  },
+  {
+    "name": "station taps another creature and adds charge counters equal to its power",
+    "players": [
+      { "battlefield": ["U.S.S. Excelsior, Cutting Edge", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "U.S.S. Excelsior, Cutting Edge" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "counters": { "U.S.S. Excelsior, Cutting Edge": { "charge": 2 } }
+    }
+  },
+  {
+    "name": "reaching 8 or more charge counters makes it a 4/4 flying artifact creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "U.S.S. Excelsior, Cutting Edge", "sick": false, "counters": { "charge": 6 } },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "U.S.S. Excelsior, Cutting Edge" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "U.S.S. Excelsior, Cutting Edge": { "charge": 9 } },
+      "pt": { "U.S.S. Excelsior, Cutting Edge": [4, 4] }
+    }
+  },
+  {
+    "name": "at 6 charge counters it is not yet a creature and cannot attack",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "U.S.S. Excelsior, Cutting Edge", "sick": false, "counters": { "charge": 4 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "U.S.S. Excelsior, Cutting Edge" },
+      { "resolve": true },
+      { "illegal": true, "attack": [ { "card": "U.S.S. Excelsior, Cutting Edge", "at": "p1" } ] }
+    ],
+    "expect": {
+      "counters": { "U.S.S. Excelsior, Cutting Edge": { "charge": 6 } }
+    }
+  }
+]

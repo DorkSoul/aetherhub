@@ -1,0 +1,176 @@
+[
+ {
+  "name": "manifests all creature cards from an opponent's graveyard under your control",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp"]
+   },
+   {
+    "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Hill Giant": [2, 2] },
+   "players": [
+    {
+     "graveyard_has": ["Ghastly Conscription"],
+     "battlefield_has": ["Grizzly Bears", "Hill Giant"],
+     "battlefield_lacks": ["Lightning Bolt"]
+    },
+    {
+     "graveyard": ["Lightning Bolt"],
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "can target your own graveyard; noncreature cards stay",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp"],
+    "graveyard": ["Grizzly Bears", "Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": ["Lightning Bolt", "Ghastly Conscription"],
+     "exile": [],
+     "battlefield_has": ["Grizzly Bears"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "empty creature graveyard does nothing",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp"]
+   },
+   {
+    "graveyard": ["Lightning Bolt"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": ["Ghastly Conscription"]
+    },
+    {
+     "graveyard": ["Lightning Bolt"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a manifested creature is a colorless 2/2",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp"]
+   },
+   {
+    "graveyard": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "colors": { "Grizzly Bears": [] },
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: face-down cards have no name, so two manifested Grizzly Bears can both be on the battlefield",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp"]
+   },
+   {
+    "graveyard": ["Grizzly Bears", "Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Grizzly Bears"], "graveyard_has": ["Ghastly Conscription"] },
+    { "graveyard": [] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: turning a manifested creature face up is a special action for its mana cost (Hill Giant {3}{R})",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Mountain","Mountain"]
+   },
+   {
+    "graveyard": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p1"] },
+   { "resolve": true },
+   { "activate": "Hill Giant" }
+  ],
+  "expect": {
+   "pt": { "Hill Giant": [3, 3] },
+   "players": [
+    { "battlefield_has": ["Hill Giant"] },
+    { "graveyard": [] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: turning a manifested creature face up does not trigger its enters-the-battlefield ability (Mulldrifter)",
+  "players": [
+   {
+    "hand": ["Ghastly Conscription"],
+    "battlefield": ["Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Swamp","Island","Island"]
+   },
+   {
+    "graveyard": ["Mulldrifter"]
+   }
+  ],
+  "steps": [
+   { "cast": "Ghastly Conscription", "targets": ["p1"] },
+   { "resolve": true },
+   { "activate": "Mulldrifter" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Mulldrifter"], "hand_count": 0 },
+    {}
+   ]
+  }
+ }
+]

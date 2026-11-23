@@ -1,0 +1,295 @@
+[
+  {
+    "name": "ETB energy equals creatures attacking you (none here, so no energy)",
+    "players": [
+      {
+        "hand": [
+          "Sentry Bot"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sentry Bot"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "energy": 0,
+          "battlefield_has": [
+            "Sentry Bot"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no cost reduction without attacking creatures (4 lands cannot pay {4}{W})",
+    "players": [
+      {
+        "hand": [
+          "Sentry Bot"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sentry Bot",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Sentry Bot"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "beginning of combat: paying EEE puts a +1/+1 counter on each creature you control",
+    "players": [
+      {
+        "energy": 3,
+        "battlefield": [
+          "Sentry Bot",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "answers": [true]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 0 },
+        {}
+      ],
+      "counters": {
+        "Sentry Bot": { "p1p1": 1 },
+        "Grizzly Bears": { "p1p1": 1 }
+      }
+    }
+  },
+  {
+    "name": "beginning of combat: declining to pay EEE leaves energy and counters alone",
+    "players": [
+      {
+        "energy": 3,
+        "battlefield": [
+          "Sentry Bot",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "answers": [false]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 3 },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": { "p1p1": 0 }
+      }
+    }
+  },
+  {
+    "name": "beginning of combat with only two energy: nothing is paid and no counters",
+    "players": [
+      {
+        "energy": 2,
+        "battlefield": [
+          "Sentry Bot",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 2 },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": { "p1p1": 0 }
+      }
+    }
+  },
+  {
+    "name": "flash during the opponent's attack: two attackers make it cost {2}{W}, so three Plains suffice",
+    "players": [
+      {
+        "hand": ["Sentry Bot"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      {"advance_to": "Main1"},
+      {"advance_to": "BeginCombat"},
+      {"player": 1, "attack": [{"card": "Grizzly Bears", "at": "p0"}, {"card": "Hill Giant", "at": "p0"}]},
+      {"pass": true, "player": 1},
+      {"player": 0, "cast": "Sentry Bot"},
+      {"resolve": true},
+      {"player": 0, "block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"energy": 2, "battlefield_has": ["Sentry Bot"], "life": 15},
+        {"battlefield_has": ["Grizzly Bears", "Hill Giant"]}
+      ]
+    }
+  },
+  {
+    "name": "flash during the opponent's attack with only one attacker: {3}{W} needs four lands, three Plains are not enough",
+    "players": [
+      {
+        "hand": ["Sentry Bot"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"advance_to": "Main1"},
+      {"advance_to": "BeginCombat"},
+      {"player": 1, "attack": [{"card": "Grizzly Bears", "at": "p0"}]},
+      {"pass": true, "player": 1},
+      {"player": 0, "cast": "Sentry Bot", "illegal": true},
+      {"player": 0, "block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"hand": ["Sentry Bot"], "life": 18},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: ETB energy counts all three attackers as it resolves",
+    "players": [
+      {
+        "hand": ["Sentry Bot"],
+        "battlefield": ["Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Hill Giant", "Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      {"advance_to": "Main1"},
+      {"advance_to": "BeginCombat"},
+      {"player": 1, "attack": [{"card": "Grizzly Bears", "at": "p0"}, {"card": "Hill Giant", "at": "p0"}, {"card": "Llanowar Elves", "at": "p0"}]},
+      {"pass": true, "player": 1},
+      {"player": 0, "cast": "Sentry Bot"},
+      {"resolve": true},
+      {"player": 0, "block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"energy": 3, "battlefield_has": ["Sentry Bot"], "life": 14},
+        {"battlefield_has": ["Grizzly Bears", "Hill Giant", "Llanowar Elves"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: paying EEE with six energy puts one counter on each creature, once",
+    "players": [
+      {
+        "energy": 6,
+        "battlefield": ["Sentry Bot", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "answers": [true]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 3 },
+        {}
+      ],
+      "counters": {
+        "Sentry Bot": { "p1p1": 1 },
+        "Grizzly Bears": { "p1p1": 1 }
+      }
+    }
+  },
+  {
+    "name": "ruling: unused energy stays with the player when the turn ends",
+    "players": [
+      {
+        "energy": 3,
+        "battlefield": ["Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      {"advance_to": "Main2"},
+      {"advance_to": "Main1"}
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "energy": 3 },
+        {}
+      ]
+    }
+  }
+]

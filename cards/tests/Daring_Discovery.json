@@ -1,0 +1,84 @@
+[
+  {
+    "name": "declining the discovered card puts it into hand",
+    "players": [
+      { "hand": ["Daring Discovery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Raging Goblin"] }
+    ],
+    "steps": [
+      { "cast": "Daring Discovery", "targets": ["Raging Goblin"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"] }, { "battlefield_has": ["Raging Goblin"] } ],
+      "keywords": { "Raging Goblin": ["CantBlock"] }
+    }
+  },
+  {
+    "name": "casting the discovered card puts it onto the battlefield",
+    "players": [
+      { "hand": ["Daring Discovery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Raging Goblin"] }
+    ],
+    "steps": [
+      { "cast": "Daring Discovery", "targets": ["Raging Goblin"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: every chosen target is illegal on resolution: nothing is discovered and the library is untouched",
+    "players": [
+      { "hand": ["Daring Discovery", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Raging Goblin"] }
+    ],
+    "steps": [
+      { "cast": "Daring Discovery", "targets": ["Raging Goblin"] },
+      { "cast": "Lightning Bolt", "targets": ["Raging Goblin"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "library_top": ["Forest", "Grizzly Bears", "Savannah Lions"], "graveyard_has": ["Daring Discovery", "Lightning Bolt"] },
+        { "graveyard": ["Raging Goblin"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: one target still legal: Discover 4 happens and the other target is unaffected",
+    "players": [
+      { "hand": ["Daring Discovery", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Raging Goblin", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Daring Discovery", "targets": ["Raging Goblin", "Hill Giant"] },
+      { "cast": "Lightning Bolt", "targets": ["Raging Goblin"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        { "graveyard": ["Raging Goblin"], "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a discovered {X} spell is cast with X = 0, so Walking Ballista enters as a 0/0 and dies",
+    "players": [
+      { "hand": ["Daring Discovery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Walking Ballista", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Daring Discovery" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Walking Ballista"], "battlefield_lacks": ["Walking Ballista"] },
+        {}
+      ]
+    }
+  }
+]

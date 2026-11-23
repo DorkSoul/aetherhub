@@ -1,0 +1,136 @@
+[
+  {
+    "name": "enters with four -1/-1 counters and is a 2/2",
+    "players": [
+      { "hand": ["Shrewd Hatchling"], "battlefield": ["Island", "Mountain", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shrewd Hatchling" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Shrewd Hatchling"] },
+        {}
+      ],
+      "counters": { "Shrewd Hatchling": { "m1m1": 4 } },
+      "pt": { "Shrewd Hatchling": [2, 2] }
+    }
+  },
+  {
+    "name": "casting a blue spell removes one -1/-1 counter",
+    "players": [
+      { "hand": ["Opt"], "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 4 } }, "Island"], "library": ["Mountain", "Forest", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Opt" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "counters": { "Shrewd Hatchling": { "m1m1": 3 } },
+      "pt": { "Shrewd Hatchling": [3, 3] }
+    }
+  },
+  {
+    "name": "casting a red spell removes one -1/-1 counter",
+    "players": [
+      { "hand": ["Shock"], "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 4 } }, "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Shrewd Hatchling": { "m1m1": 3 } },
+      "pt": { "Shrewd Hatchling": [3, 3] }
+    }
+  },
+  {
+    "name": "target creature can't block it this turn, and only it",
+    "players": [
+      { "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 0 } }, "Hill Giant", "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Shrewd Hatchling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Shrewd Hatchling", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Shrewd Hatchling" }], "player": 1, "illegal": true },
+      { "block": [], "player": 1 },
+      { "advance_to": "Main2", "auto": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 14, "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "the restriction covers only the activating creature",
+    "players": [
+      { "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 0 } }, "Hill Giant", "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Shrewd Hatchling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }], "player": 1 },
+      { "advance_to": "Main2", "auto": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "can't activate without blue or red mana",
+    "players": [
+      { "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 0 } }, "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Shrewd Hatchling", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_has": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: a red and blue spell removes two -1/-1 counters",
+    "players": [
+      { "hand": ["Izzet Charm"], "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 4 } }, "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Izzet Charm", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "graveyard": ["Grizzly Bears"] }],
+      "counters": { "Shrewd Hatchling": { "m1m1": 2 } },
+      "pt": { "Shrewd Hatchling": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a blue spell with no -1/-1 counters to remove does nothing",
+    "players": [
+      { "hand": ["Opt"], "battlefield": [{ "name": "Shrewd Hatchling", "counters": { "m1m1": 0 } }, "Island"], "library": ["Mountain", "Forest", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Opt" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "counters": { "Shrewd Hatchling": { "m1m1": 0 } },
+      "pt": { "Shrewd Hatchling": [6, 6] }
+    }
+  }
+]

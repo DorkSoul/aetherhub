@@ -1,0 +1,31 @@
+{
+  "name": "Hunter's Talent",
+  "mana_cost": "{1}{G}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    { "type": "Triggered", "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "target creature you control" },
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "Opponent" } }, "label": "target creature you don't control" } ],
+      "effects": [ { "type": "Bite", "a": { "type": "Target", "idx": 0 }, "b": { "type": "Target", "idx": 1 } } ] },
+    { "type": "Activated", "cost": [ { "type": "Mana", "cost": "{1}{G}" } ], "timing": "Sorcery",
+      "condition": { "type": "All", "cs": [ { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 }, { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } } ] },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ] },
+    { "type": "Triggered", "trigger": { "type": "Attacks", "batched": true, "one_per_declaration": true, "filter": { "types": ["Creature"], "controller": "You" } },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+      "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "attacking": true } }, "label": "target attacking creature" } ],
+      "effects": [
+        { "type": "Pump", "what": { "type": "Target", "idx": 0 }, "power": { "type": "Fixed", "n": 1 }, "toughness": { "type": "Fixed", "n": 0 }, "duration": "UntilEndOfTurn" },
+        { "type": "GrantKeyword", "what": { "type": "Target", "idx": 0 }, "keyword": "Trample", "duration": "UntilEndOfTurn" } ] },
+    { "type": "Activated", "cost": [ { "type": "Mana", "cost": "{3}{G}" } ], "timing": "Sorcery",
+      "condition": { "type": "All", "cs": [ { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 }, { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } } ] },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ] },
+    { "type": "Triggered", "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "condition": { "type": "All", "cs": [ { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+        { "type": "Control", "who": { "type": "You" }, "at_least": 1, "filter": { "types": ["Creature"], "power": { "op": "Ge", "n": 4 } } } ] },
+      "effects": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ] }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nWhen this Class enters, target creature you control deals damage equal to its power to target creature you don't control.\n{1}{G}: Level 2\nWhenever you attack, target attacking creature gets +1/+0 and gains trample until end of turn.\n{3}{G}: Level 3\nAt the beginning of your end step, if you control a creature with power 4 or greater, draw a card."
+}

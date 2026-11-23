@@ -1,0 +1,170 @@
+[
+  {
+    "name": "{2}{B}: gets +3/+3 and deathtouch until end of turn",
+    "players": [
+      {
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Swamp", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Knight of the Ebon Legion" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Knight of the Ebon Legion": [4, 5] },
+      "keywords": { "Knight of the Ebon Legion": ["Deathtouch"] }
+    }
+  },
+  {
+    "name": "without three mana the pump can't be activated",
+    "players": [
+      {
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Knight of the Ebon Legion", "illegal": true }
+    ],
+    "expect": {
+      "pt": { "Knight of the Ebon Legion": [1, 2] }
+    }
+  },
+  {
+    "name": "end step: an opponent lost 4 life this turn (any player counts) so it gets a +1/+1 counter",
+    "players": [
+      {
+        "hand": ["Lava Axe"],
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lava Axe", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Knight of the Ebon Legion": { "PlusOnePlusOne": 1 } },
+      "pt": { "Knight of the Ebon Legion": [2, 3] }
+    }
+  },
+  {
+    "name": "end step: no player lost 4 or more life this turn, no counter",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {},
+      "pt": { "Knight of the Ebon Legion": [1, 2] }
+    }
+  },
+  {
+    "name": "ruling: losing 4 life counts even if the player gained life back (lost 4 by two Shocks, gained 3 from Lightning Helix)",
+    "players": [
+      {
+        "hand": ["Shock", "Shock", "Lightning Helix"],
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Mountain", "Mountain", "Mountain", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Lightning Helix", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Knight of the Ebon Legion": { "PlusOnePlusOne": 1 } },
+      "pt": { "Knight of the Ebon Legion": [2, 3] },
+      "players": [ { "life": 19 }, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "ruling: the Knight need not be on the battlefield when the life is lost (cast after Bolt and Shock on the opponent)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Shock", "Knight of the Ebon Legion"],
+        "battlefield": ["Mountain", "Mountain", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Knight of the Ebon Legion" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Knight of the Ebon Legion": { "PlusOnePlusOne": 1 } },
+      "pt": { "Knight of the Ebon Legion": [2, 3] },
+      "players": [ {}, { "life": 15 } ]
+    }
+  },
+  {
+    "name": "ruling: paying 4 life for Snuff Out counts as losing life for the Knight's end step trigger",
+    "players": [
+      {
+        "hand": ["Snuff Out"],
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Swamp"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Snuff Out", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Knight of the Ebon Legion": { "PlusOnePlusOne": 1 } },
+      "pt": { "Knight of the Ebon Legion": [2, 3] },
+      "players": [ { "life": 16 }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: two separate 2-life losses add up to 4 for the end step trigger",
+    "players": [
+      {
+        "hand": ["Shock", "Shock"],
+        "battlefield": [{ "name": "Knight of the Ebon Legion", "sick": false }, "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Knight of the Ebon Legion": { "PlusOnePlusOne": 1 } },
+      "pt": { "Knight of the Ebon Legion": [2, 3] },
+      "players": [ {}, { "life": 16 } ]
+    }
+  }
+]

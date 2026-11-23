@@ -1,0 +1,135 @@
+{
+ "name": "Riveteers Charm",
+ "mana_cost": "{B}{R}{G}",
+ "types": [
+  "Instant"
+ ],
+ "abilities": [
+  {
+   "type": "Modal",
+   "choose_min": 1,
+   "choose_max": 1,
+   "modes": [
+    {
+     "text": "Target opponent sacrifices a creature or planeswalker they control with the greatest mana value among creatures and planeswalkers they control.",
+     "targets": [
+      {
+       "what": {
+        "type": "Player",
+        "filter": "Opponent"
+       },
+       "label": "target opponent"
+      }
+     ],
+     "effects": [
+      {
+       "type": "Sacrifice",
+       "who": {
+        "type": "Target",
+        "idx": 0
+       },
+       "filter": {
+        "any_of": [
+         {
+          "types": [
+           "Creature"
+          ]
+         },
+         {
+          "types": [
+           "Planeswalker"
+          ]
+         }
+        ],
+        "controller": "You",
+        "mana_value_vs": {
+         "op": "Ge",
+         "amount": {
+          "type": "HighestManaValue",
+          "filter": {
+           "any_of": [
+            {
+             "types": [
+              "Creature"
+             ]
+            },
+            {
+             "types": [
+              "Planeswalker"
+             ]
+            }
+           ],
+           "controlled_by": {
+            "type": "Target",
+            "idx": 0
+           }
+          }
+         }
+        }
+       },
+       "n": {
+        "type": "Fixed",
+        "n": 1
+       }
+      }
+     ]
+    },
+    {
+     "text": "Exile the top three cards of your library. Until your next end step, you may play those cards.",
+     "effects": [
+      {
+       "type": "LookAtTop",
+       "who": {
+        "type": "You"
+       },
+       "n": {
+        "type": "Fixed",
+        "n": 3
+       },
+       "take": 3,
+       "all": true,
+       "filter": {},
+       "rest": "Graveyard",
+       "to": "Exile"
+      },
+      {
+       "type": "GrantPlayFromExile",
+       "what": {
+        "type": "Remembered"
+       },
+       "window": "EndOfYourNextTurn"
+      }
+     ]
+    },
+    {
+     "text": "Exile target player's graveyard.",
+     "targets": [
+      {
+       "what": {
+        "type": "Player",
+        "filter": "Any"
+       },
+       "label": "target player"
+      }
+     ],
+     "effects": [
+      {
+       "type": "Move",
+       "what": {
+        "type": "AllOfPlayer",
+        "player": {
+         "type": "Target",
+         "idx": 0
+        },
+        "zone": "Graveyard",
+        "filter": {}
+       },
+       "to": "Exile"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "oracle_text": "Choose one \u2014\n\u2022 Target opponent sacrifices a creature or planeswalker they control with the greatest mana value among creatures and planeswalkers they control.\n\u2022 Exile the top three cards of your library. Until your next end step, you may play those cards.\n\u2022 Exile target player's graveyard."
+}

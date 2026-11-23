@@ -1,0 +1,282 @@
+[
+ {
+  "name": "search mode finds a land and puts it onto the battlefield tapped",
+  "players": [
+   {
+    "hand": [
+     "Archdruid's Charm"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Archdruid's Charm",
+    "answers": [
+     0
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest",
+      "Forest",
+      "Forest",
+      "Forest"
+     ],
+     "hand_count": 0,
+     "library_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "search mode finds a creature and puts it into hand",
+  "players": [
+   {
+    "hand": [
+     "Archdruid's Charm"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Archdruid's Charm",
+    "answers": [
+     0
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "library_count": 1,
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "counter mode: creature gets +1/+1 and deals damage equal to its new power",
+  "players": [
+   {
+    "hand": [
+     "Archdruid's Charm"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Archdruid's Charm",
+    "answers": [
+     1
+    ],
+    "targets": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Hill Giant"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "counter mode: damage is less than the creature's power so the target survives",
+  "players": [
+   {
+    "hand": [
+     "Archdruid's Charm"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Craw Wurm"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Archdruid's Charm",
+    "answers": [
+     1
+    ],
+    "targets": [
+     "Grizzly Bears",
+     "Craw Wurm"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "battlefield_has": [
+      "Craw Wurm"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "exile mode exiles target artifact",
+  "players": [
+   {
+    "hand": [
+     "Archdruid's Charm"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Archdruid's Charm",
+    "answers": [
+     2
+    ],
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "exile": [
+      "Sol Ring"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if your creature is killed in response, the counter and damage do nothing",
+  "players": [
+   { "hand": ["Archdruid's Charm"], "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Archdruid's Charm", "answers": [1], "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the opponent's creature is gone, your creature still gets the counter",
+  "players": [
+   { "hand": ["Archdruid's Charm", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Mountain", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Archdruid's Charm", "answers": [1], "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "graveyard": ["Hill Giant"] }
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ }
+]

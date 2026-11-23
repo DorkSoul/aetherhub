@@ -1,0 +1,82 @@
+[
+ {
+  "name": "play a land from the graveyard, then the once-per-turn permission is used up",
+  "players": [
+   { "battlefield": ["Serra Paragon", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "cast": "Grizzly Bears", "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"], "graveyard": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "cast a permanent spell with mana value 3 or less from the graveyard, then no second one",
+  "players": [
+   { "battlefield": ["Serra Paragon", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Grizzly Bears", "Runeclaw Bear"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Runeclaw Bear", "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Runeclaw Bear"] }, {} ] }
+ },
+ {
+  "name": "mana value 4 permanents and instants can't be cast from the graveyard",
+  "players": [
+   { "battlefield": ["Serra Paragon", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Hill Giant", "Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Hill Giant", "illegal": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Hill Giant", "Lightning Bolt"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "a creature cast this way is exiled when it dies, and its controller gains 2 life",
+  "players": [
+   { "battlefield": ["Serra Paragon", "Forest", "Forest", "Mountain"], "graveyard": ["Grizzly Bears"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 22, "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ] }
+ },
+ {
+  "name": "a land played this way is exiled when destroyed, gaining 2 life",
+  "players": [
+   { "battlefield": ["Serra Paragon", "Mountain", "Mountain", "Mountain"], "graveyard": ["Forest"], "hand": ["Stone Rain"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "cast": "Stone Rain", "targets": ["Forest"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 22, "exile": ["Forest"], "graveyard": ["Stone Rain"] }, {} ] }
+ },
+ {
+  "name": "a creature cast from hand has no such rider and goes to the graveyard",
+  "players": [
+   { "battlefield": ["Serra Paragon", "Forest", "Forest", "Mountain"], "hand": ["Grizzly Bears", "Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 20, "graveyard": ["Grizzly Bears", "Lightning Bolt"] }, {} ] }
+ }
+]

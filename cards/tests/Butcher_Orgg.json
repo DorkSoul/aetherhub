@@ -1,0 +1,233 @@
+[
+ {
+  "name": "by default all damage goes to the player",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Butcher Orgg",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Butcher Orgg",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 14,
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "divides damage among the player and a creature",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Butcher Orgg",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Butcher Orgg",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     "p1=4,Grizzly Bears=2"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 16,
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "divides damage among several creatures and the player",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Butcher Orgg",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Butcher Orgg",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     "Grizzly Bears=2,Hill Giant=3,p1=1"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 19,
+     "graveyard": [
+      "Grizzly Bears",
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "when blocked it assigns damage normally",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Butcher Orgg",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Butcher Orgg",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Butcher Orgg"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Butcher Orgg"
+     ]
+    },
+    {
+     "life": 20,
+     "graveyard": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if its only blocker is removed before damage, it deals no combat damage and the player takes none",
+  "players": [
+   { "battlefield": [ { "name": "Butcher Orgg", "sick": false } ] },
+   { "hand": ["Drag Down"], "battlefield": ["Swamp", "Swamp", "Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Butcher Orgg", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Butcher Orgg" } ] },
+   { "pass": true },
+   { "cast": "Drag Down", "player": 1, "targets": ["p1:Grizzly Bears"] },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20, "graveyard": ["Grizzly Bears", "Drag Down"] } ]
+  }
+ },
+ {
+  "name": "ruling: unblocked, all of its damage can be divided onto a creature alone, none to the player",
+  "players": [
+   { "battlefield": [ { "name": "Butcher Orgg", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Butcher Orgg", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2", "answers": ["Hill Giant=6"] }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20, "graveyard": ["Hill Giant"] } ]
+  }
+ }
+]

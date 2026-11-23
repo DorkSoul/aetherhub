@@ -1,0 +1,31 @@
+{
+  "name": "Out of Time",
+  "mana_cost": "{1}{W}{W}",
+  "types": ["Enchantment"],
+  "colors": ["W"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {"type": "EntersBattlefield", "filter": {"this": true}},
+      "effects": [
+        {"type": "AddCounters", "what": {"type": "This"}, "kind": "Time", "n": {"type": "Count", "filter": {"types": ["Creature"]}}},
+        {"type": "Untap", "what": {"type": "All", "filter": {"types": ["Creature"]}}},
+        {"type": "PhaseOut", "what": {"type": "All", "filter": {"types": ["Creature"]}}, "until_source_leaves": true}
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {"type": "BeginningOfStep", "step": "Upkeep", "whose": "You"},
+      "condition": {"type": "SourceHasCounter", "kind": "Time", "at_least": 1},
+      "effects": [
+        {"type": "RemoveCounters", "what": {"type": "This"}, "kind": "Time", "n": {"type": "Fixed", "n": 1}},
+        {
+          "type": "If",
+          "cond": {"type": "Not", "c": {"type": "SourceHasCounter", "kind": "Time", "at_least": 1}},
+          "then": [{"type": "Sacrifice", "who": {"type": "You"}, "filter": {"this": true}, "n": {"type": "Fixed", "n": 1}}]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When Out of Time enters, untap all creatures, then phase them out until Out of Time leaves the battlefield. Put a time counter on Out of Time for each creature phased out this way.\nVanishing (At the beginning of your upkeep, remove a time counter from this enchantment. When the last is removed, sacrifice it.)"
+}

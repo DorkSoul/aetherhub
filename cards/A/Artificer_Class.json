@@ -1,0 +1,71 @@
+{
+  "name": "Artificer Class",
+  "mana_cost": "{1}{U}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CostChange",
+        "filter": { "types": ["Artifact"] },
+        "whose": "You",
+        "generic": -1
+      },
+      "condition": { "type": "Not", "c": { "type": "CastThisTurn", "filter": { "types": ["Artifact"] }, "at_least": 1 } }
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{1}{U}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "filter": { "this": true }, "kind": "Level" },
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [
+        { "type": "RevealUntil", "who": { "type": "You" }, "filter": { "types": ["Artifact"] }, "to": "Hand", "rest": "Library", "rest_random": true }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{5}{U}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Artifact"], "controller": "You" } }, "label": "target artifact you control" }
+      ],
+      "effects": [
+        { "type": "CopyPermanent", "what": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 1 }, "except": [] }
+      ]
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nThe first artifact spell you cast each turn costs {1} less to cast.\n{1}{U}: Level 2\nWhen this Class becomes level 2, reveal cards from the top of your library until you reveal an artifact card. Put that card into your hand and the rest on the bottom of your library in a random order.\n{5}{U}: Level 3\nAt the beginning of your end step, create a token that's a copy of target artifact you control."
+}

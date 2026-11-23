@@ -1,0 +1,79 @@
+[
+  {
+    "name": "puts an opponent's exiled card into their graveyard to tap a creature",
+    "players": [
+      { "battlefield": ["Cryptic Cruiser", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "exile": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "activate": "Cryptic Cruiser", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [ {}, { "graveyard": ["Lightning Bolt"], "exile": [] } ]
+    }
+  },
+  {
+    "name": "can tap its own creature",
+    "players": [
+      { "battlefield": ["Cryptic Cruiser", "Island", "Island", "Island"] },
+      { "exile": ["Shock"] }
+    ],
+    "steps": [
+      { "activate": "Cryptic Cruiser", "targets": ["Cryptic Cruiser"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Cryptic Cruiser": true },
+      "players": [ {}, { "graveyard": ["Shock"] } ]
+    }
+  },
+  {
+    "name": "cannot activate when only your own cards are in exile",
+    "players": [
+      { "battlefield": ["Cryptic Cruiser", "Island", "Island", "Island"], "exile": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Cryptic Cruiser", "illegal": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": false } }
+  },
+  {
+    "name": "is colorless (devoid)",
+    "players": [
+      { "battlefield": ["Cryptic Cruiser"] },
+      {}
+    ],
+    "steps": [],
+    "expect": { "colors": { "Cryptic Cruiser": [] }, "pt": { "Cryptic Cruiser": [3, 3] } }
+  },
+  {
+    "name": "ruling: a replacement that exiles cards going to a graveyard does not stop the cost; the card stays exiled as a new object",
+    "players": [
+      { "battlefield": ["Cryptic Cruiser", "Island", "Island", "Island", "Rest in Peace"] },
+      { "battlefield": ["Grizzly Bears"], "exile": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "activate": "Cryptic Cruiser", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [ {}, { "exile": ["Lightning Bolt"], "graveyard": [] } ]
+    }
+  },
+  {
+    "name": "ruling: a color granted by another effect is the only color (devoid does not add colorless)",
+    "players": [
+      { "hand": ["Painter's Servant"], "battlefield": ["Cryptic Cruiser", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Painter's Servant" },
+      { "resolve": true, "answers": ["R"] }
+    ],
+    "expect": { "colors": { "Cryptic Cruiser": ["R"], "Painter's Servant": ["R"] } }
+  }
+]

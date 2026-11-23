@@ -1,0 +1,145 @@
+[
+  { "name": "enters with two +1/+1 counters",
+    "players": [ { "hand": ["Explorer's Cache"], "battlefield": ["Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Explorer's Cache" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Explorer's Cache"] }, {} ], "counters": { "Explorer's Cache": { "p1p1": 2 } } } },
+  { "name": "moves a counter onto a creature",
+    "players": [ { "hand": ["Explorer's Cache"], "battlefield": ["Forest", "Forest"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Explorer's Cache" }, { "resolve": true }, { "activate": "Explorer's Cache", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "counters": { "Explorer's Cache": { "p1p1": 1 }, "Grizzly Bears": { "p1p1": 1 } } } },
+{
+  "name": "creature with a +1/+1 counter dies: this artifact gets a +1/+1 counter",
+  "players": [
+    {
+      "hand": [
+        "Lightning Bolt"
+      ],
+      "battlefield": [
+        {
+          "name": "Explorer's Cache",
+          "counters": {
+            "p1p1": 2
+          }
+        },
+        "Mountain",
+        {
+          "name": "Grizzly Bears",
+          "counters": {
+            "p1p1": 1
+          }
+        }
+      ]
+    },
+    {}
+  ],
+  "steps": [
+    {
+      "cast": "Lightning Bolt",
+      "targets": [
+        "Grizzly Bears"
+      ]
+    },
+    {
+      "resolve": true
+    }
+  ],
+  "expect": {
+    "players": [
+      {
+        "graveyard_has": [
+          "Grizzly Bears",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "counters": {
+      "Explorer's Cache": {
+        "p1p1": 3
+      }
+    }
+  }
+},
+{
+  "name": "creature without a +1/+1 counter dies: no counter on this artifact",
+  "players": [
+    {
+      "hand": [
+        "Lightning Bolt"
+      ],
+      "battlefield": [
+        {
+          "name": "Explorer's Cache",
+          "counters": {
+            "p1p1": 2
+          }
+        },
+        "Mountain",
+        "Grizzly Bears"
+      ]
+    },
+    {}
+  ],
+  "steps": [
+    {
+      "cast": "Lightning Bolt",
+      "targets": [
+        "Grizzly Bears"
+      ]
+    },
+    {
+      "resolve": true
+    }
+  ],
+  "expect": {
+    "players": [
+      {
+        "graveyard_has": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "counters": {
+      "Explorer's Cache": {
+        "p1p1": 2
+      }
+    }
+  }
+},
+{
+  "name": "ruling: moved counter is taken off the Cache and the creature dying with it puts one back on the Cache",
+  "players": [
+    { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Explorer's Cache", "counters": { "p1p1": 2 } }, "Mountain", "Grizzly Bears" ] },
+    {}
+  ],
+  "steps": [
+    { "activate": "Explorer's Cache", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [ { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }, {} ],
+    "counters": { "Explorer's Cache": { "p1p1": 2 } }
+  }
+},
+{
+  "name": "ruling: Cache destroyed in response: the counter is not moved onto the creature",
+  "players": [
+    { "battlefield": [ { "name": "Explorer's Cache", "counters": { "p1p1": 2 } }, "Grizzly Bears" ] },
+    { "hand": ["Shatter"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+    { "activate": "Explorer's Cache", "targets": ["Grizzly Bears"] },
+    { "pass": true },
+    { "cast": "Shatter", "player": 1, "targets": ["Explorer's Cache"] },
+    { "resolve": true },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [ { "graveyard_has": ["Explorer's Cache"] }, {} ],
+    "counters": { "Grizzly Bears": { "p1p1": 0 } }
+  }
+}
+]

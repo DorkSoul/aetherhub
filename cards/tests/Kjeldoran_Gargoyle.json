@@ -1,0 +1,145 @@
+[
+  {
+    "name": "unblocked combat damage gains you that much life",
+    "players": [
+      {
+        "battlefield": [
+          "Kjeldoran Gargoyle"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Kjeldoran Gargoyle",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "first-strike damage to a flying blocker also gains life",
+    "players": [
+      {
+        "battlefield": [
+          "Kjeldoran Gargoyle"
+        ]
+      },
+      {
+        "battlefield": [
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Kjeldoran Gargoyle",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Serra Angel",
+            "attacker": "Kjeldoran Gargoyle"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23,
+          "graveyard": [
+            "Kjeldoran Gargoyle"
+          ]
+        },
+        {
+          "life": 20,
+          "battlefield": [
+            "Serra Angel"
+          ]
+        }
+      ]
+    }
+  },
+ {
+  "name": "ruling: damage from a fight (not combat) also triggers the life gain",
+  "players": [
+   { "hand": ["Prey Upon"], "battlefield": ["Forest", "Kjeldoran Gargoyle"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Prey Upon", "targets": ["Kjeldoran Gargoyle", "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 23, "battlefield_has": ["Kjeldoran Gargoyle"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the life gain is a triggered ability that can be responded to; it still gains after the Gargoyle dies",
+  "players": [
+   { "battlefield": ["Kjeldoran Gargoyle"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Kjeldoran Gargoyle", "at": "p1" } ] },
+   { "advance_to": "FirstStrikeDamage", "hold": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Kjeldoran Gargoyle"] },
+   { "pass": true },
+   { "pass": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 23, "graveyard": ["Kjeldoran Gargoyle"] },
+    { "life": 17, "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: first-strike damage that drops me to 0 at the same time as the Gargoyle deals damage loses before the life gain resolves",
+  "players": [
+   { "life": 2, "battlefield": ["Kjeldoran Gargoyle"] },
+   { "battlefield": ["White Knight", "Youthful Knight"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "White Knight", "at": "p0" }, { "card": "Youthful Knight", "at": "p0" } ], "player": 1 },
+   { "block": [ { "blocker": "Kjeldoran Gargoyle", "attacker": "White Knight" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "winner": 1
+  }
+ }
+]

@@ -1,0 +1,33 @@
+[
+ { "name": "ETB returns a creature card from your graveyard to hand and amass Goblins 1 makes a Goblin Army",
+   "players": [ { "hand": ["Along the Crooked Way"], "graveyard": ["Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Along the Crooked Way" }, { "resolve": true } ],
+   "expect": {
+     "players": [ { "hand": ["Grizzly Bears"], "graveyard": [], "battlefield_has": ["Along the Crooked Way", "Army"] }, {} ],
+     "pt": { "Army": [1, 1] }
+   } },
+ { "name": "boundary: no creature card in graveyard, nothing returns and no Army is made",
+   "players": [ { "hand": ["Along the Crooked Way"], "graveyard": ["Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Along the Crooked Way" }, { "resolve": true } ],
+   "expect": {
+     "players": [ { "hand": [], "graveyard": ["Lightning Bolt"], "battlefield_has": ["Along the Crooked Way"] }, {} ]
+   } },
+ { "name": "{1}{B}: Goblins you control gain menace until end of turn (not other creatures)",
+   "players": [ { "battlefield": ["Along the Crooked Way", "Goblin Piker", "Grizzly Bears", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "activate": "Along the Crooked Way" }, { "resolve": true } ],
+   "expect": {
+     "players": [ { "battlefield_has": ["Along the Crooked Way", "Goblin Piker", "Grizzly Bears"] }, {} ],
+     "keywords": { "Goblin Piker": ["Menace"], "Grizzly Bears": [] }
+   } },
+ { "name": "boundary: menace ability needs {1}{B}; one Swamp is not enough",
+   "players": [ { "battlefield": ["Along the Crooked Way", "Goblin Piker", "Swamp"] }, {} ],
+   "steps": [ { "activate": "Along the Crooked Way", "illegal": true } ] },
+ { "name": "ruling: with no legal target the ETB does nothing, so nothing amasses and no Army token is made",
+   "players": [ { "hand": ["Along the Crooked Way"], "graveyard": ["Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Along the Crooked Way" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Along the Crooked Way"], "battlefield_lacks": ["Army"] }, {} ] } },
+ { "name": "ruling: the amassed Army is a Goblin, so the Goblin-wide menace ability gives it menace",
+   "players": [ { "hand": ["Along the Crooked Way"], "graveyard": ["Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Along the Crooked Way" }, { "resolve": true }, { "activate": "Along the Crooked Way" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Along the Crooked Way", "Army"] }, {} ], "keywords": { "Army": ["Menace"] } } }
+]

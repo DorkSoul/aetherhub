@@ -1,0 +1,243 @@
+[
+ {
+  "name": "beginning of combat: may move a counter from one creature onto another",
+  "players": [
+   {
+    "battlefield": [
+     "Tidus, Yuna's Guardian",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1
+      }
+     },
+     "Llanowar Elves"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat",
+    "targets": [
+     "Grizzly Bears",
+     "Llanowar Elves"
+    ],
+    "answers": [
+     true
+    ],
+    "auto": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 0
+    },
+    "Llanowar Elves": {
+     "p1p1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "beginning of combat: declining the move leaves the counter where it was",
+  "players": [
+   {
+    "battlefield": [
+     "Tidus, Yuna's Guardian",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1
+      }
+     },
+     "Llanowar Elves"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat",
+    "targets": [
+     "Grizzly Bears",
+     "Llanowar Elves"
+    ],
+    "answers": [
+     false
+    ],
+    "auto": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1
+    },
+    "Llanowar Elves": {
+     "p1p1": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "cheer: a creature with counters dealing combat damage to a player draws and proliferates",
+  "players": [
+   {
+    "battlefield": [
+     "Tidus, Yuna's Guardian",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ],
+    "targets": [
+     "Tidus, Yuna's Guardian",
+     "Grizzly Bears"
+    ],
+    "answers": [
+     false
+    ]
+   },
+   {
+    "block": [],
+    "player": 1
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     true
+    ],
+    "auto": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 2
+    }
+   },
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "cheer: a creature without counters dealing combat damage gives no draw",
+  "players": [
+   {
+    "battlefield": [
+     "Tidus, Yuna's Guardian",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat",
+    "targets": [
+     "Tidus, Yuna's Guardian",
+     "Grizzly Bears"
+    ],
+    "answers": [
+     false
+    ],
+    "auto": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "player": 1
+   },
+   {
+    "advance_to": "Main2",
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: proliferate adds one counter of each kind the permanent already has",
+  "players": [
+   {"battlefield": ["Tidus, Yuna's Guardian", {"name": "Grizzly Bears", "counters": {"p1p1": 1, "charge": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}], "targets": ["Tidus, Yuna's Guardian", "Grizzly Bears"], "answers": [false]},
+   {"block": [], "player": 1},
+   {"advance_to": "Main2", "answers": [true], "auto": true}
+  ],
+  "expect": {
+   "counters": {"Grizzly Bears": {"p1p1": 2, "charge": 2}},
+   "players": [{"hand_count": 1}, {"life": 17}]
+  }
+ },
+ {
+  "name": "ruling: proliferate may choose no permanents",
+  "players": [
+   {"battlefield": ["Tidus, Yuna's Guardian", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}], "targets": ["Tidus, Yuna's Guardian", "Grizzly Bears"], "answers": [false]},
+   {"block": [], "player": 1},
+   {"advance_to": "Main2", "answers": [true, []], "auto": true}
+  ],
+  "expect": {
+   "counters": {"Grizzly Bears": {"p1p1": 1}},
+   "players": [{"hand_count": 1}, {"life": 17}]
+  }
+ },
+ {
+  "name": "ruling: proliferate can choose opponents' permanents and players with counters",
+  "players": [
+   {"battlefield": ["Tidus, Yuna's Guardian", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}]},
+   {"poison": 1, "battlefield": [{"name": "Llanowar Elves", "counters": {"p1p1": 1}}]}
+  ],
+  "steps": [
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}], "targets": ["Tidus, Yuna's Guardian", "Grizzly Bears"], "answers": [false]},
+   {"block": [], "player": 1},
+   {"advance_to": "Main2", "answers": [true], "auto": true}
+  ],
+  "expect": {
+   "counters": {"Grizzly Bears": {"p1p1": 2}, "Llanowar Elves": {"p1p1": 2}},
+   "players": [{"hand_count": 1}, {"life": 17, "poison": 2}]
+  }
+ }
+]

@@ -1,0 +1,145 @@
+[
+  {
+    "name": "a Pirate's damage to the opponent exiles their top card, playable this turn with any mana",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": [
+          "Breeches, Brazen Plunderer",
+          "Swamp"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Breeches, Brazen Plunderer",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 14,
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "a non-Pirate's damage does not trigger it",
+    "players": [
+      {
+        "battlefield": [
+          "Breeches, Brazen Plunderer",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "library": [
+          "Lightning Bolt",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18,
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled card not played this turn stays exiled and is not playable on later turns",
+    "players": [
+      { "battlefield": ["Breeches, Brazen Plunderer", "Mountain", "Swamp"] },
+      { "library": ["Lightning Bolt", "Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Breeches, Brazen Plunderer", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "exile": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played once the land drop is used this turn",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Breeches, Brazen Plunderer", "Swamp"] },
+      { "library": ["Forest", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "attack": [ { "card": "Breeches, Brazen Plunderer", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"] }, { "exile": ["Forest"] } ] }
+  },
+  {
+    "name": "ruling: an exiled land can be played this turn when the land drop is still available",
+    "players": [
+      { "battlefield": ["Breeches, Brazen Plunderer", "Swamp"] },
+      { "library": ["Forest", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Breeches, Brazen Plunderer", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "play_land": "Forest" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"] }, { "exile": [] } ] }
+  }
+]

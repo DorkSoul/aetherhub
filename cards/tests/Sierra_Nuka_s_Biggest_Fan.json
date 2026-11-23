@@ -1,0 +1,198 @@
+[
+ {
+  "name": "combat damage to a player: quest counter and a Food",
+  "players": [
+   {
+    "battlefield": [
+     "Sierra, Nuka's Biggest Fan"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sierra, Nuka's Biggest Fan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Sierra, Nuka's Biggest Fan",
+      "Food"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ],
+   "counters": {
+    "Sierra, Nuka's Biggest Fan": {
+     "quest": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "blocked attacker deals no combat damage: no Food",
+  "players": [
+   {
+    "battlefield": [
+     "Sierra, Nuka's Biggest Fan"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Sierra, Nuka's Biggest Fan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Sierra, Nuka's Biggest Fan"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Sierra, Nuka's Biggest Fan"
+     ],
+     "battlefield": [
+      "Sierra, Nuka's Biggest Fan"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "sacrificing a Food: target creature gets +X/+X where X is Sierra's quest counters",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Sierra, Nuka's Biggest Fan", "counters": { "quest": 2 } },
+     "Savannah Lions",
+     "Food",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Food", "ability": 0, "targets": ["Savannah Lions"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Sierra, Nuka's Biggest Fan", "Savannah Lions"], "battlefield_lacks": ["Food"], "life": 23 },
+    {}
+   ],
+   "pt": { "Savannah Lions": [4, 3] }
+  }
+ },
+ {
+  "name": "no quest counters on Sierra: sacrificing a Food gives +0/+0",
+  "players": [
+   {
+    "battlefield": [
+     "Sierra, Nuka's Biggest Fan",
+     "Savannah Lions",
+     "Food",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Food", "ability": 0, "targets": ["Savannah Lions"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Food"] },
+    {}
+   ],
+   "pt": { "Savannah Lions": [2, 1] }
+  }
+ },
+ {
+  "name": "ruling: sacrificing a Food for another cost (Junk Jet) still triggers Sierra",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Sierra, Nuka's Biggest Fan", "counters": { "quest": 2 } },
+     "Savannah Lions",
+     "Food",
+     "Junk Jet",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk Jet", "ability": 0, "targets": ["Savannah Lions"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Sierra, Nuka's Biggest Fan", "Savannah Lions", "Junk Jet"], "battlefield_lacks": ["Food"] },
+    {}
+   ],
+   "pt": { "Savannah Lions": [4, 3] }
+  }
+ },
+ {
+  "name": "ruling: a Food cannot pay for two costs: once sacrificed for its own ability, Junk Jet has no artifact to sacrifice",
+  "players": [
+   {
+    "battlefield": ["Junk Jet", "Food", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Food", "ability": 0 },
+   { "resolve": true },
+   { "activate": "Junk Jet", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Junk Jet"], "battlefield_lacks": ["Food"], "life": 23 },
+    {}
+   ]
+  }
+ }
+]

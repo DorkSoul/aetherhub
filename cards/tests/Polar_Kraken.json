@@ -1,0 +1,74 @@
+[
+  {
+    "name": "enters tapped",
+    "players": [
+      { "hand": ["Polar Kraken"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Polar Kraken" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Polar Kraken": true },
+      "players": [ { "battlefield_has": ["Polar Kraken"] }, {} ]
+    }
+  },
+  {
+    "name": "upkeep: sacrifices two lands for two age counters",
+    "players": [
+      { "battlefield": [ { "name": "Polar Kraken", "counters": { "age": 1 } }, "Island", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "counters": { "Polar Kraken": { "age": 2 } },
+      "players": [ { "battlefield_has": ["Polar Kraken"], "graveyard_has": ["Island", "Island"] }, {} ]
+    }
+  },
+  {
+    "name": "upkeep: no lands to sacrifice, sacrificed",
+    "players": [
+      { "battlefield": ["Polar Kraken"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Polar Kraken"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: no partial payment of cumulative upkeep, too few lands means the Kraken is sacrificed",
+    "players": [
+      { "battlefield": [ { "name": "Polar Kraken", "counters": { "age": 2 } }, "Island", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Island", "Island"], "graveyard_has": ["Polar Kraken"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: paying cumulative upkeep is optional, declining sacrifices the Kraken and keeps the lands",
+    "players": [
+      { "battlefield": [ { "name": "Polar Kraken", "counters": { "age": 2 } }, "Island", "Island", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Island", "Island", "Island"], "graveyard_has": ["Polar Kraken"] }, {} ]
+    }
+  }
+]

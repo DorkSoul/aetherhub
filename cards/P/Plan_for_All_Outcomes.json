@@ -1,0 +1,46 @@
+{
+  "name": "Plan for All Outcomes",
+  "mana_cost": "{3}{U}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "not_types": ["Land"], "other": true } }, "min": 0, "max": 1, "label": "up to one other target nonland permanent" }
+      ],
+      "effects": [
+        { "type": "OwnerChoosesLibraryPosition", "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": { "not_types": ["Creature"] } },
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "CastThisTurn", "at_least": 1, "filter": { "not_types": ["Creature"], "controller": "You" } },
+          { "type": "Not", "c": { "type": "CastThisTurn", "at_least": 2, "filter": { "not_types": ["Creature"], "controller": "You" } } }
+        ]
+      },
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "Control", "who": { "type": "You" }, "filter": { "types": ["Planeswalker"], "subtypes": ["Jace"], "token": true }, "at_least": 1 } },
+          "then": [ { "type": "CreateToken", "token": "Jace" } ],
+          "else": []
+        },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Planeswalker"], "subtypes": ["Jace"], "token": true, "controller": "You" },
+          "min": 1,
+          "max": 1,
+          "then": [ { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "Loyalty", "n": { "type": "Fixed", "n": 1 } } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When this enchantment enters, the owner of up to one other target nonland permanent puts it on their choice of the top or bottom of their library.\nWhenever you cast your first noncreature spell each turn, empower Jace 1. (Put a loyalty counter on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")"
+}

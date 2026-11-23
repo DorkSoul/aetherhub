@@ -1,0 +1,108 @@
+[
+  {
+    "name": "enchanted creature taps to make X hasty tokens equal to its power",
+    "players": [ { "hand": ["Elemental Mastery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Elemental Mastery", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Elemental Mastery", "Grizzly Bears", "Elemental 1-1 Red Haste"] }, {} ],
+      "pt": { "Elemental 1-1 Red Haste": [1, 1] },
+      "keywords": { "Elemental 1-1 Red Haste": ["Haste"] },
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "the tokens are exiled at the beginning of the next end step",
+    "players": [ { "hand": ["Elemental Mastery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Elemental Mastery", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Elemental 1-1 Red Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: tokens made in the End step are not exiled by that End step",
+    "players": [ { "hand": ["Elemental Mastery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Elemental Mastery", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Elemental Mastery", "Grizzly Bears", "Elemental 1-1 Red Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: tokens made in the End step are exiled at the next (opponent's) End step",
+    "players": [ { "hand": ["Elemental Mastery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Elemental Mastery", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Elemental Mastery", "Grizzly Bears"], "battlefield_lacks": ["Elemental 1-1 Red Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: enchanted creature killed in response: tokens use its last known power (2 tokens)",
+    "players": [
+      { "hand": ["Elemental Mastery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Elemental Mastery", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Elemental 1-1 Red Haste", "Elemental 1-1 Red Haste"], "graveyard": ["Elemental Mastery", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: tokens are exiled at the End step even after the enchanted creature died",
+    "players": [
+      { "hand": ["Elemental Mastery"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Elemental Mastery", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ]
+    }
+  }
+]

@@ -1,0 +1,260 @@
+[
+  {
+    "name": "cast trigger gains 1 life per colorless permanent you control (lands are colorless)",
+    "players": [
+      {
+        "hand": [
+          "Breaker of Creation"
+        ],
+        "battlefield": [
+          "Wastes",
+          "Wastes",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Eldrazi Scion"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Breaker of Creation"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 29,
+          "battlefield_has": [
+            "Breaker of Creation",
+            "Eldrazi Scion"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent's colorless permanents do not count for the cast trigger",
+    "players": [
+      {
+        "hand": [
+          "Breaker of Creation"
+        ],
+        "battlefield": [
+          "Wastes",
+          "Wastes",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Eldrazi Scion"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Breaker of Creation"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 28,
+          "battlefield_has": [
+            "Breaker of Creation"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Eldrazi Scion"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "hexproof from each color: opponent's white Pacifism cannot target it",
+    "players": [
+      {
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Breaker of Creation"
+        ]
+      },
+      {
+        "hand": [
+          "Pacifism"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Pacifism",
+        "player": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Breaker of Creation"
+          ]
+        },
+        {
+          "hand": [
+            "Pacifism"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "annihilator 2: defending player sacrifices two permanents when it attacks",
+    "players": [
+      {
+        "battlefield": [
+          "Breaker of Creation"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Breaker of Creation",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Breaker of Creation"
+          ]
+        },
+        {
+          "battlefield": [],
+          "graveyard": [
+            "Grizzly Bears",
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "hexproof from white: an opponent's Pacifism has no legal target on their turn",
+    "players": [{"battlefield": ["Plains", "Plains", "Plains", "Breaker of Creation"]}, {"hand": ["Pacifism"], "battlefield": ["Plains", "Plains", "Plains"]}],
+    "steps": [{"advance_to": "Main1"}, {"cast": "Pacifism", "player": 1, "illegal": true}],
+    "expect": {"players": [{"battlefield_has": ["Breaker of Creation"]}, {"hand_count": 2, "battlefield_lacks": ["Pacifism"]}]}
+  },
+  {
+    "name": "ruling: cast trigger still resolves when the spell is countered in response",
+    "players": [
+      {"hand": ["Breaker of Creation"], "battlefield": ["Wastes", "Wastes", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]},
+      {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}
+    ],
+    "steps": [
+      {"cast": "Breaker of Creation"},
+      {"pass": true},
+      {"cast": "Counterspell", "player": 1},
+      {"resolve": true}
+    ],
+    "expect": {"players": [{"life": 28, "graveyard": ["Breaker of Creation"]}, {"graveyard": ["Counterspell"]}]}
+  },
+  {
+    "name": "ruling: annihilator sacrifices happen before blocks, so the sacrificed creatures cannot block",
+    "players": [
+      {"battlefield": ["Breaker of Creation"]},
+      {"battlefield": ["Grizzly Bears", "Hill Giant", "Grizzly Bears"]}
+    ],
+    "steps": [
+      {"advance_to": "Main1"},
+      {"advance_to": "Main1"},
+      {"attack": [{"card": "Breaker of Creation", "at": "p1"}]},
+      {"resolve": true, "answers": [["Hill Giant", "Grizzly Bears"]]},
+      {"block": [{"blocker": "Grizzly Bears", "attacker": "Breaker of Creation"}]},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"life": 20, "battlefield_has": ["Breaker of Creation"]},
+        {"life": 20, "battlefield": [], "graveyard": ["Hill Giant", "Grizzly Bears", "Grizzly Bears"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: annihilator attacking a planeswalker: sacrificing it leaves the attacker with no combat damage",
+    "players": [
+      {"battlefield": ["Breaker of Creation"]},
+      {"battlefield": ["Tezzeret, Cruel Captain", "Grizzly Bears"]}
+    ],
+    "steps": [
+      {"advance_to": "Main1"},
+      {"advance_to": "Main1"},
+      {"attack": [{"card": "Breaker of Creation", "at": "Tezzeret, Cruel Captain"}]},
+      {"block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Breaker of Creation"]},
+        {"life": 20, "battlefield": [], "graveyard": ["Tezzeret, Cruel Captain", "Grizzly Bears"]}
+      ]
+    }
+  }
+]

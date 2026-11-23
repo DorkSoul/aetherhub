@@ -1,0 +1,214 @@
+[
+  {
+    "name": "paying R copies the entering creature with haste; the token is exiled at end step",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Flameshadow Conjuring",
+          "Forest",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Flameshadow Conjuring",
+            "Grizzly Bears",
+            "Forest",
+            "Mountain",
+            "Mountain"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining does not create a copy",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Flameshadow Conjuring",
+          "Forest",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a token copy of a Clone copies what the Clone is copying (Hill Giant)",
+    "players": [
+      { "hand": ["Clone"], "battlefield": ["Flameshadow Conjuring", "Hill Giant", "Island", "Forest", "Plains", "Swamp", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Island" },
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Plains" },
+      { "tap_for_mana": "Swamp" },
+      { "cast": "Clone" },
+      { "resolve": true, "answers": [0, true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Flameshadow Conjuring", "Hill Giant", "Hill Giant", "Hill Giant", "Island", "Forest", "Plains", "Swamp", "Mountain"] },
+        {}
+      ],
+      "pt": { "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: the token copy of Mulldrifter gets its enters trigger and draws two",
+    "players": [
+      { "hand": ["Mulldrifter"], "battlefield": ["Flameshadow Conjuring", "Island", "Forest", "Plains", "Swamp", { "name": "Den of the Bugbear", "sick": false }, "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Island" },
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Plains" },
+      { "tap_for_mana": "Swamp" },
+      { "tap_for_mana": "Den of the Bugbear" },
+      { "cast": "Mulldrifter" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 4, "battlefield_has": ["Mulldrifter", "Mulldrifter"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: another creature that copies the token is not exiled at the end step",
+    "players": [
+      { "hand": ["Grizzly Bears", "Clone"], "battlefield": ["Flameshadow Conjuring", "Forest", "Mountain", "Mountain", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Island" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [true] },
+      { "cast": "Clone" },
+      { "resolve": true, "answers": [1] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Flameshadow Conjuring", "Grizzly Bears", "Grizzly Bears", "Forest", "Mountain", "Mountain", "Island", "Island", "Island", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a token copy of Walking Ballista has X=0 and dies at once",
+    "players": [
+      { "hand": ["Walking Ballista"], "battlefield": ["Flameshadow Conjuring", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Walking Ballista", "answers": [2] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Flameshadow Conjuring", "Walking Ballista", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ],
+      "counters": { "Walking Ballista": { "+1/+1": 2 } }
+    }
+  },
+  {
+    "name": "ruling: a flash creature cast in your end step: its copy stays through that end step",
+    "players": [
+      { "hand": ["Ambush Viper"], "battlefield": ["Flameshadow Conjuring", "Forest", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Ambush Viper" },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Flameshadow Conjuring", "Ambush Viper", "Ambush Viper", "Forest", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the copy of that flash creature is exiled at the next turn's end step",
+    "players": [
+      { "hand": ["Ambush Viper"], "battlefield": ["Flameshadow Conjuring", "Forest", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Ambush Viper" },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Flameshadow Conjuring", "Ambush Viper", "Forest", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ]
+    }
+  }
+]

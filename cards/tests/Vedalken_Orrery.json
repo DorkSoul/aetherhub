@@ -1,0 +1,84 @@
+[
+  {
+    "name": "creature spell can be cast at the end step as though it had flash",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Vedalken Orrery", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Vedalken Orrery"] }, {} ]
+    }
+  },
+  {
+    "name": "without Orrery a creature spell cannot be cast at the end step",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery can be cast on the opponent's upkeep as though it had flash",
+    "players": [
+      { "hand": ["Stone Rain"], "battlefield": ["Vedalken Orrery", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep", "auto": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Stone Rain", "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Stone Rain"] },
+        { "graveyard_has": ["Forest"], "battlefield_lacks": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: without Orrery a sorcery cannot be cast on the opponent's upkeep",
+    "players": [
+      { "hand": ["Stone Rain"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep", "auto": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Stone Rain", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Stone Rain"] }, { "battlefield_has": ["Forest"] } ]
+    }
+  },
+  {
+    "name": "ruling: Orrery does not make an equip ability (sorcery speed) usable on the opponent's turn",
+    "players": [
+      { "battlefield": ["Vedalken Orrery", "Bonesplitter", "Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep", "auto": true },
+      { "pass": true, "player": 1 },
+      { "activate": "Bonesplitter", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Bonesplitter"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

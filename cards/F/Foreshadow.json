@@ -1,0 +1,32 @@
+{
+  "name": "Foreshadow",
+  "mana_cost": "{1}{U}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [ { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" } ],
+      "effects": [
+        { "type": "ChooseCardName", "kind": "Any" },
+        { "type": "Mill", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "All",
+            "cs": [
+              { "type": "Compare", "a": { "type": "RememberedCount" }, "cmp": { "op": "Ge", "n": 1 } },
+              { "type": "RememberedIs", "filter": { "chosen_name": true } }
+            ]
+          },
+          "then": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+        },
+        {
+          "type": "Delayed",
+          "at": "NextUpkeep",
+          "effects": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose a card name, then target opponent mills a card. If a card with the chosen name was milled this way, you draw a card.\nDraw a card at the beginning of the next turn's upkeep."
+}

@@ -1,0 +1,143 @@
+[
+ {
+  "name": "combat damage to a player copies the next loyalty ability this turn",
+  "players": [
+   {
+    "battlefield": ["Jaya's Phoenix", "Test Walker", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Jaya's Phoenix", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "activate": "Test Walker" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 24 },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "no combat damage to a player: the loyalty ability is not copied",
+  "players": [
+   {
+    "battlefield": ["Jaya's Phoenix", "Test Walker", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Test Walker" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 22 },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "casting a planeswalker spell returns it from the graveyard",
+  "players": [
+   {
+    "hand": ["Test Walker"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "graveyard": ["Jaya's Phoenix"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Test Walker" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Jaya's Phoenix", "Test Walker"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "casting a non-planeswalker spell does not return it",
+  "players": [
+   {
+    "hand": ["Grizzly Bears"],
+    "battlefield": ["Forest", "Forest"],
+    "graveyard": ["Jaya's Phoenix"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Jaya's Phoenix"], "battlefield_lacks": ["Jaya's Phoenix"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "combat damage to an opposing planeswalker copies the next loyalty ability you activate this turn",
+  "players": [
+   {
+    "battlefield": ["Jaya's Phoenix", "Test Walker", "Plains"]
+   },
+   {
+    "battlefield": ["Jace, Ingenious Mind-Mage"]
+   }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Jaya's Phoenix", "at": "Jace, Ingenious Mind-Mage" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "activate": "Test Walker", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": {
+    "Jace, Ingenious Mind-Mage": { "Loyalty": 2 }
+   },
+   "players": [
+    { "life": 24 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: copying a loyalty ability adds no loyalty counters (Test Walker goes 4 to 5 once)",
+  "players": [
+   {
+    "battlefield": ["Jaya's Phoenix", "Test Walker", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Jaya's Phoenix", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "activate": "Test Walker" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": {
+    "Test Walker": { "Loyalty": 5 }
+   },
+   "players": [
+    { "life": 24 },
+    { "life": 17 }
+   ]
+  }
+ }
+]

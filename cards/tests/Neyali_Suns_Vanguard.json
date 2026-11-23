@@ -1,0 +1,223 @@
+[
+ {
+  "name": "token attack exiles top card, land playable that turn, token has double strike",
+  "players": [
+   {
+    "battlefield": [
+     "Neyali, Suns' Vanguard",
+     "Soldier"
+    ],
+    "library": [
+     "Forest",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Soldier",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "play_land": "Forest"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest"
+     ]
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "next turn without a token attack the card cannot be played",
+  "players": [
+   {
+    "battlefield": [
+     "Neyali, Suns' Vanguard",
+     "Soldier"
+    ],
+    "library": [
+     "Mountain",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Soldier",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "play_land": "Mountain",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a nontoken attacker does not trigger",
+  "players": [
+   {
+    "battlefield": [
+     "Neyali, Suns' Vanguard"
+    ],
+    "library": [
+     "Forest",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Neyali, Suns' Vanguard",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "library_top": [
+      "Forest",
+      "Island"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the exiled card can be cast in the second main phase after combat is over",
+  "players": [
+   { "battlefield": ["Neyali, Suns' Vanguard", "Soldier", "Mountain"], "library": ["Lightning Bolt", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard": ["Lightning Bolt"] },
+    { "life": 15 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the exiled card is still castable after the attacking token has left combat",
+  "players": [
+   { "battlefield": ["Neyali, Suns' Vanguard", "Soldier", "Mountain"], "library": ["Lightning Bolt", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Soldier" } ], "player": 1 },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard": ["Lightning Bolt"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled sorcery cannot be cast during combat, only in a main phase",
+  "players": [
+   { "battlefield": ["Neyali, Suns' Vanguard", "Soldier", "Mountain"], "library": ["Lava Spike", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier", "at": "p1" } ] },
+   { "resolve": true },
+   { "cast": "Lava Spike", "targets": ["p1"], "illegal": true },
+   { "advance_to": "Main2" },
+   { "cast": "Lava Spike", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard": ["Lava Spike"] },
+    { "life": 15 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the exiled card stays castable after Neyali leaves the battlefield",
+  "players": [
+   { "battlefield": ["Neyali, Suns' Vanguard", "Soldier", "Mountain"], "library": ["Lava Spike", "Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier", "at": "p1" } ] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Neyali, Suns' Vanguard"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Lava Spike", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard": ["Lava Spike", "Neyali, Suns' Vanguard"] },
+    { "life": 16 }
+   ]
+  }
+ }
+]

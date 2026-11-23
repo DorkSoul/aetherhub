@@ -1,0 +1,63 @@
+{
+  "name": "Olórin's Searing Light",
+  "mana_cost": "{2}{R}{W}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [],
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Battlefield",
+              "filter": {
+                "types": ["Creature"],
+                "controller": "You",
+                "power_vs": {
+                  "op": "Ge",
+                  "amount": {
+                    "type": "HighestPower",
+                    "filter": { "types": ["Creature"], "controlled_by": { "type": "EachObject" } }
+                  }
+                }
+              },
+              "min": 1,
+              "max": 1,
+              "then": [
+                {
+                  "type": "If",
+                  "cond": {
+                    "type": "CompareAmounts",
+                    "op": "Ge",
+                    "a": {
+                      "type": "Count",
+                      "filter": { "types": ["Instant", "Sorcery"] },
+                      "zone": "Graveyard",
+                      "player": { "type": "You" }
+                    },
+                    "b": { "type": "Fixed", "n": 2 }
+                  },
+                  "then": [
+                    {
+                      "type": "DealDamage",
+                      "source": { "type": "This" },
+                      "to": { "type": "EachObject" },
+                      "amount": { "type": "PowerOf", "of": { "type": "Remembered" } }
+                    }
+                  ]
+                },
+                { "type": "Exile", "what": { "type": "Remembered" } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Each opponent exiles a creature with the greatest power among creatures that player controls.\nSpell mastery — If there are two or more instant and/or sorcery cards in your graveyard, Olórin's Searing Light deals damage to each opponent equal to the power of the creature they exiled."
+}

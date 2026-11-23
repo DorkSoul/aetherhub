@@ -1,0 +1,108 @@
+[
+  {
+    "name": "pay {1} and tap: target creature can't attack this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Edifice of Authority",
+          "Plains",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Edifice of Authority",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Edifice of Authority": true
+      }
+    }
+  },
+  {
+    "name": "the second ability is illegal with fewer than three brick counters",
+    "players": [
+      {
+        "battlefield": [
+          "Edifice of Authority",
+          "Plains",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Edifice of Authority",
+        "ability": 1,
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Edifice of Authority": false
+      }
+    }
+  },
+  {
+    "name": "three brick counters: target creature can't attack or block until your next turn",
+    "players": [
+      { "battlefield": [ { "name": "Edifice of Authority", "counters": { "Brick": 3 } }, "Plains", "Grizzly Bears" ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Edifice of Authority", "ability": 1, "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, { "life": 20 }],
+      "tapped": { "Edifice of Authority": true }
+    }
+  },
+  {
+    "name": "ruling: activating after the attack is declared does not undo the attack",
+    "players": [{"battlefield": ["Edifice of Authority", "Plains"]}, {"battlefield": [{"name": "Hill Giant", "sick": false}]}],
+    "steps": [
+      {"advance_to": "Main2"},
+      {"advance_to": "Main1"},
+      {"advance_to": "BeginCombat"},
+      {"attack": [{"card": "Hill Giant", "at": "p0"}], "player": 1},
+      {"pass": true, "player": 1},
+      {"activate": "Edifice of Authority", "ability": 0, "targets": ["Hill Giant"]},
+      {"resolve": true},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {"players": [{"life": 17}, {}], "tapped": {"Edifice of Authority": true}}
+  }
+]

@@ -1,0 +1,85 @@
+[
+  {
+    "name": "enters with a +1/+1 counter",
+    "players": [
+      { "hand": ["Barkhide Troll"], "battlefield": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Barkhide Troll" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Barkhide Troll": [3, 3] },
+      "counters": { "Barkhide Troll": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "{1}, remove a counter: hexproof until end of turn",
+    "players": [
+      { "battlefield": [{ "name": "Barkhide Troll", "counters": { "p1p1": 1 } }, "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Barkhide Troll" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Barkhide Troll": [2, 2] },
+      "counters": { "Barkhide Troll": { "p1p1": 0 } },
+      "keywords": { "Barkhide Troll": ["Hexproof"] }
+    }
+  },
+  {
+    "name": "hexproof: opponent cannot target it after activation",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Barkhide Troll", "counters": { "p1p1": 1 } }, "Forest"] },
+      { "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Barkhide Troll" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Barkhide Troll"], "player": 1, "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: damage from a blocked attacker becomes lethal when hexproof is activated (counter removed)",
+    "players": [
+      { "battlefield": [{ "name": "Barkhide Troll", "counters": { "p1p1": 1 } }, "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Barkhide Troll", "attacker": "Grizzly Bears" }], "player": 0 },
+      { "advance_to": "Main2" },
+      { "pass": true, "player": 1 },
+      { "activate": "Barkhide Troll" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Barkhide Troll"] }, { "graveyard_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: without the activation, the same 2 damage stays nonlethal and the Troll survives",
+    "players": [
+      { "battlefield": [{ "name": "Barkhide Troll", "counters": { "p1p1": 1 } }, "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Barkhide Troll", "attacker": "Grizzly Bears" }], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Barkhide Troll"] }, { "graveyard_has": ["Grizzly Bears"] } ],
+      "pt": { "Barkhide Troll": [3, 3] },
+      "counters": { "Barkhide Troll": { "p1p1": 1 } }
+    }
+  }
+]

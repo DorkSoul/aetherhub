@@ -1,0 +1,152 @@
+[
+  {
+    "name": "destroy target attacking creature (convoke)",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Protective Response"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Protective Response",
+        "player": 1,
+        "answers": [
+          [
+            "Hill Giant"
+          ]
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Protective Response"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a creature that is neither attacking nor blocking cannot be targeted",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Protective Response"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Protective Response",
+        "player": 1,
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "hand": [
+            "Protective Response"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: tapping a blocking creature to convoke does not remove it from combat",
+    "players": [
+      { "battlefield": ["Hill Giant", "Llanowar Elves"] },
+      { "hand": ["Protective Response"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Llanowar Elves", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "pass": true },
+      { "cast": "Protective Response", "player": 1, "targets": ["Llanowar Elves"], "answers": [["Grizzly Bears"]] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"], "graveyard": ["Llanowar Elves"] },
+        { "life": 20, "graveyard": ["Protective Response", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that came under your control this turn can still convoke",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "hand": ["Protective Response"], "battlefield": ["Plains", "Plains", { "name": "Grizzly Bears", "sick": true }] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Protective Response", "player": 1, "targets": ["Hill Giant"], "answers": [["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Hill Giant"] },
+        { "graveyard": ["Protective Response"] }
+      ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  }
+]

@@ -1,0 +1,127 @@
+[
+  {
+    "name": "protection from creatures (chosen type Creature): a creature can't block the protected creature",
+    "players": [
+      { "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": [{ "name": "Llanowar Elves", "sick": false }] }
+    ],
+    "steps": [
+      { "activate": "Pippin, Guard of the Citadel", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[2]] },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }],
+      "tapped": { "Pippin, Guard of the Citadel": true }
+    }
+  },
+  {
+    "name": "protection from a different type (Creature) does not stop Lightning Bolt (an Instant)",
+    "players": [
+      { "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Pippin, Guard of the Citadel", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[2]] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "tapped Pippin can't activate its ability",
+    "players": [
+      { "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false, "tapped": true }, { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Pippin, Guard of the Citadel", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "tapped": { "Pippin, Guard of the Citadel": true }
+    }
+  },
+  {
+    "name": "ward {1}: opponent with no spare mana cannot pay, Bolt is countered and Pippin stays",
+    "players": [
+      { "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Pippin, Guard of the Citadel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Pippin, Guard of the Citadel"] }, { "graveyard": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "ward {1}: opponent pays 1 with a spare Mountain, Bolt resolves and kills Pippin",
+    "players": [
+      { "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Pippin, Guard of the Citadel"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Pippin, Guard of the Citadel"] }, { "graveyard_has": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "protection from creatures: Llanowar Elves cannot block the protected Bears, so 2 damage gets through",
+    "players": [
+      { "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }, { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }] },
+      { "battlefield": ["Llanowar Elves", "Savannah Lions"] }
+    ],
+    "steps": [
+      { "activate": "Pippin, Guard of the Citadel", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[2]] },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "block": [{ "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" }, { "blocker": "Savannah Lions", "attacker": "Hill Giant" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "ruling: choosing Sorcery gives protection from Sorcery; a Sorcery cannot target the Bears",
+    "players": [
+      { "hand": ["Eviscerate"], "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }, { "name": "Grizzly Bears", "sick": false }, "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Pippin, Guard of the Citadel", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[8]] },
+      { "cast": "Eviscerate", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Eviscerate"], "battlefield_has": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "control: without the protection, Eviscerate (a Sorcery) destroys the Bears",
+    "players": [
+      { "hand": ["Eviscerate"], "battlefield": [{ "name": "Pippin, Guard of the Citadel", "sick": false }, { "name": "Grizzly Bears", "sick": false }, "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eviscerate", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Eviscerate", "Grizzly Bears"] }, {}]
+    }
+  }
+]

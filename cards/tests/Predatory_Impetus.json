@@ -1,0 +1,85 @@
+[
+ {
+  "name": "aura gives +3/+3 and goads the enchanted creature",
+  "players": [
+   { "hand": ["Predatory Impetus"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+   { "battlefield": [{ "name": "Grizzly Bears", "sick": false }] }
+  ],
+  "steps": [
+   { "cast": "Predatory Impetus", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "attack": [], "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [5, 5] },
+   "attached": { "Predatory Impetus": "Grizzly Bears" }
+  }
+ },
+ {
+  "name": "costs five mana: four Forests cannot cast it",
+  "players": [
+   { "hand": ["Predatory Impetus"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Predatory Impetus", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "goaded: the enchanted creature attacks even though only the other creature is declared",
+  "players": [
+   { "hand": ["Predatory Impetus"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Llanowar Elves"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Predatory Impetus", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Llanowar Elves", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 14 } ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "must be blocked if able: the Lions are moved from the Elves onto the enchanted creature",
+  "players": [
+   { "hand": ["Predatory Impetus"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Llanowar Elves"] },
+   { "battlefield": ["Savannah Lions"] }
+  ],
+  "steps": [
+   { "cast": "Predatory Impetus", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Llanowar Elves", "at": "p1" } ] },
+   { "block": [ { "blocker": "Savannah Lions", "attacker": "Llanowar Elves" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Llanowar Elves"] },
+    { "life": 19, "graveyard_has": ["Savannah Lions"] }
+   ]
+  }
+ },
+ { "name": "ruling: one blocker is enough for a goaded creature; the other may stay out of combat",
+   "players": [ { "hand": ["Predatory Impetus"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+                { "battlefield": ["Savannah Lions", "Hill Giant"] } ],
+   "steps": [ { "cast": "Predatory Impetus", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "BeginCombat" },
+              { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [ { "blocker": "Savannah Lions", "attacker": "Grizzly Bears" } ] },
+              { "advance_to": "Main2" } ],
+   "expect": { "players": [ {}, { "life": 20, "battlefield_has": ["Hill Giant"], "graveyard_has": ["Savannah Lions"] } ] } },
+ { "name": "ruling: if every blocker is tapped, the goaded creature is unblocked",
+   "players": [ { "hand": ["Predatory Impetus"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+                { "battlefield": [ { "name": "Savannah Lions", "tapped": true } ] } ],
+   "steps": [ { "cast": "Predatory Impetus", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "BeginCombat" },
+              { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+   "expect": { "players": [ {}, { "life": 15 } ] } }
+]

@@ -1,0 +1,253 @@
+[
+  {
+    "name": "mutate over Grizzly Bears: the top card of the opponent's library is exiled and playable",
+    "players": [
+      {
+        "hand": [
+          "Mindleecher"
+        ],
+        "battlefield": [
+          "Grizzly Bears",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "library": [
+          "Island",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Mindleecher",
+        "alt": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mindleecher"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "exile": [
+            "Island"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "mutate under Grizzly Bears: the mutates trigger still exiles the opponent's top card",
+    "players": [
+      {
+        "hand": [
+          "Mindleecher"
+        ],
+        "battlefield": [
+          "Grizzly Bears",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "library": [
+          "Island",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Mindleecher",
+        "alt": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "exile": [
+            "Island"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cast for its full cost (no mutate): the opponent's library is untouched",
+    "players": [
+      {
+        "hand": [
+          "Mindleecher"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "library": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Mindleecher"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mindleecher"
+          ]
+        },
+        {
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled creature is castable in its controller's main phase with an empty stack",
+    "players": [
+      { "hand": ["Mindleecher"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest"] },
+      { "library": ["Llanowar Elves", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Mindleecher", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "cast": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mindleecher", "Llanowar Elves"] },
+        { "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled creature follows normal timing, so it cannot be cast on the opponent's turn",
+    "players": [
+      { "hand": ["Mindleecher"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest"] },
+      { "library": ["Llanowar Elves", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Mindleecher", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Llanowar Elves", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mindleecher"] },
+        { "exile": ["Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled cards stay playable after Mindleecher leaves the battlefield",
+    "players": [
+      { "hand": ["Mindleecher"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"], "library": ["Llanowar Elves", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Mindleecher", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "pass": true },
+      { "player": 1, "cast": "Murder", "targets": ["Mindleecher"] },
+      { "resolve": true },
+      { "cast": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Llanowar Elves"], "battlefield_lacks": ["Mindleecher"], "graveyard_has": ["Mindleecher"] },
+        { "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no land play left, a land exiled by Mindleecher cannot be played",
+    "players": [
+      { "hand": ["Mindleecher", "Island"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "library": ["Forest", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Mindleecher", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "play_land": "Island" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Forest"], "battlefield_has": ["Island"] },
+        { "exile": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with a land play left, a land exiled by Mindleecher can be played",
+    "players": [
+      { "hand": ["Mindleecher"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "library": ["Forest", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Mindleecher", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mindleecher", "Forest"] },
+        { "exile": [] }
+      ]
+    }
+  }
+]

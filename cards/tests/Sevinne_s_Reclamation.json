@@ -1,0 +1,248 @@
+[
+  {
+    "name": "returns a permanent card with mana value 3 or less",
+    "players": [
+      {
+        "hand": [
+          "Sevinne's Reclamation"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sevinne's Reclamation",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Sevinne's Reclamation"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "mana value 4+ is not a legal target",
+    "players": [
+      {
+        "hand": [
+          "Sevinne's Reclamation"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Serra Angel"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sevinne's Reclamation",
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "flashback with a copy for a second target",
+    "players": [
+      {
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Sevinne's Reclamation",
+          "Grizzly Bears",
+          "Savannah Lions"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sevinne's Reclamation",
+        "alt": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true,
+          "Savannah Lions"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Savannah Lions"
+          ],
+          "exile": [
+            "Sevinne's Reclamation"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the copy is not cast, so a cast trigger fires only for the flashback cast",
+    "players": [
+      {
+        "battlefield": ["Guttersnipe", "Plains", "Plains", "Plains", "Plains", "Plains"],
+        "graveyard": ["Sevinne's Reclamation", "Grizzly Bears", "Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sevinne's Reclamation", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true, "Savannah Lions"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Savannah Lions", "Guttersnipe"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: X in a graveyard mana cost is 0, so Walking Ballista is a legal target",
+    "players": [
+      {
+        "hand": ["Sevinne's Reclamation"],
+        "battlefield": ["Plains", "Plains", "Plains"],
+        "graveyard": ["Walking Ballista"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sevinne's Reclamation", "targets": ["Walking Ballista"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Walking Ballista"], "graveyard_has": ["Walking Ballista"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land card in the graveyard is a permanent card that can be returned",
+    "players": [
+      {
+        "hand": ["Sevinne's Reclamation"],
+        "battlefield": ["Plains", "Plains", "Plains"],
+        "graveyard": ["Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sevinne's Reclamation", "targets": ["Island"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an instant in the graveyard is not a permanent card",
+    "players": [
+      {
+        "hand": ["Sevinne's Reclamation"],
+        "battlefield": ["Plains", "Plains", "Plains"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sevinne's Reclamation", "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing, so not during combat",
+    "players": [
+      {
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"],
+        "graveyard": ["Sevinne's Reclamation", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Sevinne's Reclamation", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: flashback cost is {4}{W}, so four lands are not enough",
+    "players": [
+      {
+        "battlefield": ["Plains", "Plains", "Plains", "Plains"],
+        "graveyard": ["Sevinne's Reclamation", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sevinne's Reclamation", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: declined copy, the flashback spell is still exiled after it resolves",
+    "players": [
+      {
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"],
+        "graveyard": ["Sevinne's Reclamation", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sevinne's Reclamation", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": ["Sevinne's Reclamation"], "graveyard": [] },
+        {}
+      ]
+    }
+  }
+]

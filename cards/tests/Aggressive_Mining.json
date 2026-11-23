@@ -1,0 +1,48 @@
+[
+  {
+    "name": "you can't play lands",
+    "players": [ { "hand": ["Mountain"], "battlefield": ["Aggressive Mining"] }, {} ],
+    "steps": [
+      { "play_land": "Mountain", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Mountain"] }, {} ] }
+  },
+  {
+    "name": "sacrifice a land: draw two cards",
+    "players": [ { "library": ["Island", "Island", "Island"], "battlefield": ["Aggressive Mining", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Aggressive Mining", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2, "graveyard_has": ["Mountain"] }, {} ] }
+  },
+  {
+    "name": "only once each turn",
+    "players": [ { "library": ["Island", "Island", "Island", "Island"], "battlefield": ["Aggressive Mining", "Mountain", "Forest"] }, {} ],
+    "steps": [
+      { "activate": "Aggressive Mining", "ability": 0, "answers": ["Mountain"] },
+      { "resolve": true },
+      { "activate": "Aggressive Mining", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2, "battlefield_has": ["Forest"] }, {} ] }
+  },
+  {
+    "name": "ruling: activatable once on each player's turn (again on the opponent's turn)",
+    "players": [ { "library": ["Island", "Island", "Island", "Island"], "battlefield": ["Aggressive Mining", "Mountain", "Forest"] }, {} ],
+    "steps": [
+      { "activate": "Aggressive Mining", "ability": 0, "answers": ["Mountain"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "pass": true, "player": 1 },
+      { "activate": "Aggressive Mining", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 4, "graveyard_has": ["Mountain", "Forest"], "battlefield_has": ["Aggressive Mining"] }, {} ] }
+  },
+  {
+    "name": "ruling: lands put onto the battlefield by a spell still enter (only the land-play action is stopped)",
+    "players": [ { "hand": ["Rampant Growth"], "battlefield": ["Aggressive Mining", "Forest", "Forest"], "library": ["Mountain", "Forest"] }, {} ],
+    "steps": [ { "cast": "Rampant Growth" }, { "resolve": true, "answers": ["Mountain"] } ],
+    "expect": { "players": [ { "battlefield_has": ["Mountain"], "graveyard": ["Rampant Growth"] }, {} ] }
+  }
+]

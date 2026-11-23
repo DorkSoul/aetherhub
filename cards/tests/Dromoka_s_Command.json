@@ -1,0 +1,323 @@
+[
+ {
+  "name": "counter then fight",
+  "players": [
+   {
+    "hand": [
+     "Dromoka's Command"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Dromoka's Command",
+    "targets": [
+     "Grizzly Bears",
+     "Grizzly Bears",
+     "Savannah Lions"
+    ],
+    "answers": [
+     [
+      2,
+      3
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Dromoka's Command"
+     ]
+    },
+    {
+     "graveyard": [
+      "Savannah Lions"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "prevent all damage a Bolt would deal (and +1/+1 counter)",
+  "players": [
+   {
+    "hand": [
+     "Dromoka's Command"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Dromoka's Command",
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     },
+     "Grizzly Bears"
+    ],
+    "answers": [
+     [
+      0,
+      2
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "target player sacrifices an enchantment (+1/+1 counter)",
+  "players": [
+   {
+    "hand": [
+     "Dromoka's Command"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Pacifism",
+     "Plains"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Dromoka's Command",
+    "targets": [
+     "p1",
+     "Grizzly Bears"
+    ],
+    "answers": [
+     [
+      1,
+      2
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "battlefield": [
+      "Plains"
+     ],
+     "graveyard": [
+      "Pacifism"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "only one mode has a legal target: can't cast",
+  "players": [
+   {
+    "hand": [
+     "Dromoka's Command"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dromoka's Command",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Dromoka's Command"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the creature target becomes illegal the other chosen mode still resolves",
+  "players": [
+   { "hand": ["Dromoka's Command"], "battlefield": ["Forest", "Plains", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Oath of Gideon"] }
+  ],
+  "steps": [
+   { "cast": "Dromoka's Command", "targets": ["p1", "Grizzly Bears"], "answers": [[1, 2]] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Dromoka's Command", "Grizzly Bears"] },
+    { "graveyard_has": ["Lightning Bolt", "Oath of Gideon"], "battlefield_lacks": ["Oath of Gideon"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the modes resolve in printed order (counter before fight)",
+  "players": [
+   { "hand": ["Dromoka's Command"], "battlefield": ["Forest", "Plains", "Grizzly Bears"] },
+   { "battlefield": ["Savannah Lions"] }
+  ],
+  "steps": [
+   { "cast": "Dromoka's Command", "targets": ["Grizzly Bears", "Grizzly Bears", "Savannah Lions"], "answers": [[2, 3]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Dromoka's Command"] },
+    { "graveyard": ["Savannah Lions"] }
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: a fight caused by a sorcery is not stopped by the prevent-damage mode",
+  "players": [
+   { "hand": ["Prey Upon"], "battlefield": ["Forest", { "name": "Grizzly Bears", "sick": false }] },
+   { "hand": ["Dromoka's Command"], "battlefield": ["Forest", "Plains", "Savannah Lions"] }
+  ],
+  "steps": [
+   { "cast": "Prey Upon", "targets": ["Grizzly Bears", "p1:Savannah Lions"] },
+   { "pass": true },
+   { "cast": "Dromoka's Command", "player": 1, "targets": ["p0:Grizzly Bears"], "answers": [[0, 2]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Prey Upon"] },
+    { "battlefield_lacks": ["Savannah Lions"], "graveyard_has": ["Savannah Lions", "Dromoka's Command"] }
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: unchosen modes need no legal target (no creatures on the battlefield)",
+  "players": [
+   { "hand": ["Dromoka's Command"], "battlefield": ["Forest", "Plains"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "pass": true, "player": 1 },
+   { "cast": "Dromoka's Command", "targets": ["p1"], "answers": [[0, 1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Dromoka's Command"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a player with no enchantment can still be the target of the sacrifice mode",
+  "players": [
+   { "hand": ["Dromoka's Command"], "battlefield": ["Forest", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Dromoka's Command", "targets": ["p1", "Grizzly Bears"], "answers": [[1, 2]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Dromoka's Command"] },
+    {}
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ }
+]

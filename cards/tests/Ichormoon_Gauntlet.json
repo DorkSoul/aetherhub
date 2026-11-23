@@ -1,0 +1,100 @@
+[
+ {
+  "name": "noncreature spell adds a second counter of the only kind",
+  "players": [
+   {
+    "hand": ["Shock"],
+    "battlefield": ["Mountain", "Ichormoon Gauntlet", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1", "Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [{}, { "life": 18 }], "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2 } } }
+ },
+ {
+  "name": "with two kinds the controller chooses which gets the counter",
+  "players": [
+   {
+    "hand": ["Shock"],
+    "battlefield": ["Mountain", "Ichormoon Gauntlet", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1, "Charge": 1 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1", "Grizzly Bears"] },
+   { "resolve": true, "answers": ["Charge"] },
+   { "resolve": true }
+  ],
+  "expect": { "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1, "Charge": 2 } } }
+ },
+ {
+  "name": "a creature spell does not trigger it",
+  "players": [
+   {
+    "hand": ["Grizzly Bears"],
+    "battlefield": ["Forest", "Forest", "Ichormoon Gauntlet", { "name": "Runeclaw Bear", "counters": { "PlusOnePlusOne": 1 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": { "counters": { "Runeclaw Bear": { "PlusOnePlusOne": 1 } } }
+ },
+ {
+  "name": "planeswalkers have 0: proliferate",
+  "players": [
+   {
+    "battlefield": ["Ichormoon Gauntlet", "Mu Yanling", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Mu Yanling", "ability": 32768 },
+   { "resolve": true }
+  ],
+  "expect": { "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2 }, "Mu Yanling": { "Loyalty": 6 } } }
+ },
+ {
+  "name": "your planeswalkers get the -12 extra turn ability: the extra turn draws a card",
+  "players": [
+   {
+    "battlefield": ["Ichormoon Gauntlet", { "name": "Jace Beleren", "counters": { "loyalty": 12 } }],
+    "library": ["Swamp"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Jace Beleren", "ability": 32769 },
+   { "resolve": true },
+   { "advance_to": "Main1" }
+  ],
+  "expect": {
+   "turn": 2,
+   "players": [
+    { "hand": ["Swamp"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a planeswalker gets only one loyalty ability per turn, so after the granted 0 its own printed ability is illegal",
+  "players": [
+   {
+    "battlefield": ["Ichormoon Gauntlet", "Mu Yanling"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Mu Yanling", "ability": 32768 },
+   { "resolve": true },
+   { "activate": "Mu Yanling", "ability": 0, "illegal": true }
+  ],
+  "expect": { "counters": { "Mu Yanling": { "Loyalty": 6 } } }
+ }
+]

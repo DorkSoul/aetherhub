@@ -1,0 +1,103 @@
+[
+  {
+    "name": "enters with a counter per other Zombie you control and Zombie card in your graveyard",
+    "players": [
+      { "hand": ["Unbreathing Horde"], "battlefield": ["Swamp", "Swamp", "Swamp", "Zombie Cannibal"], "graveyard": ["Zombie Cannibal"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unbreathing Horde" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Unbreathing Horde"] }, {} ],
+      "counters": { "Unbreathing Horde": { "PlusOnePlusOne": 2 } },
+      "pt": { "Unbreathing Horde": [2, 2] }
+    }
+  },
+  {
+    "name": "no other Zombies and no Zombie cards in graveyard: 0/0 dies",
+    "players": [
+      { "hand": ["Unbreathing Horde"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unbreathing Horde" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Unbreathing Horde"] }, {} ]
+    }
+  },
+  {
+    "name": "damage is prevented and removes one +1/+1 counter; the damage is not dealt",
+    "players": [
+      { "battlefield": [ { "name": "Unbreathing Horde", "counters": { "p1p1": 3 } } ] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Unbreathing Horde"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Unbreathing Horde"] }, { "graveyard": ["Shock"] } ],
+      "counters": { "Unbreathing Horde": { "PlusOnePlusOne": 2 } },
+      "pt": { "Unbreathing Horde": [2, 2] }
+    }
+  },
+  {
+    "name": "each damage event removes one counter: two Shocks leave a 1/1",
+    "players": [
+      { "battlefield": [ { "name": "Unbreathing Horde", "counters": { "p1p1": 3 } } ] },
+      { "hand": ["Shock", "Shock"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Unbreathing Horde"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Unbreathing Horde"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Unbreathing Horde"] }, {} ],
+      "counters": { "Unbreathing Horde": { "PlusOnePlusOne": 1 } },
+      "pt": { "Unbreathing Horde": [1, 1] }
+    }
+  },
+  {
+    "name": "last counter removed: the 0/0 dies to state-based actions",
+    "players": [
+      { "battlefield": [ { "name": "Unbreathing Horde", "counters": { "p1p1": 1 } } ] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Unbreathing Horde"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Unbreathing Horde"] }, { "graveyard": ["Shock"] } ]
+    }
+  },
+  {
+    "name": "ruling: with no counters but toughness from a pump, damage is still prevented and no counter is removed",
+    "players": [
+      { "hand": ["Giant Growth", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Mountain", "Mountain", { "name": "Unbreathing Horde", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Unbreathing Horde"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Unbreathing Horde"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Unbreathing Horde"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Unbreathing Horde"] }, {} ],
+      "pt": { "Unbreathing Horde": [3, 3] }
+    }
+  }
+]

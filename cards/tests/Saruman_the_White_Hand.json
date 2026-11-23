@@ -1,0 +1,165 @@
+[
+  {
+    "name": "noncreature spell amasses Orcs X equal to its mana value (Lightning Bolt: 1)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Saruman, the White Hand", "Mountain"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Army"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "counters": {
+        "Army": { "+1/+1": 1 }
+      }
+    }
+  },
+  {
+    "name": "amass uses the spell's mana value (Divination: 3)",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Saruman, the White Hand", "Island", "Island", "Island"],
+        "library": ["Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {
+        "Army": { "+1/+1": 3 }
+      }
+    }
+  },
+  {
+    "name": "creature spell does not amass",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Saruman, the White Hand", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Army"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Goblins you control have ward {2}: Doom Blade on a Goblin is countered when unpaid",
+    "players": [
+      {
+        "battlefield": [
+          "Saruman, the White Hand",
+          "Goblin Piker"
+        ]
+      },
+      {
+        "hand": [
+          "Doom Blade"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Doom Blade", "targets": ["Goblin Piker"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Goblin Piker"] },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    }
+  },
+  {
+    "name": "a non-Goblin non-Orc creature gets no ward: Doom Blade on Grizzly Bears kills it",
+    "players": [
+      {
+        "battlefield": [
+          "Saruman, the White Hand",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Doom Blade"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Doom Blade", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second amass reuses the existing Army (counters added, no second Army)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Saruman, the White Hand", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Army"] }, {} ],
+      "counters": { "Army": { "+1/+1": 2 } }
+    }
+  },
+  {
+    "name": "ruling: the Army enters as a 0/0 before its counters, so Mentor of the Meek triggers on it",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Saruman, the White Hand", "Mentor of the Meek", "Island", "Island", "Island", "Forest"],
+        "library": ["Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 3, "battlefield_has": ["Army"] }, {} ],
+      "counters": { "Army": { "+1/+1": 3 } }
+    }
+  }
+]

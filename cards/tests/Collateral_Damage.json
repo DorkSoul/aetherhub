@@ -1,0 +1,132 @@
+[
+  {
+    "name": "sacrifices a creature and deals 3 damage to the target player",
+    "players": [
+      {
+        "hand": [
+          "Collateral Damage"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Collateral Damage",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Collateral Damage",
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast without a creature to sacrifice",
+    "players": [
+      {
+        "hand": [
+          "Collateral Damage"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Collateral Damage",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Collateral Damage"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the sacrificed creature is gone at cast time, before any response",
+    "players": [
+      { "hand": ["Collateral Damage"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Collateral Damage", "targets": ["p1"] },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: sacrificing an attacking creature means it deals no combat damage",
+    "players": [
+      { "hand": ["Collateral Damage"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Collateral Damage", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Collateral Damage", "Grizzly Bears"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exactly one creature is sacrificed when several are available",
+    "players": [
+      { "hand": ["Collateral Damage"], "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Collateral Damage", "targets": ["p1"], "answers": [["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Collateral Damage", "Grizzly Bears"], "battlefield_has": ["Hill Giant"] },
+        { "life": 17 }
+      ]
+    }
+  }
+]

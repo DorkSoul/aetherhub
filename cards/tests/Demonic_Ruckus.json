@@ -1,0 +1,111 @@
+[
+  {
+    "name": "enchanted creature gets +1/+1 and has menace and trample",
+    "players": [
+      { "hand": ["Demonic Ruckus"], "battlefield": ["Mountain", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Demonic Ruckus", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Demonic Ruckus"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [3, 3] },
+      "keywords": { "Grizzly Bears": ["Menace", "Trample"] },
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "draws a card when put into a graveyard from the battlefield",
+    "players": [
+      { "hand": ["Demonic Ruckus", "Lightning Bolt"], "battlefield": ["Mountain", "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Demonic Ruckus", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Demonic Ruckus", "Lightning Bolt"], "hand_count": 1 },
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "cannot be cast without a creature to enchant",
+    "players": [
+      { "hand": ["Demonic Ruckus"], "battlefield": ["Mountain", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Demonic Ruckus", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Demonic Ruckus"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "plot for R, then cast free from exile on a later turn",
+    "players": [
+      { "hand": ["Demonic Ruckus"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Demonic Ruckus", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Demonic Ruckus", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Demonic Ruckus", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Demonic Ruckus"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [3, 3] },
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: plot is a sorcery-speed special action, not usable during combat",
+    "players": [
+      { "hand": ["Demonic Ruckus"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Demonic Ruckus", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Demonic Ruckus"] }, {} ] }
+  },
+  {
+    "name": "ruling: if the Aura's target is gone when it resolves, it goes to the graveyard from the stack and draws nothing",
+    "players": [
+      { "hand": ["Demonic Ruckus", "Lightning Bolt"], "battlefield": ["Mountain", "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Demonic Ruckus", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Demonic Ruckus", "Lightning Bolt"], "hand_count": 0 }, { "graveyard": ["Grizzly Bears"] } ],
+      "stack_empty": true
+    }
+  }
+]

@@ -1,0 +1,213 @@
+[
+  {
+    "name": "destroys a blocking creature with power 3 or less",
+    "players": [
+      {
+        "hand": [
+          "Puncturing Light"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Hill Giant",
+            "sick": false
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "cast": "Puncturing Light",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Puncturing Light"
+          ],
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "attacking creature with power 4 is not a legal target",
+    "players": [
+      {
+        "hand": [
+          "Puncturing Light"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island",
+          {
+            "name": "Serra Angel",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Serra Angel",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "cast": "Puncturing Light",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a creature that is neither attacking nor blocking is not a legal target",
+    "players": [
+      {
+        "hand": [
+          "Puncturing Light"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Puncturing Light",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Puncturing Light"
+          ]
+        },
+        {
+          "battlefield": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: still a blocking creature after the creature it blocked has left combat",
+    "players": [
+      {
+        "hand": ["Puncturing Light", "Lightning Bolt"],
+        "battlefield": ["Plains", "Island", "Mountain", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {
+        "battlefield": [{ "name": "Hill Giant", "sick": false }]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Puncturing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Puncturing Light", "Lightning Bolt", "Grizzly Bears"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: power is checked again on resolution, so a pump in response makes it fizzle",
+    "players": [
+      {
+        "hand": ["Puncturing Light"],
+        "battlefield": ["Plains", "Island", { "name": "Hill Giant", "sick": false }]
+      },
+      {
+        "hand": ["Giant Growth"],
+        "battlefield": ["Forest"]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "cast": "Puncturing Light", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Giant Growth", "player": 1, "targets": ["Hill Giant"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"], "graveyard": ["Puncturing Light"] },
+        { "graveyard": ["Giant Growth"] }
+      ],
+      "pt": { "Hill Giant": [6, 6] }
+    }
+  }
+]

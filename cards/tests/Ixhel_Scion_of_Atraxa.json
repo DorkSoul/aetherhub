@@ -1,0 +1,146 @@
+[
+  {
+    "name": "an opponent with three poison counters: the top card is exiled at your end step and you may cast it with any mana",
+    "players": [
+      { "hand": ["Caress of Phyrexia"], "battlefield": ["Ixhel, Scion of Atraxa", "Swamp", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "library": ["Island", "Island", "Island", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Caress of Phyrexia", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ixhel, Scion of Atraxa"], "graveyard": ["Caress of Phyrexia"] },
+        { "life": 14, "poison": 3, "exile": [], "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "an opponent without poison counters: nothing is exiled at your end step",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa"] },
+      { "library": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ixhel, Scion of Atraxa"] },
+        { "poison": 0, "exile": [], "library_count": 1 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Ixhel does not change timing: a card exiled at the end step can't be cast then",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa"] },
+      { "poison": 3, "library": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "exile": ["Grizzly Bears"], "poison": 3 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: toxic does not change the damage dealt (2 power: 2 life and 2 poison)",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ixhel, Scion of Atraxa", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18, "poison": 2 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a replacement that doubles counters also doubles toxic (Vorinclex: 2 becomes 4)",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa", "Vorinclex, Monstrous Raider"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ixhel, Scion of Atraxa", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18, "poison": 4 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a damage-doubling effect does not change the toxic counters (4 damage, still 2 poison)",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa", "Gratuitous Violence"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ixhel, Scion of Atraxa", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 16, "poison": 2 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: toxic gives no poison when the combat damage is dealt to a planeswalker",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa"] },
+      { "battlefield": ["Chandra, Flameshaper"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ixhel, Scion of Atraxa", "at": "Chandra, Flameshaper" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "poison": 0 }
+      ],
+      "counters": { "Chandra, Flameshaper": { "Loyalty": 4 } }
+    }
+  },
+  {
+    "name": "ruling: ten or more poison counters loses the game (9 + 2 toxic)",
+    "players": [
+      { "battlefield": ["Ixhel, Scion of Atraxa"] },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ixhel, Scion of Atraxa", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 0
+    }
+  }
+]

@@ -1,0 +1,153 @@
+[
+  {
+    "name": "no draw when the opponent cast nothing blue or black",
+    "players": [
+      { "hand": ["Veil of Summer"], "library": ["Forest"], "battlefield": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Veil of Summer"], "hand": [], "library_top": ["Forest"] }, {}]
+    }
+  },
+  {
+    "name": "draws a card when the opponent cast a blue spell this turn",
+    "players": [
+      { "hand": ["Veil of Summer"], "library": ["Forest"], "battlefield": ["Forest"] },
+      { "hand": ["Thought Scour"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Thought Scour", "targets": ["p1"], "player": 1 },
+      { "resolve": true },
+      { "cast": "Veil of Summer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Veil of Summer"], "hand": ["Forest"] }, { "graveyard_has": ["Thought Scour"] }]
+    }
+  },
+  {
+    "name": "my spell can't be countered this turn",
+    "players": [
+      { "hand": ["Veil of Summer", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Watery Grave"] }
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Grizzly Bears" }], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"], "graveyard": ["Veil of Summer"] }, { "graveyard": ["Counterspell"] }]
+    }
+  },
+  {
+    "name": "my creature can't be targeted by a blue spell",
+    "players": [
+      { "hand": ["Veil of Summer"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Forest", "Grizzly Bears"] }, { "hand": ["Unsummon"] }]
+    }
+  },
+  {
+    "name": "my creature can't be targeted by a black spell",
+    "players": [
+      { "hand": ["Veil of Summer"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Terror", "targets": ["Grizzly Bears"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Forest", "Grizzly Bears"] }, { "hand": ["Terror"] }]
+    }
+  },
+  {
+    "name": "I can't be targeted by a black spell",
+    "players": [
+      { "hand": ["Veil of Summer"], "battlefield": ["Forest"] },
+      { "hand": ["Duress"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Duress", "targets": ["p0"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Veil of Summer"] }, { "hand": ["Duress"] }]
+    }
+  },
+  {
+    "name": "a green spell can still target my creature",
+    "players": [
+      { "hand": ["Veil of Summer"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Giant Growth"], "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [5, 5] },
+      "players": [{ "graveyard": ["Veil of Summer"] }, { "graveyard": ["Giant Growth"] }]
+    }
+  },
+  {
+    "name": "ruling: Veil can be countered; it has no effect until it resolves",
+    "players": [
+      { "hand": ["Veil of Summer"], "battlefield": ["Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Veil of Summer" },
+      { "cast": "Counterspell", "targets": [{ "stack": "Veil of Summer" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Veil of Summer"] }, { "graveyard": ["Counterspell"] }]
+    }
+  },
+  {
+    "name": "ruling: several blue or black spells by the opponent still draw only one card",
+    "players": [
+      { "hand": ["Veil of Summer"], "library": ["Forest", "Forest"], "battlefield": ["Forest"] },
+      { "hand": ["Thought Scour", "Thought Scour"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Thought Scour", "targets": ["p1"], "player": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Thought Scour", "targets": ["p1"], "player": 1 },
+      { "resolve": true },
+      { "cast": "Veil of Summer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Veil of Summer"], "hand": ["Forest"], "library_top": ["Forest"] }, {}]
+    }
+  }
+]

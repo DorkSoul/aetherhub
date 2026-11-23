@@ -1,0 +1,67 @@
+{
+  "name": "Glorious Sunrise",
+  "mana_cost": "{3}{G}{G}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "BeginCombat", "whose": "You" },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Creatures you control get +1/+1 and gain trample until end of turn.",
+              "effects": [
+                { "type": "Pump", "what": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" }, "zone": "Battlefield" }, "power": { "type": "Fixed", "n": 1 }, "toughness": { "type": "Fixed", "n": 1 }, "duration": "UntilEndOfTurn" },
+                { "type": "GrantKeyword", "what": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" }, "zone": "Battlefield" }, "keyword": "Trample", "duration": "UntilEndOfTurn" }
+              ]
+            },
+            {
+              "text": "Target land gains \"{T}: Add {G}{G}{G}\" until end of turn.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Land"] } }, "label": "target land" } ],
+                  "effects": [
+                    {
+                      "type": "GrantStatic",
+                      "what": { "type": "Target", "idx": 0 },
+                      "effect": {
+                        "type": "GrantAbility",
+                        "affects": {},
+                        "ability": {
+                          "type": "Activated",
+                          "cost": [{ "type": "Tap" }],
+                          "effects": [{ "type": "AddMana", "mana": [{ "t": "Fixed", "m": "G", "n": 3 }] }]
+                        }
+                      },
+                      "duration": "UntilEndOfTurn"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "Draw a card if you control a creature with power 3 or greater.",
+              "effects": [
+                {
+                  "type": "If",
+                  "cond": { "type": "Control", "who": { "type": "You" }, "filter": { "types": ["Creature"], "power": { "op": "Ge", "n": 3 } }, "at_least": 1 },
+                  "then": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+                }
+              ]
+            },
+            {
+              "text": "You gain 3 life.",
+              "effects": [ { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 3 } } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of combat on your turn, choose one —\n• Creatures you control get +1/+1 and gain trample until end of turn.\n• Target land gains \"{T}: Add {G}{G}{G}\" until end of turn.\n• Draw a card if you control a creature with power 3 or greater.\n• You gain 3 life."
+}

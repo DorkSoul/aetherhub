@@ -1,0 +1,470 @@
+[
+  {
+    "name": "lethal burn leaves you at 1 life",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain"
+        ],
+        "life": 3
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "control: without it the bolt kills",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "life": 3
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: once Angel's Grace resolves, Shock can be cast before the Bolt below it resolves",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Angel's Grace",
+          "Shock"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Shock",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell already on the stack still resolves when Angel's Grace is cast over it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Angel's Grace"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: while Angel's Grace is on the stack, Shock cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace",
+          "Shock"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "cast": "Shock",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Angel's Grace does not stop life loss from Ob Nixilis's landfall trigger (3 life goes to 0)",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace",
+          "Forest"
+        ],
+        "battlefield": [
+          "Plains",
+          "Ob Nixilis, the Fallen"
+        ],
+        "life": 3
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p0"
+        ],
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 0,
+          "hand": []
+        },
+        {}
+      ],
+      "winner": -1
+    }
+  },
+  {
+    "name": "ruling: cannot pay more life than you have for Dismember's Phyrexian mana, even with Angel's Grace",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace",
+          "Dismember"
+        ],
+        "battlefield": [
+          "Plains",
+          "Swamp"
+        ],
+        "life": 3
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Dismember",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 3,
+          "hand": [
+            "Dismember"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Chalice of the Void still triggers on Angel's Grace (split second does not stop triggered abilities)",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace"
+        ],
+        "battlefield": [
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Chalice of the Void",
+            "counters": {
+              "Charge": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Angel's Grace"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Chalice of the Void"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Angel's Grace does not prevent damage: a 5/5 lifelink attacker reduces you to 1 and still gains its controller 5",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace"
+        ],
+        "battlefield": [
+          "Plains"
+        ],
+        "life": 3
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Baneslayer Angel",
+            "sick": false
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Baneslayer Angel",
+            "at": "p0"
+          }
+        ],
+        "player": 1
+      },
+      {
+        "block": [],
+        "player": 0
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 1
+        },
+        {
+          "life": 25
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: at 0 life, Lightning Bolt damage takes life further below 0 (not held at 1)",
+    "players": [
+      {
+        "hand": [
+          "Angel's Grace",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Angel's Grace"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "set_life": 0
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 1
+        },
+        {}
+      ],
+      "winner": -1
+    }
+  }
+]

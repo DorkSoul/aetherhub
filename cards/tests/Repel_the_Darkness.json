@@ -1,0 +1,95 @@
+[
+ {
+  "name": "taps two target creatures and draws a card",
+  "players": [
+   { "hand": ["Repel the Darkness"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Repel the Darkness", "targets": ["Grizzly Bears", "Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "library_count": 19, "graveyard": ["Repel the Darkness"] },
+    {}
+   ],
+   "tapped": { "Grizzly Bears": true, "Serra Angel": true }
+  }
+ },
+ {
+  "name": "zero targets: only the draw happens",
+  "players": [
+   { "hand": ["Repel the Darkness"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Repel the Darkness", "targets": [] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "library_count": 19 },
+    {}
+   ],
+   "tapped": { "Grizzly Bears": false }
+  }
+ },
+ {
+  "name": "an already tapped creature can be targeted; the draw still happens",
+  "players": [
+   { "hand": ["Repel the Darkness"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+  ],
+  "steps": [
+   { "cast": "Repel the Darkness", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "library_count": 19 },
+    {}
+   ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "ruling: a lone illegal target makes the spell do nothing, no card drawn",
+  "players": [
+   { "hand": ["Repel the Darkness"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Repel the Darkness", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "graveyard": ["Repel the Darkness"] },
+    { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with two targets, one illegal: the other is still tapped and you draw",
+  "players": [
+   { "hand": ["Repel the Darkness"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears", "Llanowar Elves"] }
+  ],
+  "steps": [
+   { "cast": "Repel the Darkness", "targets": ["Grizzly Bears", "Llanowar Elves"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "graveyard": ["Repel the Darkness"] },
+    { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+   ],
+   "tapped": { "Llanowar Elves": true }
+  }
+ }
+]

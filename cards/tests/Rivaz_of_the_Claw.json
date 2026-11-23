@@ -1,0 +1,146 @@
+[
+  {
+    "name": "casts a Dragon from the graveyard, paying with Rivaz's restricted mana",
+    "players": [
+      { "battlefield": ["Rivaz of the Claw"], "graveyard": ["Dragon Hatchling"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dragon Hatchling" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rivaz of the Claw", "Dragon Hatchling"], "graveyard_has": [] },
+        {}
+      ],
+      "tapped": { "Rivaz of the Claw": true }
+    }
+  },
+  {
+    "name": "only once during your turn: a second Dragon from the graveyard cannot be cast",
+    "players": [
+      { "battlefield": ["Rivaz of the Claw", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Dragon Hatchling", "Dragon Hatchling"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dragon Hatchling" },
+      { "resolve": true },
+      { "cast": "Dragon Hatchling", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dragon Hatchling"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a Dragon cast from the graveyard is exiled instead of dying",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Rivaz of the Claw", "Mountain", "Mountain", "Mountain"], "graveyard": ["Dragon Hatchling"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dragon Hatchling" },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Dragon Hatchling"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Dragon Hatchling"], "battlefield_lacks": ["Dragon Hatchling"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "a non-Dragon creature card in the graveyard cannot be cast from it",
+    "players": [
+      { "battlefield": ["Rivaz of the Claw", "Mountain", "Mountain"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Rivaz's mana can only cast Dragon creature spells: Grizzly Bears from hand is not castable with it",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Rivaz of the Claw", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Dragon cannot be cast from the graveyard on the opponent's turn (creature sorcery timing)",
+    "players": [
+      { "battlefield": ["Rivaz of the Claw", "Mountain", "Mountain"], "graveyard": ["Dragon Hatchling"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Dragon Hatchling", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dragon Hatchling"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Dragon cast from the graveyard that is countered goes to the graveyard, not exile",
+    "players": [
+      { "battlefield": ["Rivaz of the Claw", "Mountain", "Mountain"], "graveyard": ["Dragon Hatchling"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Dragon Hatchling" },
+      { "pass": true },
+      { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Dragon Hatchling" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dragon Hatchling"], "exile": [] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exile trigger applies to a Dragon cast from the graveyard even when its mana did not come from Rivaz",
+    "players": [
+      { "hand": ["Shock"], "battlefield": [{ "name": "Rivaz of the Claw", "tapped": true }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Dragon Hatchling"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dragon Hatchling" },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Dragon Hatchling"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Dragon Hatchling"] },
+        {}
+      ]
+    }
+  }
+]

@@ -1,0 +1,193 @@
+[
+  {
+    "name": "persist: returns with a -1/-1 counter when it dies without one",
+    "players": [
+      {
+        "battlefield": [
+          "Putrid Goblin"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Putrid Goblin"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Putrid Goblin"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ],
+      "counters": {
+        "Putrid Goblin": {
+          "m1m1": 1
+        }
+      },
+      "pt": {
+        "Putrid Goblin": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "does not persist when it already has a -1/-1 counter",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Putrid Goblin",
+            "counters": {
+              "m1m1": 1
+            }
+          }
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Putrid Goblin"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Putrid Goblin"
+          ],
+          "battlefield_lacks": [
+            "Putrid Goblin"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: +1/+1 and -1/-1 counters cancel, so the Goblin can persist again",
+    "players": [
+      { "battlefield": [{ "name": "Putrid Goblin", "counters": { "p1p1": 1, "m1m1": 1 } }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Putrid Goblin"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Putrid Goblin"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Putrid Goblin": { "m1m1": 1, "p1p1": 0 } },
+      "pt": { "Putrid Goblin": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: persist returns a new object, so the +1/+1 counter is not put back",
+    "players": [
+      { "battlefield": [{ "name": "Putrid Goblin", "counters": { "p1p1": 1 } }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Putrid Goblin"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Putrid Goblin"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Putrid Goblin": { "p1p1": 0, "m1m1": 1 } },
+      "pt": { "Putrid Goblin": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: an Aura on the Goblin does not return with it",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains", "Putrid Goblin"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Putrid Goblin"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Putrid Goblin"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Putrid Goblin"], "battlefield_lacks": ["Pacifism"], "graveyard_has": ["Pacifism"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: lethal -1/-1 counters mean persist does not return it",
+    "players": [
+      { "battlefield": [{ "name": "Putrid Goblin", "counters": { "p1p1": 1, "m1m1": 3 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Putrid Goblin"], "battlefield_lacks": ["Putrid Goblin"] },
+        {}
+      ]
+    }
+  }
+]

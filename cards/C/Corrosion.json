@@ -1,0 +1,84 @@
+{
+  "name": "Corrosion",
+  "mana_cost": "{1}{B}{R}",
+  "types": ["Enchantment"],
+  "colors": ["B", "R"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        {
+          "type": "CumulativeUpkeep",
+          "cost": [{ "type": "Mana", "cost": "{1}" }]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" }
+      ],
+      "effects": [
+        {
+          "type": "AddCounters",
+          "kind": "Rust",
+          "n": { "type": "Fixed", "n": 1 },
+          "what": {
+            "type": "All",
+            "filter": {
+              "types": ["Artifact"],
+              "controlled_by": { "type": "Target", "idx": 0 }
+            }
+          }
+        },
+        {
+          "type": "ForEach",
+          "objects": {
+            "type": "All",
+            "filter": { "types": ["Artifact"] },
+            "zone": "Battlefield"
+          },
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "CompareAmounts",
+                "a": { "type": "ManaValueOf", "of": { "type": "Remembered" } },
+                "op": "Le",
+                "b": { "type": "CountersOn", "kind": "Rust", "of": { "type": "Remembered" } }
+              },
+              "then": [
+                {
+                  "type": "Destroy",
+                  "what": { "type": "Remembered" },
+                  "no_regeneration": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "LeavesBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "All", "filter": {}, "zone": "Battlefield" },
+          "effects": [
+            {
+              "type": "RemoveCounters",
+              "kind": "Rust",
+              "n": { "type": "CountersOn", "kind": "Rust", "of": { "type": "Remembered" } },
+              "what": { "type": "Remembered" }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cumulative upkeep {1} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\nAt the beginning of your upkeep, put a rust counter on each artifact target opponent controls. Then destroy each artifact with mana value less than or equal to the number of rust counters on it. Artifacts destroyed this way can't be regenerated.\nWhen this enchantment leaves the battlefield, remove all rust counters from all permanents."
+}

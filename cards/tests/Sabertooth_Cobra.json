@@ -1,0 +1,84 @@
+[
+  {
+    "name": "stats",
+    "players": [{ "battlefield": ["Sabertooth Cobra"] }, {}],
+    "steps": [],
+    "expect": { "pt": { "Sabertooth Cobra": [2, 2] } }
+  },
+  {
+    "name": "combat damage gives one poison counter, and a second at the next upkeep when {2} isn't paid",
+    "players": [
+      { "battlefield": ["Sabertooth Cobra"], "library": ["Island", "Island", "Island"] },
+      { "library": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sabertooth Cobra", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 18, "poison": 1 }] }
+  },
+  {
+    "name": "when {2} isn't paid the damaged player gets another poison counter at their next upkeep",
+    "players": [
+      { "battlefield": ["Sabertooth Cobra"], "library": ["Island", "Island", "Island"] },
+      { "library": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sabertooth Cobra", "at": "p1" }] },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{}, { "life": 18, "poison": 2 }] }
+  },
+  {
+    "name": "paying {2} before the upkeep avoids the second poison counter",
+    "players": [
+      { "battlefield": ["Sabertooth Cobra"], "library": ["Island", "Island", "Island"] },
+      { "battlefield": ["Plains", "Plains"], "library": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sabertooth Cobra", "at": "p1" }] },
+      { "advance_to": "End", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{}, { "life": 18, "poison": 1 }] }
+  },
+  {
+    "name": "a blocked Sabertooth Cobra deals no damage to a player: no poison",
+    "players": [
+      { "battlefield": ["Sabertooth Cobra"], "library": ["Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "library": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sabertooth Cobra", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Sabertooth Cobra" }] },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{}, { "life": 20, "poison": 0 }] }
+  },
+  {
+    "name": "ruling: the poison counter still comes at the next upkeep after the Cobra has left the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Sabertooth Cobra", "Mountain"], "library": ["Island", "Island", "Island"] },
+      { "library": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sabertooth Cobra", "at": "p1" }] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["Sabertooth Cobra"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "graveyard_has": ["Sabertooth Cobra"] }, { "life": 18, "poison": 2 }] }
+  }
+]

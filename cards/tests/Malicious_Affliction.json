@@ -1,0 +1,136 @@
+[
+  {
+    "name": "destroys a nonblack creature",
+    "players": [
+      {
+        "hand": [
+          "Malicious Affliction"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Malicious Affliction",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Malicious Affliction"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "can't target a black creature",
+    "players": [
+      {
+        "hand": [
+          "Malicious Affliction"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Blood Artist"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Malicious Affliction",
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "morbid: a creature died this turn, so the copy may take a new target",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Malicious Affliction"],
+        "battlefield": ["Swamp", "Swamp", "Mountain"]
+      },
+      {
+        "battlefield": ["Hill Giant", "Grizzly Bears", "Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Malicious Affliction", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true, "Llanowar Elves"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt", "Malicious Affliction"] },
+        { "graveyard_has": ["Hill Giant", "Grizzly Bears", "Llanowar Elves"], "battlefield_lacks": ["Grizzly Bears", "Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "no creature died this turn: no morbid copy",
+    "players": [
+      {
+        "hand": ["Malicious Affliction"],
+        "battlefield": ["Swamp", "Swamp"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      { "cast": "Malicious Affliction", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Malicious Affliction"] },
+        { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a morbid copy keeps the original target when you don't choose a new one",
+    "players": [
+      { "hand": ["Lightning Bolt", "Malicious Affliction"], "battlefield": ["Swamp", "Swamp", "Mountain"] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Malicious Affliction", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt", "Malicious Affliction"] },
+        { "graveyard_has": ["Hill Giant", "Grizzly Bears"], "battlefield_has": ["Llanowar Elves"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,229 @@
+[
+ {
+  "name": "scry 1 puts a +1/+1 counter on one chosen creature",
+  "players": [
+   {
+    "hand": [
+     "Opt"
+    ],
+    "battlefield": [
+     "Elrond, Master of Healing",
+     "Grizzly Bears",
+     "Island"
+    ],
+    "library": [
+     "Mountain",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Opt"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [],
+     [
+      "Grizzly Bears"
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1
+    },
+    "Hill Giant": {}
+   }
+  }
+ },
+ {
+  "name": "scry with an empty library: no counter",
+  "players": [
+   {
+    "hand": [
+     "Opt"
+    ],
+    "battlefield": [
+     "Elrond, Master of Healing",
+     "Grizzly Bears",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Opt"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "opponent targets my creature with a +1/+1 counter: may draw",
+  "players": [
+   {
+    "library": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Elrond, Master of Healing",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1
+      }
+     }
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent targets my creature without a counter: no draw",
+  "players": [
+   {
+    "library": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Elrond, Master of Healing",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: scry 2 with only one card looked at makes X = 1, so the second target gets nothing",
+  "players": [
+   { "hand": ["Witching Well"], "battlefield": ["Elrond, Master of Healing", "Grizzly Bears", "Hill Giant", "Island"], "library": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Witching Well" },
+   { "resolve": true, "answers": [[], ["Grizzly Bears", "Hill Giant"]] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 1 }, "Hill Giant": {} }
+  }
+ },
+ {
+  "name": "ruling: scry 2 with two cards looked at makes X = 2, so both targets get a counter (control)",
+  "players": [
+   { "hand": ["Witching Well"], "battlefield": ["Elrond, Master of Healing", "Grizzly Bears", "Hill Giant", "Island"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Witching Well" },
+   { "resolve": true, "answers": [[], ["Grizzly Bears", "Hill Giant"]] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 1 }, "Hill Giant": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: two of my creatures with counters targeted by one opposing spell trigger Elrond twice",
+  "players": [
+   { "library": ["Forest", "Forest"], "battlefield": ["Elrond, Master of Healing", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, { "name": "Hill Giant", "counters": { "p1p1": 1 } }] },
+   { "hand": ["Adverse Conditions"], "battlefield": ["Island", "Island", "Island", "Island"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Adverse Conditions", "player": 1, "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "resolve": true, "answers": [true, true] }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Forest", "Forest"] }, {} ]
+  }
+ }
+]

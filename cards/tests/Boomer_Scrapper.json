@@ -1,0 +1,225 @@
+[
+  {
+    "name": "entering costs 1 life and creates a Junk token",
+    "players": [
+      {
+        "hand": [
+          "Boomer Scrapper"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Mountain",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": []
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Boomer Scrapper"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 19,
+          "battlefield_has": [
+            "Boomer Scrapper",
+            "Junk"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "attacking costs 1 life and creates a Junk token",
+    "players": [
+      {
+        "battlefield": [
+          "Boomer Scrapper",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": []
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Boomer Scrapper",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 19,
+          "battlefield_has": [
+            "Boomer Scrapper",
+            "Junk"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "a Junk token leaving the battlefield puts a +1/+1 counter on it",
+    "players": [
+      {
+        "battlefield": [
+          "Boomer Scrapper",
+          "Junk"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": []
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Junk"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Boomer Scrapper"
+          ],
+          "battlefield_lacks": [
+            "Junk"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Boomer Scrapper": {
+          "PlusOnePlusOne": 1
+        }
+      },
+      "pt": {
+        "Boomer Scrapper": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "an opponent's token leaving does not put a counter on it",
+    "players": [
+      {
+        "hand": [
+          "Smash to Smithereens"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Boomer Scrapper"
+        ]
+      },
+      {
+        "battlefield": [
+          "Junk"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Smash to Smithereens",
+        "targets": [
+          "Junk"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Boomer Scrapper"
+          ],
+          "life": 20
+        },
+        {
+          "battlefield_lacks": [
+            "Junk"
+          ]
+        }
+      ],
+      "pt": {
+        "Boomer Scrapper": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a land exiled by a Junk token can be played this turn, in the main phase",
+    "players": [
+      { "battlefield": ["Boomer Scrapper", "Junk", "Mountain"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Junk", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Boomer Scrapper", "Forest"], "battlefield_lacks": ["Junk"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Junk token cannot pay two costs: once sacrificed for its own ability it cannot also pay for Junk Jet",
+    "players": [
+      { "battlefield": ["Boomer Scrapper", "Junk Jet", "Junk", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Junk", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Junk Jet", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Boomer Scrapper", "Junk Jet"], "battlefield_lacks": ["Junk"], "exile": ["Lightning Bolt"] },
+        {}
+      ],
+      "pt": { "Boomer Scrapper": [2, 2] }
+    }
+  }
+]

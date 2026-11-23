@@ -1,0 +1,164 @@
+[
+ {
+  "name": "upkeep: opponent's hand can be played from; they cannot cast",
+  "players": [
+   {
+    "battlefield": [
+     "Sen Triplets",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Forest",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "play_land": "Forest"
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest",
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "hand": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  },
+  "start": "Untap"
+ },
+ {
+  "name": "the targeted opponent can't cast spells this turn",
+  "start": "Untap",
+  "players": [
+   {
+    "battlefield": [
+     "Sen Triplets"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "hand": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a replacement effect (enters tapped) still applies to a land played from the opponent's hand",
+  "start": "Untap",
+  "players": [
+   { "battlefield": ["Sen Triplets", "Forest"] },
+   { "hand": ["Bleeding Woods"] }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "play_land": "Bleeding Woods" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Bleeding Woods"] }, {} ],
+   "tapped": { "Bleeding Woods": true }
+  }
+ },
+ {
+  "name": "ruling: playing the opponent's land uses the turn's land drop (a second land is illegal)",
+  "start": "Untap",
+  "players": [
+   { "hand": ["Island"], "battlefield": ["Sen Triplets", "Forest"] },
+   { "hand": ["Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "play_land": "Forest" },
+   { "play_land": "Island", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Island"], "battlefield_has": ["Forest"] }, { "hand": [] } ]
+  }
+ },
+ {
+  "name": "ruling: the targeted opponent cannot activate abilities (Prodigal Sorcerer's tap ability is illegal)",
+  "start": "Untap",
+  "players": [
+   { "battlefield": ["Sen Triplets"] },
+   { "battlefield": ["Prodigal Sorcerer"] }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "resolve": true },
+   { "pass": true },
+   { "player": 1, "activate": "Prodigal Sorcerer", "targets": ["p0"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20 }, {} ],
+   "tapped": { "Prodigal Sorcerer": false }
+  }
+ }
+]

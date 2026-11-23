@@ -1,0 +1,91 @@
+[
+  {
+    "name": "increment: spending more mana than its power adds a counter and the counter draws a card",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Pensive Professor", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1 }, { "life": 17 }],
+      "pt": { "Pensive Professor": [1, 3] },
+      "counters": { "Pensive Professor": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "increment does not trigger when the mana spent is not greater than power or toughness",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Pensive Professor", "sick": false, "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 0 }, { "life": 17 }],
+      "pt": { "Pensive Professor": [1, 3] },
+      "counters": { "Pensive Professor": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: mana spent equal to power and toughness is not greater than either, so no increment",
+    "players": [
+      { "hand": ["Revitalize"], "battlefield": ["Plains", "Plains", { "name": "Pensive Professor", "sick": false, "counters": { "p1p1": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Revitalize" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "life": 23 }, {}],
+      "pt": { "Pensive Professor": [2, 4] },
+      "counters": { "Pensive Professor": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "ruling: the increment trigger still resolves when the spell is countered, and the counter draws a card",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Pensive Professor", "sick": false }] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Counterspell"], "life": 20 }],
+      "pt": { "Pensive Professor": [1, 3] },
+      "counters": { "Pensive Professor": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: the increment comparison is redone on resolution; a pump that makes the creature big enough stops the counter",
+    "players": [
+      { "hand": ["Revitalize", "Giant Growth"], "battlefield": ["Plains", "Plains", "Forest", { "name": "Pensive Professor", "sick": false, "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Revitalize" },
+      { "cast": "Giant Growth", "targets": ["Pensive Professor"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "life": 23 }, {}],
+      "pt": { "Pensive Professor": [4, 6] },
+      "counters": { "Pensive Professor": { "p1p1": 1 } }
+    }
+  }
+]

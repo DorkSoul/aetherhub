@@ -1,0 +1,223 @@
+[
+ {
+  "name": "target opponent loses 3 life; no creature to encode on so it goes to the graveyard",
+  "players": [
+   {
+    "hand": [
+     "Shadow Slice"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Shadow Slice",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Shadow Slice"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "encoded on Grizzly Bears: the copy is cast for free when the Bears hit the opponent",
+  "players": [
+   {
+    "hand": [
+     "Shadow Slice"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Shadow Slice",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Shadow Slice"
+     ],
+     "graveyard": []
+    },
+    {
+     "life": 12
+    }
+   ]
+  }
+ },
+ {
+  "name": "encode declined with a creature out: Shadow Slice goes to the graveyard and the Bears hit does not copy it",
+  "players": [
+   {
+    "hand": [
+     "Shadow Slice"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Shadow Slice",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     []
+    ]
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Shadow Slice"
+     ],
+     "exile": []
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+  {
+   "name": "ruling: declining the cipher copy means it is never cast; the card stays in exile, not the graveyard",
+   "players": [
+    { "hand": ["Shadow Slice"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Shadow Slice", "targets": ["p1"] },
+    { "resolve": true, "answers": [[0]] },
+    { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+    { "advance_to": "Main2", "answers": [false] }
+   ],
+   "expect": {
+    "players": [
+     { "exile": ["Shadow Slice"], "graveyard": [] },
+     { "life": 15 }
+    ]
+   }
+  },
+  {
+   "name": "ruling: if the encoded creature leaves the battlefield the card stays in exile and is never cast",
+   "players": [
+    { "hand": ["Shadow Slice"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+    { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+    { "cast": "Shadow Slice", "targets": ["p1"] },
+    { "resolve": true, "answers": [[0]] },
+    { "pass": true },
+    { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "exile": ["Shadow Slice"], "graveyard": ["Grizzly Bears"] },
+     { "life": 17, "graveyard": ["Lightning Bolt"] }
+    ]
+   }
+  },
+  {
+   "name": "ruling: a countered Shadow Slice does not encode anything and goes to the graveyard",
+   "players": [
+    { "hand": ["Shadow Slice"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+    { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+   ],
+   "steps": [
+    { "cast": "Shadow Slice", "targets": ["p1"] },
+    { "pass": true },
+    { "cast": "Counterspell", "player": 1, "targets": [{"stack": "Shadow Slice"}] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Shadow Slice"], "exile": [] },
+     { "life": 20, "graveyard": ["Counterspell"] }
+    ]
+   }
+  }
+ ]

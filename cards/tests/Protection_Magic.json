@@ -1,0 +1,259 @@
+[
+ {
+  "name": "shield counter on each of up to three targets",
+  "players": [
+   {
+    "hand": [
+     "Protection Magic"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Protection Magic",
+    "targets": [
+     "Grizzly Bears",
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "shield": 1
+    },
+    "Hill Giant": {
+     "shield": 1
+    },
+    "Savannah Lions": {
+     "shield": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "a shield counter replaces lethal damage",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "shield": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "shield": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "a shield counter replaces destruction",
+  "players": [
+   {
+    "hand": [
+     "Terror"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Hill Giant",
+      "counters": {
+       "shield": 1
+      }
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Terror",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Terror"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    }
+   ],
+   "counters": {
+    "Hill Giant": {
+     "shield": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "up to: zero targets is legal",
+  "players": [
+   {
+    "hand": [
+     "Protection Magic"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Protection Magic",
+    "targets": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Protection Magic"
+     ]
+    }
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "shield": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "can target an opponent's creature too",
+  "players": [
+   {
+    "hand": [
+     "Protection Magic"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Protection Magic",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Hill Giant": {
+     "shield": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: a shield counter still works after the creature loses all abilities (Deep Freeze)",
+  "players": [ { "hand": ["Deep Freeze", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Mountain", { "name": "Grizzly Bears", "counters": { "shield": 1 } }] }, {} ],
+  "steps": [
+    { "cast": "Deep Freeze", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ],
+   "counters": { "Grizzly Bears": { "shield": 0 } }
+  }
+ },
+ {
+  "name": "ruling: shield counters do not prevent a sacrifice",
+  "players": [ { "hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "shield": 1 } } ] } ],
+  "steps": [
+    { "cast": "Diabolic Edict", "targets": ["p1"] },
+    { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Diabolic Edict"] }, { "graveyard": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: with two shield counters the damage is prevented and only one counter is removed",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "shield": 2 } } ] } ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Lightning Bolt"] }, { "battlefield_has": ["Grizzly Bears"] } ],
+   "counters": { "Grizzly Bears": { "shield": 1 } }
+  }
+ }
+]

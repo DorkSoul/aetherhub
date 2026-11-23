@@ -1,0 +1,125 @@
+[
+ {
+  "name": "enters tapped and you get three energy",
+  "players": [
+   {
+    "hand": [
+     "Solar Transformer"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Solar Transformer"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Solar Transformer": true
+   },
+   "players": [
+    {
+     "energy": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "tap for {C}",
+  "players": [
+   {
+    "battlefield": [
+     "Solar Transformer"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Solar Transformer"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "C": 1
+     },
+     "energy": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "tapped: no mana",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Solar Transformer",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Solar Transformer",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: energy is not mana, it stays with the player through turns",
+  "players": [ { "battlefield": ["Solar Transformer"], "energy": 3 }, {} ],
+  "steps": [ { "advance_to": "End" }, { "advance_to": "Main1" } ],
+  "expect": { "players": [ { "energy": 3 }, {} ] }
+ },
+ {
+  "name": "ruling: energy belongs to the player, so it stays after Solar Transformer is destroyed",
+  "players": [ { "hand": ["Shatter"], "battlefield": ["Solar Transformer", "Mountain", "Mountain"], "energy": 3 }, {} ],
+  "steps": [ { "cast": "Shatter" }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard_has": ["Solar Transformer", "Shatter"], "energy": 3 }, {} ] }
+ },
+ {
+  "name": "ruling: with no energy counter the pay-{E} mana ability is unavailable",
+  "players": [ { "battlefield": ["Solar Transformer"] }, {} ],
+  "steps": [ { "tap_for_mana": "Solar Transformer", "color": "W", "illegal": true } ],
+  "expect": { "players": [ { "energy": 0, "battlefield_has": ["Solar Transformer"] }, {} ] }
+ },
+ {
+  "name": "ruling: one energy counter pays for one mana of any colour, leaving none",
+  "players": [ { "battlefield": ["Solar Transformer"], "energy": 1 }, {} ],
+  "steps": [ { "tap_for_mana": "Solar Transformer", "color": "W" } ],
+  "expect": { "players": [ { "pool": { "W": 1 }, "energy": 0 }, {} ] }
+ },
+ {
+  "name": "ruling: a may-pay {E} trigger is paid once: one energy is spent, the effect happens once",
+  "players": [ { "battlefield": ["Maulfist Doorbuster"], "energy": 2 }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "attack": [ { "card": "Maulfist Doorbuster", "at": "p1" } ] },
+   { "resolve": true, "answers": ["Grizzly Bears", true] },
+   { "block": [] }
+  ],
+  "expect": { "players": [ { "energy": 1 }, {} ] }
+ },
+ {
+  "name": "ruling: a may-pay {E} trigger that is declined costs no energy",
+  "players": [ { "battlefield": ["Maulfist Doorbuster"], "energy": 2 }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "attack": [ { "card": "Maulfist Doorbuster", "at": "p1" } ] },
+   { "resolve": true, "answers": ["Grizzly Bears", false] },
+   { "block": [] }
+  ],
+  "expect": { "players": [ { "energy": 2 }, {} ] }
+ }
+]

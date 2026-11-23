@@ -1,0 +1,139 @@
+[
+  {
+    "name": "landfall exiles the top card and its owner may cast it from exile later",
+    "players": [
+      { "hand": ["Mountain"], "battlefield": ["Valakut Exploration", "Mountain", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Mountain" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "at the beginning of your end step the exiled cards go to the graveyard and deal that much damage",
+    "players": [
+      { "hand": ["Mountain"], "battlefield": ["Valakut Exploration", "Mountain", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Mountain" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "exile": [] },
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "no cards exiled with it at the end step means no damage",
+    "players": [
+      { "battlefield": ["Valakut Exploration", "Mountain", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "a card cast from exile leaves exile so the end step deals no damage",
+    "players": [
+      { "hand": ["Mountain"], "battlefield": ["Valakut Exploration", "Mountain", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Mountain" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played once the land drop is already used",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Valakut Exploration", "Mountain"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true },
+      { "play_land": "Mountain", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "exile": ["Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land put onto the battlefield by an ability triggers landfall, and the exiled land can still be played as the land drop",
+    "players": [
+      {
+        "hand": ["Cultivator Colossus", "Forest"],
+        "battlefield": ["Valakut Exploration", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Grizzly Bears", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cultivator Colossus" },
+      { "resolve": true, "answers": ["Forest"] },
+      { "play_land": "Mountain" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mountain", "Cultivator Colossus"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if Valakut Exploration leaves the battlefield, its exiled cards stay exiled and the end step deals no damage",
+    "players": [
+      { "hand": ["Mountain", "Disenchant"], "battlefield": ["Valakut Exploration", "Forest", "Plains"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Mountain" },
+      { "resolve": true },
+      { "cast": "Disenchant", "targets": ["Valakut Exploration"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "graveyard_has": ["Valakut Exploration"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

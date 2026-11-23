@@ -1,0 +1,127 @@
+[
+ {
+  "name": "ruling: the ability is used after blocks, so the blocked attacker's damage goes to the player (Hill Giant blocks)",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Gurzigost", "Forest", "Forest"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gurzigost", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Gurzigost" } ], "player": 1 },
+   { "activate": "Gurzigost", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Gurzigost"] }, { "life": 14, "battlefield_has": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "upkeep: two graveyard cards go to the bottom",
+  "players": [
+   {
+    "battlefield": [
+     "Gurzigost"
+    ],
+    "graveyard": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "start": "Untap",
+  "steps": [
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Gurzigost"
+     ],
+     "graveyard": [],
+     "library_count": 3
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "only one card in the graveyard: sacrificed",
+  "players": [
+   {
+    "battlefield": [
+     "Gurzigost"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "start": "Untap",
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Gurzigost"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "{G}{G}, discard: the blocked attacker assigns its combat damage to the player",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Gurzigost", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gurzigost", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Gurzigost" } ], "player": 1 },
+   { "activate": "Gurzigost", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Gurzigost"] }, { "life": 14, "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "boundary: without {G}{G} the blocked Gurzigost's damage stays with the blocker",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Gurzigost", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gurzigost", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Gurzigost" } ], "player": 1 },
+   { "activate": "Gurzigost", "ability": 0, "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 20, "battlefield_lacks": ["Grizzly Bears"] } ] }
+ }
+]

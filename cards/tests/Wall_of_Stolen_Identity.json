@@ -1,0 +1,73 @@
+[
+  {
+    "name": "copies a creature, gets defender, and taps the copied creature",
+    "players": [
+      { "hand": ["Wall of Stolen Identity"], "battlefield": ["Island", "Island", "Island", "Island", "Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wall of Stolen Identity" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": {
+      "tapped": { "Serra Angel": true },
+      "pt": { "Serra Angel": [4, 4] },
+      "players": [ { "battlefield_has": ["Serra Angel", "Serra Angel"] }, {} ]
+    }
+  },
+  {
+    "name": "the copy has defender",
+    "players": [
+      { "hand": ["Wall of Stolen Identity"], "battlefield": ["Island", "Island", "Island", "Island", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wall of Stolen Identity" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant", "Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "the copied creature stays tapped through its controller's untap step",
+    "players": [
+      { "hand": ["Wall of Stolen Identity"], "battlefield": ["Island", "Island", "Island", "Island", "Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wall of Stolen Identity" },
+      { "resolve": true, "answers": [0] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "turn": 3, "tapped": { "Serra Angel": true } }
+  },
+  {
+    "name": "when the Wall leaves, the copied creature untaps normally",
+    "players": [
+      { "hand": ["Wall of Stolen Identity", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Wall of Stolen Identity" },
+      { "resolve": true, "answers": [0] },
+      { "cast": "Lightning Bolt", "targets": ["p0:Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "turn": 2, "tapped": { "Hill Giant": false }, "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: the copy's enters-the-battlefield trigger fires (copying Whirler Virtuoso gives three energy)",
+    "players": [
+      { "hand": ["Wall of Stolen Identity"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Whirler Virtuoso"] }
+    ],
+    "steps": [
+      { "cast": "Wall of Stolen Identity" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": {
+      "players": [ { "energy": 3 }, {} ]
+    }
+  }
+]

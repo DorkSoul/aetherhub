@@ -1,0 +1,252 @@
+[
+  {
+    "name": "exiles one nonland permanent of each opponent",
+    "players": [
+      {
+        "hand": [
+          "Grasp of Fate"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grasp of Fate"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant",
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grasp of Fate",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield": [
+            "Forest"
+          ],
+          "exile": [
+            "Hill Giant"
+          ]
+        },
+        {
+          "battlefield": [],
+          "exile": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "opponent with no nonland permanent is skipped",
+    "players": [
+      {
+        "hand": [
+          "Grasp of Fate"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grasp of Fate"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grasp of Fate"
+          ]
+        },
+        {
+          "battlefield": [
+            "Forest"
+          ]
+        },
+        {
+          "battlefield": [],
+          "exile": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "creature returns when Grasp leaves",
+    "players": [
+      {
+        "hand": [
+          "Grasp of Fate",
+          "Disenchant"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grasp of Fate"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant",
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "pass": true,
+        "player": 2
+      },
+      {
+        "cast": "Disenchant",
+        "targets": [
+          "Grasp of Fate"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Disenchant",
+            "Grasp of Fate"
+          ]
+        },
+        {
+          "battlefield": [
+            "Hill Giant",
+            "Mountain"
+          ],
+          "exile": []
+        },
+        {
+          "battlefield": [
+            "Llanowar Elves",
+            "Mountain"
+          ],
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Aura on an exiled creature goes to its owner's graveyard",
+    "players": [
+      {"hand": ["Pacifism", "Grasp of Fate"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Island"]},
+      {"battlefield": ["Grizzly Bears"]}
+    ],
+    "steps": [
+      {"cast": "Pacifism", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"cast": "Grasp of Fate"},
+      {"resolve": true, "targets": ["Grizzly Bears"]}
+    ],
+    "expect": {"players": [{"graveyard": ["Pacifism"], "battlefield_has": ["Grasp of Fate"]}, {"battlefield": [], "exile": ["Grizzly Bears"]}]}
+  },
+  {
+    "name": "ruling: counters on an exiled creature cease to exist and it returns without them",
+    "players": [
+      {"hand": ["Grasp of Fate", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"]},
+      {"battlefield": [{"name": "Grizzly Bears", "counters": {"p1p1": 2}}]}
+    ],
+    "steps": [
+      {"cast": "Grasp of Fate"},
+      {"resolve": true, "targets": ["Grizzly Bears"]},
+      {"cast": "Disenchant", "targets": ["Grasp of Fate"]},
+      {"resolve": true}
+    ],
+    "expect": {"players": [{"graveyard": ["Disenchant", "Grasp of Fate"]}, {"battlefield_has": ["Grizzly Bears"], "exile": []}], "pt": {"Grizzly Bears": [2, 2]}}
+  },
+  {
+    "name": "ruling: an exiled token ceases to exist and does not return",
+    "players": [
+      {"hand": ["Grasp of Fate", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"]},
+      {"hand": ["Raise the Alarm"], "battlefield": ["Plains", "Plains"]}
+    ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Raise the Alarm", "player": 1},
+      {"resolve": true},
+      {"cast": "Grasp of Fate"},
+      {"resolve": true, "targets": ["Soldier"]},
+      {"cast": "Disenchant", "targets": ["Grasp of Fate"]},
+      {"resolve": true}
+    ],
+    "expect": {"players": [{"graveyard": ["Disenchant", "Grasp of Fate"]}, {"battlefield": ["Plains", "Plains", "Soldier"], "exile": []}]}
+  }
+]

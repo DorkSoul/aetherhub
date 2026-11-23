@@ -1,0 +1,136 @@
+{
+  "name": "Cultural Exchange",
+  "mana_cost": "{4}{U}{U}",
+  "types": [
+    "Sorcery"
+  ],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "Player",
+            "filter": "Any"
+          },
+          "label": "target player"
+        },
+        {
+          "what": {
+            "type": "Player",
+            "filter": "Any"
+          },
+          "distinct": true,
+          "label": "another target player"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Choose",
+          "who": {
+            "type": "You"
+          },
+          "zone": "Battlefield",
+          "filter": {
+            "types": [
+              "Creature"
+            ],
+            "controlled_by": {
+              "type": "Target",
+              "idx": 0
+            }
+          },
+          "min": 0,
+          "max": 1,
+          "max_amount": {
+            "type": "Min",
+            "a": {
+              "type": "Count",
+              "filter": {
+                "types": [
+                  "Creature"
+                ],
+                "controlled_by": {
+                  "type": "Target",
+                  "idx": 0
+                }
+              },
+              "zone": "Battlefield",
+              "player": {
+                "type": "Target",
+                "idx": 0
+              }
+            },
+            "b": {
+              "type": "Count",
+              "filter": {
+                "types": [
+                  "Creature"
+                ],
+                "controlled_by": {
+                  "type": "Target",
+                  "idx": 1
+                }
+              },
+              "zone": "Battlefield",
+              "player": {
+                "type": "Target",
+                "idx": 1
+              }
+            }
+          },
+          "then": [
+            {
+              "type": "GainControl",
+              "what": {
+                "type": "Remembered"
+              },
+              "to": {
+                "type": "Target",
+                "idx": 1
+              },
+              "duration": "Forever"
+            },
+            {
+              "type": "Choose",
+              "who": {
+                "type": "You"
+              },
+              "zone": "Battlefield",
+              "filter": {
+                "types": [
+                  "Creature"
+                ],
+                "controlled_by": {
+                  "type": "Target",
+                  "idx": 1
+                },
+                "not_among_remembered": true
+              },
+              "min_amount": {
+                "type": "RememberedCount"
+              },
+              "max_amount": {
+                "type": "RememberedCount"
+              },
+              "then": [
+                {
+                  "type": "GainControl",
+                  "what": {
+                    "type": "Remembered"
+                  },
+                  "to": {
+                    "type": "Target",
+                    "idx": 0
+                  },
+                  "duration": "Forever"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose any number of creatures target player controls. Choose the same number of creatures another target player controls. Those players exchange control of those creatures. (This effect lasts indefinitely.)"
+}

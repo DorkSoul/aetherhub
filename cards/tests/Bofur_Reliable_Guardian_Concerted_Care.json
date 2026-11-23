@@ -1,0 +1,84 @@
+[
+  {
+    "name": "Concerted Care gives a creature you control hexproof and indestructible, then the card is exiled",
+    "players": [
+      { "hand": ["Bofur, Reliable Guardian // Concerted Care"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bofur, Reliable Guardian // Concerted Care", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Hexproof", "Indestructible"] },
+      "players": [
+        { "exile": ["Bofur, Reliable Guardian // Concerted Care"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "needs an artifact or creature you control as its target",
+    "players": [
+      { "hand": ["Bofur, Reliable Guardian // Concerted Care"], "battlefield": ["Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Bofur, Reliable Guardian // Concerted Care", "face": true, "targets": ["p1:Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Bofur, Reliable Guardian // Concerted Care"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: after Concerted Care resolves, Bofur can be cast as a creature from exile",
+    "players": [
+      { "hand": ["Bofur, Reliable Guardian // Concerted Care"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bofur, Reliable Guardian // Concerted Care", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Bofur, Reliable Guardian // Concerted Care" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [], "battlefield_has": ["Bofur, Reliable Guardian // Concerted Care", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an adventurer exiled by another effect gives no permission to cast it as a creature",
+    "players": [
+      { "exile": ["Bofur, Reliable Guardian // Concerted Care"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bofur, Reliable Guardian // Concerted Care", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Bofur, Reliable Guardian // Concerted Care"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a countered Adventure is not exiled and cannot be cast later as a creature",
+    "players": [
+      { "hand": ["Bofur, Reliable Guardian // Concerted Care"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Bofur, Reliable Guardian // Concerted Care", "face": true, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Concerted Care" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Bofur, Reliable Guardian // Concerted Care"], "exile": [] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

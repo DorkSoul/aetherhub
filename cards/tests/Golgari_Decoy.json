@@ -1,0 +1,29 @@
+[
+  { "name": "every creature able to block it must block it",
+    "players": [ { "battlefield": ["Golgari Decoy"] }, { "battlefield": ["Hill Giant", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Golgari Decoy", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Golgari Decoy" } ], "illegal": true },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Golgari Decoy" }, { "blocker": "Grizzly Bears", "attacker": "Golgari Decoy" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Golgari Decoy"] }, { } ] } },
+  { "name": "scavenge from the graveyard: +2 counters on target creature and exile it",
+    "players": [ { "graveyard": ["Golgari Decoy"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Golgari Decoy", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Golgari Decoy"], "graveyard": [] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    } },
+  { "name": "no block declared: every creature able to block it must block (Decoy dies, no damage)",
+    "players": [ { "battlefield": ["Golgari Decoy"] }, { "battlefield": ["Hill Giant", "Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Golgari Decoy", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "graveyard": ["Golgari Decoy"] }, { "life": 20 } ] } },
+  { "name": "ruling: scavenge exiles the card as a cost, so it is already exiled while the ability is on the stack",
+    "players": [ { "graveyard": ["Golgari Decoy"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [ { "activate": "Golgari Decoy", "ability": 0, "targets": ["Grizzly Bears"] }, { "pass": true } ],
+    "expect": { "players": [ { "exile": ["Golgari Decoy"], "graveyard": [] }, {} ], "pt": { "Grizzly Bears": [2, 2] }, "stack_empty": false } }
+]

@@ -1,0 +1,235 @@
+[
+ {
+  "name": "each draw pings; casting a sorcery draws a card",
+  "players": [
+   {
+    "hand": [
+     "Divination"
+    ],
+    "battlefield": [
+     "Niv-Mizzet, Parun",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true,
+    "auto": true,
+    "targets": [
+     "p1",
+     "p1",
+     "p1"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 3
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "an opponent's instant draws a card for Niv's controller",
+  "players": [
+   {
+    "battlefield": [
+     "Niv-Mizzet, Parun"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1,
+     "life": 17
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature spell does not draw",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Niv-Mizzet, Parun",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't be countered",
+  "players": [
+   {
+    "hand": [
+     "Niv-Mizzet, Parun"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Niv-Mizzet, Parun"
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "targets": [
+     {
+      "stack": "Niv-Mizzet, Parun"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Niv-Mizzet, Parun"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the draw trigger resolves even when the spell is countered",
+  "players": [
+   { "hand": ["Lightning Bolt"], "library": ["Grizzly Bears"], "battlefield": ["Niv-Mizzet, Parun", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true, "targets": ["p1"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 2, "life": 20, "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a search into hand is not a draw",
+  "players": [
+   { "hand": ["Ranger-Captain of Eos"], "battlefield": ["Niv-Mizzet, Parun", "Plains", "Plains", "Plains"], "library": ["Llanowar Elves"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ranger-Captain of Eos" },
+   { "resolve": true, "answers": [true, "Llanowar Elves"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Llanowar Elves"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card-draw effect that draws two triggers Niv twice",
+  "players": [
+   { "hand": ["Mulldrifter"], "battlefield": ["Niv-Mizzet, Parun", "Island", "Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mulldrifter" },
+   { "resolve": true, "auto": true, "targets": ["p1", "p1"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 2 },
+    { "life": 18 }
+   ]
+  }
+ }
+]

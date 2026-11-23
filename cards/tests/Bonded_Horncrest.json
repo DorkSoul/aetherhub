@@ -1,0 +1,92 @@
+[
+  {
+    "name": "can't attack alone",
+    "players": [ { "battlefield": ["Bonded Horncrest"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Bonded Horncrest", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": { "tapped": { "Bonded Horncrest": false } }
+  },
+  {
+    "name": "can attack together with another creature",
+    "players": [ { "battlefield": ["Bonded Horncrest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Bonded Horncrest", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "tapped": { "Bonded Horncrest": true, "Grizzly Bears": true } }
+  },
+  {
+    "name": "can't block alone",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Bonded Horncrest"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Bonded Horncrest", "attacker": "Hill Giant" } ], "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ] }
+  },
+  {
+    "name": "can block together with another creature",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Bonded Horncrest", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Bonded Horncrest", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "lone attacker is dropped: opponent takes no damage, Horncrest stays untapped",
+    "players": [ { "battlefield": ["Bonded Horncrest"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Bonded Horncrest", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20 } ], "tapped": { "Bonded Horncrest": false } }
+  },
+  {
+    "name": "lone blocker is dropped: Hill Giant is unblocked and deals 3",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Bonded Horncrest"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Bonded Horncrest", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: another blocker may block a different attacker than Horncrest",
+    "players": [ { "battlefield": ["Hill Giant", "Lord of Atlantis"] }, { "battlefield": ["Bonded Horncrest", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Lord of Atlantis", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Bonded Horncrest", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Lord of Atlantis" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant", "Lord of Atlantis"] }, { "life": 20, "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: two Bonded Horncrests may attack together with no other attacker",
+    "players": [ { "battlefield": ["Bonded Horncrest", "Bonded Horncrest"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Bonded Horncrest", "at": "p1" }, { "card": "Bonded Horncrest", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 10 } ] }
+  },
+  {
+    "name": "ruling: Horncrest stays in combat after its partner leaves",
+    "players": [ { "battlefield": ["Bonded Horncrest", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "attack": [ { "card": "Bonded Horncrest", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "life": 15, "graveyard_has": ["Lightning Bolt"] } ] }
+  }
+]

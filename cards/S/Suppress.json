@@ -1,0 +1,31 @@
+{
+  "name": "Suppress",
+  "mana_cost": "{2}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [ { "what": { "type": "Player", "filter": "Any" }, "label": "target player" } ],
+      "effects": [
+        { "type": "Exile", "face_down": true,
+          "what": { "type": "AllOfPlayer", "player": { "type": "Target", "idx": 0 }, "zone": "Hand" } },
+        { "type": "If",
+          "cond": { "type": "CompareAmounts", "op": "Eq",
+                    "a": { "type": "Count", "zone": "Exile", "filter": { "among_remembered": true, "owner": "You" } },
+                    "b": { "type": "RememberedCount" } },
+          "then": [
+            { "type": "AddTrigger", "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" }, "once": true, "until": "Forever",
+              "effects": [
+                { "type": "AddTrigger", "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" }, "once": true, "until": "Forever",
+                  "effects": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ] }
+              ] }
+          ],
+          "else": [
+            { "type": "AddTrigger", "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "Opponent" }, "once": true, "until": "Forever",
+              "effects": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ] }
+          ] }
+      ]
+    }
+  ],
+  "oracle_text": "Target player exiles all cards from their hand face down. At the beginning of the end step of that player's next turn, that player returns those cards to their hand."
+}

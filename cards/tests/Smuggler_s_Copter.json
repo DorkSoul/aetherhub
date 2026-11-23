@@ -1,0 +1,248 @@
+[
+ {
+  "name": "crewed, attacks, loots",
+  "players": [
+   {
+    "hand": [
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Smuggler's Copter",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Smuggler's Copter"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Smuggler's Copter",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true,
+     "Hill Giant"
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Island"
+     ],
+     "graveyard": [
+      "Hill Giant"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "may decline looting",
+  "players": [
+   {
+    "hand": [
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Smuggler's Copter",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Smuggler's Copter"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Smuggler's Copter",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Hill Giant"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "not a creature until crewed (cannot attack)",
+  "players": [
+   {
+    "battlefield": [
+     "Smuggler's Copter"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "blocking: may draw then discard (the drawn card is the only card in hand)",
+  "players": [
+   { "library": ["Lightning Bolt"], "battlefield": ["Smuggler's Copter", "Llanowar Elves"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "activate": "Smuggler's Copter", "player": 0 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1 },
+   { "block": [{ "blocker": "Smuggler's Copter", "attacker": "Grizzly Bears" }], "player": 0 },
+   { "resolve": true, "answers": [true] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [{ "hand": [], "graveyard_has": ["Lightning Bolt"] }, {}] }
+ },
+  {
+    "name": "ruling: destroying a crewed Vehicle does not affect the creature that crewed it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Smuggler's Copter", "Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Smuggler's Copter" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Smuggler's Copter"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Smuggler's Copter", "Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: a creature that just came under your control can crew",
+    "players": [
+      { "battlefield": ["Smuggler's Copter", { "name": "Grizzly Bears", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Smuggler's Copter" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Smuggler's Copter", "Grizzly Bears"] },
+        {}
+      ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: crewing at the beginning of combat lets the Vehicle attack",
+    "players": [
+      { "battlefield": ["Smuggler's Copter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Smuggler's Copter" },
+      { "resolve": true },
+      { "attack": [ { "card": "Smuggler's Copter", "at": "p1" } ] },
+      { "resolve": true, "answers": [false] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Vehicle becoming a creature is not a creature entering (Soul Warden does not trigger)",
+    "players": [
+      { "battlefield": ["Smuggler's Copter", "Soul Warden"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Smuggler's Copter" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        {}
+      ]
+    }
+  }
+]

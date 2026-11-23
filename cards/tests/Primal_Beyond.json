@@ -1,0 +1,87 @@
+[
+  {
+    "name": "enters untapped when an Elemental card is revealed",
+    "players": [
+      { "hand": ["Primal Beyond", "Chandra's Embercat"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Primal Beyond" },
+      { "pass": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Primal Beyond"] }, {} ],
+      "tapped": { "Primal Beyond": false }
+    }
+  },
+  {
+    "name": "enters tapped when no Elemental is revealed",
+    "players": [
+      { "hand": ["Primal Beyond"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Primal Beyond" },
+      { "pass": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Primal Beyond"] }, {} ],
+      "tapped": { "Primal Beyond": true }
+    }
+  },
+  {
+    "name": "its any-color mana pays for an Elemental spell",
+    "players": [
+      { "hand": ["Chandra's Embercat"], "battlefield": [ { "name": "Primal Beyond", "sick": false }, "Mountain" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Chandra's Embercat" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Chandra's Embercat", "Primal Beyond"] }, {} ]
+    }
+  },
+  {
+    "name": "its any-color mana cannot pay for a non-Elemental spell",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Primal Beyond", "sick": false } ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: its any-color mana can pay part of an evoke (alternative) cost of an Elemental",
+    "players": [
+      { "hand": ["Mulldrifter"], "battlefield": [ { "name": "Primal Beyond", "sick": false }, "Island", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mulldrifter", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Mulldrifter"], "graveyard_has": ["Mulldrifter"] }, {} ],
+      "tapped": { "Primal Beyond": true }
+    }
+  },
+  {
+    "name": "ruling: the evoke cost is not payable with two Islands alone",
+    "players": [
+      { "hand": ["Mulldrifter"], "battlefield": ["Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mulldrifter", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  }
+]

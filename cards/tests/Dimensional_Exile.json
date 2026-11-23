@@ -1,0 +1,53 @@
+[
+  { "name": "exiles target creature an opponent controls until the aura leaves",
+    "players": [ { "hand": ["Dimensional Exile"], "battlefield": ["Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Dimensional Exile", "targets": ["Plains"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Dimensional Exile"] }, { "battlefield": [], "exile": ["Grizzly Bears"] } ],
+      "attached": { "Dimensional Exile": "Plains" }
+    }
+  },
+  { "name": "never targets your own creature",
+    "players": [ { "hand": ["Dimensional Exile"], "battlefield": ["Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Dimensional Exile", "targets": ["Plains"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "exile": ["Hill Giant"] } ]
+    }
+  },
+  { "name": "ruling: an aura on the exiled creature goes to its owner's graveyard",
+    "players": [ { "hand": ["Pacifism", "Dimensional Exile"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Pacifism" },
+      { "resolve": true },
+      { "cast": "Dimensional Exile", "targets": ["Plains"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Pacifism"], "battlefield_has": ["Dimensional Exile"] }, { "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  { "name": "ruling: if the aura leaves before its trigger resolves, nothing is exiled",
+    "players": [ { "hand": ["Dimensional Exile"], "battlefield": ["Plains", "Plains"] }, { "hand": ["Naturalize"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Dimensional Exile", "targets": ["Plains"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Naturalize", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Dimensional Exile"] }, { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Naturalize"] } ]
+    }
+  }
+]

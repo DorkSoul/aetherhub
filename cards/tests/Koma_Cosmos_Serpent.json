@@ -1,0 +1,139 @@
+[
+ {
+  "name": "each upkeep creates a Koma's Coil token",
+  "players": [
+   {
+    "battlefield": ["Koma, Cosmos Serpent", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Koma's Coil"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "sacrificing another Serpent taps target permanent",
+  "players": [
+   {
+    "battlefield": ["Koma, Cosmos Serpent", "Koma's Coil"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "activate": "Koma, Cosmos Serpent" },
+   { "resolve": true, "answers": [[0], "Grizzly Bears"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Koma's Coil"] },
+    {}
+   ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "indestructible mode gains indestructible until end of turn",
+  "players": [
+   {
+    "battlefield": ["Koma, Cosmos Serpent", "Koma's Coil"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Koma, Cosmos Serpent" },
+   { "resolve": true, "answers": [[1]] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Koma, Cosmos Serpent"] },
+    {}
+   ],
+   "keywords": { "Koma, Cosmos Serpent": ["Indestructible"] }
+  }
+ },
+ {
+  "name": "cannot be activated without another Serpent to sacrifice",
+  "players": [
+   {
+    "battlefield": ["Koma, Cosmos Serpent", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Koma, Cosmos Serpent", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Koma, Cosmos Serpent"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "tapped permanent cannot activate its abilities this turn",
+  "players": [
+   {
+    "battlefield": ["Koma, Cosmos Serpent", "Koma's Coil", "Test Walker", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Koma, Cosmos Serpent" },
+   { "resolve": true, "answers": [[0], "Test Walker"] },
+   { "activate": "Test Walker", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Test Walker"] },
+    {}
+   ],
+   "tapped": { "Test Walker": true }
+  }
+ },
+ {
+  "name": "ruling: Counterspell targeting Koma resolves and Koma is not countered",
+  "players": [
+   { "hand": ["Koma, Cosmos Serpent"], "battlefield": ["Forest", "Forest", "Island", "Island", "Plains", "Plains", "Plains"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Koma, Cosmos Serpent" },
+   { "pass": true },
+   { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Koma, Cosmos Serpent" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Forest", "Forest", "Island", "Island", "Plains", "Plains", "Plains", "Koma, Cosmos Serpent"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a tapped permanent can still be chosen; its activated abilities are stopped",
+  "players": [
+   { "battlefield": ["Koma, Cosmos Serpent", "Koma's Coil", "Plains", { "name": "Test Walker", "tapped": true }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Koma, Cosmos Serpent" },
+   { "resolve": true, "answers": [[0], "Test Walker"] },
+   { "activate": "Test Walker", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Test Walker"] },
+    {}
+   ],
+   "tapped": { "Test Walker": true }
+  }
+ }
+]

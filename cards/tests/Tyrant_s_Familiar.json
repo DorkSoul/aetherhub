@@ -1,0 +1,184 @@
+[
+  {
+    "name": "lieutenant with commander on battlefield: +2/+2 and attack trigger deals 7 to a creature defending player controls",
+    "commander": true,
+    "players": [
+      {
+        "hand": [],
+        "battlefield": ["Forest", "Forest", "Tyrant's Familiar"],
+        "command": ["Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant", "Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "attack": [{ "card": "Tyrant's Familiar", "at": "p1" }] },
+      { "block": [], "targets": ["Hill Giant"] },
+      { "advance_to": "EndCombat" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Forest", "Forest", "Tyrant's Familiar", "Grizzly Bears"] },
+        { "graveyard": ["Hill Giant"], "battlefield": ["Llanowar Elves"] }
+      ],
+      "pt": { "Tyrant's Familiar": [7, 7] }
+    }
+  },
+  {
+    "name": "without a commander on the battlefield: plain 5/5 and no attack trigger",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": ["Forest", "Forest", "Tyrant's Familiar"]
+      },
+      {
+        "battlefield": ["Hill Giant", "Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Tyrant's Familiar", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "EndCombat" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Forest", "Forest", "Tyrant's Familiar"] },
+        { "battlefield": ["Hill Giant", "Llanowar Elves"] }
+      ],
+      "pt": { "Tyrant's Familiar": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: a commander only in the command zone does not make the Familiar lieutenant",
+    "commander": true,
+    "players": [
+      { "battlefield": ["Tyrant's Familiar"], "command": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [],
+    "expect": { "pt": { "Tyrant's Familiar": [5, 5] } }
+  },
+  {
+    "name": "ruling: lieutenant checks only my commander, not an opponent's commander",
+    "commander": true,
+    "players": [
+      { "battlefield": ["Tyrant's Familiar"] },
+      { "battlefield": ["Forest", "Forest"], "command": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Tyrant's Familiar"] },
+        { "battlefield": ["Forest", "Forest", "Grizzly Bears"] }
+      ],
+      "pt": { "Tyrant's Familiar": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: a lieutenant creature I gain control of checks my commander, not its owner's",
+    "commander": true,
+    "players": [
+      { "hand": ["Control Magic"], "battlefield": ["Forest", "Mountain", "Island", "Island", "Island", "Plains"], "command": ["Grizzly Bears"] },
+      { "battlefield": ["Tyrant's Familiar"] }
+    ],
+    "steps": [
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Mountain" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Control Magic", "targets": ["Tyrant's Familiar"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tyrant's Familiar", "Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Tyrant's Familiar": [7, 7] }
+    }
+  },
+  {
+    "name": "ruling: losing my commander stops the lieutenant bonus; damage already marked can then kill the Familiar",
+    "commander": true,
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Mountain", "Mountain", "Tyrant's Familiar"], "command": ["Grizzly Bears"] },
+      { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Tyrant's Familiar"] },
+      { "cast": "Lightning Bolt", "targets": ["Tyrant's Familiar"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Tyrant's Familiar"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: losing my commander stops the lieutenant bonus; 3 marked damage does not kill the 5/5",
+    "commander": true,
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Forest", "Forest", "Mountain", "Mountain", "Tyrant's Familiar"], "command": ["Grizzly Bears"] },
+      { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Tyrant's Familiar"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tyrant's Familiar"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Tyrant's Familiar": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: an attack trigger still resolves after I lose my commander in response",
+    "commander": true,
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Forest", "Forest", "Mountain", "Tyrant's Familiar"], "command": ["Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "attack": [{ "card": "Tyrant's Familiar", "at": "p1" }] },
+      { "block": [], "targets": ["Hill Giant"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "EndCombat" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard_has": ["Hill Giant"], "life": 15 }
+      ]
+    }
+  }
+]

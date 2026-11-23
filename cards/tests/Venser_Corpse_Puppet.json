@@ -1,0 +1,100 @@
+[
+  {
+    "name": "proliferate: create The Hollow Sentinel when you don't control one",
+    "players": [
+      { "hand": ["Adaptive Sporesinger"], "battlefield": ["Venser, Corpse Puppet", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, "Forest", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Adaptive Sporesinger" },
+      { "resolve": true, "answers": [[1], [0], [0]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Venser, Corpse Puppet", "The Hollow Sentinel", "Adaptive Sporesinger"] }, {} ],
+      "counters": { "Grizzly Bears": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "proliferate: target artifact creature you control gains flying and lifelink",
+    "players": [
+      { "hand": ["Adaptive Sporesinger"], "battlefield": ["Venser, Corpse Puppet", "Annex Sentry", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, "Forest", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Adaptive Sporesinger" },
+      { "resolve": true, "answers": [[1], [0], [1]] }
+    ],
+    "expect": {
+      "pt": { "Annex Sentry": [1, 4] },
+      "keywords": { "Annex Sentry": ["Flying", "Lifelink"] },
+      "players": [ { "battlefield_has": ["Venser, Corpse Puppet", "Annex Sentry"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: toxic 1 unblocked gives 1 poison and 1 life loss, lifelink still gains 1",
+    "players": [ { "battlefield": ["Venser, Corpse Puppet"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Venser, Corpse Puppet", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 21 }, { "life": 19, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: toxic does nothing when the combat damage goes to a creature",
+    "players": [ { "battlefield": ["Venser, Corpse Puppet"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Venser, Corpse Puppet", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Venser, Corpse Puppet" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 21 }, { "life": 20, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: ten poison counters loses the game",
+    "players": [ { "battlefield": ["Venser, Corpse Puppet"] }, { "poison": 9 } ],
+    "steps": [ { "attack": [ { "card": "Venser, Corpse Puppet", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "winner": 0 }
+  },
+  {
+    "name": "ruling: proliferate with no permanents chosen still triggers Venser",
+    "players": [
+      { "hand": ["Adaptive Sporesinger"], "battlefield": ["Venser, Corpse Puppet", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, "Forest", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [ { "cast": "Adaptive Sporesinger" }, { "resolve": true, "answers": [[1], [], [0]] } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Venser, Corpse Puppet", "The Hollow Sentinel", "Adaptive Sporesinger"] }, {} ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: proliferate can choose an opponent's permanent that has a counter",
+    "players": [
+      { "hand": ["Adaptive Sporesinger"], "battlefield": ["Venser, Corpse Puppet", "Forest", "Forest", "Plains"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] }
+    ],
+    "steps": [ { "cast": "Adaptive Sporesinger" }, { "resolve": true, "answers": [[1], [0], [0]] } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Hollow Sentinel"] }, {} ],
+      "counters": { "Grizzly Bears": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "ruling: proliferate adds one counter of every kind the permanent already has",
+    "players": [
+      { "hand": ["Adaptive Sporesinger"], "battlefield": ["Venser, Corpse Puppet", { "name": "Grizzly Bears", "counters": { "p1p1": 1, "charge": 1 } }, "Forest", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [ { "cast": "Adaptive Sporesinger" }, { "resolve": true, "answers": [[1], [0], [0]] } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Hollow Sentinel"] }, {} ],
+      "counters": { "Grizzly Bears": { "p1p1": 2, "charge": 2 } }
+    }
+  },
+  {
+    "name": "ruling: a +1/+1 and a -1/-1 counter on the same permanent are removed in pairs",
+    "players": [
+      { "hand": ["Forest"], "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1, "m1m1": 1 } } ] },
+      {}
+    ],
+    "steps": [ { "play_land": "Forest" } ],
+    "expect": { "counters": { "Grizzly Bears": { "p1p1": 0, "m1m1": 0 } } }
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "name": "Mirror Match",
+  "mana_cost": "{4}{U}{U}",
+  "types": ["Instant"],
+  "abilities": [
+    { "type": "CastOnlyIf", "condition": { "type": "InStep", "step": "DeclareBlockers" } },
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        {
+          "type": "ForEach",
+          "objects": { "type": "All", "filter": { "types": ["Creature"], "attacking_you": true }, "zone": "Battlefield" },
+          "effects": [
+            { "type": "CopyPermanent", "what": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 1 } },
+            { "type": "EnterBlocking", "what": { "type": "Remembered" }, "attacker": { "type": "EachObject" } },
+            { "type": "StoreRemembered", "slot": 0, "append": true }
+          ]
+        },
+        { "type": "Remember", "what": { "type": "Stored", "slot": 0 } },
+        {
+          "type": "Delayed",
+          "at": "EndOfCombat",
+          "effects": [ { "type": "Exile", "what": { "type": "Remembered" } } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only during the declare blockers step.\nFor each creature attacking you or a planeswalker you control, create a token that's a copy of that creature and that's blocking that creature. Exile those tokens at end of combat."
+}

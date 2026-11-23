@@ -1,0 +1,83 @@
+[
+  {
+    "name": "destroys an attacking creature that was blocked",
+    "players": [
+      { "hand": ["Smite"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Savannah Lions", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Smite", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Smite", "Grizzly Bears"] },
+        { "battlefield_has": ["Savannah Lions"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot target an attacking creature that was not blocked",
+    "players": [
+      { "hand": ["Smite"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "cast": "Smite", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Smite"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot target a creature that was blocked after combat ended",
+    "players": [
+      { "hand": ["Smite"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" },
+      { "cast": "Smite", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Smite"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blocked creature stays blocked after its blocker leaves combat, so Smite still works",
+    "players": [
+      { "hand": ["Smite", "Lightning Bolt"], "battlefield": ["Plains", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Savannah Lions", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "cast": "Smite", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Smite", "Grizzly Bears"] },
+        { "graveyard": ["Savannah Lions"] }
+      ]
+    }
+  }
+]

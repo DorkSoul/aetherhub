@@ -1,0 +1,90 @@
+[
+  {
+    "name": "ETB creates a 2/2 Rebel token and attaches to it",
+    "players": [ { "hand": ["Glimmer Lens"], "battlefield": ["Plains", "Plains"] }, {} ],
+    "steps": [
+      { "cast": "Glimmer Lens" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Glimmer Lens", "Rebel 2-2"] }, {} ],
+      "pt": { "Rebel 2-2": [2, 2] },
+      "attached": { "Glimmer Lens": "Rebel 2-2" }
+    }
+  },
+  {
+    "name": "equip {1}{W} moves it to another creature you control",
+    "players": [ { "battlefield": ["Plains", "Plains", "Glimmer Lens", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Glimmer Lens", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Glimmer Lens": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "draws when equipped creature attacks with at least one other creature",
+    "players": [ { "battlefield": ["Plains", "Plains", "Glimmer Lens", "Grizzly Bears", "Hill Giant"] }, {} ],
+    "steps": [
+      { "activate": "Glimmer Lens", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "no draw when the equipped creature attacks alone",
+    "players": [ { "battlefield": ["Plains", "Plains", "Glimmer Lens", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Glimmer Lens", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the Equipment stays when the Rebel dies and can be equipped again",
+    "players": [
+      { "hand": ["Glimmer Lens"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Glimmer Lens" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Rebel 2-2"] },
+      { "resolve": true },
+      { "activate": "Glimmer Lens", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Glimmer Lens", "Grizzly Bears"], "battlefield_lacks": ["Rebel 2-2"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "attached": { "Glimmer Lens": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: with two Rebels from doubling, the Equipment attaches to only one",
+    "players": [
+      { "hand": ["Glimmer Lens"], "battlefield": ["Doubling Season", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimmer Lens" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Doubling Season", "Glimmer Lens", "Rebel 2-2", "Rebel 2-2"] }, {} ],
+      "attached": { "Glimmer Lens": "Rebel 2-2" }
+    }
+  }
+]

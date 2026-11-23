@@ -1,0 +1,123 @@
+[
+ {
+  "name": "enchants a creature and gives it the untap ability",
+  "players": [
+   { "hand": ["Well Rested"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Well Rested", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Well Rested", "Grizzly Bears"] }, {} ],
+   "attached": { "Well Rested": "Grizzly Bears" },
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "cannot enchant a land",
+  "players": [
+   { "hand": ["Well Rested"], "battlefield": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Well Rested", "targets": ["Forest"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Well Rested"] }, {} ]
+  }
+ },
+ {
+  "name": "enchanted creature untapping gets two counters, 2 life and a card",
+  "players": [
+   {
+    "hand": [
+     "Well Rested"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Well Rested",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 22,
+     "hand_count": 1
+    },
+    {}
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "plusoneplusone": 2
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: the untap trigger goes on the stack at the beginning of the upkeep, not during the untap step",
+  "players": [
+   {
+    "hand": ["Well Rested"],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Well Rested", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "hold": true }
+  ],
+  "expect": {
+   "stack_empty": false,
+   "players": [
+    { "life": 20, "hand_count": 0 },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [2, 2]
+   }
+  }
+ }
+]

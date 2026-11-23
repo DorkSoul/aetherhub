@@ -1,0 +1,52 @@
+{
+  "name": "Mari, the Killing Quill",
+  "mana_cost": "{1}{B}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Vampire", "Assassin"],
+  "colors": ["B"],
+  "power": 3,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "ChangesZone", "filter": { "types": ["Creature"], "controller": "Opponent" }, "from": "Battlefield", "to": "Graveyard" },
+      "effects": [
+        { "type": "Move", "what": { "type": "TriggerObject" }, "to": "Exile", "remember": true },
+        { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "Hit", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantKeyword",
+        "affects": { "types": ["Creature"], "controller": "You", "any_of": [ { "subtypes": ["Assassin"] }, { "subtypes": ["Mercenary"] }, { "subtypes": ["Rogue"] } ] },
+        "keyword": "Deathtouch"
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "types": ["Creature"], "controller": "You", "any_of": [ { "subtypes": ["Assassin"] }, { "subtypes": ["Mercenary"] }, { "subtypes": ["Rogue"] } ] },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "DealsCombatDamage", "filter": { "this": true }, "to": "Player" },
+          "effects": [
+            {
+              "type": "Choose", "who": { "type": "You" }, "from": { "type": "TriggerPlayer" }, "zone": "Exile",
+              "filter": { "has_counter": "Hit" },
+              "min": 0, "max": 1,
+              "then": [
+                { "type": "RemoveCounters", "what": { "type": "Remembered" }, "kind": "Hit", "n": { "type": "Fixed", "n": 1 } },
+                { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+                { "type": "CreateToken", "token": "Treasure", "n": { "type": "Fixed", "n": 2 }, "controller": { "type": "You" } }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "oracle_text": "Whenever a creature an opponent controls dies, exile it with a hit counter on it.\nAssassins, Mercenaries, and Rogues you control have deathtouch and \"Whenever this creature deals combat damage to a player, you may remove a hit counter from a card that player owns in exile. If you do, draw a card and create two Treasure tokens.\""
+}

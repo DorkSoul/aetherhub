@@ -1,0 +1,86 @@
+[
+  { "name": "bloodthirst 1: an opponent was dealt damage this turn, so it enters 2/2",
+    "players": [
+      { "hand": ["Lightning Bolt", "Skarrgan Pit-Skulk"], "battlefield": ["Mountain", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Skarrgan Pit-Skulk" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Skarrgan Pit-Skulk"] }, { "life": 17 } ],
+      "pt": { "Skarrgan Pit-Skulk": [2, 2] },
+      "counters": { "Skarrgan Pit-Skulk": { "PlusOnePlusOne": 1 } }
+    }
+  },
+  { "name": "no damage dealt this turn: it enters as a 1/1 with no counter",
+    "players": [
+      { "hand": ["Skarrgan Pit-Skulk"], "battlefield": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Skarrgan Pit-Skulk" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Skarrgan Pit-Skulk"] }, {} ],
+      "pt": { "Skarrgan Pit-Skulk": [1, 1] }
+    }
+  },
+  { "name": "a 1-power creature can't block it (power 2 Pit-Skulk)",
+    "players": [
+      { "battlefield": [ { "name": "Skarrgan Pit-Skulk", "sick": false, "counters": { "p1p1": 1 } } ] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Skarrgan Pit-Skulk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Skarrgan Pit-Skulk" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  { "name": "an equal-power creature can block it",
+    "players": [
+      { "battlefield": [ { "name": "Skarrgan Pit-Skulk", "sick": false, "counters": { "p1p1": 1 } } ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Skarrgan Pit-Skulk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Skarrgan Pit-Skulk" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Skarrgan Pit-Skulk"] }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  { "name": "Llanowar Elves (power 1) is dropped as a blocker of the 2-power Pit-Skulk; Hill Giant blocks Bears instead",
+    "players": [
+      { "battlefield": [ { "name": "Skarrgan Pit-Skulk", "sick": false, "counters": { "p1p1": 1 } }, { "name": "Grizzly Bears", "sick": false } ] },
+      { "battlefield": ["Llanowar Elves", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Skarrgan Pit-Skulk", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Skarrgan Pit-Skulk" }, { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: each blocker is compared with the Pit-Skulk's power; Hill Giant (power 3) may block the 2/2",
+    "players": [
+      { "battlefield": [ { "name": "Skarrgan Pit-Skulk", "sick": false, "counters": { "p1p1": 1 } } ] },
+      { "battlefield": ["Llanowar Elves", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Skarrgan Pit-Skulk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Skarrgan Pit-Skulk" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Skarrgan Pit-Skulk"] }, { "battlefield_has": ["Hill Giant", "Llanowar Elves"], "life": 20 } ] }
+  }
+]

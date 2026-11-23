@@ -1,0 +1,163 @@
+[
+ {
+  "name": "enters untapped when you control a basic land",
+  "players": [
+   {
+    "hand": [
+     "Fire Nation Palace"
+    ],
+    "battlefield": [
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Fire Nation Palace"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Fire Nation Palace": false
+   }
+  }
+ },
+ {
+  "name": "enters tapped when you control no basic land",
+  "players": [
+   {
+    "hand": [
+     "Fire Nation Palace"
+    ],
+    "battlefield": [
+     "Darkslick Shores"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Fire Nation Palace"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Fire Nation Palace": true
+   }
+  }
+ },
+ {
+  "name": "{1}{R}, {T}: target creature gains firebending 4; attacking adds RRRR until end of combat",
+  "players": [
+   {
+    "battlefield": [
+     "Fire Nation Palace",
+     "Mountain",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Fire Nation Palace",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "EndCombat"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "R": 4
+     }
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: two firebending instances on one creature trigger separately (RRRR + RRRR)",
+  "players": [ { "battlefield": ["Fire Nation Palace", "Fire Nation Palace", "Mountain", "Plains", "Badlands", "Swamp", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "tap_for_mana": "Mountain" },
+   { "tap_for_mana": "Plains" },
+   { "activate": "Fire Nation Palace", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "tap_for_mana": "Badlands", "color": "R" },
+   { "tap_for_mana": "Swamp" },
+   { "activate": "Fire Nation Palace", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "resolve": true },
+   { "advance_to": "EndCombat" }
+  ],
+  "expect": { "players": [ { "pool": { "R": 8 } }, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: mana from another source added in combat is lost when the step changes; firebending mana is kept",
+  "players": [ { "battlefield": ["Fire Nation Palace", "Mountain", "Plains", "Swamp", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "tap_for_mana": "Mountain" },
+   { "tap_for_mana": "Plains" },
+   { "activate": "Fire Nation Palace", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "resolve": true },
+   { "tap_for_mana": "Swamp" },
+   { "advance_to": "EndCombat" }
+  ],
+  "expect": { "players": [ { "pool": { "R": 4 } }, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: firebending is a triggered ability: it still adds RRRR after the creature is killed in response",
+  "players": [ { "battlefield": ["Fire Nation Palace", "Mountain", "Plains", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [
+   { "activate": "Fire Nation Palace", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "EndCombat" }
+  ],
+  "expect": { "players": [ { "pool": { "R": 4 }, "graveyard": ["Grizzly Bears"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: firebending mana stays usable after combat damage, in the end of combat step",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Fire Nation Palace", "Mountain", "Plains", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "activate": "Fire Nation Palace", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "resolve": true },
+   { "advance_to": "EndCombat" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "pool": { "R": 3 } }, { "life": 15 } ] }
+ }
+]

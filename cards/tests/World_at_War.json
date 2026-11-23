@@ -1,0 +1,169 @@
+[
+  {
+    "name": "creatures that did not attack stay tapped when the extra combat begins",
+    "players": [
+      {
+        "hand": [
+          "World at War"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Grizzly Bears",
+          {
+            "name": "Hill Giant",
+            "tapped": true
+          }
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "World at War"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "turn": 1,
+      "step": "BeginCombat",
+      "tapped": {
+        "Grizzly Bears": false,
+        "Hill Giant": true
+      }
+    }
+  },
+  {
+    "name": "ruling: a rebound spell cast from hand that resolves is exiled, not put into the graveyard",
+    "players": [
+      { "hand": ["World at War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "World at War" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["World at War"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: at your next upkeep the rebound cast is free, and afterwards the card goes to the graveyard, not back to exile",
+    "players": [
+      { "hand": ["World at War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "World at War" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["World at War"], "exile": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: declining the rebound cast leaves the card in exile for good",
+    "players": [
+      { "hand": ["World at War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "World at War" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "exile": ["World at War"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a countered rebound spell goes to the graveyard and does not rebound",
+    "players": [
+      { "hand": ["World at War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "World at War" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "World at War" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["World at War"], "exile": [] }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: resolving World at War does not untap attackers; they untap at the new combat's beginning",
+    "players": [
+      { "hand": ["World at War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "World at War" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "the untap happens only at that turn's additional combat, not at the next turn's combat",
+    "players": [
+      { "hand": ["World at War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "World at War" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "turn": 2,
+      "step": "BeginCombat",
+      "tapped": { "Grizzly Bears": true },
+      "players": [ {}, { "life": 16 } ]
+    }
+  }
+]

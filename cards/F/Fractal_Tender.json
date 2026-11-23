@@ -1,0 +1,41 @@
+{
+  "name": "Fractal Tender",
+  "mana_cost": "{3}{G}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Elf", "Wizard"],
+  "power": 3,
+  "toughness": 3,
+  "abilities": [
+    { "type": "Ward", "cost": [{ "type": "Mana", "cost": "{2}" }] },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": {} },
+      "condition": {
+        "type": "AnyOf",
+        "cs": [
+          { "type": "CompareAmounts", "a": { "type": "ManaSpent", "of": { "type": "TriggerSource" } }, "b": { "type": "PowerOf", "of": { "type": "This" } }, "op": "Gt" },
+          { "type": "CompareAmounts", "a": { "type": "ManaSpent", "of": { "type": "TriggerSource" } }, "b": { "type": "ToughnessOf", "of": { "type": "This" } }, "op": "Gt" }
+        ]
+      },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "kind": "PlusOnePlusOne", "placed_by": "You", "filter": { "this": true } },
+      "once_per_turn": true,
+      "effects": [
+        {
+          "type": "Delayed",
+          "at": "EndOfTurn",
+          "effects": [
+            { "type": "CreateToken", "token": "Fractal 0-0 Green Blue", "n": { "type": "Fixed", "n": 1 } },
+            { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 3 } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Ward {2}\nIncrement (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nAt the beginning of each end step, if you put a counter on this creature this turn, create a 0/0 green and blue Fractal creature token and put three +1/+1 counters on it."
+}

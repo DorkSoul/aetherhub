@@ -1,0 +1,73 @@
+[
+  {
+    "name": "owner of targeted creature chooses top of library: it leaves the battlefield",
+    "players": [
+      { "hand": ["Swat Away"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "library": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Swat Away", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Swat Away"] },
+        { "library_count": 2, "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "owner of targeted spell chooses bottom: the spell goes to the bottom of its owner's library",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Forest"] },
+      { "hand": ["Swat Away"], "battlefield": ["Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Swat Away", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 2, "graveyard": [] },
+        { "graveyard": ["Swat Away"], "life": 20 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "with no attacking creature it costs full {2}{U}{U}: three Islands are not enough",
+    "players": [
+      { "hand": ["Swat Away"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Swat Away", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Swat Away"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "a creature attacking me reduces the cost by {2}: three Islands suffice",
+    "players": [
+      { "hand": ["Swat Away"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "library": ["Mountain"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Swat Away", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Swat Away"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

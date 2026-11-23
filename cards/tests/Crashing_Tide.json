@@ -1,0 +1,167 @@
+[
+ {
+  "name": "with a Merfolk: bounce target creature and draw a card",
+  "players": [
+   {
+    "hand": [
+     "Crashing Tide"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Coral Merfolk"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Crashing Tide",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1,
+     "graveyard": [
+      "Crashing Tide"
+     ]
+    },
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "bouncing your own creature returns it to your hand",
+  "players": [
+   {
+    "hand": [
+     "Crashing Tide"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Crashing Tide",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "with a Merfolk it has flash: cast in the opponent's main phase to bounce their creature",
+  "players": [
+   { "hand": ["Crashing Tide"], "battlefield": ["Island", "Island", "Island", "Coral Merfolk"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "pass": true, "player": 1 },
+   { "cast": "Crashing Tide", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "graveyard": ["Crashing Tide"] },
+    { "hand_count": 2, "battlefield_lacks": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "without a Merfolk it is not castable in the opponent's main phase",
+  "players": [
+   { "hand": ["Crashing Tide"], "battlefield": ["Island", "Island", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "pass": true, "player": 1 },
+   { "cast": "Crashing Tide", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Crashing Tide"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the target is gone when Crashing Tide resolves, it does nothing and draws nothing",
+  "players": [
+   { "hand": ["Crashing Tide"], "battlefield": ["Island", "Island", "Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Crashing Tide", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "graveyard": ["Crashing Tide"] },
+    { "graveyard": ["Lightning Bolt", "Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the Merfolk loses flash while Crashing Tide is on the stack, it still resolves",
+  "players": [
+   { "hand": ["Crashing Tide"], "battlefield": ["Island", "Island", "Island", "Coral Merfolk"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Crashing Tide", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Coral Merfolk"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "graveyard": ["Coral Merfolk", "Crashing Tide"], "battlefield_lacks": ["Coral Merfolk"] },
+    { "hand": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ }
+]

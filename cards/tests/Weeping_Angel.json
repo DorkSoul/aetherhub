@@ -1,0 +1,119 @@
+[
+  {
+    "name": "opponent casting a creature spell makes it stop being a creature until end of turn",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Weeping Angel"] },
+      { "hand": ["Spectral Sailor"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Weeping Angel"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Murder"], "battlefield_has": ["Weeping Angel"] }, {} ]
+    }
+  },
+  {
+    "name": "without an opponent creature spell Weeping Angel is still a creature and can be destroyed",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Weeping Angel"] },
+      { "battlefield": ["Island"], "hand": ["Spectral Sailor"] }
+    ],
+    "steps": [
+      { "cast": "Murder", "targets": ["Weeping Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Murder", "Weeping Angel"] }, {} ]
+    }
+  },
+  {
+    "name": "combat damage to a blocking creature is prevented and that creature is shuffled into its owner's library",
+    "players": [
+      { "battlefield": ["Weeping Angel"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Weeping Angel", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Weeping Angel" } ] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Weeping Angel"] },
+        { "life": 20, "battlefield_lacks": ["Grizzly Bears"], "library_count": 21, "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "combat damage to a player is not prevented",
+    "players": [
+      { "battlefield": ["Weeping Angel"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Weeping Angel", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "ruling: a creature spell flashed in during the attack removes Weeping Angel from combat",
+    "players": [
+      { "battlefield": ["Weeping Angel"] },
+      { "hand": ["Spectral Sailor"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Weeping Angel", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "battlefield_has": ["Weeping Angel"] }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: a creature blocked by Weeping Angel stays blocked when the Angel leaves combat",
+    "players": [
+      { "battlefield": ["Weeping Angel"] },
+      { "battlefield": ["Grizzly Bears", "Island"], "hand": ["Spectral Sailor"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Weeping Angel", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: after an opponent's creature spell it is only an artifact, no longer an Alien or Angel",
+    "players": [
+      { "battlefield": ["Weeping Angel"] },
+      { "hand": ["Spectral Sailor"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Weeping Angel"] }, {} ],
+      "not_subtypes": { "Weeping Angel": ["Alien", "Angel"] }
+    }
+  }
+]

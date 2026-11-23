@@ -1,0 +1,69 @@
+{
+  "name": "Invoke Calamity",
+  "mana_cost": "{1}{R}{R}{R}{R}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0 },
+        { "type": "StoreRemembered", "slot": 1 },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Hand",
+          "also_zones": ["Graveyard"],
+          "filter": { "types": ["Instant", "Sorcery"], "controller": "You" },
+          "min": 0,
+          "max": 1,
+          "then": [
+            { "type": "StoreRemembered", "slot": 0 },
+            { "type": "ClearRemembered" },
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Hand",
+              "also_zones": ["Graveyard"],
+              "filter": {
+                "types": ["Instant", "Sorcery"],
+                "controller": "You",
+                "not_among_stored": 0,
+                "mana_value_vs": {
+                  "amount": {
+                    "type": "Minus",
+                    "a": { "type": "Fixed", "n": 6 },
+                    "b": { "type": "ManaValueOf", "of": { "type": "Stored", "slot": 0 } }
+                  },
+                  "op": "Le"
+                }
+              },
+              "min": 0,
+              "max": 1,
+              "then": [
+                { "type": "StoreRemembered", "slot": 1 }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "CastFree",
+          "what": { "type": "Stored", "slot": 0 },
+          "exile_after": true
+        },
+        {
+          "type": "CastFree",
+          "what": { "type": "Stored", "slot": 1 },
+          "exile_after": true
+        },
+        {
+          "type": "Move",
+          "what": { "type": "This" },
+          "from": "Stack",
+          "to": "Exile"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "You may cast up to two instant and/or sorcery spells with total mana value 6 or less from your graveyard and/or hand without paying their mana costs. If those spells would be put into your graveyard, exile them instead. Exile Invoke Calamity."
+}

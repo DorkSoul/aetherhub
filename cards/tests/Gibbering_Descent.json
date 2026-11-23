@@ -1,0 +1,179 @@
+[
+  {
+    "name": "opponent's upkeep: they lose 1 life and discard a card",
+    "players": [
+      {
+        "battlefield": [
+          "Gibbering Descent"
+        ]
+      },
+      {
+        "hand": [
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 19,
+          "hand_count": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "your upkeep: lose 1 life and discard a card",
+    "players": [
+      {
+        "hand": [
+          "Swamp"
+        ],
+        "battlefield": [
+          "Gibbering Descent"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 19,
+          "hand_count": 0
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "madness: discarded by Mind Rot and cast for its madness cost (answer yes)",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Gibbering Descent"], "battlefield": ["Swamp", "Swamp", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Gibbering Descent"] } ]
+    }
+  },
+  {
+    "name": "madness declined: the discarded Gibbering Descent goes to the graveyard",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Gibbering Descent"], "battlefield": ["Swamp", "Swamp", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard_has": ["Gibbering Descent"] } ]
+    }
+  },
+  {
+    "name": "hellbent: with no cards in hand the upkeep trigger does nothing (the upkeep is skipped)",
+    "players": [
+      {
+        "battlefield": [
+          "Gibbering Descent"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no cards in hand the upkeep is skipped and the turn moves on to the draw step",
+    "players": [
+      { "battlefield": ["Gibbering Descent"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Draw" }
+    ],
+    "expect": {
+      "step": "Draw",
+      "players": [
+        { "life": 20, "hand_count": 1 },
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a declined madness discard goes to the graveyard and cannot be cast later",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Gibbering Descent"], "battlefield": ["Swamp", "Swamp", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard_has": ["Gibbering Descent"], "battlefield_lacks": ["Gibbering Descent"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: madness is paid at the madness cost {2}{B}{B} (four lands), not the full six-mana cost",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Gibbering Descent"], "battlefield": ["Swamp", "Swamp", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Gibbering Descent"], "exile": [] } ]
+    }
+  }
+]

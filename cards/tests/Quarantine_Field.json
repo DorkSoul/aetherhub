@@ -1,0 +1,164 @@
+[
+  { "name": "X=1: exiles one chosen nonland permanent an opponent controls",
+    "players": [
+      { "hand": ["Quarantine Field"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Quarantine Field", "answers": [1] },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Quarantine Field"] },
+        { "battlefield_has": ["Forest"], "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  { "name": "X=2: exiles two nonland permanents, never lands",
+    "players": [
+      { "hand": ["Quarantine Field"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Quarantine Field", "answers": [2] },
+      { "resolve": true, "targets": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Quarantine Field"] },
+        { "battlefield_has": ["Forest"], "exile": ["Grizzly Bears", "Hill Giant"] }
+      ]
+    }
+  },
+  { "name": "X=0: enters with no counters and exiles nothing",
+    "players": [
+      { "hand": ["Quarantine Field"], "battlefield": ["Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Quarantine Field", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Quarantine Field"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  { "name": "ruling: if it leaves before its trigger resolves, no permanents are exiled",
+    "players": [
+      { "hand": ["Quarantine Field", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Quarantine Field", "answers": [1] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Disenchant", "targets": ["Grizzly Bears", "Quarantine Field"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Disenchant", "Quarantine Field"], "battlefield_lacks": ["Quarantine Field"] },
+        { "battlefield_has": ["Grizzly Bears"], "exile": [] }
+      ]
+    }
+  },
+  { "name": "ruling: an exiled token ceases to exist and is not returned or kept in exile",
+    "players": [
+      { "hand": ["Quarantine Field"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Raise the Alarm"], "battlefield": ["Plains", "Plains"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Raise the Alarm", "player": 1 },
+      { "resolve": true },
+      { "cast": "Quarantine Field", "answers": [1] },
+      { "resolve": true, "targets": ["Soldier"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Quarantine Field"] },
+        { "battlefield_has": ["Soldier"], "exile": [] }
+      ]
+    }
+  },
+  { "name": "ruling: exiled cards return to the battlefield as soon as it leaves",
+    "players": [
+      { "hand": ["Quarantine Field", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Quarantine Field", "answers": [1] },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "cast": "Disenchant", "targets": ["Quarantine Field"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Disenchant", "Quarantine Field"], "battlefield_lacks": ["Quarantine Field"] },
+        { "battlefield_has": ["Grizzly Bears"], "exile": [] }
+      ]
+    }
+  },
+  { "name": "ruling: several exiled permanents all return when it leaves",
+    "players": [
+      { "hand": ["Quarantine Field", "Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Quarantine Field", "answers": [2] },
+      { "resolve": true, "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "cast": "Disenchant", "targets": ["Quarantine Field"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Disenchant", "Quarantine Field"] },
+        { "battlefield_has": ["Grizzly Bears", "Hill Giant"], "exile": [] }
+      ]
+    }
+  },
+  { "name": "ruling: an Aura on an exiled creature goes to its owner's graveyard",
+    "players": [
+      { "hand": ["Pacifism", "Quarantine Field"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Quarantine Field", "answers": [1] },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Pacifism"], "battlefield_has": ["Quarantine Field"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  { "name": "ruling: equipment on an exiled creature stays on the battlefield",
+    "players": [
+      { "hand": ["Quarantine Field"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Bonesplitter", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "activate": "Bonesplitter", "ability": 0, "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "cast": "Quarantine Field", "answers": [1] },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Quarantine Field"] },
+        { "battlefield_has": ["Bonesplitter"], "exile": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

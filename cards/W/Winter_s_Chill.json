@@ -1,0 +1,50 @@
+{
+  "name": "Winter's Chill",
+  "mana_cost": "{X}{U}",
+  "types": ["Instant"],
+  "colors": ["U"],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": { "type": "AnyOf", "cs": [ { "type": "InStep", "step": "BeginCombat" }, { "type": "InStep", "step": "DeclareAttackers" } ] }
+    },
+    {
+      "type": "XCap",
+      "amount": { "type": "Count", "filter": { "types": ["Land"], "supertypes": ["Snow"], "controller": "You" }, "zone": "Battlefield" }
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "attacking": true } }, "max_x": true, "exact_x": true, "label": "X target attacking creatures" }
+      ],
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "Targets" },
+          "effects": [
+            {
+              "type": "Unless",
+              "payer": { "type": "ControllerOf", "of": { "type": "Remembered" } },
+              "cost": [ { "type": "Mana", "cost": "{2}" } ],
+              "effects": [
+                {
+                  "type": "Unless",
+                  "payer": { "type": "ControllerOf", "of": { "type": "Remembered" } },
+                  "cost": [ { "type": "Mana", "cost": "{1}" } ],
+                  "effects": [
+                    { "type": "Delayed", "at": "EndOfCombat", "effects": [ { "type": "Destroy", "what": { "type": "Remembered" } } ] }
+                  ],
+                  "if_paid": [
+                    { "type": "PreventDamage", "to": { "type": "Remembered" }, "combat_only": true },
+                    { "type": "PreventDamage", "from": { "type": "Remembered" }, "combat_only": true }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only during combat before blockers are declared.\nX can't be greater than the number of snow lands you control.\nChoose X target attacking creatures. For each of those creatures, its controller may pay {1} or {2}. If that player doesn't, destroy that creature at end of combat. If that player pays only {1}, prevent all combat damage that would be dealt to and dealt by that creature this combat."
+}

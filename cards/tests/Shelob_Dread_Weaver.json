@@ -1,0 +1,102 @@
+[
+  {
+    "name": "stats",
+    "players": [{ "battlefield": ["Shelob, Dread Weaver"] }, {}],
+    "steps": [],
+    "expect": { "pt": { "Shelob, Dread Weaver": [3, 3] } }
+  },
+  {
+    "name": "a nontoken creature an opponent controls that dies is exiled",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Shelob, Dread Weaver", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "graveyard": ["Doom Blade"] }, { "exile": ["Grizzly Bears"], "graveyard": [] }] }
+  },
+  {
+    "name": "your own creature that dies is not exiled",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Shelob, Dread Weaver", "Grizzly Bears", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "graveyard_has": ["Grizzly Bears"], "exile": [] }, {}] }
+  },
+  {
+    "name": "an exiled creature can be put into its owner's graveyard for two counters and a card",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Shelob, Dread Weaver", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Shelob, Dread Weaver", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Island"] }, { "graveyard": ["Grizzly Bears"], "exile": [] }],
+      "counters": { "Shelob, Dread Weaver": { "PlusOnePlusOne": 2 } },
+      "pt": { "Shelob, Dread Weaver": [5, 5] }
+    }
+  },
+  {
+    "name": "the counters ability can't be activated with no creature exiled with Shelob",
+    "players": [
+      { "battlefield": ["Shelob, Dread Weaver", "Swamp", "Swamp", "Swamp"] },
+      { "exile": ["Grizzly Bears"] }
+    ],
+    "steps": [{ "activate": "Shelob, Dread Weaver", "ability": 0, "illegal": true }],
+    "expect": { "players": [{}, { "exile": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "X = 2 returns the exiled mana value 2 creature tapped under your control",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Shelob, Dread Weaver", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Shelob, Dread Weaver", "ability": 1, "targets": ["Grizzly Bears"], "answers": [2] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"], "exile": [] }],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "X selects by mana value: X = 4 returns Hill Giant, Grizzly Bears stays exiled",
+    "players": [
+      { "hand": ["Doom Blade", "Doom Blade"], "battlefield": ["Shelob, Dread Weaver", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Doom Blade", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Shelob, Dread Weaver", "ability": 1, "targets": ["Hill Giant"], "answers": [4] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Hill Giant"] }, { "exile": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "ruling: Shelob and an opposing creature die together: the opposing creature is still exiled",
+    "players": [ { "battlefield": ["Shelob, Dread Weaver"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Shelob, Dread Weaver", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Shelob, Dread Weaver" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Shelob, Dread Weaver"] }, { "exile": ["Hill Giant"], "graveyard": [] } ] }
+  }
+]

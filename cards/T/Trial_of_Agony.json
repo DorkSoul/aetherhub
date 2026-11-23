@@ -1,0 +1,28 @@
+{
+  "name": "Trial of Agony",
+  "mana_cost": "{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "Opponent" } }, "label": "first target creature an opponent controls" },
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controlled_by": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } } } }, "distinct": true, "label": "second target creature controlled by the same player" }
+      ],
+      "effects": [
+        { "type": "Remember", "what": { "type": "Targets" } },
+        { "type": "StoreRemembered", "slot": 0 },
+        { "type": "Choose", "who": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } }, "zone": "Battlefield", "filter": { "among_stored": 0 },
+          "then": [
+            { "type": "StoreRemembered", "slot": 1 },
+            { "type": "Choose", "who": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } }, "zone": "Battlefield", "filter": { "among_stored": 0, "not_among_stored": 1 }, "random": true,
+              "then": [
+                { "type": "GrantStatic", "what": { "type": "Remembered" }, "effect": { "type": "CantBlock", "affects": {} }, "duration": "UntilEndOfTurn" }
+              ] },
+            { "type": "DealDamage", "to": { "type": "Stored", "slot": 1 }, "amount": { "type": "Fixed", "n": 5 } }
+          ] }
+      ]
+    }
+  ],
+  "oracle_text": "Choose two target creatures controlled by the same opponent. That player chooses one of those creatures. Trial of Agony deals 5 damage to that creature, and the other can't block this turn."
+}

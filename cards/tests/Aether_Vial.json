@@ -1,0 +1,219 @@
+[
+  {
+    "name": "put a counter in upkeep, then put a creature with that mana value onto the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Llanowar Elves",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Aether Vial"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Aether Vial",
+        "ability": 0
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Aether Vial",
+            "Llanowar Elves"
+          ],
+          "hand": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Aether Vial": true
+      }
+    }
+  },
+  {
+    "name": "no creature in hand matches the counter count: nothing enters",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Aether Vial"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Aether Vial",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "hand": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the upkeep counter leaves no counters: a mana value 1 creature does not enter",
+    "players": [
+      {
+        "hand": [
+          "Llanowar Elves"
+        ],
+        "battlefield": [
+          "Aether Vial"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Aether Vial",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Llanowar Elves"
+          ],
+          "hand": [
+            "Llanowar Elves"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Vial leaves while its ability is on the stack; its last known counters (2) still choose Grizzly Bears",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Shatter"],
+        "battlefield": [{ "name": "Aether Vial", "counters": { "charge": 2 } }, "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Aether Vial", "ability": 0 },
+      { "cast": "Shatter", "targets": ["Aether Vial"] },
+      { "resolve": true, "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Aether Vial", "Shatter"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a {X} creature card in hand has X=0, so Tyrant Guard (mana value 3) enters with 3 counters",
+    "players": [
+      {
+        "hand": ["Tyrant Guard"],
+        "battlefield": [{ "name": "Aether Vial", "counters": { "charge": 3 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Aether Vial", "ability": 0 },
+      { "resolve": true, "answers": ["Tyrant Guard"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tyrant Guard"], "hand_count": 0 },
+        {}
+      ],
+      "pt": { "Tyrant Guard": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: with 2 counters the mana value 3 Tyrant Guard does not match and stays in hand",
+    "players": [
+      {
+        "hand": ["Tyrant Guard"],
+        "battlefield": [{ "name": "Aether Vial", "counters": { "charge": 2 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Aether Vial", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Tyrant Guard"], "hand": ["Tyrant Guard"] },
+        {}
+      ]
+    }
+  }
+]

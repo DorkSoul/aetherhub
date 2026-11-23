@@ -1,0 +1,83 @@
+[
+  {
+    "name": "instant spells you control have lifelink: Lightning Bolt to the opponent gains you 3",
+    "players": [{"hand": ["Lightning Bolt"], "battlefield": ["Soulfire Grand Master", "Mountain"]}, {}],
+    "steps": [{"cast": "Lightning Bolt", "targets": ["p1"]}, {"resolve": true}],
+    "expect": {
+      "players": [{"life": 23, "graveyard": ["Lightning Bolt"]}, {"life": 17}]
+    }
+  },
+  {
+    "name": "the opponent's instant does not get lifelink from your Soulfire",
+    "players": [{"battlefield": ["Soulfire Grand Master"]}, {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}],
+    "steps": [{"pass": true}, {"cast": "Lightning Bolt", "targets": ["p0"], "player": 1}, {"resolve": true}],
+    "expect": {
+      "players": [{"life": 17}, {"life": 20}]
+    }
+  },
+  {
+    "name": "activated: the next instant you cast from hand this turn goes to hand instead of the graveyard",
+    "players": [{"hand": ["Lightning Bolt"], "battlefield": ["Soulfire Grand Master", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]}, {}],
+    "steps": [
+      {"activate": "Soulfire Grand Master", "ability": 0},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"hand": ["Lightning Bolt"], "graveyard": []}, {"life": 17}]
+    }
+  },
+  {
+    "name": "the effect applies only to the next instant or sorcery: a second Bolt goes to the graveyard",
+    "players": [{"hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Soulfire Grand Master", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]}, {}],
+    "steps": [
+      {"activate": "Soulfire Grand Master", "ability": 0},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"hand": ["Lightning Bolt"], "graveyard": ["Lightning Bolt"]}, {"life": 14}]
+    }
+  },
+  {
+    "name": "ruling: the countered first Bolt does not carry the effect on; the next Bolt goes to the graveyard",
+    "players": [{"hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Soulfire Grand Master", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]}, {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}],
+    "steps": [
+      {"activate": "Soulfire Grand Master", "ability": 0},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"cast": "Counterspell", "player": 1, "targets": [{"stack": "Lightning Bolt"}]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"hand": [], "graveyard": ["Lightning Bolt", "Lightning Bolt"], "life": 23}, {"life": 17, "graveyard": ["Counterspell"]}]
+    }
+  },
+  {
+    "name": "ruling: lifelink comes from the spell itself: a sorcery's creature dealing fight damage gains its controller nothing",
+    "players": [{"hand": ["Prey Upon"], "battlefield": ["Soulfire Grand Master", "Forest", "Grizzly Bears"]}, {"battlefield": ["Hill Giant"]}],
+    "steps": [{"cast": "Prey Upon", "targets": ["Grizzly Bears", "Hill Giant"]}, {"resolve": true}],
+    "expect": {
+      "players": [{"life": 20, "graveyard_has": ["Prey Upon", "Grizzly Bears"]}, {"battlefield_has": ["Hill Giant"]}]
+    }
+  },
+  {
+    "name": "ruling: Temporal Trespass exiles itself, so the Soulfire effect does not return it to hand",
+    "players": [{"hand": ["Temporal Trespass"], "battlefield": ["Soulfire Grand Master", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "graveyard": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"]}, {}],
+    "steps": [
+      {"activate": "Soulfire Grand Master", "ability": 0},
+      {"resolve": true},
+      {"cast": "Temporal Trespass", "answers": [["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"]]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"hand": [], "graveyard": []}, {}]
+    }
+  }
+]

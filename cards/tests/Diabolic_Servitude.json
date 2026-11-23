@@ -1,0 +1,83 @@
+[
+  {
+    "name": "returns a creature card from your graveyard to the battlefield",
+    "players": [
+      { "hand": ["Diabolic Servitude"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Diabolic Servitude" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Diabolic Servitude", "Grizzly Bears"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "when the linked creature dies it is exiled and the enchantment returns to hand",
+    "players": [
+      { "hand": ["Diabolic Servitude"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Diabolic Servitude" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Terror", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Diabolic Servitude"], "exile": ["Grizzly Bears"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "when the enchantment leaves the battlefield the linked creature is exiled",
+    "players": [
+      { "hand": ["Diabolic Servitude"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Diabolic Servitude" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Disenchant", "targets": ["Diabolic Servitude"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Diabolic Servitude"], "exile": ["Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ]
+    }
+  },
+  {
+    "name": "another creature dying doesn't bounce the enchantment",
+    "players": [
+      { "hand": ["Diabolic Servitude"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Hill Giant"], "graveyard": ["Grizzly Bears"] },
+      { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Diabolic Servitude" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Terror", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Diabolic Servitude", "Grizzly Bears"], "graveyard": ["Hill Giant"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a creature returned to hand by another effect loses the link, the enchantment stays",
+    "players": [
+      { "hand": ["Diabolic Servitude", "Scapegoat"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Plains", "Savannah Lions"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Diabolic Servitude" },
+      { "resolve": true },
+      { "cast": "Scapegoat", "targets": ["Grizzly Bears"], "answers": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Diabolic Servitude"], "hand": ["Grizzly Bears"], "exile": [], "graveyard": ["Savannah Lions", "Scapegoat"] }, {} ]
+    }
+  }
+]

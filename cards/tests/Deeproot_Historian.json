@@ -1,0 +1,79 @@
+[
+ {
+  "name": "a Merfolk card in your graveyard can be cast with retrace by discarding a land",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Deeproot Historian", "Island"], "graveyard": ["Merfolk of the Pearl Trident"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Merfolk of the Pearl Trident", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Deeproot Historian", "Merfolk of the Pearl Trident"], "hand": [], "graveyard": ["Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a Druid card in your graveyard has retrace too",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Deeproot Historian", "Forest"], "graveyard": ["Elvish Mystic"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Elvish Mystic", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Deeproot Historian", "Elvish Mystic"], "hand": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "retrace needs a land card to discard",
+  "players": [
+   { "battlefield": ["Deeproot Historian", "Island"], "graveyard": ["Merfolk of the Pearl Trident"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Merfolk of the Pearl Trident", "alt": 100, "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Merfolk of the Pearl Trident"] }, {} ] }
+ },
+ {
+  "name": "other creature types gain no retrace",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Deeproot Historian", "Forest", "Forest"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears", "alt": 100, "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: a countered retrace spell goes back to the graveyard and can be retraced again",
+  "players": [
+   { "hand": ["Forest", "Forest"], "battlefield": ["Deeproot Historian", "Island", "Island"], "graveyard": ["Merfolk of the Pearl Trident"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Merfolk of the Pearl Trident", "alt": 100, "answers": ["Forest"] },
+   { "pass": true },
+   { "cast": "Counterspell", "targets": [{ "stack": "Merfolk of the Pearl Trident" }], "player": 1 },
+   { "resolve": true },
+   { "cast": "Merfolk of the Pearl Trident", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Deeproot Historian", "Merfolk of the Pearl Trident"], "hand": [], "graveyard": ["Forest", "Forest"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,78 @@
+[
+  { "name": "controller can cast only one spell per turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Eidolon of Rhetoric", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 17 } ]
+    }
+  },
+  { "name": "opponent who cast a spell this turn can not cast another",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Eidolon of Rhetoric", "Mountain"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, { "life": 20 } ]
+    }
+  },
+  { "name": "the Eidolon itself counts as the one spell cast this turn",
+    "players": [
+      { "hand": ["Eidolon of Rhetoric", "Lightning Bolt"], "battlefield": ["Plains", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eidolon of Rhetoric" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Eidolon of Rhetoric"], "hand": ["Lightning Bolt"] }, { "life": 20 } ]
+    }
+  },
+  { "name": "without Eidolon each player may cast several spells",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 14 } ]
+    }
+  },
+  { "name": "ruling: a spell cast before Eidolon entered still counts, so no second spell once it is out",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Eidolon of Rhetoric"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Eidolon of Rhetoric" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Eidolon of Rhetoric"], "hand": ["Lightning Bolt"] }, { "life": 17 } ]
+    }
+  }
+]

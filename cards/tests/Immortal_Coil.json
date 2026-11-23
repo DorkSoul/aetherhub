@@ -1,0 +1,131 @@
+[
+  {
+    "name": "Shock dealt to you is prevented and exiles 2 graveyard cards (one per point prevented)",
+    "players": [
+      {
+        "battlefield": ["Immortal Coil"],
+        "graveyard": ["Forest", "Island", "Plains"]
+      },
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": ["Forest", "Island"] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Plains"], "exile": ["Forest", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Shock dealt to the opponent is not prevented (Coil only protects its controller)",
+    "players": [
+      {
+        "battlefield": ["Immortal Coil"],
+        "graveyard": ["Forest", "Island"]
+      },
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Forest", "Island"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "{T}, exile two cards from your graveyard: draw a card (a third card keeps the graveyard non-empty)",
+    "players": [
+      {
+        "battlefield": ["Immortal Coil"],
+        "graveyard": ["Forest", "Island", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Immortal Coil", "ability": 0, "answers": [["Forest", "Island"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Plains"], "exile": ["Forest", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no cards left in your graveyard: you lose the game",
+    "players": [
+      { "battlefield": ["Immortal Coil"], "graveyard": ["Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Immortal Coil", "ability": 0 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": 1
+    }
+  },
+  {
+    "name": "a card left in your graveyard: the game goes on",
+    "players": [
+      { "battlefield": ["Immortal Coil"], "graveyard": ["Forest", "Island", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Immortal Coil", "ability": 0, "answers": [["Forest", "Island"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": -1,
+      "players": [{ "graveyard": ["Plains"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a card put into your graveyard after the lose trigger has checked does not save you",
+    "players": [
+      { "battlefield": ["Immortal Coil", "Mountain"], "graveyard": ["Forest", "Island"], "hand": ["Shock"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Immortal Coil", "ability": 0 },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": 1
+    }
+  },
+  {
+    "name": "ruling: the exile ability needs two cards in your graveyard (one is not enough)",
+    "players": [
+      { "battlefield": ["Immortal Coil"], "graveyard": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Immortal Coil", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Immortal Coil"], "graveyard": ["Forest"] },
+        {}
+      ]
+    }
+  }
+]

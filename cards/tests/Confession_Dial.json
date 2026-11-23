@@ -1,0 +1,129 @@
+[
+ {
+  "name": "tap: legendary creature in graveyard gains escape, castable exiling three other cards",
+  "players": [
+   {
+    "battlefield": ["Confession Dial", "Plains", "Forest"],
+    "graveyard": ["Katilda, Dawnhart Prime", "Shock", "Shock", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Confession Dial", "ability": 0 },
+   { "resolve": true },
+   { "cast": "Katilda, Dawnhart Prime", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Katilda, Dawnhart Prime"], "exile": ["Shock", "Shock", "Shock"], "graveyard": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "escape needs three other cards in the graveyard",
+  "players": [
+   {
+    "battlefield": ["Confession Dial", "Plains", "Forest"],
+    "graveyard": ["Katilda, Dawnhart Prime", "Shock", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Confession Dial", "ability": 0 },
+   { "resolve": true },
+   { "cast": "Katilda, Dawnhart Prime", "alt": 100, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Katilda, Dawnhart Prime", "Shock", "Shock"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a non-legendary creature card cannot be targeted",
+  "players": [
+   {
+    "battlefield": ["Confession Dial"],
+    "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Confession Dial", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "enters and surveils 3: the chosen card goes to the graveyard, the rest stay on top",
+  "players": [
+   { "hand": ["Confession Dial"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Grizzly Bears", "Island", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Confession Dial" },
+   { "resolve": true, "answers": [["Grizzly Bears"]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"], "library_top": ["Island", "Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "surveil 3 with nothing put in the graveyard leaves the library untouched",
+  "players": [
+   { "hand": ["Confession Dial"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Grizzly Bears", "Island", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Confession Dial" },
+   { "resolve": true, "answers": [[]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": [], "library_top": ["Grizzly Bears", "Island", "Forest"] },
+    {}
+   ]
+  }
+ },
+ { "name": "ruling: an escaped creature that dies goes to its owner's graveyard",
+   "players": [
+    { "hand": ["Lightning Bolt"], "battlefield": ["Confession Dial", "Plains", "Forest", "Mountain"], "graveyard": ["Katilda, Dawnhart Prime", "Shock", "Shock", "Shock"] },
+    {}
+   ],
+   "steps": [
+    { "activate": "Confession Dial", "ability": 0 },
+    { "resolve": true },
+    { "cast": "Katilda, Dawnhart Prime", "alt": 100 },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Katilda, Dawnhart Prime"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_lacks": ["Katilda, Dawnhart Prime"], "graveyard_has": ["Katilda, Dawnhart Prime", "Lightning Bolt"], "exile": ["Shock", "Shock", "Shock"] },
+     {}
+    ]
+   }
+ },
+ { "name": "ruling: surveil 3 can put all three cards into the graveyard",
+   "players": [ { "hand": ["Confession Dial"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Grizzly Bears", "Island", "Forest"] }, {} ],
+   "steps": [
+    { "cast": "Confession Dial" },
+    { "resolve": true, "answers": [["Grizzly Bears", "Island", "Forest"]] },
+    { "resolve": true }
+   ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Island", "Forest"] }, {} ] }
+ }
+]

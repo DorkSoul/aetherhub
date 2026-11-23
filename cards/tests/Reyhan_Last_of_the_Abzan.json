@@ -1,0 +1,198 @@
+[
+  {
+    "name": "enters with three counters",
+    "players": [
+      { "hand": ["Reyhan, Last of the Abzan"], "battlefield": ["Swamp", "Forest", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Reyhan, Last of the Abzan": { "p1p1": 3 } },
+      "pt": { "Reyhan, Last of the Abzan": [3, 3] }
+    }
+  },
+  {
+    "name": "dies with counters: may move them to another creature",
+    "players": [
+      { "hand": ["Reyhan, Last of the Abzan", "Lightning Bolt"], "battlefield": ["Swamp", "Forest", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Reyhan, Last of the Abzan"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Reyhan, Last of the Abzan"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "commander put into the command zone with +1/+1 counters: may move its counters to target creature",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Reyhan, Last of the Abzan"],
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Swamp", "Forest", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Reyhan, Last of the Abzan"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "command": ["Reyhan, Last of the Abzan"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "commander to the command zone: declining the may leaves the target creature alone",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Reyhan, Last of the Abzan"],
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Swamp", "Forest", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Reyhan, Last of the Abzan"] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "command": ["Reyhan, Last of the Abzan"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "commander with counters bounced to hand goes to the command zone instead: may move its counters to target creature",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Reyhan, Last of the Abzan"],
+        "hand": ["Unsummon"],
+        "battlefield": ["Swamp", "Forest", "Mountain", "Island", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Unsummon", "targets": ["Reyhan, Last of the Abzan"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "command": ["Reyhan, Last of the Abzan"], "battlefield_lacks": ["Reyhan, Last of the Abzan"], "graveyard": ["Unsummon"] },
+        {}
+      ],
+      "counters": { "Grizzly Bears": { "p1p1": 3 } },
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "non-commander with counters bounced to hand: no trigger, counters stay behind",
+    "players": [
+      {
+        "hand": ["Reyhan, Last of the Abzan", "Unsummon"],
+        "battlefield": ["Swamp", "Forest", "Mountain", "Island", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Unsummon", "targets": ["Reyhan, Last of the Abzan"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Reyhan, Last of the Abzan"], "graveyard": ["Unsummon"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: after one commander is cast, the other costs no commander tax",
+    "commander": true,
+    "players": [
+      { "command": ["Reyhan, Last of the Abzan", "Michelangelo, the Heart"], "battlefield": ["Swamp", "Forest", "Forest", "Forest", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Michelangelo, the Heart" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Reyhan, Last of the Abzan", "Michelangelo, the Heart"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: enough -1/-1 counters at once kill Reyhan; its trigger uses the +1/+1 counters it had before them",
+    "players": [
+      {
+        "hand": ["Blight Rot"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Reyhan, Last of the Abzan", "counters": { "p1p1": 3 } }, "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blight Rot", "targets": ["Reyhan, Last of the Abzan"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Blight Rot", "Reyhan, Last of the Abzan"] }, {} ],
+      "pt": { "Grizzly Bears": [5, 5] },
+      "counters": { "Grizzly Bears": { "p1p1": 3 } }
+    }
+  },
+  {
+    "name": "ruling: a commander check passes with one of two commanders: Klauth's Will gets both modes",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Reyhan, Last of the Abzan", "Michelangelo, the Heart"],
+        "hand": ["Klauth's Will"],
+        "battlefield": ["Swamp", "Forest", "Forest", "Forest", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      { "battlefield": ["Llanowar Elves", "Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Reyhan, Last of the Abzan" },
+      { "resolve": true },
+      { "cast": "Klauth's Will", "alt": 0, "targets": ["Sol Ring"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Reyhan, Last of the Abzan"] }, { "graveyard_has": ["Llanowar Elves", "Sol Ring"] } ]
+    }
+  }
+]

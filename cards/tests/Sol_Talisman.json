@@ -1,0 +1,247 @@
+[
+  {
+    "name": "has no mana cost, so it cannot be cast from hand (only suspended)",
+    "players": [
+      {
+        "hand": [
+          "Sol Talisman"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sol Talisman",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Sol Talisman"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "suspend for {1} exiles it with three time counters; it is not on the battlefield yet",
+    "players": [
+      {
+        "hand": [
+          "Sol Talisman"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Sol Talisman"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Sol Talisman"
+          ],
+          "battlefield_has": [
+            "Mountain"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "after the third upkeep it is cast for free and enters the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Sol Talisman"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Sol Talisman"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Sol Talisman"
+          ],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "suspend-cast Sol Talisman taps for two colorless",
+    "players": [
+      {
+        "hand": [
+          "Sol Talisman"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Sol Talisman"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "tap_for_mana": "Sol Talisman",
+        "color": "C"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Sol Talisman"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Sol Talisman": true
+      }
+    }
+  },
+  {
+    "name": "ruling: suspending exiles the card at once, without using the stack",
+    "players": [ { "hand": ["Sol Talisman"], "battlefield": ["Mountain"] }, {} ],
+    "steps": [ { "activate": "Sol Talisman" } ],
+    "expect": { "players": [ { "exile": ["Sol Talisman"], "battlefield_has": ["Mountain"] }, {} ] }
+  },
+  {
+    "name": "ruling: suspend is only available when the card could be cast (artifact: not on an opponent's turn)",
+    "players": [ {}, { "hand": ["Sol Talisman"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "player": 1, "activate": "Sol Talisman", "illegal": true } ],
+    "expect": { "players": [ {}, { "hand": ["Sol Talisman"] } ] }
+  },
+  {
+    "name": "ruling: suspending on its owner's own turn is allowed",
+    "players": [ {}, { "hand": ["Sol Talisman"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "Main1" }, { "player": 1, "activate": "Sol Talisman" }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "exile": ["Sol Talisman"] } ] }
+  },
+  {
+    "name": "ruling: declining the free cast leaves Sol Talisman exiled, no longer suspended",
+    "players": [ { "hand": ["Sol Talisman"], "battlefield": ["Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Sol Talisman" }, { "resolve": true },
+      { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Sol Talisman"], "battlefield_has": ["Mountain"] }, {} ] }
+  },
+  {
+    "name": "ruling: countering the first suspend trigger removes no time counter",
+    "players": [ { "hand": ["Sol Talisman"], "battlefield": ["Mountain"] }, { "hand": ["Stifle"], "battlefield": ["Island"] } ],
+    "steps": [
+      { "activate": "Sol Talisman" }, { "resolve": true },
+      { "advance_to": "End" }, { "advance_to": "End" },
+      { "player": 1, "pass": true }, { "pass": true },
+      { "player": 1, "cast": "Stifle", "targets": [ { "stack": "Sol Talisman" } ] }, { "resolve": true },
+      { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Sol Talisman"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: countering the cast trigger leaves the card exiled with no counters, not cast",
+    "players": [ { "hand": ["Sol Talisman"], "battlefield": ["Mountain"] }, { "hand": ["Stifle"], "battlefield": ["Island"] } ],
+    "steps": [
+      { "activate": "Sol Talisman" }, { "resolve": true },
+      { "advance_to": "End" }, { "advance_to": "End" }, { "advance_to": "End" }, { "advance_to": "End" }, { "advance_to": "End" }, { "advance_to": "End" },
+      { "player": 1, "pass": true }, { "pass": true },
+      { "player": 1, "pass": true }, { "pass": true },
+      { "player": 1, "cast": "Stifle", "targets": [ { "stack": "Sol Talisman" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Sol Talisman"], "battlefield_has": ["Mountain"] }, {} ] }
+  }
+]

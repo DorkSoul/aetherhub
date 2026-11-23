@@ -1,0 +1,139 @@
+[
+  {
+    "name": "enters with X charge counters",
+    "players": [
+      {
+        "hand": [
+          "Mana Bloom"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mana Bloom",
+        "answers": [
+          2
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mana Bloom"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "removes a counter for one mana of any color, once each turn",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Mana Bloom",
+            "counters": {
+              "charge": 2
+            }
+          },
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Mana Bloom",
+        "color": "R"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "R": 1
+          }
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no charge counters left: returns to hand at your upkeep",
+    "players": [
+      {
+        "battlefield": ["Mana Bloom"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Mana Bloom"], "battlefield_lacks": ["Mana Bloom"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a charge counter left: stays on the battlefield at your upkeep",
+    "players": [
+      {
+        "battlefield": [ { "name": "Mana Bloom", "counters": { "charge": 1 } } ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mana Bloom"] },
+        {}
+      ],
+      "counters": { "Mana Bloom": { "charge": 1 } }
+    }
+  },
+  {
+    "name": "enters with X=3 charge counters",
+    "players": [
+      { "hand": ["Mana Bloom"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "cast": "Mana Bloom", "answers": [3] }, { "resolve": true } ],
+    "expect": {
+      "counters": { "Mana Bloom": { "charge": 3 } },
+      "players": [ { "battlefield_has": ["Mana Bloom"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: one charge counter at upkeep: it stays, and its mana ability still works afterwards",
+    "players": [
+      { "battlefield": [ { "name": "Mana Bloom", "counters": { "charge": 1 } } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "tap_for_mana": "Mana Bloom", "color": "R" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mana Bloom"], "pool": { "R": 1 } }, {} ]
+    }
+  }
+]

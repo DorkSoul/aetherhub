@@ -1,0 +1,343 @@
+[
+  {
+    "name": "chapter I returns the target creature to its owner's hand",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Inventive Iteration // Living Breakthrough",
+            "counters": {
+              "lore": 0
+            }
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "hand_count": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "chapter II returns an artifact card from your graveyard to your hand",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Inventive Iteration // Living Breakthrough",
+            "counters": {
+              "lore": 1
+            }
+          }
+        ],
+        "graveyard": [
+          "Sol Ring"
+        ],
+        "library": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2,
+          "library_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "chapter II draws a card if there is no artifact card in your graveyard",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Inventive Iteration // Living Breakthrough",
+            "counters": {
+              "lore": 1
+            }
+          }
+        ],
+        "library": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2,
+          "library_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "chapter III exiles the Saga and returns it transformed as Living Breakthrough",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Inventive Iteration // Living Breakthrough",
+            "counters": {
+              "lore": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Living Breakthrough"
+          ],
+          "battlefield_lacks": [
+            "Inventive Iteration // Living Breakthrough"
+          ],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Living Breakthrough: opponents can't cast a spell with the same mana value as the spell you cast",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Living Breakthrough",
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Shock"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Shock",
+        "player": 1,
+        "targets": [
+          "p0"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "hand": [
+            "Shock"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Living Breakthrough: opponents can still cast spells with a different mana value",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Living Breakthrough",
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Strike"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Strike",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard_has": [
+            "Lightning Strike"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast in response to Living Breakthrough's trigger is not affected by it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Living Breakthrough", "Mountain"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "battlefield_has": ["Living Breakthrough"] },
+        { "life": 17, "graveyard_has": ["Shock"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the face that is up gives the characteristics: Living Breakthrough is a 3/3 flier",
+    "players": [
+      { "battlefield": ["Living Breakthrough"] },
+      {}
+    ],
+    "steps": [
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Living Breakthrough": [3, 3] },
+      "keywords": { "Living Breakthrough": ["Flying"] }
+    }
+  },
+  {
+    "name": "ruling: the mana value is the front face's (4), so the opponent cannot cast a 4-drop on their next turn",
+    "players": [
+      { "hand": ["Inventive Iteration // Living Breakthrough"], "battlefield": ["Living Breakthrough", "Island", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Hill Giant"], "battlefield": ["Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Inventive Iteration // Living Breakthrough" },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Hill Giant", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_lacks": ["Hill Giant"] } ]
+    }
+  }
+]

@@ -1,0 +1,201 @@
+[
+  {
+    "name": "attaches and gives infect",
+    "players": [
+      {
+        "hand": [
+          "Glistening Oil"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Glistening Oil",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "attached": {
+        "Glistening Oil": "Grizzly Bears"
+      },
+      "keywords": {
+        "Grizzly Bears": [
+          "Infect"
+        ]
+      },
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "returns to hand when put into a graveyard from the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Glistening Oil",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Glistening Oil",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Glistening Oil"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "your upkeep puts a -1/-1 counter on the enchanted creature",
+    "players": [
+      { "hand": ["Glistening Oil"], "battlefield": ["Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Glistening Oil", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "m1m1": 1 } },
+      "pt": { "Grizzly Bears": [1, 1] },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "opponent's upkeep puts no counter",
+    "players": [
+      { "hand": ["Glistening Oil"], "battlefield": ["Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Glistening Oil", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ruling: two Glistening Oils on one creature give infect once: the attack deals 2 poison, no life loss",
+    "players": [
+      { "hand": ["Glistening Oil", "Glistening Oil"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glistening Oil", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Glistening Oil", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20, "poison": 2 } ]
+    }
+  },
+  {
+    "name": "ruling: destroying the Oil itself (not the creature) still returns it to its owner's hand",
+    "players": [
+      { "hand": ["Glistening Oil"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"] },
+      { "hand": ["Naturalize"], "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Glistening Oil", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Naturalize", "player": 1, "targets": ["Glistening Oil"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Glistening Oil"], "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Glistening Oil"] },
+        { "graveyard": ["Naturalize"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Oil's target is gone when it resolves: Oil goes to the graveyard, no entering, no return trigger",
+    "players": [
+      { "hand": ["Glistening Oil", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Glistening Oil", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard_has": ["Glistening Oil", "Lightning Bolt"], "battlefield_lacks": ["Glistening Oil"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

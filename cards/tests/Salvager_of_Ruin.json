@@ -1,0 +1,94 @@
+[
+  {
+    "name": "sacrifice: returns a permanent card put into the graveyard from the battlefield this turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Salvager of Ruin", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Salvager of Ruin", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a permanent card already in the graveyard before this turn is not a legal target",
+    "players": [
+      { "battlefield": ["Swamp", "Salvager of Ruin"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Salvager of Ruin", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: targets are chosen before the sacrifice cost, so it cannot target itself",
+    "players": [
+      { "battlefield": ["Swamp", "Salvager of Ruin"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Salvager of Ruin", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Salvager of Ruin"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a permanent put into the graveyard before Salvager entered this turn can be returned",
+    "players": [
+      { "hand": ["Lightning Bolt", "Salvager of Ruin"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Salvager of Ruin" },
+      { "resolve": true },
+      { "activate": "Salvager of Ruin", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard_has": ["Salvager of Ruin"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a permanent spell countered earlier this turn is not a legal target",
+    "players": [
+      { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Forest", "Plains", "Salvager of Ruin"] },
+      { "hand": ["Negate"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Control Magic", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Negate", "player": 1, "targets": [{ "stack": "Control Magic" }] },
+      { "resolve": true },
+      { "activate": "Salvager of Ruin", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Salvager of Ruin"], "graveyard_has": ["Control Magic"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Negate"] }
+      ]
+    }
+  }
+]

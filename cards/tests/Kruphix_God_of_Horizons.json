@@ -1,0 +1,68 @@
+[
+  {
+    "name": "devotion below seven: not a creature, so a creature-only spell has no target",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] },
+      { "battlefield": ["Kruphix, God of Horizons"] }
+    ],
+    "steps": [ { "cast": "Doom Blade", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Doom Blade"] }, { "battlefield_has": ["Kruphix, God of Horizons"] } ] }
+  },
+  {
+    "name": "devotion of seven: a 4/7 creature again and indestructible",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] },
+      { "battlefield": ["Kruphix, God of Horizons", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Kruphix, God of Horizons"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Doom Blade"] }, { "battlefield_has": ["Kruphix, God of Horizons"] } ],
+      "pt": { "Kruphix, God of Horizons": [4, 7] }
+    }
+  },
+  {
+    "name": "unspent red mana becomes colorless at the end of the phase",
+    "players": [
+      { "battlefield": ["Kruphix, God of Horizons", "Mountain"] },
+      {}
+    ],
+    "steps": [ { "tap_for_mana": "Mountain" }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "pool": { "C": 1 } }, {} ] }
+  },
+  {
+    "name": "control: without Kruphix the mana empties",
+    "players": [
+      { "battlefield": ["Mountain"] },
+      {}
+    ],
+    "steps": [ { "tap_for_mana": "Mountain" }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, {} ] }
+  },
+  {
+    "name": "no maximum hand size: nine cards survive cleanup",
+    "players": [ { "hand": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"], "battlefield": ["Kruphix, God of Horizons"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep", "auto": true } ],
+    "expect": { "turn": 2, "players": [ { "hand_count": 9 }, {} ] }
+  },
+  {
+    "name": "control: without Kruphix the same hand is discarded to seven",
+    "players": [ { "hand": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep", "auto": true } ],
+    "expect": { "turn": 2, "players": [ { "hand_count": 7 }, {} ] }
+  },
+  {
+    "name": "ruling: unspent mana stays colorless across steps and can pay for a spell in a later step",
+    "players": [ { "hand": ["Smoke Bomb"], "battlefield": ["Kruphix, God of Horizons", "Mountain", "Island", "Island"] }, {} ],
+    "steps": [ { "tap_for_mana": "Mountain" }, { "advance_to": "Main2" }, { "cast": "Smoke Bomb" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Smoke Bomb"] }, {} ] }
+  },
+  {
+    "name": "ruling: with devotion below seven Kruphix is not a creature and loses the God type",
+    "players": [ { "battlefield": ["Kruphix, God of Horizons", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }, {} ],
+    "steps": [],
+    "expect": { "not_subtypes": { "Kruphix, God of Horizons": ["God"] } }
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "returns target card from your graveyard to hand",
+    "players": [ { "hand": ["Dryad's Revival"], "graveyard": ["Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Dryad's Revival", "targets": ["Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Lightning Bolt"], "graveyard": ["Dryad's Revival"] }, {} ]
+    }
+  },
+  {
+    "name": "flashback {4}{G} exiles it after it resolves",
+    "players": [ { "graveyard": ["Dryad's Revival", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Dryad's Revival", "alt": 0, "targets": ["Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Lightning Bolt"], "exile": ["Dryad's Revival"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows the card's timing, so a sorcery cannot be flashed back on the opponent's turn",
+    "players": [ { "graveyard": ["Dryad's Revival", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Dryad's Revival", "alt": 0, "targets": ["Lightning Bolt"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Dryad's Revival", "Lightning Bolt"], "exile": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a flashed-back spell that is countered is still exiled",
+    "players": [
+      { "graveyard": ["Dryad's Revival", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Dryad's Revival", "alt": 0, "targets": ["Lightning Bolt"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Dryad's Revival" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Dryad's Revival"], "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: a cost increase applies to the flashback total cost ({4}{G} plus {1} from Sphere of Resistance)",
+    "players": [ { "graveyard": ["Dryad's Revival", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] }, { "battlefield": ["Sphere of Resistance"] } ],
+    "steps": [ { "cast": "Dryad's Revival", "alt": 0, "targets": ["Lightning Bolt"], "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Dryad's Revival", "Lightning Bolt"] }, {} ] }
+  },
+  {
+    "name": "ruling: with six lands the flashback total cost with the Sphere is payable",
+    "players": [ { "graveyard": ["Dryad's Revival", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }, { "battlefield": ["Sphere of Resistance"] } ],
+    "steps": [ { "cast": "Dryad's Revival", "alt": 0, "targets": ["Lightning Bolt"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Lightning Bolt"], "exile": ["Dryad's Revival"] }, {} ] }
+  }
+]

@@ -1,0 +1,99 @@
+[
+  {
+    "name": "one creature token per Aura attached to it, exiled at the next end step",
+    "players": [
+      { "hand": ["Pacifism", "Pacifism"], "battlefield": ["Valduk, Keeper of the Flame", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism" },
+      { "resolve": true },
+      { "cast": "Pacifism" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Elemental 3-1 Trample Haste", "Elemental 3-1 Trample Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "no Aura or Equipment attached: no token",
+    "players": [
+      { "battlefield": ["Valduk, Keeper of the Flame"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Elemental 3-1 Trample Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "tokens are exiled at the beginning of the end step",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Valduk, Keeper of the Flame", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Valduk, Keeper of the Flame"], "battlefield_lacks": ["Elemental 3-1 Trample Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: an Aura controlled by the opponent attached to Valduk counts toward the tokens",
+    "players": [ { "battlefield": ["Valduk, Keeper of the Flame", "Plains"] }, { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains"] } ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Pacifism", "player": 1, "targets": ["Valduk, Keeper of the Flame"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "BeginCombat" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Valduk, Keeper of the Flame", "Elemental 3-1 Trample Haste"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Valduk killed in response to its trigger: the token count is the Auras it last had",
+    "players": [ { "hand": ["Pacifism"], "battlefield": ["Valduk, Keeper of the Flame", "Plains", "Plains"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Valduk, Keeper of the Flame"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Valduk, Keeper of the Flame"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Elemental 3-1 Trample Haste"], "graveyard_has": ["Valduk, Keeper of the Flame"] }, { "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: Valduk dies after its trigger resolved: the tokens are still exiled at the end step",
+    "players": [ { "hand": ["Pacifism", "Lightning Bolt"], "battlefield": ["Valduk, Keeper of the Flame", "Plains", "Plains", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Valduk, Keeper of the Flame"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Valduk, Keeper of the Flame"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Elemental 3-1 Trample Haste"], "graveyard_has": ["Valduk, Keeper of the Flame"] }, {} ]
+    }
+  }
+]

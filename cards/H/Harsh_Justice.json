@@ -1,0 +1,49 @@
+{
+  "name": "Harsh Justice",
+  "mana_cost": "{2}{W}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "InStep", "step": "DeclareAttackers" },
+          {
+            "type": "Compare",
+            "a": {
+              "type": "Count",
+              "filter": { "types": ["Creature"], "attacking_you": true, "controller": "Opponent" },
+              "zone": "Battlefield"
+            },
+            "cmp": { "op": "Ge", "n": 1 }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "AddTrigger",
+          "trigger": {
+            "type": "DealsDamage",
+            "combat": true,
+            "filter": { "types": ["Creature"], "attacking": true },
+            "to": "You"
+          },
+          "effects": [
+            {
+              "type": "DealDamage",
+              "source": { "type": "TriggerSource" },
+              "to": { "type": "ControllerOf", "of": { "type": "TriggerSource" } },
+              "amount": { "type": "EventAmount" }
+            }
+          ],
+          "until": "EndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only during the declare attackers step and only if you've been attacked this step.\nThis turn, whenever an attacking creature deals combat damage to you, it deals that much damage to its controller."
+}

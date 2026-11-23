@@ -1,0 +1,52 @@
+{
+  "name": "Urdnan, Dromoka Warrior",
+  "mana_cost": "{1}{W}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Warrior"],
+  "power": 1,
+  "toughness": 1,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [{ "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }],
+      "effects": [
+        {
+          "type": "AddCounters",
+          "what": { "type": "Target", "idx": 0 },
+          "kind": "PlusOnePlusOne",
+          "n": { "type": "Fixed", "n": 1 }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "batched": true, "one_per_declaration": true, "filter": { "controller": "You" } },
+      "targets": [{
+        "what": {
+          "type": "Permanent",
+          "filter": { "types": ["Creature"], "controller": "You", "attacking": true, "has_counter": "PlusOnePlusOne" }
+        },
+        "label": "target attacking creature with a +1/+1 counter"
+      }],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "Target", "idx": 0 } },
+            "cmp": { "op": "Ge", "n": 2 }
+          },
+          "then": [
+            { "type": "GrantKeyword", "what": { "type": "Target", "idx": 0 }, "keyword": "DoubleStrike", "duration": "UntilEndOfTurn" }
+          ],
+          "else": [
+            { "type": "GrantKeyword", "what": { "type": "Target", "idx": 0 }, "keyword": "FirstStrike", "duration": "UntilEndOfTurn" }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When Urdnan enters, put a +1/+1 counter on target creature.\nWhenever you attack, target attacking creature with a +1/+1 counter on it gains first strike until end of turn. If that creature has two or more +1/+1 counters on it, it gains double strike until end of turn instead."
+}

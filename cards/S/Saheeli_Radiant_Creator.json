@@ -1,0 +1,58 @@
+{
+  "name": "Saheeli, Radiant Creator",
+  "mana_cost": "{1}{G}{U}{R}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Artificer"],
+  "power": 4,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": { "any_of": [ { "subtypes": ["Artificer"] }, { "types": ["Artifact"] } ] } },
+      "effects": [
+        { "type": "GainEnergy", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "BeginCombat", "whose": "You" },
+      "effects": [
+        {
+          "type": "MayPay",
+          "payer": { "type": "You" },
+          "cost": [ { "type": "PayEnergy", "n": 3 } ],
+          "effects": [
+            {
+              "type": "Reflexive",
+              "targets": [
+                { "what": { "type": "Permanent", "filter": { "controller": "You" } }, "label": "target permanent you control" }
+              ],
+              "effects": [
+                {
+                  "type": "CopyPermanent",
+                  "what": { "type": "Target", "idx": 0 },
+                  "n": { "type": "Fixed", "n": 1 },
+                  "except": [
+                    { "type": "SetPT", "power": 5, "toughness": 5 },
+                    { "type": "AddType", "card_type": "Artifact" },
+                    { "type": "AddType", "card_type": "Creature" },
+                    { "type": "AddKeyword", "keyword": "Haste" }
+                  ]
+                },
+                {
+                  "type": "Delayed",
+                  "at": "NextEndStep",
+                  "effects": [
+                    { "type": "Sacrifice", "who": { "type": "Remembered" }, "filter": {}, "n": { "type": "Fixed", "n": 1 } }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever you cast an Artificer or artifact spell, you get {E} (an energy counter).\nAt the beginning of combat on your turn, you may pay {E}{E}{E}. When you do, create a token that's a copy of target permanent you control, except it's a 5/5 artifact creature in addition to its other types and has haste. Sacrifice it at the beginning of the next end step."
+}

@@ -1,0 +1,110 @@
+[
+ {
+  "name": "opponent casting a spell turns it into a 1/1 flying Bird",
+  "players": [
+   {"battlefield": ["Veil of Birds"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"resolve": true},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"life": 17, "battlefield_has": ["Veil of Birds"]},
+    {}
+   ],
+   "pt": {"Veil of Birds": [1, 1]},
+   "keywords": {"Veil of Birds": ["Flying"]}
+  }
+ },
+ {
+  "name": "no opponent spell: stays an enchantment",
+  "players": [
+   {"battlefield": ["Veil of Birds"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Main1"}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Veil of Birds"]},
+    {}
+   ],
+   "keywords": {"Veil of Birds": []}
+  }
+ },
+ {
+  "name": "ruling: once it is a creature it is no longer an enchantment, so Thraben Exorcism cannot target it",
+  "players": [
+   {"hand": ["Thraben Exorcism"], "battlefield": ["Plains", "Plains", "Veil of Birds"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true, "player": 0},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"pass": true, "player": 1},
+   {"pass": true, "player": 0},
+   {"cast": "Thraben Exorcism", "targets": ["Veil of Birds"], "illegal": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Thraben Exorcism"], "battlefield_has": ["Veil of Birds"]},
+    {}
+   ],
+   "pt": {"Veil of Birds": [1, 1]}
+  }
+ },
+ {
+  "name": "ruling: it still becomes a creature when the opponent's spell is countered",
+  "players": [
+   {"hand": ["Counterspell"], "battlefield": ["Island", "Island", "Veil of Birds"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true, "player": 0},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"pass": true, "player": 1},
+   {"cast": "Counterspell", "targets": [{"stack": "Lightning Bolt"}]},
+   {"pass": true, "player": 0},
+   {"pass": true, "player": 1},
+   {"pass": true, "player": 0},
+   {"pass": true, "player": 1}
+  ],
+  "expect": {
+   "players": [
+    {"life": 20, "graveyard": ["Counterspell"], "battlefield_has": ["Veil of Birds"]},
+    {"graveyard": ["Lightning Bolt"]}
+   ],
+   "pt": {"Veil of Birds": [1, 1]},
+   "keywords": {"Veil of Birds": ["Flying"]},
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "ruling: a permanent that became a creature on its controller's turn can attack, since it has been controlled since the turn began",
+  "players": [
+   {"battlefield": ["Veil of Birds"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true, "player": 0},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["p0"]},
+   {"pass": true, "player": 1},
+   {"pass": true, "player": 0},
+   {"pass": true, "player": 0},
+   {"pass": true, "player": 1},
+   {"attack": [ {"card": "Veil of Birds", "at": "p1"} ]},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [
+    {"life": 17},
+    {"life": 19}
+   ]
+  }
+ }
+]

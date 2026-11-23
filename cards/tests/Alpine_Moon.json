@@ -1,0 +1,164 @@
+[
+  {
+    "name": "lands with another name keep their own mana",
+    "players": [
+      {
+        "hand": [
+          "Alpine Moon",
+          "Ancient Den"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Alpine Moon"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Ancient Den"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "tap_for_mana": "Island",
+        "player": 1
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "pool": {
+            "U": 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "granted ability: opponent's chosen land taps for any color (its own W/U is gone)",
+    "players": [
+      {
+        "hand": ["Alpine Moon"],
+        "battlefield": ["Mountain"]
+      },
+      {
+        "battlefield": ["Hallowed Fountain"]
+      }
+    ],
+    "steps": [
+      { "cast": "Alpine Moon" },
+      { "resolve": true, "answers": ["Hallowed Fountain"] },
+      { "pass": true },
+      { "tap_for_mana": "Hallowed Fountain", "player": 1, "color": "R" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "pool": { "R": 1 } }
+      ]
+    }
+  },
+  {
+    "name": "opponent's chosen land loses its activated abilities: Mutavault cannot animate",
+    "players": [
+      {
+        "hand": ["Alpine Moon"],
+        "battlefield": ["Mountain"]
+      },
+      {
+        "battlefield": ["Mutavault", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Alpine Moon" },
+      { "resolve": true, "answers": ["Mutavault"] },
+      { "pass": true },
+      { "activate": "Mutavault", "ability": 0, "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Mutavault"] }
+      ]
+    }
+  },
+  {
+    "name": "opponent's chosen land loses its land types: Hallowed Fountain is no Island, so islandwalk does not apply",
+    "players": [
+      {
+        "hand": ["Alpine Moon"],
+        "battlefield": ["Mountain", "Benthic Djinn"]
+      },
+      {
+        "battlefield": ["Hallowed Fountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Alpine Moon" },
+      { "resolve": true, "answers": ["Hallowed Fountain"] },
+      { "attack": [ { "card": "Benthic Djinn", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Benthic Djinn" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20, "battlefield_has": ["Hallowed Fountain"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an affected land loses its enters-tapped and when-enters abilities (Bloodfell Caves enters untapped, no life)",
+    "players": [
+      { "hand": ["Alpine Moon"], "battlefield": ["Mountain"] },
+      { "hand": ["Bloodfell Caves"] }
+    ],
+    "steps": [
+      { "cast": "Alpine Moon" },
+      { "resolve": true, "answers": ["Bloodfell Caves"] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "play_land": "Bloodfell Caves", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20, "battlefield_has": ["Bloodfell Caves"] }
+      ],
+      "tapped": { "Bloodfell Caves": false }
+    }
+  },
+  {
+    "name": "ruling (control for the one above): without Alpine Moon Bloodfell Caves enters tapped and gains 1 life",
+    "players": [
+      {},
+      { "hand": ["Bloodfell Caves"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "play_land": "Bloodfell Caves", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 21, "battlefield_has": ["Bloodfell Caves"] }
+      ],
+      "tapped": { "Bloodfell Caves": true }
+    }
+  }
+]

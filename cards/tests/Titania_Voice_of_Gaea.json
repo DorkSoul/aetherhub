@@ -1,0 +1,253 @@
+[
+ {
+  "name": "two lands milled together gain 2 life once",
+  "players": [
+   {
+    "hand": [
+     "Acolyte of Affliction"
+    ],
+    "battlefield": [
+     "Titania, Voice of Gaea",
+     "Swamp",
+     "Swamp",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Forest",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Acolyte of Affliction"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 22,
+     "graveyard": [
+      "Forest",
+      "Island"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a milled nonland card does not gain life",
+  "players": [
+   {
+    "hand": [
+     "Acolyte of Affliction"
+    ],
+    "battlefield": [
+     "Titania, Voice of Gaea",
+     "Swamp",
+     "Swamp",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Acolyte of Affliction"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "upkeep meld with Argoth once four lands are in the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Titania, Voice of Gaea",
+     "Argoth, Sanctum of Nature",
+     "Plains"
+    ],
+    "graveyard": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Titania, Gaea Incarnate": [
+     5,
+     5
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Titania, Gaea Incarnate",
+      "Forest",
+      "Plains"
+     ],
+     "battlefield_lacks": [
+      "Titania, Voice of Gaea",
+      "Argoth, Sanctum of Nature"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no meld with only three lands in the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Titania, Voice of Gaea",
+     "Argoth, Sanctum of Nature"
+    ],
+    "graveyard": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Titania, Voice of Gaea",
+      "Argoth, Sanctum of Nature"
+     ],
+     "battlefield_lacks": [
+      "Titania, Gaea Incarnate"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: melded permanent has only the back face's abilities (no Titania life gain from a land going to the graveyard)",
+  "players": [
+   {
+    "battlefield": ["Titania, Voice of Gaea", "Argoth, Sanctum of Nature", "Flood Plain"],
+    "graveyard": ["Forest", "Forest", "Forest", "Forest"],
+    "library": ["Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "activate": "Flood Plain" },
+   { "resolve": true, "answers": ["Plains"] }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "battlefield_has": ["Titania, Gaea Incarnate", "Plains"],
+     "battlefield_lacks": ["Flood Plain", "Titania, Voice of Gaea"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: when the melded creature dies, both of its cards go to the graveyard",
+  "players": [
+   {
+    "battlefield": ["Titania, Voice of Gaea", "Argoth, Sanctum of Nature", "Plains"],
+    "graveyard": ["Forest", "Forest", "Forest", "Forest"]
+   },
+   {
+    "hand": ["Murder"],
+    "battlefield": ["Swamp", "Swamp", "Swamp"]
+   }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "pass": true },
+   { "cast": "Murder", "player": 1, "targets": ["Titania, Gaea Incarnate"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": ["Titania, Voice of Gaea", "Argoth, Sanctum of Nature"],
+     "battlefield_lacks": ["Titania, Gaea Incarnate"]
+    },
+    { "graveyard": ["Murder"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: counters on a melded card do not carry over to the melded permanent",
+  "players": [
+   {
+    "battlefield": [{ "name": "Titania, Voice of Gaea", "counters": { "PlusOnePlusOne": 2 } }, "Argoth, Sanctum of Nature", "Plains"],
+    "graveyard": ["Forest", "Forest", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "pt": { "Titania, Gaea Incarnate": [5, 5] },
+   "players": [
+    { "battlefield_has": ["Titania, Gaea Incarnate"] },
+    {}
+   ]
+  }
+ }
+]

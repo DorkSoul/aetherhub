@@ -1,0 +1,72 @@
+[
+  {
+    "name": "taps to gain control of a creature with power <= creatures you control",
+    "players": [
+      { "battlefield": ["Beguiler of Wills", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Beguiler of Wills", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Beguiler of Wills", "Grizzly Bears"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Beguiler of Wills": true }
+    }
+  },
+  {
+    "name": "tapped Beguiler cannot activate",
+    "players": [
+      { "battlefield": [{ "name": "Beguiler of Wills", "tapped": true }, "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Beguiler of Wills", "targets": ["p1:Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Beguiler of Wills"] }, { "battlefield_has": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: the target is rechecked on resolution; losing creatures in response makes the ability fizzle",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Beguiler of Wills", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Beguiler of Wills", "targets": ["p1:Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["p0:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Beguiler of Wills"], "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt", "Grizzly Bears"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: control stays after the stolen creature's power exceeds the creatures you control",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Beguiler of Wills", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Beguiler of Wills", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p0:Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p0:Beguiler of Wills"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Beguiler of Wills", "Hill Giant"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,138 @@
+[
+ {
+  "name": "combat damage removes time counters equal to damage from an owned suspended card",
+  "players": [
+   {
+    "hand": [
+     "Ancestral Vision"
+    ],
+    "battlefield": [
+     "Amy Pond",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Ancestral Vision"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Amy Pond",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Ancestral Vision"
+     ]
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "no suspended card: combat damage still hits",
+  "players": [
+   {
+    "battlefield": [
+     "Amy Pond"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Amy Pond",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: partner with Rory: the target player may search their library for Rory and put him into hand",
+  "players": [
+   { "hand": ["Amy Pond"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Rory Williams"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Amy Pond" },
+   { "resolve": true, "targets": ["p0"], "answers": [true, "Rory Williams"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Rory Williams"], "library_count": 20 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: partner with Rory: the target player (not the controller) searches their own library",
+  "players": [
+   { "hand": ["Amy Pond"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "library": ["Rory Williams"] }
+  ],
+  "steps": [
+   { "cast": "Amy Pond" },
+   { "resolve": true, "targets": ["p1"], "answers": [true, "Rory Williams"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "library_count": 20 },
+    { "hand": ["Rory Williams"], "library_count": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: removing the last time counter from a suspended card casts it",
+  "players": [
+   { "battlefield": ["Amy Pond"], "exile": [{ "name": "Ancestral Vision", "counters": { "Time": 2 } }] },
+   {}
+  ],
+  "steps": [
+   { "attack": [{ "card": "Amy Pond", "at": "p1" }] },
+   { "advance_to": "Main2", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "hand_count": 3, "library_count": 17, "graveyard_has": ["Ancestral Vision"] },
+    { "life": 18 }
+   ]
+  }
+ }
+]

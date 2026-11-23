@@ -1,0 +1,152 @@
+[
+  {
+    "name": "+1 without attacking: draw a card, then discard a card",
+    "players": [
+      { "hand": ["Island"], "library": ["Forest"], "battlefield": ["Kaito Shizuki"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kaito Shizuki", "ability": 0 },
+      { "resolve": true, "answers": ["Forest"] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Island"], "graveyard": ["Forest"] } ],
+      "counters": { "Kaito Shizuki": { "Loyalty": 4 } }
+    }
+  },
+  {
+    "name": "+1 after attacking this turn: draw only, no discard",
+    "players": [
+      { "hand": ["Island"], "library": ["Forest"], "battlefield": ["Kaito Shizuki", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "activate": "Kaito Shizuki", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Island", "Forest"] } ]
+    }
+  },
+  {
+    "name": "-2: creates a 1/1 blue Ninja that can't be blocked",
+    "players": [
+      { "battlefield": ["Kaito Shizuki"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kaito Shizuki", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Ninja 1-1 Blue Unblockable"] } ],
+      "counters": { "Kaito Shizuki": { "Loyalty": 1 } }
+    }
+  },
+  {
+    "name": "entered this turn: phases out at your end step",
+    "players": [
+      { "hand": ["Kaito Shizuki"], "battlefield": ["Island", "Swamp", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kaito Shizuki" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Kaito Shizuki"] } ]
+    }
+  },
+  {
+    "name": "-7 with 7 loyalty: emblem, then a connecting creature finds a blue or black creature",
+    "players": [
+      { "battlefield": [ { "name": "Kaito Shizuki", "counters": { "Loyalty": 7 } }, "Grizzly Bears" ], "library": ["Forest", "Ninja of the Deep Hours"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kaito Shizuki", "ability": 2 },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": ["Ninja of the Deep Hours"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "command": ["Kaito Shizuki Emblem"], "battlefield_has": ["Grizzly Bears", "Ninja of the Deep Hours"] }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "-7 is not possible with only 6 loyalty",
+    "players": [
+      { "battlefield": [ { "name": "Kaito Shizuki", "counters": { "Loyalty": 6 } } ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kaito Shizuki", "ability": 2, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kaito Shizuki"], "command": [] }, {} ]
+    }
+  },
+  {
+    "name": "phased out Kaito phases back in during your next untap step",
+    "players": [
+      { "hand": ["Kaito Shizuki"], "battlefield": ["Island", "Swamp", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kaito Shizuki" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kaito Shizuki"] } ]
+    }
+  },
+  {
+    "name": "ruling: a phased-out planeswalker phases back in with the loyalty it had",
+    "players": [
+      { "hand": ["Kaito Shizuki", "Island"], "library": ["Forest"], "battlefield": ["Island", "Swamp", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kaito Shizuki" },
+      { "resolve": true },
+      { "activate": "Kaito Shizuki", "ability": 0 },
+      { "resolve": true, "answers": ["Forest"] },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kaito Shizuki"] } ],
+      "counters": { "Kaito Shizuki": { "Loyalty": 4 } }
+    }
+  },
+  {
+    "name": "ruling: a phased-in planeswalker does not phase out again at the end of that turn",
+    "players": [
+      { "hand": ["Kaito Shizuki"], "battlefield": ["Island", "Swamp", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kaito Shizuki" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kaito Shizuki"] } ]
+    }
+  }
+]

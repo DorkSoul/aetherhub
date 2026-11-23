@@ -1,0 +1,57 @@
+{
+  "name": "Bomb Squad",
+  "mana_cost": "{3}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Dwarf"],
+  "power": 1,
+  "toughness": 1,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "Fuse", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        {
+          "type": "AddCounters",
+          "kind": "Fuse",
+          "n": { "type": "Fixed", "n": 1 },
+          "what": { "type": "All", "filter": { "types": ["Creature"], "has_counter": "Fuse" }, "zone": "Battlefield" }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "filter": { "types": ["Creature"] }, "kind": "Fuse" },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Fuse", "of": { "type": "TriggerObject" } },
+        "cmp": { "op": "Ge", "n": 4 }
+      },
+      "effects": [
+        {
+          "type": "DealDamage",
+          "source": { "type": "TriggerObject" },
+          "to": { "type": "ControllerOf", "of": { "type": "TriggerObject" } },
+          "amount": { "type": "Fixed", "n": 4 }
+        },
+        {
+          "type": "RemoveCounters",
+          "what": { "type": "TriggerObject" },
+          "kind": "Fuse",
+          "n": { "type": "CountersOn", "kind": "Fuse", "of": { "type": "TriggerObject" } }
+        },
+        { "type": "Destroy", "what": { "type": "TriggerObject" } }
+      ]
+    }
+  ],
+  "oracle_text": "{T}: Put a fuse counter on target creature.\nAt the beginning of your upkeep, put a fuse counter on each creature with a fuse counter on it.\nWhenever a creature has four or more fuse counters on it, remove all fuse counters from it and destroy it. That creature deals 4 damage to its controller."
+}

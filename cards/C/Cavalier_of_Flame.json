@@ -1,0 +1,66 @@
+{
+  "name": "Cavalier of Flame",
+  "mana_cost": "{2}{R}{R}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Elemental", "Knight"],
+  "power": 6,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{1}{R}" }],
+      "effects": [
+        {
+          "type": "Pump",
+          "what": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" }, "zone": "Battlefield" },
+          "power": { "type": "Fixed", "n": 1 },
+          "toughness": { "type": "Fixed", "n": 0 },
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "GrantKeyword",
+          "what": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" }, "zone": "Battlefield" },
+          "keyword": "Haste",
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Hand",
+          "filter": {},
+          "min": 0,
+          "max": 255,
+          "then": [
+            { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard", "discard": true, "remember": true }
+          ]
+        },
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "RememberedCount" } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "DealDamage",
+          "source": { "type": "This" },
+          "to": { "type": "EachOpponent" },
+          "amount": { "type": "Count", "filter": { "types": ["Land"] }, "zone": "Graveyard", "player": { "type": "You" } }
+        },
+        {
+          "type": "DealDamage",
+          "source": { "type": "This" },
+          "to": { "type": "All", "filter": { "types": ["Planeswalker"], "controller": "Opponent" }, "zone": "Battlefield" },
+          "amount": { "type": "Count", "filter": { "types": ["Land"] }, "zone": "Graveyard", "player": { "type": "You" } }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{1}{R}: Creatures you control get +1/+0 and gain haste until end of turn.\nWhen Cavalier of Flame enters, discard any number of cards, then draw that many cards.\nWhen Cavalier of Flame dies, it deals X damage to each opponent and each planeswalker they control, where X is the number of land cards in your graveyard."
+}

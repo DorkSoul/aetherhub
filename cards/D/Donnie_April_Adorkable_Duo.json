@@ -1,0 +1,81 @@
+{
+  "name": "Donnie & April, Adorkable Duo",
+  "mana_cost": "{4}{U}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Mutant", "Ninja", "Human", "Turtle"],
+  "power": 3,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Target player draws two cards.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [ { "what": { "type": "Player", "filter": "Any" }, "label": "target player" } ],
+                  "effects": [ { "type": "Draw", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 2 } } ]
+                }
+              ]
+            },
+            {
+              "text": "Target player returns an artifact, instant, or sorcery card from their graveyard to their hand.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [ { "what": { "type": "Player", "filter": "Any" }, "label": "target player" } ],
+                  "effects": [
+                    {
+                      "type": "Choose",
+                      "who": { "type": "Target", "idx": 0 },
+                      "zone": "Graveyard",
+                      "from": { "type": "Target", "idx": 0 },
+                      "filter": { "types": ["Artifact", "Instant", "Sorcery"] },
+                      "min": 1,
+                      "max": 1,
+                      "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "Target player draws two cards. Target a different player, who returns an artifact, instant, or sorcery card from their graveyard to their hand.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    { "what": { "type": "Player", "filter": "Any" }, "label": "target player who draws" },
+                    { "what": { "type": "Player", "filter": "Any" }, "label": "different player who returns", "distinct": true }
+                  ],
+                  "effects": [
+                    { "type": "Draw", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 2 } },
+                    {
+                      "type": "Choose",
+                      "who": { "type": "Target", "idx": 1 },
+                      "zone": "Graveyard",
+                      "from": { "type": "Target", "idx": 1 },
+                      "filter": { "types": ["Artifact", "Instant", "Sorcery"] },
+                      "min": 1,
+                      "max": 1,
+                      "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When Donnie & April enter, choose one or both. Each mode must target a different player.\n• Target player draws two cards.\n• Target player returns an artifact, instant, or sorcery card from their graveyard to their hand."
+}

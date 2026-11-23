@@ -1,0 +1,96 @@
+[
+ {
+  "name": "ETB exiles chosen creatures and gets +2/+2 for each exiled card",
+  "players": [
+   {
+    "hand": ["Lumbering Battlement"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lumbering Battlement" },
+   { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant"]] }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Lumbering Battlement"],
+     "exile": ["Grizzly Bears", "Hill Giant"]
+    },
+    {}
+   ],
+   "pt": { "Lumbering Battlement": [8, 9] }
+  }
+ },
+ {
+  "name": "choosing no creatures exiles nothing and Battlement stays 4/5",
+  "players": [
+   {
+    "hand": ["Lumbering Battlement"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lumbering Battlement" },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Lumbering Battlement", "Grizzly Bears"]
+    },
+    {}
+   ],
+   "pt": { "Lumbering Battlement": [4, 5] }
+  }
+ },
+ {
+  "name": "ruling: exiled creature returns when Battlement leaves the battlefield",
+  "players": [
+   {"hand": ["Lumbering Battlement"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]},
+   {"hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"]}
+  ],
+  "steps": [
+   {"cast": "Lumbering Battlement"},
+   {"resolve": true, "answers": [["Grizzly Bears"]]},
+   {"pass": true},
+   {"cast": "Murder", "player": 1, "targets": ["Lumbering Battlement"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Grizzly Bears"], "exile": [], "graveyard_has": ["Lumbering Battlement"]}, {"graveyard_has": ["Murder"]}]}
+ },
+ {
+  "name": "ruling: Aura on an exiled creature goes to its owner's graveyard",
+  "players": [
+   {"hand": ["Lumbering Battlement", "Pacifism"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Pacifism", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Lumbering Battlement"},
+   {"resolve": true, "answers": [["Grizzly Bears"]]}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Lumbering Battlement"], "exile": ["Grizzly Bears"], "graveyard": ["Pacifism"]}, {}]}
+ },
+ {
+  "name": "ruling: Battlement leaving before its trigger resolves exiles nothing",
+  "players": [
+   {"hand": ["Lumbering Battlement"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]},
+   {"hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"]}
+  ],
+  "steps": [
+   {"cast": "Lumbering Battlement"},
+   {"pass": true},
+   {"pass": true, "player": 1},
+   {"pass": true},
+   {"cast": "Murder", "player": 1, "targets": ["Lumbering Battlement"]},
+   {"pass": true, "player": 1},
+   {"pass": true},
+   {"resolve": true, "auto": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Lumbering Battlement"], "exile": []}, {"graveyard_has": ["Murder"]}]}
+ }
+]

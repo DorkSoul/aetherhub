@@ -1,0 +1,87 @@
+[
+  {
+    "name": "opposing creatures with power <= counters can't block",
+    "players": [
+      { "hand": ["Rumbling Ruin"], "battlefield": ["Mountain", "Forest", "Swamp", "Island", "Plains", "Wastes", { "name": "Savannah Lions", "counters": { "p1p1": 2 } }] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Rumbling Ruin" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["CantBlock"], "Hill Giant": [] }
+    }
+  },
+  {
+    "name": "no counters means nobody is stopped from blocking",
+    "players": [
+      { "hand": ["Rumbling Ruin"], "battlefield": ["Mountain", "Forest", "Swamp", "Island", "Plains", "Wastes"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Rumbling Ruin" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": [] }
+    }
+  },
+  {
+    "name": "ruling: with no counters, power 0 creatures still can't block",
+    "players": [
+      { "hand": ["Rumbling Ruin"], "battlefield": ["Mountain", "Forest", "Swamp", "Island", "Plains", "Wastes"] },
+      { "battlefield": ["Alabaster Wall", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Rumbling Ruin" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Alabaster Wall": ["CantBlock"], "Grizzly Bears": [] }
+    }
+  },
+  {
+    "name": "ruling: the counter count is fixed on resolution; later counters do not widen the set",
+    "players": [
+      { "hand": ["Rumbling Ruin", "Battlegrowth"], "battlefield": ["Mountain", "Swamp", "Island", "Plains", "Wastes", "Mountain", "Forest", "Forest", { "name": "Savannah Lions", "counters": { "p1p1": 2 } }] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Rumbling Ruin" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Battlegrowth", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Savannah Lions": { "p1p1": 3 } },
+      "keywords": { "Grizzly Bears": ["CantBlock"], "Hill Giant": [] }
+    }
+  },
+  {
+    "name": "ruling: the number is fixed on resolution but power is checked continuously (a pumped creature can block, a shrunk one can't)",
+    "players": [
+      { "hand": ["Rumbling Ruin"], "battlefield": ["Mountain", "Forest", "Swamp", "Island", "Plains", "Wastes", { "name": "Savannah Lions", "counters": { "p1p1": 2 } }] },
+      { "hand": ["Brute Force", "Disfigure"], "battlefield": ["Grizzly Bears", "Hill Giant", "Mountain", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Rumbling Ruin" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Brute Force", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Disfigure", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [5, 5], "Hill Giant": [1, 1] },
+      "keywords": { "Grizzly Bears": [], "Hill Giant": ["CantBlock"] }
+    }
+  }
+]

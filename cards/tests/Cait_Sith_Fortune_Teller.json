@@ -1,0 +1,112 @@
+[
+ {
+  "name": "exiled card's mana value pumps a creature you control until end of turn",
+  "players": [
+   {
+    "battlefield": [
+     "Cait Sith, Fortune Teller",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat",
+    "answers": [
+     [],
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     6,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "a land (mana value 0) gives no bonus",
+  "players": [
+   {
+    "battlefield": [
+     "Cait Sith, Fortune Teller",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat",
+    "answers": [
+     [],
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Forest"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: a card with {X} in its cost counts X as 0 for mana value (Fireball gives +1)",
+  "players": [ { "battlefield": ["Cait Sith, Fortune Teller", "Grizzly Bears"], "library": ["Fireball"] }, {} ],
+  "steps": [ { "advance_to": "BeginCombat", "answers": [[], "Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "exile": ["Fireball"] }, {} ], "pt": { "Grizzly Bears": [3, 2] } }
+ },
+ {
+  "name": "ruling: an exiled land can be played in the main phase after combat",
+  "players": [ { "battlefield": ["Cait Sith, Fortune Teller", "Grizzly Bears"], "library": ["Forest"] }, {} ],
+  "steps": [ { "advance_to": "BeginCombat", "answers": [[], "Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Main2" }, { "play_land": "Forest" } ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: an exiled land cannot be played during combat",
+  "players": [ { "battlefield": ["Cait Sith, Fortune Teller", "Grizzly Bears"], "library": ["Forest"] }, {} ],
+  "steps": [ { "advance_to": "BeginCombat", "answers": [[], "Grizzly Bears"] }, { "resolve": true }, { "play_land": "Forest", "illegal": true } ],
+  "expect": { "players": [ { "exile": ["Forest"], "battlefield_lacks": ["Forest"] }, {} ] }
+ },
+ {
+  "name": "ruling: the land drop is used up, so the exiled land cannot be played that turn",
+  "players": [ { "hand": ["Plains"], "battlefield": ["Cait Sith, Fortune Teller", "Grizzly Bears"], "library": ["Forest"] }, {} ],
+  "steps": [ { "play_land": "Plains" }, { "advance_to": "BeginCombat", "answers": [[], "Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Main2" }, { "play_land": "Forest", "illegal": true } ],
+  "expect": { "players": [ { "exile": ["Forest"], "battlefield_has": ["Plains"], "battlefield_lacks": ["Forest"] }, {} ] }
+ }
+]

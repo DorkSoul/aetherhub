@@ -1,0 +1,76 @@
+[
+ {
+  "name": "{2} and exile a land card from graveyard: becomes a 3/4 Elemental until end of turn",
+  "players": [
+   { "battlefield": ["Hostile Desert", "Plains", "Plains"], "graveyard": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Hostile Desert", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Forest"], "graveyard": [] }, {} ],
+   "pt": { "Hostile Desert": [3, 4] }
+  }
+ },
+ {
+  "name": "needs a land card in graveyard",
+  "players": [
+   { "battlefield": ["Hostile Desert", "Plains", "Plains"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Hostile Desert", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Lightning Bolt"] }, {} ]
+  }
+ },
+ {
+  "name": "taps for colourless mana",
+  "players": [
+   { "battlefield": ["Hostile Desert"] },
+   {}
+  ],
+  "steps": [
+   { "tap_for_mana": "Hostile Desert" }
+  ],
+  "expect": {
+   "players": [ { "pool": { "C": 1 } }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a land played this turn that becomes a creature cannot attack",
+  "players": [
+   { "hand": ["Hostile Desert"], "battlefield": ["Plains", "Plains"], "graveyard": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Hostile Desert" },
+   { "activate": "Hostile Desert", "ability": 0 },
+   { "resolve": true },
+   { "attack": [ { "card": "Hostile Desert", "at": "p1" } ], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Hostile Desert"], "exile": ["Forest"] }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: a land that has been under your control since the start of the turn can attack once animated",
+  "players": [
+   { "battlefield": ["Hostile Desert", "Plains", "Plains"], "graveyard": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Hostile Desert", "ability": 0 },
+   { "resolve": true },
+   { "attack": [ { "card": "Hostile Desert", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Hostile Desert"] }, { "life": 17 } ]
+  }
+ }
+]

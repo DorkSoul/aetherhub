@@ -1,0 +1,141 @@
+[
+ {"name": "equipped creature's combat damage: may sacrifice it, discard hand, draw three",
+  "players": [
+    {"hand": ["Shock", "Giant Growth"], "battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2", "answers": [true]}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 3, "library_count": 17, "graveyard_has": ["Grizzly Bears", "Shock", "Giant Growth"], "battlefield_has": ["Ogre-Head Helm"]},
+      {"life": 16}
+    ],
+    "attached": {}
+  }},
+ {"name": "declining the optional sacrifice keeps the creature and the hand",
+  "players": [
+    {"hand": ["Shock", "Giant Growth"], "battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2", "answers": [false]}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 2, "library_count": 20, "battlefield_has": ["Grizzly Bears", "Ogre-Head Helm"]},
+      {"life": 16}
+    ],
+    "attached": {"Ogre-Head Helm": "Grizzly Bears"},
+    "pt": {"Grizzly Bears": [4, 4]}
+  }},
+ {"name": "unattached Helm is a 2/2 creature; its own combat damage can sacrifice it",
+  "players": [
+    {"hand": ["Shock", "Giant Growth"], "battlefield": [{"name": "Ogre-Head Helm", "sick": false}]},
+    {}
+  ],
+  "steps": [
+    {"attack": [{"card": "Ogre-Head Helm", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2", "answers": [true]}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 3, "library_count": 17, "graveyard_has": ["Ogre-Head Helm", "Shock", "Giant Growth"]},
+      {"life": 18}
+    ]
+  }},
+  {"name": "reconfigure {3} unattaches the Helm: it is a 2/2 creature again and the creature is back to 2/2", "players": [ {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]}, {} ], "steps": [ {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true}, {"activate": "Ogre-Head Helm", "ability": 1}, {"resolve": true} ], "expect": { "players": [ {"battlefield_has": ["Ogre-Head Helm", "Grizzly Bears"]}, {} ], "pt": {"Grizzly Bears": [2, 2], "Ogre-Head Helm": [2, 2]} } },
+  {"name": "reconfigure to unattach needs an attached Helm", "players": [ {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, "Mountain", "Mountain", "Mountain"]}, {} ], "steps": [ {"activate": "Ogre-Head Helm", "ability": 1, "illegal": true} ], "expect": { "players": [ {"battlefield_has": ["Ogre-Head Helm"]}, {} ] } },
+ {"name": "attached Helm is an Equipment, not an Ogre creature (subtype check)",
+  "players": [
+    {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true}
+  ],
+  "expect": {
+    "players": [
+      {"battlefield_has": ["Ogre-Head Helm", "Grizzly Bears"]},
+      {}
+    ],
+    "subtypes": {"Ogre-Head Helm": ["Equipment"]},
+    "not_subtypes": {"Ogre-Head Helm": ["Ogre"]},
+    "attached": {"Ogre-Head Helm": "Grizzly Bears"}
+  }},
+ {"name": "attached Helm is not a creature: it cannot attack, only the 4/4 Bears deal 4",
+  "players": [
+    {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"attack": [{"card": "Grizzly Bears", "at": "p1"}, {"card": "Ogre-Head Helm", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2", "answers": [false]}
+  ],
+  "expect": {
+    "players": [{}, {"life": 16}],
+    "attached": {"Ogre-Head Helm": "Grizzly Bears"}
+  }},
+ {"name": "ruling: an Equipment creature can never attach to itself (reconfigure cannot target the Helm)",
+  "players": [
+    {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Ogre-Head Helm"], "illegal": true}
+  ],
+  "expect": {
+    "players": [{"battlefield_has": ["Ogre-Head Helm"]}, {}],
+    "attached": {}
+  }},
+ {"name": "ruling: an attacked (tapped) Helm stays tapped when it reconfigures onto a creature",
+  "players": [
+    {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"attack": [{"card": "Ogre-Head Helm", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2", "answers": [false]},
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true}
+  ],
+  "expect": {
+    "players": [{"battlefield_has": ["Ogre-Head Helm", "Grizzly Bears"]}, {"life": 18}],
+    "attached": {"Ogre-Head Helm": "Grizzly Bears"},
+    "tapped": {"Ogre-Head Helm": true}
+  }},
+ {"name": "ruling: an equipped creature tapping to attack does not tap the Helm; unattaching later leaves it untapped",
+  "players": [
+    {"battlefield": [{"name": "Ogre-Head Helm", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Ogre-Head Helm", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2", "answers": [false]},
+    {"activate": "Ogre-Head Helm", "ability": 1},
+    {"resolve": true}
+  ],
+  "expect": {
+    "players": [{"battlefield_has": ["Ogre-Head Helm", "Grizzly Bears"]}, {"life": 16}],
+    "attached": {},
+    "tapped": {"Grizzly Bears": true, "Ogre-Head Helm": false}
+  }}
+]

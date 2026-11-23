@@ -1,0 +1,131 @@
+[
+  {
+    "name": "exiles the top card and deals its mana value to the target player",
+    "players": [
+      {
+        "hand": ["Soulfire Eruption"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Soulfire Eruption", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Hill Giant"] },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "each chosen target is dealt damage by one exiled card (order within the group is not observable)",
+    "players": [
+      {
+        "hand": ["Soulfire Eruption"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Hill Giant", "Hill Giant"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Soulfire Eruption", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Hill Giant", "Hill Giant"] },
+        { "life": 16, "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "an exiled land deals no damage",
+    "players": [
+      {
+        "hand": ["Soulfire Eruption"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Soulfire Eruption", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "no targets chosen: nothing is exiled",
+    "players": [
+      {
+        "hand": ["Soulfire Eruption"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Soulfire Eruption", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played this turn while the land drop is unused",
+    "players": [
+      {
+        "hand": ["Soulfire Eruption"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Soulfire Eruption", "targets": ["p1"] },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [], "battlefield_has": ["Forest"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played once this turn's land drop is used",
+    "players": [
+      {
+        "hand": ["Soulfire Eruption", "Island"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Island" },
+      { "cast": "Soulfire Eruption", "targets": ["p1"] },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

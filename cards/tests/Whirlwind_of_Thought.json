@@ -1,0 +1,151 @@
+[
+  {
+    "name": "noncreature spell draws a card",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Whirlwind of Thought",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "creature spell does not",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Whirlwind of Thought",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "an opponent's noncreature spell does not",
+    "players": [
+      {
+        "battlefield": [
+          "Whirlwind of Thought"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "life": 17
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the draw trigger resolves even if the noncreature spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Whirlwind of Thought", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Grizzly Bears", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "hand_count": 1 },
+        { "graveyard": ["Counterspell"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card drawn by the trigger can be cast while the original spell is still on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Whirlwind of Thought", "Mountain", "Mountain"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard_has": ["Lightning Bolt"] },
+        { "life": 14 }
+      ]
+    }
+  }
+]

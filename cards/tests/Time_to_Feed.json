@@ -1,0 +1,126 @@
+[
+  {
+    "name": "opposing creature dies in the fight: gain 3 life",
+    "players": [
+      {
+        "hand": ["Time to Feed"],
+        "battlefield": ["Forest", "Forest", "Forest", "Hill Giant"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Time to Feed",
+        "targets": ["Grizzly Bears", "Hill Giant"]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23,
+          "graveyard": ["Time to Feed"],
+          "battlefield_has": ["Hill Giant"]
+        },
+        {
+          "graveyard": ["Grizzly Bears"]
+        }
+      ],
+      "pt": {
+        "Hill Giant": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "opposing creature survives the fight: no life gain",
+    "players": [
+      {
+        "hand": ["Time to Feed"],
+        "battlefield": ["Forest", "Forest", "Forest", "Llanowar Elves"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Time to Feed",
+        "targets": ["Hill Giant", "Llanowar Elves"]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "graveyard": ["Llanowar Elves", "Time to Feed"]
+        },
+        {
+          "battlefield_has": ["Hill Giant"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: when neither chosen creature is still legal, the spell does nothing (no fight, no life)",
+    "players": [
+      { "hand": ["Time to Feed", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Mountain", "Mountain", "Llanowar Elves"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Time to Feed", "targets": ["Grizzly Bears", "Llanowar Elves"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard_has": ["Time to Feed", "Llanowar Elves"] },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: if only the opposing creature is illegal, no fight happens and no life is gained",
+    "players": [
+      { "hand": ["Time to Feed", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Mountain", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Time to Feed", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Hill Giant"] },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Hill Giant": [3, 3] },
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: the opposing creature dying later this turn, by any cause, still gains 3 life",
+    "players": [
+      { "hand": ["Time to Feed", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Mountain", "Llanowar Elves"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Time to Feed", "targets": ["Hill Giant", "Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard_has": ["Llanowar Elves", "Time to Feed", "Lightning Bolt"] },
+        { "graveyard_has": ["Hill Giant"] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

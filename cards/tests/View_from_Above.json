@@ -1,0 +1,54 @@
+[
+  {
+    "name": "returns to hand when you control a white permanent",
+    "players": [ { "hand": ["View from Above"], "battlefield": ["Island", "Island", "Serra Angel", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "View from Above", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["View from Above"] }, {} ], "keywords": { "Grizzly Bears": ["Flying"] } }
+  },
+  {
+    "name": "goes to the graveyard without a white permanent",
+    "players": [ { "hand": ["View from Above"], "battlefield": ["Island", "Island", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "View from Above", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["View from Above"] }, {} ], "keywords": { "Grizzly Bears": ["Flying"] } }
+  },
+  {
+    "name": "illegal to cast with no creature to target",
+    "players": [ { "hand": ["View from Above"], "battlefield": ["Island", "Island"] }, {} ],
+    "steps": [ { "cast": "View from Above", "illegal": true } ]
+  },
+  {
+    "name": "ruling: if the target becomes illegal, View from Above does nothing and goes to the graveyard even with a white permanent",
+    "players": [
+      { "hand": ["View from Above"], "battlefield": ["Island", "Island", "Serra Angel"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "View from Above", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["View from Above"], "battlefield_has": ["Serra Angel"] }, { "graveyard": ["Grizzly Bears", "Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: white permanents are checked as View from Above resolves; a white creature that died in response does not count",
+    "players": [
+      { "hand": ["View from Above"], "battlefield": ["Island", "Island", "Savannah Lions"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "View from Above", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["View from Above", "Savannah Lions"] }, {} ],
+      "keywords": { "Grizzly Bears": ["Flying"] }
+    }
+  }
+]

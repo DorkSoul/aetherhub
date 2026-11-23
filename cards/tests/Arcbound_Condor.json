@@ -1,0 +1,228 @@
+[
+  {
+    "name": "another artifact entering gives an opponent's creature -1/-1",
+    "players": [
+      {
+        "hand": [
+          "Arcbound Worker"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Arcbound Condor"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Arcbound Worker"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "does not trigger on itself entering",
+    "players": [
+      {
+        "hand": [
+          "Arcbound Condor"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Arcbound Condor"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      },
+      "keywords": {
+        "Arcbound Condor": [
+          "Flying"
+        ]
+      }
+    }
+  },
+  {
+    "name": "dies: modular counters move to target artifact creature",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Arcbound Condor",
+            "counters": {
+              "p1p1": 3
+            }
+          },
+          "Arcbound Worker"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Arcbound Condor"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Arcbound Worker"
+          ],
+          "battlefield_lacks": [
+            "Arcbound Condor"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Arcbound Worker": {
+          "p1p1": 4
+        }
+      },
+      "pt": {
+        "Arcbound Worker": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "dies: declining the modular trigger leaves the artifact creature alone",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Arcbound Condor",
+            "counters": {
+              "p1p1": 3
+            }
+          },
+          "Arcbound Worker"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Arcbound Condor"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Arcbound Condor"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Arcbound Worker": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: modular moves the +1/+1 counters the Condor had when it died",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          "Mountain",
+          { "name": "Arcbound Condor", "counters": { "p1p1": 3 } },
+          "Ornithopter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Arcbound Condor"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ornithopter"], "battlefield_lacks": ["Arcbound Condor"] },
+        {}
+      ],
+      "counters": { "Ornithopter": { "p1p1": 3 } },
+      "pt": { "Ornithopter": [3, 5] }
+    }
+  }
+]

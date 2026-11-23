@@ -1,0 +1,284 @@
+[
+ {
+  "name": "no play permission on a turn you did not attack with it",
+  "players": [
+   {
+    "hand": [
+     "Goblin Researcher"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Goblin Researcher"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "attacking lets you cast the card exiled by its enters trigger",
+  "players": [
+   {
+    "hand": [
+     "Goblin Researcher"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Goblin Researcher"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Goblin Researcher",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 14
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the card can still be played after the Researcher has left combat and the battlefield",
+  "players": [
+   { "hand": ["Goblin Researcher", "Doom Blade"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Swamp", "Swamp"], "library": ["Lightning Bolt", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Goblin Researcher", "at": "p1" } ] },
+   { "resolve": true },
+   { "cast": "Doom Blade", "targets": ["Goblin Researcher"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Goblin Researcher", "Doom Blade", "Lightning Bolt"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled sorcery can't be cast during combat, only in a main phase",
+  "players": [
+   { "hand": ["Goblin Researcher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"], "library": ["Reduce to Ashes", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Goblin Researcher", "at": "p1" } ] },
+   { "resolve": true },
+   { "cast": "Reduce to Ashes", "targets": ["Grizzly Bears"], "illegal": true },
+   { "advance_to": "Main2" },
+   { "cast": "Reduce to Ashes", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Reduce to Ashes"], "battlefield_lacks": ["Grizzly Bears"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled land can be played when no land has been played this turn",
+  "players": [
+   { "hand": ["Goblin Researcher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Goblin Researcher", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "play_land": "Island" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Goblin Researcher", "Island"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled land can't be played once a land has already been played this turn",
+  "players": [
+   { "hand": ["Goblin Researcher", "Mountain"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Goblin Researcher", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "play_land": "Mountain" },
+   { "play_land": "Island", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Goblin Researcher"], "exile": ["Island"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: casting the exiled card removes it from exile, so it can't be cast again",
+  "players": [
+   { "hand": ["Goblin Researcher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Goblin Researcher", "at": "p1" } ] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"] },
+    { "life": 14 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: attacking with one Goblin Researcher doesn't let you play the card exiled by the other",
+  "players": [
+   { "hand": ["Goblin Researcher", "Goblin Researcher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Doom Blade", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "cast": "Goblin Researcher" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Goblin Researcher", "at": "p1" } ] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "play_land": "Island", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"], "exile": ["Island"] },
+    { "life": 14 }
+   ]
+  }
+ }
+]

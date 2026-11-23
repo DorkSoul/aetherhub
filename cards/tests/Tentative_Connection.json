@@ -1,0 +1,69 @@
+[
+  {
+    "name": "with a menace creature it costs {R}: steals, untaps and gives haste",
+    "players": [
+      { "hand": ["Tentative Connection"], "battlefield": ["Mountain", "Alley Strangler"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+    ],
+    "steps": [
+      { "cast": "Tentative Connection", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Alley Strangler", "Grizzly Bears"], "graveyard": ["Tentative Connection"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Grizzly Bears": false },
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  },
+  {
+    "name": "without a menace creature it costs {3}{R}: three lands cannot cast it",
+    "players": [
+      { "hand": ["Tentative Connection"], "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tentative Connection", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Tentative Connection"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: can target a creature you already control that is untapped",
+    "players": [
+      { "hand": ["Tentative Connection"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tentative Connection", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"], "graveyard": ["Tentative Connection"] }, {}],
+      "tapped": { "Grizzly Bears": false },
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  },
+  {
+    "name": "ruling: cost is set on cast, so losing the menace creature in response does not stop the steal",
+    "players": [
+      { "hand": ["Tentative Connection"], "battlefield": ["Mountain", "Alley Strangler"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "tapped": true }] }
+    ],
+    "steps": [
+      { "cast": "Tentative Connection", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Alley Strangler"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"], "graveyard": ["Tentative Connection", "Alley Strangler"] }, { "graveyard": ["Lightning Bolt"] }],
+      "tapped": { "Grizzly Bears": false },
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  }
+]

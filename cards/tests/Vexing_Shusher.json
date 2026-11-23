@@ -1,0 +1,139 @@
+[
+  {
+    "name": "without the activation the spell is still countered",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Vexing Shusher",
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Counterspell"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Counterspell",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 20,
+          "graveyard": [
+            "Counterspell"
+          ]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "{R/G}: target spell can't be countered; the Counterspell then fails and Bolt resolves",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Vexing Shusher", "Mountain", "Mountain"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Vexing Shusher", "ability": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Vexing Shusher"], "graveyard": ["Lightning Bolt"] },
+        { "life": 17, "graveyard": ["Counterspell"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "Vexing Shusher itself can't be countered by Counterspell",
+    "players": [
+      { "hand": ["Vexing Shusher"], "battlefield": ["Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Vexing Shusher" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Vexing Shusher" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Vexing Shusher"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Mana Drain targeting an uncounterable spell does not counter it, but its mana still comes",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Vexing Shusher", "Mountain", "Mountain"]
+      },
+      {
+        "hand": ["Mana Drain"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Vexing Shusher", "ability": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Mana Drain", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Vexing Shusher"], "graveyard": ["Lightning Bolt"] },
+        { "life": 17, "graveyard": ["Mana Drain"], "pool": { "C": 1 } }
+      ],
+      "stack_empty": true
+    }
+  }
+]

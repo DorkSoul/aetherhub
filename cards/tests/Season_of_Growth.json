@@ -1,0 +1,105 @@
+[
+  {
+    "name": "casting a spell that targets your creature draws a card",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Forest", "Season of Growth", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "a spell targeting an opposing creature does not draw",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Forest", "Season of Growth"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "a creature you control entering scries 1: bottoming the top card",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Season of Growth"], "library": ["Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "library_top": ["Mountain"] }, {} ]
+    }
+  },
+  {
+    "name": "scry 1 keeping the top card on top leaves it there",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Season of Growth"], "library": ["Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "library_top": ["Island"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: two creatures entering at once each scry 1, looking at one card at a time",
+    "players": [
+      { "hand": ["Swarmyard Massacre"], "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Forest", "Season of Growth"], "library": ["Island", "Mountain", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Swarmyard Massacre" },
+      { "resolve": true, "answers": [[0], [0]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Squirrel 1-1 Green"], "library_top": ["Forest"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a spell with two targets on your creatures draws only one card",
+    "players": [
+      { "hand": ["Windborne Charge"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Season of Growth", "Grizzly Bears", "Hill Giant"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Windborne Charge", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the draw still happens when the spell that caused it is countered",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Forest", "Season of Growth", "Grizzly Bears"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "player": 1, "cast": "Counterspell", "targets": [ { "stack": "Giant Growth" } ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "graveyard_has": ["Giant Growth"] }, { "graveyard_has": ["Counterspell"] } ]
+    }
+  }
+]

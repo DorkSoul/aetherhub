@@ -1,0 +1,88 @@
+[
+  {
+    "name": "a discarded Vampire may be cast for its mana cost",
+    "players": [
+      { "hand": ["Tormenting Voice", "Vampire Interloper"], "battlefield": ["Falkenrath Gorger", "Mountain", "Mountain", "Swamp", "Swamp"], "library": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tormenting Voice" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Vampire Interloper"], "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "declining leaves the Vampire in the graveyard",
+    "players": [
+      { "hand": ["Tormenting Voice", "Vampire Interloper"], "battlefield": ["Falkenrath Gorger", "Mountain", "Mountain", "Swamp", "Swamp"], "library": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tormenting Voice" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Vampire Interloper"], "battlefield_lacks": ["Vampire Interloper"] }, {} ]
+    }
+  },
+  {
+    "name": "a non-Vampire discard does nothing special",
+    "players": [
+      { "hand": ["Tormenting Voice", "Grizzly Bears"], "battlefield": ["Falkenrath Gorger", "Mountain", "Mountain", "Forest", "Forest"], "library": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tormenting Voice" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Gorger leaves before its madness trigger resolves, the Vampire can still be cast",
+    "players": [
+      { "hand": ["Tormenting Voice", "Vampire Interloper"], "battlefield": ["Falkenrath Gorger", "Mountain", "Mountain", "Swamp", "Swamp"], "library": ["Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Tormenting Voice" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Falkenrath Gorger"], "player": 1 },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Vampire Interloper"], "graveyard_has": ["Falkenrath Gorger"] }, { "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: a Gorger discarded from hand (none on the battlefield) goes to the graveyard, not exile",
+    "players": [
+      { "hand": ["Tormenting Voice", "Falkenrath Gorger"], "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp"], "library": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tormenting Voice" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Falkenrath Gorger"], "exile": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Vampire that dies on the battlefield is not discarded, so no madness cast",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Falkenrath Gorger", "Mountain", "Vampire Interloper"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Vampire Interloper"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Vampire Interloper", "Lightning Bolt"], "battlefield_has": ["Falkenrath Gorger"], "battlefield_lacks": ["Vampire Interloper"], "hand_count": 0 }, {} ]
+    }
+  }
+]

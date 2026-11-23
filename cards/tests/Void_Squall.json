@@ -1,0 +1,80 @@
+[
+  {
+    "name": "bounces a nonland permanent and rebounds from hand",
+    "players": [
+      { "hand": ["Void Squall"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Void Squall" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Void Squall"] }, { "hand": ["Grizzly Bears"], "battlefield": [] }]
+    }
+  },
+  {
+    "name": "cannot be cast without a nonland permanent to target",
+    "players": [
+      { "hand": ["Void Squall"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Void Squall", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Void Squall"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: if every target is gone on resolution, the rebound spell does nothing and is not exiled",
+    "players": [
+      { "hand": ["Void Squall", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Void Squall", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Void Squall", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: rebound cast from exile (even at upkeep, ignoring sorcery timing) goes to the graveyard, not back to exile",
+    "players": [
+      { "hand": ["Void Squall"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Void Squall", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Void Squall"] }, { "hand": ["Forest", "Grizzly Bears", "Sol Ring"] }]
+    }
+  },
+  {
+    "name": "ruling: declining the rebound cast leaves the card in exile",
+    "players": [
+      { "hand": ["Void Squall"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Void Squall", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Void Squall"] }, { "battlefield_has": ["Sol Ring"], "hand": ["Forest", "Grizzly Bears"] }]
+    }
+  }
+]

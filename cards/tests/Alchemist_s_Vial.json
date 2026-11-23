@@ -1,0 +1,70 @@
+[
+  {
+    "name": "enters: draw a card",
+    "players": [
+      { "hand": ["Alchemist's Vial"], "battlefield": ["Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alchemist's Vial" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "battlefield_has": ["Alchemist's Vial"] }, {} ]
+    }
+  },
+  {
+    "name": "sacrifice: target creature can't attack or block this turn",
+    "players": [
+      { "battlefield": ["Alchemist's Vial", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Alchemist's Vial", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Alchemist's Vial"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "keywords": { "Grizzly Bears": ["CantAttack", "CantBlock"] }
+    }
+  },
+  {
+    "name": "the effect ends at end of turn",
+    "players": [
+      { "battlefield": ["Alchemist's Vial", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Alchemist's Vial", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["CantAttack", "CantBlock"] }
+    }
+  },
+  {
+    "name": "ruling: activating on an already attacking creature does not remove it from combat",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Alchemist's Vial", "Plains"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "pass": true },
+      { "activate": "Alchemist's Vial", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18, "graveyard": ["Alchemist's Vial"] }
+      ]
+    }
+  }
+]

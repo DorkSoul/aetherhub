@@ -1,0 +1,104 @@
+[
+  { "name": "damage equals the mana spent and it untaps your creatures",
+    "players": [
+      { "hand": ["Molten Note"], "battlefield": ["Plains", "Mountain", "Swamp", "Forest", "Island", { "name": "Grizzly Bears", "tapped": true }, "Hill Giant"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Molten Note", "targets": ["p1:Hill Giant"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Molten Note"] }, { "graveyard": ["Hill Giant"] } ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  { "name": "X=0 deals only 2 damage (the two colored mana)",
+    "players": [
+      { "hand": ["Molten Note"], "battlefield": ["Plains", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Molten Note", "targets": ["p1:Hill Giant"], "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Molten Note"] }, { "battlefield": ["Hill Giant"] } ]
+    }
+  },
+  { "name": "flashback for 8 mana kills a 3/3 and is exiled afterwards",
+    "players": [
+      { "graveyard": ["Molten Note"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Molten Note", "alt": 0, "targets": ["p1:Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Molten Note"], "graveyard": [] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  { "name": "ruling: total mana spent (X=1, three mana) is the damage, which kills a 3/3 that mana value 2 would not",
+    "players": [
+      { "hand": ["Molten Note"], "battlefield": ["Plains", "Mountain", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Molten Note", "targets": ["p1:Hill Giant"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Molten Note"] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  { "name": "ruling: if the target became illegal, Molten Note does nothing and untaps no creatures",
+    "players": [
+      { "hand": ["Molten Note"], "battlefield": ["Plains", "Mountain", { "name": "Grizzly Bears", "tapped": true }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Molten Note", "targets": ["p1:Hill Giant"], "answers": [0] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p1:Hill Giant"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Molten Note"] }, { "graveyard": ["Hill Giant", "Lightning Bolt"] } ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  { "name": "ruling: a flashback cast on the opponent's turn is illegal because Molten Note is a sorcery",
+    "players": [
+      { "graveyard": ["Molten Note"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Molten Note", "alt": 0, "targets": ["p1:Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Molten Note"] }, { "battlefield": ["Hill Giant"] } ]
+    }
+  },
+  { "name": "ruling: a flashback spell that fizzles is still exiled",
+    "players": [
+      { "graveyard": ["Molten Note"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Molten Note", "alt": 0, "targets": ["p1:Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p1:Hill Giant"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Molten Note"], "graveyard": [] }, { "graveyard": ["Hill Giant", "Lightning Bolt"] } ]
+    }
+  }
+]

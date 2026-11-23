@@ -1,0 +1,176 @@
+[
+  {
+    "name": "blight 2 on own creature: the spell is countered and the creature dies",
+    "players": [
+      {
+        "hand": ["Wild Unraveling"],
+        "battlefield": ["Island", "Island", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      {
+        "cast": "Wild Unraveling",
+        "answers": [0],
+        "targets": [{ "stack": "Lightning Bolt" }]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Wild Unraveling", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "pay {1} instead of blighting: the creature keeps its counters and the spell is countered",
+    "players": [
+      {
+        "hand": ["Wild Unraveling"],
+        "battlefield": ["Island", "Island", "Island", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      {
+        "cast": "Wild Unraveling",
+        "answers": [1],
+        "targets": [{ "stack": "Lightning Bolt" }]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Wild Unraveling"], "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "no creature to blight: the {1} option is the only one and the spell still counters",
+    "players": [
+      {
+        "hand": ["Wild Unraveling"],
+        "battlefield": ["Island", "Island", "Island"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      {
+        "cast": "Wild Unraveling",
+        "answers": [1],
+        "targets": [{ "stack": "Lightning Bolt" }]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Wild Unraveling"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: blight 2 puts all the counters on one chosen creature",
+    "players": [
+      { "hand": ["Wild Unraveling"], "battlefield": ["Island", "Island", "Hill Giant", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Wild Unraveling", "answers": [0, "Hill Giant"], "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Wild Unraveling"], "battlefield_has": ["Hill Giant", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Hill Giant": { "-1/-1": 2 } },
+      "pt": { "Hill Giant": [1, 1], "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: the chosen creature need not survive the counters (a 2/1 blighted for 2 dies)",
+    "players": [
+      { "hand": ["Wild Unraveling"], "battlefield": ["Island", "Island", "Savannah Lions", "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Wild Unraveling", "answers": [0, "Savannah Lions"], "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Savannah Lions"], "battlefield_lacks": ["Savannah Lions"], "battlefield_has": ["Hill Giant"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no creature to blight, the blight option is unavailable and only {1} remains",
+    "players": [
+      { "hand": ["Wild Unraveling"], "battlefield": ["Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Wild Unraveling", "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "hand": ["Wild Unraveling"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: +1/+1 and -1/-1 counters cancel as a state-based action, leaving only the extra +1/+1",
+    "players": [
+      { "hand": ["Wild Unraveling"], "battlefield": ["Island", "Island", { "name": "Hill Giant", "counters": { "+1/+1": 3 } }, "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Wild Unraveling", "answers": [0, "Hill Giant"], "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Hill Giant": { "+1/+1": 1, "-1/-1": 0 } },
+      "pt": { "Hill Giant": [4, 4] }
+    }
+  }
+]

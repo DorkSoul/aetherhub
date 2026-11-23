@@ -1,0 +1,177 @@
+[
+ {
+  "name": "play a land from the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Perennial Behemoth"
+    ],
+    "graveyard": [
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest"
+     ],
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearth returns with haste and is exiled at the end step",
+  "players": [
+   {
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Perennial Behemoth"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Perennial Behemoth",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Perennial Behemoth"
+     ],
+     "exile": [
+      "Perennial Behemoth"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearth needs GG",
+  "players": [
+   {
+    "battlefield": [
+     "Forest"
+    ],
+    "graveyard": [
+     "Perennial Behemoth"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Perennial Behemoth",
+    "ability": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Perennial Behemoth"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an unearthed permanent that would leave the battlefield is exiled instead",
+  "players": [
+   {
+    "hand": ["Ancient Grudge"],
+    "battlefield": ["Forest", "Forest", "Mountain", "Mountain"],
+    "graveyard": ["Perennial Behemoth"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Perennial Behemoth", "ability": 0 },
+   { "resolve": true },
+   { "cast": "Ancient Grudge", "targets": ["Perennial Behemoth"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Perennial Behemoth"], "graveyard": ["Ancient Grudge"], "battlefield_lacks": ["Perennial Behemoth"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: unearth is an activated ability, so a counterspell has no spell to counter",
+  "players": [
+   {
+    "battlefield": ["Forest", "Forest"],
+    "graveyard": ["Perennial Behemoth"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "activate": "Perennial Behemoth", "ability": 0 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Perennial Behemoth"], "graveyard": [] },
+    { "hand_count": 1 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: playing a land from the graveyard still counts against the one land per turn",
+  "players": [
+   {
+    "battlefield": ["Perennial Behemoth"],
+    "graveyard": ["Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Perennial Behemoth", "Forest"], "graveyard_has": ["Forest"] },
+    {}
+   ]
+  }
+ }
+]

@@ -1,0 +1,67 @@
+[
+ {
+  "name": "enters with a +1/+1 counter, so it is a 1/1",
+  "players": [ { "hand": ["Arcbound Slith"], "battlefield": ["Plains", "Plains"] }, {} ],
+  "steps": [ { "cast": "Arcbound Slith" }, { "resolve": true } ],
+  "expect": { "counters": { "Arcbound Slith": { "p1p1": 1 } }, "pt": { "Arcbound Slith": [1, 1] } }
+ },
+ {
+  "name": "combat damage to a player puts a +1/+1 counter on it",
+  "players": [ { "battlefield": [ { "name": "Arcbound Slith", "counters": { "p1p1": 1 } } ] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Arcbound Slith", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "counters": { "Arcbound Slith": { "p1p1": 2 } },
+   "players": [ {}, { "life": 19 } ]
+  }
+ },
+ {
+  "name": "modular: when it dies its counters move to target artifact creature",
+  "players": [
+   { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Arcbound Slith", "counters": { "p1p1": 1 } }, { "name": "Arcbound Worker", "counters": { "p1p1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["Arcbound Slith"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Arcbound Slith"] }, {} ],
+   "counters": { "Arcbound Worker": { "p1p1": 2 } },
+   "pt": { "Arcbound Worker": [2, 2] }
+  }
+ },
+ {
+  "name": "modular: declining leaves the artifact creature alone",
+  "players": [
+   { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Arcbound Slith", "counters": { "p1p1": 1 } }, { "name": "Arcbound Worker", "counters": { "p1p1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["Arcbound Slith"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Arcbound Slith"] }, {} ],
+   "counters": { "Arcbound Worker": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: modular on lethal damage: the +1/+1 counters it had as it left (two) move to the artifact creature",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Arcbound Slith", "counters": { "p1p1": 2 } }, { "name": "Arcbound Worker", "counters": { "p1p1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Arcbound Slith"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Arcbound Slith"] }, {} ],
+   "counters": { "Arcbound Worker": { "p1p1": 3 } }
+  }
+ }
+]

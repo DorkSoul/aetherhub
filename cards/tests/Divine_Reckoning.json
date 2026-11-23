@@ -1,0 +1,267 @@
+[
+ {
+  "name": "each player keeps the creature they chose and the rest are destroyed",
+  "players": [
+   {
+    "hand": [
+     "Divine Reckoning"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Serra Angel"
+    ]
+   },
+   {
+    "battlefield": [
+     "Llanowar Elves",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Divine Reckoning"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Serra Angel",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Serra Angel"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ],
+     "graveyard_has": [
+      "Grizzly Bears",
+      "Divine Reckoning"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "battlefield_lacks": [
+      "Llanowar Elves"
+     ],
+     "graveyard_has": [
+      "Llanowar Elves"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "a lone creature of the other player is chosen automatically and survives",
+  "players": [
+   {
+    "hand": [
+     "Divine Reckoning"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Serra Angel"
+    ]
+   },
+   {
+    "battlefield": [
+     "Llanowar Elves"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Divine Reckoning"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "battlefield_lacks": [
+      "Serra Angel"
+     ],
+     "graveyard_has": [
+      "Serra Angel"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Llanowar Elves"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "a player with no creatures does not choose and the other player's creature stays",
+  "players": [
+   {
+    "hand": [
+     "Divine Reckoning"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Serra Angel"
+    ]
+   },
+   {
+    "battlefield": [
+     "Plains"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Divine Reckoning"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Serra Angel"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Serra Angel"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Plains"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "flashback from the graveyard for 5WW exiles the card",
+  "players": [
+   {
+    "graveyard": [
+     "Divine Reckoning"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Llanowar Elves"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Divine Reckoning",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Divine Reckoning"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Llanowar Elves"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: flashback is sorcery speed, so it cannot be cast during the opponent's main phase",
+  "players": [
+   { "graveyard": ["Divine Reckoning"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Divine Reckoning", "alt": 0, "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Divine Reckoning"] }, {} ] }
+ },
+ {
+  "name": "ruling: Thalia's tax is added to the flashback total cost, so 7 lands are not enough",
+  "players": [
+   { "graveyard": ["Divine Reckoning"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "battlefield": ["Thalia, Guardian of Thraben"] }
+  ],
+  "steps": [ { "cast": "Divine Reckoning", "alt": 0, "illegal": true } ],
+  "expect": { "players": [ { "graveyard": ["Divine Reckoning"] }, { "battlefield_has": ["Thalia, Guardian of Thraben"] } ] }
+ },
+ {
+  "name": "ruling: with Thalia's tax in the total cost, 8 lands pay for flashback and the card is exiled",
+  "players": [
+   { "graveyard": ["Divine Reckoning"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "battlefield": ["Thalia, Guardian of Thraben"] }
+  ],
+  "steps": [ { "cast": "Divine Reckoning", "alt": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "exile": ["Divine Reckoning"] }, { "battlefield_has": ["Thalia, Guardian of Thraben"] } ] }
+ },
+ {
+  "name": "ruling: a countered flashback spell is exiled instead of going to the graveyard",
+  "players": [
+   { "graveyard": ["Divine Reckoning"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Divine Reckoning", "alt": 0 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Divine Reckoning" } ] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "exile": ["Divine Reckoning"], "graveyard": [] }, { "graveyard": ["Counterspell"] } ] }
+ }
+]

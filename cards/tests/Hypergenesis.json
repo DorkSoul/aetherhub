@@ -1,0 +1,293 @@
+[
+  {
+    "name": "suspend 3 from hand: pay {1}{G}{G} and it is exiled",
+    "players": [
+      {
+        "hand": [
+          "Hypergenesis"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Hypergenesis"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [],
+          "exile": [
+            "Hypergenesis"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "each player in turn puts a card from hand onto the battlefield, repeating until a round puts nothing",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears",
+          "Forest",
+          "Lightning Bolt"
+        ],
+        "exile": [
+          {
+            "name": "Hypergenesis",
+            "counters": {
+              "time": 1
+            }
+          }
+        ]
+      },
+      {
+        "hand": [
+          "Serra Angel",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true,
+          [
+            "Grizzly Bears"
+          ],
+          [
+            "Serra Angel"
+          ],
+          [
+            "Forest"
+          ],
+          [
+            "Island"
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Forest"
+          ],
+          "hand": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Serra Angel",
+            "Island"
+          ],
+          "hand": [
+            "Forest"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a player may decline, and the process ends once a whole round puts nothing",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears",
+          "Forest"
+        ],
+        "exile": [
+          {
+            "name": "Hypergenesis",
+            "counters": {
+              "time": 1
+            }
+          }
+        ]
+      },
+      {
+        "hand": [
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true,
+          [
+            "Grizzly Bears"
+          ],
+          [],
+          [],
+          []
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Forest"
+          ],
+          "hand": [
+            "Forest"
+          ]
+        },
+        {
+          "hand": [
+            "Forest",
+            "Serra Angel"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "only artifacts, creatures, enchantments and lands may be put onto the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Grizzly Bears"
+        ],
+        "exile": [
+          {
+            "name": "Hypergenesis",
+            "counters": {
+              "time": 1
+            }
+          }
+        ]
+      },
+      {
+        "hand": [
+          "Shock"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true,
+          [
+            "Grizzly Bears"
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "hand": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "hand": [
+            "Forest",
+            "Shock"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the process does not end when one player declines, while another still puts cards",
+    "players": [
+      { "hand": ["Lightning Bolt"], "exile": [ { "name": "Hypergenesis", "counters": { "time": 1 } } ] },
+      { "hand": ["Serra Angel", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true, ["Serra Angel"], ["Island"], []] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"] },
+        { "battlefield_has": ["Serra Angel", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a player who declined earlier may put a card the next time around",
+    "players": [
+      { "hand": ["Forest"], "exile": [ { "name": "Hypergenesis", "counters": { "time": 1 } } ] },
+      { "hand": ["Serra Angel", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true, [], ["Serra Angel"], ["Forest"], ["Island"], [], []] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "hand": [] },
+        { "battlefield_has": ["Serra Angel", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining to cast the suspended card leaves it exiled",
+    "players": [
+      { "exile": [ { "name": "Hypergenesis", "counters": { "time": 1 } } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Hypergenesis"], "battlefield": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card with no mana cost can't be cast from hand",
+    "players": [
+      { "hand": ["Hypergenesis"], "battlefield": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hypergenesis", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Hypergenesis"] },
+        {}
+      ]
+    }
+  }
+]

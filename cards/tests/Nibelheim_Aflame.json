@@ -1,0 +1,247 @@
+[
+  {
+    "name": "target creature deals damage equal to its power to each other creature, not to itself",
+    "players": [
+      {
+        "hand": [
+          "Nibelheim Aflame"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Hill Giant",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nibelheim Aflame",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Grizzly Bears",
+            "Nibelheim Aflame"
+          ]
+        },
+        {
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ],
+      "pt": {
+        "Hill Giant": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "cast from hand does not discard the hand or draw",
+    "players": [
+      {
+        "hand": [
+          "Nibelheim Aflame",
+          "Doom Blade"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Nibelheim Aflame",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Doom Blade"
+          ],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback from graveyard: discard hand, draw four, then exile it",
+    "players": [
+      {
+        "hand": [
+          "Doom Blade",
+          "Llanowar Elves"
+        ],
+        "graveyard": [
+          "Nibelheim Aflame"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Hill Giant",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nibelheim Aflame",
+        "alt": 0,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Doom Blade",
+            "Llanowar Elves"
+          ],
+          "hand_count": 4,
+          "exile": [
+            "Nibelheim Aflame"
+          ]
+        },
+        {
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback is sorcery speed, so the opponent cannot cast it from their graveyard on your turn",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      {
+        "graveyard": ["Nibelheim Aflame"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Nibelheim Aflame", "player": 1, "alt": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Nibelheim Aflame"], "battlefield_has": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "ruling: the creature is the damage source, so a white creature damages a protection-from-red Silver Knight",
+    "players": [
+      {
+        "hand": ["Nibelheim Aflame"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Knight of Meadowgrain"]
+      },
+      { "battlefield": ["Silver Knight"] }
+    ],
+    "steps": [
+      { "cast": "Nibelheim Aflame", "targets": ["Knight of Meadowgrain"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Knight of Meadowgrain"] },
+        { "graveyard": ["Silver Knight"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a flashback copy that is countered is still exiled",
+    "players": [
+      {
+        "graveyard": ["Nibelheim Aflame"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Nibelheim Aflame", "alt": 0, "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Nibelheim Aflame" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Nibelheim Aflame"], "battlefield_has": ["Hill Giant", "Grizzly Bears"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback whose only target is removed in response fizzles: no damage, no discard or draw, still exiled",
+    "players": [
+      {
+        "hand": ["Llanowar Elves"],
+        "graveyard": ["Nibelheim Aflame"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Doom Blade"],
+        "battlefield": ["Swamp", "Swamp"]
+      }
+    ],
+    "steps": [
+      { "cast": "Nibelheim Aflame", "alt": 0, "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Llanowar Elves"], "hand_count": 1, "exile": ["Nibelheim Aflame"], "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Hill Giant"] },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    }
+  }
+]

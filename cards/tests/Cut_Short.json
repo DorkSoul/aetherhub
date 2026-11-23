@@ -1,0 +1,221 @@
+[
+ {
+  "name": "destroys a tapped creature",
+  "players": [
+   {
+    "hand": [
+     "Cut Short"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cut Short",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Cut Short"
+     ]
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't target an untapped creature",
+  "players": [
+   {
+    "hand": [
+     "Cut Short"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cut Short",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "destroys a planeswalker that was activated this turn",
+  "players": [
+   {
+    "hand": [
+     "Cut Short"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Jace Beleren"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "pass": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "player": 1,
+    "activate": "Jace Beleren",
+    "ability": 0
+   },
+   {
+    "player": 1,
+    "resolve": true
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Cut Short",
+    "targets": [
+     "Jace Beleren"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Cut Short"
+     ]
+    },
+    {
+     "graveyard": [
+      "Jace Beleren"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't target a planeswalker that wasn't activated this turn",
+  "players": [
+   {
+    "hand": [
+     "Cut Short"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Jace Beleren"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cut Short",
+    "targets": [
+     "Jace Beleren"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a summoning-sick creature can be tapped to convoke",
+  "players": [
+   { "hand": ["Cut Short"], "battlefield": ["Plains", "Plains", { "name": "Savannah Lions", "sick": true }] },
+   { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+  ],
+  "steps": [
+   { "cast": "Cut Short", "targets": ["Grizzly Bears"], "answers": [["Savannah Lions"]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Savannah Lions"], "graveyard_has": ["Cut Short"] }, { "graveyard": ["Grizzly Bears"] } ],
+   "tapped": { "Savannah Lions": true }
+  }
+ },
+ {
+  "name": "ruling: a planeswalker whose ability is still on the stack counts as activated",
+  "players": [
+   { "hand": ["Cut Short"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "battlefield": ["Jace Beleren"] }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "pass": true },
+   { "advance_to": "Main1" },
+   { "player": 1, "activate": "Jace Beleren", "ability": 0 },
+   { "pass": true, "player": 1 },
+   { "cast": "Cut Short", "targets": ["Jace Beleren"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Cut Short"] }, { "graveyard": ["Jace Beleren"] } ]
+  }
+ }
+]

@@ -1,0 +1,106 @@
+[
+ {
+  "name": "with a commander in play it is free and redirects a spell to the player",
+  "commander": true,
+  "players": [
+   { "command": ["Grizzly Bears"], "hand": ["Lightning Bolt", "Deflecting Swat"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "cast": "Deflecting Swat", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "answers": ["p1"] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Deflecting Swat"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain", "Grizzly Bears"] },
+    { "life": 17, "battlefield": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "without a commander the redirect spell cannot be cast for free",
+  "players": [
+   { "hand": ["Lightning Bolt", "Deflecting Swat"], "battlefield": ["Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "cast": "Deflecting Swat", "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"], "hand": ["Deflecting Swat"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "declining the new target keeps the original target",
+  "commander": true,
+  "players": [
+   { "command": ["Grizzly Bears"], "hand": ["Lightning Bolt", "Deflecting Swat"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "cast": "Deflecting Swat", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Deflecting Swat"] },
+    { "life": 20, "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with two commanders, controlling one is enough; the redirect goes to the caster",
+  "commander": true,
+  "players": [
+   { "command": ["Grizzly Bears", "Wall of Omens"], "hand": ["Lightning Bolt", "Deflecting Swat"], "battlefield": ["Forest", "Forest", "Plains", "Plains", "Mountain", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Wall of Omens" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Deflecting Swat", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "answers": ["p0"] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "graveyard": ["Lightning Bolt", "Deflecting Swat"], "battlefield": ["Forest", "Forest", "Plains", "Plains", "Mountain", "Island", "Island", "Grizzly Bears", "Wall of Omens"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a one-target Forked Bolt stays one-target; its damage follows the new target",
+  "commander": true,
+  "players": [
+   { "command": ["Grizzly Bears"], "hand": ["Forked Bolt", "Deflecting Swat"], "battlefield": ["Forest", "Forest", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Forked Bolt", "targets": ["p1"] },
+   { "cast": "Deflecting Swat", "targets": [{ "stack": "Forked Bolt" }] },
+   { "resolve": true, "answers": ["p0"] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 18, "graveyard": ["Forked Bolt", "Deflecting Swat"] },
+    { "life": 20 }
+   ]
+  }
+ }
+]

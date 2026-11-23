@@ -1,0 +1,101 @@
+[
+  {
+    "name": "opponent discards a permanent card: you may put it onto the battlefield",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Tergrid, God of Fright", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tergrid, God of Fright", "Grizzly Bears"], "graveyard": ["Mind Rot"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent discards a nonpermanent card: nothing returns",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Tergrid, God of Fright", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Lightning Bolt"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "opponent sacrifices a nontoken creature: you may put it onto the battlefield",
+    "players": [
+      { "hand": ["Diabolic Edict"], "battlefield": ["Tergrid, God of Fright", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Diabolic Edict", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tergrid, God of Fright", "Grizzly Bears"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "Lantern: a target player with no cards and no permanents loses 3 life",
+    "players": [
+      { "hand": ["Tergrid, God of Fright"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tergrid, God of Fright", "face": true },
+      { "resolve": true },
+      { "activate": "Tergrid's Lantern", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "Lantern {3}{B}: untap it",
+    "players": [
+      { "battlefield": [{ "name": "Tergrid's Lantern", "tapped": true }, "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Tergrid's Lantern", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Tergrid's Lantern": false },
+      "players": [ { "battlefield_has": ["Tergrid's Lantern"] }, {} ]
+    }
+  },
+  {
+    "name": "Lantern untap needs four mana: three Swamps is illegal",
+    "players": [
+      { "battlefield": [{ "name": "Tergrid's Lantern", "tapped": true }, "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Tergrid's Lantern", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "tapped": { "Tergrid's Lantern": true },
+      "players": [ {}, {} ]
+    }
+  }
+]

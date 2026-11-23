@@ -1,0 +1,56 @@
+[
+  {
+    "name": "enters with a +1/+1 counter",
+    "players": [
+      { "hand": ["Vebulid"], "battlefield": ["Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Vebulid" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Vebulid"] }, {} ],
+      "pt": { "Vebulid": [1, 1] }
+    }
+  },
+  {
+    "name": "attacking: destroyed at end of combat",
+    "players": [
+      { "battlefield": ["Vebulid"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Vebulid", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Vebulid"] }, {} ]
+    }
+  },
+  {
+    "name": "upkeep: you may put a +1/+1 counter on it",
+    "players": [ { "battlefield": ["Vebulid"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Vebulid"] }, {} ], "pt": { "Vebulid": [2, 2] } }
+  },
+  {
+    "name": "upkeep: declining leaves it unchanged",
+    "players": [ { "battlefield": ["Vebulid"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [false] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Vebulid"] }, {} ], "pt": { "Vebulid": [1, 1] } }
+  },
+  {
+    "name": "blocking: destroyed at end of combat even though it survives combat damage",
+    "players": [ { "battlefield": [ { "name": "Vebulid", "counters": { "p1p1": 2 } } ] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [ { "advance_to": "Main1" }, { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 }, { "block": [ { "blocker": "Vebulid", "attacker": "Grizzly Bears" } ], "player": 0 }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "graveyard_has": ["Vebulid"] }, { "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: declining the upkeep counter cannot be backed up into a counter later in the turn",
+    "players": [ { "battlefield": ["Vebulid"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [false] }, { "resolve": true }, { "advance_to": "Main1" } ],
+    "expect": { "players": [ { "battlefield_has": ["Vebulid"] }, {} ], "pt": { "Vebulid": [1, 1] } }
+  }
+]

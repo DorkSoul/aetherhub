@@ -1,0 +1,94 @@
+[
+ {
+  "name": "dealt 2 damage: deals 2 damage to a player, who can't gain life afterwards",
+  "players": [
+   { "battlefield": [ "Screaming Nemesis" ] },
+   { "hand": [ "Shock", "Revitalize" ], "battlefield": [ "Mountain", "Plains", "Plains", "Plains" ] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "cast": "Shock", "targets": [ "Screaming Nemesis" ] },
+   { "resolve": true, "targets": [ "p1" ] },
+   { "pass": true },
+   { "player": 1, "cast": "Revitalize" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "life": 18 } ] }
+ },
+ {
+  "name": "damage to a creature: that much damage to another creature, no life-gain lock",
+  "players": [
+   { "battlefield": [ "Screaming Nemesis" ] },
+   { "hand": [ "Shock", "Revitalize" ], "battlefield": [ "Mountain", "Plains", "Plains", "Plains", "Hill Giant" ] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "cast": "Shock", "targets": [ "Screaming Nemesis" ] },
+   { "resolve": true, "targets": [ "Hill Giant" ] },
+   { "pass": true },
+   { "player": 1, "cast": "Revitalize" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "life": 23, "hand_count": 1 } ] }
+ },
+ {
+  "name": "the lock outlasts Screaming Nemesis, which dies to 3 damage and deals 3 back",
+  "players": [
+   { "battlefield": [ "Screaming Nemesis" ] },
+   { "hand": [ "Lightning Bolt", "Revitalize" ], "battlefield": [ "Mountain", "Mountain", "Plains", "Plains", "Plains" ] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "cast": "Lightning Bolt", "targets": [ "Screaming Nemesis" ] },
+   { "resolve": true, "targets": [ "p1" ] },
+   { "pass": true },
+   { "player": 1, "cast": "Revitalize" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "life": 17 } ] }
+ },
+ {
+  "name": "the damage can go to a planeswalker",
+  "players": [
+   { "battlefield": [ "Screaming Nemesis" ] },
+   { "hand": [ "Shock" ], "battlefield": [ "Mountain", { "name": "Jace Beleren", "counters": { "Loyalty": 3 } } ] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "cast": "Shock", "targets": [ "Screaming Nemesis" ] },
+   { "resolve": true, "targets": [ "Jace Beleren" ] }
+  ],
+  "expect": { "counters": { "Jace Beleren": { "Loyalty": 1 } } }
+ },
+ {
+  "name": "ruling: a locked player does not gain life from Biorhythm, even though it would raise the total",
+  "players": [
+   { "hand": [ "Biorhythm" ], "battlefield": [ "Screaming Nemesis", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest" ] },
+   { "life": 3, "battlefield": [ "Grizzly Bears", "Grizzly Bears", "Grizzly Bears" ] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Screaming Nemesis", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Screaming Nemesis" } ] },
+   { "advance_to": "Main2", "targets": [ "p1" ] },
+   { "cast": "Biorhythm" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "life": 1 } ] }
+ },
+ {
+  "name": "ruling: a lifegain spell still deals its other damage to a locked player, who gains no life",
+  "players": [
+   { "battlefield": [ "Screaming Nemesis" ] },
+   { "life": 3, "hand": [ "Lightning Helix" ], "battlefield": [ "Mountain", "Plains", "Grizzly Bears" ] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Screaming Nemesis", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Screaming Nemesis" } ] },
+   { "advance_to": "Main2", "targets": [ "p1" ] },
+   { "pass": true },
+   { "player": 1, "cast": "Lightning Helix", "targets": [ "p0" ] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 17 }, { "life": 1 } ] }
+ }
+]

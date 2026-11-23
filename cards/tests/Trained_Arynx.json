@@ -1,0 +1,160 @@
+[
+ {
+  "name": "saddled attack: gains first strike until end of turn (scry 1 happens too)",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Trained Arynx", "sick": false },
+     { "name": "Grizzly Bears", "sick": false },
+     { "name": "Grizzly Bears", "sick": false }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0 },
+   { "resolve": true },
+   { "attack": [ { "card": "Trained Arynx", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "keywords": { "Trained Arynx": ["FirstStrike"] }
+  }
+ },
+ {
+  "name": "unsaddled attack: no first strike",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Trained Arynx", "sick": false }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Trained Arynx", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "keywords": { "Trained Arynx": [] }
+  }
+ },
+ {
+  "name": "ruling: the saddle cost cannot be paid by the Mount itself",
+  "players": [
+   { "battlefield": ["Trained Arynx"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Trained Arynx"] }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: saddle needs other creatures with total power 2 (one 1-power creature is not enough)",
+  "players": [
+   { "battlefield": ["Trained Arynx", "Elvish Visionary"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Trained Arynx", "Elvish Visionary"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: saddle counts total power, so two 1-power creatures together saddle it",
+  "players": [
+   { "battlefield": ["Trained Arynx", "Elvish Visionary", "Elvish Visionary"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0 },
+   { "resolve": true },
+   { "attack": [ { "card": "Trained Arynx", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "keywords": { "Trained Arynx": ["FirstStrike"] },
+   "players": [ {}, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: a tapped creature cannot be used to saddle",
+  "players": [
+   { "battlefield": ["Trained Arynx", { "name": "Grizzly Bears", "tapped": true }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Trained Arynx", "Grizzly Bears"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: an unsaddled Mount still attacks normally for its power",
+  "players": [
+   { "battlefield": ["Trained Arynx"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Trained Arynx", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: a saddled Mount may be saddled again while already saddled",
+  "players": [
+   { "battlefield": ["Trained Arynx", "Grizzly Bears", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0, "auto": true },
+   { "resolve": true },
+   { "activate": "Trained Arynx", "ability": 0, "auto": true },
+   { "resolve": true },
+   { "attack": [ { "card": "Trained Arynx", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "keywords": { "Trained Arynx": ["FirstStrike"] },
+   "players": [ {}, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: saddled status lasts until the end of the turn, so next turn's attack is not saddled",
+  "players": [
+   { "battlefield": ["Trained Arynx", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Trained Arynx", "ability": 0, "auto": true },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Trained Arynx", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "keywords": { "Trained Arynx": [] },
+   "players": [ {}, { "life": 17 } ]
+  }
+ }
+]

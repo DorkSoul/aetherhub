@@ -1,0 +1,213 @@
+[
+  {
+    "name": "copies an instant you control with mana value 2 or less",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Izzet Guildmage",
+          "Mountain",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "activate": "Izzet Guildmage",
+        "ability": 0,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot copy a spell with mana value above 2",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Izzet Guildmage",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "activate": "Izzet Guildmage",
+        "ability": 0,
+        "targets": [
+          {
+            "stack": "Divination"
+          }
+        ],
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "copies a sorcery you control with mana value 2 or less ({2}{R})",
+    "players": [
+      {
+        "hand": ["Sign in Blood"],
+        "battlefield": ["Izzet Guildmage", "Swamp", "Swamp", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sign in Blood", "targets": ["p0"] },
+      { "activate": "Izzet Guildmage", "ability": 1, "targets": [{ "stack": "Sign in Blood" }] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 16, "hand_count": 4 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot copy a sorcery with mana value 3 with the sorcery ability",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Izzet Guildmage", "Island", "Island", "Island", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "activate": "Izzet Guildmage", "ability": 1, "targets": [{ "stack": "Divination" }], "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: a copy of a modal spell has the same mode (2 damage copied)",
+    "players": [
+      { "hand": ["Izzet Charm"], "battlefield": ["Izzet Guildmage", "Island", "Island", "Island", "Mountain", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Izzet Charm", "answers": [1], "targets": ["Hill Giant"] },
+      { "activate": "Izzet Guildmage", "ability": 0, "targets": [{ "stack": "Izzet Charm" }] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Izzet Charm"] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "ruling: X counts toward mana value on the stack; Fireball with X=1 (MV 2) can be copied",
+    "players": [
+      { "hand": ["Fireball"], "battlefield": ["Izzet Guildmage", "Mountain", "Mountain", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fireball", "answers": [1], "targets": ["p1"] },
+      { "activate": "Izzet Guildmage", "ability": 1, "targets": [{ "stack": "Fireball" }] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: X counts toward mana value on the stack; Fireball with X=2 (MV 3) cannot be copied",
+    "players": [
+      { "hand": ["Fireball"], "battlefield": ["Izzet Guildmage", "Mountain", "Mountain", "Mountain", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fireball", "answers": [2], "targets": ["p1"] },
+      { "activate": "Izzet Guildmage", "ability": 1, "targets": [{ "stack": "Fireball" }], "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: an instant with no targets can be copied; the copy draws too",
+    "players": [
+      { "hand": ["Opt"], "battlefield": ["Izzet Guildmage", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Opt" },
+      { "activate": "Izzet Guildmage", "ability": 0, "targets": [{ "stack": "Opt" }] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2 }, {} ] }
+  },
+  {
+    "name": "ruling: the copy resolves first and makes its own scry choice (copy bottoms the top card, original keeps)",
+    "players": [
+      { "hand": ["Opt"], "battlefield": ["Izzet Guildmage", "Island", "Island", "Island", "Island"], "library": ["Lightning Bolt", "Mountain", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Opt" },
+      { "activate": "Izzet Guildmage", "ability": 0, "targets": [{ "stack": "Opt" }] },
+      { "resolve": true, "answers": [[0], []] }
+    ],
+    "expect": { "players": [ { "hand": ["Mountain", "Island"] }, {} ] }
+  },
+  {
+    "name": "ruling: the copy may choose new targets (Bolt copy redirected to the opponent's face)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Izzet Guildmage", "Mountain", "Mountain", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "activate": "Izzet Guildmage", "ability": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": ["p1"] }
+    ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17, "graveyard": ["Grizzly Bears"] } ] }
+  }
+]

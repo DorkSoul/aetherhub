@@ -1,0 +1,189 @@
+[
+  {
+    "name": "exile a nonland card, the rest go to hand; it cannot be cast the turn it was plotted",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island"],
+        "library": ["Forest", "Grizzly Bears", "Island", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Forest", "Island"],
+          "exile": ["Grizzly Bears"],
+          "graveyard": ["Make Your Own Luck"],
+          "library_count": 2
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "on a later turn the plotted card is cast for free at sorcery speed",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island"],
+        "library": ["Forest", "Grizzly Bears", "Island", "Plains", "Plains", "Plains"]
+      },
+      { "library": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 3,
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears"],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a plotted instant cannot be cast during an upkeep (sorcery timing only)",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island"],
+        "library": ["Lightning Bolt", "Island", "Plains", "Plains", "Plains", "Plains"]
+      },
+      { "library": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true, "answers": ["Lightning Bolt"] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Upkeep" },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Island", "Plains"],
+          "exile": ["Lightning Bolt"]
+        },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "plotted instant is cast from exile for free on a later main phase",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island"],
+        "library": ["Lightning Bolt", "Island", "Plains", "Plains", "Plains", "Plains"]
+      },
+      { "library": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true, "answers": ["Lightning Bolt"] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Make Your Own Luck", "Lightning Bolt"],
+          "exile": []
+        },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "all three lands: nothing to exile, all go to hand",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island"],
+        "library": ["Forest", "Island", "Plains", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Forest", "Island", "Plains"],
+          "exile": [],
+          "library_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining to exile puts all three cards into hand",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island"],
+        "library": ["Grizzly Bears", "Island", "Lightning Bolt", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Grizzly Bears", "Island", "Lightning Bolt"],
+          "exile": [],
+          "library_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a plotted card with {X} in its cost is cast with X = 0",
+    "players": [
+      {
+        "hand": ["Make Your Own Luck"],
+        "battlefield": ["Forest", "Forest", "Forest", "Island", "Island", "Mountain", "Mountain", "Mountain"],
+        "library": ["Fireball", "Island", "Plains", "Plains", "Plains", "Plains"]
+      },
+      { "library": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Make Your Own Luck" },
+      { "resolve": true, "answers": ["Fireball"] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Fireball", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 3,
+      "players": [
+        { "graveyard_has": ["Fireball"], "exile": [] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "name": "Aggression",
+  "mana_cost": "{2}{R}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Creature"], "not_subtypes": ["Wall"] } },
+    {
+      "type": "Static",
+      "effect": { "type": "GrantKeyword", "affects": { "types": ["Creature"], "enchanted": true }, "keyword": "FirstStrike" }
+    },
+    {
+      "type": "Static",
+      "effect": { "type": "GrantKeyword", "affects": { "types": ["Creature"], "enchanted": true }, "keyword": "Trample" }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "Any" },
+      "condition": { "type": "Control", "who": { "type": "TriggerPlayer" }, "filter": { "attached_by_source": true }, "at_least": 1 },
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "Compare", "a": { "type": "Count", "filter": { "attached_by_source": true, "attacked_this_turn": true }, "zone": "Battlefield" }, "cmp": { "op": "Ge", "n": 1 } } },
+          "then": [{ "type": "Destroy", "what": { "type": "AttachedTo" } }],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant non-Wall creature\nEnchanted creature has first strike and trample.\nAt the beginning of the end step of enchanted creature's controller, destroy that creature if it didn't attack this turn."
+}

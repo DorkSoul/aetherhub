@@ -1,0 +1,70 @@
+[
+ {
+  "name": "2 damage is prevented and removes 2 +1/+1 counters (5 -> 3)",
+  "players": [
+   { "battlefield": [ { "name": "Bloatfly Swarm", "counters": { "p1p1": 5 } } ] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Bloatfly Swarm"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Bloatfly Swarm"] },
+    { "graveyard": ["Shock"] }
+   ],
+   "counters": { "Bloatfly Swarm": { "p1p1": 3 } },
+   "pt": { "Bloatfly Swarm": [3, 3] }
+  }
+ },
+ {
+  "name": "damage larger than the counters removes only the counters it has: 0/0 with 1 counter dies",
+  "players": [
+   { "battlefield": [ { "name": "Bloatfly Swarm", "counters": { "p1p1": 1 } } ] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Bloatfly Swarm"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Bloatfly Swarm"] },
+    { "graveyard": ["Shock"] }
+   ]
+  }
+ },
+  {
+    "name": "enters with five +1/+1 counters",
+    "players": [
+      { "hand": ["Bloatfly Swarm"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bloatfly Swarm" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Bloatfly Swarm"] }, {} ],
+      "counters": { "Bloatfly Swarm": { "p1p1": 5 } },
+      "pt": { "Bloatfly Swarm": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: at the precombat main phase of a player with rad counters, they mill that many and lose 1 life per nonland card",
+    "players": [ { "rad": 3, "library": ["Forest", "Grizzly Bears", "Mountain", "Island"] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" } ],
+    "expect": { "players": [ { "rad": 2, "life": 19, "hand": ["Forest"], "graveyard": ["Grizzly Bears", "Mountain", "Island"] }, {} ] }
+  },
+  {
+    "name": "ruling: rad counters do not go away when turns end; they stay until an effect removes them",
+    "players": [ { "rad": 3 }, {} ],
+    "steps": [ { "advance_to": "Main1" } ],
+    "expect": { "players": [ { "rad": 3 }, {} ] }
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "name": "WW gives +1/+0 until end of turn",
+    "players": [
+      { "hand": [], "battlefield": ["Order of the White Shield", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Order of the White Shield", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Order of the White Shield": [3, 1] } }
+  },
+  {
+    "name": "W gives first strike until end of turn",
+    "players": [
+      { "battlefield": ["Order of the White Shield", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Order of the White Shield", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Order of the White Shield": ["FirstStrike"] },
+      "pt": { "Order of the White Shield": [2, 1] }
+    }
+  },
+  {
+    "name": "first strike ability needs a white mana",
+    "players": [
+      { "battlefield": ["Order of the White Shield", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Order of the White Shield", "ability": 0, "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "protection from black: a black spell can't target it (Disfigure is the only possible target)",
+    "players": [ { "battlefield": ["Order of the White Shield"] }, { "hand": ["Disfigure"], "battlefield": ["Swamp"] } ],
+    "steps": [ { "pass": true }, { "cast": "Disfigure", "player": 1, "targets": ["Order of the White Shield"], "illegal": true } ],
+    "expect": { "pt": { "Order of the White Shield": [2, 1] }, "players": [ { "battlefield_has": ["Order of the White Shield"] }, { "hand": ["Disfigure"] } ] }
+  },
+  {
+    "name": "protection from black: a black creature can't block it, so it is unblocked (2 damage)",
+    "players": [
+      { "battlefield": [ { "name": "Order of the White Shield", "sick": false }, { "name": "Hill Giant", "sick": false } ] },
+      { "battlefield": ["Gurmag Angler", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Order of the White Shield", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Gurmag Angler", "attacker": "Order of the White Shield" }, { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Order of the White Shield"] }, { "life": 18 } ] }
+  }
+]

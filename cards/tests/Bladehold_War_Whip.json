@@ -1,0 +1,90 @@
+[
+  {
+    "name": "ETB creates a 2/2 Rebel token and attaches to it",
+    "players": [
+      { "hand": ["Bladehold War-Whip"], "battlefield": ["Mountain", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bladehold War-Whip" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Bladehold War-Whip", "Rebel 2-2"] }, {} ],
+      "attached": { "Bladehold War-Whip": "Rebel 2-2" }
+    }
+  },
+  {
+    "name": "equip abilities of other Equipment cost {1} less (Bonesplitter equips for free)",
+    "players": [
+      { "battlefield": ["Bladehold War-Whip", "Bonesplitter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [4, 2] }, "attached": { "Bonesplitter": "Grizzly Bears" } }
+  },
+  {
+    "name": "its own equip is not reduced (needs all 5 mana)",
+    "players": [
+      { "battlefield": ["Bladehold War-Whip", "Grizzly Bears", "Mountain", "Plains", "Mountain", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bladehold War-Whip", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "attached": { "Bladehold War-Whip": "Grizzly Bears" } }
+  },
+  {
+    "name": "its own equip is not reduced: four lands are not enough",
+    "players": [
+      { "battlefield": ["Bladehold War-Whip", "Grizzly Bears", "Mountain", "Plains", "Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bladehold War-Whip", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "a non-equip ability of other Equipment is not reduced (Batterskull {3} return)",
+    "players": [
+      { "battlefield": ["Bladehold War-Whip", "Batterskull", "Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Batterskull", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Batterskull"] }, {} ] }
+  },
+  {
+    "name": "ruling: Rebel destroyed, the Equipment stays and can be moved for its full equip cost",
+    "players": [
+      { "hand": ["Bladehold War-Whip"], "battlefield": ["Grizzly Bears", "Mountain", "Plains", "Mountain", "Plains", "Mountain", "Plains", "Mountain", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Bladehold War-Whip" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Rebel 2-2"] },
+      { "resolve": true },
+      { "activate": "Bladehold War-Whip", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bladehold War-Whip", "Grizzly Bears"], "battlefield_lacks": ["Rebel 2-2"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "attached": { "Bladehold War-Whip": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [2, 2] },
+      "keywords": { "Grizzly Bears": ["DoubleStrike"] }
+    }
+  }
+]

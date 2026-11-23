@@ -1,0 +1,49 @@
+[
+ {
+  "name": "cycling {U/B}: discard to draw a card",
+  "players": [ { "hand": ["Architects of Will"], "battlefield": ["Island"] }, {} ],
+  "steps": [
+   { "activate": "Architects of Will" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 1, "graveyard_has": ["Architects of Will"] }, {} ] }
+ },
+ {
+  "name": "ETB looks at the top three of target player's library and puts them back",
+  "players": [ { "hand": ["Architects of Will"], "battlefield": ["Island", "Swamp", "Plains", "Plains"] }, {} ],
+  "steps": [
+   { "cast": "Architects of Will" },
+   { "resolve": true, "targets": ["p1"], "auto": true },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Architects of Will"] }, { "library_count": 20 } ] }
+ },
+ {
+  "name": "needs blue and black mana",
+  "players": [ { "hand": ["Architects of Will"], "battlefield": ["Plains", "Plains", "Island", "Island"] }, {} ],
+  "steps": [ { "cast": "Architects of Will", "illegal": true } ],
+  "expect": {}
+ },
+ {
+  "name": "ruling: Stifle counters the cycling ability; the card is discarded but no card is drawn",
+  "players": [ { "hand": ["Architects of Will"], "battlefield": ["Island"] }, { "hand": ["Stifle"], "battlefield": ["Island"] } ],
+  "steps": [
+   { "activate": "Architects of Will" },
+   { "pass": true },
+   { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Architects of Will" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard_has": ["Architects of Will"] }, { "graveyard_has": ["Stifle"] } ] }
+ },
+ {
+  "name": "ruling: Remove Soul cannot counter cycling (cycling is not a spell)",
+  "players": [ { "hand": ["Architects of Will"], "battlefield": ["Island"] }, { "hand": ["Remove Soul"], "battlefield": ["Island", "Island", "Island"] } ],
+  "steps": [
+   { "activate": "Architects of Will" },
+   { "pass": true },
+   { "cast": "Remove Soul", "player": 1, "illegal": true, "targets": [{ "stack": "Architects of Will" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 1, "graveyard_has": ["Architects of Will"] }, {} ] }
+ }
+]

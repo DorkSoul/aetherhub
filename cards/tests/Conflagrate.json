@@ -1,0 +1,133 @@
+[
+ {
+  "name": "X=4 divided 2 / 1 / 1 among a creature, a creature and a player",
+  "players": [
+   { "hand": ["Conflagrate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears", "Llanowar Elves", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "targets": ["Grizzly Bears", "Llanowar Elves", "p1"], "answers": [4, 2, 1] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Conflagrate"] },
+    { "life": 19, "battlefield": ["Hill Giant"], "graveyard": ["Grizzly Bears", "Llanowar Elves"] }
+   ]
+  }
+ },
+ {
+  "name": "X=3 all to one target",
+  "players": [
+   { "hand": ["Conflagrate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "targets": ["Hill Giant"], "answers": [3] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [{ "graveyard": ["Conflagrate"] }, { "graveyard": ["Hill Giant"] }] }
+ },
+ {
+  "name": "division is not enough: 1 damage to a 2/2 leaves it alive",
+  "players": [
+   { "hand": ["Conflagrate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "targets": ["Grizzly Bears", "p1"], "answers": [3, 1] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "graveyard": ["Conflagrate"] }, { "life": 18, "battlefield": ["Grizzly Bears"] }],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "flashback RR discarding X=2 cards, then exiled",
+  "players": [
+   { "hand": ["Island", "Swamp"], "graveyard": ["Conflagrate"], "battlefield": ["Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "alt": 0, "targets": ["Grizzly Bears", "p1"], "answers": [2, 1] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "graveyard": ["Island", "Swamp"], "exile": ["Conflagrate"] },
+    { "life": 19, "battlefield": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: X=2 allows at most two targets, so a third target cannot be chosen",
+  "players": [
+   { "hand": ["Conflagrate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears", "Llanowar Elves", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "targets": ["Grizzly Bears", "Llanowar Elves", "Hill Giant"], "answers": [2], "illegal": true }
+  ],
+  "expect": { "players": [{ "hand_count": 1 }, { "battlefield": ["Grizzly Bears", "Llanowar Elves", "Hill Giant"] }] }
+ },
+ {
+  "name": "ruling: target made illegal in response: its damage is not dealt and the other target keeps its division",
+  "players": [
+   { "hand": ["Conflagrate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "targets": ["Grizzly Bears", "Hill Giant"], "answers": [3, 2] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": { "players": [{ "graveyard": ["Conflagrate"] }, { "life": 20, "graveyard": ["Grizzly Bears", "Lightning Bolt"], "battlefield": ["Hill Giant", "Mountain"] }] }
+ },
+ {
+  "name": "ruling: X=0 has no targets and deals no damage",
+  "players": [
+   { "hand": ["Conflagrate"], "battlefield": ["Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "answers": [0] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [{ "graveyard": ["Conflagrate"] }, { "life": 20, "battlefield": ["Grizzly Bears"] }] }
+ },
+ {
+  "name": "ruling: flashback spell whose only target is gone fizzles and is still exiled",
+  "players": [
+   { "hand": ["Island"], "graveyard": ["Conflagrate"], "battlefield": ["Mountain", "Mountain"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Conflagrate", "alt": 0, "targets": ["Grizzly Bears"], "answers": [1] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": { "players": [{ "hand_count": 0, "graveyard": ["Island"], "exile": ["Conflagrate"] }, { "graveyard": ["Grizzly Bears", "Lightning Bolt"] }] }
+ },
+ {
+  "name": "ruling: flashback follows sorcery timing, so it cannot be cast on the opponent's turn",
+  "players": [
+   { "graveyard": ["Conflagrate"], "battlefield": ["Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Conflagrate", "alt": 0, "illegal": true, "player": 0 }
+  ],
+  "expect": { "players": [{ "graveyard": ["Conflagrate"] }, {}] }
+ }
+]

@@ -1,0 +1,108 @@
+[
+ {
+  "name": "unleashed Spawn (+1/+1 counter) cannot block: the Hill Giant it would block is unblocked", "players": [ { "battlefield": [ { "name": "Spawn of Rix Maadi", "counters": { "p1p1": 1 } }, "Grizzly Bears" ] }, { "battlefield": ["Hill Giant", "Savannah Lions"] } ], "steps": [ { "advance_to": "Main1" }, { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Savannah Lions", "at": "p0" } ], "player": 1 }, { "block": [ { "blocker": "Spawn of Rix Maadi", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Savannah Lions" } ], "player": 0 }, { "advance_to": "Main2" } ], "expect": { "players": [ { "life": 17, "battlefield_has": ["Spawn of Rix Maadi"] }, { "battlefield_has": ["Hill Giant"] } ] } },
+ { "name": "without the counter the Spawn blocks the Hill Giant", "players": [ { "battlefield": ["Spawn of Rix Maadi", "Grizzly Bears"] }, { "battlefield": ["Hill Giant", "Savannah Lions"] } ], "steps": [ { "advance_to": "Main1" }, { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Savannah Lions", "at": "p0" } ], "player": 1 }, { "block": [ { "blocker": "Spawn of Rix Maadi", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Savannah Lions" } ], "player": 0 }, { "advance_to": "Main2" } ], "expect": { "players": [ { "life": 20 }, { "battlefield_lacks": ["Hill Giant"] } ] } },
+ { "name": "unleash with the counter: 6/4",
+  "players": [
+   {
+    "hand": [
+     "Spawn of Rix Maadi"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Spawn of Rix Maadi"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Spawn of Rix Maadi": [
+     6,
+     4
+    ]
+   },
+   "counters": {
+    "Spawn of Rix Maadi": {
+     "PlusOnePlusOne": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "unleash declined: plain 5/3 with no counter",
+  "players": [
+   {
+    "hand": [
+     "Spawn of Rix Maadi"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Spawn of Rix Maadi"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Spawn of Rix Maadi": [
+     5,
+     3
+    ]
+   }
+  }
+ },
+ { "name": "ruling: unleash works when the creature enters from a graveyard (Reanimate): the counter is chosen as it enters",
+   "players": [ { "hand": ["Reanimate"], "battlefield": ["Swamp"], "graveyard": ["Spawn of Rix Maadi"] }, {} ],
+   "steps": [ { "cast": "Reanimate", "targets": ["Spawn of Rix Maadi"] }, { "resolve": true, "answers": [true] } ],
+   "expect": { "players": [ { "life": 15, "battlefield_has": ["Spawn of Rix Maadi"] }, {} ],
+     "pt": { "Spawn of Rix Maadi": [6, 4] }, "counters": { "Spawn of Rix Maadi": { "PlusOnePlusOne": 1 } } } },
+ { "name": "ruling: a +1/+1 counter put on a creature that is already blocking does not remove it from combat",
+   "players": [ { "hand": ["Battlegrowth"], "battlefield": ["Spawn of Rix Maadi", "Forest"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "advance_to": "Main1" },
+     { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+     { "block": [ { "blocker": "Spawn of Rix Maadi", "attacker": "Hill Giant" } ], "player": 0 },
+     { "pass": true, "player": 1 },
+     { "cast": "Battlegrowth", "targets": ["Spawn of Rix Maadi"] },
+     { "resolve": true },
+     { "advance_to": "Main2" } ],
+   "expect": { "players": [ { "life": 20, "battlefield_has": ["Spawn of Rix Maadi"] }, { "graveyard_has": ["Hill Giant"] } ],
+     "counters": { "Spawn of Rix Maadi": { "PlusOnePlusOne": 1 } } } },
+ { "name": "ruling: a +1/+1 counter from a spell (not unleash) also stops the creature blocking",
+   "players": [ { "hand": ["Battlegrowth"], "battlefield": ["Spawn of Rix Maadi", "Forest"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Battlegrowth", "targets": ["Spawn of Rix Maadi"] },
+     { "resolve": true },
+     { "advance_to": "Main1" },
+     { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+     { "block": [ { "blocker": "Spawn of Rix Maadi", "attacker": "Hill Giant" } ], "player": 0, "illegal": true },
+     { "advance_to": "Main2" } ],
+   "expect": { "players": [ { "life": 17, "battlefield_has": ["Spawn of Rix Maadi"] }, { "battlefield_has": ["Hill Giant"] } ] } }
+]

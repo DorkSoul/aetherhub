@@ -1,0 +1,50 @@
+{
+  "name": "Consuming Tide",
+  "mana_cost": "{2}{U}{U}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachPlayer" },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Battlefield",
+              "filter": { "not_types": ["Land"], "controlled_by": { "type": "EachObject" } },
+              "min": 1,
+              "max": 1,
+              "then": [ { "type": "StoreRemembered", "slot": 0, "append": true } ]
+            }
+          ]
+        },
+        {
+          "type": "Bounce",
+          "what": { "type": "All", "filter": { "not_types": ["Land"], "not_among_stored": 0 } }
+        },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "CompareAmounts",
+                "a": { "type": "HandSize", "who": { "type": "EachObject" } },
+                "b": { "type": "HandSize", "who": { "type": "You" } },
+                "op": "Gt"
+              },
+              "then": [
+                { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Each player chooses a nonland permanent they control. Return all nonland permanents not chosen this way to their owners' hands. Then you draw a card for each opponent who has more cards in their hand than you."
+}

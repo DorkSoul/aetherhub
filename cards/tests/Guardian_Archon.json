@@ -1,0 +1,250 @@
+[
+ {
+  "name": "before activating, the opponent's Lightning Bolt can target your creature",
+  "players": [
+   {
+    "hand": [
+     "Guardian Archon"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Guardian Archon"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "activated: you and the target creature gain protection from the chosen opponent until end of turn",
+  "players": [
+   {
+    "hand": [
+     "Guardian Archon"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Guardian Archon"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Guardian Archon",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Guardian Archon",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "activate only once: a second activation is not legal",
+  "players": [
+   {
+    "hand": [
+     "Guardian Archon"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Guardian Archon"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Guardian Archon",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Guardian Archon",
+    "ability": 0,
+    "targets": [
+     "Hill Giant"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Guardian Archon"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "chosen opponent's Go for the Throat has no legal target once the Archon gives itself protection",
+  "players": [
+   { "hand": ["Guardian Archon"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Go for the Throat"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Guardian Archon" },
+   { "resolve": true },
+   { "activate": "Guardian Archon", "ability": 0, "targets": ["Guardian Archon"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Go for the Throat", "player": 1, "targets": ["Guardian Archon"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Guardian Archon"] }, { "hand": ["Go for the Throat"] } ]
+  }
+ },
+ {
+  "name": "control: without the activation the opponent's Go for the Throat kills the Archon",
+  "players": [
+   { "hand": ["Guardian Archon"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Go for the Throat"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Guardian Archon" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Go for the Throat", "player": 1, "targets": ["Guardian Archon"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Guardian Archon"] }, { "graveyard": ["Go for the Throat"] } ]
+  }
+ },
+ {
+  "name": "ruling: after activation, the chosen opponent's creatures can't block the protected creature (it deals its damage)",
+  "players": [
+   { "hand": ["Guardian Archon"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Guardian Archon" },
+   { "resolve": true },
+   { "activate": "Guardian Archon", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1, "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Guardian Archon", "Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"], "life": 18 } ]
+  }
+ },
+ {
+  "name": "ruling control: without the activation the same Hill Giant can block Grizzly Bears",
+  "players": [
+   { "hand": ["Guardian Archon"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Guardian Archon" },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"], "life": 20 } ]
+  }
+ }
+]

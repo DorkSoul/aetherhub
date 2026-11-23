@@ -1,0 +1,113 @@
+[
+  {
+    "name": "enters and adds {B}{R} when an opponent lost life this turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Flamecache Gecko"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Flamecache Gecko" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "B": 1, "R": 1 } },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "no mana when no opponent lost life this turn",
+    "players": [
+      { "hand": ["Flamecache Gecko"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flamecache Gecko" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "pool": {} },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "{1}{R}, discard a card: draw a card",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Flamecache Gecko", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Flamecache Gecko", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the discard ability needs a card in hand",
+    "players": [
+      { "battlefield": ["Flamecache Gecko", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Flamecache Gecko", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the enters ability uses the stack, so its mana is not in the pool until it resolves",
+    "players": [
+      { "hand": ["Lightning Bolt", "Flamecache Gecko"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Flamecache Gecko" },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "pool": {} },
+        { "life": 17 }
+      ],
+      "stack_empty": false
+    }
+  },
+  {
+    "name": "ruling: an opponent who lost life and then gained it back still counts as having lost life",
+    "players": [
+      { "hand": ["Lightning Bolt", "Healing Salve", "Flamecache Gecko"], "battlefield": ["Mountain", "Mountain", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Healing Salve", "targets": ["p1"], "answers": [0] },
+      { "resolve": true },
+      { "cast": "Flamecache Gecko" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "B": 1, "R": 1 } },
+        { "life": 20 }
+      ]
+    }
+  }
+]

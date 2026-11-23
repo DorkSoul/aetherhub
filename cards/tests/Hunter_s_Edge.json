@@ -1,0 +1,182 @@
+[
+  {
+    "name": "your creature gets a counter then deals damage equal to its power to an opposing creature",
+    "players": [
+      {
+        "hand": [
+          "Hunter's Edge"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Hunter's Edge",
+        "targets": [
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Hunter's Edge"
+          ],
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "no legal opposing creature: cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Hunter's Edge"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Hunter's Edge",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Hunter's Edge"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no creature you control: cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Hunter's Edge"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Hunter's Edge",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Hunter's Edge"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the creature you control is removed in response, the Edge deals no damage",
+    "players": [
+      { "hand": ["Hunter's Edge"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Llanowar Elves", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Hunter's Edge", "targets": ["Grizzly Bears", "Llanowar Elves"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Hunter's Edge", "Grizzly Bears"] },
+        { "battlefield_has": ["Llanowar Elves"], "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the creature you don't control is removed in response, the creature you control still gets the counter",
+    "players": [
+      { "hand": ["Hunter's Edge"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Llanowar Elves", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Hunter's Edge", "targets": ["Grizzly Bears", "Llanowar Elves"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Llanowar Elves"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Hunter's Edge"] },
+        { "battlefield_lacks": ["Llanowar Elves"], "graveyard": ["Lightning Bolt", "Llanowar Elves"] }
+      ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  }
+]

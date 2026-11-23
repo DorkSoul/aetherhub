@@ -1,0 +1,284 @@
+[
+ {
+  "name": "a player with no last turn can't be attacked",
+  "players": [
+   {
+    "battlefield": [
+     "Arboria",
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main2",
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "defender cast a spell on their last turn: attack allowed",
+  "players": [
+   {
+    "battlefield": [
+     "Arboria",
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "defender put a nontoken permanent onto the battlefield on their last turn: attack allowed",
+  "players": [
+   {
+    "battlefield": [
+     "Arboria",
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "hand": [
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "play_land": "Forest",
+    "player": 1
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "defender did nothing on their last turn: can't be attacked",
+  "players": [
+   {
+    "battlefield": [
+     "Arboria",
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main2",
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "a spell cast on the attacker's turn doesn't count for the defender's last turn",
+  "players": [
+   {
+    "battlefield": [
+     "Arboria",
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main2",
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "player who did nothing on their last turn can't be attacked: Hill Giant's attack on the player is dropped while Grizzly Bears attacks the planeswalker",
+  "players": [
+   { "battlefield": ["Arboria", { "name": "Hill Giant", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+   { "battlefield": ["Test Walker"] }
+  ],
+  "steps": [
+   { "attack": [{ "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "Test Walker" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "tapped": { "Grizzly Bears": true }, "players": [{}, { "life": 20 }] }
+ },
+ {
+  "name": "a spell cast during the attacker's own turn doesn't let the attack through",
+  "players": [
+   { "battlefield": ["Arboria", { "name": "Hill Giant", "sick": false }] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Hill Giant", "at": "p1" }], "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [{ "life": 17 }, { "life": 20 }] }
+ },
+ {
+  "name": "ruling: a countered spell still counts as cast on their last turn (attack allowed)",
+  "players": [
+   { "battlefield": ["Arboria", "Island", "Island", "Island", { "name": "Hill Giant", "sick": false }], "hand": ["Cancel"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "pass": true, "player": 1 },
+   { "cast": "Cancel", "player": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "attack": [{ "card": "Hill Giant", "at": "p1" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Cancel"] },
+    { "life": 17, "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ }
+]

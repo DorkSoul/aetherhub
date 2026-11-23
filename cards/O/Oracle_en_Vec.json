@@ -1,0 +1,29 @@
+{
+  "name": "Oracle en-Vec",
+  "mana_cost": "{1}{W}",
+  "colors": ["W"],
+  "types": ["Creature"],
+  "subtypes": ["Human", "Wizard"],
+  "power": 1,
+  "toughness": 1,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "condition": { "type": "YourTurn" },
+      "targets": [ { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" } ],
+      "effects": [
+        { "type": "LinkPlayer", "what": { "type": "Target", "idx": 0 } },
+        { "type": "ClearRemembered" },
+        { "type": "Choose", "who": { "type": "Target", "idx": 0 }, "zone": "Battlefield", "filter": { "types": ["Creature"], "controlled_by": { "type": "Target", "idx": 0 } }, "min": 0, "max": 99, "then": [] },
+        { "type": "StoreRemembered", "slot": 3, "append": false },
+        { "type": "UnlinkAll" },
+        { "type": "ForEach", "objects": { "type": "Stored", "slot": 3 }, "effects": [ { "type": "Remember", "what": { "type": "EachObject" } }, { "type": "LinkRemembered" } ] },
+        { "type": "GrantStatic", "what": { "type": "This" }, "effect": { "type": "MustAttack", "affects": { "types": ["Creature"], "linked_with_this": true } }, "duration": "UntilEndOfAffectedControllersNextTurn", "dynamic": true },
+        { "type": "GrantStatic", "what": { "type": "This" }, "effect": { "type": "CantAttack", "affects": { "types": ["Creature"], "not_linked_with_this": true } }, "duration": "UntilEndOfAffectedControllersNextTurn", "dynamic": true },
+        { "type": "Delayed", "at": "NextChosenPlayerEndStep", "effects": [ { "type": "Destroy", "what": { "type": "All", "filter": { "types": ["Creature"], "linked_with_this": true, "not_attacked_this_turn": true } } } ] }
+      ]
+    }
+  ],
+  "oracle_text": "{T}: Target opponent chooses any number of creatures they control. During that player's next turn, the chosen creatures attack if able, and other creatures can't attack. At the beginning of that turn's end step, destroy each of the chosen creatures that didn't attack this turn. Activate only during your turn."
+}

@@ -1,0 +1,179 @@
+[
+ {
+  "name": "ETB manifest dread: the manifested card is a 2/2 and the other card goes to the graveyard",
+  "players": [
+   {
+    "hand": [
+     "Killer's Mask"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Killer's Mask"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     0
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Forest"
+     ],
+     "battlefield_has": [
+      "Killer's Mask"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equip {2} to a creature you control (sorcery speed)",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Killer's Mask",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Killer's Mask",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Killer's Mask",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equip needs two mana: one Swamp is illegal",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Killer's Mask",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Killer's Mask",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Killer's Mask"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equipped creature has menace: a single blocker cannot block it, so the Bears deal 2",
+  "players": [
+   { "battlefield": ["Swamp", "Swamp", "Killer's Mask", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Killer's Mask", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18, "battlefield_has": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "equipped creature gains menace",
+  "players": [ { "battlefield": ["Swamp", "Swamp", "Killer's Mask", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "activate": "Killer's Mask", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "keywords": { "Grizzly Bears": ["Menace"] }, "players": [ {}, {} ] }
+ },
+ {
+  "name": "ruling: turning a manifested creature face up does not change whether it is tapped",
+  "players": [ { "battlefield": ["Forest", "Swamp", { "name": "Grizzly Bears", "face_down": true, "tapped": true }] }, {} ],
+  "steps": [ { "activate": "Grizzly Bears" } ],
+  "expect": { "tapped": { "Grizzly Bears": true }, "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: turning a manifested creature face up is a special action that uses no stack",
+  "players": [ { "battlefield": ["Forest", "Swamp", { "name": "Grizzly Bears", "face_down": true }] }, {} ],
+  "steps": [ { "activate": "Grizzly Bears" } ],
+  "expect": { "stack_empty": true, "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: turning a face-down creature face up keeps the Equipment attached",
+  "players": [ { "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Killer's Mask", { "name": "Grizzly Bears", "face_down": true }] }, {} ],
+  "steps": [ { "activate": "Killer's Mask", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "activate": "Grizzly Bears" } ],
+  "expect": { "attached": { "Killer's Mask": "Grizzly Bears" }, "keywords": { "Grizzly Bears": ["Menace"] }, "players": [ {}, {} ] }
+ },
+ {
+  "name": "ruling: a manifested instant that is revealed cannot be turned face up",
+  "players": [ { "hand": ["Killer's Mask"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"], "library": ["Lightning Bolt", "Forest"] }, {} ],
+  "steps": [ { "cast": "Killer's Mask" }, { "resolve": true, "answers": [0] }, { "resolve": true }, { "activate": "Lightning Bolt", "illegal": true } ],
+  "expect": { "players": [ { "graveyard": ["Forest"], "battlefield_has": ["Killer's Mask"] }, {} ] }
+ },
+ {
+  "name": "ruling: the manifest still happens when the Equipment has left the battlefield before its trigger resolves",
+  "players": [ { "hand": ["Killer's Mask", "Disenchant"], "battlefield": ["Swamp", "Swamp", "Swamp", "Plains", "Plains"], "library": ["Grizzly Bears", "Forest"] }, {} ],
+  "steps": [ { "cast": "Killer's Mask" }, { "resolve": true, "answers": [0] }, { "cast": "Disenchant", "targets": ["Killer's Mask"] }, { "pass": true }, { "pass": true, "player": 1 }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Killer's Mask", "Disenchant", "Forest"] }, {} ] }
+ }
+]

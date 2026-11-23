@@ -1,0 +1,62 @@
+{
+  "name": "Mirkwood Trapper",
+  "mana_cost": "{1}{G}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Elf", "Scout"],
+  "power": 1,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "YouAttack",
+        "who": "Any",
+        "filter": { "attacking_you_player": true }
+      },
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature"], "attacking": true } },
+          "label": "target attacking creature"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Pump",
+          "what": { "type": "Target", "idx": 0 },
+          "power": { "type": "Fixed", "n": -2 },
+          "toughness": { "type": "Fixed", "n": 0 },
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "YouAttack", "who": "Any" },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "Count", "filter": { "types": ["Creature"], "attacking_you_player": true }, "zone": "Battlefield" },
+        "cmp": { "op": "Eq", "n": 0 }
+      },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "ControllerOf", "of": { "type": "TriggerObject" } },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "attacking": true, "controlled_by": { "type": "ControllerOf", "of": { "type": "TriggerObject" } } },
+          "min": 1,
+          "max": 1,
+          "then": [
+            {
+              "type": "Pump",
+              "what": { "type": "Remembered" },
+              "power": { "type": "Fixed", "n": 2 },
+              "toughness": { "type": "Fixed", "n": 0 },
+              "duration": "UntilEndOfTurn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever a player attacks you, target attacking creature gets -2/-0 until end of turn.\nWhenever a player attacks, if they aren't attacking you, that player chooses an attacking creature. It gets +2/+0 until end of turn."
+}

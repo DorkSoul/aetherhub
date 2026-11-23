@@ -1,0 +1,143 @@
+[
+  {
+    "name": "cycling: draw a card and deal 1 damage to each opponent",
+    "players": [
+      {
+        "hand": [
+          "Magmakin Artillerist"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Magmakin Artillerist"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Forest"
+          ],
+          "graveyard": [
+            "Magmakin Artillerist"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "discarding two cards at once deals 2 damage to each opponent",
+    "players": [
+      {
+        "hand": [
+          "Careful Study"
+        ],
+        "battlefield": [
+          "Magmakin Artillerist",
+          "Island"
+        ],
+        "library": [
+          "Forest",
+          "Mountain",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Careful Study"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Careful Study",
+            "Forest",
+            "Mountain"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the cycling trigger does not stop the cycle (Stifle on the trigger)",
+    "players": [
+      { "hand": ["Magmakin Artillerist"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest"] },
+      { "hand": ["Stifle"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "activate": "Magmakin Artillerist" },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Magmakin Artillerist" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "graveyard": ["Magmakin Artillerist"] },
+        { "life": 20, "graveyard": ["Stifle"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cycling is a discard, so a battlefield Magmakin triggers too; both cycle-related triggers deal damage",
+    "players": [
+      { "hand": ["Magmakin Artillerist"], "battlefield": ["Magmakin Artillerist", "Mountain", "Mountain"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magmakin Artillerist" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "graveyard": ["Magmakin Artillerist"], "battlefield_has": ["Magmakin Artillerist"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Cancel cannot counter the cycling ability or its trigger (they are not spells)",
+    "players": [
+      { "hand": ["Magmakin Artillerist"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest"] },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Magmakin Artillerist" },
+      { "pass": true },
+      { "cast": "Cancel", "player": 1, "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "graveyard": ["Magmakin Artillerist"] },
+        { "life": 19, "hand": ["Cancel"] }
+      ]
+    }
+  }
+]

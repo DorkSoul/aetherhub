@@ -1,0 +1,53 @@
+[
+ { "name": "battalion: attacking with two others gives all your creatures indestructible",
+   "players": [ { "battlefield": ["Frontline Medic", "Grizzly Bears", "Hill Giant"] }, {} ],
+   "steps": [
+     { "attack": [ { "card": "Frontline Medic", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+     { "resolve": true } ],
+   "expect": { "keywords": { "Frontline Medic": ["Indestructible"], "Grizzly Bears": ["Indestructible"], "Hill Giant": ["Indestructible"] } } },
+ { "name": "battalion needs two other attackers",
+   "players": [ { "battlefield": ["Frontline Medic", "Grizzly Bears", "Hill Giant"] }, {} ],
+   "steps": [
+     { "attack": [ { "card": "Frontline Medic", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+     { "resolve": true } ],
+   "expect": { "keywords": { "Grizzly Bears": [] } } },
+ { "name": "sacrifice: counters a spell with X in its cost unless its controller pays 3",
+   "players": [ { "hand": ["Tempt with Vengeance"], "battlefield": ["Frontline Medic", "Mountain", "Mountain"] }, {} ],
+   "steps": [
+     { "cast": "Tempt with Vengeance", "answers": [1] },
+     { "activate": "Frontline Medic", "targets": [ { "stack": "Tempt with Vengeance" } ] },
+     { "resolve": true, "auto": true } ],
+   "expect": { "players": [ { "graveyard_has": ["Frontline Medic", "Tempt with Vengeance"], "battlefield": ["Mountain", "Mountain"] }, {} ] } },
+ { "name": "sacrifice: spell resolves if its controller pays 3",
+   "players": [ { "hand": ["Tempt with Vengeance"], "battlefield": ["Frontline Medic", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+   "steps": [
+     { "cast": "Tempt with Vengeance", "answers": [1] },
+     { "activate": "Frontline Medic", "targets": [ { "stack": "Tempt with Vengeance" } ] },
+     { "resolve": true, "answers": [true, false] } ],
+   "expect": { "players": [ { "graveyard_has": ["Frontline Medic", "Tempt with Vengeance"], "battlefield_has": ["Elemental 1-1 Red Haste"] }, {} ] } },
+ { "name": "cannot target a spell without X in its cost",
+   "players": [ { "battlefield": ["Frontline Medic", "Mountain"], "hand": [] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+   "steps": [
+     { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+     { "activate": "Frontline Medic", "illegal": true, "targets": [ { "stack": "Lightning Bolt" } ] } ],
+   "expect": { "players": [ { "battlefield": ["Frontline Medic", "Mountain"] }, {} ] } },
+ { "name": "ruling: battalion resolves on the creatures it saw; an attacker killed in response does not stop the grant",
+   "players": [ { "hand": [], "battlefield": ["Frontline Medic", "Grizzly Bears", "Hill Giant"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+   "steps": [
+     { "attack": [ { "card": "Frontline Medic", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "resolve": true } ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Frontline Medic", "Hill Giant"] }, {} ], "keywords": { "Frontline Medic": ["Indestructible"], "Hill Giant": ["Indestructible"] } } },
+ { "name": "ruling: a creature that comes under your control after battalion resolves is not granted indestructible",
+   "players": [ { "hand": ["Juggernaut"], "battlefield": ["Frontline Medic", "Grizzly Bears", "Hill Giant", "Plains", "Plains", "Plains", "Plains"] }, {} ],
+   "steps": [
+     { "attack": [ { "card": "Frontline Medic", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+     { "resolve": true },
+     { "block": [] },
+     { "advance_to": "Main2" },
+     { "cast": "Juggernaut" },
+     { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Juggernaut", "Frontline Medic"] }, {} ], "keywords": { "Juggernaut": [], "Hill Giant": ["Indestructible"] } } }
+]

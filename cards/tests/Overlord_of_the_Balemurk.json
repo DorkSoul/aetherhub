@@ -1,0 +1,299 @@
+[
+ {
+  "name": "impending: five time counters, mills four, returns a non-Avatar creature",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Balemurk"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Balemurk",
+    "alt": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Overlord of the Balemurk": {
+     "time": 5
+    }
+   },
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Swamp",
+      "Swamp",
+      "Overlord of the Balemurk"
+     ],
+     "library_count": 16
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "can return a planeswalker",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Balemurk"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ],
+    "graveyard": [
+     "Test Walker"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Balemurk",
+    "alt": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Test Walker"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Test Walker"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cannot return an Avatar creature card",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Balemurk"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ],
+    "graveyard": [
+     "Overlord of the Mistmoors"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Balemurk",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [],
+     "graveyard_has": [
+      "Overlord of the Mistmoors"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "hard cast: a 5/5 creature",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Balemurk"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Balemurk"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Overlord of the Balemurk": [
+     5,
+     5
+    ]
+   },
+   "players": [
+    {
+     "library_count": 16
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "impending: a time counter is removed at your end step, not before",
+  "players": [
+   { "hand": ["Overlord of the Balemurk"], "battlefield": ["Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Overlord of the Balemurk", "alt": 0 },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "counters": { "Overlord of the Balemurk": { "time": 5 } },
+   "players": [ { "battlefield_has": ["Overlord of the Balemurk"] }, {} ]
+  }
+ },
+ {
+  "name": "impending: your end step removes one time counter",
+  "players": [
+   { "hand": ["Overlord of the Balemurk"], "battlefield": ["Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Overlord of the Balemurk", "alt": 0 },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Overlord of the Balemurk": { "time": 4 } },
+   "players": [ { "battlefield_has": ["Overlord of the Balemurk"] }, {} ]
+  }
+ },
+ {
+  "name": "attacking: mill four, then return a creature card from the graveyard to hand",
+  "players": [
+   { "battlefield": ["Overlord of the Balemurk"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Overlord of the Balemurk", "at": "p1" } ] },
+   { "resolve": true, "answers": ["Grizzly Bears"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears"], "library_count": 16 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "attacking: declining the may leaves the creature card in the graveyard",
+  "players": [
+   { "battlefield": ["Overlord of the Balemurk"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Overlord of the Balemurk", "at": "p1" } ] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [], "graveyard_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "impending (time counters): not a creature, so Disfigure has no creature to target",
+  "players": [
+   { "hand": ["Disfigure"], "battlefield": ["Swamp", "Swamp", { "name": "Overlord of the Balemurk", "counters": { "time": 5 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Disfigure", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Disfigure"] }, {} ]
+  }
+ },
+ {
+  "name": "no time counters: a creature, so Disfigure can target and shrink it",
+  "players": [
+   { "hand": ["Disfigure"], "battlefield": ["Swamp", "Swamp", "Overlord of the Balemurk"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Disfigure", "targets": ["Overlord of the Balemurk"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Overlord of the Balemurk": [3, 3] },
+   "players": [ { "graveyard": ["Disfigure"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a spell cast for its impending cost can be countered and goes to the graveyard",
+  "players": [
+   { "hand": ["Overlord of the Balemurk"], "battlefield": ["Swamp", "Swamp"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Overlord of the Balemurk", "alt": 0 },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Overlord of the Balemurk" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Overlord of the Balemurk"] }, { "graveyard": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: impending cost does not allow casting the creature spell on the opponent's turn",
+  "players": [
+   { "hand": ["Overlord of the Balemurk"], "battlefield": ["Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Overlord of the Balemurk", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Overlord of the Balemurk"] }, {} ]
+  }
+ }
+]

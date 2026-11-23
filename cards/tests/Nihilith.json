@@ -1,0 +1,209 @@
+[
+  {
+    "name": "ruling: last time counter removed by Nihilith's own trigger starts the cast; the free cast gets haste",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "exile": [ { "name": "Nihilith", "counters": { "time": 1 } } ] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+      { "resolve": true, "answers": [true, true] },
+      { "resolve": true },
+      { "attack": [{ "card": "Nihilith", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Nihilith"] }, { "graveyard": ["Savannah Lions"], "life": 16 } ]
+    }
+  },
+  {
+    "name": "ruling: declining the free cast leaves Nihilith exiled and no longer suspended",
+    "players": [
+      { "exile": [ { "name": "Nihilith", "counters": { "time": 1 } } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Nihilith"], "battlefield_lacks": ["Nihilith"], "hand": [] }, {} ]
+    }
+  },
+  {
+    "name": "suspended: an opponent's card going to their graveyard removes a time counter",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "exile": [
+          {
+            "name": "Nihilith",
+            "counters": {
+              "time": 3
+            }
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Savannah Lions"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Savannah Lions"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard": [
+            "Savannah Lions"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "not suspended (no time counters): nothing to remove",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "exile": [
+          "Nihilith"
+        ]
+      },
+      {
+        "battlefield": [
+          "Savannah Lions"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Savannah Lions"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard": [
+            "Savannah Lions"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "your own card going to your graveyard does not count",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Savannah Lions"
+        ],
+        "exile": [
+          {
+            "name": "Nihilith",
+            "counters": {
+              "time": 3
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Savannah Lions"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Savannah Lions"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "suspend {1}{B}: exiled from hand with seven time counters, no spell cast",
+    "players": [
+      {
+        "hand": ["Nihilith"],
+        "battlefield": ["Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Nihilith" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "exile": ["Nihilith"], "battlefield_lacks": ["Nihilith"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "suspend needs {1}{B}: with a single Swamp the card stays in hand",
+    "players": [
+      {
+        "hand": ["Nihilith"],
+        "battlefield": ["Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Nihilith", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Nihilith"] },
+        {}
+      ]
+    }
+  }
+]

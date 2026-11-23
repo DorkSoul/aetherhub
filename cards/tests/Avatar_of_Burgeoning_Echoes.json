@@ -1,0 +1,76 @@
+[
+ {
+  "name": "landfall with no Jace creates a blue Jace token with two loyalty counters",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Avatar of Burgeoning Echoes", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Avatar of Burgeoning Echoes", "Forest", "Jace"] }, {} ],
+   "counters": { "Jace": { "loyalty": 2 } }
+  }
+ },
+ {
+  "name": "landfall with a Jace token you control adds two loyalty counters to it and makes no second Jace",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Avatar of Burgeoning Echoes", "Mountain", { "name": "Jace", "counters": { "loyalty": 2 } }] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Jace"] }, {} ],
+   "counters": { "Jace": { "loyalty": 4 } }
+  }
+ },
+ {
+  "name": "a nontoken Jace planeswalker is not empowered: a new token is created instead",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Avatar of Burgeoning Echoes", "Mountain", "Jace, the Mind Sculptor"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Jace, the Mind Sculptor", "Jace"] }, {} ],
+   "counters": { "Jace": { "loyalty": 2 } }
+  }
+ },
+ {
+  "name": "granted [-10] on a planeswalker: a +1/+1 counter per land you control on target creature",
+  "players": [
+   { "battlefield": ["Avatar of Burgeoning Echoes", "Mountain", "Mountain", "Plains", { "name": "Jace", "counters": { "loyalty": 12 } }] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Jace", "ability": 32768, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Jace"] }, {} ],
+   "pt": { "Grizzly Bears": [5, 5] },
+   "counters": { "Jace": { "loyalty": 2 } }
+  }
+ },
+ {
+  "name": "the granted [-10] needs ten loyalty: with two loyalty it can't be activated",
+  "players": [
+   { "battlefield": ["Avatar of Burgeoning Echoes", "Mountain", { "name": "Jace", "counters": { "loyalty": 2 } }] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Jace", "ability": 32768, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ }
+]

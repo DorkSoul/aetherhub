@@ -1,0 +1,118 @@
+[
+ {
+  "name": "reconfigure attaches it: the creature gets +2/+1 and the Familiar stops being a creature",
+  "players": [
+   { "battlefield": ["Island", "Island", "Island", "Island", "Armguard Familiar", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Armguard Familiar", "at": "p1" } ], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Armguard Familiar"] }, {} ],
+   "attached": { "Armguard Familiar": "Grizzly Bears" },
+   "pt": { "Grizzly Bears": [4, 3] }
+  }
+ },
+ {
+  "name": "reconfigure needs {4}: three Islands cannot attach it",
+  "players": [
+   { "battlefield": ["Island", "Island", "Island", "Armguard Familiar", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Armguard Familiar"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "unattach with reconfigure makes the Familiar a 2/1 creature again",
+  "players": [
+   { "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Armguard Familiar", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Armguard Familiar", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Armguard Familiar", "Grizzly Bears"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2], "Armguard Familiar": [2, 1] }
+  }
+ },
+ {
+  "name": "ward {2}: the opponent has 1 spare mana and cannot pay, Bolt is countered",
+  "players": [ { "battlefield": ["Armguard Familiar"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Armguard Familiar"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Armguard Familiar"] }, { "graveyard_has": ["Lightning Bolt"], "life": 20 } ] }
+ },
+ {
+  "name": "ward {2}: the opponent pays 2 with spare mana, Bolt resolves and kills the Familiar",
+  "players": [ { "battlefield": ["Armguard Familiar"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Armguard Familiar"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "graveyard_has": ["Armguard Familiar"] }, { "graveyard_has": ["Lightning Bolt"], "life": 20 } ] }
+ },
+ {
+  "name": "equipped creature has ward {2}: Bolt on the 4/3 Grizzly Bears is countered when the opponent cannot pay",
+  "players": [ { "battlefield": ["Island", "Island", "Island", "Island", "Armguard Familiar", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Armguard Familiar", "Grizzly Bears"] }, { "graveyard_has": ["Lightning Bolt"], "life": 20 } ],
+   "attached": { "Armguard Familiar": "Grizzly Bears" },
+   "pt": { "Grizzly Bears": [4, 3] }
+  }
+ },
+ {
+  "name": "attached, the Familiar is an Equipment and not a creature: Doom Blade has no creature to target (the only black creature is Brain Maggot)",
+  "players": [ { "battlefield": ["Island", "Island", "Island", "Island", "Armguard Familiar", "Brain Maggot"] }, { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] } ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0, "targets": ["Brain Maggot"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Armguard Familiar"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Armguard Familiar", "Brain Maggot"] }, { "hand": ["Doom Blade"], "life": 20 } ],
+   "attached": { "Armguard Familiar": "Brain Maggot" }
+  }
+ },
+ {
+  "name": "ruling: reconfigure targeting itself does nothing; the Familiar stays a 2/1 creature and unattached",
+  "players": [ { "battlefield": ["Island", "Island", "Island", "Island", "Armguard Familiar"] }, {} ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Armguard Familiar"] }, {} ],
+   "pt": { "Armguard Familiar": [2, 1] }
+  }
+ },
+ {
+  "name": "ruling: an attached Equipment does not become tapped when the creature it is attached to attacks",
+  "players": [ { "battlefield": ["Island", "Island", "Island", "Island", "Armguard Familiar", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "activate": "Armguard Familiar", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "attached": { "Armguard Familiar": "Grizzly Bears" },
+   "tapped": { "Grizzly Bears": true, "Armguard Familiar": false }
+  }
+ }
+]

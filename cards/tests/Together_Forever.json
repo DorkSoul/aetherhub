@@ -1,0 +1,111 @@
+[
+  {
+    "name": "support 2 puts a +1/+1 counter on each of two chosen creatures",
+    "players": [
+      {
+        "hand": ["Together Forever"],
+        "battlefield": ["Plains", "Plains", "Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Together Forever"},
+      {"resolve": true, "targets": ["Grizzly Bears", "Hill Giant"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {"p1p1": 1},
+        "Hill Giant": {"p1p1": 1}
+      }
+    }
+  },
+  {
+    "name": "ability needs a creature with a counter on it (none: no legal action)",
+    "players": [
+      {
+        "battlefield": ["Forest", "Together Forever", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      {"tap_for_mana": "Forest"},
+      {"activate": "Together Forever", "targets": ["Hill Giant"], "illegal": true}
+    ],
+    "expect": {}
+  },
+  {
+    "name": "creature with a counter that dies this turn returns to its owner's hand",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          "Mountain",
+          "Forest",
+          "Together Forever",
+          {"name": "Grizzly Bears", "counters": {"p1p1": 1}}
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {"tap_for_mana": "Forest"},
+      {"activate": "Together Forever", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Grizzly Bears"],
+          "battlefield": ["Mountain", "Forest", "Together Forever"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: support can put the counter on an opponent's creature",
+    "players": [
+      {"hand": ["Together Forever"], "battlefield": ["Plains", "Plains"]},
+      {"battlefield": ["Grizzly Bears"]}
+    ],
+    "steps": [
+      {"cast": "Together Forever"},
+      {"resolve": true, "targets": ["p1:Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "counters": {"Grizzly Bears": {"p1p1": 1}}
+    }
+  },
+  {
+    "name": "ruling: the ability can target a support counter; the return still works after the creature dies",
+    "players": [
+      {
+        "hand": ["Together Forever", "Lightning Bolt"],
+        "battlefield": ["Plains", "Plains", "Forest", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Together Forever"},
+      {"resolve": true, "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"tap_for_mana": "Forest"},
+      {"activate": "Together Forever", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand": ["Grizzly Bears"], "battlefield": ["Together Forever", "Mountain", "Forest", "Plains", "Plains"]},
+        {}
+      ]
+    }
+  }
+]

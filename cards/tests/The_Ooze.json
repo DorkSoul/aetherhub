@@ -1,0 +1,136 @@
+[
+ {
+  "name": "tap: exile target card from a graveyard and create a Mutagen",
+  "players": [
+   {
+    "battlefield": [
+     "The Ooze"
+    ]
+   },
+   {
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "The Ooze",
+    "ability": 0,
+    "targets": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "The Ooze",
+      "Mutagen"
+     ]
+    },
+    {
+     "exile": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "creature with a +1/+1 counter dies: Mutagen per counter",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "The Ooze",
+     "Mountain",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "The Ooze",
+      "Mutagen"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the target card is exiled in response, so The Ooze's ability does nothing and makes no Mutagen",
+  "players": [
+   {"battlefield": ["The Ooze"]},
+   {"graveyard": ["Lightning Bolt"], "battlefield": ["Scavenging Ooze", "Forest"]}
+  ],
+  "steps": [
+   {"activate": "The Ooze", "ability": 0, "targets": ["Lightning Bolt"]},
+   {"pass": true},
+   {"activate": "Scavenging Ooze", "ability": 0, "player": 1, "targets": ["Lightning Bolt"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield": ["The Ooze"]}, {"exile": ["Lightning Bolt"]}]}
+ },
+ {
+  "name": "ruling: a Mutagen token is sacrificed to put a +1/+1 counter on a creature, paying {1}",
+  "players": [
+   {"battlefield": ["The Ooze", "Mountain", "Grizzly Bears"]},
+   {"graveyard": ["Lightning Bolt"]}
+  ],
+  "steps": [
+   {"activate": "The Ooze", "ability": 0, "targets": ["Lightning Bolt"]},
+   {"resolve": true},
+   {"activate": "Mutagen", "ability": 0, "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"battlefield": ["The Ooze", "Mountain", "Grizzly Bears"]}, {"exile": ["Lightning Bolt"]}],
+   "pt": {"Grizzly Bears": [3, 3]},
+   "counters": {"Grizzly Bears": {"p1p1": 1}}
+  }
+ },
+ {
+  "name": "ruling: a creature killed by lethal damage counts all its +1/+1 counters for The Ooze (two counters, two Mutagens)",
+  "players": [
+   {"hand": ["Shock", "Shock"], "battlefield": ["The Ooze", "Mountain", "Mountain", {"name": "Grizzly Bears", "counters": {"p1p1": 2}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Shock", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Shock", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield": ["The Ooze", "Mountain", "Mountain", "Mutagen", "Mutagen"]}, {}]}
+ }
+]

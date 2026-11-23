@@ -1,0 +1,209 @@
+[
+ {
+  "name": "bounce then cast a returned creature free",
+  "players": [
+   {
+    "hand": [
+     "Baral's Expertise",
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Baral's Expertise",
+    "targets": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears",
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Serra Angel"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Baral's Expertise"
+     ]
+    },
+    {
+     "hand": [
+      "Hill Giant"
+     ],
+     "battlefield": [
+      "Savannah Lions"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "mana value 5 is too big, can cast nothing; zero targets is fine",
+  "players": [
+   {
+    "hand": [
+     "Baral's Expertise",
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Baral's Expertise"
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Serra Angel"
+     ],
+     "battlefield": [
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Island"
+     ],
+     "graveyard": [
+      "Baral's Expertise"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "may decline to cast",
+  "players": [
+   {
+    "hand": [
+     "Baral's Expertise",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Baral's Expertise"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears",
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Island"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a free X spell has X = 0 (Fireball deals no damage)",
+  "players": [
+   { "hand": ["Baral's Expertise", "Fireball"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Baral's Expertise" },
+   { "resolve": true, "answers": ["Fireball", true] }
+  ],
+  "expect": {
+   "players": [ { "hand": [], "graveyard": ["Baral's Expertise", "Fireball"] }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: the target is gone before resolution, so Expertise fizzles and nothing is cast free",
+  "players": [
+   { "hand": ["Baral's Expertise", "Hill Giant"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Baral's Expertise", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Hill Giant"], "graveyard_has": ["Baral's Expertise", "Grizzly Bears"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land cannot be cast free (the only card in hand is a land)",
+  "players": [
+   { "hand": ["Baral's Expertise", "Island"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Baral's Expertise" },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Island"], "graveyard": ["Baral's Expertise"] }, {} ]
+  }
+ }
+]

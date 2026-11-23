@@ -1,0 +1,183 @@
+[
+ {
+  "name": "on your turn a non-Lesson sorcery in your graveyard can be cast for its mana cost",
+  "players": [
+   {
+    "battlefield": ["Iroh, Grand Lotus", "Island", "Island", "Plains"],
+    "graveyard": ["Divination"],
+    "library": ["Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Iroh, Grand Lotus"], "exile": ["Divination"], "graveyard": [], "hand_count": 2 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "on an opponent's turn the flashback grant does not apply",
+  "players": [
+   {
+    "battlefield": ["Iroh, Grand Lotus", "Island", "Island", "Plains"],
+    "graveyard": ["Divination"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "pass": true, "player": 1 },
+   { "cast": "Divination", "alt": 100, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Divination"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "firebending: attacking adds RR that pays for a Lightning Bolt in combat",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Iroh, Grand Lotus", "at": "p1" } ] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "firebending mana is gone after combat: Bolt illegal in second main",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Iroh, Grand Lotus", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Lightning Bolt"] },
+    { "life": 15 }
+   ]
+  }
+ },
+ {
+  "name": "no attack means no firebending mana: Bolt illegal in combat",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Lightning Bolt"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "on your turn a Lesson in your graveyard has flashback {1}: Combustion Technique is cast for 1 from the graveyard and exiled",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus", "Mountain"], "graveyard": ["Combustion Technique"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [ { "cast": "Combustion Technique", "alt": 101, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "exile": ["Combustion Technique"], "graveyard": [] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: a flashback spell that is countered is still exiled",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   { "hand": ["Counterspell"], "battlefield": ["Grizzly Bears", "Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "alt": 100, "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"], "graveyard": [] },
+    { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery put into your graveyard on your turn can be cast with flashback right away",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Iroh, Grand Lotus", "Island", "Island", "Island", "Plains", "Plains", "Plains"], "library": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "resolve": true },
+   { "cast": "Divination", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Divination"], "graveyard": [], "hand_count": 4 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: firebending mana can still be spent after combat damage, during the end of combat step",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Iroh, Grand Lotus", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "EndCombat" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [] },
+    { "life": 12 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: flashback sorceries follow sorcery timing; illegal during combat on your turn",
+  "players": [
+   { "battlefield": ["Iroh, Grand Lotus", "Island", "Island", "Plains"], "graveyard": ["Divination"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Divination", "alt": 100, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Divination"] },
+    {}
+   ]
+  }
+ }
+]

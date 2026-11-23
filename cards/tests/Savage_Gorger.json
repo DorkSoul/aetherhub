@@ -1,0 +1,87 @@
+[
+  {
+    "name": "gets a counter at your end step if an opponent lost life this turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Savage Gorger", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 17 } ],
+      "counters": { "Savage Gorger": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "no counter if no opponent lost life this turn",
+    "players": [
+      { "battlefield": ["Savage Gorger", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Savage Gorger": { "p1p1": 0 } }
+    }
+  },
+  {
+    "name": "controller losing life does not count",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Savage Gorger", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, { "life": 20 } ],
+      "counters": { "Savage Gorger": { "p1p1": 0 } }
+    }
+  },
+  {
+    "name": "ruling: an opponent losing life before Savage Gorger entered still counts",
+    "players": [
+      { "hand": ["Lightning Bolt", "Savage Gorger"], "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Savage Gorger" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 17 } ],
+      "counters": { "Savage Gorger": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: an opponent who lost life and got back to 20 still counts",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Savage Gorger", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "set_life": 20, "player": 1 },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 20 } ],
+      "counters": { "Savage Gorger": { "p1p1": 1 } }
+    }
+  }
+]

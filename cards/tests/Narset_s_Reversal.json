@@ -1,0 +1,214 @@
+[
+  {
+    "name": "copy resolves, original returns to hand",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Narset's Reversal"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "cast": "Narset's Reversal",
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Lightning Bolt"
+          ],
+          "graveyard": [
+            "Narset's Reversal"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "battlefield": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "opponent's spell: copy is yours, the original goes to its owner's hand",
+    "players": [
+      {
+        "hand": [
+          "Narset's Reversal"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "player": 1
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Narset's Reversal",
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Narset's Reversal",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "hand": [
+            "Forest",
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot target a creature spell",
+    "players": [
+      {
+        "hand": [
+          "Narset's Reversal"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Grizzly Bears",
+        "player": 1
+      },
+      {
+        "cast": "Narset's Reversal",
+        "targets": [
+          {
+            "stack": "Grizzly Bears"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: the copy is not cast, so a cast trigger (Young Pyromancer) fires only for the Reversal itself",
+    "players": [
+      { "battlefield": ["Young Pyromancer", "Island", "Island"], "hand": ["Narset's Reversal"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Narset's Reversal", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Young Pyromancer", "Island", "Island", "Elemental"] },
+        { "hand_count": 2, "battlefield": ["Mountain"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: can copy a non-targeted sorcery (Divination); the copy draws for its controller",
+    "players": [
+      { "hand": ["Divination", "Narset's Reversal"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "cast": "Narset's Reversal", "targets": [{ "stack": "Divination" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 3, "library_count": 18, "graveyard": ["Narset's Reversal"] },
+        {}
+      ]
+    }
+  }
+]

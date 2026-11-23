@@ -1,0 +1,162 @@
+[
+ {
+  "name": "enters: may put a -1/-1 counter on a creature; enchanted creature gets +1/+1 and lifelink",
+  "players": [
+   {
+    "hand": [
+     "Cartouche of Ambition"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Savannah Lions"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cartouche of Ambition",
+    "targets": [
+     "Savannah Lions"
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Cartouche of Ambition": "Savannah Lions"
+   },
+   "pt": {
+    "Savannah Lions": [
+     3,
+     2
+    ],
+    "Grizzly Bears": [
+     1,
+     1
+    ]
+   },
+   "keywords": {
+    "Savannah Lions": [
+     "Lifelink"
+    ]
+   }
+  }
+ },
+ {
+  "name": "declining puts no counter",
+  "players": [
+   {
+    "hand": [
+     "Cartouche of Ambition"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Savannah Lions"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cartouche of Ambition",
+    "targets": [
+     "Savannah Lions"
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: the enchant trigger may target the enchanted creature itself",
+  "players": [
+   {"hand": ["Cartouche of Ambition"], "battlefield": ["Swamp", "Swamp", "Swamp", "Savannah Lions"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Cartouche of Ambition", "targets": ["Savannah Lions"]},
+   {"resolve": true, "targets": ["Savannah Lions"], "answers": [true]}
+  ],
+  "expect": {
+   "attached": {"Cartouche of Ambition": "Savannah Lions"},
+   "pt": {"Savannah Lions": [2, 1], "Grizzly Bears": [2, 2]},
+   "keywords": {"Savannah Lions": ["Lifelink"]}
+  }
+ },
+ {
+  "name": "ruling: if another player gains control of the enchanted creature, Cartouche goes to its owner's graveyard",
+  "players": [
+   {"hand": ["Cartouche of Ambition"], "battlefield": ["Swamp", "Swamp", "Swamp", "Savannah Lions"]},
+   {"hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Cartouche of Ambition", "targets": ["Savannah Lions"]},
+   {"resolve": true, "targets": ["Grizzly Bears"], "answers": [false]},
+   {"advance_to": "Main2"},
+   {"advance_to": "Main1"},
+   {"cast": "Control Magic", "player": 1, "targets": ["Savannah Lions"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard_has": ["Cartouche of Ambition"], "battlefield_lacks": ["Cartouche of Ambition"]},
+    {"battlefield_has": ["Savannah Lions", "Control Magic"]}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Cartouche whose enchanted creature became an illegal target before it resolved does not enter the battlefield",
+  "players": [
+   {"hand": ["Cartouche of Ambition"], "battlefield": ["Swamp", "Swamp", "Swamp", "Savannah Lions"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Cartouche of Ambition", "targets": ["Savannah Lions"]},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["Savannah Lions"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard_has": ["Cartouche of Ambition", "Savannah Lions"], "battlefield_lacks": ["Cartouche of Ambition"]},
+    {"graveyard_has": ["Lightning Bolt"], "life": 20}
+   ]
+  }
+ }
+]

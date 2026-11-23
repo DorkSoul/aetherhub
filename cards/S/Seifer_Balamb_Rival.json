@@ -1,0 +1,60 @@
+{
+  "name": "Seifer, Balamb Rival",
+  "mana_cost": "{2}{B}{R}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Mercenary"],
+  "colors": ["B", "R"],
+  "power": 4,
+  "toughness": 3,
+  "keywords": ["FirstStrike"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Attacks",
+        "filter": { "types": ["Creature"], "controller": "You" },
+        "batched": true,
+        "player_only": true
+      },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "types": ["Creature"], "controlled_by": { "type": "DefendingPlayer" } }
+          },
+          "label": "target creature that player controls"
+        }
+      ],
+      "effects": [ { "type": "Goad", "what": { "type": "Target", "idx": 0 } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BecomesBlocked",
+        "filter": { "types": ["Creature"], "attacking": true, "attacking_you": false }
+      },
+      "effects": [
+        { "type": "Remember", "what": { "type": "TriggerSource" } },
+        { "type": "StoreRemembered", "slot": 0 },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": {
+              "type": "Count",
+              "filter": { "types": ["Creature"], "blocking_stored": 0 },
+              "zone": "Battlefield"
+            },
+            "cmp": { "op": "Ge", "n": 2 }
+          },
+          "then": [
+            { "type": "GrantKeyword", "what": { "type": "TriggerSource" }, "keyword": "Deathtouch", "duration": "UntilEndOfTurn" }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "First strike\nWhenever you attack a player, goad target creature that player controls.\nWhenever a creature attacking one of your opponents becomes blocked by two or more creatures, that attacking creature gains deathtouch until end of turn."
+}

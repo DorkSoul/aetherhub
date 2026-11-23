@@ -1,0 +1,55 @@
+[
+  {
+    "name": "upkeep: pays 2 life for one age counter",
+    "players": [
+      { "battlefield": ["Glacial Chasm"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "counters": { "Glacial Chasm": { "age": 1 } },
+      "players": [ { "battlefield_has": ["Glacial Chasm"], "life": 18 }, {} ]
+    }
+  },
+  {
+    "name": "upkeep: cannot pay, sacrificed",
+    "players": [
+      { "battlefield": [ { "name": "Glacial Chasm", "counters": { "age": 2 } } ], "life": 1 },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Glacial Chasm"] }, {} ]
+    }
+  },
+  {
+    "name": "enters the battlefield: sacrifices itself when it is the only land",
+    "players": [
+      { "hand": ["Glacial Chasm"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Glacial Chasm" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Glacial Chasm"] }, {} ]
+    }
+  },
+  { "name": "damage to you is prevented: an opponent's Lightning Bolt at you deals nothing",
+    "players": [ { "battlefield": ["Glacial Chasm"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 20 }, {} ] } },
+  {
+    "name": "ruling: with another land in play, the enters trigger can sacrifice that land instead",
+    "players": [ { "hand": ["Glacial Chasm"], "battlefield": ["Plains"] }, {} ],
+    "steps": [ { "play_land": "Glacial Chasm" }, { "resolve": true, "answers": ["Plains"] } ],
+    "expect": { "players": [ { "battlefield_has": ["Glacial Chasm"], "graveyard_has": ["Plains"] }, {} ] }
+  }
+]

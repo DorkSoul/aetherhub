@@ -1,0 +1,182 @@
+[
+  {
+    "name": "forage by exiling three other graveyard cards: the creature enters with a finality counter",
+    "players": [
+      {
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears", "Island", "Swamp", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Osteomancer Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "answers": [[0]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Osteomancer Adept"], "graveyard": [] },
+        {}
+      ],
+      "counters": { "Grizzly Bears": { "Finality": 1 } }
+    }
+  },
+  {
+    "name": "forage by sacrificing a Food",
+    "players": [
+      {
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest", "Food"],
+        "graveyard": ["Grizzly Bears", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Osteomancer Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "answers": [[1]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Osteomancer Adept"], "graveyard": ["Island"] },
+        {}
+      ],
+      "counters": { "Grizzly Bears": { "Finality": 1 } }
+    }
+  },
+  {
+    "name": "cannot cast from the graveyard without a forage payment",
+    "players": [
+      {
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears", "Island", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Osteomancer Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Island", "Swamp"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast from the graveyard unless the ability was activated",
+    "players": [
+      {
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears", "Island", "Swamp", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Island", "Swamp", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cast permission follows normal timing (illegal in the opponent's turn with the ability on the stack)",
+    "players": [
+      {
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears", "Island", "Swamp", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "activate": "Osteomancer Adept" },
+      { "cast": "Grizzly Bears", "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Island", "Swamp", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Dryad Arbor in the graveyard cannot be cast by foraging",
+    "players": [
+      {
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest"],
+        "graveyard": ["Dryad Arbor", "Island", "Swamp", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Osteomancer Adept" },
+      { "resolve": true },
+      { "cast": "Dryad Arbor", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dryad Arbor", "Island", "Swamp", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a finality creature that dies is exiled instead of going to the graveyard",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest", "Mountain"],
+        "graveyard": ["Grizzly Bears", "Island", "Swamp", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Osteomancer Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "answers": [[0]] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears", "Island", "Swamp", "Plains"], "graveyard": ["Lightning Bolt"], "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a finality creature returned to hand by a bounce still goes to hand",
+    "players": [
+      {
+        "hand": ["Unsummon"],
+        "battlefield": ["Osteomancer Adept", "Forest", "Forest", "Island"],
+        "graveyard": ["Grizzly Bears", "Plains", "Swamp", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Osteomancer Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "answers": [[0]] },
+      { "resolve": true },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

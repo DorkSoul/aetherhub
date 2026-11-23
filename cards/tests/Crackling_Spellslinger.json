@@ -1,0 +1,278 @@
+[
+ {
+  "name": "next instant after Spellslinger has storm (1 spell cast before it)",
+  "players": [
+   {
+    "hand": [
+     "Crackling Spellslinger",
+     "Lightning Bolt",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Crackling Spellslinger"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 14
+    }
+   ]
+  }
+ },
+ {
+  "name": "only the next spell has storm",
+  "players": [
+   {
+    "hand": [
+     "Crackling Spellslinger",
+     "Lightning Bolt",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Crackling Spellslinger"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 11
+    }
+   ]
+  }
+ },
+ {
+  "name": "not cast: no storm granted",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Crackling Spellslinger",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "a creature spell in between doesn't use the grant; storm counts it",
+  "players": [
+   {
+    "hand": [
+     "Crackling Spellslinger",
+     "Goblin Piker",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Crackling Spellslinger"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Goblin Piker"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Goblin Piker"
+     ]
+    },
+    {
+     "life": 11
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: storm copies are not cast, so a later storm spell does not count them",
+  "players": [
+   {
+    "hand": ["Crackling Spellslinger", "Lightning Bolt", "Weather the Storm"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Crackling Spellslinger" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Weather the Storm" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 29 }, { "life": 14 } ]
+  }
+ },
+ {
+  "name": "ruling: countering one storm copy leaves the original and the other copies",
+  "players": [
+   {
+    "hand": ["Crackling Spellslinger", "Lightning Bolt"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Crackling Spellslinger" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17, "graveyard": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: a countered spell still counts for storm",
+  "players": [
+   {
+    "hand": ["Lightning Bolt", "Weather the Storm"],
+    "battlefield": ["Mountain", "Forest", "Forest"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "resolve": true },
+   { "cast": "Weather the Storm" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 29 }, { "life": 20 } ]
+  }
+ }
+]

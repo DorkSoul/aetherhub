@@ -1,0 +1,54 @@
+[
+  {
+    "name": "ETB: you lose 2, sacrifice two creatures (including itself), target opponent draws two",
+    "players": [ { "hand": ["Lord of Tresserhorn"], "battlefield": ["Island", "Swamp", "Mountain", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Lord of Tresserhorn" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 18, "graveyard": ["Lord of Tresserhorn", "Grizzly Bears"] }, { "hand_count": 2 } ] }
+  },
+  {
+    "name": "with no other creature it sacrifices itself and the opponent still draws two",
+    "players": [ { "hand": ["Lord of Tresserhorn"], "battlefield": ["Island", "Swamp", "Mountain", "Forest"] }, {} ],
+    "steps": [ { "cast": "Lord of Tresserhorn" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 18, "graveyard": ["Lord of Tresserhorn"] }, { "hand_count": 2 } ] }
+  },
+  {
+    "name": "{B}: regenerate; a Murder destroys Lord of Tresserhorn but it regenerates tapped",
+    "players": [ { "battlefield": ["Swamp", "Lord of Tresserhorn"] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Murder", "targets": ["Lord of Tresserhorn"], "player": 1 },
+      { "activate": "Lord of Tresserhorn", "ability": 0 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Lord of Tresserhorn"], "battlefield_lacks": [] }, { "graveyard": ["Murder"] } ],
+      "tapped": { "Lord of Tresserhorn": true }
+    }
+  },
+  {
+    "name": "without a black mana source Lord of Tresserhorn cannot regenerate and is destroyed",
+    "players": [ { "battlefield": ["Forest", "Lord of Tresserhorn"] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Murder", "targets": ["Lord of Tresserhorn"], "player": 1 },
+      { "activate": "Lord of Tresserhorn", "ability": 0, "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lord of Tresserhorn"] }, { "graveyard": ["Murder"] } ]
+    }
+  },
+  {
+    "name": "ruling: losing life is not a payment, so the life total can go below zero",
+    "players": [ { "hand": ["Lord of Tresserhorn"], "battlefield": ["Island", "Swamp", "Mountain", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [ { "set_life": 1, "player": 0 }, { "cast": "Lord of Tresserhorn" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": -1, "graveyard": ["Lord of Tresserhorn", "Grizzly Bears"] }, { "hand_count": 2 } ] }
+  },
+  {
+    "name": "ruling: with no other creature, regeneration does not save Lord from its own ETB sacrifice (the rest still happens)",
+    "players": [ { "hand": ["Lord of Tresserhorn"], "battlefield": ["Island", "Swamp", "Mountain", "Forest", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Lord of Tresserhorn" }, { "pass": true }, { "pass": true, "player": 1 }, { "activate": "Lord of Tresserhorn", "ability": 0 }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 18, "graveyard": ["Lord of Tresserhorn"] }, { "hand_count": 2 } ] }
+  }
+]

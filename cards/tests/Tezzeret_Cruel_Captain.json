@@ -1,0 +1,368 @@
+[
+ {
+  "name": "artifact entering adds a loyalty counter",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain",
+     "Mountain"
+    ],
+    "hand": [
+     "Short Sword"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Short Sword"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Tezzeret, Cruel Captain": {
+     "Loyalty": 5
+    }
+   }
+  }
+ },
+ {
+  "name": "nonartifact entering adds nothing",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain",
+     "Forest",
+     "Forest"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Tezzeret, Cruel Captain": {
+     "Loyalty": 4
+    }
+   }
+  }
+ },
+ {
+  "name": "0: untap an artifact (no counter if not a creature)",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain",
+     {
+      "name": "Sol Ring",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tezzeret, Cruel Captain",
+    "ability": 0,
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Sol Ring": false
+   },
+   "pt": {}
+  }
+ },
+ {
+  "name": "0: untap a non-artifact creature, no counter",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain",
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tezzeret, Cruel Captain",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Grizzly Bears": false
+   },
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "0: artifact creature gets a +1/+1 counter",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain",
+     {
+      "name": "Darksteel Myr",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tezzeret, Cruel Captain",
+    "ability": 0,
+    "targets": [
+     "Darksteel Myr"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Darksteel Myr": false
+   },
+   "counters": {
+    "Darksteel Myr": {
+     "PlusOnePlusOne": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "-3 tutors an artifact with mana value 1 or less",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain"
+    ],
+    "library": [
+     "Mind Stone",
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tezzeret, Cruel Captain",
+    "ability": 1
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Sol Ring"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Tezzeret, Cruel Captain": {
+     "Loyalty": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "-3 cannot take a 2-mana artifact",
+  "players": [
+   {
+    "battlefield": [
+     "Tezzeret, Cruel Captain"
+    ],
+    "library": [
+     "Mind Stone"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tezzeret, Cruel Captain",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-7 emblem animates an artifact at beginning of combat",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Tezzeret, Cruel Captain",
+      "counters": {
+       "Loyalty": 7
+      }
+     },
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Tezzeret, Cruel Captain",
+    "ability": 2
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "command": [
+      "Tezzeret, Cruel Captain Emblem"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Sol Ring": [
+     3,
+     3
+    ]
+   },
+   "counters": {
+    "Sol Ring": {
+     "PlusOnePlusOne": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: the emblem keeps the artifact's own abilities and subtypes (Sol Ring still taps for mana as a Robot)",
+  "players": [
+   { "battlefield": [ { "name": "Tezzeret, Cruel Captain", "counters": { "Loyalty": 7 } }, "Sol Ring" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Tezzeret, Cruel Captain", "ability": 2 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat", "targets": ["Sol Ring"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "tap_for_mana": "Sol Ring" }
+  ],
+  "expect": {
+   "players": [ { "pool": { "C": 2 } }, {} ],
+   "subtypes": { "Sol Ring": ["Robot"] }
+  }
+ },
+ {
+  "name": "ruling: an animated Vehicle has base 0/0, so its printed 3/2 does not apply (3 counters make it 3/3)",
+  "players": [
+   { "battlefield": [ { "name": "Tezzeret, Cruel Captain", "counters": { "Loyalty": 7 } }, "Vehicle 3-2" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Tezzeret, Cruel Captain", "ability": 2 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat", "targets": ["Vehicle 3-2"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "command": ["Tezzeret, Cruel Captain Emblem"] }, {} ],
+   "pt": { "Vehicle 3-2": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: an {X} cost counts as 0 in the library, so -3 finds a Chalice of the Void",
+  "players": [
+   { "battlefield": ["Tezzeret, Cruel Captain"], "library": ["Chalice of the Void", "Mind Stone"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Tezzeret, Cruel Captain", "ability": 1 },
+   { "resolve": true, "answers": ["Chalice of the Void"] }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Chalice of the Void"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: an animated artifact can attack if it has been under your control since the turn began",
+  "players": [
+   { "battlefield": [ { "name": "Tezzeret, Cruel Captain", "counters": { "Loyalty": 7 } }, "Sol Ring" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Tezzeret, Cruel Captain", "ability": 2 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat", "targets": ["Sol Ring"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Sol Ring", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17 } ]
+  }
+ }
+]

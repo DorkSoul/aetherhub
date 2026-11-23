@@ -1,0 +1,118 @@
+[
+  {
+    "name": "ETB puts a +1/+1 counter on each other Soldier, not on non-Soldiers",
+    "players": [
+      {
+        "hand": ["Rescue Retriever"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Elite Vanguard", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rescue Retriever" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Rescue Retriever", "Elite Vanguard", "Grizzly Bears", "Plains", "Plains", "Plains", "Plains", "Plains"]
+        },
+        {}
+      ],
+      "counters": {
+        "Elite Vanguard": { "PlusOnePlusOne": 1 },
+        "Grizzly Bears": { "PlusOnePlusOne": 0 },
+        "Rescue Retriever": { "PlusOnePlusOne": 0 }
+      },
+      "pt": {
+        "Elite Vanguard": [3, 2]
+      }
+    }
+  },
+  {
+    "name": "Shock on an attacking Soldier is prevented",
+    "players": [
+      {
+        "battlefield": ["Rescue Retriever", "Elite Vanguard"]
+      },
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Elite Vanguard", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Elite Vanguard"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Rescue Retriever", "Elite Vanguard"] },
+        { "graveyard": ["Shock"] }
+      ]
+    }
+  },
+  {
+    "name": "Shock on a non-attacking Soldier is not prevented",
+    "players": [
+      {
+        "battlefield": ["Rescue Retriever", "Elite Vanguard"]
+      },
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Elite Vanguard"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Rescue Retriever"], "graveyard": ["Elite Vanguard"] },
+        { "graveyard": ["Shock"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if Rescue Retriever leaves before combat damage, the blocked attacking Soldier takes damage",
+    "players": [
+      { "battlefield": ["Rescue Retriever", "Elite Vanguard"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Elite Vanguard", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Elite Vanguard" } ], "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Rescue Retriever"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Rescue Retriever", "Elite Vanguard"] },
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Rescue Retriever prevents damage to other attacking Soldiers even when it is not attacking",
+    "players": [
+      { "battlefield": ["Rescue Retriever", "Elite Vanguard"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Elite Vanguard", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Elite Vanguard" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rescue Retriever", "Elite Vanguard"] },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

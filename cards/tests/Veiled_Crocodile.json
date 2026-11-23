@@ -1,0 +1,113 @@
+[
+  {
+    "name": "becomes a 4/4 Crocodile creature when a player has no cards in hand",
+    "players": [
+      {
+        "hand": ["Forest"],
+        "battlefield": ["Forest", "Island", "Veiled Crocodile"]
+      },
+      {
+        "hand": ["Island"]
+      }
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Veiled Crocodile": [4, 4]
+      }
+    }
+  },
+  {
+    "name": "stays an enchantment while every player has cards in hand",
+    "players": [
+      {
+        "hand": ["Naturalize", "Island"],
+        "battlefield": ["Forest", "Forest", "Veiled Crocodile"]
+      },
+      {
+        "hand": ["Island"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Naturalize",
+        "targets": ["Veiled Crocodile"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Naturalize", "Veiled Crocodile"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "once a creature it is no longer an enchantment, so Naturalize cannot target it",
+    "players": [
+      {
+        "hand": ["Naturalize"],
+        "battlefield": ["Forest", "Forest", "Veiled Crocodile"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Naturalize",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Veiled Crocodile": [4, 4]
+      }
+    }
+  },
+  {
+    "name": "ruling: it becomes a creature when any player has no cards in hand, not only its controller",
+    "players": [
+      { "hand": ["Island", "Island"], "battlefield": ["Forest", "Forest", "Veiled Crocodile"] },
+      {}
+    ],
+    "steps": [
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Veiled Crocodile": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a creature that was controlled since the start of the turn can attack after it becomes a creature",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Veiled Crocodile"] },
+      {}
+    ],
+    "steps": [
+      { "pass": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Veiled Crocodile", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ]
+    }
+  }
+]

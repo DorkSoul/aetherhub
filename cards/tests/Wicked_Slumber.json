@@ -1,0 +1,66 @@
+[
+  {
+    "name": "taps two targets and puts a stun counter on each",
+    "players": [
+      { "hand": ["Wicked Slumber"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Wicked Slumber", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true, "answers": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true },
+      "counters": { "Grizzly Bears": { "stun": 1 }, "Hill Giant": { "stun": 1 } }
+    }
+  },
+  {
+    "name": "one target gets both stun counters",
+    "players": [
+      { "hand": ["Wicked Slumber"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Wicked Slumber", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Hill Giant": false },
+      "counters": { "Grizzly Bears": { "stun": 2 } }
+    }
+  },
+  {
+    "name": "ruling: can target a creature that is already tapped",
+    "players": [
+      { "hand": ["Wicked Slumber"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+    ],
+    "steps": [
+      { "cast": "Wicked Slumber", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "counters": { "Grizzly Bears": { "stun": 2 } }
+    }
+  },
+  {
+    "name": "ruling: illegal target on resolution is unaffected and both counters go on the other target",
+    "players": [
+      { "hand": ["Wicked Slumber"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Wicked Slumber", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_lacks": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] } ],
+      "tapped": { "Hill Giant": true },
+      "counters": { "Hill Giant": { "stun": 2 } }
+    }
+  }
+]

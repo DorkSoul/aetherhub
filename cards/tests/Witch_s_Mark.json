@@ -1,0 +1,157 @@
+[
+  {
+    "name": "discard a card to draw two, and attach a Wicked Role to the chosen creature you control",
+    "players": [
+      {
+        "hand": [
+          "Witch's Mark",
+          "Island",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Witch's Mark",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true,
+          "Island"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 3,
+          "graveyard": [
+            "Island",
+            "Witch's Mark"
+          ],
+          "battlefield_has": [
+            "Hill Giant",
+            "Wicked Role"
+          ]
+        },
+        {}
+      ],
+      "attached": {
+        "Wicked Role": "Hill Giant"
+      },
+      "pt": {
+        "Hill Giant": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "no target chosen: the discard and draw still happen but no Wicked Role is created",
+    "players": [
+      {
+        "hand": [
+          "Witch's Mark",
+          "Island",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Witch's Mark"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2,
+          "battlefield_lacks": [
+            "Wicked Role"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Wicked Role is a colorless Aura Role",
+    "players": [
+      { "hand": ["Witch's Mark"], "battlefield": ["Mountain", "Mountain", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Witch's Mark", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant", "Wicked Role"] },
+        {}
+      ],
+      "colors": { "Wicked Role": [] },
+      "subtypes": { "Wicked Role": ["Aura", "Role"] }
+    }
+  },
+  {
+    "name": "ruling: a second Wicked Role from the same controller replaces the first (the old one's drain fires once)",
+    "players": [
+      { "hand": ["Witch's Mark", "Witch's Mark"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Witch's Mark", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [false] },
+      { "cast": "Witch's Mark", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "battlefield_has": ["Hill Giant", "Wicked Role"] },
+        { "life": 19 }
+      ],
+      "pt": { "Hill Giant": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: if the chosen creature is gone when Witch's Mark resolves, the spell does nothing (no discard, draw or Role)",
+    "players": [
+      { "hand": ["Witch's Mark", "Island", "Forest"], "battlefield": ["Mountain", "Mountain", "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Witch's Mark", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "graveyard_has": ["Witch's Mark", "Hill Giant"], "battlefield_lacks": ["Wicked Role"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

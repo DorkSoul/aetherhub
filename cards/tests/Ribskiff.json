@@ -1,0 +1,148 @@
+[
+  {
+    "name": "ETB trigger draws a card",
+    "players": [
+      { "hand": ["Ribskiff"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ribskiff" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "crew 3 with two Grizzly Bears, then attack: toxic 2 poison",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16, "poison": 2 } ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "crew needs total power 3",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0, "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: toxic does not change the damage: 4 combat damage gives 2 poison (not 4)",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: a replacement that doubles the damage (Gratuitous Violence) does not change the poison counters (still 2)",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears", "Gratuitous Violence" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 12, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: multiple instances of toxic are cumulative (toxic 2 + Prosthetic Injector's toxic 1 = 3 poison)",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears", "Prosthetic Injector", "Mountain" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Prosthetic Injector", "ability": 0, "targets": ["Ribskiff"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16, "poison": 3 } ] }
+  },
+  {
+    "name": "ruling: a player with ten or more poison counters loses the game as a state-based action",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears" ] },
+      { "poison": 8 }
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "winner": 0 }
+  },
+  {
+    "name": "ruling: combat damage to a creature with toxic gives no poison counters",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears" ] },
+      { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "block": [ { "blocker": "p1:Grizzly Bears", "attacker": "Ribskiff" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20, "poison": 0, "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: Vorinclex, Monstrous Raider doubles the poison counters placed on a player by toxic (2 becomes 4)",
+    "players": [
+      { "battlefield": [ "Vorinclex, Monstrous Raider", { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16, "poison": 4 } ] }
+  },
+  {
+    "name": "ruling: other effects of the damage still apply: Basilisk Collar's lifelink gains 4 while toxic gives 2 poison",
+    "players": [
+      { "battlefield": [ { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears", "Basilisk Collar", "Mountain", "Mountain" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Basilisk Collar", "ability": 0, "targets": ["Ribskiff"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 24 }, { "life": 16, "poison": 2 } ] }
+  }
+]

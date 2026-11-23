@@ -1,0 +1,71 @@
+[
+  { "name": "graveyard ability exiles this card and puts an indestructible counter on target creature",
+    "players": [
+      { "graveyard": ["Daring Fiendbonder"], "battlefield": ["Swamp", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Daring Fiendbonder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": [], "exile": ["Daring Fiendbonder"] }, {} ],
+      "counters": { "Grizzly Bears": { "indestructible": 1 } }
+    }
+  },
+  { "name": "graveyard ability needs {1}{B}: without black mana it cannot be activated",
+    "players": [
+      { "graveyard": ["Daring Fiendbonder"], "battlefield": ["Plains", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Daring Fiendbonder", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Daring Fiendbonder"] }, {} ],
+      "counters": { "Grizzly Bears": { "indestructible": 0 } }
+    }
+  },
+  { "name": "attacks each combat if able: declaring no attack is illegal",
+    "players": [
+      { "battlefield": ["Daring Fiendbonder"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Daring Fiendbonder"] }, {} ]
+    }
+  },
+  {
+    "name": "attacks each combat if able: with no attack declared it is forced to attack for 5",
+    "players": [
+      { "battlefield": ["Daring Fiendbonder"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Daring Fiendbonder"] }, { "life": 15 } ]
+    }
+  },
+  {
+    "name": "ruling: a creature that is tapped cannot attack, so the forced attack does not happen",
+    "players": [
+      { "battlefield": ["Icy Manipulator", "Mountain", "Daring Fiendbonder"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Icy Manipulator", "targets": ["Daring Fiendbonder"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Daring Fiendbonder"] }, { "life": 20 } ],
+      "tapped": { "Daring Fiendbonder": true }
+    }
+  }
+]

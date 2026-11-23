@@ -1,0 +1,107 @@
+[
+  {
+    "name": "destroys every creature and draws one card per creature destroyed",
+    "players": [
+      {
+        "hand": ["Decree of Pain"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "library": ["Island", "Island", "Island"]
+      },
+      {
+        "battlefield": ["Hill Giant", "Serra Angel"]
+      }
+    ],
+    "steps": [
+      { "cast": "Decree of Pain" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Island", "Island", "Island"],
+          "graveyard": ["Decree of Pain", "Grizzly Bears"]
+        },
+        {
+          "battlefield": [],
+          "graveyard": ["Hill Giant", "Serra Angel"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast with only seven mana",
+    "players": [
+      {
+        "hand": ["Decree of Pain"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Serra Angel"]
+      }
+    ],
+    "steps": [
+      { "cast": "Decree of Pain", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Decree of Pain"],
+          "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+        },
+        {
+          "battlefield": ["Serra Angel"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cycling draws a card and gives every creature -2/-2 until end of turn",
+    "players": [
+      {
+        "hand": ["Decree of Pain"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "library": ["Island"]
+      },
+      {
+        "battlefield": ["Serra Angel"]
+      }
+    ],
+    "steps": [
+      { "activate": "Decree of Pain" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Island"],
+          "graveyard": ["Decree of Pain", "Grizzly Bears"]
+        },
+        {}
+      ],
+      "pt": {
+        "Serra Angel": [2, 2]
+      }
+    }
+  },
+  {
+    "name": "ruling: if the cycling trigger is countered, cycling still draws and the -2/-2 does not happen",
+    "players": [
+      { "hand": ["Decree of Pain"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"], "library": ["Island"] },
+      { "hand": ["Stifle"], "battlefield": ["Island", "Serra Angel"] }
+    ],
+    "steps": [
+      { "activate": "Decree of Pain" },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Decree of Pain" }] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Island"], "battlefield_has": ["Grizzly Bears"], "graveyard": ["Decree of Pain"] },
+        { "battlefield_has": ["Serra Angel"] }
+      ],
+      "pt": { "Serra Angel": [4, 4] }
+    }
+  }
+]

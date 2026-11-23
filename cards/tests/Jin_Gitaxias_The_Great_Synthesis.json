@@ -1,0 +1,212 @@
+[
+  {
+    "name": "seven cards at activation: transforms Jin into the Saga, chapter I draws a card per card in hand",
+    "players": [
+      {
+        "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Jin-Gitaxias // The Great Synthesis" },
+      { "resolve": true },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["The Great Synthesis"],
+          "battlefield_lacks": ["Jin-Gitaxias // The Great Synthesis"],
+          "hand_count": 16
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "six cards at activation (five in hand plus the turn draw): the transform ability can't be activated",
+    "players": [
+      {
+        "hand": ["Forest", "Forest", "Forest", "Forest", "Forest"],
+        "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Jin-Gitaxias // The Great Synthesis", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Jin-Gitaxias // The Great Synthesis"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "chapter II returns all non-Phyrexian creatures to their owners' hands",
+    "players": [
+      {
+        "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Island", "Island", "Island", "Island", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Jin-Gitaxias // The Great Synthesis" },
+      { "resolve": true },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": ["Grizzly Bears"],
+          "battlefield_has": ["The Great Synthesis"]
+        },
+        {
+          "battlefield_lacks": ["Grizzly Bears"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "chapter III casts the chosen nonland cards from hand without paying their costs",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Jin-Gitaxias // The Great Synthesis" },
+      { "resolve": true },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears", "Jin-Gitaxias // The Great Synthesis"],
+          "battlefield_lacks": ["The Great Synthesis"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "casting a noncreature spell with mana value 3 or greater draws a card",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 3, "graveyard": ["Divination"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a noncreature spell with mana value under 3 does not draw",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ward {2}: opponent pays the ward and Swords to Plowshares exiles Jin-Gitaxias",
+    "players": [
+      { "battlefield": ["Jin-Gitaxias // The Great Synthesis"] },
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "targets": ["Jin-Gitaxias // The Great Synthesis"], "player": 1 },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Jin-Gitaxias // The Great Synthesis"] },
+        { "graveyard": ["Swords to Plowshares"] }
+      ]
+    }
+  },
+  {
+    "name": "ward {2}: opponent who cannot pay has Swords to Plowshares countered",
+    "players": [
+      { "battlefield": ["Jin-Gitaxias // The Great Synthesis"] },
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "targets": ["Jin-Gitaxias // The Great Synthesis"], "player": 1 },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Jin-Gitaxias // The Great Synthesis"] },
+        { "graveyard": ["Swords to Plowshares"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the transform still resolves when the hand drops to six before it resolves",
+    "players": [
+      { "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Jin-Gitaxias // The Great Synthesis", "Island", "Island", "Island", "Island", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Jin-Gitaxias // The Great Synthesis" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Great Synthesis"], "battlefield_lacks": ["Jin-Gitaxias // The Great Synthesis"] },
+        { "life": 14 }
+      ]
+    }
+  }
+]

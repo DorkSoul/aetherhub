@@ -1,0 +1,69 @@
+[
+ {
+  "name": "{2}{W}: exile the enchanted creature",
+  "players": [ { "hand": ["Cooped Up"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "cast": "Cooped Up", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Cooped Up", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "the exile ability needs {2}{W}",
+  "players": [ { "hand": ["Cooped Up"], "battlefield": ["Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "cast": "Cooped Up", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Cooped Up", "ability": 0, "illegal": true }
+  ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+  {
+    "name": "enchanted creature can't attack: its controller's other creature attacks alone",
+    "players": [
+      { "hand": ["Cooped Up"], "battlefield": ["Plains", "Plains"] },
+      { "battlefield": ["Hill Giant", "Elite Vanguard"] }
+    ],
+    "steps": [
+      { "cast": "Cooped Up", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Elite Vanguard", "at": "p0" } ], "player": 1 },
+      { "block": [] },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "life": 18 }, {} ] }
+  },
+  {
+    "name": "enchanted creature can't block: the illegal blocker is dropped and the attacker gets through",
+    "players": [
+      { "hand": ["Cooped Up"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Elite Vanguard"] }
+    ],
+    "steps": [
+      { "cast": "Cooped Up", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: only the controller of Cooped Up may activate it (the enchanted creature's controller has the mana)",
+    "players": [
+      { "hand": ["Cooped Up"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Cooped Up", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Cooped Up", "ability": 0, "player": 1, "illegal": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Cooped Up"] }, { "battlefield_has": ["Grizzly Bears"] }] }
+  }
+]

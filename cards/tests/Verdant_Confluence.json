@@ -1,0 +1,143 @@
+[
+ {
+  "name": "choose three: counters, return a permanent card, fetch a basic tapped",
+  "players": [
+   {
+    "hand": [
+     "Verdant Confluence"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ],
+    "graveyard": [
+     "Gravedigger"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Verdant Confluence",
+    "answers": [
+     [
+      0,
+      1,
+      2
+     ]
+    ],
+    "targets": [
+     "Grizzly Bears",
+     "Gravedigger"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Gravedigger"
+     ],
+     "battlefield_has": [
+      "Forest"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     4
+    ]
+   },
+   "tapped": {
+    "Forest": true
+   }
+  }
+ },
+ {
+  "name": "ruling: the same mode can be chosen more than once",
+  "players": [
+   { "hand": ["Verdant Confluence"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Verdant Confluence", "answers": [[0, 0, 0]] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [{}, {}], "pt": { "Grizzly Bears": [8, 8] } }
+ },
+ {
+  "name": "ruling: a repeated targeted mode may pick a different target each time",
+  "players": [
+   { "hand": ["Verdant Confluence"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+   { "battlefield": ["Wall of Stone"] }
+  ],
+  "steps": [
+   { "cast": "Verdant Confluence", "answers": [[0, 0, 0]], "targets": ["Grizzly Bears", "Wall of Stone", "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [{}, {}], "pt": { "Grizzly Bears": [6, 6], "Wall of Stone": [2, 10] } }
+ },
+ {
+  "name": "ruling: if one target becomes illegal the spell still resolves for its other legal targets",
+  "players": [
+   { "hand": ["Verdant Confluence"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Wall of Stone"] }
+  ],
+  "steps": [
+   { "cast": "Verdant Confluence", "answers": [[0, 0, 0]], "targets": ["Grizzly Bears", "Wall of Stone", "Wall of Stone"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Lightning Bolt"], "battlefield_has": ["Wall of Stone"] } ],
+   "pt": { "Wall of Stone": [4, 12] }
+  }
+ },
+ {
+  "name": "ruling: if every target becomes illegal the spell does not resolve, so the untargeted search does nothing",
+  "players": [
+   { "hand": ["Verdant Confluence"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"], "library": ["Forest"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Verdant Confluence", "answers": [[0, 2, 2]] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"], "library_top": ["Forest"] }, { "graveyard_has": ["Lightning Bolt"] } ]
+  }
+ },
+ {
+  "name": "ruling: a permanent card is a legal target for the return mode, an instant card is not",
+  "players": [
+   { "hand": ["Verdant Confluence"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Lightning Bolt", "Grizzly Bears"], "library": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Verdant Confluence", "answers": [[1, 2, 2]] },
+   { "resolve": true, "answers": ["Forest", "Forest"] }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] }, {} ]
+  }
+ }
+]

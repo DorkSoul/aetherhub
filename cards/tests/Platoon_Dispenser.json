@@ -1,0 +1,218 @@
+[
+ {
+  "name": "3W makes a colorless Soldier artifact token",
+  "players": [
+   {
+    "battlefield": [
+     "Platoon Dispenser",
+     "Plains",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Platoon Dispenser",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Platoon Dispenser",
+      "Soldier 1-1 Colorless Artifact"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Soldier 1-1 Colorless Artifact": [
+     1,
+     1
+    ]
+   }
+  }
+ },
+ {
+  "name": "end step draw needs two other creatures",
+  "players": [
+   {
+    "battlefield": [
+     "Platoon Dispenser",
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no end step draw with only one other creature",
+  "players": [
+   {
+    "battlefield": [
+     "Platoon Dispenser",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearth {2}{W}{W} from the graveyard returns Platoon Dispenser to the battlefield",
+  "players": [
+   {
+    "graveyard": ["Platoon Dispenser"],
+    "battlefield": ["Plains", "Plains", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Platoon Dispenser", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Platoon Dispenser"], "graveyard": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearth with only three lands is illegal: Dispenser stays in the graveyard",
+  "players": [
+   {
+    "graveyard": ["Platoon Dispenser"],
+    "battlefield": ["Plains", "Plains", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Platoon Dispenser", "ability": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Platoon Dispenser"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearthed Dispenser has haste: it attacks for 4 alongside a second attacker",
+  "players": [
+   {
+    "graveyard": ["Platoon Dispenser"],
+    "battlefield": ["Plains", "Plains", "Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Platoon Dispenser", "ability": 1 },
+   { "resolve": true },
+   { "attack": [{ "card": "Platoon Dispenser", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 14 }
+   ]
+  }
+ },
+ {
+  "name": "unearthed Dispenser is exiled at the beginning of the next end step",
+  "players": [
+   {
+    "graveyard": ["Platoon Dispenser"],
+    "battlefield": ["Plains", "Plains", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Platoon Dispenser", "ability": 1 },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Platoon Dispenser"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Tormod's Crypt exiles the graveyard in response to unearth: unearth does nothing",
+  "players": [
+   { "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Tormod's Crypt"], "graveyard": ["Platoon Dispenser"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Platoon Dispenser", "ability": 1 },
+   { "activate": "Tormod's Crypt", "ability": 0, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Platoon Dispenser"], "exile": ["Platoon Dispenser", "Tormod's Crypt"] }, {} ] }
+ },
+ {
+  "name": "ruling: unearthed Dispenser destroyed by Disenchant is exiled instead of going to the graveyard",
+  "players": [
+   { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain"], "graveyard": ["Platoon Dispenser"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Platoon Dispenser", "ability": 1 },
+   { "resolve": true },
+   { "cast": "Disenchant", "targets": ["Platoon Dispenser"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "exile": ["Platoon Dispenser"], "graveyard_has": ["Disenchant"] }, {} ] }
+ }
+]

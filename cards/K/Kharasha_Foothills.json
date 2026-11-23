@@ -1,0 +1,150 @@
+{
+  "name": "Kharasha Foothills",
+  "types": [
+    "Plane"
+  ],
+  "subtypes": [
+    "Mongseng"
+  ],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "from": "Command",
+      "trigger": {
+        "type": "Attacks",
+        "filter": {
+          "types": [
+            "Creature"
+          ],
+          "controller": "You"
+        },
+        "player_only": true
+      },
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": {
+            "type": "EachOpponentExceptTriggerPlayer"
+          },
+          "effects": [
+            {
+              "type": "May",
+              "effects": [
+                {
+                  "type": "CopyPermanent",
+                  "what": {
+                    "type": "TriggerObject"
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "except": [
+                    {
+                      "type": "GrantAbility",
+                      "ability": {
+                        "type": "Triggered",
+                        "trigger": {
+                          "type": "BeginningOfStep",
+                          "step": "End",
+                          "whose": "Any"
+                        },
+                        "effects": [
+                          {
+                            "type": "Move",
+                            "what": {
+                              "type": "This"
+                            },
+                            "to": "Exile"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "StoreRemembered",
+                  "slot": 0
+                },
+                {
+                  "type": "ChangeDefender",
+                  "what": {
+                    "type": "Stored",
+                    "slot": 0
+                  },
+                  "to": {
+                    "type": "EachObject"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "from": "Command",
+      "trigger": {
+        "type": "RollsChaos"
+      },
+      "effects": [
+        {
+          "type": "May",
+          "effects": [
+            {
+              "type": "SacrificeAny",
+              "filter": {
+                "types": [
+                  "Creature"
+                ],
+                "controller": "You"
+              }
+            },
+            {
+              "type": "If",
+              "cond": {
+                "type": "Compare",
+                "a": {
+                  "type": "RememberedCount"
+                },
+                "cmp": {
+                  "op": "Ge",
+                  "n": 1
+                }
+              },
+              "then": [
+                {
+                  "type": "DealDamage",
+                  "source": {
+                    "type": "This"
+                  },
+                  "to": {
+                    "type": "Target",
+                    "idx": 0
+                  },
+                  "amount": {
+                    "type": "RememberedCount"
+                  }
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "types": [
+                "Creature"
+              ]
+            }
+          },
+          "label": "target creature"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever a creature you control attacks a player, for each other opponent, you may create a token that's a copy of that creature, tapped and attacking that opponent. Exile those tokens at the beginning of the next end step.\nWhenever chaos ensues, you may sacrifice any number of creatures. If you do, Kharasha Foothills deals that much damage to target creature."
+}

@@ -1,0 +1,82 @@
+{
+  "name": "Jace, Reality Sculptor",
+  "mana_cost": "{3}{U}{U}",
+  "types": ["Planeswalker"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Jace"],
+  "colors": ["U"],
+  "loyalty": 5,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": 1,
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "Control", "who": { "type": "You" }, "filter": { "token": true, "types": ["Planeswalker"], "subtypes": ["Jace"] }, "at_least": 1 } },
+          "then": [ { "type": "CreateToken", "token": "Jace" } ],
+          "else": []
+        },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "token": true, "types": ["Planeswalker"], "subtypes": ["Jace"], "controller": "You" },
+          "min": 1,
+          "max": 1,
+          "then": [
+            { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "Loyalty", "n": { "type": "Count", "filter": { "subtypes": ["Island"], "controller": "You" } } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -3,
+      "effects": [
+        {
+          "type": "GrantStatic",
+          "what": { "type": "This" },
+          "dynamic": true,
+          "duration": "UntilYourNextTurn",
+          "effect": {
+            "type": "Modify",
+            "affects": { "types": ["Creature"], "attacking_you": true },
+            "power": { "type": "Fixed", "n": -5 },
+            "toughness": { "type": "Fixed", "n": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": 0,
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "TotalCounters", "filter": { "types": ["Planeswalker"], "subtypes": ["Jace"], "controller": "You" }, "kind": "Loyalty" },
+        "cmp": { "op": "Ge", "n": 25 }
+      },
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "ExileTopOfLibrary",
+              "who": { "type": "EachObject" },
+              "n": {
+                "type": "Minus",
+                "a": { "type": "Count", "filter": {}, "zone": "Library", "player": { "type": "EachObject" } },
+                "b": { "type": "Fixed", "n": 1 }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "+1: Empower Jace X, where X is the number of Islands you control. (Put X loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\n−3: Until your next turn, whenever a creature attacks you or a planeswalker you control, it gets -5/-0 until end of turn.\n0: Exile all but the bottom card of each opponent's library. Activate only if there are twenty-five or more loyalty counters among Jaces you control."
+}

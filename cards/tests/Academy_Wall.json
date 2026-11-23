@@ -1,0 +1,96 @@
+[
+  {
+    "name": "casting an instant: may draw, then discard",
+    "players": [
+      { "hand": ["Lightning Bolt", "Grizzly Bears", "Hill Giant"], "battlefield": ["Mountain", "Academy Wall"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true, "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "graveyard": ["Lightning Bolt", "Hill Giant"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "declining the optional draw does nothing",
+    "players": [
+      { "hand": ["Lightning Bolt", "Grizzly Bears"], "battlefield": ["Mountain", "Academy Wall"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "triggers only once each turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Academy Wall"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears", "Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cast trigger resolves while the instant is still on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Academy Wall"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true, "player": 1, "answers": [true] }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "players": [
+        { "hand_count": 0 },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered instant still lets its cast trigger resolve",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Academy Wall"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"], "library_count": 19 },
+        { "graveyard": ["Counterspell"], "life": 20 }
+      ]
+    }
+  }
+]

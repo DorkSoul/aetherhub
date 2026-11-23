@@ -1,0 +1,138 @@
+[
+ {
+  "name": "after I put a +1/+1 counter on a creature this turn, the Paladin has trample and lifelink",
+  "players": [
+   {
+    "hand": [
+     "Battlegrowth"
+    ],
+    "battlefield": [
+     "Sigardian Paladin",
+     "Forest",
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Battlegrowth",
+    "targets": [
+     "Savannah Lions"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "keywords": {
+    "Sigardian Paladin": [
+     "Trample",
+     "Lifelink"
+    ]
+   }
+  }
+ },
+ {
+  "name": "without a counter this turn it has neither",
+  "players": [
+   {
+    "battlefield": [
+     "Sigardian Paladin"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "keywords": {
+    "Sigardian Paladin": []
+   }
+  }
+ },
+ {
+  "name": "{1}{G}{W}: target creature with a +1/+1 counter gains trample and lifelink until end of turn",
+  "players": [
+   {
+    "battlefield": [
+     "Sigardian Paladin",
+     { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+     "Forest",
+     "Plains",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Sigardian Paladin", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "keywords": {
+    "Grizzly Bears": ["Trample", "Lifelink"],
+    "Sigardian Paladin": []
+   },
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "no creature with a +1/+1 counter to target: the ability is illegal",
+  "players": [
+   {
+    "battlefield": ["Sigardian Paladin", "Grizzly Bears", "Forest", "Plains", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Sigardian Paladin", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "keywords": {
+    "Grizzly Bears": []
+   }
+  }
+ },
+ {
+  "name": "ruling: the Paladin keeps trample and lifelink after the creature that got the counter has died",
+  "players": [
+   { "hand": ["Battlegrowth", "Lightning Bolt"], "battlefield": ["Sigardian Paladin", "Savannah Lions", "Forest", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Battlegrowth", "targets": ["Savannah Lions"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Savannah Lions"] }, {} ],
+   "keywords": {
+    "Sigardian Paladin": ["Trample", "Lifelink"]
+   }
+  }
+ },
+ {
+  "name": "ruling: the granted trample and lifelink last after the creature loses its +1/+1 counters",
+  "players": [
+   {
+    "battlefield": ["Sigardian Paladin", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }, "Forest", "Plains", "Island", "Vampire Hexmage"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Sigardian Paladin", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Vampire Hexmage", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Vampire Hexmage"] }, {} ],
+   "keywords": {
+    "Grizzly Bears": ["Trample", "Lifelink"]
+   },
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ }
+]

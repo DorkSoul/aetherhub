@@ -1,0 +1,326 @@
+[
+ {
+  "name": "ETB: your creature deals damage equal to its power to an opposing creature",
+  "players": [
+   {
+    "hand": [
+     "Hunter's Talent"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Hunter's Talent"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "counters": {
+    "Hunter's Talent": {
+     "level": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "level 2 ({1}{G}) adds the attack trigger",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Hunter's Talent",
+      "counters": {
+       "level": 1
+      }
+     },
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Hunter's Talent",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Hunter's Talent": {
+     "level": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "level 3: draw at your end step if you control a creature with power 4 or greater",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Hunter's Talent",
+      "counters": {
+       "level": 2
+      }
+     },
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Hunted Dragon"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Hunter's Talent",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Hunter's Talent": {
+     "level": 3
+    }
+   },
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "level 2: whenever you attack, target attacking creature gets +1/+0 and trample",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Hunter's Talent",
+      "counters": {
+       "level": 2
+      }
+     },
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     },
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 14
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     2
+    ],
+    "Hill Giant": [
+     3,
+     3
+    ]
+   },
+   "keywords": {
+    "Grizzly Bears": [
+     "Trample"
+    ]
+   }
+  }
+ },
+ {
+  "name": "level 1: no attack trigger, the attacker is unchanged",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Hunter's Talent",
+      "counters": {
+       "level": 1
+      }
+     },
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 18
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: level 3 keeps the level 2 attack trigger",
+  "players": [
+   { "battlefield": [ { "name": "Hunter's Talent", "counters": { "level": 3 } }, "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17 } ],
+   "pt": { "Grizzly Bears": [3, 2] },
+   "keywords": { "Grizzly Bears": ["Trample"] }
+  }
+ },
+ {
+  "name": "ruling: at level 2 the level 2 ability cannot be activated again",
+  "players": [
+   { "battlefield": [ { "name": "Hunter's Talent", "counters": { "level": 2 } }, "Forest", "Forest" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Hunter's Talent", "ability": 0, "illegal": true }
+  ],
+  "expect": { "counters": { "Hunter's Talent": { "level": 2 } }, "players": [ {}, {} ] }
+ },
+ {
+  "name": "ruling: gaining a level uses the stack, so Stifle can counter it",
+  "players": [
+   { "battlefield": [ { "name": "Hunter's Talent", "counters": { "level": 1 } }, "Forest", "Forest" ] },
+   { "hand": ["Stifle"], "battlefield": ["Island"] }
+  ],
+  "steps": [
+   { "activate": "Hunter's Talent", "ability": 0 },
+   { "pass": true },
+   { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Hunter's Talent" }] },
+   { "resolve": true }
+  ],
+  "expect": { "counters": { "Hunter's Talent": { "level": 1 } }, "players": [ {}, { "graveyard": ["Stifle"] } ] }
+ },
+ {
+  "name": "ruling: each Class tracks its own level",
+  "players": [
+   { "battlefield": [ { "name": "Hunter's Talent", "counters": { "level": 1 } }, { "name": "Bard Class", "counters": { "level": 1 } }, "Forest", "Forest" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Hunter's Talent", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "counters": { "Hunter's Talent": { "level": 2 }, "Bard Class": { "level": 1 } }, "players": [ {}, {} ] }
+ },
+ {
+  "name": "ruling: the level 3 end step draw happens once, even with two creatures of power 4 or more",
+  "players": [
+   { "battlefield": [ { "name": "Hunter's Talent", "counters": { "level": 2 } }, "Forest", "Forest", "Forest", "Forest", "Hunted Dragon", "Serra Angel" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Hunter's Talent", "ability": 1 },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "counters": { "Hunter's Talent": { "level": 3 } }, "players": [ { "hand_count": 1 }, {} ] }
+ },
+ {
+  "name": "ruling: with no creature of power 4 or greater at the end step, nothing is drawn",
+  "players": [
+   { "battlefield": [ { "name": "Hunter's Talent", "counters": { "level": 3 } }, "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 0 }, {} ] }
+ }
+]

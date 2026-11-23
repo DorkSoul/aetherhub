@@ -1,0 +1,184 @@
+[
+ {
+  "name": "enchanted creature gets +1/+1 and vigilance",
+  "players": [
+   {
+    "hand": [
+     "Lightwheel Enhancements"
+    ],
+    "battlefield": [
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightwheel Enhancements",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "keywords": {
+    "Grizzly Bears": [
+     "Vigilance"
+    ]
+   },
+   "attached": {
+    "Lightwheel Enhancements": "Grizzly Bears"
+   },
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "can enchant a noncreature Vehicle",
+  "players": [
+   {
+    "hand": [
+     "Lightwheel Enhancements"
+    ],
+    "battlefield": [
+     "Plains",
+     "Adventurer's Airship"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightwheel Enhancements",
+    "targets": [
+     "Adventurer's Airship"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Lightwheel Enhancements": "Adventurer's Airship"
+   }
+  }
+ },
+ {
+  "name": "max speed: cast it from the graveyard",
+  "players": [
+   {
+    "graveyard": [
+     "Lightwheel Enhancements"
+    ],
+    "battlefield": [
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "set_speed": 4
+   },
+   {
+    "cast": "Lightwheel Enhancements",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Lightwheel Enhancements"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "below max speed: not castable from the graveyard",
+  "players": [
+   {
+    "graveyard": [
+     "Lightwheel Enhancements"
+    ],
+    "battlefield": [
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "set_speed": 3
+   },
+   {
+    "cast": "Lightwheel Enhancements",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightwheel Enhancements"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "start your engines: a freshly cast Enhancements leaves you at speed 1",
+  "players": [ { "hand": ["Lightwheel Enhancements"], "battlefield": ["Plains", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "cast": "Lightwheel Enhancements", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "speed": 1 }, {} ] }
+ },
+ {
+  "name": "ruling: speed is tracked per player (p0 at max speed does not give the opponent speed)",
+  "players": [ { "battlefield": ["Plains"] }, {} ],
+  "steps": [ { "set_speed": 4 } ],
+  "expect": { "players": [ { "speed": 4 }, { "speed": 0 } ] }
+ },
+ {
+  "name": "ruling: a player with no speed counts as speed 0, so the graveyard cast is not allowed",
+  "players": [ { "graveyard": ["Lightwheel Enhancements"], "battlefield": ["Plains", "Grizzly Bears"] }, {} ],
+  "steps": [ { "cast": "Lightwheel Enhancements", "targets": ["Grizzly Bears"], "illegal": true } ],
+  "expect": { "players": [ { "graveyard": ["Lightwheel Enhancements"] }, {} ] }
+ },
+ {
+  "name": "ruling: speed rises once per turn, only when an opponent loses life on your turn",
+  "players": [ { "hand": ["Lightwheel Enhancements", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Plains", "Mountain", "Mountain", "Grizzly Bears"] }, {} ],
+  "steps": [ { "cast": "Lightwheel Enhancements", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+  "expect": { "players": [ { "speed": 2 }, { "life": 14 } ] }
+ }
+]

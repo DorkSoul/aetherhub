@@ -1,0 +1,64 @@
+[
+  {
+    "name": "enchanted creature becomes a base 1/1 with no abilities",
+    "players": [{ "hand": ["Utter Insignificance"], "battlefield": ["Island", "Island"] }, { "battlefield": ["Serra Angel"] }],
+    "steps": [{ "cast": "Utter Insignificance", "targets": ["Serra Angel"] }, { "resolve": true }],
+    "expect": {
+      "pt": { "Serra Angel": [1, 1] },
+      "attached": { "Utter Insignificance": "Serra Angel" }
+    }
+  },
+  {
+    "name": "flash: can be cast on the opponent's turn",
+    "players": [{ "battlefield": ["Island", "Island"] }, { "hand": ["Utter Insignificance"], "battlefield": ["Island", "Island", "Serra Angel"] }],
+    "steps": [
+      { "pass": true },
+      { "cast": "Utter Insignificance", "targets": ["Serra Angel"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Serra Angel": [1, 1] } }
+  },
+  {
+    "name": "2C: exile the enchanted creature",
+    "players": [{ "hand": ["Utter Insignificance"], "battlefield": ["Island", "Island", "Island", "Island", "Wastes"] }, { "battlefield": ["Serra Angel"] }],
+    "steps": [
+      { "cast": "Utter Insignificance", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "activate": "Utter Insignificance", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "exile": ["Serra Angel"], "battlefield_lacks": ["Serra Angel"] }]
+    }
+  },
+  {
+    "name": "enchanted creature loses flying: a ground creature can block it",
+    "players": [{ "hand": ["Utter Insignificance"], "battlefield": ["Island", "Island", "Serra Angel", "Hill Giant"] }, { "battlefield": ["Grizzly Bears"] }],
+    "steps": [
+      { "cast": "Utter Insignificance", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Serra Angel", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Serra Angel" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 17 }] }
+  },
+  {
+    "name": "ruling: ability gained after attaching is kept (Gladiolus landfall trample)",
+    "players": [{ "hand": ["Utter Insignificance", "Forest"], "battlefield": ["Island", "Island", "Gladiolus Amicitia", "Grizzly Bears"] }, {}],
+    "steps": [{ "cast": "Utter Insignificance", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "play_land": "Forest" }, { "resolve": true }],
+    "expect": { "pt": { "Grizzly Bears": [3, 3] }, "keywords": { "Grizzly Bears": ["Trample"] }, "attached": { "Utter Insignificance": "Grizzly Bears" } }
+  },
+  {
+    "name": "ruling: a pump that started before attaching still applies on top of base 1/1",
+    "players": [{ "hand": ["Utter Insignificance", "Forest"], "battlefield": ["Island", "Island", "Gladiolus Amicitia", "Grizzly Bears"] }, {}],
+    "steps": [{ "play_land": "Forest" }, { "resolve": true }, { "cast": "Utter Insignificance", "targets": ["Grizzly Bears"] }, { "resolve": true }],
+    "expect": { "pt": { "Grizzly Bears": [3, 3] }, "attached": { "Utter Insignificance": "Grizzly Bears" } }
+  },
+  {
+    "name": "ruling: damage already marked becomes lethal when the base toughness drops to 1",
+    "players": [{ "hand": ["Shock", "Utter Insignificance"], "battlefield": ["Mountain", "Island", "Island"] }, { "battlefield": ["Serra Angel"] }],
+    "steps": [{ "cast": "Shock", "targets": ["Serra Angel"] }, { "resolve": true }, { "cast": "Utter Insignificance", "targets": ["Serra Angel"] }, { "resolve": true }],
+    "expect": { "players": [{}, { "graveyard": ["Serra Angel"], "battlefield_lacks": ["Serra Angel"] }] }
+  }
+]

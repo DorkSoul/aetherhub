@@ -1,0 +1,107 @@
+[
+  {
+    "name": "ruling: the creature-cast trigger draws and puts the land even if the spell is countered",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Forest"],
+        "battlefield": ["Chulane, Teller of Tales", "Forest", "Forest"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true, "answers": [["Forest"]] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "hand_count": 1, "battlefield_has": ["Forest"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the trigger's land does not use up the land drop",
+    "players": [
+      {
+        "hand": ["Forest", "Grizzly Bears", "Forest"],
+        "battlefield": ["Chulane, Teller of Tales", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [["Forest"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the trigger works on the opponent's turn, when the spell is cast at instant speed",
+    "players": [
+      {
+        "hand": ["Spectral Sailor", "Forest"],
+        "battlefield": ["Chulane, Teller of Tales", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Spectral Sailor", "player": 0 },
+      { "resolve": true, "answers": [["Forest"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spectral Sailor", "Chulane, Teller of Tales"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: {3},{T} returns target creature you control to its owner's hand",
+    "players": [
+      {
+        "battlefield": ["Chulane, Teller of Tales", "Grizzly Bears", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chulane, Teller of Tales", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Chulane, Teller of Tales"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "boundary: with only two mana the {3} cost cannot be paid, so the ability is not activatable",
+    "players": [
+      {
+        "battlefield": ["Chulane, Teller of Tales", "Grizzly Bears", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chulane, Teller of Tales", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Chulane, Teller of Tales"], "hand_count": 0 },
+        {}
+      ]
+    }
+  }
+]

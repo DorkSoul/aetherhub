@@ -1,0 +1,36 @@
+[
+  { "name": "upkeep: discard a card, then create a Treasure",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Ultimate Green Goblin"] }, {} ],
+    "start": "Untap",
+    "steps": [ { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Treasure", "Ultimate Green Goblin"] }, {} ] } },
+  { "name": "upkeep with an empty hand still creates a Treasure",
+    "players": [ { "hand": [], "battlefield": ["Ultimate Green Goblin"] }, {} ],
+    "start": "Untap",
+    "steps": [ { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Treasure"] }, {} ] } },
+  { "name": "mayhem: discarded with Faithless Looting, then cast from the graveyard for {2}{B/R}",
+    "players": [ { "hand": ["Faithless Looting", "Ultimate Green Goblin"], "library": ["Island", "Swamp"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Ultimate Green Goblin", "Island"]] },
+      { "cast": "Ultimate Green Goblin", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Ultimate Green Goblin"], "graveyard_has": ["Faithless Looting"] }, {} ], "pt": { "Ultimate Green Goblin": [5, 4] } } },
+  { "name": "a card in the graveyard that was not discarded this turn cannot be cast for mayhem",
+    "players": [ { "graveyard": ["Ultimate Green Goblin"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Ultimate Green Goblin", "alt": 0, "illegal": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Ultimate Green Goblin"] }, {} ] } },
+  { "name": "ruling: discarded during the opponent's turn, a sorcery-speed creature cannot be cast for mayhem that turn",
+    "players": [ { "hand": ["Ultimate Green Goblin"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, { "hand": ["Hymn to Tourach"], "battlefield": ["Swamp", "Swamp"] } ],
+    "steps": [
+      { "advance_to": "Main2", "auto": true },
+      { "advance_to": "Main1", "auto": true },
+      { "cast": "Hymn to Tourach", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Ultimate Green Goblin", "alt": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Ultimate Green Goblin"], "hand_count": 0 }, { "graveyard_has": ["Hymn to Tourach"] } ] } }
+]

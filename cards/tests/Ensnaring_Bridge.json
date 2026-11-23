@@ -1,0 +1,99 @@
+[
+  {
+    "name": "creature with power greater than hand size can't attack",
+    "players": [
+      { "hand": ["Forest", "Island"], "battlefield": ["Ensnaring Bridge", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "power equal to hand size may attack",
+    "players": [
+      { "hand": ["Forest", "Island", "Plains"], "battlefield": ["Ensnaring Bridge", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Ensnaring Bridge", "Hill Giant"] }, {}]
+    }
+  },
+  {
+    "name": "small creature attacks regardless of hand size",
+    "players": [
+      { "hand": ["Forest", "Island"], "battlefield": ["Ensnaring Bridge", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Ensnaring Bridge", "Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "Hill Giant (power 3 > hand 2) is dropped from the attack; Grizzly Bears still deals 2",
+    "players": [
+      { "hand": ["Plains", "Plains"], "battlefield": ["Ensnaring Bridge", "Hill Giant", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "control: without Ensnaring Bridge both attack (5 damage)",
+    "players": [
+      { "hand": ["Plains", "Plains"], "battlefield": ["Hill Giant", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 15 }]
+    }
+  },
+  {
+    "name": "ruling: a creature that attacked legally stays in combat when the Bridge controller's hand size drops below its power",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Ensnaring Bridge", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "battlefield_has": ["Ensnaring Bridge", "Grizzly Bears"] },
+        { "life": 12 }
+      ]
+    }
+  }
+]

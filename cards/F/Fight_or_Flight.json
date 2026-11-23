@@ -1,0 +1,73 @@
+{
+  "name": "Fight or Flight",
+  "mana_cost": "{3}{W}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "BeginCombat", "whose": "Opponent" },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "controlled_by": { "type": "TriggerPlayer" } },
+          "min": 0,
+          "max": 99,
+          "then": []
+        },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        { "type": "UnlinkAll" },
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "chooser": { "type": "TriggerPlayer" },
+          "modes": [
+            {
+              "text": "The pile of creatures the separating player put in pile one can attack this turn.",
+              "effects": [
+                {
+                  "type": "ForEach",
+                  "objects": { "type": "Stored", "slot": 0 },
+                  "effects": [ { "type": "Remember", "what": { "type": "EachObject" } }, { "type": "LinkRemembered" } ]
+                },
+                {
+                  "type": "GrantStatic",
+                  "what": { "type": "This" },
+                  "duration": "UntilEndOfTurn",
+                  "dynamic": true,
+                  "effect": {
+                    "type": "CantAttack",
+                    "affects": { "types": ["Creature"], "controller": "Opponent", "not_linked_with_this": true }
+                  }
+                }
+              ]
+            },
+            {
+              "text": "The other pile can attack this turn.",
+              "effects": [
+                {
+                  "type": "ForEach",
+                  "objects": { "type": "All", "filter": { "types": ["Creature"], "controlled_by": { "type": "TriggerPlayer" }, "not_among_stored": 0 } },
+                  "effects": [ { "type": "Remember", "what": { "type": "EachObject" } }, { "type": "LinkRemembered" } ]
+                },
+                {
+                  "type": "GrantStatic",
+                  "what": { "type": "This" },
+                  "duration": "UntilEndOfTurn",
+                  "dynamic": true,
+                  "effect": {
+                    "type": "CantAttack",
+                    "affects": { "types": ["Creature"], "controller": "Opponent", "not_linked_with_this": true }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of combat on each opponent's turn, separate all creatures that player controls into two piles. Only creatures in the pile of their choice can attack this turn."
+}

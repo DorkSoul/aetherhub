@@ -1,0 +1,191 @@
+[
+ {
+  "name": "draws a card",
+  "players": [
+   {
+    "hand": [
+     "Everdream"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Everdream"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest"
+     ],
+     "library_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "spliced onto Lightning Bolt: draws a card as well",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Everdream"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Everdream",
+      "Forest"
+     ],
+     "library_count": 1
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining the splice: no card drawn",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Everdream"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "answers": [
+     false
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Everdream"
+     ],
+     "library_count": 2
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: spell countered: the spliced Everdream stays in hand and nothing is drawn",
+  "players": [
+   { "hand": ["Lightning Bolt", "Everdream"], "battlefield": ["Mountain", "Island", "Island", "Island"], "library": ["Forest", "Forest"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"], "answers": [true] },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Everdream"], "library_count": 2, "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Counterspell"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: all targets illegal when the spell tries to resolve: spliced Everdream draws nothing",
+  "players": [
+   { "hand": ["Lightning Bolt", "Everdream"], "battlefield": ["Mountain", "Island", "Island", "Island"], "library": ["Forest", "Forest"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"], "answers": [true] },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Everdream"], "library_count": 2, "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Lightning Bolt", "Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: two Everdreams, each spliced once onto the same spell: draws two",
+  "players": [
+   { "hand": ["Lightning Bolt", "Everdream", "Everdream"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"], "answers": [true, true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Everdream", "Everdream", "Forest", "Forest"], "library_count": 0 },
+    { "life": 17 }
+   ]
+  }
+ }
+]

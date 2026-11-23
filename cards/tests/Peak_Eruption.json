@@ -1,0 +1,91 @@
+[
+ {
+  "name": "destroys target Mountain and deals 3 to its controller",
+  "players": [
+   { "hand": ["Peak Eruption"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Peak Eruption", "targets": ["p1:Mountain"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 17, "graveyard_has": ["Mountain"] }]
+  }
+ },
+ {
+  "name": "a land without the Mountain type is not a legal target",
+  "players": [
+   { "hand": ["Peak Eruption"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Peak Eruption", "targets": ["p0:Plains"], "illegal": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 20 }]
+  }
+ },
+ {
+  "name": "ruling: Mountain made illegal before resolution (bounced in response): Peak Eruption does not resolve, no damage",
+  "players": [
+   { "hand": ["Peak Eruption"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Boomerang"], "battlefield": ["Island", "Island", "Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Peak Eruption", "targets": ["p1:Mountain"] },
+   { "cast": "Boomerang", "player": 1, "targets": ["p1:Mountain"] },
+   { "pass": true },
+   { "pass": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "graveyard": ["Peak Eruption"] }, { "life": 20, "battlefield_lacks": ["Mountain"], "graveyard": ["Boomerang"] }]
+  }
+ },
+ {
+  "name": "ruling: a Mountain-subtype land with another name (Taiga) is a legal target",
+  "players": [
+   { "hand": ["Peak Eruption"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Taiga"] }
+  ],
+  "steps": [
+   { "cast": "Peak Eruption", "targets": ["p1:Taiga"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 17, "battlefield_lacks": ["Taiga"] }]
+  }
+ },
+ {
+  "name": "ruling: a land that taps for R but lacks the Mountain subtype (Sulfurous Springs) is not a legal target",
+  "players": [
+   { "hand": ["Peak Eruption"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Sulfurous Springs"] }
+  ],
+  "steps": [
+   { "cast": "Peak Eruption", "targets": ["p1:Sulfurous Springs"], "illegal": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 20, "battlefield_has": ["Sulfurous Springs"] }]
+  }
+ },
+ {
+  "name": "ruling: Mountain that is still there when Peak Eruption resolves but is indestructible: damage is still dealt",
+  "players": [
+   { "hand": ["Peak Eruption"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Kamahl's Will"], "battlefield": ["Forest", "Island", "Island", "Taiga"] }
+  ],
+  "steps": [
+   { "cast": "Peak Eruption", "targets": ["p1:Taiga"] },
+   { "cast": "Kamahl's Will", "player": 1, "answers": [0], "targets": ["p1:Taiga"] },
+   { "pass": true },
+   { "pass": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 17, "battlefield_has": ["Taiga"] }],
+   "keywords": { "Taiga": ["Indestructible"] }
+  }
+ }
+]

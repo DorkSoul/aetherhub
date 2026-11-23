@@ -1,0 +1,254 @@
+[
+  {
+    "name": "target player gets a token copy of my creature, then the spell is exiled",
+    "players": [
+      {
+        "hand": [
+          "Echocasting Symposium"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Echocasting Symposium",
+        "targets": [
+          "p0",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Forest",
+            "Forest",
+            "Forest",
+            "Forest",
+            "Island",
+            "Island",
+            "Grizzly Bears",
+            "Grizzly Bears"
+          ],
+          "exile": [
+            "Echocasting Symposium"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "target opponent gets the token copy, not me",
+    "players": [
+      {
+        "hand": [
+          "Echocasting Symposium"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Echocasting Symposium",
+        "targets": [
+          "p1",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Forest",
+            "Forest",
+            "Forest",
+            "Forest",
+            "Island",
+            "Island",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "paradigm: at my first main phase the exiled spell is cast free and copies a creature to a target player",
+    "players": [
+      {
+        "hand": ["Echocasting Symposium"],
+        "battlefield": ["Island", "Island", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Echocasting Symposium", "targets": ["p0", "Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [true, 0], "targets": ["p0", "Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Forest", "Forest", "Forest", "Forest", "Island", "Island", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"],
+          "exile": ["Echocasting Symposium"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "paradigm: declining the free cast leaves the exiled spell and the board alone",
+    "players": [
+      {
+        "hand": ["Echocasting Symposium"],
+        "battlefield": ["Island", "Island", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Echocasting Symposium", "targets": ["p0", "Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Forest", "Forest", "Forest", "Forest", "Island", "Island", "Grizzly Bears", "Grizzly Bears"],
+          "exile": ["Echocasting Symposium"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the free copy does not stop the paradigm trigger on a later turn",
+    "players": [
+      {
+        "hand": ["Echocasting Symposium"],
+        "battlefield": ["Island", "Island", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Echocasting Symposium", "targets": ["p0", "Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [false] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "answers": [true, 0], "targets": ["p0", "Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Forest", "Forest", "Forest", "Forest", "Island", "Island", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"],
+          "exile": ["Echocasting Symposium"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the token copy of Elvish Visionary triggers its enters ability (draws a card)",
+    "players": [
+      {
+        "hand": ["Echocasting Symposium"],
+        "battlefield": ["Island", "Island", "Forest", "Forest", "Forest", "Forest", "Elvish Visionary"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Echocasting Symposium", "targets": ["p0", "Elvish Visionary"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "battlefield_has": ["Elvish Visionary"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the token copy does not copy the tapped status or counters of the copied creature",
+    "players": [
+      {
+        "hand": ["Echocasting Symposium", "Lightning Bolt"],
+        "battlefield": ["Island", "Island", "Forest", "Forest", "Forest", "Forest", "Mountain", { "name": "Grizzly Bears", "tapped": true, "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Echocasting Symposium", "targets": ["p0", "Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] },
+      "tapped": { "Grizzly Bears": false },
+      "counters": { "Grizzly Bears": { "p1p1": 0 } },
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the token copy of a token copies the token's own characteristics (Knight 2/2 Vigilance)",
+    "players": [
+      {
+        "hand": ["Echocasting Symposium"],
+        "battlefield": ["Island", "Island", "Forest", "Forest", "Forest", "Forest", "Knight 2-2 Vigilance"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Echocasting Symposium", "targets": ["p0", "Knight 2-2 Vigilance"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Knight 2-2 Vigilance": [2, 2] },
+      "keywords": { "Knight 2-2 Vigilance": ["Vigilance"] },
+      "players": [
+        { "battlefield_has": ["Knight 2-2 Vigilance", "Knight 2-2 Vigilance"] },
+        {}
+      ]
+    }
+  }
+]

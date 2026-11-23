@@ -1,0 +1,117 @@
+[
+  {
+    "name": "fetches a basic tapped and returns to hand at the cleanup step",
+    "players": [
+      {
+        "battlefield": ["Thawing Glaciers", "Plains"],
+        "library": ["Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Thawing Glaciers"
+      },
+      {
+        "resolve": true,
+        "answers": ["Mountain"]
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Mountain": true
+      },
+      "players": [
+        {
+          "hand": ["Thawing Glaciers"],
+          "battlefield": ["Mountain", "Plains"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without activation it stays on the battlefield",
+    "players": [
+      {
+        "battlefield": ["Thawing Glaciers", "Plains"],
+        "library": ["Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Thawing Glaciers", "Plains"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters the battlefield tapped when played",
+    "players": [
+      {
+        "hand": ["Thawing Glaciers"],
+        "battlefield": ["Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Thawing Glaciers" }
+    ],
+    "expect": {
+      "tapped": {
+        "Thawing Glaciers": true
+      },
+      "players": [
+        { "battlefield_has": ["Thawing Glaciers", "Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the search is optional, so finding nothing leaves the Mountain in the library",
+    "players": [
+      { "battlefield": ["Thawing Glaciers", "Plains"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Thawing Glaciers" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the land fetched by Thawing Glaciers does not use up the land drop",
+    "players": [
+      { "hand": ["Plains"], "battlefield": ["Thawing Glaciers", "Forest"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Thawing Glaciers" },
+      { "resolve": true, "answers": ["Mountain"] },
+      { "play_land": "Plains" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Plains", "Mountain", "Forest"] },
+        {}
+      ],
+      "tapped": { "Mountain": true }
+    }
+  }
+]

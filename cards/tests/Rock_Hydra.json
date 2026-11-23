@@ -1,0 +1,140 @@
+[
+ {
+  "name": "X=3 enters with three +1/+1 counters (3/3)",
+  "players": [
+   {
+    "hand": ["Rock Hydra"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Rock Hydra", "answers": [3] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Rock Hydra": [3, 3] },
+   "counters": { "Rock Hydra": { "p1p1": 3 } }
+  }
+ },
+ {
+  "name": "Shock on a 3/3 with three counters: two damage prevented, one counter removed",
+  "players": [
+   { "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 3 } }] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Rock Hydra"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Rock Hydra": { "p1p1": 1 } },
+   "pt": { "Rock Hydra": [1, 1] }
+  }
+ },
+ {
+  "name": "Shock on a 1/1 with one counter: the one counter is removed and the 1/1 dies",
+  "players": [
+   { "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 1 } }] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Rock Hydra"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Rock Hydra"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "RRR in your upkeep puts a +1/+1 counter on it",
+  "players": [
+   { "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 1 } }, "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "activate": "Rock Hydra", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Rock Hydra": { "p1p1": 2 } },
+   "pt": { "Rock Hydra": [2, 2] }
+  }
+ },
+ {
+  "name": "RRR counter ability is illegal outside your upkeep",
+  "players": [
+   { "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 1 } }, "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Rock Hydra", "ability": 1, "illegal": true }
+  ],
+  "expect": {
+   "counters": { "Rock Hydra": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "{R} prevent-1 ability resolves and leaves the Hydra's counters alone",
+  "players": [
+   { "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 3 } }, "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Rock Hydra", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Rock Hydra": { "p1p1": 3 } },
+   "players": [ { "battlefield_has": ["Rock Hydra"] }, {} ]
+  }
+ },
+ {
+  "name": "{R} prevent-1 needs red mana",
+  "players": [
+   { "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 3 } }, "Island"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Rock Hydra", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "counters": { "Rock Hydra": { "p1p1": 3 } }
+  }
+ },
+ {
+  "name": "without the {R} prevention the same Lightning Bolt kills the 3/3 Hydra",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Rock Hydra", "counters": { "p1p1": 3 } }, "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Rock Hydra"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Lightning Bolt", "Rock Hydra"], "battlefield_lacks": ["Rock Hydra"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: put onto the battlefield without being cast, X is zero, so it enters as a 0/0 and dies",
+  "players": [
+   { "hand": ["Reanimate"], "battlefield": ["Swamp"], "graveyard": ["Rock Hydra"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Reanimate", "targets": ["Rock Hydra"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Rock Hydra"], "battlefield_lacks": ["Rock Hydra"] }, {} ]
+  }
+ }
+]

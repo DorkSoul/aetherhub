@@ -1,0 +1,138 @@
+[
+  {
+    "name": "enchanted artifact cannot activate its abilities",
+    "players": [
+      {
+        "hand": [
+          "Realmbreaker's Grasp"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Razortip Whip",
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Realmbreaker's Grasp",
+        "targets": [
+          "Razortip Whip"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "activate": "Razortip Whip",
+        "ability": 0,
+        "player": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot enchant a land",
+    "players": [
+      {
+        "hand": [
+          "Realmbreaker's Grasp"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Realmbreaker's Grasp",
+        "targets": [
+          "Forest"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Realmbreaker's Grasp"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature cannot attack: the other attacker connects alone",
+    "players": [
+      {
+        "hand": ["Realmbreaker's Grasp"],
+        "battlefield": ["Plains", "Plains", "Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Realmbreaker's Grasp", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Hill Giant"] },
+        { "life": 17 }
+      ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "enchanted creature cannot block: the opponent's Bears does not stop the attacker",
+    "players": [
+      {
+        "hand": ["Realmbreaker's Grasp"],
+        "battlefield": ["Plains", "Plains", "Hill Giant", "Raging Cougar"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      { "cast": "Realmbreaker's Grasp", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }, { "card": "Raging Cougar", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Llanowar Elves", "attacker": "Raging Cougar" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17, "battlefield_has": ["Grizzly Bears"], "graveyard": ["Llanowar Elves"] }
+      ]
+    }
+  }
+]

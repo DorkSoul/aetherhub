@@ -1,0 +1,84 @@
+[
+  {
+    "name": "flying while you control a blue creature",
+    "players": [
+      { "battlefield": ["Wingrattle Scarecrow", "Mulldrifter"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "keywords": { "Wingrattle Scarecrow": ["Flying"] }
+    }
+  },
+  {
+    "name": "no flying without a blue creature",
+    "players": [
+      { "battlefield": ["Wingrattle Scarecrow", "Blood Artist"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "keywords": { "Wingrattle Scarecrow": [] }
+    }
+  },
+  {
+    "name": "persist while you control a black creature",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Wingrattle Scarecrow", "Typhoid Rats"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Wingrattle Scarecrow"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Wingrattle Scarecrow"] }, {} ],
+      "counters": { "Wingrattle Scarecrow": { "m1m1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: the returned Scarecrow dies for good (it has a -1/-1 counter)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Wingrattle Scarecrow", "Typhoid Rats"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Wingrattle Scarecrow"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Wingrattle Scarecrow"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Typhoid Rats"], "battlefield_lacks": ["Wingrattle Scarecrow"], "graveyard_has": ["Wingrattle Scarecrow"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Scarecrow with a -1/-1 counter on it does not persist",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Wingrattle Scarecrow", "counters": { "m1m1": 1 } }, "Typhoid Rats"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Wingrattle Scarecrow"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Typhoid Rats"], "battlefield_lacks": ["Wingrattle Scarecrow"], "graveyard_has": ["Wingrattle Scarecrow"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: counters reduce it to 0 toughness, so it dies and does not persist",
+    "players": [
+      { "battlefield": [ { "name": "Wingrattle Scarecrow", "counters": { "p1p1": 1, "m1m1": 3 } }, "Typhoid Rats" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Typhoid Rats"], "battlefield_lacks": ["Wingrattle Scarecrow"], "graveyard_has": ["Wingrattle Scarecrow"] }, {} ]
+    }
+  }
+]

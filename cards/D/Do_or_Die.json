@@ -1,0 +1,64 @@
+{
+  "name": "Do or Die",
+  "mana_cost": "{1}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Player", "filter": "Any" },
+          "label": "target player"
+        }
+      ],
+      "effects": [
+        { "type": "ClearRemembered" },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": {
+            "types": ["Creature"],
+            "controlled_by": { "type": "Target", "idx": 0 }
+          },
+          "min": 0,
+          "max": 99,
+          "then": []
+        },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "chooser": { "type": "Target", "idx": 0 },
+          "modes": [
+            {
+              "text": "Destroy the chosen pile.",
+              "effects": [
+                { "type": "Destroy", "what": { "type": "Stored", "slot": 0 }, "no_regeneration": true }
+              ]
+            },
+            {
+              "text": "Destroy the other pile.",
+              "effects": [
+                {
+                  "type": "Destroy",
+                  "what": {
+                    "type": "All",
+                    "filter": {
+                      "types": ["Creature"],
+                      "controlled_by": { "type": "Target", "idx": 0 },
+                      "not_among_stored": 0
+                    }
+                  },
+                  "no_regeneration": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Separate all creatures target player controls into two piles. Destroy all creatures in the pile of that player's choice. They can't be regenerated."
+}

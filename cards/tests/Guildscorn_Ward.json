@@ -1,0 +1,225 @@
+[
+ {
+  "name": "enchanted creature has protection from multicolored: a monocolored spell can still target it",
+  "players": [
+   {
+    "hand": [
+     "Guildscorn Ward"
+    ],
+    "battlefield": [
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Guildscorn Ward",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Grizzly Bears",
+      "Guildscorn Ward"
+     ]
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "the Ward attaches and the creature keeps it",
+  "players": [
+   {
+    "hand": [
+     "Guildscorn Ward"
+    ],
+    "battlefield": [
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Guildscorn Ward",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Guildscorn Ward",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "attached": {
+    "Guildscorn Ward": "Grizzly Bears"
+   }
+  }
+ },
+ {
+  "name": "enchanted creature has protection from multicolored: a multicolored sorcery cannot target it",
+  "players": [
+   { "hand": [ "Guildscorn Ward" ], "battlefield": [ "Plains", "Grizzly Bears" ] },
+   { "hand": [ "Dreadbore" ], "battlefield": [ "Swamp", "Mountain" ] }
+  ],
+  "steps": [
+   { "cast": "Guildscorn Ward", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Dreadbore", "targets": [ "Grizzly Bears" ], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": [ "Guildscorn Ward", "Grizzly Bears" ] }, { "graveyard": [] } ]
+  }
+ },
+ {
+  "name": "control: without the Ward a multicolored sorcery destroys the creature",
+  "players": [
+   { "battlefield": [ "Grizzly Bears" ] },
+   { "hand": [ "Dreadbore" ], "battlefield": [ "Swamp", "Mountain" ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Dreadbore", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": [ "Grizzly Bears" ] }, { "graveyard": [ "Dreadbore" ] } ]
+  }
+ },
+ {
+  "name": "ruling: a hybrid spell is multicolored even when cast with one colour: Push paid with white cannot target the protected creature",
+  "players": [
+   { "hand": [ "Guildscorn Ward" ], "battlefield": [ "Plains", { "name": "Grizzly Bears", "tapped": true } ] },
+   { "hand": [ "Push" ], "battlefield": [ "Plains", "Plains" ] }
+  ],
+  "steps": [
+   { "cast": "Guildscorn Ward", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Push", "targets": [ "Grizzly Bears" ], "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": [ "Guildscorn Ward", "Grizzly Bears" ] }, { "graveyard": [] } ] }
+ },
+ {
+  "name": "control: without the Ward a Push paid with white destroys the tapped creature",
+  "players": [
+   { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] },
+   { "hand": [ "Push" ], "battlefield": [ "Plains", "Plains" ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Push", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": [ "Grizzly Bears" ] }, { "graveyard": [ "Push" ] } ] }
+ },
+ {
+  "name": "ruling: a multicolored (hybrid) creature cannot block the protected creature",
+  "players": [
+   { "hand": [ "Guildscorn Ward" ], "battlefield": [ "Plains", "Grizzly Bears" ] },
+   { "battlefield": [ "Boros Recruit" ] }
+  ],
+  "steps": [
+   { "cast": "Guildscorn Ward", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Boros Recruit", "attacker": "Grizzly Bears" } ], "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18 } ] }
+ },
+ {
+  "name": "control: without the Ward the same hybrid creature can block",
+  "players": [
+   { "battlefield": [ "Grizzly Bears" ] },
+   { "battlefield": [ "Boros Recruit" ] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Boros Recruit", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: damage from a multicolored (hybrid) source is prevented to the protected creature",
+  "players": [
+   { "hand": [ "Guildscorn Ward" ], "battlefield": [ "Plains", "Grizzly Bears" ] },
+   { "hand": [ "Firespout" ], "battlefield": [ "Mountain", "Mountain", "Mountain" ] }
+  ],
+  "steps": [
+   { "cast": "Guildscorn Ward", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Firespout" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": [ "Guildscorn Ward", "Grizzly Bears" ] }, { "graveyard": [ "Firespout" ] } ] }
+ },
+ {
+  "name": "control: without the Ward Firespout's 3 damage kills the creature",
+  "players": [
+   { "battlefield": [ "Grizzly Bears" ] },
+   { "hand": [ "Firespout" ], "battlefield": [ "Mountain", "Mountain", "Mountain" ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Firespout" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": [ "Grizzly Bears" ] }, { "graveyard": [ "Firespout" ] } ] }
+ }
+]

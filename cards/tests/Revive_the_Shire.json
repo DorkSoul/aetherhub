@@ -1,0 +1,71 @@
+[
+ {
+  "name": "returns a permanent card to hand and creates a Food",
+  "players": [
+   { "hand": ["Revive the Shire"], "graveyard": ["Rakdos Signet", "Lightning Bolt"], "battlefield": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Revive the Shire", "targets": ["Rakdos Signet"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Rakdos Signet"], "graveyard_has": ["Lightning Bolt"], "battlefield_has": ["Food"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cannot target an instant or sorcery card",
+  "players": [
+   { "hand": ["Revive the Shire"], "graveyard": ["Lightning Bolt"], "battlefield": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Revive the Shire", "targets": ["Lightning Bolt"], "illegal": true }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "ruling: the graveyard target is gone when Revive resolves (exiled in response): no Food",
+  "players": [
+   { "hand": ["Revive the Shire"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] },
+   { "battlefield": ["Tormod's Crypt"] }
+  ],
+  "steps": [
+   { "cast": "Revive the Shire", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "activate": "Tormod's Crypt", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Grizzly Bears"], "graveyard": ["Revive the Shire"], "battlefield": ["Forest", "Forest"] },
+    { "graveyard": ["Tormod's Crypt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Food used for its own ability cannot also pay for Maraleaf Rider",
+  "players": [
+   { "hand": ["Revive the Shire", "Maraleaf Rider"], "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Revive the Shire", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Maraleaf Rider" },
+   { "resolve": true },
+   { "activate": "Food", "ability": 0 },
+   { "resolve": true },
+   { "activate": "Maraleaf Rider", "ability": 0, "targets": ["Maraleaf Rider"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Grizzly Bears"], "battlefield_has": ["Maraleaf Rider"], "battlefield_lacks": ["Food"], "life": 23 },
+    {}
+   ]
+  }
+ }
+]

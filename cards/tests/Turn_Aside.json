@@ -1,0 +1,77 @@
+[
+  {
+    "name": "counters a spell that targets a permanent you control",
+    "players": [
+      { "hand": ["Turn Aside"], "battlefield": ["Island", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "cast": "Turn Aside", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Turn Aside"], "battlefield": ["Island", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "cannot target a spell that only targets a player",
+    "players": [
+      { "hand": ["Turn Aside"], "battlefield": ["Island", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "cast": "Turn Aside", "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 17 }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "cannot target a spell that targets only an opponent's permanent",
+    "players": [
+      { "hand": ["Turn Aside", "Lightning Bolt"], "battlefield": ["Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Turn Aside", "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "battlefield": ["Island", "Mountain"] },
+        { "graveyard": ["Grizzly Bears"], "battlefield": [] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: counters a multi-target spell when one of its targets is a permanent you control",
+    "players": [
+      { "hand": ["Turn Aside"], "battlefield": ["Island", "Grizzly Bears"] },
+      { "hand": ["Agony Warp"], "battlefield": ["Island", "Swamp", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Agony Warp", "player": 1, "targets": ["p1:Grizzly Bears", "p0:Grizzly Bears"] },
+      { "cast": "Turn Aside", "targets": [{ "stack": "Agony Warp" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Turn Aside"], "battlefield": ["Island", "Grizzly Bears"] },
+        { "graveyard": ["Agony Warp"], "battlefield": ["Island", "Swamp", "Grizzly Bears"] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "enters with X echo counters",
+    "players": [ { "hand": ["Soul Echo"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] }, {} ],
+    "steps": [ { "cast": "Soul Echo", "answers": [3] }, { "resolve": true } ],
+    "expect": { "counters": { "Soul Echo": { "echo": 3 } } }
+  },
+  {
+    "name": "no echo counters at upkeep: sacrificed",
+    "players": [ { "battlefield": ["Soul Echo"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": [], "graveyard": ["Soul Echo"] }, {} ] }
+  },
+  {
+    "name": "opponent accepts: Lightning Bolt damage becomes removed echo counters",
+    "players": [ { "battlefield": [ { "name": "Soul Echo", "counters": { "echo": 3 } } ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [true] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 20, "battlefield_has": ["Soul Echo"] }, { "graveyard": ["Lightning Bolt"] } ], "counters": { "Soul Echo": {} } }
+  },
+  {
+    "name": "opponent declines: the damage is dealt and the counters stay",
+    "players": [ { "battlefield": [ { "name": "Soul Echo", "counters": { "echo": 3 } } ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [false] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 17 }, {} ], "counters": { "Soul Echo": { "echo": 3 } } }
+  },
+  {
+    "name": "fewer counters than damage: only the counters' worth is replaced",
+    "players": [ { "battlefield": [ { "name": "Soul Echo", "counters": { "echo": 2 } } ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [true] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 19 }, {} ], "counters": { "Soul Echo": {} } }
+  },
+  {
+    "name": "you don't lose the game at 0 life",
+    "players": [ { "life": 3, "battlefield": [ { "name": "Soul Echo", "counters": { "echo": 1 } } ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 0, "battlefield_has": ["Soul Echo"] }, {} ] }
+  },
+  {
+    "name": "ruling: damage dealt in response to the upkeep trigger is not replaced",
+    "players": [ { "battlefield": [ { "name": "Soul Echo", "counters": { "echo": 3 } } ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "Upkeep", "answers": [true] }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "pass": true, "player": 1 }, { "pass": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 17, "battlefield_has": ["Soul Echo"] }, { "graveyard": ["Lightning Bolt"] } ], "counters": { "Soul Echo": { "echo": 3 } } }
+  }
+]

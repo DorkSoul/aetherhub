@@ -1,0 +1,124 @@
+[
+  {
+    "name": "casts a spell from the top of your library",
+    "players": [
+      {
+        "battlefield": [
+          "Magus of the Future",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "plays a land from the top of your library",
+    "players": [
+      {
+        "battlefield": [
+          "Magus of the Future"
+        ],
+        "library": [
+          "Plains",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Plains"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Plains"
+          ],
+          "library_count": 21
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast a card that is not on top of the library",
+    "players": [
+      {
+        "battlefield": [
+          "Magus of the Future",
+          "Mountain"
+        ],
+        "library": [
+          "Plains",
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  { "name": "ruling: a spell cast from the top of the library still pays its additional discard cost",
+    "players": [ { "hand": ["Forest"], "battlefield": ["Magus of the Future", "Mountain", "Mountain", "Mountain"], "library": ["Honor the God-Pharaoh", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Honor the God-Pharaoh" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 2, "graveyard_has": ["Forest", "Honor the God-Pharaoh"], "battlefield_has": ["Army"] }, {} ] } },
+  { "name": "ruling: a land cannot be played from the top of the library during combat",
+    "players": [ { "battlefield": ["Magus of the Future"], "library": ["Plains", "Lightning Bolt"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "play_land": "Plains", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Plains"], "library_top": ["Plains"] }, {} ] } },
+  { "name": "ruling: a sorcery on top of the library cannot be cast during combat",
+    "players": [ { "hand": ["Forest"], "battlefield": ["Magus of the Future", "Mountain", "Mountain", "Mountain"], "library": ["Honor the God-Pharaoh", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "cast": "Honor the God-Pharaoh", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Forest"], "library_top": ["Honor the God-Pharaoh"] }, {} ] } },
+  { "name": "ruling: playing a land from the top of the library uses the turn's land drop",
+    "players": [ { "battlefield": ["Magus of the Future"], "library": ["Plains", "Forest", "Lightning Bolt"] }, {} ],
+    "steps": [ { "play_land": "Plains" }, { "play_land": "Forest", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Plains"], "battlefield_lacks": ["Forest"], "library_top": ["Forest"] }, {} ] } }
+]

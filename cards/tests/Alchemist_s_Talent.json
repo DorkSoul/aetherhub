@@ -1,0 +1,274 @@
+[
+ {
+  "name": "enters with level 1 and creates two tapped Treasure tokens",
+  "players": [
+   {
+    "hand": [
+     "Alchemist's Talent"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Island",
+     "Swamp",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Alchemist's Talent"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Alchemist's Talent": {
+     "Level": 1
+    }
+   },
+   "tapped": {
+    "Treasure": true
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Alchemist's Talent",
+      "Treasure"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "level 2 lets Treasures make two mana of one color",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Alchemist's Talent",
+      "counters": {
+       "Level": 1
+      }
+     },
+     "Mountain",
+     "Island",
+     "Treasure"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Alchemist's Talent"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "tap_for_mana": "Treasure",
+    "color": "R"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Alchemist's Talent": {
+     "Level": 2
+    }
+   },
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "pool": {
+      "R": 1
+     }
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "level 3 deals damage equal to the mana value when Treasure mana was spent",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Alchemist's Talent",
+      "counters": {
+       "Level": 3
+      }
+     },
+     "Treasure"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 16
+    }
+   ]
+  }
+ },
+ {
+  "name": "level 3 does nothing when no Treasure mana was spent",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Alchemist's Talent",
+      "counters": {
+       "Level": 3
+      }
+     },
+     "Mountain",
+     "Treasure"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Mountain"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "the level 3 ability needs level 3 (level 2 deals no extra damage)",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Alchemist's Talent",
+      "counters": {
+       "Level": 2
+      }
+     },
+     "Treasure"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ { "name": "{4}{R}: Level 3 on a Class at Level 2",
+   "players": [ { "battlefield": [ { "name": "Alchemist's Talent", "counters": { "Level": 2 } }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ],
+   "steps": [ { "activate": "Alchemist's Talent", "ability": 1 }, { "resolve": true } ],
+   "expect": { "players": [ {}, {} ], "counters": { "Alchemist's Talent": { "Level": 3 } } } },
+ { "name": "{4}{R}: illegal at Level 1 (Level 3 needs Level 2 first)",
+   "players": [ { "battlefield": [ { "name": "Alchemist's Talent", "counters": { "Level": 1 } }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ],
+   "steps": [ { "activate": "Alchemist's Talent", "ability": 1, "illegal": true } ],
+   "expect": { "players": [ {}, {} ], "counters": { "Alchemist's Talent": { "Level": 1 } } } },
+ {
+  "name": "ruling: a higher level keeps the earlier abilities (Treasures still make two mana at level 3)",
+  "players": [ { "battlefield": [ { "name": "Alchemist's Talent", "counters": { "Level": 3 } }, "Treasure" ] }, {} ],
+  "steps": [ { "tap_for_mana": "Treasure", "color": "R" } ],
+  "expect": { "players": [ { "pool": { "R": 2 }, "battlefield_lacks": ["Treasure"] }, {} ] }
+ },
+ {
+  "name": "ruling: an X spell's mana value uses the chosen X (Walking Ballista with X=2 deals 4)",
+  "players": [ { "hand": ["Walking Ballista"], "battlefield": [ { "name": "Alchemist's Talent", "counters": { "Level": 3 } }, "Treasure", "Island", "Island" ] }, {} ],
+  "steps": [ { "tap_for_mana": "Treasure", "color": "U" }, { "cast": "Walking Ballista", "answers": [2] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Walking Ballista"] }, { "life": 16 } ] }
+ },
+ {
+  "name": "ruling: gaining a level uses the stack; the Class stays at level 1 until the ability resolves",
+  "players": [ { "battlefield": [ { "name": "Alchemist's Talent", "counters": { "Level": 1 } }, "Mountain", "Island" ] }, {} ],
+  "steps": [ { "activate": "Alchemist's Talent", "ability": 0 } ],
+  "expect": { "stack_empty": false, "counters": { "Alchemist's Talent": { "Level": 1 } }, "players": [ {}, {} ] }
+ },
+ {
+  "name": "ruling: a Class at level 2 cannot gain level 2 again",
+  "players": [ { "battlefield": [ { "name": "Alchemist's Talent", "counters": { "Level": 2 } }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ],
+  "steps": [ { "activate": "Alchemist's Talent", "ability": 0, "illegal": true } ],
+  "expect": { "players": [ {}, {} ], "counters": { "Alchemist's Talent": { "Level": 2 } } }
+ }
+]

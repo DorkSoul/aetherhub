@@ -1,0 +1,32 @@
+[
+  { "name": "entering creates a Blood token",
+    "players": [ { "hand": ["Ivora, Insatiable Heir"], "battlefield": ["Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Ivora, Insatiable Heir" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Blood"] }, {} ] } },
+  { "name": "combat damage to a player creates a Blood token",
+    "players": [ { "battlefield": ["Ivora, Insatiable Heir"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Ivora, Insatiable Heir", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Blood"] }, { "life": 19 } ] } },
+  { "name": "combat damage to a blocker creates no Blood token",
+    "players": [ { "battlefield": ["Ivora, Insatiable Heir"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Ivora, Insatiable Heir", "at": "p1" } ] }, { "block": [ { "blocker": "Hill Giant", "attacker": "Ivora, Insatiable Heir" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Blood"] }, { "life": 20 } ] } },
+  { "name": "discarding two cards puts a +1/+1 counter on Ivora for each discard",
+    "players": [ { "hand": ["Island", "Island"], "battlefield": ["Ivora, Insatiable Heir"] }, { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "Main1" }, { "cast": "Mind Rot", "player": 1, "targets": ["p0"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 0 }, {} ], "counters": { "Ivora, Insatiable Heir": { "p1p1": 2 } }, "pt": { "Ivora, Insatiable Heir": [3, 3] } } },
+  { "name": "the opponent discarding does not put a counter on Ivora",
+    "players": [ { "hand": ["Mind Rot"], "battlefield": ["Ivora, Insatiable Heir", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Island", "Island"] } ],
+    "steps": [ { "cast": "Mind Rot", "targets": ["p1"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "hand_count": 0 } ], "pt": { "Ivora, Insatiable Heir": [1, 1] } } },
+  { "name": "ruling: a Blood token sacrificed as a cost still triggers 'whenever you sacrifice a Blood token' (Blood Hypnotist)",
+    "players": [ { "hand": ["Blood Servitor", "Island"], "battlefield": ["Blood Hypnotist", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Blood Servitor" }, { "resolve": true }, { "resolve": true },
+      { "activate": "Blood", "ability": 0, "targets": ["Hill Giant"] }, { "resolve": true }, { "resolve": true },
+      { "attack": [ { "card": "Blood Hypnotist", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Blood Hypnotist" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Blood Hypnotist", "Blood Servitor"] }, { "life": 17 } ] } }
+]

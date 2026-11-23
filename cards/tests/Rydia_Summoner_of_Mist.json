@@ -1,0 +1,217 @@
+[
+  {
+    "name": "summon with X=3 returns the Saga with mana value 3 with a finality counter and haste",
+    "players": [
+      {
+        "battlefield": [
+          "Rydia, Summoner of Mist",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Book of Mazarbul"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Rydia, Summoner of Mist",
+        "targets": [
+          "Book of Mazarbul"
+        ],
+        "answers": [
+          3
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Book of Mazarbul"
+          ],
+          "graveyard": []
+        },
+        {}
+      ],
+      "counters": {
+        "Book of Mazarbul": {
+          "finality": 1
+        }
+      },
+      "keywords": {
+        "Book of Mazarbul": [
+          "Haste"
+        ]
+      }
+    }
+  },
+  {
+    "name": "landfall: yes lets you discard a card and draw one",
+    "players": [
+      {
+        "hand": [
+          "Forest",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Rydia, Summoner of Mist"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "landfall: no means no discard and no draw",
+    "players": [
+      {
+        "hand": [
+          "Forest",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Rydia, Summoner of Mist"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [],
+          "hand": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a finality counter does not stop a permanent from going to hand",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Island", { "name": "Grizzly Bears", "counters": { "finality": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard": ["Unsummon"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a finality counter exiles a creature that would die",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "counters": { "finality": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "exile": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a finality counter also exiles a destroyed noncreature permanent",
+    "players": [
+      { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", { "name": "Bonesplitter", "counters": { "finality": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Disenchant", "targets": ["Bonesplitter"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Disenchant"], "exile": ["Bonesplitter"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two finality counters still just exile the creature once",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "counters": { "finality": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "exile": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land put onto the battlefield by Cultivate (not a land drop) triggers landfall",
+    "players": [
+      {
+        "hand": ["Cultivate", "Lightning Bolt"],
+        "battlefield": ["Rydia, Summoner of Mist", "Forest", "Forest", "Forest"],
+        "library": ["Mountain", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cultivate" },
+      { "resolve": true, "answers": ["Mountain", "Island", true, "Lightning Bolt"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mountain"], "graveyard_has": ["Lightning Bolt"], "hand_count": 2 },
+        {}
+      ]
+    }
+  }
+]

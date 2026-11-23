@@ -1,0 +1,47 @@
+{
+  "name": "Doom Reigns Supreme",
+  "mana_cost": "{1}{B}",
+  "types": ["Enchantment"],
+  "subtypes": ["Plan"],
+  "colors": ["B"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "subtypes": ["Villain"], "controller": "You" } },
+      "effects": [
+        { "type": "LoseLife", "who": { "type": "EachOpponent" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Plan", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "filter": { "this": true }, "kind": "Plan" },
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Plan", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 5 } },
+      "targets": [ { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" } ],
+      "effects": [
+        { "type": "Sacrifice", "who": { "type": "This" } },
+        {
+          "type": "LookAtTop",
+          "who": { "type": "Target", "idx": 0 },
+          "n": { "type": "Fixed", "n": 5 },
+          "all": true,
+          "take": 5,
+          "filter": {},
+          "rest": "Graveyard",
+          "to": "Exile"
+        },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Exile",
+          "filter": { "exiled_with_this": true, "not_types": ["Land"] },
+          "min": 0,
+          "max": 2,
+          "then": [ { "type": "CastFree", "what": { "type": "Remembered" }, "may": false } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever a Villain you control enters, each opponent loses 1 life and you gain 1 life. Put a plan counter on this enchantment.\nWhen the fifth plan counter is put on this enchantment, sacrifice it. When you do, target opponent exiles the top five cards of their library. You may cast up to two spells from among the exiled cards without paying their mana costs."
+}

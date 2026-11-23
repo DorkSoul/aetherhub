@@ -1,0 +1,120 @@
+[
+ {
+  "name": "an attacking creature you control dies: 2 damage to each opponent",
+  "players": [
+   { "hand": ["Brazen Cannonade", "Shock"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Brazen Cannonade" },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "cast": "Shock", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "life": 18 } ] }
+ },
+ {
+  "name": "a creature you control that is not attacking dies: no damage",
+  "players": [
+   { "hand": ["Brazen Cannonade", "Shock"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Brazen Cannonade" },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "raid: after attacking, exile the top card at the postcombat main phase and play it until end of combat next turn",
+  "players": [
+   { "hand": ["Brazen Cannonade"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"], "library": ["Swamp", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Brazen Cannonade" },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "play_land": "Swamp" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Swamp"], "exile": [] }, { "life": 18 } ] }
+ },
+ {
+  "name": "the exiled card can no longer be played after combat ends on my next turn",
+  "players": [
+   { "hand": ["Brazen Cannonade"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"], "library": ["Swamp", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Brazen Cannonade" },
+   { "resolve": true },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main2" },
+   { "play_land": "Swamp", "illegal": true }
+  ],
+  "expect": { "players": [ { "exile": ["Swamp"] }, {} ] }
+ },
+ {
+  "name": "no raid when you did not attack: nothing is exiled",
+  "players": [
+   { "hand": ["Brazen Cannonade"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"], "library": ["Swamp", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Brazen Cannonade" },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "exile": [], "library_top": ["Swamp", "Island"] }, {} ] }
+ },
+ {
+  "name": "ruling: the exiled creature is cast from exile in the postcombat main phase and leaves exile",
+  "players": [
+   { "battlefield": ["Brazen Cannonade", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears"], "library": ["Hill Giant", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "cast": "Hill Giant" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Hill Giant", "Brazen Cannonade"], "exile": [], "library_top": ["Island"] }, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: a card exiled by raid that is not played remains in exile",
+  "players": [
+   { "battlefield": ["Brazen Cannonade", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears"], "library": ["Hill Giant", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" }
+  ],
+  "expect": { "players": [ { "exile": ["Hill Giant"], "library_top": ["Island"] }, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: an exiled land can be played only if a land drop is still available",
+  "players": [
+   { "hand": ["Mountain"], "battlefield": ["Brazen Cannonade", "Mountain", "Grizzly Bears"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Mountain" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": { "players": [ { "exile": ["Forest"], "battlefield_has": ["Mountain"] }, { "life": 18 } ] }
+ }
+]

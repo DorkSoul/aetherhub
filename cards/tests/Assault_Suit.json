@@ -1,0 +1,106 @@
+[
+  { "name": "equip {3} gives +2/+2 and haste",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Assault Suit": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [4, 4] },
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    } },
+  { "name": "opponent's upkeep: you may have that player gain control of the equipped creature and untap it",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", { "name": "Grizzly Bears", "tapped": true }] }, {} ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, { "battlefield_has": ["Grizzly Bears"] } ],
+      "tapped": { "Grizzly Bears": false }
+    } },
+  { "name": "declining the optional trigger leaves control with you",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"] } ]
+    } },
+  { "name": "while the opponent controls it, the equipped creature can't attack you",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "battlefield_lacks": [] } ]
+    } },
+  { "name": "equipped creature can't be sacrificed: Goblin Bombardment has no legal sacrifice",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears", "Goblin Bombardment"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Goblin Bombardment", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Goblin Bombardment"] }, { "battlefield_has": ["Hill Giant"] } ],
+      "attached": { "Assault Suit": "Grizzly Bears" }
+    } },
+  { "name": "equipped creature under the opponent's control can't attack you while you control an untapped land: no damage to you",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ]
+    } },
+  { "name": "ruling: an effect making you sacrifice a creature takes the other creature, not the equipped one",
+    "players": [
+      { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears", "Hill Giant"] },
+      { "hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Diabolic Edict", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Assault Suit"], "battlefield_lacks": ["Hill Giant"], "graveyard": ["Hill Giant"] }, {} ],
+      "attached": { "Assault Suit": "Grizzly Bears" }
+    } },
+  { "name": "ruling: the equipped creature can't be sacrificed, so when it is your only creature the sacrifice does nothing",
+    "players": [
+      { "battlefield": ["Plains", "Plains", "Plains", "Assault Suit", "Grizzly Bears"] },
+      { "hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "activate": "Assault Suit", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Diabolic Edict", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Assault Suit"] }, {} ],
+      "attached": { "Assault Suit": "Grizzly Bears" }
+    } }
+]

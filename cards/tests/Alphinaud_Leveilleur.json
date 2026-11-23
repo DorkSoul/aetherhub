@@ -1,0 +1,275 @@
+[
+  {
+    "name": "second spell draws a card",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Alphinaud Leveilleur",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {
+          "life": 14
+        }
+      ]
+    }
+  },
+  {
+    "name": "only one spell: no draw",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Alphinaud Leveilleur",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "third spell does not draw",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Alphinaud Leveilleur",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {
+          "life": 11
+        }
+      ]
+    }
+  },
+  {
+    "name": "second spell cast in response still draws once",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Alphinaud Leveilleur",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {
+          "life": 14
+        }
+      ]
+    }
+  },
+  {
+    "name": "enters: target player searches for Alisaie",
+    "players": [
+      {
+        "hand": [
+          "Alphinaud Leveilleur"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Alisaie Leveilleur"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Alphinaud Leveilleur"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p0"
+        ],
+        "answers": [
+          "Alisaie Leveilleur"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Alisaie Leveilleur"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Alphinaud as my first spell of the turn makes the Bolt cast after it my second spell (I draw)",
+    "players": [
+      { "hand": ["Alphinaud Leveilleur", "Merfolk Looter"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Forest", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alphinaud Leveilleur" },
+      { "resolve": true, "targets": ["p0"], "auto": true },
+      { "cast": "Merfolk Looter" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "battlefield_has": ["Alphinaud Leveilleur", "Merfolk Looter"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: Alphinaud's draw still happens when the second spell is countered, and resolves before that spell",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Alphinaud Leveilleur", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "graveyard": ["Lightning Bolt", "Lightning Bolt"] }, { "life": 17, "graveyard": ["Counterspell"] }]
+    }
+  },
+  {
+    "name": "ruling: the enters trigger may target an opponent with no Alisaie in library (nothing found)",
+    "players": [
+      { "hand": ["Alphinaud Leveilleur"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alphinaud Leveilleur" },
+      { "resolve": true, "targets": ["p1"], "auto": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Alphinaud Leveilleur"] }, { "library_count": 20 }]
+    }
+  }
+]

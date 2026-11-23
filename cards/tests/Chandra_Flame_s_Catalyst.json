@@ -1,0 +1,230 @@
+[
+ {
+  "name": "+1 deals 3 damage to each opponent",
+  "players": [
+   {
+    "battlefield": [
+     "Chandra, Flame's Catalyst"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, Flame's Catalyst",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ],
+   "counters": {
+    "Chandra, Flame's Catalyst": {
+     "loyalty": 6
+    }
+   }
+  }
+ },
+ {
+  "name": "-2 casts a red instant from the graveyard, then exiles it",
+  "players": [
+   {
+    "battlefield": [
+     "Chandra, Flame's Catalyst",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, Flame's Catalyst",
+    "ability": 1,
+    "targets": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ],
+    "targets": [
+     "p1"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Lightning Bolt"
+     ],
+     "graveyard": []
+    },
+    {
+     "life": 17
+    }
+   ],
+   "counters": {
+    "Chandra, Flame's Catalyst": {
+     "loyalty": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "-8 discards the hand, draws seven and lets you cast spells from hand for free",
+  "players": [
+   {
+    "hand": [
+     "Savannah Lions"
+    ],
+    "battlefield": [
+     {
+      "name": "Chandra, Flame's Catalyst",
+      "counters": {
+       "loyalty": 8
+      }
+     }
+    ],
+    "library": [
+     "Hill Giant",
+     "Grizzly Bears",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, Flame's Catalyst",
+    "ability": 2
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Hill Giant",
+    "alt": 100
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Chandra, Flame's Catalyst",
+      "Savannah Lions"
+     ],
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "hand_count": 6
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the -2 cast must be paid; with no mana the card is not cast and stays in the graveyard",
+  "players": [
+   { "battlefield": ["Chandra, Flame's Catalyst"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Chandra, Flame's Catalyst", "ability": 1, "targets": ["Lightning Bolt"] },
+   { "resolve": true, "answers": [true], "targets": ["p1"] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 20 } ],
+   "counters": { "Chandra, Flame's Catalyst": { "loyalty": 3 } }
+  }
+ },
+ {
+  "name": "ruling: declining the -2 cast leaves the card in the graveyard and it cannot be cast later this turn",
+  "players": [
+   { "battlefield": ["Chandra, Flame's Catalyst", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Chandra, Flame's Catalyst", "ability": 1, "targets": ["Lightning Bolt"] },
+   { "resolve": true, "answers": [false] },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: a free cast of a spell with X in its cost uses X = 0",
+  "players": [
+   { "hand": ["Savannah Lions"], "battlefield": [ { "name": "Chandra, Flame's Catalyst", "counters": { "loyalty": 8 } } ],
+     "library": ["Fireball", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Chandra, Flame's Catalyst", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Fireball", "alt": 100, "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 6 }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: the free-cast permission does not allow a sorcery to be cast during combat",
+  "players": [
+   { "hand": ["Savannah Lions"], "battlefield": [ { "name": "Chandra, Flame's Catalyst", "counters": { "loyalty": 8 } } ],
+     "graveyard": ["Grizzly Bears"],
+     "library": ["Revive the Fallen", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+   { "library": ["Mountain"] }
+  ],
+  "steps": [
+   { "activate": "Chandra, Flame's Catalyst", "ability": 2 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "cast": "Revive the Fallen", "alt": 100, "targets": ["Grizzly Bears"], "illegal": true },
+   { "advance_to": "Main2" },
+   { "cast": "Revive the Fallen", "alt": 100, "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [false, false] }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 7, "graveyard_has": ["Revive the Fallen"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: with an empty hand the -8 still draws seven and the free cast applies",
+  "players": [
+   { "battlefield": [ { "name": "Chandra, Flame's Catalyst", "counters": { "loyalty": 8 } } ],
+     "library": ["Lightning Bolt", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Chandra, Flame's Catalyst", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "alt": 100, "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 6, "graveyard_has": ["Lightning Bolt"] }, { "life": 17 } ]
+  }
+ }
+]

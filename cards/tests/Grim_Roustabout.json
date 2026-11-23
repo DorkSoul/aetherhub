@@ -1,0 +1,39 @@
+[
+  { "name": "unleash yes: enters with a +1/+1 counter as a 2/2",
+    "players": [ { "hand": ["Grim Roustabout"], "battlefield": ["Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Grim Roustabout" }, { "resolve": true, "answers": [true] } ],
+    "expect": { "pt": { "Grim Roustabout": [2, 2] }, "counters": { "Grim Roustabout": { "PlusOnePlusOne": 1 } } } },
+  { "name": "regenerate for 1B saves it from lethal damage and taps it",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Grim Roustabout", "Mountain", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Grim Roustabout" }, { "resolve": true },
+               { "cast": "Lightning Bolt", "targets": ["Grim Roustabout"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grim Roustabout"], "graveyard_has": ["Lightning Bolt"] }, {} ], "tapped": { "Grim Roustabout": true } } },
+  { "name": "without regeneration mana it dies to Lightning Bolt",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Grim Roustabout", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grim Roustabout"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Grim Roustabout"] }, {} ] } },
+  { "name": "ruling: a creature with a +1/+1 counter from unleash cannot block (the attacker connects)",
+    "players": [ { "hand": ["Grim Roustabout"], "battlefield": ["Swamp", "Swamp"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [
+      { "cast": "Grim Roustabout" },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grim Roustabout", "attacker": "Grizzly Bears" } ], "player": 0, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18 }, {} ] } },
+  { "name": "ruling: contrast - without the unleash counter the same Roustabout can block and takes the 2 damage instead of the player",
+    "players": [ { "hand": ["Grim Roustabout"], "battlefield": ["Swamp", "Swamp"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [
+      { "cast": "Grim Roustabout" },
+      { "resolve": true, "answers": [false] },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grim Roustabout", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20, "graveyard_has": ["Grim Roustabout"] }, {} ] } }
+]

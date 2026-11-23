@@ -1,0 +1,86 @@
+[
+  {
+    "name": "gets -1/-1 for each card in hand",
+    "players": [
+      {
+        "hand": ["Mountain", "Mountain", "Mountain"],
+        "battlefield": ["Stingerback Terror"]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": { "pt": { "Stingerback Terror": [4, 4] } }
+  },
+  {
+    "name": "empty hand leaves it a 7/7",
+    "players": [
+      { "battlefield": ["Stingerback Terror"] },
+      {}
+    ],
+    "steps": [],
+    "expect": { "pt": { "Stingerback Terror": [7, 7] } }
+  },
+  {
+    "name": "plotted on one turn, cast free from exile on a later turn",
+    "players": [
+      {
+        "hand": ["Stingerback Terror"],
+        "battlefield": ["Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Stingerback Terror", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Stingerback Terror", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Stingerback Terror"] },
+        {}
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "cannot cast the plotted card on the turn it was plotted",
+    "players": [
+      {
+        "hand": ["Stingerback Terror"],
+        "battlefield": ["Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Stingerback Terror", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Stingerback Terror", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Stingerback Terror"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: plot is a sorcery-speed special action, not allowed while a spell is on the stack",
+    "players": [
+      { "hand": ["Stingerback Terror", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "activate": "Stingerback Terror", "ability": 0, "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Stingerback Terror"] }, { "graveyard": ["Grizzly Bears"] } ],
+      "stack_empty": true
+    }
+  }
+]

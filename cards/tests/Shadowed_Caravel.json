@@ -1,0 +1,114 @@
+[
+  {
+    "name": "a creature you control explores a nonland card: +1/+1 counter on the Caravel",
+    "players": [
+      {
+        "hand": ["Cenote Scout"],
+        "battlefield": ["Shadowed Caravel", "Forest"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cenote Scout" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "counters": { "Shadowed Caravel": { "p1p1": 1 } },
+      "players": [ { "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "explore reveals a land (card goes to hand): no counter on the Caravel",
+    "players": [
+      {
+        "hand": ["Cenote Scout"],
+        "battlefield": ["Shadowed Caravel", "Forest"],
+        "library": ["Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cenote Scout" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Shadowed Caravel": {} },
+      "players": [ { "hand": ["Plains"] }, {} ]
+    }
+  },
+  {
+    "name": "crew 2 with a 2-power creature makes the Caravel a 2/2 artifact creature",
+    "players": [
+      {
+        "battlefield": ["Shadowed Caravel", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Shadowed Caravel", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Shadowed Caravel": false },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ruling: crewing with a creature that just came under your control works",
+    "players": [ { "battlefield": ["Shadowed Caravel", { "name": "Grizzly Bears", "sick": true }] }, {} ],
+    "steps": [ { "activate": "Shadowed Caravel", "ability": 0 }, { "resolve": true } ],
+    "expect": { "tapped": { "Grizzly Bears": true, "Shadowed Caravel": false }, "players": [ {}, {} ] }
+  },
+  {
+    "name": "ruling: Shocking the crewed Caravel leaves the crewing creature alone",
+    "players": [ { "hand": ["Shock"], "battlefield": ["Shadowed Caravel", "Grizzly Bears", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Shadowed Caravel", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Shadowed Caravel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Shadowed Caravel", "Shock"] }, {} ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: counters put on the Caravel while it is not a creature apply once it is crewed",
+    "players": [ { "hand": ["Cenote Scout"], "battlefield": ["Shadowed Caravel", "Forest", "Grizzly Bears"], "library": ["Lightning Bolt"] }, {} ],
+    "steps": [
+      { "cast": "Cenote Scout" },
+      { "resolve": true, "answers": [false] },
+      { "activate": "Shadowed Caravel", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Shadowed Caravel": { "p1p1": 1 } },
+      "pt": { "Shadowed Caravel": [3, 3] },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ruling: a crewed Caravel that is attacking with its crew deals its damage",
+    "players": [ { "battlefield": ["Shadowed Caravel", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Shadowed Caravel", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Shadowed Caravel", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: a Vehicle that came under your control this turn cannot attack after crewing",
+    "players": [ { "battlefield": [ { "name": "Shadowed Caravel", "sick": true }, "Grizzly Bears" ] }, {} ],
+    "steps": [
+      { "activate": "Shadowed Caravel", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Shadowed Caravel", "at": "p1" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  }
+]

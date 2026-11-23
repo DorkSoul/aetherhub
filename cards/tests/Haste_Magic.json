@@ -1,0 +1,44 @@
+[
+  { "name": "+3/+1 and haste, and the top card can be played this turn",
+    "players": [ { "hand": ["Haste Magic"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Forest"] }, {} ],
+    "steps": [
+      { "cast": "Haste Magic", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Haste Magic"], "battlefield_has": ["Forest"] }, {} ],
+      "pt": { "Grizzly Bears": [5, 3] },
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  },
+  { "name": "ruling: an exiled land cannot be played once the land drop is used",
+    "players": [ { "hand": ["Plains", "Haste Magic"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Forest"] }, {} ],
+    "steps": [
+      { "play_land": "Plains" },
+      { "cast": "Haste Magic", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Forest"], "battlefield_lacks": ["Forest"] }, {} ] }
+  },
+  { "name": "ruling: an exiled spell is cast by paying its full cost",
+    "players": [ { "hand": ["Haste Magic"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Hill Giant"], "library": ["Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Haste Magic", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  { "name": "ruling: an exiled spell whose full cost cannot be paid cannot be cast",
+    "players": [ { "hand": ["Haste Magic"], "battlefield": ["Mountain", "Mountain", "Forest", "Hill Giant"], "library": ["Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Haste Magic", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"] }, {} ] }
+  }
+]

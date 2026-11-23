@@ -1,0 +1,87 @@
+[
+  {
+    "name": "returns a black creature card from your graveyard to hand",
+    "players": [
+      { "hand": ["Call to the Netherworld"], "battlefield": ["Swamp"], "graveyard": ["Vampire Nighthawk"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Call to the Netherworld" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Vampire Nighthawk"], "graveyard": ["Call to the Netherworld"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a non-black creature card is not a legal target",
+    "players": [
+      { "hand": ["Call to the Netherworld"], "battlefield": ["Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Call to the Netherworld", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "madness {0}: discarded to Wild Guess, cast for free and return the creature",
+    "players": [
+      { "hand": ["Wild Guess", "Call to the Netherworld"], "battlefield": ["Mountain", "Mountain"], "graveyard": ["Vampire Nighthawk"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Wild Guess", "Call to the Netherworld"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the madness cast leaves the card in the graveyard, with no second chance",
+    "players": [
+      { "hand": ["Wild Guess", "Call to the Netherworld"], "battlefield": ["Mountain", "Mountain"], "graveyard": ["Vampire Nighthawk"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Wild Guess", "Call to the Netherworld", "Vampire Nighthawk"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery cast for its madness cost during the opponent's turn is allowed",
+    "players": [
+      { "hand": ["Call to the Netherworld"], "battlefield": ["Swamp"], "graveyard": ["Vampire Nighthawk"] },
+      { "hand": ["Duress"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Duress", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": ["Call to the Netherworld", true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Vampire Nighthawk"], "graveyard_has": ["Call to the Netherworld"] },
+        { "graveyard_has": ["Duress"] }
+      ]
+    }
+  }
+]

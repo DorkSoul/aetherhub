@@ -1,0 +1,94 @@
+[
+  {
+    "name": "enters with a divinity counter when cast from hand",
+    "players": [
+      { "hand": ["Myojin of Life's Web"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Myojin of Life's Web" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myojin of Life's Web"] }, {} ],
+      "counters": { "Myojin of Life's Web": { "divinity": 1 } }
+    }
+  },
+  {
+    "name": "removing the counter puts chosen creature cards from hand onto the battlefield",
+    "players": [
+      { "hand": ["Grizzly Bears", "Grizzly Bears", "Lightning Bolt"], "battlefield": [ { "name": "Myojin of Life's Web", "counters": { "divinity": 1 } } ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Myojin of Life's Web", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears", "Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Grizzly Bears"], "hand": ["Lightning Bolt"] },
+        {}
+      ],
+      "counters": { "Myojin of Life's Web": { "divinity": 0 } }
+    }
+  },
+  {
+    "name": "the Myojin is indestructible while it has the counter",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "battlefield": [ { "name": "Myojin of Life's Web", "counters": { "divinity": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Myojin of Life's Web"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Myojin of Life's Web"] } ]
+    }
+  },
+  {
+    "name": "indestructible while it has a counter: Murder does not destroy it",
+    "players": [
+      { "battlefield": [ { "name": "Myojin of Life's Web", "counters": { "divinity": 1 } } ] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Myojin of Life's Web"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myojin of Life's Web"] }, {} ],
+      "counters": { "Myojin of Life's Web": { "divinity": 1 } }
+    }
+  },
+  {
+    "name": "without a counter Murder destroys it",
+    "players": [
+      { "battlefield": ["Myojin of Life's Web"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Myojin of Life's Web"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Myojin of Life's Web"] }, {} ] }
+  },
+  {
+    "name": "ruling: cast from the command zone in a Commander game is not a cast from hand, so no divinity counter",
+    "commander": true,
+    "players": [
+      { "command": ["Myojin of Life's Web"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Myojin of Life's Web" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myojin of Life's Web"] }, {} ],
+      "counters": { "Myojin of Life's Web": { "divinity": 0 } }
+    }
+  }
+]

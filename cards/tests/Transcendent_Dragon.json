@@ -1,0 +1,92 @@
+[
+  {
+    "name": "flashed in over an opponent's creature spell: it is countered and exiled, and I cast it free",
+    "players": [
+      { "hand": ["Transcendent Dragon"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Spectral Sailor"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "cast": "Transcendent Dragon" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Transcendent Dragon", "Spectral Sailor"] },
+        { "battlefield_lacks": ["Spectral Sailor"], "exile": [], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "declining the free cast leaves the countered creature card in exile",
+    "players": [
+      { "hand": ["Transcendent Dragon"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Spectral Sailor"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Spectral Sailor", "player": 1 },
+      { "cast": "Transcendent Dragon" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Transcendent Dragon"], "battlefield_lacks": ["Spectral Sailor"] },
+        { "exile": ["Spectral Sailor"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "cast with no spell to counter: no target, the trigger does nothing",
+    "players": [
+      { "hand": ["Transcendent Dragon"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { }
+    ],
+    "steps": [
+      { "cast": "Transcendent Dragon" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Transcendent Dragon"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an X spell countered and cast without paying its cost is cast with X = 0",
+    "players": [
+      { "hand": ["Transcendent Dragon"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Blaze"], "battlefield": ["Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Blaze", "player": 1, "answers": [2], "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Transcendent Dragon" },
+      { "resolve": true, "answers": [true, 0] }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "battlefield_has": ["Transcendent Dragon"] }, { "exile": [], "graveyard": ["Blaze"] } ]
+    }
+  },
+  {
+    "name": "ruling: the countered sorcery is cast free during resolution, ignoring the timing restriction of its type",
+    "players": [
+      { "hand": ["Transcendent Dragon"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Mountain"] },
+      { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Rampant Growth", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Transcendent Dragon" },
+      { "resolve": true, "answers": [true, "Mountain"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Transcendent Dragon", "Mountain"] }, { "exile": [], "graveyard": ["Rampant Growth"] } ]
+    }
+  }
+]

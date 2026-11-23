@@ -1,0 +1,198 @@
+[
+  {
+    "name": "+1 discards a red card and deals 4 damage to the target",
+    "players": [
+      {
+        "hand": ["Shock", "Island"],
+        "battlefield": ["Chandra Ablaze"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 0, "targets": ["p1"]},
+      {"resolve": true, "answers": ["Shock"]}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 1, "graveyard_has": ["Shock"]},
+        {"life": 16}
+      ],
+      "counters": {"Chandra Ablaze": {"Loyalty": 6}}
+    }
+  },
+  {
+    "name": "+1 discarding a nonred card deals no damage",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Island"],
+        "battlefield": ["Chandra Ablaze"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 0, "targets": ["p1"]},
+      {"resolve": true, "answers": ["Grizzly Bears"]}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 1, "graveyard_has": ["Grizzly Bears"]},
+        {"life": 20}
+      ],
+      "counters": {"Chandra Ablaze": {"Loyalty": 6}}
+    }
+  },
+  {
+    "name": "+1 with an empty hand still works and deals no damage",
+    "players": [
+      {
+        "battlefield": ["Chandra Ablaze"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 0, "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 0},
+        {"life": 20}
+      ],
+      "counters": {"Chandra Ablaze": {"Loyalty": 6}}
+    }
+  },
+  {
+    "name": "-2 each player discards their hand, then draws three",
+    "players": [
+      {
+        "hand": ["Shock", "Island"],
+        "battlefield": ["Chandra Ablaze"],
+        "library": ["Mountain", "Forest", "Plains", "Swamp"]
+      },
+      {
+        "hand": ["Grizzly Bears"],
+        "library": ["Mountain", "Forest", "Plains", "Swamp"]
+      }
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 1},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 3, "graveyard_has": ["Shock", "Island"]},
+        {"hand_count": 3, "graveyard_has": ["Grizzly Bears"]}
+      ],
+      "counters": {"Chandra Ablaze": {"Loyalty": 3}}
+    }
+  },
+  {
+    "name": "-7 casts the chosen red instant free and leaves the rest",
+    "players": [
+      {
+        "battlefield": [{"name": "Chandra Ablaze", "counters": {"Loyalty": 7}}],
+        "graveyard": ["Shock", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 2},
+      {"resolve": true, "answers": [["Shock"], "p1"]}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard_has": ["Grizzly Bears"]},
+        {"life": 18}
+      ]
+    }
+  },
+  {
+    "name": "-7 choosing nothing casts nothing",
+    "players": [
+      {
+        "battlefield": [{"name": "Chandra Ablaze", "counters": {"Loyalty": 7}}],
+        "graveyard": ["Shock", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 2},
+      {"resolve": true, "answers": [[]]}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard_has": ["Shock", "Grizzly Bears"]},
+        {"life": 20}
+      ]
+    }
+  },
+  {
+    "name": "ruling: -7 casts several chosen red instants one after another, paying no mana cost",
+    "players": [
+      {
+        "battlefield": [{"name": "Chandra Ablaze", "counters": {"Loyalty": 7}}],
+        "graveyard": ["Shock", "Lightning Bolt", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 2},
+      {"resolve": true, "answers": [["Shock", "Lightning Bolt"], "p1", "p1"]}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard_has": ["Shock", "Lightning Bolt", "Grizzly Bears"]},
+        {"life": 15}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the targeted creature is gone on resolution, the +1 does nothing (no discard, no damage)",
+    "players": [
+      {
+        "hand": ["Shock", "Island"],
+        "battlefield": ["Chandra Ablaze"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 0, "targets": ["Grizzly Bears"]},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 2, "life": 20},
+        {"graveyard_has": ["Lightning Bolt", "Grizzly Bears"]}
+      ],
+      "counters": {"Chandra Ablaze": {"Loyalty": 6}}
+    }
+  },
+  {
+    "name": "ruling: -2 works with an empty hand: the empty-handed player draws three",
+    "players": [
+      {
+        "battlefield": ["Chandra Ablaze"],
+        "library": ["Mountain", "Forest", "Plains", "Swamp"]
+      },
+      {
+        "library": ["Mountain", "Forest", "Plains", "Swamp"]
+      }
+    ],
+    "steps": [
+      {"activate": "Chandra Ablaze", "ability": 1},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 3},
+        {"hand_count": 3}
+      ],
+      "counters": {"Chandra Ablaze": {"Loyalty": 3}}
+    }
+  }
+]

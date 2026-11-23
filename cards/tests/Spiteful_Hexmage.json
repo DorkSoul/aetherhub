@@ -1,0 +1,119 @@
+[
+  {
+    "name": "ETB creates a Cursed Role that makes the chosen creature 1/1",
+    "players": [
+      { "hand": ["Spiteful Hexmage"], "battlefield": ["Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spiteful Hexmage" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spiteful Hexmage", "Cursed Role", "Grizzly Bears"] },
+        {}
+      ],
+      "attached": { "Cursed Role": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [1, 1] }
+    }
+  },
+  {
+    "name": "with no other creature it can target itself",
+    "players": [
+      { "hand": ["Spiteful Hexmage"], "battlefield": ["Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spiteful Hexmage" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spiteful Hexmage", "Cursed Role"] },
+        {}
+      ],
+      "attached": { "Cursed Role": "Spiteful Hexmage" },
+      "pt": { "Spiteful Hexmage": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: no Role is created on a creature with protection from enchantments",
+    "players": [
+      { "hand": ["Spiteful Hexmage"], "battlefield": ["Swamp", "Azorius First-Wing"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spiteful Hexmage" },
+      { "resolve": true, "targets": ["Azorius First-Wing"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spiteful Hexmage", "Azorius First-Wing"], "battlefield_lacks": ["Cursed Role"] },
+        {}
+      ],
+      "pt": { "Azorius First-Wing": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: if the target is gone when the trigger resolves, no Role is created",
+    "players": [
+      { "hand": ["Spiteful Hexmage"], "battlefield": ["Swamp", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Spiteful Hexmage" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true, "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Spiteful Hexmage"], "battlefield_lacks": ["Cursed Role"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second Role from the same player puts the older Role into the graveyard",
+    "players": [
+      { "hand": ["Faunsbane Troll", "Spiteful Hexmage"], "battlefield": ["Swamp", "Swamp", "Forest", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faunsbane Troll" },
+      { "resolve": true },
+      { "cast": "Spiteful Hexmage" },
+      { "resolve": true, "targets": ["Faunsbane Troll"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Faunsbane Troll", "Spiteful Hexmage", "Cursed Role"] },
+        {}
+      ],
+      "attached": { "Cursed Role": "Faunsbane Troll" },
+      "pt": { "Faunsbane Troll": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: Roles are colorless Aura and Role enchantment tokens",
+    "players": [
+      { "hand": ["Spiteful Hexmage"], "battlefield": ["Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spiteful Hexmage" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "subtypes": { "Cursed Role": ["Aura", "Role"] },
+      "colors": { "Cursed Role": [] }
+    }
+  }
+]

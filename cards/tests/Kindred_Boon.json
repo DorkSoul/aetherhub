@@ -1,0 +1,79 @@
+[
+  {
+    "name": "enters choosing Goblin; activation puts a divinity counter on a Goblin you control",
+    "players": [
+      {
+        "hand": [ "Kindred Boon" ],
+        "battlefield": [ "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Goblin King", "Grizzly Bears" ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kindred Boon" },
+      { "resolve": true, "answers": [ "Goblin" ] },
+      { "activate": "Kindred Boon", "ability": 0, "targets": [ "Goblin King" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {
+        "Goblin King": { "divinity": 1 }
+      }
+    }
+  },
+  {
+    "name": "creature of a non-chosen type cannot be targeted by the put-counter ability",
+    "players": [
+      {
+        "hand": [ "Kindred Boon" ],
+        "battlefield": [ "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears" ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kindred Boon" },
+      { "resolve": true, "answers": [ "Goblin" ] },
+      { "activate": "Kindred Boon", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": { "divinity": 0 }
+      }
+    }
+  },
+  {
+    "name": "a creature with a divinity counter is indestructible: Lightning Bolt does not destroy Goblin King",
+    "players": [
+      {
+        "hand": [ "Kindred Boon", "Lightning Bolt" ],
+        "battlefield": [ "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Mountain", "Goblin King" ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kindred Boon" },
+      { "resolve": true, "answers": [ "Goblin" ] },
+      { "activate": "Kindred Boon", "ability": 0, "targets": [ "Goblin King" ] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": [ "Goblin King" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": [ "Kindred Boon", "Goblin King" ], "graveyard": [ "Lightning Bolt" ] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature not of the chosen type with a divinity counter is indestructible",
+    "players": [ { "hand": ["Kindred Boon", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain", { "name": "Grizzly Bears", "counters": { "divinity": 1 } }] }, {} ],
+    "steps": [ { "cast": "Kindred Boon" }, { "resolve": true, "answers": ["Goblin"] }, { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Kindred Boon", "Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ] }
+  },
+  {
+    "name": "ruling: lethal damage on an indestructible creature stays marked, so it dies when Kindred Boon leaves",
+    "players": [ { "hand": ["Lightning Bolt", "Nature's Claim"], "battlefield": ["Kindred Boon", "Mountain", "Forest", { "name": "Grizzly Bears", "counters": { "divinity": 1 } }] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "answers": ["Goblin"] }, { "resolve": true }, { "cast": "Nature's Claim", "targets": ["Kindred Boon"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Lightning Bolt", "Nature's Claim", "Kindred Boon", "Grizzly Bears"] }, {} ] }
+  }
+]

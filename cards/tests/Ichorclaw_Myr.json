@@ -1,0 +1,155 @@
+[
+ {
+  "name": "blocked: +2/+2 once even when blocked by two creatures",
+  "players": [
+   {
+    "battlefield": [
+     "Ichorclaw Myr"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ichorclaw Myr",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Ichorclaw Myr"
+     },
+     {
+      "blocker": "Savannah Lions",
+      "attacker": "Ichorclaw Myr"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Ichorclaw Myr": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "unblocked: no +2/+2 and deals poison",
+  "players": [
+   {
+    "battlefield": [
+     "Ichorclaw Myr"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ichorclaw Myr",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "poison": 1
+    }
+   ],
+   "pt": {
+    "Ichorclaw Myr": [
+     1,
+     1
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: -1/-1 counters from infect stay on the creature after the turn ends (Hill Giant is left as a 2/2 with one -1/-1 counter)",
+  "players": [
+   { "battlefield": ["Ichorclaw Myr"] },
+   { "battlefield": [{ "name": "Hill Giant", "counters": { "p1p1": 2 } }] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Ichorclaw Myr", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Ichorclaw Myr" } ] },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "counters": { "Hill Giant": { "p1p1": 0, "m1m1": 1 } },
+   "pt": { "Hill Giant": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: a player with ten or more poison counters loses (state-based, immediate)",
+  "players": [ { "battlefield": ["Ichorclaw Myr"] }, { "poison": 9 } ],
+  "steps": [
+   { "attack": [ { "card": "Ichorclaw Myr", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "winner": 0 }
+ },
+ {
+  "name": "ruling: infect damage that is prevented gives no poison counters (Fog)",
+  "players": [ { "battlefield": ["Ichorclaw Myr"] }, { "hand": ["Fog"], "battlefield": ["Forest"] } ],
+  "steps": [
+   { "attack": [ { "card": "Ichorclaw Myr", "at": "p1" } ] },
+   { "pass": true },
+   { "cast": "Fog", "player": 1 },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20, "poison": 0 } ],
+   "pt": { "Ichorclaw Myr": [1, 1] }
+  }
+ },
+ {
+  "name": "ruling: infect damage to a planeswalker removes loyalty counters as normal damage and gives no poison",
+  "players": [ { "battlefield": ["Ichorclaw Myr"] }, { "battlefield": ["Dovin, Grand Arbiter"] } ],
+  "steps": [
+   { "attack": [ { "card": "Ichorclaw Myr", "at": "Dovin, Grand Arbiter" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "counters": { "Dovin, Grand Arbiter": { "Loyalty": 2 } },
+   "players": [ {}, { "life": 20, "poison": 0 } ]
+  }
+ },
+ {
+  "name": "ruling: infect applies to non-combat damage (Infectious Bite: Ichorclaw Myr's damage is a -1/-1 counter, not damage)",
+  "players": [ { "hand": ["Infectious Bite"], "battlefield": ["Forest", "Forest", "Ichorclaw Myr"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "cast": "Infectious Bite", "targets": ["Ichorclaw Myr", "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "poison": 1 } ],
+   "counters": { "Grizzly Bears": { "m1m1": 1 } },
+   "pt": { "Grizzly Bears": [1, 1] }
+  }
+ }
+]

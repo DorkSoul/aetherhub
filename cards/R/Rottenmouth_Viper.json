@@ -1,0 +1,30 @@
+{
+  "name": "Rottenmouth Viper",
+  "mana_cost": "{5}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Elemental", "Snake"],
+  "power": 6,
+  "toughness": 6,
+  "abilities": [
+    { "type": "Kicker", "cost": [ { "type": "Sacrifice", "filter": { "not_types": ["Land"], "controller": "You" }, "n": 1 } ], "multi": true },
+    { "type": "Static", "effect": { "type": "CostChange", "filter": { "this": true }, "whose": "You", "generic": -1, "per": { "type": "KickCount" } } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Either", "a": { "type": "EntersBattlefield", "filter": { "this": true } }, "b": { "type": "Attacks", "filter": { "this": true } } },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Blight", "n": { "type": "Fixed", "n": 1 } },
+        { "type": "Repeat", "n": { "type": "CountersOn", "of": { "type": "This" }, "kind": "Blight" }, "effects": [
+          { "type": "ForEachPlayer", "players": { "type": "EachOpponent" }, "effects": [
+            { "type": "Unless", "payer": { "type": "EachObject" },
+              "cost": [ { "type": "Or", "options": [
+                [ { "type": "Sacrifice", "filter": { "not_types": ["Land"], "controller": "You" }, "n": 1 } ],
+                [ { "type": "Discard", "filter": {}, "n": 1 } ]
+              ] } ],
+              "effects": [ { "type": "LoseLife", "who": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 4 } } ] }
+          ] }
+        ] }
+      ]
+    }
+  ],
+  "oracle_text": "As an additional cost to cast this spell, you may sacrifice any number of nonland permanents. This spell costs {1} less to cast for each permanent sacrificed this way.\nWhenever this creature enters or attacks, put a blight counter on it. Then for each blight counter on it, each opponent loses 4 life unless that player sacrifices a nonland permanent of their choice or discards a card."
+}

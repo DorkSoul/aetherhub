@@ -1,0 +1,22 @@
+[
+  { "name": "not blighting: exile the top two cards",
+    "players": [ { "hand": ["Burning Curiosity"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Lightning Bolt", "Island"] }, {} ],
+    "steps": [ { "cast": "Burning Curiosity" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Burning Curiosity"], "exile": ["Forest", "Lightning Bolt"] }, {} ] } },
+  { "name": "blighting 1 on my creature: exile the top three cards",
+    "players": [ { "hand": ["Burning Curiosity"], "battlefield": ["Mountain", "Mountain", "Mountain", "Hill Giant"], "library": ["Forest", "Lightning Bolt", "Island", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Burning Curiosity", "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Burning Curiosity"], "exile": ["Forest", "Lightning Bolt", "Island"] }, {} ], "pt": { "Hill Giant": [2, 2] } } },
+  { "name": "ruling: an exiled land is playable only with an empty stack (illegal while Lightning Bolt is on the stack, legal after)",
+    "players": [ { "hand": ["Burning Curiosity", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Burning Curiosity" }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "play_land": "Forest", "illegal": true }, { "resolve": true }, { "play_land": "Forest" } ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"], "exile": ["Island"], "graveyard": ["Burning Curiosity", "Lightning Bolt"] }, { "life": 17 } ] } },
+  { "name": "ruling: blighting a 1/1 kills it (the counters need not leave the creature alive)",
+    "players": [ { "hand": ["Burning Curiosity"], "battlefield": ["Mountain", "Mountain", "Mountain", "Llanowar Elves"], "library": ["Forest", "Island", "Swamp", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Burning Curiosity", "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Llanowar Elves", "Burning Curiosity"], "exile": ["Forest", "Island", "Swamp"] }, {} ] } },
+  { "name": "ruling: +1/+1 and -1/-1 counters annihilate after a blight: only the +1/+1 counters remain",
+    "players": [ { "hand": ["Burning Curiosity"], "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Grizzly Bears", "counters": { "p1p1": 3 } }], "library": ["Forest", "Island", "Swamp", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Burning Curiosity", "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Forest", "Island", "Swamp"] }, {} ], "counters": { "Grizzly Bears": { "p1p1": 2, "m1m1": 0 } }, "pt": { "Grizzly Bears": [4, 4] } } }
+]

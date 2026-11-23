@@ -1,0 +1,87 @@
+[
+  {
+    "name": "power under 4 at the end step: the Aura stays",
+    "players": [
+      { "hand": ["Arachnus Web"], "battlefield": ["Forest", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Arachnus Web", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Arachnus Web", "Grizzly Bears"] }, {}] }
+  },
+  {
+    "name": "enchanted creature with power 4 or more: the Aura is destroyed at the end step",
+    "players": [
+      { "hand": ["Arachnus Web"], "battlefield": ["Forest", "Forest", "Forest", { "name": "Serra Angel", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Arachnus Web", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Serra Angel"], "battlefield_lacks": ["Arachnus Web"], "graveyard_has": ["Arachnus Web"] }, {}] }
+  },
+  {
+    "name": "enchanted creature can't attack: Grizzly Bears' attack is dropped, Hill Giant's 3 damage still gets through",
+    "players": [
+      { "hand": ["Arachnus Web"], "battlefield": ["Forest", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Arachnus Web", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 17 }] }
+  },
+  {
+    "name": "enchanted creature can't block: its block is dropped, so Hill Giant's 3 damage gets through",
+    "players": [
+      { "hand": ["Arachnus Web"], "battlefield": ["Forest", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }, { "name": "Llanowar Elves", "sick": false }] },
+      { "battlefield": [{ "name": "Hill Giant", "sick": false }] }
+    ],
+    "steps": [
+      { "cast": "Arachnus Web", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "attack": [{ "card": "Hill Giant", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }], "player": 0 },
+      { "advance_to": "Main2", "player": 1 }
+    ],
+    "expect": { "players": [{ "life": 17 }, {}] }
+  },
+  {
+    "name": "enchanted creature's mana abilities can't be activated: Llanowar Elves can't help pay for Grizzly Bears",
+    "players": [
+      { "hand": ["Arachnus Web", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Arachnus Web", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [{ "hand": ["Grizzly Bears"], "battlefield_has": ["Llanowar Elves", "Arachnus Web"] }, {}] }
+  },
+ {
+  "name": "ruling: an enchanted creature's activated ability (Uyo's copy ability) can't be activated",
+  "players": [
+   { "hand": ["Arachnus Web", "Lightning Bolt"], "battlefield": ["Uyo, Silent Prophet", "Forest", "Forest", "Forest", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Arachnus Web", "targets": ["Uyo, Silent Prophet"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "activate": "Uyo, Silent Prophet", "ability": 0, "targets": [ { "stack": "Lightning Bolt" } ], "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Uyo, Silent Prophet", "Arachnus Web"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ }
+]

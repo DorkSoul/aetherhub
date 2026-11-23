@@ -1,0 +1,32 @@
+[
+ { "name": "casting an infect creature gives target player a poison counter; other infect creatures get +1/+1",
+   "players": [ { "hand": ["Blight Mamba"], "battlefield": ["Forest", "Forest", "Hand of the Praetors"] }, {} ],
+   "steps": [ { "cast": "Blight Mamba", "targets": ["p1"] }, { "resolve": true }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Blight Mamba", "Hand of the Praetors"] }, { "poison": 1 } ], "pt": { "Blight Mamba": [2, 2], "Hand of the Praetors": [3, 2] } } },
+ { "name": "casting a creature without infect gives no poison counter",
+   "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Hand of the Praetors"] }, {} ],
+   "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+   "expect": { "players": [ { "poison": 0 }, { "poison": 0 } ] } },
+ { "name": "casting the infect creature itself does not trigger its own last ability",
+   "players": [ { "hand": ["Hand of the Praetors"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Hand of the Praetors" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Hand of the Praetors"], "poison": 0 }, { "poison": 0 } ] } },
+ { "name": "a player with ten poison counters loses the game",
+   "players": [ { "hand": ["Blight Mamba"], "battlefield": ["Forest", "Forest", "Hand of the Praetors"] }, { "poison": 9 } ],
+   "steps": [ { "cast": "Blight Mamba", "targets": ["p1"] }, { "resolve": true }, { "resolve": true } ],
+   "expect": { "winner": 0, "players": [ {}, { "poison": 10 } ] } },
+ { "name": "ruling: the Hand's trigger goes on the stack above the creature spell and resolves first",
+   "players": [ { "hand": ["Blight Mamba"], "battlefield": ["Forest", "Forest", "Hand of the Praetors"] }, {} ],
+   "steps": [ { "cast": "Blight Mamba", "targets": ["p1"] }, { "pass": true }, { "pass": true, "player": 1 } ],
+   "expect": { "stack_empty": false, "players": [ { "battlefield_lacks": ["Blight Mamba"] }, { "poison": 1 } ] } },
+ { "name": "ruling: -1/-1 counters from infect damage stay on the creature into the next turn",
+   "players": [ { "battlefield": ["Hand of the Praetors"] }, { "battlefield": ["Serra Angel"] } ],
+   "steps": [
+     { "attack": [ { "card": "Hand of the Praetors", "at": "p1" } ] },
+     { "block": [ { "blocker": "Serra Angel", "attacker": "Hand of the Praetors" } ] },
+     { "advance_to": "Main2" },
+     { "advance_to": "End" },
+     { "advance_to": "Main1" }
+   ],
+   "expect": { "counters": { "Serra Angel": { "-1/-1": 3 } }, "pt": { "Serra Angel": [1, 1] } } }
+]

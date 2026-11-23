@@ -1,0 +1,38 @@
+[
+  {
+    "name": "returns a creature card from the graveyard to hand when cast from hand",
+    "players": [ { "hand": ["Morgue Theft"], "graveyard": ["Grizzly Bears"], "battlefield": ["Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Morgue Theft", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "graveyard": ["Morgue Theft"] }, {} ] }
+  },
+  {
+    "name": "flashback {4}{B} from the graveyard, then exiled",
+    "players": [ { "graveyard": ["Morgue Theft", "Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Morgue Theft", "alt": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "exile": ["Morgue Theft"], "graveyard": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a card that just went to the graveyard can be flashed back the same turn",
+    "players": [ { "hand": ["Morgue Theft"], "graveyard": ["Grizzly Bears", "Hill Giant"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Morgue Theft", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "cast": "Morgue Theft", "alt": 0, "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears", "Hill Giant"], "exile": ["Morgue Theft"], "graveyard": [] }, {} ] }
+  },
+  {
+    "name": "ruling: flashback is paid at its own cost {4}{B}, not the mana value {1}{B}: four lands are not enough",
+    "players": [ { "graveyard": ["Morgue Theft", "Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Morgue Theft", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Morgue Theft", "Grizzly Bears"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a sorcery flashback cannot be cast during combat",
+    "players": [ { "graveyard": ["Morgue Theft", "Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "cast": "Morgue Theft", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Morgue Theft", "Grizzly Bears"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a flashback spell that is countered is still exiled",
+    "players": [ { "graveyard": ["Morgue Theft", "Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+    "steps": [ { "cast": "Morgue Theft", "alt": 0, "targets": ["Grizzly Bears"] }, { "pass": true }, { "cast": "Counterspell", "player": 1, "targets": [{"stack": "Morgue Theft"}] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Morgue Theft"], "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Counterspell"] } ] }
+  }
+]

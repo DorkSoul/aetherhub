@@ -1,0 +1,218 @@
+[
+  {
+    "name": "enters: target creature can't be blocked and is exiled and returned after dealing combat damage",
+    "players": [
+      {
+        "hand": [
+          "Long River Lurker"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Long River Lurker"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Long River Lurker",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "declining to exile: the creature stays on the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Long River Lurker"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Long River Lurker"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Long River Lurker",
+            "Grizzly Bears"
+          ],
+          "exile": []
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ward {1}: the opponent has no spare mana, Bolt is countered and Lurker survives",
+    "players": [ { "battlefield": ["Long River Lurker"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Long River Lurker"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Long River Lurker"] }, { "graveyard_has": ["Lightning Bolt"], "life": 20 } ] }
+  },
+  {
+    "name": "ward {1}: the opponent pays 1 with a spare Mountain, Bolt resolves and kills Lurker",
+    "players": [ { "battlefield": ["Long River Lurker"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Long River Lurker"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard": ["Long River Lurker"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "other Frogs you control have ward {1}: Bolt on Burrog Banemaker is countered without spare mana",
+    "players": [ { "battlefield": ["Long River Lurker", "Burrog Banemaker"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Burrog Banemaker"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Long River Lurker", "Burrog Banemaker"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "a non-Frog creature has no ward: Bolt kills Grizzly Bears with one Mountain",
+    "players": [ { "battlefield": ["Long River Lurker", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Long River Lurker"], "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: a token exiled by the Lurker's trigger ceases to exist and does not return",
+    "players": [
+      { "hand": ["Long River Lurker"], "battlefield": ["Island", "Island", "Island", { "name": "Sliver 1-1", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Long River Lurker" },
+      { "resolve": true, "targets": ["Sliver 1-1"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Sliver 1-1", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Long River Lurker"], "battlefield_lacks": ["Sliver 1-1"] },
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled creature returns as a new object, so its +1/+1 counter is gone",
+    "players": [
+      { "hand": ["Long River Lurker"], "battlefield": ["Island", "Island", "Island", { "name": "Grizzly Bears", "sick": false, "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Long River Lurker" },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Long River Lurker", "Grizzly Bears"] },
+        { "life": 17 }
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: Frog ward already triggered still applies after the Lurker leaves (Bolt countered, Burrog survives)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Long River Lurker", "Burrog Banemaker", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Burrog Banemaker"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Long River Lurker"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Burrog Banemaker"], "battlefield_lacks": ["Long River Lurker"], "graveyard_has": ["Long River Lurker", "Lightning Bolt"] },
+        { "graveyard_has": ["Lightning Bolt"], "life": 20 }
+      ]
+    }
+  }
+]

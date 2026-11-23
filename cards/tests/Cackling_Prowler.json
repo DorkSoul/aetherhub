@@ -1,0 +1,51 @@
+[
+  {
+    "name": "morbid: a creature died this turn, so it gets a counter at the end step",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Cackling Prowler"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Cackling Prowler": { "p1p1": 1 } },
+      "players": [ {}, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "morbid: no creature died this turn, so no counter",
+    "players": [
+      { "battlefield": ["Cackling Prowler"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "pt": { "Cackling Prowler": [4, 3] },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ward {2}: opponent pays 2 with spare mana, Bolt kills the Prowler",
+    "players": [ { "battlefield": ["Cackling Prowler"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Cackling Prowler"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard": ["Cackling Prowler"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ward {2}: opponent has only two Mountains and cannot pay, Bolt is countered",
+    "players": [ { "battlefield": ["Cackling Prowler"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Cackling Prowler"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Cackling Prowler"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: a creature dying after the end step has begun does not trigger morbid",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Cackling Prowler"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "advance_to": "End" }, { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Cackling Prowler": [4, 3] }, "players": [ {}, { "graveyard": ["Grizzly Bears"] } ] }
+  }
+]

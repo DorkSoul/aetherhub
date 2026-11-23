@@ -1,0 +1,234 @@
+[
+ {
+  "name": "chapter II: casting a spell puts a +1/+1 counter on a creature",
+  "start": "Untap",
+  "players": [
+   {
+    "hand": [
+     "Giant Growth"
+    ],
+    "battlefield": [
+     {
+      "name": "Showdown of the Skalds",
+      "counters": {
+       "lore": 1
+      }
+     },
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "chapter I: exiles the top four cards, and one of them can be played from exile",
+  "players": [
+   {
+    "hand": [
+     "Showdown of the Skalds"
+    ],
+    "library": ["Forest", "Swamp", "Mountain", "Plains", "Island"],
+    "battlefield": [
+     "Mountain",
+     "Plains",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Showdown of the Skalds"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "play_land": "Forest"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": ["Mountain", "Plains", "Swamp"],
+     "battlefield_has": ["Forest"],
+     "library_top": ["Island"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "chapter III: casting a spell this turn still puts a +1/+1 counter on a creature",
+  "start": "Untap",
+  "players": [
+   {
+    "hand": [
+     "Giant Growth"
+    ],
+    "battlefield": [
+     {
+      "name": "Showdown of the Skalds",
+      "counters": {
+       "lore": 2
+      }
+     },
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: a third lore counter starts only chapter III: chapter I does not exile again",
+  "start": "Untap",
+  "players": [
+   {
+    "battlefield": [{"name": "Showdown of the Skalds", "counters": {"lore": 2}}],
+    "library": ["Forest", "Swamp", "Mountain", "Plains", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Main1"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [ { "exile": [], "graveyard": ["Showdown of the Skalds"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: after its last chapter ability leaves the stack the Saga is sacrificed",
+  "start": "Untap",
+  "players": [
+   {
+    "battlefield": [{"name": "Showdown of the Skalds", "counters": {"lore": 2}}]
+   },
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Main1"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Showdown of the Skalds"], "graveyard": ["Showdown of the Skalds"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery exiled by chapter I cannot be cast during combat",
+  "players": [
+   {
+    "hand": ["Showdown of the Skalds"],
+    "battlefield": ["Mountain", "Plains", "Island", "Island", "Swamp", "Swamp", "Swamp"],
+    "library": ["Tip the Scales", "Forest", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Showdown of the Skalds"},
+   {"resolve": true},
+   {"advance_to": "BeginCombat"},
+   {"cast": "Tip the Scales", "illegal": true}
+  ],
+  "expect": {
+   "players": [ { "exile": ["Forest", "Forest", "Forest", "Tip the Scales"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the exiled sorcery can be cast in your main phase with an empty stack",
+  "players": [
+   {
+    "hand": ["Showdown of the Skalds"],
+    "battlefield": ["Mountain", "Plains", "Island", "Island", "Swamp", "Swamp", "Swamp"],
+    "library": ["Tip the Scales", "Forest", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Showdown of the Skalds"},
+   {"resolve": true},
+   {"cast": "Tip the Scales"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Tip the Scales"], "exile": ["Forest", "Forest", "Forest"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: only one land can be played from among the exiled cards each turn",
+  "players": [
+   {
+    "hand": ["Showdown of the Skalds"],
+    "battlefield": ["Mountain", "Plains", "Island", "Island"],
+    "library": ["Forest", "Swamp", "Mountain", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Showdown of the Skalds"},
+   {"resolve": true},
+   {"play_land": "Forest"},
+   {"play_land": "Swamp", "illegal": true}
+  ],
+  "expect": {
+   "players": [ { "exile": ["Mountain", "Plains", "Swamp"], "battlefield_has": ["Forest"], "battlefield_lacks": ["Swamp"] }, {} ]
+  }
+ }
+]

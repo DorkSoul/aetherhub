@@ -1,0 +1,138 @@
+[
+ {
+  "name": "noncombat damage from my spell becomes -1/-1 counters on an opposing creature",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Soul-Scar Mage"]
+   },
+   {
+    "battlefield": ["Serra Angel"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": {
+    "Serra Angel": { "MinusOneMinusOne": 3 }
+   },
+   "pt": {
+    "Serra Angel": [1, 1]
+   },
+   "players": [
+    {},
+    {
+     "battlefield": ["Serra Angel"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "noncombat damage to my own creature from an opposing spell is not replaced",
+  "players": [
+   {
+    "battlefield": ["Soul-Scar Mage", "Grizzly Bears"]
+   },
+   {
+    "hand": ["Shock"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": ["Grizzly Bears"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "combat damage from my creature to an opposing creature is not replaced",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Soul-Scar Mage", "sick": false },
+     { "name": "Grizzly Bears", "sick": false }
+    ]
+   },
+   {
+    "battlefield": ["Serra Angel"]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     { "card": "Grizzly Bears", "at": "p1" }
+    ]
+   },
+   {
+    "block": [
+     { "blocker": "Serra Angel", "attacker": "Grizzly Bears" }
+    ]
+   },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "counters": {
+    "Serra Angel": { "MinusOneMinusOne": 0 }
+   },
+   "pt": {
+    "Serra Angel": [4, 4]
+   },
+   "players": [
+    {
+     "graveyard": ["Grizzly Bears"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a fight deals its damage simultaneously; my creature's damage to their creature becomes -1/-1 counters",
+  "players": [
+   { "hand": ["Prey Upon"], "battlefield": ["Forest", "Soul-Scar Mage", "Grizzly Bears"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Prey Upon", "targets": ["Grizzly Bears", "Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Serra Angel": { "MinusOneMinusOne": 2 } },
+   "pt": { "Serra Angel": [2, 2] },
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"] },
+    { "battlefield": ["Serra Angel"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an opponent's fight still replaces my creature's damage to their creature with -1/-1 counters",
+  "players": [
+   { "battlefield": ["Soul-Scar Mage", "Grizzly Bears"] },
+   { "hand": ["Prey Upon"], "battlefield": ["Forest", "Serra Angel"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Prey Upon", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Serra Angel": { "MinusOneMinusOne": 2 } },
+   "pt": { "Serra Angel": [2, 2] },
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Serra Angel"] }
+   ]
+  }
+ }
+]

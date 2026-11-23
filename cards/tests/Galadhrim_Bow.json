@@ -1,0 +1,101 @@
+[
+ {
+  "name": "attaches to a creature you control and untaps it",
+  "players": [
+   {
+    "hand": [
+     "Galadhrim Bow"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Galadhrim Bow"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     4
+    ]
+   },
+   "attached": {
+    "Galadhrim Bow": "Grizzly Bears"
+   },
+   "tapped": {
+    "Grizzly Bears": false
+   }
+  }
+ },
+ {
+  "name": "with no creature you control it just enters unattached",
+  "players": [
+   {
+    "hand": [
+     "Galadhrim Bow"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Galadhrim Bow"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Galadhrim Bow"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equip {2} attaches it to a chosen creature you control",
+  "players": [{"battlefield": ["Forest", "Forest", "Galadhrim Bow", "Grizzly Bears", "Hill Giant"]}, {}],
+  "steps": [{"activate": "Galadhrim Bow", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true}],
+  "expect": {"attached": {"Galadhrim Bow": "Grizzly Bears"}, "pt": {"Grizzly Bears": [3, 4], "Hill Giant": [3, 3]}}
+ },
+ {
+  "name": "equip needs {2}: with one land it cannot be activated",
+  "players": [{"battlefield": ["Forest", "Galadhrim Bow", "Grizzly Bears"]}, {}],
+  "steps": [{"activate": "Galadhrim Bow", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true}],
+  "expect": {"pt": {"Grizzly Bears": [2, 2]}}
+ },
+ {"name": "ruling: the enters trigger attaches it during combat, at no mana cost (equip timing does not apply)",
+  "players": [{"hand": ["Galadhrim Bow"], "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears"]}, {}],
+  "steps": [{"advance_to": "BeginCombat"}, {"cast": "Galadhrim Bow"}, {"resolve": true}, {"resolve": true}],
+  "expect": {"pt": {"Grizzly Bears": [3, 4]}, "attached": {"Galadhrim Bow": "Grizzly Bears"}}},
+ {"name": "ruling: if the target creature dies in response, the Bow stays on the battlefield unattached",
+  "players": [{"hand": ["Galadhrim Bow"], "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears"]}, {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}],
+  "steps": [{"cast": "Galadhrim Bow"}, {"pass": true}, {"pass": true, "player": 1}, {"pass": true}, {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]}, {"resolve": true}, {"resolve": true}],
+  "expect": {"players": [{"battlefield_has": ["Galadhrim Bow"], "graveyard": ["Grizzly Bears"]}, {"graveyard": ["Lightning Bolt"]}]}}
+]

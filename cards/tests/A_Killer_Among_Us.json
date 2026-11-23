@@ -1,0 +1,91 @@
+[
+ {"name": "ETB creates a Human, a Merfolk and a Goblin token and records the chosen type",
+  "players": [
+   {"hand": ["A Killer Among Us"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "A Killer Among Us"},
+   {"resolve": true, "answers": ["Merfolk"]}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["A Killer Among Us", "Human", "Merfolk 1-1", "Goblin"]}, {"battlefield_has": ["Grizzly Bears"]}]
+  }
+ },
+ {"name": "the sacrifice ability cannot be activated without an attacking creature token",
+  "players": [
+   {"hand": ["A Killer Among Us"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "A Killer Among Us"},
+   {"resolve": true, "answers": ["Merfolk"]},
+   {"activate": "A Killer Among Us", "ability": 0, "illegal": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["A Killer Among Us"]}, {"battlefield_has": ["Grizzly Bears"]}]
+  }
+ },
+ {"name": "attacking token of the chosen type gets three +1/+1 counters and deathtouch",
+  "players": [
+   {"hand": ["A Killer Among Us"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "A Killer Among Us"},
+   {"resolve": true, "answers": ["Human"]},
+   {"advance_to": "Upkeep", "auto": true},
+   {"advance_to": "Upkeep", "auto": true},
+   {"advance_to": "BeginCombat", "auto": true},
+   {"attack": [{"card": "Human", "at": "p1"}]},
+   {"activate": "A Killer Among Us", "ability": 0, "targets": ["Human"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"graveyard": ["A Killer Among Us"]}, {}],
+   "pt": {"Human": [4, 4]}
+  }
+ },
+ {"name": "attacking token that is not the chosen type gets nothing",
+  "players": [
+   {"hand": ["A Killer Among Us"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "A Killer Among Us"},
+   {"resolve": true, "answers": ["Merfolk"]},
+   {"advance_to": "Upkeep", "auto": true},
+   {"advance_to": "Upkeep", "auto": true},
+   {"advance_to": "BeginCombat", "auto": true},
+   {"attack": [{"card": "Goblin", "at": "p1"}]},
+   {"activate": "A Killer Among Us", "ability": 0, "targets": ["Goblin"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"graveyard": ["A Killer Among Us"]}, {}],
+   "pt": {"Goblin": [1, 1]}
+  }
+ },
+ {"name": "ruling: the last ability can target any attacking creature token, even one another card made",
+  "players": [
+   {"hand": ["A Killer Among Us", "Saproling Migration"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "A Killer Among Us"},
+   {"resolve": true, "answers": ["Human"]},
+   {"cast": "Saproling Migration"},
+   {"resolve": true},
+   {"advance_to": "Upkeep", "auto": true},
+   {"advance_to": "Upkeep", "auto": true},
+   {"advance_to": "BeginCombat", "auto": true},
+   {"attack": [{"card": "Saproling", "at": "p1"}]},
+   {"activate": "A Killer Among Us", "ability": 0, "targets": ["Saproling"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"graveyard_has": ["A Killer Among Us"]}, {}],
+   "pt": {"Saproling": [1, 1]}
+  }
+ }
+]

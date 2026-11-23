@@ -1,0 +1,63 @@
+[
+  {
+    "name": "chapter I creates two tapped Powerstone tokens",
+    "players": [
+      { "hand": ["The Brothers' War"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Brothers' War" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Brothers' War", "Powerstone", "Powerstone"] }, {} ],
+      "tapped": { "Powerstone": true }
+    }
+  },
+  {
+    "name": "chapter II: target creature of one chosen player must attack the other chosen player",
+    "start": "Upkeep",
+    "players": [
+      { "battlefield": [ { "name": "The Brothers' War", "counters": { "lore": 1 } }, { "name": "Hill Giant", "sick": false } ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1", "targets": ["p0", "p1"] },
+      { "advance_to": "BeginCombat" },
+      { "attack": [], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "chapter III: X damage to two different targets, X = artifacts you control",
+    "start": "Upkeep",
+    "players": [
+      { "battlefield": [ { "name": "The Brothers' War", "counters": { "lore": 2 } }, "Sol Ring", "Sol Ring" ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1", "targets": ["p1", "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sol Ring", "Sol Ring"] }, { "life": 18, "battlefield_lacks": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: Powerstone mana cannot be spent to cast a nonartifact spell",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Powerstone", "Powerstone"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Lightning Bolt"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: Powerstone mana can be spent to cast an artifact spell",
+    "players": [ { "hand": ["Sol Ring"], "battlefield": ["Powerstone"] }, {} ],
+    "steps": [ { "cast": "Sol Ring" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Sol Ring"], "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "ruling: Powerstone mana can pay the activation cost of a nonartifact permanent",
+    "players": [ { "battlefield": ["Witching Well", "Island", "Island", "Powerstone", "Powerstone"] }, {} ],
+    "steps": [ { "activate": "Witching Well", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Witching Well"] }, {} ] }
+  }
+]

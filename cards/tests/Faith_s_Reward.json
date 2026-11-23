@@ -1,0 +1,59 @@
+[
+  { "name": "returns a creature put into your graveyard from the battlefield this turn",
+    "players": [ { "hand": ["Lightning Bolt", "Faith's Reward"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Faith's Reward" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt", "Faith's Reward"] }, {} ] } },
+  { "name": "creature that died in an earlier turn stays in the graveyard",
+    "players": [ { "hand": ["Faith's Reward"], "battlefield": ["Plains", "Plains", "Plains", "Plains"], "graveyard": ["Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Faith's Reward" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Faith's Reward"] }, {} ] } },
+  { "name": "opponent's creature that died this turn does not return to the battlefield",
+    "players": [ { "hand": ["Lightning Bolt", "Faith's Reward"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Faith's Reward" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt", "Faith's Reward"] }, { "graveyard_has": ["Grizzly Bears"] } ] } },
+  { "name": "ruling: a permanent card discarded this turn (not put there from the battlefield) stays in the graveyard",
+    "players": [ { "hand": ["Grizzly Bears", "Lightning Bolt", "Faith's Reward"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }, { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Mind Rot", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [["Grizzly Bears", "Lightning Bolt"]] },
+      { "player": 1, "pass": true },
+      { "cast": "Faith's Reward" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Faith's Reward"] }, {} ] } },
+  { "name": "ruling: an Aura with nothing legal to enchant stays in the graveyard",
+    "players": [ { "hand": ["Pacifism", "Lightning Bolt", "Faith's Reward"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Faith's Reward" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Pacifism"], "graveyard_has": ["Pacifism", "Faith's Reward"] }, { "graveyard_has": ["Grizzly Bears"] } ] } },
+  { "name": "ruling: a permanent spell countered this turn never entered, so it does not return",
+    "players": [ { "hand": ["Grizzly Bears", "Faith's Reward"], "battlefield": ["Forest", "Plains", "Plains", "Plains", "Plains", "Plains"] }, { "hand": ["Dissolve"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Dissolve", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true, "auto": true },
+      { "cast": "Faith's Reward" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Faith's Reward"] }, { "graveyard_has": ["Dissolve"] } ] } }
+]

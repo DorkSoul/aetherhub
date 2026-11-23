@@ -1,0 +1,143 @@
+{
+  "name": "Rapid Fire",
+  "mana_cost": "{3}{W}",
+  "types": [
+    "Instant"
+  ],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": {
+        "type": "All",
+        "cs": [
+          {
+            "type": "AnyOf",
+            "cs": [
+              {
+                "type": "InStep",
+                "step": "Upkeep"
+              },
+              {
+                "type": "InStep",
+                "step": "Draw"
+              },
+              {
+                "type": "InStep",
+                "step": "Main1"
+              },
+              {
+                "type": "InStep",
+                "step": "BeginCombat"
+              },
+              {
+                "type": "InStep",
+                "step": "DeclareAttackers"
+              }
+            ]
+          },
+          {
+            "type": "FirstCombatThisTurn"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "types": [
+                "Creature"
+              ]
+            }
+          },
+          "label": "target creature"
+        }
+      ],
+      "effects": [
+        {
+          "type": "GrantKeyword",
+          "what": {
+            "type": "Target",
+            "idx": 0
+          },
+          "keyword": "FirstStrike",
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "SelIs",
+            "what": {
+              "type": "Target",
+              "idx": 0
+            },
+            "filter": {
+              "lacks_keyword_word": "rampage"
+            }
+          },
+          "then": [
+            {
+              "type": "AddTrigger",
+              "bind": {
+                "type": "Target",
+                "idx": 0
+              },
+              "trigger": {
+                "type": "BecomesBlocked",
+                "filter": {}
+              },
+              "effects": [
+                {
+                  "type": "Pump",
+                  "what": {
+                    "type": "TriggerSource"
+                  },
+                  "power": {
+                    "type": "Times",
+                    "a": {
+                      "type": "Minus",
+                      "a": {
+                        "type": "BlockersOfTrigger"
+                      },
+                      "b": {
+                        "type": "Fixed",
+                        "n": 1
+                      }
+                    },
+                    "b": {
+                      "type": "Fixed",
+                      "n": 2
+                    }
+                  },
+                  "toughness": {
+                    "type": "Times",
+                    "a": {
+                      "type": "Minus",
+                      "a": {
+                        "type": "BlockersOfTrigger"
+                      },
+                      "b": {
+                        "type": "Fixed",
+                        "n": 1
+                      }
+                    },
+                    "b": {
+                      "type": "Fixed",
+                      "n": 2
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              ],
+              "until": "EndOfTurn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only before blockers are declared.\nTarget creature gains first strike until end of turn. If it doesn't have rampage, that creature gains rampage 2 until end of turn. (Whenever the creature becomes blocked, it gets +2/+2 until end of turn for each creature blocking it beyond the first.)"
+}

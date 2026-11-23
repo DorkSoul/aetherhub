@@ -1,0 +1,117 @@
+[
+ {
+  "name": "other artifact creatures you control get +1/+0 and menace",
+  "players": [
+   {
+    "battlefield": [
+     "Skorpekh Lord",
+     "Skorpekh Destroyer"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Skorpekh Destroyer": [
+     5,
+     2
+    ],
+    "Skorpekh Lord": [
+     3,
+     2
+    ]
+   },
+   "keywords": {
+    "Skorpekh Destroyer": [
+     "Menace"
+    ]
+   }
+  }
+ },
+ {
+  "name": "unearth returns it with haste and it is exiled at the end step",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ],
+    "graveyard": [
+     "Skorpekh Lord"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Skorpekh Lord",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "exile": [
+      "Skorpekh Lord"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: unearth gives haste: it can attack the turn it returns",
+  "players": [ { "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Skorpekh Lord"] }, {} ],
+  "steps": [
+   { "activate": "Skorpekh Lord", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Skorpekh Lord", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Skorpekh Lord"] }, { "life": 17 } ] }
+ },
+ {
+  "name": "ruling: the unearth ability does nothing if the card is gone from the graveyard before it resolves",
+  "players": [ { "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Skorpekh Lord"] }, { "battlefield": ["Relic of Progenitus"] } ],
+  "steps": [
+   { "activate": "Skorpekh Lord", "ability": 0 },
+   { "pass": true },
+   { "activate": "Relic of Progenitus", "player": 1, "ability": 0, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Skorpekh Lord"], "graveyard": [], "exile": ["Skorpekh Lord"] }, { "battlefield": ["Relic of Progenitus"] } ] }
+ },
+ {
+  "name": "ruling: unearth is an ability, so Stifle can counter it and the card stays in the graveyard",
+  "players": [ { "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Skorpekh Lord"] }, { "battlefield": ["Island"], "hand": ["Stifle"] } ],
+  "steps": [
+   { "activate": "Skorpekh Lord", "ability": 0 },
+   { "pass": true },
+   { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Skorpekh Lord" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Skorpekh Lord"], "graveyard": ["Skorpekh Lord"] }, { "graveyard": ["Stifle"] } ] }
+ },
+ {
+  "name": "ruling: an unearthed creature that would leave the battlefield is exiled instead",
+  "players": [ { "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Skorpekh Lord"] }, { "battlefield": ["Swamp", "Swamp", "Swamp"], "hand": ["Murder"] } ],
+  "steps": [
+   { "activate": "Skorpekh Lord", "ability": 0 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Murder", "player": 1, "targets": ["Skorpekh Lord"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": [], "exile": ["Skorpekh Lord"] }, { "graveyard": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ] }
+ }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "name": "damage to an opponent exiles that many cards from their library instead",
+    "players": [
+      { "battlefield": ["Crumbling Sanctuary", "Mountain"], "hand": ["Lightning Bolt"] },
+      { "library": ["Grizzly Bears", "Serra Angel", "Shock"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "exile": ["Grizzly Bears", "Serra Angel", "Shock"], "library_count": 0 }
+      ]
+    }
+  },
+  {
+    "name": "damage to yourself exiles from your own library",
+    "players": [
+      { "battlefield": ["Crumbling Sanctuary", "Mountain"], "hand": ["Lightning Bolt"], "library": ["Grizzly Bears", "Serra Angel", "Shock"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "exile": ["Grizzly Bears", "Serra Angel", "Shock"], "library_count": 0 },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "damage to a creature is not replaced",
+    "players": [
+      { "battlefield": ["Crumbling Sanctuary", "Mountain"], "hand": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"], "library": ["Serra Angel", "Shock", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "graveyard": ["Grizzly Bears"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the replacement applies to combat damage to the opponent too (life stays 20, not 17)",
+    "players": [
+      { "battlefield": ["Crumbling Sanctuary", { "name": "Hill Giant", "sick": false }] },
+      { "library": ["Grizzly Bears", "Serra Angel", "Shock"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { }, { "life": 20 } ]
+    }
+  }
+]

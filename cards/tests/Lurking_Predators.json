@@ -1,0 +1,94 @@
+[
+  {
+    "name": "opponent's spell puts a creature top card onto the battlefield under my control",
+    "players": [
+      { "battlefield": ["Lurking Predators"], "library": ["Grizzly Bears", "Forest"] },
+      { "hand": ["Dark Ritual"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Dark Ritual", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "library_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-creature top card stays on top when I decline the bottom",
+    "players": [
+      { "battlefield": ["Lurking Predators"], "library": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Dark Ritual"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Dark Ritual", "player": 1 },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Forest", "Grizzly Bears"], "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-creature top card goes to the bottom when I accept, exposing the next card",
+    "players": [
+      { "battlefield": ["Lurking Predators"], "library": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Dark Ritual", "Dark Ritual"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Dark Ritual", "player": 1 },
+      { "resolve": true, "answers": [true] },
+      { "pass": true },
+      { "cast": "Dark Ritual", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Forest"], "library_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "negative: my own spell does not trigger it",
+    "players": [
+      { "battlefield": ["Lurking Predators", "Swamp"], "hand": ["Dark Ritual"], "library": ["Grizzly Bears", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dark Ritual" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an artifact creature on top counts as a creature card and enters under my control",
+    "players": [
+      { "battlefield": ["Lurking Predators"], "library": ["Ornithopter", "Forest"] },
+      { "hand": ["Dark Ritual"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Dark Ritual", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ornithopter"], "library_count": 1 },
+        {}
+      ]
+    }
+  }
+]

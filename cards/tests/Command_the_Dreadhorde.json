@@ -1,0 +1,88 @@
+[
+  {
+    "name": "two creature cards from both graveyards: damage equal to total mana value (2+5+4=11), all come under your control",
+    "players": [
+      { "hand": ["Command the Dreadhorde"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      { "graveyard": ["Serra Angel", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Command the Dreadhorde", "targets": ["Grizzly Bears", "Serra Angel", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 9, "battlefield_has": ["Grizzly Bears", "Serra Angel", "Hill Giant"], "graveyard": ["Command the Dreadhorde"] },
+        { "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "choosing no cards deals no damage",
+    "players": [
+      { "hand": ["Command the Dreadhorde"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Command the Dreadhorde", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard_has": ["Grizzly Bears", "Command the Dreadhorde"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a noncreature card in a graveyard is not chosen (it stays put and no damage is dealt)",
+    "players": [
+      { "hand": ["Command the Dreadhorde"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Command the Dreadhorde", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard_has": ["Lightning Bolt", "Command the Dreadhorde"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: damage is dealt before the creature enters; at 0 life the creature still enters before the loss",
+    "players": [
+      { "hand": ["Command the Dreadhorde"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "life": 5 },
+      { "graveyard": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Command the Dreadhorde", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": 1,
+      "players": [
+        { "life": 0, "battlefield_has": ["Serra Angel"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card with {X} in its cost has mana value 0 in the graveyard: no damage, and Walking Ballista enters as a 0/0 and dies",
+    "players": [
+      { "hand": ["Command the Dreadhorde"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Walking Ballista"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Command the Dreadhorde", "targets": ["Walking Ballista"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_lacks": ["Walking Ballista"], "graveyard_has": ["Walking Ballista"] },
+        {}
+      ]
+    }
+  }
+]

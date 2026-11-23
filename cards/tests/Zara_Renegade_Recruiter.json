@@ -1,0 +1,301 @@
+[
+ {
+  "name": "attacking: a creature card from the defending player's hand enters tapped and attacking (4 + 2 combat damage), and returns at the end step",
+  "players": [
+   {
+    "battlefield": [
+     "Zara, Renegade Recruiter"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Zara, Renegade Recruiter",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     [
+      "Grizzly Bears"
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Zara, Renegade Recruiter"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "life": 14
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining to put a creature card in play leaves the defending player's hand alone (only Zara's 4 damage)",
+  "players": [
+   {
+    "battlefield": [
+     "Zara, Renegade Recruiter"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Zara, Renegade Recruiter",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     []
+    ]
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 16,
+     "hand": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "a non-creature card in the defending player's hand cannot be put onto the battlefield",
+  "players": [
+   {
+    "battlefield": [
+     "Zara, Renegade Recruiter"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Zara, Renegade Recruiter",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "hand": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "the creature can attack a planeswalker that the defending player controls instead",
+  "players": [
+   {
+    "battlefield": [
+     "Zara, Renegade Recruiter"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Jace Beleren"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Zara, Renegade Recruiter",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     [
+      "Grizzly Bears"
+     ],
+     [
+      "Jace Beleren"
+     ]
+    ]
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Zara, Renegade Recruiter"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 16,
+     "battlefield_has": [
+      "Jace Beleren"
+     ],
+     "hand": [
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "counters": {
+    "Jace Beleren": {
+     "loyalty": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: a creature that enters attacking was never declared as an attacker, so its own attack trigger does not fire",
+  "players": [
+   { "battlefield": ["Zara, Renegade Recruiter"] },
+   { "hand": ["Goblin Guide"], "library": ["Island"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Zara, Renegade Recruiter", "at": "p1" } ] },
+   { "block": [], "answers": [ ["Goblin Guide"] ] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Goblin Guide"] },
+    { "hand": ["Goblin Guide"], "library_top": ["Island"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the creature returns only if still on the battlefield at the end step (blocked and killed, it stays in the graveyard)",
+  "players": [
+   { "battlefield": ["Zara, Renegade Recruiter"] },
+   { "hand": ["Grizzly Bears"], "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Zara, Renegade Recruiter", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "answers": [ ["Grizzly Bears"] ] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Zara, Renegade Recruiter"], "battlefield_lacks": ["Grizzly Bears"] },
+    { "graveyard": ["Grizzly Bears"], "hand_count": 0, "life": 16, "battlefield_has": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature with defender can still enter attacking (Wall of Omens)",
+  "players": [
+   { "battlefield": ["Zara, Renegade Recruiter"] },
+   { "hand": ["Wall of Omens"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Zara, Renegade Recruiter", "at": "p1" } ] },
+   { "block": [], "answers": [ ["Wall of Omens"] ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Zara, Renegade Recruiter", "Wall of Omens"] },
+    { "battlefield_lacks": ["Wall of Omens"] }
+   ]
+  }
+ },
+  {
+  "name": "another spell resolving before the end step does not stop the creature from returning to its owner's hand",
+  "players": [
+   { "battlefield": ["Zara, Renegade Recruiter"] },
+   { "hand": ["Grizzly Bears", "Time and Tide"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Zara, Renegade Recruiter", "at": "p1" } ] },
+   { "block": [], "answers": [ [ "Grizzly Bears" ] ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "pass": true },
+   { "cast": "Time and Tide", "player": 1 },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "turn": 1, "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, { "hand": ["Grizzly Bears"], "graveyard": ["Time and Tide"] } ] }
+ }
+]

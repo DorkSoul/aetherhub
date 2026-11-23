@@ -1,0 +1,102 @@
+[
+  { "name": "enters: 1 damage to each creature without first strike, double strike, vigilance or haste",
+    "players": [
+      { "hand": ["Path of Mettle // Metzali, Tower of Triumph"], "battlefield": ["Mountain", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Savannah Lions", "Serra Angel", "Raging Goblin"] }
+    ],
+    "steps": [ { "cast": "Path of Mettle // Metzali, Tower of Triumph" }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Path of Mettle // Metzali, Tower of Triumph"] },
+        { "graveyard": ["Savannah Lions"], "battlefield_has": ["Serra Angel", "Raging Goblin"] }
+      ]
+    }
+  },
+  { "name": "one attacker with vigilance among two attackers: does not transform (needs two such attackers)",
+    "players": [
+      { "battlefield": ["Path of Mettle // Metzali, Tower of Triumph", "Serra Angel", "Grizzly Bears"] },
+      { "battlefield": [] }
+    ],
+    "steps": [ { "attack": [ { "card": "Serra Angel", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Path of Mettle // Metzali, Tower of Triumph"], "battlefield_lacks": ["Metzali, Tower of Triumph"] },
+        {}
+      ]
+    }
+  },
+  { "name": "attacking with two creatures that have vigilance or haste transforms it into Metzali",
+    "players": [
+      { "battlefield": ["Path of Mettle // Metzali, Tower of Triumph", "Serra Angel", "Raging Goblin"] },
+      { "battlefield": [] }
+    ],
+    "steps": [ { "attack": [ { "card": "Serra Angel", "at": "p1" }, { "card": "Raging Goblin", "at": "p1" } ] }, { "block": [] }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Metzali, Tower of Triumph"], "battlefield_lacks": ["Path of Mettle // Metzali, Tower of Triumph"] },
+        {}
+      ]
+    }
+  },
+  { "name": "Metzali {1}{R}, {T}: 2 damage to each opponent; needs the {R}",
+    "players": [
+      { "battlefield": ["Metzali, Tower of Triumph", "Mountain", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [ { "activate": "Metzali, Tower of Triumph", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  { "name": "Metzali ability 0 is illegal with only Plains and Metzali itself (no {R})",
+    "players": [
+      { "battlefield": ["Metzali, Tower of Triumph", "Plains", "Plains"] },
+      { "battlefield": [] }
+    ],
+    "steps": [ { "activate": "Metzali, Tower of Triumph", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  },
+  { "name": "Metzali {2}{W}, {T}: destroys a creature that attacked this turn (only attackers are candidates)",
+    "players": [
+      { "battlefield": ["Metzali, Tower of Triumph", "Plains", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "activate": "Metzali, Tower of Triumph", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Metzali, Tower of Triumph"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  { "name": "ruling: Metzali's destroy ability can be activated before blockers are chosen",
+    "players": [
+      { "battlefield": ["Metzali, Tower of Triumph", "Plains", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "activate": "Metzali, Tower of Triumph", "ability": 1 },
+      { "resolve": true },
+      { "block": [] }
+    ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  { "name": "ruling: Metzali's destroy ability can be activated after combat damage, choosing a creature that survived",
+    "players": [
+      { "battlefield": ["Metzali, Tower of Triumph", "Plains", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "activate": "Metzali, Tower of Triumph", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, { "life": 18 } ] }
+  }
+]

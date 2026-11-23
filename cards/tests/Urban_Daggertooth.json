@@ -1,0 +1,97 @@
+[
+  {
+    "name": "enrage: being dealt damage proliferates its +1/+1 counter",
+    "players": [
+      { "battlefield": [{ "name": "Urban Daggertooth", "counters": { "p1p1": 1 } }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Urban Daggertooth", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Urban Daggertooth" }] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Urban Daggertooth": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "no damage taken: no proliferate",
+    "players": [
+      { "battlefield": [{ "name": "Urban Daggertooth", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Urban Daggertooth", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Urban Daggertooth": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: Daggertooth dies to the damage, its enrage still proliferates the other creature",
+    "players": [
+      { "battlefield": ["Urban Daggertooth"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "p1p1": 3 } }] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Urban Daggertooth", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Urban Daggertooth" }] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Urban Daggertooth"] }, {} ],
+      "counters": { "Grizzly Bears": { "p1p1": 4 } }
+    }
+  },
+  {
+    "name": "ruling: proliferate adds one counter of each kind a creature has",
+    "players": [
+      { "battlefield": [{ "name": "Urban Daggertooth", "counters": { "p1p1": 1 } }] },
+      { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "counters": { "p1p1": 1, "time": 1 } }] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Urban Daggertooth"] },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 2, "time": 2 }, "Urban Daggertooth": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: enrage proliferate may choose no permanents or players at all",
+    "players": [
+      { "battlefield": [{ "name": "Urban Daggertooth", "counters": { "p1p1": 2 } }] },
+      { "poison": 1, "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Urban Daggertooth", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Urban Daggertooth" }] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": {
+      "players": [ {}, { "poison": 1 } ],
+      "counters": { "Urban Daggertooth": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "ruling: enrage proliferate may choose only an opponent (their poison counter)",
+    "players": [
+      { "battlefield": [{ "name": "Urban Daggertooth", "counters": { "p1p1": 2 } }] },
+      { "poison": 1, "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Urban Daggertooth", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Urban Daggertooth" }] },
+      { "advance_to": "Main2", "answers": [["p1"]] }
+    ],
+    "expect": {
+      "players": [ {}, { "poison": 2 } ],
+      "counters": { "Urban Daggertooth": { "p1p1": 2 } }
+    }
+  }
+]

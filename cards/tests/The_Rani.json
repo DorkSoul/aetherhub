@@ -1,0 +1,36 @@
+[
+  { "name": "ETB creates Mark of the Rani attached to another creature (+2/+2)",
+    "players": [ { "hand": ["The Rani"], "battlefield": ["Island", "Swamp", "Mountain", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [ { "cast": "The Rani" }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Rani", "Mark of the Rani"] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] },
+      "attached": { "Mark of the Rani": "Grizzly Bears" } } },
+  { "name": "a goaded creature dealing combat damage to an opponent investigates",
+    "players": [ { "hand": ["The Rani"], "battlefield": ["Island", "Swamp", "Mountain", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [ { "cast": "The Rani" }, { "resolve": true }, { "resolve": true },
+               { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Clue"] }, { "life": 16 } ] } },
+  { "name": "an ungoaded creature dealing combat damage does not investigate",
+    "players": [ { "battlefield": [ "The Rani", { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Clue"] }, { "life": 18 } ] } },
+  { "name": "attacks: Mark of the Rani goes on the chosen other creature (+2/+2, goaded); Rani hits for 3",
+    "players": [ { "battlefield": [ "The Rani", { "name": "Mother of Runes", "sick": false } ] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "attack": [ { "card": "The Rani", "at": "p1" } ] }, { "resolve": true, "targets": [ "Grizzly Bears" ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 17 } ], "pt": { "Grizzly Bears": [4, 4] }, "attached": { "Mark of the Rani": "Grizzly Bears" } } },
+  { "name": "attacks with no other creature in play: the Mark trigger has no target and nothing is attached",
+    "players": [ { "battlefield": [ "The Rani" ] }, {} ],
+    "steps": [ { "attack": [ { "card": "The Rani", "at": "p1" } ] }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Mark of the Rani"] }, { "life": 17 } ] } },
+  { "name": "ruling: Time Lord is one creature subtype (The Rani has no separate Time or Lord subtype)",
+    "players": [ { "battlefield": ["The Rani"] }, {} ],
+    "steps": [],
+    "expect": { "subtypes": { "The Rani": ["Time Lord", "Scientist"] }, "not_subtypes": { "The Rani": ["Time", "Lord"] } } },
+  { "name": "ruling: an effect that chooses a creature type may choose Time Lord (Unnatural Selection makes Grizzly Bears a Time Lord)",
+    "players": [ { "battlefield": ["Unnatural Selection", "Swamp", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [ { "activate": "Unnatural Selection", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": ["Time Lord"] } ],
+    "expect": { "subtypes": { "Grizzly Bears": ["Time Lord"] }, "pt": { "Grizzly Bears": [2, 2] } } }
+]

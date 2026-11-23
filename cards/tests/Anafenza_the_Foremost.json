@@ -1,0 +1,73 @@
+[
+  {
+    "name": "attack trigger: +1/+1 counter on another tapped creature you control",
+    "players": [
+      { "battlefield": ["Anafenza, the Foremost", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Anafenza, the Foremost", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "opponent's nontoken creature that dies is exiled instead",
+    "players": [
+      { "battlefield": ["Anafenza, the Foremost"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Anafenza, the Foremost", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Anafenza, the Foremost" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": [], "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "opponent's creature card discarded from hand is exiled instead",
+    "players": [ { "hand": ["Mind Rot"], "battlefield": ["Anafenza, the Foremost", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Mind Rot", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "exile": ["Grizzly Bears"], "hand_count": 0 } ] }
+  },
+  {
+    "name": "opponent's creature card milled from library is exiled instead",
+    "players": [ { "hand": ["Mind Sculpt"], "battlefield": ["Anafenza, the Foremost", "Island", "Island"] }, { "library": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Mind Sculpt", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "exile": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "opponent's creature spell countered by Essence Scatter is exiled instead of going to the graveyard",
+    "players": [ { "hand": ["Essence Scatter"], "battlefield": ["Anafenza, the Foremost", "Island", "Island"] }, { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] } ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "Upkeep" }, { "advance_to": "Main1" }, { "cast": "Grizzly Bears", "player": 1 }, { "pass": true, "player": 1 }, { "cast": "Essence Scatter", "player": 0, "targets": [{ "stack": "Grizzly Bears" }] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "exile": ["Grizzly Bears"], "graveyard": [] } ] }
+  },
+  {
+    "name": "a creature card returned from exile to the graveyard by Mimic Vat is exiled instead",
+    "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt", "Anafenza, the Foremost"], "battlefield": ["Mimic Vat", "Mountain", "Mountain", "Plains", "Swamp", "Forest", "Hill Giant"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [true] }, { "resolve": true },
+      { "cast": "Anafenza, the Foremost" }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "resolve": true, "answers": [true] }, { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Hill Giant"] }, { "exile": ["Grizzly Bears"], "graveyard": [] } ] }
+  },
+  {
+    "name": "ruling: a dying opponent's nontoken creature is exiled, so its own dies trigger does not happen",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Anafenza, the Foremost", "Mountain"] },
+      { "battlefield": [ { "name": "Dockworker Drone", "counters": { "p1p1": 1 } }, "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Dockworker Drone"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "exile": ["Dockworker Drone"], "graveyard": [] } ], "pt": { "Grizzly Bears": [2, 2] } }
+  }
+]

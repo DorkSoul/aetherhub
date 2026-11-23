@@ -1,0 +1,74 @@
+{
+  "name": "Whims of the Fates",
+  "mana_cost": "{5}{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "NotePileOrGuess" },
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 3, "append": false },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachPlayer" },
+          "effects": [
+            { "type": "ClearRemembered" },
+            { "type": "StoreRemembered", "slot": 0, "append": false },
+            { "type": "StoreRemembered", "slot": 1, "append": false },
+            { "type": "StoreRemembered", "slot": 2, "append": false },
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Battlefield",
+              "filter": { "controller": "You" },
+              "min": 0,
+              "max": 255,
+              "then": [
+                { "type": "StoreRemembered", "slot": 1, "append": false },
+                { "type": "StoreRemembered", "slot": 0, "append": true }
+              ]
+            },
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Battlefield",
+              "filter": { "controller": "You", "not_among_stored": 0 },
+              "min": 0,
+              "max": 255,
+              "then": [
+                { "type": "StoreRemembered", "slot": 2, "append": false },
+                { "type": "StoreRemembered", "slot": 0, "append": true }
+              ]
+            },
+            {
+              "type": "If",
+              "cond": { "type": "RandomPick", "of": 3, "pick": 0 },
+              "then": [
+                { "type": "Remember", "what": { "type": "Stored", "slot": 1 } },
+                { "type": "StoreRemembered", "slot": 3, "append": true }
+              ],
+              "else": [
+                {
+                  "type": "If",
+                  "cond": { "type": "RandomPick", "of": 3, "pick": 1 },
+                  "then": [
+                    { "type": "Remember", "what": { "type": "Stored", "slot": 2 } },
+                    { "type": "StoreRemembered", "slot": 3, "append": true }
+                  ],
+                  "else": [
+                    { "type": "Remember", "what": { "type": "All", "filter": { "controller": "You", "not_among_stored": 0 } } },
+                    { "type": "StoreRemembered", "slot": 3, "append": true }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        { "type": "Remember", "what": { "type": "Stored", "slot": 3 } },
+        { "type": "Sacrifice", "who": { "type": "Remembered" } }
+      ]
+    }
+  ],
+  "oracle_text": "Starting with you, each player separates all permanents they control into three piles. Then each player chooses one of their piles at random and sacrifices those permanents. (Piles can be empty.)"
+}

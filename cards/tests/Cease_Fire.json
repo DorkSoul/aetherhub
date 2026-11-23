@@ -1,0 +1,69 @@
+[
+  {
+    "name": "target player can't cast creature spells this turn; caster draws a card",
+    "players": [
+      { "hand": ["Cease-Fire", "Phyrexian Walker"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cease-Fire", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Phyrexian Walker", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "target opponent: the caster can still cast creature spells",
+    "players": [
+      { "hand": ["Cease-Fire", "Phyrexian Walker"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cease-Fire", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Phyrexian Walker" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "battlefield_has": ["Phyrexian Walker"] }, {} ]
+    }
+  },
+  {
+    "name": "noncreature spells are not affected: the restricted player can still cast an instant",
+    "players": [
+      { "hand": ["Cease-Fire", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Cease-Fire", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: a creature spell already on the stack is not countered by Cease-Fire",
+    "players": [
+      { "hand": ["Cease-Fire"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Cease-Fire", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true, "player": 1 },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  }
+]

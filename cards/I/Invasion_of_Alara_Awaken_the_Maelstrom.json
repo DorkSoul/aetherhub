@@ -1,0 +1,106 @@
+{
+  "name": "Invasion of Alara // Awaken the Maelstrom",
+  "mana_cost": "{W}{U}{B}{R}{G}",
+  "types": ["Battle"],
+  "subtypes": ["Siege"],
+  "defense": 7,
+  "layout": "Transform",
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "RevealUntil",
+          "who": { "type": "You" },
+          "filter": { "not_types": ["Land"], "mana_value_vs": { "op": "Le", "amount": { "type": "Fixed", "n": 4 } } },
+          "count": { "type": "Fixed", "n": 2 },
+          "to": "Exile",
+          "rest": "Library",
+          "rest_random": true
+        },
+        { "type": "StoreRemembered", "slot": 0 },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Exile",
+          "among": { "type": "Stored", "slot": 0 },
+          "filter": { "in_zone": "Exile" },
+          "min": 0,
+          "max": 1,
+          "then": [
+            { "type": "StoreRemembered", "slot": 1 },
+            { "type": "CastFree", "what": { "type": "Remembered" } }
+          ]
+        },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Exile",
+          "among": { "type": "Stored", "slot": 0 },
+          "filter": { "in_zone": "Exile", "not_among_stored": 1 },
+          "min": 1,
+          "max": 1,
+          "then": [{ "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" }]
+        },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Exile",
+          "among": { "type": "Stored", "slot": 0 },
+          "filter": { "in_zone": "Exile", "not_among_stored": 1 },
+          "min": 255,
+          "max": 255,
+          "then": [{ "type": "Move", "what": { "type": "Remembered" }, "to": "Library", "random_order": true }]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "(As a Siege enters, choose an opponent to protect it. You and others can attack it. When it's defeated, exile it, then cast it transformed.)\nWhen this Siege enters, exile cards from the top of your library until you exile two nonland cards with mana value 4 or less. You may cast one of those two cards without paying its mana cost. Put one of them into your hand. Then put the other cards exiled this way on the bottom of your library in a random order.",
+  "back": {
+    "name": "Awaken the Maelstrom",
+    "types": ["Sorcery"],
+    "colors": ["W", "U", "B", "R", "G"],
+    "abilities": [
+      {
+        "type": "Spell",
+        "targets": [
+          { "what": { "type": "Player", "filter": "Any" }, "label": "target player" },
+          { "what": { "type": "Permanent", "filter": { "controller": "Opponent" } }, "label": "target permanent an opponent controls" }
+        ],
+        "effects": [
+          { "type": "Draw", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 2 } },
+          {
+            "type": "Choose",
+            "who": { "type": "You" },
+            "zone": "Hand",
+            "filter": { "types": ["Artifact"] },
+            "min": 0,
+            "max": 1,
+            "then": [{ "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" }]
+          },
+          {
+            "type": "Choose",
+            "who": { "type": "You" },
+            "zone": "Battlefield",
+            "filter": { "controller": "You" },
+            "min": 1,
+            "max": 1,
+            "then": [{ "type": "CopyPermanent", "what": { "type": "Remembered" } }]
+          },
+          {
+            "type": "Choose",
+            "who": { "type": "You" },
+            "zone": "Battlefield",
+            "filter": { "types": ["Creature"], "controller": "You" },
+            "min": 1,
+            "max": 3,
+            "then": [{ "type": "DivideCounters", "kind": "PlusOnePlusOne", "total": { "type": "Fixed", "n": 3 }, "among": { "type": "Remembered" } }]
+          },
+          { "type": "Destroy", "what": { "type": "Target", "idx": 1 } }
+        ]
+      }
+    ],
+    "oracle_text": "Awaken the Maelstrom is all colors.\nTarget player draws two cards. You may put an artifact card from your hand onto the battlefield. Create a token that's a copy of a permanent you control. Distribute three +1/+1 counters among one, two, or three creatures you control. Destroy target permanent an opponent controls."
+  }
+}

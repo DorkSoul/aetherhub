@@ -1,0 +1,79 @@
+[
+  {
+    "name": "beginning of combat on your turn: not attacking is illegal",
+    "players": [
+      { "battlefield": [ { "name": "Raving Dead", "sick": false } ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "combat damage to a player makes that player lose half their remaining life, rounded down",
+    "players": [
+      { "battlefield": [ { "name": "Raving Dead", "sick": false } ] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Raving Dead", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 9 } ]
+    }
+  },
+  {
+    "name": "blocked: no combat damage to a player, no life loss",
+    "players": [
+      { "battlefield": [ { "name": "Raving Dead", "sick": false } ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Raving Dead", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Raving Dead" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: the last ability uses the life total after combat damage (17 to 8)",
+    "players": [ { "battlefield": [ { "name": "Raving Dead", "sick": false } ] }, { "life": 17, "battlefield": [] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Raving Dead", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 8 } ] }
+  },
+  {
+    "name": "ruling: Raving Dead must attack the chosen player, not a planeswalker that player controls",
+    "players": [ { "battlefield": [ { "name": "Raving Dead", "sick": false } ] }, { "battlefield": ["Test Walker"] } ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Raving Dead", "at": "Test Walker" } ], "illegal": true },
+      { "attack": [ { "card": "Raving Dead", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 9 } ] }
+  },
+  {
+    "name": "ruling: each combat phase triggers the must-attack ability again (Relentless Assault)",
+    "players": [
+      { "hand": ["Relentless Assault"], "battlefield": [ { "name": "Raving Dead", "sick": false }, "Mountain", "Mountain", "Mountain", "Mountain" ] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Raving Dead", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "cast": "Relentless Assault" },
+      { "resolve": true },
+      { "attack": [], "illegal": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "turn": 1, "players": [ {}, { "life": 4 } ] }
+  }
+]

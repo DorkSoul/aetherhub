@@ -1,0 +1,60 @@
+[
+ {
+  "name": "prevents damage from an instant",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Plains", "Mountain", "Energy Storm"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "cumulative upkeep: pays {1} on the first upkeep",
+  "players": [
+   { "battlefield": ["Energy Storm", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "answers": [true] }
+  ],
+  "expect": {
+   "counters": { "Energy Storm": { "age": 1 } },
+   "players": [ { "battlefield_has": ["Energy Storm"] }, {} ]
+  }
+ },
+ {
+  "name": "cumulative upkeep: cannot pay, sacrificed",
+  "players": [
+   { "battlefield": ["Energy Storm"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Energy Storm"] }, {} ]
+  }
+ },
+ {
+  "name": "a tapped flyer does not untap in its controller's untap step (a non-flyer does)",
+  "players": [
+   { "battlefield": ["Energy Storm", "Plains", { "name": "Storm Crow", "tapped": true }, { "name": "Grizzly Bears", "tapped": true }] },
+   {}
+  ],
+  "start": "End",
+  "steps": [
+   { "advance_to": "Main1", "auto": true },
+   { "advance_to": "Main1", "answers": [true] }
+  ],
+  "expect": {
+   "tapped": { "Storm Crow": true, "Grizzly Bears": false }
+  }
+ }
+]

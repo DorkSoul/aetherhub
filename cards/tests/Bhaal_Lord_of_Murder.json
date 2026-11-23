@@ -1,0 +1,139 @@
+[
+  {
+    "name": "another creature dying puts a +1/+1 counter on target creature",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Bhaal, Lord of Murder", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Grizzly Bears"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Bhaal, Lord of Murder": [5, 5] },
+      "counters": { "Bhaal, Lord of Murder": { "+1/+1": 1 } }
+    }
+  },
+  {
+    "name": "Bhaal dying does not trigger its own ability",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Bhaal, Lord of Murder", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Bhaal, Lord of Murder"]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Bhaal, Lord of Murder"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Bhaal, Lord of Murder"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "indestructible at exactly half the starting life total",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Bhaal, Lord of Murder", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "set_life": 10 },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Bhaal, Lord of Murder"]
+      },
+      { "resolve": true },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Bhaal, Lord of Murder"]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bhaal, Lord of Murder"] },
+        {}
+      ],
+      "keywords": { "Bhaal, Lord of Murder": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "not indestructible above half the starting life total",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Bhaal, Lord of Murder", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "set_life": 11 },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Bhaal, Lord of Murder"]
+      },
+      { "resolve": true },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Bhaal, Lord of Murder"]
+      },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Bhaal, Lord of Murder"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: lethal damage and the life loss happen together, so Bhaal is indestructible when checked",
+    "players": [
+      { "battlefield": ["Beast 5-5 Trample"] },
+      { "life": 11, "battlefield": ["Bhaal, Lord of Murder"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Beast 5-5 Trample", "at": "p1" } ] },
+      { "block": [ { "blocker": "Bhaal, Lord of Murder", "attacker": "Beast 5-5 Trample" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 10, "battlefield_has": ["Bhaal, Lord of Murder"] }
+      ],
+      "keywords": { "Bhaal, Lord of Murder": ["Indestructible"] }
+    }
+  }
+]

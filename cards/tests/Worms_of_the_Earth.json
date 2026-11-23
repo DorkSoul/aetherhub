@@ -1,0 +1,137 @@
+[
+ {
+  "name": "players can't play lands",
+  "players": [
+   { "hand": ["Forest"] },
+   { "hand": ["Mountain"], "battlefield": ["Worms of the Earth"] }
+  ],
+  "steps": [
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Forest"] },
+    { "hand": ["Mountain"] }
+  ]
+  }
+ },
+ {
+  "name": "lands can't enter the battlefield from a library",
+  "players": [
+   { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest"], "library": ["Forest", "Mountain"] },
+   { "battlefield": ["Worms of the Earth"] }
+  ],
+  "steps": [
+   { "cast": "Rampant Growth" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Forest", "Forest"], "graveyard": ["Rampant Growth"], "library_count": 2 },
+    {}
+  ]
+  }
+ },
+ {
+  "name": "a player sacrifices two lands at an upkeep: Worms is destroyed",
+  "players": [
+   { "battlefield": ["Forest", "Forest", "Forest"] },
+   { "battlefield": ["Worms of the Earth"] }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep", "answers": [false, true, 0, ["Forest", "Forest"]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield": ["Forest"], "graveyard": ["Forest", "Forest"] },
+    { "life": 20, "graveyard": ["Worms of the Earth"] }
+  ]
+  }
+ },
+ {
+  "name": "a player takes 5 damage at an upkeep: Worms is destroyed",
+  "players": [
+   { "battlefield": ["Forest"] },
+   { "battlefield": ["Worms of the Earth"] }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep", "answers": [true, 1] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield": ["Forest"] },
+    { "life": 15, "graveyard": ["Worms of the Earth"] }
+  ]
+  }
+ },
+ {
+  "name": "nobody pays: Worms stays and nobody is hurt",
+  "players": [
+   { "battlefield": ["Forest"] },
+   { "battlefield": ["Worms of the Earth"] }
+  ],
+  "steps": [
+   { "advance_to": "Upkeep", "answers": [false, false] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield": ["Forest"] },
+    { "life": 20, "battlefield": ["Worms of the Earth"] }
+  ]
+  }
+ },
+ {
+  "name": "a land on top of the library can't enter the battlefield when a search finds it",
+  "players": [
+   { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest"], "library": ["Forest"] },
+   { "battlefield": ["Worms of the Earth"] }
+  ],
+  "steps": [
+   { "cast": "Rampant Growth" },
+   { "resolve": true, "answers": ["Forest"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Forest", "Forest"], "graveyard": ["Rampant Growth"], "library_count": 1 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Clone copying Dryad Arbor is a land, so it can't enter and goes to the graveyard",
+  "players": [
+   { "hand": ["Clone"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Dryad Arbor", "Worms of the Earth"] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Clone"] },
+    { "battlefield_has": ["Worms of the Earth", "Dryad Arbor"] }
+   ]
+  }
+ },
+ {
+  "name": "control: without Worms the Clone copy of Dryad Arbor enters as a land creature",
+  "players": [
+   { "hand": ["Clone"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Dryad Arbor"] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Dryad Arbor"] },
+    { "battlefield_has": ["Dryad Arbor"] }
+   ]
+  }
+ }
+]

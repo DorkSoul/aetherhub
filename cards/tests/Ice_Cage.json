@@ -1,0 +1,131 @@
+[
+  {
+    "name": "enchanted creature can't attack",
+    "players": [
+      {
+        "hand": ["Ice Cage"],
+        "battlefield": ["Island", "Island", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ice Cage", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Grizzly Bears", "Ice Cage"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature's activated ability can't be activated",
+    "players": [
+      {
+        "hand": ["Ice Cage"],
+        "battlefield": ["Island", "Island", "Prodigal Pyromancer"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ice Cage", "targets": ["Prodigal Pyromancer"] },
+      { "resolve": true },
+      { "activate": "Prodigal Pyromancer", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Prodigal Pyromancer", "Ice Cage"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "a creature that isn't enchanted can still attack",
+    "players": [
+      {
+        "hand": ["Ice Cage"],
+        "battlefield": ["Island", "Island", "Grizzly Bears", "Prodigal Pyromancer"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ice Cage", "targets": ["Prodigal Pyromancer"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "destroyed when enchanted creature becomes the target of a spell",
+    "players": [
+      {
+        "hand": ["Ice Cage", "Lightning Bolt"],
+        "battlefield": ["Island", "Island", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Ice Cage", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Mountain"], "graveyard": ["Ice Cage", "Lightning Bolt"] },
+        { "battlefield": [], "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature can't block: the Giant's block is dropped and the Runecaster deals 2",
+    "players": [
+      { "hand": ["Ice Cage"], "battlefield": ["Island", "Island", { "name": "Aphetto Runecaster", "sick": false }, { "name": "Hunted Ghoul", "sick": false }] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Ice Cage", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Aphetto Runecaster", "at": "p1" }, { "card": "Hunted Ghoul", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Aphetto Runecaster" }, { "blocker": "Grizzly Bears", "attacker": "Hunted Ghoul" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18, "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Ice Cage's trigger goes on the stack above the targeting spell and resolves first",
+    "players": [
+      { "hand": ["Ice Cage", "Lightning Bolt"], "battlefield": ["Island", "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Ice Cage", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "players": [
+        { "graveyard": ["Ice Cage"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

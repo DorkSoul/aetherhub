@@ -1,0 +1,113 @@
+[
+  {
+    "name": "tap a red creature: +X/+0 where X is its power",
+    "players": [
+      {
+        "battlefield": [
+          "Impelled Giant",
+          "Goblin Piker"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Impelled Giant"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Impelled Giant": [
+          5,
+          3
+        ]
+      },
+      "tapped": {
+        "Goblin Piker": true,
+        "Impelled Giant": false
+      }
+    }
+  },
+  {
+    "name": "cannot tap itself for its own pump",
+    "players": [
+      {
+        "battlefield": [
+          "Impelled Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Impelled Giant",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Impelled Giant": [
+          3,
+          3
+        ]
+      },
+      "tapped": {
+        "Impelled Giant": false
+      }
+    }
+  },
+  {
+    "name": "ruling: power is checked on resolution (pump the tapped creature in response)",
+    "players": [
+      {"hand": ["Giant Growth"], "battlefield": ["Impelled Giant", "Goblin Piker", "Forest"]},
+      {}
+    ],
+    "steps": [
+      {"activate": "Impelled Giant"},
+      {"cast": "Giant Growth", "targets": ["Goblin Piker"]},
+      {"pass": true},
+      {"pass": true, "player": 1},
+      {"resolve": true}
+    ],
+    "expect": {
+      "pt": {"Impelled Giant": [8, 3]}
+    }
+  },
+  {
+    "name": "ruling: tapped creature dies in response; its last known power is used",
+    "players": [
+      {"battlefield": ["Impelled Giant", "Goblin Piker"]},
+      {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+    ],
+    "steps": [
+      {"activate": "Impelled Giant"},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Goblin Piker"]},
+      {"pass": true, "player": 1},
+      {"pass": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "pt": {"Impelled Giant": [5, 3]},
+      "players": [{"graveyard": ["Goblin Piker"]}, {"graveyard": ["Lightning Bolt"]}]
+    }
+  },
+  {
+    "name": "ruling: a summoning-sick creature can be tapped to pay the ability",
+    "players": [
+      {"battlefield": ["Impelled Giant", {"name": "Goblin Piker", "sick": true}]},
+      {}
+    ],
+    "steps": [
+      {"activate": "Impelled Giant"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "pt": {"Impelled Giant": [5, 3]},
+      "tapped": {"Goblin Piker": true}
+    }
+  }
+]

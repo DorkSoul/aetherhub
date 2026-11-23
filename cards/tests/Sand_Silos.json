@@ -1,0 +1,269 @@
+[
+  {
+    "name": "enters the battlefield tapped",
+    "players": [
+      {
+        "hand": [
+          "Sand Silos"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Sand Silos"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Sand Silos": true
+      }
+    }
+  },
+  {
+    "name": "upkeep: a tapped Sand Silos gets a storage counter",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sand Silos",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sand Silos": {
+          "storage": 1
+        }
+      }
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "upkeep: an untapped Sand Silos gets no storage counter",
+    "players": [
+      {
+        "battlefield": [
+          "Sand Silos"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sand Silos": {
+          "storage": 0
+        }
+      }
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "tap: removes all storage counters and adds U for each",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sand Silos",
+            "counters": {
+              "storage": 3
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Sand Silos"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "U": 3
+          }
+        },
+        {}
+      ],
+      "counters": {
+        "Sand Silos": {
+          "storage": 0
+        }
+      },
+      "tapped": {
+        "Sand Silos": true
+      }
+    }
+  },
+  {
+    "name": "choosing to keep it tapped in my untap step: it stays tapped and gets a storage counter at upkeep",
+    "players": [
+      { "battlefield": [ { "name": "Sand Silos", "tapped": true } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Sand Silos": { "storage": 1 } },
+      "tapped": { "Sand Silos": true }
+    }
+  },
+  {
+    "name": "ruling: a Sand Silos tapped by something other than its mana ability cannot remove counters",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sand Silos",
+            "tapped": true,
+            "counters": {
+              "storage": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Sand Silos",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {}
+        },
+        {}
+      ],
+      "counters": {
+        "Sand Silos": {
+          "storage": 2
+        }
+      },
+      "tapped": {
+        "Sand Silos": true
+      }
+    }
+  },
+  {
+    "name": "ruling: storage counters stay on Sand Silos when Blood Moon changes its land type",
+    "players": [
+      {
+        "hand": [
+          "Blood Moon"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Sand Silos",
+            "counters": {
+              "storage": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Blood Moon"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Blood Moon",
+            "Sand Silos"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Sand Silos": {
+          "storage": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: the upkeep check adds a further counter to a tapped Sand Silos that already has counters",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sand Silos",
+            "tapped": true,
+            "counters": {
+              "storage": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sand Silos": {
+          "storage": 3
+        }
+      }
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "choosing to untap in my untap step: it is untapped and gets no storage counter",
+    "players": [
+      { "battlefield": [ { "name": "Sand Silos", "tapped": true } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Sand Silos": { "storage": 0 } },
+      "tapped": { "Sand Silos": false }
+    }
+  }
+]

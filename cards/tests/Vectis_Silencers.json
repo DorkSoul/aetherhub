@@ -1,0 +1,77 @@
+[
+  {
+    "name": "{2}{B}: gains deathtouch until end of turn",
+    "players": [
+      { "battlefield": ["Vectis Silencers", "Swamp", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Vectis Silencers", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Vectis Silencers"] }, {} ],
+      "keywords": { "Vectis Silencers": ["Deathtouch"] }
+    }
+  },
+  {
+    "name": "needs a black source for the activation",
+    "players": [
+      { "battlefield": ["Vectis Silencers", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Vectis Silencers", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Vectis Silencers"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a colored artifact needs colored mana, so three sources without blue cannot cast it",
+    "players": [
+      { "hand": ["Vectis Silencers"], "battlefield": ["Wastes", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Vectis Silencers", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Vectis Silencers"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: it is an artifact, so Shatter can destroy it",
+    "players": [
+      { "battlefield": ["Vectis Silencers"] },
+      { "hand": ["Shatter"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shatter", "player": 1, "targets": ["Vectis Silencers"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Vectis Silencers"] }, { "graveyard": ["Shatter"] } ]
+    }
+  },
+  {
+    "name": "ruling: activating twice gives redundant deathtouch; the blocking Hill Giant still dies",
+    "players": [
+      { "battlefield": ["Vectis Silencers", "Swamp", "Swamp", "Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Vectis Silencers", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Vectis Silencers", "ability": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Vectis Silencers", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Vectis Silencers" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Vectis Silencers"] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  }
+]

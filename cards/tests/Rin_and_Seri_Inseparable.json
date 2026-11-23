@@ -1,0 +1,249 @@
+[
+ {
+  "name": "casting a Dog makes a Cat token",
+  "players": [
+   {
+    "battlefield": [
+     "Rin and Seri, Inseparable",
+     "Plains"
+    ],
+    "hand": [
+     "Isamaru, Hound of Konda"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Isamaru, Hound of Konda"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Cat",
+      "Isamaru, Hound of Konda"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Cat": [
+     1,
+     1
+    ]
+   }
+  }
+ },
+ {
+  "name": "casting a Cat makes a Dog token",
+  "players": [
+   {
+    "battlefield": [
+     "Rin and Seri, Inseparable",
+     "Plains"
+    ],
+    "hand": [
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Savannah Lions"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Dog",
+      "Savannah Lions"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "casting neither makes nothing",
+  "players": [
+   {
+    "battlefield": [
+     "Rin and Seri, Inseparable",
+     "Forest",
+     "Forest"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Rin and Seri, Inseparable",
+      "Forest",
+      "Forest",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ability: damage = Dogs, life = Cats (Rin and Seri counts as both)",
+  "players": [
+   {
+    "battlefield": [
+     "Rin and Seri, Inseparable",
+     "Isamaru, Hound of Konda",
+     "Savannah Lions",
+     "Mountain",
+     "Forest",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Rin and Seri, Inseparable",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 22
+    },
+    {
+     "life": 18
+    }
+   ],
+   "tapped": {
+    "Rin and Seri, Inseparable": true
+   }
+  }
+ },
+ {
+   "name": "ruling: ability fizzles if its target is gone at resolution, so no life is gained",
+   "players": [
+    {
+     "hand": ["Lightning Bolt"],
+     "battlefield": ["Rin and Seri, Inseparable", "Mountain", "Mountain", "Forest", "Plains"]
+    },
+    {
+     "battlefield": ["Grizzly Bears"]
+    }
+   ],
+   "steps": [
+    { "activate": "Rin and Seri, Inseparable", "targets": ["Grizzly Bears"] },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "life": 20, "graveyard": ["Lightning Bolt"] },
+     { "graveyard": ["Grizzly Bears"] }
+    ]
+   }
+  },
+  {
+   "name": "ruling: casting Rin and Seri itself makes no Cat or Dog tokens",
+   "players": [
+    {
+     "hand": ["Rin and Seri, Inseparable"],
+     "battlefield": ["Mountain", "Forest", "Plains", "Plains"]
+    },
+    {}
+   ],
+   "steps": [
+    { "cast": "Rin and Seri, Inseparable" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Rin and Seri, Inseparable"], "battlefield_lacks": ["Cat", "Dog"] },
+     {}
+    ]
+   }
+  },
+  {
+   "name": "ruling: a Dog spell's trigger resolves even if that spell is countered",
+   "players": [
+    {
+     "hand": ["Isamaru, Hound of Konda"],
+     "battlefield": ["Rin and Seri, Inseparable", "Plains", "Plains"]
+    },
+    {
+     "hand": ["Counterspell"],
+     "battlefield": ["Island", "Island"]
+    }
+   ],
+   "steps": [
+    { "cast": "Isamaru, Hound of Konda" },
+    { "pass": true },
+    { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Isamaru, Hound of Konda" }] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     {
+      "battlefield_has": ["Rin and Seri, Inseparable", "Cat"],
+      "battlefield_lacks": ["Isamaru, Hound of Konda"],
+      "graveyard": ["Isamaru, Hound of Konda"]
+     },
+     { "graveyard": ["Counterspell"] }
+    ]
+   }
+  },
+  {
+   "name": "ruling: Rin dies in response, its ability still resolves but counts no Dogs",
+   "players": [
+    {
+     "battlefield": ["Rin and Seri, Inseparable", "Mountain", "Forest", "Plains"]
+    },
+    {
+     "hand": ["Murder"],
+     "battlefield": ["Savannah Lions", "Swamp", "Swamp", "Swamp"]
+    }
+   ],
+   "steps": [
+    { "activate": "Rin and Seri, Inseparable", "targets": ["Savannah Lions"] },
+    { "pass": true },
+    { "cast": "Murder", "player": 1, "targets": ["Rin and Seri, Inseparable"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "life": 20, "battlefield_lacks": ["Rin and Seri, Inseparable"], "graveyard": ["Rin and Seri, Inseparable"] },
+     { "battlefield_has": ["Savannah Lions"], "graveyard": ["Murder"] }
+    ]
+   }
+  }
+ ]

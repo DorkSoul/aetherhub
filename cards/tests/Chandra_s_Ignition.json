@@ -1,0 +1,95 @@
+[
+ {
+  "name": "the target creature deals its power to each other creature and each opponent, but not to itself",
+  "players": [
+   { "hand": ["Chandra's Ignition"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Hill Giant", "Llanowar Elves"] },
+   { "battlefield": ["Grizzly Bears", "Savannah Lions"] }
+  ],
+  "steps": [
+   { "cast": "Chandra's Ignition", "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Llanowar Elves"] },
+    { "graveyard": ["Grizzly Bears", "Savannah Lions"], "life": 17 }
+   ],
+   "pt": { "Hill Giant": [3, 3] }
+  }
+ },
+ {
+  "name": "a creature with power 0 deals no damage and survives",
+  "players": [
+   { "hand": ["Chandra's Ignition"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Wall of Stone", "Llanowar Elves"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Chandra's Ignition", "targets": ["Wall of Stone"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Wall of Stone", "Llanowar Elves"] },
+    { "battlefield_has": ["Grizzly Bears"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the target dies in response, Ignition does nothing (no damage at all)",
+  "players": [
+   { "hand": ["Chandra's Ignition"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Hill Giant", "Llanowar Elves"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Chandra's Ignition", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "player": 1, "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Llanowar Elves"], "graveyard_has": ["Hill Giant"] },
+    { "battlefield_has": ["Grizzly Bears"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: damage uses the target's power as Ignition resolves (Giant Growth in response)",
+  "players": [
+   { "hand": ["Chandra's Ignition"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Hill Giant"] },
+   { "hand": ["Giant Growth"], "battlefield": ["Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Chandra's Ignition", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "player": 1, "cast": "Giant Growth", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant"] },
+    { "life": 14, "graveyard_has": ["Grizzly Bears"] }
+   ],
+   "pt": { "Hill Giant": [6, 6] }
+  }
+ },
+ {
+  "name": "ruling: the creature is the source, so a white creature's damage hurts a protection-from-red creature",
+  "players": [
+   { "hand": ["Chandra's Ignition"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Savannah Lions"] },
+   { "battlefield": ["Silver Knight"] }
+  ],
+  "steps": [
+   { "cast": "Chandra's Ignition", "targets": ["Savannah Lions"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Savannah Lions"] },
+    { "life": 18, "graveyard_has": ["Silver Knight"] }
+   ]
+  }
+ }
+]

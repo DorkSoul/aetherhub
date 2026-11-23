@@ -1,0 +1,112 @@
+[
+  {
+    "name": "upkeep exiles the graveyard instant; cast it with lifelink; it is exiled afterwards, not put in the graveyard",
+    "players": [
+      { "battlefield": ["Radiant Scrollwielder", "Mountain"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard": [], "exile": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "a creature card in the graveyard is not exiled by the upkeep trigger",
+    "players": [
+      { "battlefield": ["Radiant Scrollwielder"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a normally cast instant from hand still goes to the graveyard",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Radiant Scrollwielder", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled instant is still cast for its mana cost (no mana, so it cannot be cast)",
+    "players": [
+      { "battlefield": ["Radiant Scrollwielder"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "exile": ["Lightning Bolt"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a fight caused by a sorcery does not gain life (the Bears only fights, no lifelink)",
+    "players": [
+      { "hand": ["Prey Upon"], "battlefield": ["Radiant Scrollwielder", "Grizzly Bears", "Forest"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Prey Upon", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Prey Upon", "Grizzly Bears"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a lifelink Bolt aimed at its own controller gains and loses the same life (life unchanged)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Radiant Scrollwielder", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Lightning Bolt"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,133 @@
+[
+  {
+    "name": "plays a land from the top of the library",
+    "players": [
+      { "battlefield": ["Traveling Chocobo"], "library": ["Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "casts a Bird spell from the top of the library",
+    "players": [
+      { "battlefield": ["Traveling Chocobo", "Forest"], "library": ["Birds of Paradise"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Birds of Paradise" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Birds of Paradise"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast a non-Bird creature from the top of the library",
+    "players": [
+      { "battlefield": ["Traveling Chocobo", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot play a land that is not on top of the library",
+    "players": [
+      { "battlefield": ["Traveling Chocobo"], "library": ["Grizzly Bears", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a land entering from the library triggers Oracle of Mul Daya an additional time",
+    "players": [
+      { "battlefield": ["Traveling Chocobo", "Oracle of Mul Daya"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "life": 22 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Bird on top of the library must still be paid for (no mana, cannot cast it)",
+    "players": [
+      { "battlefield": ["Traveling Chocobo"], "library": ["Birds of Paradise"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Birds of Paradise", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Birds of Paradise"], "library_top": ["Birds of Paradise"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the top card of the library cannot be cycled from there",
+    "players": [
+      { "battlefield": ["Traveling Chocobo", "Plains", "Plains"], "library": ["Festering Thicket"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Festering Thicket", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_top": ["Festering Thicket"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two Traveling Chocobos a land entering triggers landfall three times",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Tireless Tracker", "Traveling Chocobo", "Traveling Chocobo"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Tireless Tracker", "Traveling Chocobo", "Traveling Chocobo", "Forest", "Clue", "Clue", "Clue"] },
+        {}
+      ]
+    }
+  }
+]

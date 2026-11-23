@@ -1,0 +1,71 @@
+[
+  {
+    "name": "counters the spell when its controller declines to pay {1} per card in your graveyard",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Circular Logic"], "battlefield": ["Island", "Island", "Island"], "graveyard": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Circular Logic", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Mountain"] },
+        { "life": 20, "graveyard": ["Grizzly Bears", "Forest", "Circular Logic"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "the spell resolves when its controller pays {1} for each card in your graveyard",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Circular Logic"], "battlefield": ["Island", "Island", "Island"], "graveyard": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Circular Logic", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 17, "graveyard": ["Grizzly Bears", "Forest", "Circular Logic"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: the count does not include Circular Logic itself: two cards in the graveyard are payable with two Islands left",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Circular Logic"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "graveyard": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Circular Logic", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 17, "graveyard": ["Grizzly Bears", "Forest", "Circular Logic"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: madness: a discarded Circular Logic goes to the graveyard when its owner declines to cast it",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Circular Logic", "Forest"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": { "players": [ { "graveyard": ["Mind Rot"] }, { "graveyard": ["Circular Logic", "Forest"] } ] }
+  }
+]

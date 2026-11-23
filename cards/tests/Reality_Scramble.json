@@ -1,0 +1,133 @@
+[
+ {
+  "name": "bottoms my Bears, then puts the first creature card revealed onto the battlefield",
+  "players": [
+   {
+    "hand": ["Reality Scramble"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"],
+    "library": ["Forest", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Reality Scramble", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant"], "graveyard": ["Reality Scramble"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "retrace: cast from the graveyard by discarding a land; the Bears still go to the bottom",
+  "players": [
+   {
+    "graveyard": ["Reality Scramble"],
+    "hand": ["Mountain"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"],
+    "library": ["Forest", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Reality Scramble", "alt": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant"], "graveyard": ["Reality Scramble", "Mountain"], "hand_count": 0 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: sorcery timing: retrace cannot be cast in the end step",
+  "players": [
+   {
+    "graveyard": ["Reality Scramble"],
+    "hand": ["Mountain"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"],
+    "library": ["Forest", "Hill Giant"]
+   },
+   {}
+  ],
+  "start": "End",
+  "steps": [
+   { "cast": "Reality Scramble", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Reality Scramble"], "hand_count": 1 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: stops at the first revealed card sharing any type with the target (an artifact stops it even though the target is an artifact creature)",
+  "players": [
+   {
+    "hand": ["Reality Scramble"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Ornithopter"],
+    "library": ["Island", "Mind Stone", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Reality Scramble", "targets": ["Ornithopter"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Mind Stone"], "battlefield_lacks": ["Hill Giant"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: retrace needs a land card to discard; without one it cannot be cast from the graveyard",
+  "players": [
+   {
+    "graveyard": ["Reality Scramble"],
+    "hand": ["Grizzly Bears"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"],
+    "library": ["Forest", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Reality Scramble", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Reality Scramble"], "hand_count": 1, "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a retraced spell returns to the graveyard and can be retraced again the same turn",
+  "players": [
+   {
+    "graveyard": ["Reality Scramble"],
+    "hand": ["Mountain", "Mountain"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"],
+    "library": ["Forest", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Reality Scramble", "alt": 0, "targets": ["Grizzly Bears"], "answers": ["Mountain"] },
+   { "resolve": true },
+   { "cast": "Reality Scramble", "alt": 0, "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Reality Scramble", "Mountain", "Mountain"], "hand_count": 0 },
+    {}
+   ]
+  }
+ }
+]

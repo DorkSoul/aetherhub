@@ -1,0 +1,93 @@
+[
+  {
+    "name": "attack puts a flood counter on target land, which untaps at your end step",
+    "players": [
+      { "battlefield": [{ "name": "Xolatoyac, the Smiling Flood", "sick": false }, { "name": "Forest", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Xolatoyac, the Smiling Flood", "at": "p1" }] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Xolatoyac, the Smiling Flood", "Forest"] },
+        {}
+      ],
+      "tapped": { "Forest": false }
+    }
+  },
+  {
+    "name": "a tapped land without a flood counter does not untap at your end step",
+    "players": [
+      { "battlefield": ["Xolatoyac, the Smiling Flood", { "name": "Forest", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "tapped": { "Forest": true }
+    }
+  },
+  {
+    "name": "ETB puts a flood counter on the targeted land",
+    "players": [
+      { "hand": ["Xolatoyac, the Smiling Flood"], "battlefield": ["Forest", "Island", "Plains", "Mountain", "Swamp", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Xolatoyac, the Smiling Flood" },
+      { "resolve": true, "targets": ["Plains"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Xolatoyac, the Smiling Flood", "Plains"] },
+        {}
+      ],
+      "counters": { "Plains": { "Flood": 1 } }
+    }
+  },
+  {
+    "name": "a land with a flood counter is an Island in addition to its other types",
+    "players": [
+      { "hand": ["Xolatoyac, the Smiling Flood"], "battlefield": ["Forest", "Island", "Plains", "Mountain", "Swamp", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Xolatoyac, the Smiling Flood" },
+      { "resolve": true, "targets": ["Plains"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Xolatoyac, the Smiling Flood", "Plains"] }, {} ],
+      "counters": { "Plains": { "Flood": 1 } },
+      "subtypes": { "Plains": ["Island"] },
+      "not_subtypes": { "Mountain": ["Island"] }
+    }
+  },
+  {
+    "name": "ruling: a flooded land keeps its other land types and abilities (it is still a Plains that taps for white, and an Island)",
+    "players": [
+      {
+        "hand": ["Samwise the Stouthearted"],
+        "battlefield": ["Xolatoyac, the Smiling Flood", { "name": "Plains", "counters": { "Flood": 1 } }, "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Samwise the Stouthearted" },
+      { "resolve": true, "targets": [], "answers": [1] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Samwise the Stouthearted", "Plains", "Island"] },
+        {}
+      ],
+      "counters": { "Plains": { "Flood": 1 } },
+      "subtypes": { "Plains": ["Island"] }
+    }
+  }
+]

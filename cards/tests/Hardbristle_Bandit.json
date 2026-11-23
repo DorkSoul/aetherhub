@@ -1,0 +1,75 @@
+[
+  {
+    "name": "committing a crime untaps the bandit",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hardbristle Bandit"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "tap_for_mana": "Hardbristle Bandit", "color": "R" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Hardbristle Bandit": false },
+      "players": [ {}, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "targeting only your own creature is not a crime",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hardbristle Bandit", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "tap_for_mana": "Hardbristle Bandit", "color": "R" },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Hardbristle Bandit": true },
+      "players": [ { "graveyard": ["Hill Giant", "Lightning Bolt"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the crime untaps the Bandit before the spell it came from resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hardbristle Bandit"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "tap_for_mana": "Hardbristle Bandit", "color": "R" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "tapped": { "Hardbristle Bandit": false },
+      "players": [ { "hand_count": 1 }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: an ability targeting a card in an opponent's graveyard is a crime",
+    "players": [
+      { "battlefield": ["Hardbristle Bandit", "Geth, Lord of the Vault", "Swamp", "Swamp"] },
+      { "graveyard": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "tap_for_mana": "Hardbristle Bandit", "color": "B" },
+      { "activate": "Geth, Lord of the Vault", "targets": ["Sol Ring"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Hardbristle Bandit": false },
+      "players": [ { "battlefield_has": ["Sol Ring"] }, {} ]
+    }
+  }
+]

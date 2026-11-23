@@ -1,0 +1,279 @@
+[
+  {
+    "name": "power and toughness are your life minus the highest opponent life (ahead by 5)",
+    "players": [
+      {
+        "life": 25,
+        "battlefield": [
+          "Roiling Horror"
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [],
+    "expect": {
+      "pt": {
+        "Roiling Horror": [
+          5,
+          5
+        ]
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Roiling Horror"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "behind on life it dies",
+    "players": [
+      {
+        "life": 20,
+        "battlefield": [
+          "Roiling Horror"
+        ]
+      },
+      {
+        "life": 25
+      }
+    ],
+    "steps": [],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Roiling Horror"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "suspend X exiles it with X time counters",
+    "players": [
+      {
+        "hand": [
+          "Roiling Horror"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Roiling Horror",
+        "answers": [
+          2
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Roiling Horror"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "X=2 takes two of your upkeeps: drained at each, cast at the second",
+    "players": [
+      {
+        "hand": [
+          "Roiling Horror"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Roiling Horror",
+        "answers": [
+          2
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "targets": [
+          "p1"
+        ],
+        "auto": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 22,
+          "battlefield_has": [
+            "Roiling Horror"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "each time counter removed drains a player for 1",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Roiling Horror",
+            "counters": {
+              "time": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "targets": [
+          "p1"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 21,
+          "exile": [
+            "Roiling Horror"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "the last counter casts it with haste",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Roiling Horror",
+            "counters": {
+              "time": 1
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "targets": [
+          "p1"
+        ],
+        "auto": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Roiling Horror": [
+          2,
+          2
+        ]
+      },
+      "players": [
+        {
+          "life": 21,
+          "battlefield_has": [
+            "Roiling Horror"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "ruling: at equal life its toughness is 0 and it dies at once",
+    "players": [ { "life": 20, "battlefield": ["Roiling Horror"] }, { "life": 20 } ],
+    "steps": [],
+    "expect": { "players": [ { "graveyard": ["Roiling Horror"] }, {} ] }
+  },
+  {
+    "name": "ruling: declining the cast when the last counter is removed leaves it exiled",
+    "players": [ { "life": 20, "exile": [ { "name": "Roiling Horror", "counters": { "time": 1 } } ] }, { "life": 20 } ],
+    "steps": [ { "advance_to": "Upkeep", "targets": ["p1"], "auto": true, "answers": [false] } ],
+    "expect": { "players": [ { "life": 21, "exile": ["Roiling Horror"], "graveyard": [] }, { "life": 19 } ] },
+    "start": "Untap"
+  },
+  {
+    "name": "ruling: suspending exiles the card at once, without the stack, and deals no damage",
+    "players": [ { "hand": ["Roiling Horror"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Roiling Horror", "answers": [2] } ],
+    "expect": { "players": [ { "hand": [], "exile": ["Roiling Horror"], "life": 20 }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: a creature cast from suspend has haste and can attack the turn it is cast",
+    "players": [ { "life": 20, "exile": [ { "name": "Roiling Horror", "counters": { "time": 1 } } ] }, { "life": 20 } ],
+    "steps": [
+      { "advance_to": "Upkeep", "targets": ["p1"], "auto": true, "answers": [true] },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Roiling Horror", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 21, "battlefield_has": ["Roiling Horror"] }, { "life": 17 } ] },
+    "start": "Untap"
+  }
+]

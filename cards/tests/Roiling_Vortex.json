@@ -1,0 +1,227 @@
+[
+  {
+    "name": "each player's upkeep deals 1 damage to that player",
+    "players": [
+      {
+        "battlefield": [
+          "Roiling Vortex"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 19
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "spell cast with no mana spent deals 5 damage to its caster",
+    "players": [
+      {
+        "hand": [
+          "Snuff Out"
+        ],
+        "battlefield": [
+          "Roiling Vortex",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Snuff Out",
+        "alt": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Snuff Out"
+          ],
+          "life": 11
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "spell cast paying mana does not damage its caster",
+    "players": [
+      {
+        "hand": [
+          "Shock"
+        ],
+        "battlefield": [
+          "Roiling Vortex",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Shock",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Shock"
+          ],
+          "life": 20
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "R: opponents can't gain life this turn, but you still can",
+    "players": [
+      {
+        "hand": [
+          "Healing Salve",
+          "Healing Salve"
+        ],
+        "battlefield": [
+          "Roiling Vortex",
+          "Mountain",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "life": 15
+      },
+      {
+        "life": 15
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Roiling Vortex"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Healing Salve",
+        "targets": [
+          "p1"
+        ],
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Healing Salve",
+        "targets": [
+          "p0"
+        ],
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 18
+        },
+        {
+          "life": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cast trigger still resolves when the spell is countered",
+    "players": [
+      { "hand": ["Snuff Out"], "battlefield": ["Roiling Vortex", "Swamp"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Snuff Out", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Snuff Out" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Snuff Out"], "life": 11 },
+        { "graveyard": ["Counterspell"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: activating the R ability does not undo life gained before it resolved",
+    "players": [
+      { "battlefield": ["Roiling Vortex", "Mountain"] },
+      { "hand": ["Healing Salve"], "battlefield": ["Plains"], "life": 15 }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Healing Salve", "player": 1, "targets": ["p1"], "answers": [0] },
+      { "resolve": true },
+      { "activate": "Roiling Vortex" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 18 }
+      ]
+    }
+  }
+]

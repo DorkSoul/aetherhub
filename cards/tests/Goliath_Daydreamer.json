@@ -1,0 +1,112 @@
+[
+  {
+    "name": "instant or sorcery cast from my hand is exiled with a dream counter as it resolves",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Goliath Daydreamer", "Island", "Island", "Island"],
+        "library": ["Forest", "Forest", "Plains", "Plains", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": ["Divination"],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "countered spell cast from my hand goes to the graveyard, not exile",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Goliath Daydreamer", "Island", "Island", "Island"],
+        "library": ["Forest", "Forest", "Plains", "Plains", "Swamp"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Divination" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "graveyard": ["Divination"]
+        },
+        {
+          "graveyard": ["Counterspell"]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "attacking lets me cast the dream-countered spell from exile without paying its mana cost",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Goliath Daydreamer", "Island", "Island", "Island"],
+        "library": ["Forest", "Forest", "Plains", "Plains", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      {
+        "attack": [
+          { "card": "Goliath Daydreamer", "at": "p1" }
+        ]
+      },
+      { "block": [], "answers": [["Divination"]] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Forest", "Forest", "Plains", "Plains"],
+          "exile": [],
+          "graveyard": ["Divination"],
+          "library_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a dream-countered spell can only be cast while the attack trigger resolves, not later in the turn",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Goliath Daydreamer", "Island", "Island", "Island", "Island", "Island", "Island"],
+        "library": ["Forest", "Forest", "Plains", "Plains", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "attack": [ { "card": "Goliath Daydreamer", "at": "p1" } ] },
+      { "block": [], "answers": [[]] },
+      { "advance_to": "Main2" },
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Divination"], "graveyard": [] }, {}]
+    }
+  }
+]

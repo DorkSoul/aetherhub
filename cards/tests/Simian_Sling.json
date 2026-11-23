@@ -1,0 +1,96 @@
+[
+  { "name": "reconfigure attaches it: the creature gets +1/+1 and the Sling stops being a creature",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Simian Sling", "Grizzly Bears"] }, {} ],
+      "attached": { "Simian Sling": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [3, 3] } } },
+  { "name": "reconfigure needs {2}: one Mountain cannot attach it",
+    "players": [ { "battlefield": ["Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Simian Sling", "Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] } } },
+  { "name": "unattach with reconfigure makes the Sling a 1/1 creature again",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Simian Sling", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Simian Sling", "Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2], "Simian Sling": [1, 1] } } },
+  { "name": "equipped creature becomes blocked: it deals 1 damage to the defending player",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Simian Sling"] }, { "life": 19 } ] } },
+  { "name": "unattached Sling that becomes blocked deals 1 damage to the defending player",
+    "players": [ { "battlefield": ["Simian Sling"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Simian Sling", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Simian Sling" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Simian Sling"] }, { "life": 19 } ] } },
+  { "name": "an unequipped creature becoming blocked deals no damage from the Sling",
+    "players": [ { "battlefield": ["Simian Sling", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Simian Sling"] }, { "life": 20 } ] } },
+  { "name": "attached Sling is not a creature: it cannot attack, so only the 3/3 Bears connect",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Simian Sling", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ], "attached": { "Simian Sling": "Grizzly Bears" } } },
+  { "name": "ruling: an attached equipment stays untapped when the creature it is attached to attacks",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ], "attached": { "Simian Sling": "Grizzly Bears" }, "tapped": { "Grizzly Bears": true, "Simian Sling": false } } },
+  { "name": "ruling: a tapped Sling can still reconfigure, and attaching does not untap it",
+    "players": [ { "battlefield": ["Mountain", "Mountain", { "name": "Simian Sling", "tapped": true }, "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, {} ], "attached": { "Simian Sling": "Grizzly Bears" }, "tapped": { "Simian Sling": true }, "pt": { "Grizzly Bears": [3, 3] } } },
+  { "name": "ruling: an attached Sling is no longer a creature and loses its Monkey subtype",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, {} ], "attached": { "Simian Sling": "Grizzly Bears" }, "subtypes": { "Simian Sling": ["Equipment"] }, "not_subtypes": { "Simian Sling": ["Monkey"] } } },
+  { "name": "ruling: an Equipment creature cannot attach to itself, so the reconfigure does nothing",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Simian Sling", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Simian Sling", "ability": 0, "targets": ["Simian Sling"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, {} ], "pt": { "Simian Sling": [1, 1], "Grizzly Bears": [2, 2] }, "subtypes": { "Simian Sling": ["Monkey"] } } }
+]

@@ -1,0 +1,127 @@
+[
+  {
+    "name": "granted -8 puts creature cards from all graveyards onto the battlefield under its controller",
+    "players": [
+      {
+        "hand": ["Liliana's Talent"],
+        "battlefield": ["Swamp", "Swamp", { "name": "Domri Rade", "counters": { "loyalty": 9 } }],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {
+        "graveyard": ["Hill Giant", "Lightning Bolt"]
+      }
+    ],
+    "steps": [
+      { "cast": "Liliana's Talent", "targets": ["Domri Rade"] },
+      { "resolve": true },
+      { "activate": "Domri Rade", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Domri Rade", "Liliana's Talent", "Grizzly Bears", "Hill Giant"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Domri Rade": { "loyalty": 1 } }
+    }
+  },
+  {
+    "name": "a creature that deals damage to the enchanted planeswalker is destroyed",
+    "players": [
+      {
+        "hand": ["Liliana's Talent"],
+        "battlefield": ["Swamp", "Swamp", "Domri Rade"]
+      },
+      {
+        "battlefield": [{ "name": "Grizzly Bears", "sick": false }]
+      }
+    ],
+    "steps": [
+      { "cast": "Liliana's Talent", "targets": ["Domri Rade"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "Domri Rade" }] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "battlefield_has": ["Domri Rade"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "counters": { "Domri Rade": { "loyalty": 1 } }
+    }
+  },
+  {
+    "name": "a noncreature source damaging the enchanted planeswalker destroys nothing",
+    "players": [
+      {
+        "hand": ["Liliana's Talent", "Lightning Bolt"],
+        "battlefield": ["Swamp", "Swamp", "Mountain", { "name": "Domri Rade", "counters": { "loyalty": 9 } }]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Liliana's Talent", "targets": ["Domri Rade"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Domri Rade"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Domri Rade", "Liliana's Talent"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "counters": { "Domri Rade": { "loyalty": 6 } }
+    }
+  },
+  {
+    "name": "ruling: a creature's non-combat damage (Pyromancer ping) to the enchanted planeswalker destroys that creature",
+    "players": [
+      {
+        "hand": ["Liliana's Talent"],
+        "battlefield": ["Swamp", "Swamp", "Domri Rade", "Prodigal Pyromancer"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Liliana's Talent", "targets": ["Domri Rade"] },
+      { "resolve": true },
+      { "activate": "Prodigal Pyromancer", "ability": 0, "targets": ["Domri Rade"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Domri Rade", "Liliana's Talent"], "battlefield_lacks": ["Prodigal Pyromancer"], "graveyard": ["Prodigal Pyromancer"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: only one loyalty ability of each planeswalker per turn, including the granted -8",
+    "players": [
+      {
+        "hand": ["Liliana's Talent"],
+        "battlefield": ["Swamp", "Swamp", { "name": "Domri Rade", "counters": { "loyalty": 20 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Liliana's Talent", "targets": ["Domri Rade"] },
+      { "resolve": true },
+      { "activate": "Domri Rade", "ability": 32768 },
+      { "resolve": true },
+      { "activate": "Domri Rade", "ability": 32768, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Domri Rade", "Liliana's Talent"] },
+        {}
+      ],
+      "counters": { "Domri Rade": { "loyalty": 12 } }
+    }
+  }
+]

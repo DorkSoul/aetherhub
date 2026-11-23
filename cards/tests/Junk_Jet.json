@@ -1,0 +1,116 @@
+[
+ {
+  "name": "enters the battlefield and creates a Junk token",
+  "players": [
+   { "hand": ["Junk Jet"], "battlefield": ["Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Junk Jet" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Junk Jet", "Junk", "Mountain", "Mountain"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "sacrifice another artifact: double equipped creature's power",
+  "players": [
+   { "battlefield": ["Junk Jet", "Grizzly Bears", "Treasure", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk Jet", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Junk Jet", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [4, 2] },
+   "players": [
+    { "battlefield": ["Junk Jet", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no other artifact to sacrifice: ability can't be activated",
+  "players": [
+   { "battlefield": ["Junk Jet", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk Jet", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Junk Jet", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "players": [
+    { "battlefield": ["Junk Jet", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Junk token cannot pay for two costs: once sacrificed for its own ability, Junk Jet has no artifact to sacrifice",
+  "players": [
+   { "battlefield": ["Junk Jet", "Junk", "Grizzly Bears", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk", "ability": 0 },
+   { "resolve": true },
+   { "activate": "Junk Jet", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Junk Jet"], "battlefield_lacks": ["Junk"], "exile": ["Lightning Bolt"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: doubling applies independently each time (2 power, doubled twice, becomes 8)",
+  "players": [
+   { "battlefield": ["Junk Jet", "Grizzly Bears", "Treasure", "Treasure", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk Jet", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Junk Jet", "ability": 0, "answers": ["Treasure"] },
+   { "resolve": true },
+   { "activate": "Junk Jet", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [8, 2] },
+   "players": [
+    { "battlefield_lacks": ["Treasure"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land exiled by a Junk token can be played in your main phase",
+  "players": [
+   { "battlefield": ["Junk", "Mountain"], "library": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk", "ability": 0 },
+   { "resolve": true },
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"], "exile": [] },
+    {}
+   ]
+  }
+ }
+]

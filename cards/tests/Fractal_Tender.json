@@ -1,0 +1,59 @@
+[
+  {
+    "name": "ruling: increment resolves before the spell: the counter is on Fractal Tender while Hill Giant is still on the stack",
+    "players": [ { "hand": ["Hill Giant"], "battlefield": ["Fractal Tender", "Forest", "Forest", "Forest", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Hill Giant" }, { "pass": true }, { "pass": true, "player": 1 } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Hill Giant"] }, {} ], "pt": { "Fractal Tender": [4, 4] } }
+  },
+  {
+    "name": "casting a spell with more mana than its power puts a counter on it; end step makes a Fractal",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Fractal Tender", "Forest", "Forest", "Forest", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Fractal Tender", "Hill Giant", "Fractal 0-0 Green Blue"] }
+      ],
+      "pt": { "Fractal Tender": [4, 4], "Fractal 0-0 Green Blue": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: mana spent equal to power (not greater) does not trigger increment: no counter, no token at end step",
+    "players": [ { "hand": ["Witching Well"], "battlefield": ["Fractal Tender", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Witching Well" }, { "resolve": true, "answers": [[]] }, { "advance_to": "End" } ],
+    "expect": { "players": [ { "battlefield_has": ["Fractal Tender", "Witching Well"], "battlefield_lacks": ["Fractal 0-0 Green Blue"] }, {} ], "pt": { "Fractal Tender": [3, 3] } }
+  },
+  {
+    "name": "mana spent not greater than power or toughness: no counter and no token",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Fractal Tender", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "pt": { "Fractal Tender": [3, 3] }
+    }
+  },
+  {
+    "name": "ward {2} not paid by the caster: Lightning Bolt is countered and Fractal Tender survives",
+    "players": [ { "battlefield": ["Fractal Tender"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Fractal Tender"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Fractal Tender"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ward {2} paid by the caster: Lightning Bolt resolves and kills Fractal Tender",
+    "players": [ { "battlefield": ["Fractal Tender"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Fractal Tender"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Fractal Tender"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  }
+]

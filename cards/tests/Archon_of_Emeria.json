@@ -1,0 +1,330 @@
+[
+ {
+  "name": "opponent's nonbasic land enters tapped",
+  "players": [
+   {
+    "hand": [
+     "Boros Garrison"
+    ]
+   },
+   {
+    "battlefield": [
+     "Archon of Emeria"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "play_land": "Boros Garrison"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Boros Garrison": true
+   }
+  }
+ },
+ {
+  "name": "opponent's basic land enters untapped",
+  "players": [
+   {
+    "hand": [
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Archon of Emeria"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Forest": false
+   }
+  }
+ },
+ {
+  "name": "a player who already cast a spell can't cast another this turn",
+  "players": [
+   {
+    "hand": [
+     "Lightning Strike",
+     "Lightning Strike"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Archon of Emeria",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Strike",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Strike",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Strike"
+     ]
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "each player can cast only one spell a turn: a second Lightning Strike is illegal",
+  "players": [
+   {
+    "hand": [
+     "Lightning Strike",
+     "Lightning Strike"
+    ],
+    "battlefield": [
+     "Archon of Emeria",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Strike",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Strike",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Lightning Strike"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "opponent's nonbasic land enters tapped (Reflecting Pool would otherwise enter untapped)",
+  "players": [
+   {
+    "hand": [
+     "Reflecting Pool"
+    ]
+   },
+   {
+    "battlefield": [
+     "Archon of Emeria"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "play_land": "Reflecting Pool"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Reflecting Pool": true
+   }
+  }
+ },
+ {
+  "name": "ruling: a countered spell still counts as cast, so the second spell (Grizzly Bears) is illegal",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Archon of Emeria",
+     "Mountain",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "hand": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ],
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the Archon itself is a spell cast this turn, so no second spell can be cast after it",
+  "players": [
+   {
+    "hand": [
+     "Archon of Emeria",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Archon of Emeria"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Archon of Emeria"
+     ],
+     "hand": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an opponent's nonbasic land paid for with 2 life still enters tapped",
+  "players": [
+   {
+    "hand": [
+     "Hallowed Fountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Archon of Emeria"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "play_land": "Hallowed Fountain"
+   },
+   {
+    "pass": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 18
+    },
+    {}
+   ],
+   "tapped": {
+    "Hallowed Fountain": true
+   }
+  }
+ }
+]

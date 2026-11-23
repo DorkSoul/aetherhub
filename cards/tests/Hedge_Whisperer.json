@@ -1,0 +1,98 @@
+[
+  {
+    "name": "collect evidence 4 and {3}{G}, {T}: a land becomes a 5/5 Plant Boar with haste while the Whisperer stays tapped",
+    "players": [
+      { "battlefield": [ { "name": "Hedge Whisperer", "sick": false }, "Forest", "Forest", "Forest", "Forest", "Forest" ], "graveyard": ["Grizzly Bears", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hedge Whisperer", "ability": 0, "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hedge Whisperer", "Forest"], "graveyard": [] },
+        {}
+      ],
+      "tapped": { "Hedge Whisperer": true },
+      "pt": { "Forest": [5, 5] }
+    }
+  },
+  {
+    "name": "not enough total mana value in the graveyard: the ability can't be activated",
+    "players": [
+      { "battlefield": [ { "name": "Hedge Whisperer", "sick": false }, "Forest", "Forest", "Forest", "Forest", "Forest" ], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hedge Whisperer", "ability": 0, "targets": ["Forest"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hedge Whisperer"], "graveyard": ["Grizzly Bears"] },
+        {}
+      ],
+      "tapped": { "Hedge Whisperer": false }
+    }
+  },
+  {
+    "name": "keep the tapped Whisperer tapped during your untap step (you choose not to untap it)",
+    "players": [
+      { "battlefield": [ { "name": "Hedge Whisperer", "tapped": true } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "turn": 3,
+      "players": [
+        { "battlefield_has": ["Hedge Whisperer"] },
+        {}
+      ],
+      "tapped": { "Hedge Whisperer": true }
+    }
+  },
+  {
+    "name": "declining the choice lets the tapped Whisperer untap normally",
+    "players": [
+      { "battlefield": [ { "name": "Hedge Whisperer", "tapped": true } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "turn": 3,
+      "players": [
+        { "battlefield_has": ["Hedge Whisperer"] },
+        {}
+      ],
+      "tapped": { "Hedge Whisperer": false }
+    }
+  },
+  {
+    "name": "ruling: Whisperer killed in response to its ability: the target land never becomes a creature",
+    "players": [
+      { "battlefield": [ { "name": "Hedge Whisperer", "sick": false }, "Forest", "Forest", "Forest", "Forest", "Forest" ], "graveyard": ["Grizzly Bears", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Hedge Whisperer", "ability": 0, "targets": ["Forest"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hedge Whisperer"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "graveyard": ["Hedge Whisperer"] },
+        {}
+      ],
+      "keywords": { "Forest": [] }
+    }
+  }
+]

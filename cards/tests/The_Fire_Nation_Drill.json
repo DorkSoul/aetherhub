@@ -1,0 +1,91 @@
+[
+  {
+    "name": "ETB: tap it to destroy a creature with power 4 or less an opponent controls",
+    "players": [
+      { "hand": ["The Fire Nation Drill"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "The Fire Nation Drill" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Fire Nation Drill"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "tapped": { "The Fire Nation Drill": true }
+    }
+  },
+  {
+    "name": "declining the tap leaves the creature alone",
+    "players": [
+      { "hand": ["The Fire Nation Drill"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "The Fire Nation Drill" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Fire Nation Drill"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ],
+      "tapped": { "The Fire Nation Drill": false }
+    }
+  },
+  {
+    "name": "power 5 creature cannot be destroyed by the tap ability",
+    "players": [
+      { "hand": ["The Fire Nation Drill"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 3 } }] }
+    ],
+    "steps": [
+      { "cast": "The Fire Nation Drill" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "{1}: the opponent's hexproof creature loses hexproof until end of turn, so Murder can target it",
+    "players": [ { "hand": ["Murder"], "battlefield": ["The Fire Nation Drill", "Swamp", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Bassara Tower Archer"] } ],
+    "steps": [
+      { "cast": "Murder", "targets": ["Bassara Tower Archer"], "illegal": true },
+      { "activate": "The Fire Nation Drill", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Bassara Tower Archer"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 0 }, { "graveyard_has": ["Bassara Tower Archer"] } ] }
+  },
+  {
+    "name": "crew 2 taps creatures with total power 2 and the Drill becomes a 6/3 creature",
+    "players": [ { "battlefield": ["The Fire Nation Drill", "Grizzly Bears", "Swamp"] }, {} ],
+    "steps": [ { "activate": "The Fire Nation Drill", "ability": 1 }, { "resolve": true } ],
+    "expect": { "players": [ {}, {} ], "pt": { "The Fire Nation Drill": [6, 3] }, "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "crew 2 needs creatures with total power 2",
+    "players": [ { "battlefield": ["The Fire Nation Drill", { "name": "Grizzly Bears", "counters": { "m1m1": 1 } }] }, {} ],
+    "steps": [ { "activate": "The Fire Nation Drill", "ability": 1, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["The Fire Nation Drill"] }, {} ], "tapped": { "Grizzly Bears": false } }
+  },
+  {
+    "name": "ruling: earlier damage stays marked, so the {1} ability lets lethal damage destroy an indestructible creature",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["The Fire Nation Drill", "Mountain", "Swamp"] }, { "battlefield": ["Darksteel Gargoyle"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Darksteel Gargoyle"] },
+      { "resolve": true },
+      { "activate": "The Fire Nation Drill", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "graveyard": ["Darksteel Gargoyle"] } ] }
+  }
+]

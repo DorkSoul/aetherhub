@@ -1,0 +1,271 @@
+[
+ {
+  "name": "sacrificing one Food gives three +1/+1 counters",
+  "players": [
+   {
+    "hand": [
+     "Feasting Hobbit"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Food"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Feasting Hobbit"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "pt": {
+    "Feasting Hobbit": [
+     5,
+     5
+    ]
+   }
+  }
+ },
+ {
+  "name": "sacrificing no Food leaves a 2/2",
+  "players": [
+   {
+    "hand": [
+     "Feasting Hobbit"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Feasting Hobbit"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "pt": {
+    "Feasting Hobbit": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "creatures with less power than it can't block it",
+  "players": [
+   {
+    "battlefield": [
+     "Feasting Hobbit"
+    ]
+   },
+   {
+    "battlefield": [
+     "Llanowar Elves",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Feasting Hobbit",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Llanowar Elves",
+      "attacker": "Feasting Hobbit"
+     }
+    ],
+    "illegal": true
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Feasting Hobbit"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Feasting Hobbit"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "unblocked when only a smaller creature is available",
+  "players": [
+   {
+    "battlefield": [
+     "Feasting Hobbit"
+    ]
+   },
+   {
+    "battlefield": [
+     "Llanowar Elves"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Feasting Hobbit",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Llanowar Elves",
+      "attacker": "Feasting Hobbit"
+     }
+    ],
+    "illegal": true
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "a smaller creature declared as a blocker is dropped: Hobbit is unblocked",
+  "players": [
+   { "battlefield": ["Feasting Hobbit"] },
+   { "battlefield": ["Llanowar Elves", "Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Feasting Hobbit", "at": "p1" } ] },
+   { "block": [ { "blocker": "Llanowar Elves", "attacker": "Feasting Hobbit" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 18, "battlefield_has": ["Llanowar Elves"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a power boost after blockers are declared does not make it unblocked",
+  "players": [
+   { "hand": ["Giant Growth"], "battlefield": ["Feasting Hobbit", "Forest"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Feasting Hobbit", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Feasting Hobbit" } ] },
+   { "cast": "Giant Growth", "targets": ["Feasting Hobbit"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Feasting Hobbit"] },
+    { "life": 20, "graveyard_has": ["Hill Giant"] }
+   ],
+   "pt": { "Feasting Hobbit": [5, 5] }
+  }
+ },
+ {
+  "name": "ruling: devour Food can sacrifice several Foods at once (two Foods: 8/8)",
+  "players": [
+   { "hand": ["Feasting Hobbit"], "battlefield": ["Forest", "Forest", "Food", "Food"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Feasting Hobbit" },
+   { "resolve": true, "answers": [[0, 1]] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Food"] }, {} ],
+   "pt": { "Feasting Hobbit": [8, 8] }
+  }
+ },
+ {
+  "name": "ruling: Tough Cookie is a Food and can be sacrificed for Maraleaf Rider",
+  "players": [
+   { "battlefield": ["Maraleaf Rider", "Tough Cookie"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Maraleaf Rider", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Tough Cookie"], "battlefield_has": ["Maraleaf Rider"] },
+    {}
+   ]
+  }
+ }
+]

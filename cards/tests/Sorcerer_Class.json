@@ -1,0 +1,257 @@
+[
+  {
+    "name": "enters the battlefield: draw two cards, then discard two",
+    "players": [
+      {
+        "hand": ["Sorcerer Class"],
+        "battlefield": ["Island", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sorcerer Class" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [],
+          "battlefield_has": ["Sorcerer Class"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "level 2: creatures you control tap for mana spendable on an instant (Lightning Bolt)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          { "name": "Sorcerer Class", "counters": { "Level": 1 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "below level 2 creatures make no mana (Lightning Bolt cannot be paid)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          "Sorcerer Class",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "level 2 only: casting an instant does not trigger damage",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [
+          { "name": "Sorcerer Class", "counters": { "Level": 1 } },
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "level 3: each instant cast deals damage equal to instants and sorceries cast this turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": [
+          { "name": "Sorcerer Class", "counters": { "Level": 2 } },
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+        { "life": 11 }
+      ]
+    }
+  },
+  {
+    "name": "{U}{R} level ability adds a Level counter",
+    "players": [ { "battlefield": ["Sorcerer Class", "Island", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Sorcerer Class", "ability": 0 }, { "resolve": true } ],
+    "expect": { "counters": { "Sorcerer Class": { "Level": 1 } } }
+  },
+  {
+    "name": "level 2 ability needs a Mountain as well (illegal without R)",
+    "players": [ { "battlefield": ["Sorcerer Class", "Island", "Island"] }, {} ],
+    "steps": [ { "activate": "Sorcerer Class", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Sorcerer Class"] }, {} ] }
+  },
+  {
+    "name": "level 3 ability ({3}{U}{R}) at level 1 adds the second Level counter",
+    "players": [ { "battlefield": [ { "name": "Sorcerer Class", "counters": { "Level": 1 } }, "Island", "Island", "Island", "Mountain", "Mountain" ] }, {} ],
+    "steps": [ { "activate": "Sorcerer Class", "ability": 1 }, { "resolve": true } ],
+    "expect": { "counters": { "Sorcerer Class": { "Level": 2 } } }
+  },
+  {
+    "name": "level 3 ability needs five mana (four lands: illegal)",
+    "players": [ { "battlefield": [ { "name": "Sorcerer Class", "counters": { "Level": 1 } }, "Island", "Island", "Island", "Mountain" ] }, {} ],
+    "steps": [ { "activate": "Sorcerer Class", "ability": 1, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Sorcerer Class"] }, {} ] }
+  },
+  {
+    "name": "level 2: a creature's {U} mana pays for an instant (Unsummon); the Bears is tapped",
+    "players": [
+      {
+        "hand": ["Unsummon"],
+        "battlefield": [
+          { "name": "Sorcerer Class", "counters": { "Level": 1 } },
+          "Grizzly Bears"
+        ]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Unsummon", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [
+        { "graveyard": ["Unsummon"] },
+        { "battlefield_lacks": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Bolt countered in response to the trigger; the level 3 trigger still deals its damage",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Sorcerer Class", "counters": { "Level": 2 } }, "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 19, "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: two instants cast before the triggers resolve: each trigger counts 2 spells",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": [{ "name": "Sorcerer Class", "counters": { "Level": 2 } }, "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 10 } ]
+    }
+  },
+  {
+    "name": "ruling: a copy is not cast (no trigger, not counted); the copy still deals its damage",
+    "players": [
+      { "hand": ["Lightning Bolt", "Twincast"], "battlefield": [{ "name": "Sorcerer Class", "counters": { "Level": 2 } }, "Mountain", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Twincast", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 10 } ]
+    }
+  },
+  {
+    "name": "ruling: level 1 class cannot use the level 2 ability again once it is level 2",
+    "players": [
+      { "battlefield": [{ "name": "Sorcerer Class", "counters": { "Level": 1 } }, "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [ { "activate": "Sorcerer Class", "ability": 0, "illegal": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sorcerer Class"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the level 3 ability cannot be activated at level 1 even with five mana",
+    "players": [
+      { "battlefield": ["Sorcerer Class", "Island", "Island", "Island", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [ { "activate": "Sorcerer Class", "ability": 1, "illegal": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sorcerer Class"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: gaining level 3 keeps the level 2 creature mana (Bears pays for Unsummon, which triggers the damage)",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": [{ "name": "Sorcerer Class", "counters": { "Level": 2 } }, "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Unsummon", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [
+        { "graveyard": ["Unsummon"] },
+        { "hand": ["Hill Giant"], "life": 19 }
+      ]
+    }
+  }
+]

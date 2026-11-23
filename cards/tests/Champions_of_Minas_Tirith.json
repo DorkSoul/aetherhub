@@ -1,0 +1,77 @@
+[
+  {
+    "name": "when it enters you become the monarch and draw at your end step",
+    "players": [
+      { "hand": ["Champions of Minas Tirith"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Champions of Minas Tirith" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "hand_count": 1 }, {} ] }
+  },
+  {
+    "name": "an opponent who doesn't pay can't attack me this combat",
+    "players": [
+      { "hand": ["Champions of Minas Tirith"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"], "hand": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Champions of Minas Tirith" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1, "illegal": true, "answers": [false] }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "an opponent who pays X (cards in hand) can attack me",
+    "players": [
+      { "hand": ["Champions of Minas Tirith"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Island", "Island"], "hand": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Champions of Minas Tirith" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1, "answers": [true] },
+      { "block": [] }, { "advance_to": "Main2" }
+    ],
+    "expect": { "turn": 2, "players": [ { "life": 18 }, {} ] }
+  },
+  {
+    "name": "ruling: a creature that deals combat damage to the monarch makes its controller the monarch, who draws at their end step",
+    "players": [
+      { "hand": ["Champions of Minas Tirith"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Champions of Minas Tirith" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat", "answers": [true] },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "life": 18 }, { "hand_count": 2 } ] }
+  },
+  {
+    "name": "ruling: an opponent who doesn't pay can still attack a planeswalker I control",
+    "players": [
+      { "hand": ["Champions of Minas Tirith"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", { "name": "Test Walker", "counters": { "Loyalty": 4 } }] },
+      { "battlefield": ["Grizzly Bears"], "hand": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Champions of Minas Tirith" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "Test Walker" } ], "player": 1, "answers": [false] },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20 }, {} ], "counters": { "Test Walker": { "Loyalty": 2 } } }
+  },
+  {"name": "a creature that becomes a creature after the trigger resolves can't attack me either", "players": [{"hand": ["Champions of Minas Tirith"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"]}, {"battlefield": ["Mishra's Factory", "Island"]}], "steps": [{"cast": "Champions of Minas Tirith"}, {"resolve": true}, {"advance_to": "Main1", "player": 1}, {"advance_to": "BeginCombat", "player": 1, "answers": [false]}, {"tap_for_mana": "Island", "player": 1}, {"activate": "Mishra's Factory", "player": 1}, {"resolve": true}, {"attack": [{"card": "Mishra's Factory", "at": "p0"}], "player": 1, "illegal": true}, {"advance_to": "End", "player": 1}], "expect": {"players": [{"life": 20}, {}], "turn": 2}}
+]

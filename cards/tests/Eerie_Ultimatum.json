@@ -1,0 +1,68 @@
+[
+  {
+    "name": "returns permanent cards with different names; a duplicate name returns once",
+    "players": [
+      {
+        "hand": ["Eerie Ultimatum"],
+        "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears", "Grizzly Bears", "Serra Angel", "Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eerie Ultimatum" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Grizzly Bears", "Serra Angel"]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears", "Serra Angel"],
+          "graveyard_has": ["Eerie Ultimatum", "Grizzly Bears", "Lightning Bolt"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "instant and sorcery cards in the graveyard can't be returned",
+    "players": [
+      {
+        "hand": ["Eerie Ultimatum"],
+        "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Forest", "Forest"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eerie Ultimatum" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": ["Lightning Bolt"],
+          "graveyard_has": ["Eerie Ultimatum", "Lightning Bolt"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a returned Aura with no legal creature to enchant stays in the graveyard",
+    "players": [ { "hand": ["Eerie Ultimatum"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Forest", "Forest"], "graveyard": ["Pacifism"] }, {} ],
+    "steps": [ { "cast": "Eerie Ultimatum" }, { "resolve": true, "answers": [["Pacifism"]] } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Pacifism"], "graveyard_has": ["Pacifism", "Eerie Ultimatum"] }, {} ] }
+  },
+  {
+    "name": "ruling: an Aura returned at the same time cannot enchant the creature returned with it",
+    "players": [ { "hand": ["Eerie Ultimatum"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Forest", "Forest"], "graveyard": ["Pacifism", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Eerie Ultimatum" }, { "resolve": true, "answers": [["Pacifism", "Grizzly Bears"]] } ],
+    "expect": { "players": [ { "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Forest", "Forest", "Grizzly Bears"], "graveyard_has": ["Pacifism"] }, {} ] }
+  },
+  {
+    "name": "ruling: you may return just one of several cards, even if they share a name",
+    "players": [ { "hand": ["Eerie Ultimatum"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Forest", "Forest"], "graveyard": ["Grizzly Bears", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Eerie Ultimatum" }, { "resolve": true, "answers": [["Grizzly Bears"]] } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Eerie Ultimatum", "Grizzly Bears"] }, {} ] }
+  }
+]

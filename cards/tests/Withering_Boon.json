@@ -1,0 +1,127 @@
+[
+  {
+    "name": "pay 3 life to counter a creature spell",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Withering Boon"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "cast": "Withering Boon",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard": [
+            "Withering Boon"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no creature spell on the stack: cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Withering Boon"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Withering Boon",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the 3 life is an additional cost, so a player at 2 life cannot cast it",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] },
+      { "hand": ["Withering Boon"], "battlefield": ["Swamp", "Swamp"], "life": 2 }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Withering Boon", "player": 1, "targets": [ { "stack": "Grizzly Bears" } ], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "life": 2, "hand": ["Withering Boon"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an artifact creature spell is a creature spell (Solemn Simulacrum is countered)",
+    "players": [
+      { "hand": ["Solemn Simulacrum"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Withering Boon"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Solemn Simulacrum" },
+      { "cast": "Withering Boon", "player": 1, "targets": [ { "stack": "Solemn Simulacrum" } ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Solemn Simulacrum"] },
+        { "life": 17, "graveyard": ["Withering Boon"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "name": "Haphazard Bombardment",
+  "mana_cost": "{5}{R}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "controller": "Opponent", "not_types": ["Enchantment"] },
+          "min": 4,
+          "max": 4,
+          "min_amount": {
+            "type": "Min",
+            "a": { "type": "Fixed", "n": 4 },
+            "b": { "type": "Count", "filter": { "controller": "Opponent", "not_types": ["Enchantment"] } }
+          },
+          "then": [
+            {
+              "type": "AddCounters",
+              "what": { "type": "Remembered" },
+              "kind": "Aim",
+              "n": { "type": "Fixed", "n": 1 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "Count", "filter": { "controller": "Opponent", "has_counter": "Aim" } },
+        "cmp": { "op": "Ge", "n": 2 }
+      },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": {
+            "controller": "Opponent",
+            "has_counter": "Aim",
+            "not_has_counter": "Indestructible",
+            "not_keywords": ["Indestructible"]
+          },
+          "min": 1,
+          "max": 1,
+          "random": true,
+          "then": [
+            { "type": "Destroy", "what": { "type": "Remembered" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When Haphazard Bombardment enters, choose four nonenchantment permanents you don't control and put an aim counter on each of them.\nAt the beginning of your end step, if two or more permanents you don't control have an aim counter on them, destroy one of those permanents at random."
+}

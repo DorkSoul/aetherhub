@@ -1,0 +1,89 @@
+[
+  {
+    "name": "enters the battlefield and draws a card",
+    "players": [
+      { "hand": ["Bomat Bazaar Barge"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bomat Bazaar Barge" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bomat Bazaar Barge"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "crew 3 taps a creature with total power 3",
+    "players": [
+      { "battlefield": ["Bomat Bazaar Barge", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bomat Bazaar Barge", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Hill Giant": true }
+    }
+  },
+  {
+    "name": "ruling: crewed at the beginning of combat, the Vehicle can attack",
+    "players": [
+      { "battlefield": ["Bomat Bazaar Barge", { "name": "Hill Giant", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Bomat Bazaar Barge", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Bomat Bazaar Barge", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, {} ], "tapped": { "Hill Giant": true, "Bomat Bazaar Barge": true } }
+  },
+  {
+    "name": "ruling: a creature that just came under your control can crew",
+    "players": [
+      { "battlefield": ["Bomat Bazaar Barge", { "name": "Hill Giant", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bomat Bazaar Barge", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Hill Giant": true } }
+  },
+  {
+    "name": "ruling: crewing a Vehicle that is already a creature changes nothing",
+    "players": [
+      { "battlefield": ["Bomat Bazaar Barge", { "name": "Hill Giant", "sick": false }, { "name": "Shivan Dragon", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bomat Bazaar Barge", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Bomat Bazaar Barge", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Hill Giant": true, "Shivan Dragon": true }, "pt": { "Bomat Bazaar Barge": [5, 5] } }
+  },
+  {
+    "name": "ruling: removing the crewed Vehicle does not affect the creatures that crewed it",
+    "players": [
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Bomat Bazaar Barge", { "name": "Hill Giant", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bomat Bazaar Barge", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Swords to Plowshares", "targets": ["Bomat Bazaar Barge"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Bomat Bazaar Barge"], "battlefield_has": ["Hill Giant"] }, {} ], "tapped": { "Hill Giant": true } }
+  }
+]

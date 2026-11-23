@@ -1,0 +1,105 @@
+[
+  {
+    "name": "attack trigger deals 1 damage to the attacked player",
+    "players": [
+      { "battlefield": ["Scorch Spitter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Scorch Spitter", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "attack trigger deals 1 damage to the attacked planeswalker",
+    "players": [
+      { "battlefield": ["Scorch Spitter"] },
+      { "battlefield": ["Test Walker"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Scorch Spitter", "at": "Test Walker" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }],
+      "counters": { "Test Walker": { "Loyalty": 2 } }
+    }
+  },
+  {
+    "name": "another attacking creature does not trigger it",
+    "players": [
+      { "battlefield": ["Scorch Spitter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "ruling: the attack trigger's damage is not combat damage, so Pause for Reflection does not prevent it",
+    "players": [
+      { "hand": ["Pause for Reflection"], "battlefield": ["Forest", "Forest", "Forest", "Scorch Spitter"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pause for Reflection", "answers": [[]] },
+      { "resolve": true },
+      { "attack": [{ "card": "Scorch Spitter", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 19 }]
+    }
+  },
+  {
+    "name": "ruling: the attacked planeswalker dies to the trigger, Scorch Spitter keeps attacking and deals no combat damage",
+    "players": [
+      { "battlefield": ["Scorch Spitter"] },
+      { "battlefield": [{ "name": "Test Walker", "counters": { "Loyalty": 1 } }] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Scorch Spitter", "at": "Test Walker" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Scorch Spitter"] },
+        { "life": 20, "graveyard_has": ["Test Walker"] }
+      ],
+      "tapped": { "Scorch Spitter": true }
+    }
+  },
+  {
+    "name": "ruling: the planeswalker died to the trigger, but Scorch Spitter can still be blocked and dies to the blocker",
+    "players": [
+      { "battlefield": ["Scorch Spitter"] },
+      { "battlefield": [{ "name": "Test Walker", "counters": { "Loyalty": 1 } }, "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Scorch Spitter", "at": "Test Walker" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Scorch Spitter" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Scorch Spitter"] },
+        { "graveyard_has": ["Test Walker"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

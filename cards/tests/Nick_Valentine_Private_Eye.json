@@ -1,0 +1,56 @@
+[
+  { "name": "dies: may investigate",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Nick Valentine, Private Eye", "Mountain"] }, { } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Nick Valentine, Private Eye"] }, { "resolve": true, "answers": [true] } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Clue"], "graveyard_has": ["Nick Valentine, Private Eye", "Lightning Bolt"] }, { } ]
+    }
+  },
+  { "name": "a non-artifact creature dying does not trigger it",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Nick Valentine, Private Eye", "Grizzly Bears", "Mountain"] }, { } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Nick Valentine, Private Eye"], "battlefield_lacks": ["Clue"] }, { } ] }
+  },
+  { "name": "an artifact creature can block it",
+    "players": [ { "battlefield": ["Nick Valentine, Private Eye"] }, { "battlefield": ["Ornithopter"] } ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Nick Valentine, Private Eye", "at": "p1" } ] },
+      { "block": [ { "blocker": "Ornithopter", "attacker": "Nick Valentine, Private Eye" } ] },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { }, { "life": 20 } ] }
+  },
+  { "name": "unblocked, it deals 2 damage",
+    "players": [ { "battlefield": ["Nick Valentine, Private Eye"] }, { } ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Nick Valentine, Private Eye", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { }, { "life": 18 } ] }
+  },
+  { "name": "non-artifact creatures cannot block it (illegal Grizzly Bears block is dropped; Hill Giant still blocks the other attacker)",
+    "players": [ { "battlefield": ["Nick Valentine, Private Eye", "Savannah Lions"] }, { "battlefield": ["Grizzly Bears", "Hill Giant"] } ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Nick Valentine, Private Eye", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nick Valentine, Private Eye" }, { "blocker": "Hill Giant", "attacker": "Savannah Lions" } ] },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { }, { "life": 18 } ] }
+  },
+  { "name": "ruling: once blocked, it stays blocked when its blocker is removed (no combat damage to the player)",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Nick Valentine, Private Eye", "Mountain"] }, { "battlefield": ["Ornithopter"] } ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Nick Valentine, Private Eye", "at": "p1" } ] },
+      { "block": [ { "blocker": "Ornithopter", "attacker": "Nick Valentine, Private Eye" } ] },
+      { "cast": "Lightning Bolt", "targets": ["Ornithopter"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { }, { "life": 20, "graveyard_has": ["Ornithopter"] } ] }
+  }
+]

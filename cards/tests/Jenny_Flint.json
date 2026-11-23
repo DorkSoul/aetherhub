@@ -1,0 +1,182 @@
+[
+  {
+    "name": "sacrificing a Food puts a +1/+1 counter on another creature",
+    "players": [
+      {
+        "battlefield": [
+          "Jenny Flint",
+          "Grizzly Bears",
+          "Food",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Food",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "PlusOnePlusOne": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "no other creature to target: no counter",
+    "players": [
+      {
+        "battlefield": [
+          "Jenny Flint",
+          "Food",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Food"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Jenny Flint": [
+          2,
+          2
+        ]
+      },
+      "players": [
+        {
+          "life": 23
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters: search your library for Madame Vastra and put it into your hand",
+    "players": [
+      {
+        "hand": ["Jenny Flint"],
+        "battlefield": ["Island", "Mountain", "Plains"],
+        "library": ["Madame Vastra"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Jenny Flint"
+      },
+      {
+        "resolve": true,
+        "targets": ["p0"],
+        "answers": ["Madame Vastra"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Madame Vastra"],
+          "battlefield_has": ["Jenny Flint"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters: the targeted opponent searches their library instead",
+    "players": [
+      {
+        "hand": ["Jenny Flint"],
+        "battlefield": ["Island", "Mountain", "Plains"]
+      },
+      {
+        "library": ["Madame Vastra"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Jenny Flint"
+      },
+      {
+        "resolve": true,
+        "targets": ["p1"],
+        "answers": ["Madame Vastra"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": []
+        },
+        {
+          "hand": ["Madame Vastra"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: training still counts after the other attacker is destroyed by a response",
+    "players": [
+      { "battlefield": ["Jenny Flint", "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Jenny Flint", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Hill Giant"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "counters": { "Jenny Flint": { "PlusOnePlusOne": 1 } },
+      "pt": { "Jenny Flint": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: an attacker with equal power does not trigger training",
+    "players": [
+      { "battlefield": ["Jenny Flint", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Jenny Flint", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Jenny Flint": [2, 2] }
+    }
+  }
+]

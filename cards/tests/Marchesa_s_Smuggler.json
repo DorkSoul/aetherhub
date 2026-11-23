@@ -1,0 +1,75 @@
+[
+  {
+    "name": "{1}{U}{R}: target creature gains haste and can't be blocked this turn",
+    "players": [
+      { "battlefield": ["Marchesa's Smuggler", "Grizzly Bears", "Island", "Mountain", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Marchesa's Smuggler", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "keywords": { "Grizzly Bears": ["Haste", "Unblockable"] } }
+  },
+  {
+    "name": "cannot activate with only two lands (needs {1}{U}{R})",
+    "players": [
+      { "battlefield": ["Marchesa's Smuggler", "Grizzly Bears", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Marchesa's Smuggler", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: dethrone counter is put on the creature before blockers are declared",
+    "players": [
+      { "battlefield": ["Marchesa's Smuggler"] },
+      { "life": 25 }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Marchesa's Smuggler", "at": "p1" }] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Marchesa's Smuggler": [2, 2] }, "counters": { "Marchesa's Smuggler": { "p1p1": 1 } }, "players": [ {}, { "life": 25 } ] }
+  },
+  {
+    "name": "ruling: dethrone still puts the counter on if the defending player no longer has the most life when it resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Marchesa's Smuggler", "Mountain"] },
+      { "life": 21 }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Marchesa's Smuggler", "at": "p1" }] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ], "pt": { "Marchesa's Smuggler": [2, 2] }, "counters": { "Marchesa's Smuggler": { "p1p1": 1 } } }
+  },
+  {
+    "name": "ruling: no dethrone trigger when the attacked player does not have the most life",
+    "players": [
+      { "battlefield": ["Marchesa's Smuggler"] },
+      { "life": 19 }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Marchesa's Smuggler", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "pt": { "Marchesa's Smuggler": [1, 1] }, "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: attacking a planeswalker does not trigger dethrone even if its controller has the most life",
+    "players": [
+      { "battlefield": ["Marchesa's Smuggler"] },
+      { "life": 25, "battlefield": ["Mu Yanling, Sky Dancer"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Marchesa's Smuggler", "at": "Mu Yanling, Sky Dancer" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "pt": { "Marchesa's Smuggler": [1, 1] } }
+  }
+]

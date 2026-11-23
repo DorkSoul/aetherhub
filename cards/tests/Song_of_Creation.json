@@ -1,0 +1,207 @@
+[
+ {
+  "name": "casting a spell draws two",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Song of Creation",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "two land drops",
+  "players": [
+   {
+    "hand": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ],
+    "battlefield": [
+     "Song of Creation"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "play_land": "Forest"
+   },
+   {
+    "play_land": "Forest",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Song of Creation",
+      "Forest",
+      "Forest"
+     ],
+     "hand": [
+      "Forest"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "hand is discarded at my end step",
+  "players": [
+   {
+    "hand": [
+     "Forest",
+     "Island",
+     "Swamp"
+    ],
+    "battlefield": [
+     "Song of Creation"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "pass": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [],
+     "graveyard": [
+      "Forest",
+      "Island",
+      "Swamp"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: two Songs each give an extra land drop: three lands this turn",
+  "players": [
+   {
+    "hand": ["Forest", "Forest", "Forest"],
+    "battlefield": ["Song of Creation", "Song of Creation"]
+   },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "play_land": "Forest" },
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Forest", "Forest", "Forest"],
+     "hand": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the cast trigger resolves while the spell is still on the stack",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Song of Creation", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "stack_empty": false,
+   "players": [
+    { "hand_count": 2 },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: casting Song of Creation does not trigger its own draw",
+  "players": [
+   {
+    "hand": ["Song of Creation"],
+    "battlefield": ["Forest", "Island", "Mountain", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Song of Creation" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "battlefield_has": ["Song of Creation"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the cast trigger resolves even if the spell is countered",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Song of Creation", "Mountain"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 2, "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Counterspell"], "life": 20 }
+   ]
+  }
+ }
+]

@@ -1,0 +1,136 @@
+{
+  "name": "Fishing Pole",
+  "mana_cost": "{1}",
+  "types": [
+    "Artifact"
+  ],
+  "subtypes": [
+    "Equipment"
+  ],
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": {
+          "attached_by_source": true
+        },
+        "ability": {
+          "type": "Activated",
+          "cost": [
+            {
+              "type": "Mana",
+              "cost": "{1}"
+            },
+            {
+              "type": "Tap"
+            },
+            {
+              "type": "TapPermanents",
+              "filter": {
+                "attached_to_source": true,
+                "name": "Fishing Pole"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "type": "AddCounters",
+              "what": {
+                "type": "GrantSource"
+              },
+              "kind": "Bait",
+              "n": {
+                "type": "Fixed",
+                "n": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BecomesUntapped",
+        "filter": {
+          "attached_by_source": true
+        }
+      },
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": {
+              "type": "CountersOn",
+              "kind": "Bait",
+              "of": {
+                "type": "This"
+              }
+            },
+            "cmp": {
+              "op": "Ge",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "RemoveCounters",
+              "kind": "Bait",
+              "n": {
+                "type": "Fixed",
+                "n": 1
+              },
+              "what": {
+                "type": "This"
+              }
+            },
+            {
+              "type": "CreateToken",
+              "token": "Fish"
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        {
+          "type": "Mana",
+          "cost": "{2}"
+        }
+      ],
+      "timing": "Sorcery",
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "types": [
+                "Creature"
+              ],
+              "controller": "You"
+            }
+          },
+          "label": "target creature you control"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Attach",
+          "what": {
+            "type": "This"
+          },
+          "to": {
+            "type": "Target",
+            "idx": 0
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Equipped creature has \"{1}, {T}, Tap Fishing Pole: Put a bait counter on Fishing Pole.\"\nWhenever equipped creature becomes untapped, remove a bait counter from this Equipment. If you do, create a 1/1 blue Fish creature token.\nEquip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+}

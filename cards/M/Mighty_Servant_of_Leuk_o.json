@@ -1,0 +1,66 @@
+{
+  "name": "Mighty Servant of Leuk-o",
+  "mana_cost": "{3}",
+  "types": ["Artifact"],
+  "subtypes": ["Vehicle"],
+  "power": 6,
+  "toughness": 6,
+  "keywords": ["Trample"],
+  "abilities": [
+    { "type": "Ward", "cost": [ { "type": "Discard", "filter": {}, "n": 1 } ] },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Crews", "vehicle": { "this": true } },
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "All",
+            "cs": [
+              { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Impostor", "at_least": 1 } },
+              { "type": "Compare", "a": { "type": "Count", "filter": { "types": ["Creature"], "crewed_source_this_turn": true }, "zone": "Battlefield" }, "cmp": { "op": "Eq", "n": 2 } }
+            ]
+          },
+          "then": [
+            {
+              "type": "GrantStatic",
+              "what": { "type": "This" },
+              "duration": "UntilEndOfTurn",
+              "effect": {
+                "type": "GrantAbility",
+                "affects": { "this": true },
+                "ability": {
+                  "type": "Triggered",
+                  "trigger": { "type": "DealsDamage", "combat": true, "to": "Player", "filter": { "this": true } },
+                  "effects": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } } ]
+                }
+              }
+            }
+          ],
+          "else": []
+        },
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Impostor", "at_least": 1 } },
+          "then": [
+            { "type": "AddCounters", "kind": "Impostor", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } },
+            {
+              "type": "Delayed",
+              "at": "EndOfTurn",
+              "effects": [ { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Impostor", "n": { "type": "Fixed", "n": 99 } } ]
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Crew", "power": 4 } ],
+      "effects": [
+        { "type": "Animate", "what": { "type": "This" }, "add_types": ["Creature"], "duration": "UntilEndOfTurn" }
+      ]
+    }
+  ],
+  "oracle_text": "Trample\nWard—Discard a card.\nWhenever this Vehicle becomes crewed for the first time each turn, if it was crewed by exactly two creatures, it gains \"Whenever this creature deals combat damage to a player, draw two cards\" until end of turn.\nCrew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)"
+}

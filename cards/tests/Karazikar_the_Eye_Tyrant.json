@@ -1,0 +1,61 @@
+[
+  { "name": "attacking a player taps the chosen creature that player controls",
+    "players": [ { "battlefield": ["Karazikar, the Eye Tyrant"] }, { "battlefield": ["Hill Giant", "Serra Angel"] } ],
+    "steps": [
+      { "attack": [ { "card": "Karazikar, the Eye Tyrant", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Serra Angel"] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Karazikar, the Eye Tyrant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "tapped": { "Serra Angel": true }, "players": [ { "battlefield_has": ["Karazikar, the Eye Tyrant"] }, { "graveyard": ["Hill Giant"], "battlefield_has": ["Serra Angel"] } ] } },
+  { "name": "a tapped creature cannot block, so Karazikar is unblocked when the only creature is tapped",
+    "players": [ { "battlefield": ["Karazikar, the Eye Tyrant"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Karazikar, the Eye Tyrant", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Karazikar, the Eye Tyrant" } ], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "tapped": { "Hill Giant": true }, "players": [ {}, { "life": 15 } ] } },
+  { "name": "two attackers still make only one trigger: the other creature stays untapped",
+    "players": [ { "battlefield": ["Karazikar, the Eye Tyrant", "Grizzly Bears"] }, { "battlefield": ["Hill Giant", "Serra Angel"] } ],
+    "steps": [
+      { "attack": [ { "card": "Karazikar, the Eye Tyrant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Hill Giant"] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "tapped": { "Hill Giant": true, "Serra Angel": false }, "players": [ {}, { "life": 13 } ] } },
+  { "name": "the goaded creature must attack on its controller's next turn",
+    "players": [ { "battlefield": ["Karazikar, the Eye Tyrant"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Karazikar, the Eye Tyrant", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "DeclareAttackers" },
+      { "attack": [], "player": 1, "illegal": true }
+    ],
+    "expect": {} },
+  { "name": "an opponent attacking another opponent: you and the attacker each draw a card and lose 1 life",
+    "players": [ { "battlefield": ["Karazikar, the Eye Tyrant"], "library": ["Plains"] }, { "battlefield": ["Grizzly Bears"], "library": ["Island", "Forest"] }, {} ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p2" } ], "player": 1 },
+      { "resolve": true },
+      { "block": [], "player": 2 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 19, "hand": ["Plains"] }, { "life": 19, "hand": ["Island", "Forest"] }, { "life": 18 } ] } },
+  { "name": "an opponent attacking you does not trigger Karazikar's draw",
+    "players": [ { "battlefield": ["Karazikar, the Eye Tyrant"], "library": ["Plains"] }, { "battlefield": ["Grizzly Bears"], "library": ["Island", "Forest"] } ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "hand": [] }, { "life": 20, "hand": ["Island"] } ] } }
+]

@@ -1,0 +1,132 @@
+[
+  {
+    "name": "exiles the top two of the opponent's library, mana of any type casts them",
+    "players": [
+      {
+        "hand": ["Petty Larceny"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "library": ["Lightning Bolt", "Forest", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Petty Larceny", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Treasure"],
+          "graveyard": ["Petty Larceny"]
+        },
+        { "life": 17, "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "freerunning after an Assassin dealt combat damage to a player",
+    "players": [
+      {
+        "hand": ["Petty Larceny"],
+        "battlefield": ["Blood Operative", "Swamp", "Swamp"]
+      },
+      {
+        "library": ["Lightning Bolt", "Forest", "Island"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Blood Operative", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Petty Larceny", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Treasure"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "freerunning is not available without combat damage this turn",
+    "players": [
+      {
+        "hand": ["Petty Larceny"],
+        "battlefield": ["Swamp", "Swamp"]
+      },
+      {
+        "library": ["Lightning Bolt", "Forest", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Petty Larceny", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Petty Larceny"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: freerunning stays available after the Assassin that dealt combat damage dies",
+    "players": [
+      {
+        "hand": ["Petty Larceny", "Lightning Bolt"],
+        "battlefield": ["Blood Operative", "Swamp", "Swamp", "Mountain"]
+      },
+      {
+        "library": ["Lightning Bolt", "Forest", "Island"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Blood Operative", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["Blood Operative"] },
+      { "resolve": true },
+      { "cast": "Petty Larceny", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Treasure"], "graveyard_has": ["Blood Operative"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land is played only in your main phase with the stack empty",
+    "players": [
+      {
+        "hand": ["Petty Larceny"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "library": ["Forest", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Petty Larceny", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "play_land": "Island", "illegal": true },
+      { "advance_to": "Main2" },
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Island", "Treasure"] },
+        { "exile": ["Forest"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,148 @@
+[
+  {
+    "name": "exiles the top card and it can be played this turn",
+    "players": [
+      {
+        "hand": ["Mind's Desire"],
+        "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mind's Desire" },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "exile": [], "graveyard": ["Mind's Desire"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the exiled card can no longer be played on your next turn",
+    "players": [
+      {
+        "hand": ["Mind's Desire"],
+        "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mind's Desire" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "storm copies the spell for each earlier spell this turn",
+    "players": [
+      {
+        "hand": ["Mind's Desire", "Lightning Bolt"],
+        "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Mind's Desire" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest", "Forest"], "graveyard": ["Lightning Bolt", "Mind's Desire"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled card not played by end of turn stays exiled",
+    "players": [
+      {
+        "hand": ["Mind's Desire"],
+        "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mind's Desire" },
+      { "resolve": true },
+      { "advance_to": "Cleanup", "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"], "graveyard_has": ["Mind's Desire"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered spell still counts for storm",
+    "players": [
+      { "hand": ["Lightning Bolt", "Mind's Desire"], "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "cast": "Mind's Desire" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest", "Forest", "Forest"], "graveyard": ["Lightning Bolt", "Mind's Desire"] },
+        { "life": 20, "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: storm copies are not cast, so a later Mind's Desire does not count them",
+    "players": [
+      { "hand": ["Lightning Bolt", "Mind's Desire", "Mind's Desire"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Mind's Desire" },
+      { "resolve": true },
+      { "cast": "Mind's Desire" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Lightning Bolt", "Mind's Desire", "Mind's Desire"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the storm trigger means no copies are made",
+    "players": [
+      { "hand": ["Lightning Bolt", "Mind's Desire"], "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Stifle"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Mind's Desire" },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Mind's Desire" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"], "graveyard": ["Lightning Bolt", "Mind's Desire"] },
+        { "life": 17, "graveyard": ["Stifle"] }
+      ]
+    }
+  }
+]

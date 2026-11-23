@@ -1,0 +1,87 @@
+[
+  {
+    "name": "draws a card when you play a land",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["The Endstone"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "draws a card when you cast a spell",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["The Endstone", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "end step: life total becomes half the starting life total when higher",
+    "players": [
+      { "battlefield": ["The Endstone"] },
+      {}
+    ],
+    "steps": [
+      { "set_life": 17 },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 10 }, {} ]
+    }
+  },
+  {
+    "name": "end step: life total is raised to half the starting life total when lower",
+    "players": [
+      { "battlefield": ["The Endstone"] },
+      {}
+    ],
+    "steps": [
+      { "set_life": 3 },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 10 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the draw still happens when the spell that caused it is countered",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["The Endstone", "Forest", "Plains"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: a raise to half the starting life is a gain, so it does not happen when players can't gain life",
+    "players": [ { "battlefield": ["The Endstone"] }, { "battlefield": ["Sunspine Lynx"] } ],
+    "steps": [ { "set_life": 3 }, { "advance_to": "End" }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 3 }, {} ] }
+  },
+  {
+    "name": "ruling: a drop to half the starting life is a loss, which still happens when players can't gain life",
+    "players": [ { "battlefield": ["The Endstone"] }, { "battlefield": ["Sunspine Lynx"] } ],
+    "steps": [ { "set_life": 17 }, { "advance_to": "End" }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 10 }, {} ] }
+  }
+]

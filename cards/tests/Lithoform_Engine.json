@@ -1,0 +1,322 @@
+[
+ {
+  "name": "copies an instant on the stack for {3}, tap",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Lithoform Engine",
+     "Mountain",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "activate": "Lithoform Engine",
+    "ability": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "needs an instant or sorcery on the stack",
+  "players": [
+   {
+    "battlefield": [
+     "Lithoform Engine",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Lithoform Engine",
+    "ability": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Lithoform Engine"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "copies a permanent spell as a token for {4}, tap",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Lithoform Engine",
+     "Forest",
+     "Forest",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "activate": "Lithoform Engine",
+    "ability": 2,
+    "targets": [
+     {
+      "stack": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Forest",
+      "Forest",
+      "Grizzly Bears",
+      "Grizzly Bears",
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Lithoform Engine"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "copies Lion Sash's exile ability on the stack for {2}, tap; the copy gets a new target",
+  "players": [
+   {
+    "battlefield": ["Lithoform Engine", "Lion Sash", "Plains", "Island", "Island"]
+   },
+   {
+    "graveyard": ["Grizzly Bears", "Hill Giant"]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Lion Sash",
+    "ability": 0,
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "activate": "Lithoform Engine",
+    "ability": 0,
+    "targets": [
+     {
+      "stack": "Lion Sash"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": ["Hill Giant"]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Lion Sash": {"p1p1": 2}
+   },
+   "players": [
+    {},
+    {
+     "graveyard": [],
+     "exile": ["Grizzly Bears", "Hill Giant"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "control: without Lithoform Engine's copy Lion Sash's exile resolves once (one counter)",
+  "players": [
+   {
+    "battlefield": ["Lion Sash", "Plains"]
+   },
+   {
+    "graveyard": ["Grizzly Bears", "Hill Giant"]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Lion Sash",
+    "ability": 0,
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Lion Sash": {"p1p1": 1}
+   },
+   "players": [
+    {},
+    {
+     "graveyard": ["Hill Giant"],
+     "exile": ["Grizzly Bears"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy of a kicked spell is kicked too (kicked Burst Lightning copy deals 4 more)",
+  "players": [
+   { "hand": ["Burst Lightning"], "battlefield": ["Lithoform Engine", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Burst Lightning", "targets": ["p1"], "answers": [true] },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Burst Lightning" }] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": { "players": [ {}, { "life": 12 } ] }
+ },
+ {
+  "name": "ruling: a copy keeps the same target when no new target is chosen (Lightning Bolt copy hits the same player)",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Lithoform Engine", "Mountain", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": { "players": [ {}, { "life": 14 } ] }
+ },
+ {
+  "name": "ruling: a divided spell keeps its damage division when copied (Arc Trail copy: 2 to the player, 1 to the creature)",
+  "players": [
+   { "hand": ["Arc Trail"], "battlefield": ["Lithoform Engine", "Mountain", "Mountain", "Island", "Island", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Arc Trail", "targets": ["p1", "Grizzly Bears"] },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Arc Trail" }] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": { "players": [ {}, { "life": 16,"graveyard": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: a copy of a sorcery with no targets works (Divination copy draws two more)",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Lithoform Engine", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Divination" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 4, "graveyard": ["Divination"] }, {} ] }
+ },
+ {
+  "name": "ruling: copying a spell is not casting it, so Guttersnipe's cast trigger does not happen again for the copy",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Lithoform Engine", "Guttersnipe", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Divination" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 4 }, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: a copy of a modal spell keeps its mode (Archmage's Charm draw-two copy: four cards)",
+  "players": [
+   { "hand": ["Archmage's Charm"], "battlefield": ["Lithoform Engine", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Archmage's Charm", "answers": [1], "targets": ["p0"] },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Archmage's Charm" }] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 4, "graveyard": ["Archmage's Charm"] }, {} ] }
+ },
+ {
+  "name": "ruling: a copy of Fireball has the same X (X=3 copied: 6 damage in total)",
+  "players": [
+   { "hand": ["Fireball"], "battlefield": ["Lithoform Engine", "Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Fireball", "targets": ["p1"], "answers": [3] },
+   { "activate": "Lithoform Engine", "ability": 1, "targets": [{ "stack": "Fireball" }] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": { "players": [ {}, { "life": 14 } ] }
+ }
+]

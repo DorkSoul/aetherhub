@@ -1,0 +1,100 @@
+[
+  {
+    "name": "land in hand can't be played, exiled land can",
+    "players": [
+      { "battlefield": ["Memory Vessel"], "hand": ["Taiga"], "library": ["Island", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains", "Swamp"] },
+      { "library": ["Plains", "Swamp", "Mountain", "Forest", "Island", "Plains", "Swamp", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Memory Vessel" },
+      { "resolve": true },
+      { "play_land": "Taiga", "illegal": true },
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Memory Vessel", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"], "hand": ["Taiga"], "battlefield_has": ["Island"] },
+        { "exile": ["Plains", "Swamp", "Mountain", "Forest", "Island", "Plains", "Swamp"] }
+      ]
+    }
+  },
+  {
+    "name": "spell in hand can't be cast, exiled spell can",
+    "players": [
+      { "battlefield": ["Memory Vessel", "Mountain"], "hand": ["Shock"], "library": ["Lightning Bolt", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains", "Swamp"] },
+      { "library": ["Plains", "Swamp", "Mountain", "Forest", "Island", "Plains", "Swamp", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Memory Vessel" },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "illegal": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Shock"], "graveyard": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land is played only in a main phase, not during combat",
+    "players": [
+      { "battlefield": ["Memory Vessel"], "library": ["Island", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Memory Vessel" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "play_land": "Island", "illegal": true },
+      { "advance_to": "Main2" },
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Memory Vessel", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"], "battlefield_has": ["Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Memory Vessel itself, exiled as a cost, can't be cast from exile",
+    "players": [
+      { "battlefield": ["Memory Vessel", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Memory Vessel" },
+      { "resolve": true },
+      { "cast": "Memory Vessel", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Memory Vessel", "Island", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the opponent may cast its own exiled Lightning Bolt during your turn",
+    "players": [
+      { "battlefield": ["Memory Vessel"], "library": ["Island", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"] },
+      { "battlefield": ["Mountain"], "library": ["Lightning Bolt", "Plains", "Swamp", "Mountain", "Forest", "Island", "Plains"] }
+    ],
+    "steps": [
+      { "activate": "Memory Vessel" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17 },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

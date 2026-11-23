@@ -1,0 +1,194 @@
+[
+ {
+  "name": "Psionic Pulse counters a noncreature spell and is exiled on resolution",
+  "players": [
+   {
+    "hand": [
+     "Sapphire Dragon // Psionic Pulse"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ],
+    "player": 1
+   },
+   {
+    "cast": "Sapphire Dragon // Psionic Pulse",
+    "face": true,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Sapphire Dragon // Psionic Pulse"
+     ]
+    },
+    {
+     "graveyard_has": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "the creature side is cast for seven mana",
+  "players": [
+   {
+    "hand": [
+     "Sapphire Dragon // Psionic Pulse"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Sapphire Dragon // Psionic Pulse"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Sapphire Dragon // Psionic Pulse"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Sapphire Dragon // Psionic Pulse": [
+     5,
+     6
+    ]
+   }
+  }
+ },
+  {
+    "name": "attacking: scry 2 puts the top card on the bottom",
+    "players": [
+      { "battlefield": ["Sapphire Dragon // Psionic Pulse"], "library": ["Lightning Bolt", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sapphire Dragon // Psionic Pulse", "at": "p1" } ] },
+      { "block": [], "answers": [[0]] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "library_top": ["Grizzly Bears"] }, { "life": 15 } ]
+    }
+  },
+  {
+    "name": "blocking: scry 2 puts the top card on the bottom",
+    "players": [
+      { "battlefield": ["Sapphire Dragon // Psionic Pulse"], "library": ["Lightning Bolt", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Sapphire Dragon // Psionic Pulse", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true, "answers": [[0]] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "library_top": ["Grizzly Bears"], "life": 20 }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+ {
+  "name": "ruling: an Adventure countered on the stack goes to the graveyard, not exile, and is not castable later",
+  "players": [
+   {
+    "hand": ["Sapphire Dragon // Psionic Pulse"],
+    "battlefield": ["Island", "Island", "Island"]
+   },
+   {
+    "hand": ["Lightning Bolt", "Counterspell"],
+    "battlefield": ["Mountain", "Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "cast": "Sapphire Dragon // Psionic Pulse", "face": true, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "cast": "Counterspell", "targets": [{ "stack": "Psionic Pulse" }], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Sapphire Dragon // Psionic Pulse"], "exile": [], "life": 17 },
+    { "graveyard_has": ["Counterspell", "Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the creature side of an Adventure exiled by Psionic Pulse follows creature timing (not in combat)",
+  "players": [
+   {
+    "hand": ["Sapphire Dragon // Psionic Pulse"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "cast": "Sapphire Dragon // Psionic Pulse", "face": true, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "cast": "Sapphire Dragon // Psionic Pulse", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Sapphire Dragon // Psionic Pulse"], "battlefield_lacks": ["Sapphire Dragon // Psionic Pulse"] },
+    {}
+   ]
+  }
+ }
+]

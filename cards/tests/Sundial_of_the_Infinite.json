@@ -1,0 +1,84 @@
+[
+  {
+    "name": "on your turn: pay 1 and tap to end the turn",
+    "players": [
+      {
+        "battlefield": ["Sundial of the Infinite", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sundial of the Infinite" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2
+    }
+  },
+  {
+    "name": "opponent cannot activate it on your turn",
+    "players": [
+      {},
+      {
+        "battlefield": ["Sundial of the Infinite", "Island"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Sundial of the Infinite", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "turn": 1
+    }
+  },
+  {
+    "name": "ruling: ending the turn in response exiles the spell on the stack (it is not countered)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Sundial of the Infinite", "Mountain", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "activate": "Sundial of the Infinite" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Lightning Bolt"] }, { "battlefield_has": ["Grizzly Bears"], "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: cleanup discards down to seven after the Sundial ends the turn",
+    "players": [
+      { "hand": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"], "battlefield": ["Sundial of the Infinite", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sundial of the Infinite" },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 7, "graveyard": ["Grizzly Bears"] }, {} ],
+      "turn": 2
+    }
+  },
+  {
+    "name": "ruling: ending the turn before the end step skips the end-step solve of the Case",
+    "players": [
+      { "hand": ["Dark Ritual", "Dark Ritual", "Dark Ritual", "Dark Ritual"], "battlefield": ["Sundial of the Infinite", "Case of the Ransacked Lab", "Swamp", "Swamp", "Swamp", "Swamp", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dark Ritual" }, { "resolve": true },
+      { "cast": "Dark Ritual" }, { "resolve": true },
+      { "cast": "Dark Ritual" }, { "resolve": true },
+      { "cast": "Dark Ritual" }, { "resolve": true },
+      { "activate": "Sundial of the Infinite" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [ {}, {} ],
+      "counters": { "Case of the Ransacked Lab": { "judgment": 0 } }
+    }
+  }
+]

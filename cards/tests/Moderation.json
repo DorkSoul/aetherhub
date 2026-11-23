@@ -1,0 +1,87 @@
+[
+ {
+  "name": "casting a spell draws a card",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Moderation", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears", "Llanowar Elves"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "a second spell in the same turn cannot be cast",
+  "players": [
+   {
+    "hand": ["Lightning Bolt", "Lightning Bolt"],
+    "battlefield": ["Moderation", "Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears", "Llanowar Elves"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "Moderation cast first still stops the second spell that turn",
+  "players": [
+   {
+    "hand": ["Moderation", "Lightning Bolt"],
+    "battlefield": ["Plains", "Island", "Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Moderation" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Lightning Bolt"], "battlefield_has": ["Moderation"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Moderation's draw ability does not trigger for casting Moderation itself",
+  "players": [
+   { "hand": ["Moderation"], "battlefield": ["Plains", "Island", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Moderation" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "battlefield_has": ["Moderation"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

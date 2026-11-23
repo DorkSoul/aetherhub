@@ -1,0 +1,148 @@
+[
+  {
+    "name": "opponent attacks you with two creatures: you draw a card",
+    "players": [
+      { "battlefield": ["Mangara, the Diplomat", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Hill Giant", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "life": 15 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent attacks you with one creature: no draw",
+    "players": [
+      { "battlefield": ["Mangara, the Diplomat", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent's second spell in a turn draws a card; the first does not",
+    "players": [
+      { "battlefield": ["Mangara, the Diplomat", "Plains"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "hand_count": 0 }
+      ]
+    }
+  },
+  {
+    "name": "your own second spell does not draw (only opponents)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mangara, the Diplomat", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the second-spell draw resolves even if that spell is countered",
+    "players": [
+      { "hand": ["Counterspell"], "battlefield": ["Mangara, the Diplomat", "Island", "Island"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "cast": "Counterspell", "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "life": 17 },
+        { "hand_count": 0 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: attacked by three creatures: still only one card drawn",
+    "players": [
+      { "battlefield": ["Mangara, the Diplomat", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant", "Craw Wurm"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Hill Giant", "at": "p0" }, { "card": "Craw Wurm", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "life": 9 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an attacker killed in response still counts toward the draw",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mangara, the Diplomat", "Mountain"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Hill Giant", "at": "p0" } ] },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "life": 17 },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

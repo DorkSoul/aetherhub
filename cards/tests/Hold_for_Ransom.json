@@ -1,0 +1,111 @@
+[
+ {
+  "name": "enchanted creature can't attack",
+  "players": [
+   { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Hold for Ransom", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hold for Ransom", "Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "{7}: the creature is sacrificed and its Aura's controller draws a card",
+  "players": [
+   { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Hold for Ransom", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Grizzly Bears", "ability": 32768 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Grizzly Bears", "Hold for Ransom"], "battlefield_lacks": ["Grizzly Bears"], "hand_count": 1 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the granted ability costs {7}: not affordable with six untapped lands",
+  "players": [
+   { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Hold for Ransom", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Grizzly Bears", "ability": 32768, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Hold for Ransom"], "hand_count": 0 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "enchanted creature can't attack; the other attacker still deals damage",
+  "players": [
+   { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Hold for Ransom", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "enchanted creature can't block: the attacker is not blocked by it",
+  "players": [
+   { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Savannah Lions"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Hold for Ransom", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17 },
+    {}
+   ]
+  }
+ },
+ { "name": "ruling: only the enchanted creature's controller can activate the granted ability (the Aura's controller cannot)",
+   "players": [ { "battlefield": ["Grizzly Bears"] }, { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] } ],
+   "steps": [ { "advance_to": "Main1" }, { "cast": "Hold for Ransom", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true },
+              { "activate": "Grizzly Bears", "ability": 32768, "player": 1, "illegal": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hold for Ransom"] } ] } },
+ { "name": "ruling: contrast - the enchanted creature's controller can activate it and sacrifice the creature",
+   "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] }, { "hand": ["Hold for Ransom"], "battlefield": ["Plains", "Plains"] } ],
+   "steps": [ { "advance_to": "Main1" }, { "cast": "Hold for Ransom", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true },
+              { "advance_to": "Main1" }, { "activate": "Grizzly Bears", "ability": 32768 }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Hold for Ransom"] } ] } }
+]

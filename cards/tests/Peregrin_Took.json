@@ -1,0 +1,162 @@
+[
+  {
+    "name": "two Pests plus one additional Food (one Food per creation event, not per token)",
+    "players": [
+      {
+        "hand": ["Pest Summoning"],
+        "battlefield": ["Peregrin Took", "Swamp", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pest Summoning" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Peregrin Took", "Swamp", "Forest", "Forest", "Pest 1-1", "Pest 1-1", "Food"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sacrifice three Foods: draw a card",
+    "players": [
+      {
+        "battlefield": ["Peregrin Took", "Food", "Food", "Food"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Peregrin Took", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Peregrin Took"],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "two Foods are not enough to draw",
+    "players": [
+      {
+        "battlefield": ["Peregrin Took", "Food", "Food"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Peregrin Took", "ability": 0, "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: tokens an opponent creates do not give Peregrin's controller a Food",
+    "players": [
+      { "battlefield": ["Peregrin Took"] },
+      { "hand": ["Pest Summoning"], "battlefield": ["Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Pest Summoning", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Food"] },
+        { "battlefield_has": ["Pest 1-1", "Pest 1-1"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the extra Food also applies to a non-Food token (Liliana's Zombie)",
+    "players": [
+      {
+        "battlefield": [
+          "Peregrin Took",
+          { "name": "Liliana, Dreadhorde General", "counters": { "loyalty": 6 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Liliana, Dreadhorde General", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Zombie 2-2 Black", "Food"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Food cannot pay for two abilities (Maraleaf Rider after Peregrin's draw)",
+    "players": [
+      {
+        "battlefield": ["Peregrin Took", "Maraleaf Rider", "Food", "Food", "Food"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Peregrin Took", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Maraleaf Rider", "ability": 0, "targets": ["Peregrin Took"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "battlefield_has": ["Maraleaf Rider"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Food artifact creature (Tough Cookie) counts as a Food",
+    "players": [
+      {
+        "battlefield": ["Peregrin Took", "Tough Cookie", "Food", "Food"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Peregrin Took", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Tough Cookie"], "battlefield_has": ["Peregrin Took"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Food is not a creature, so Liliana's -4 sacrifices only creatures",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Liliana, Dreadhorde General", "counters": { "loyalty": 6 } },
+          "Food",
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Liliana, Dreadhorde General", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Food"], "graveyard_has": ["Grizzly Bears", "Hill Giant"] },
+        {}
+      ]
+    }
+  }
+]

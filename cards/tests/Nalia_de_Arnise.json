@@ -1,0 +1,124 @@
+[
+  {
+    "name": "full party: each creature gets a +1/+1 counter at the beginning of combat",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Malakir Blood-Priest", "Dropkick Bomber", "Magus of the Future", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": {
+        "Nalia de'Arnise": [4, 4],
+        "Malakir Blood-Priest": [3, 2],
+        "Dropkick Bomber": [3, 4],
+        "Magus of the Future": [3, 4],
+        "Grizzly Bears": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "no full party (three party members): no counters at the beginning of combat",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Malakir Blood-Priest", "Dropkick Bomber", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "pt": {
+        "Nalia de'Arnise": [3, 3],
+        "Grizzly Bears": [2, 2]
+      }
+    }
+  },
+  {
+    "name": "casts a Wizard spell from the top of your library",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Island", "Island", "Island", "Island", "Island"], "library": ["Magus of the Future"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Magus of the Future" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Magus of the Future"] }, {} ]
+    }
+  },
+  {
+    "name": "cannot cast a non-party creature spell from the top of your library",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Forest", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a top-of-library cast is still sorcery speed (not in the opponent's main phase)",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Island", "Island", "Island", "Island", "Island"], "library": ["Magus of the Future"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Magus of the Future", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Magus of the Future"], "library_top": ["Magus of the Future"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: casting from the top of your library still requires paying the full cost",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Island", "Island", "Island", "Island"], "library": ["Magus of the Future"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Magus of the Future", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Magus of the Future"], "library_top": ["Magus of the Future"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: creatures keep deathtouch after the party is broken later in the turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Nalia de'Arnise", "Malakir Blood-Priest", "Dropkick Bomber", "Magus of the Future", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Malakir Blood-Priest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt", "Malakir Blood-Priest"] }, {} ],
+      "keywords": { "Nalia de'Arnise": ["Deathtouch"], "Dropkick Bomber": ["Deathtouch"] }
+    }
+  },
+  {
+    "name": "ruling: two Rogues are one party member class, so Nalia, Kamber, a Cleric and a Warrior is not a full party",
+    "players": [
+      { "battlefield": ["Nalia de'Arnise", "Kamber, the Plunderer", "Malakir Blood-Priest", "Dropkick Bomber"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "pt": { "Nalia de'Arnise": [3, 3], "Kamber, the Plunderer": [3, 4], "Dropkick Bomber": [2, 3] }
+    }
+  }
+]

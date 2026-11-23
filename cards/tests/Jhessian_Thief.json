@@ -1,0 +1,69 @@
+[
+  {
+    "name": "combat damage to a player draws a card",
+    "players": [
+      { "battlefield": ["Jhessian Thief"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Jhessian Thief", "at": "p1" }] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "prowess from a noncreature spell",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Jhessian Thief"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17 }
+      ],
+      "pt": { "Jhessian Thief": [2, 4] }
+    }
+  },
+  {
+    "name": "ruling: playing a land does not cause prowess",
+    "players": [ { "hand": ["Forest"], "battlefield": ["Jhessian Thief"] }, {} ],
+    "steps": [ { "play_land": "Forest" } ],
+    "expect": { "pt": { "Jhessian Thief": [1, 3] } }
+  },
+  {
+    "name": "ruling: a creature spell does not cause prowess",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Jhessian Thief"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": { "pt": { "Jhessian Thief": [1, 3] } }
+  },
+  {
+    "name": "ruling: an artifact creature spell does not cause prowess",
+    "players": [ { "hand": ["Ornithopter"], "battlefield": ["Jhessian Thief"] }, {} ],
+    "steps": [ { "cast": "Ornithopter" }, { "resolve": true } ],
+    "expect": { "pt": { "Jhessian Thief": [1, 3] } }
+  },
+  {
+    "name": "ruling: prowess still resolves after the spell that triggered it is countered",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Jhessian Thief"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "pass": true }, { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 20, "graveyard": ["Counterspell"] } ], "pt": { "Jhessian Thief": [2, 4] } }
+  },
+  {
+    "name": "ruling: prowess resolves before the spell that caused it (Bolt still on the stack, player at 20)",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Jhessian Thief"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "pass": true }, { "pass": true, "player": 1 } ],
+    "expect": { "players": [ {}, { "life": 20 } ], "pt": { "Jhessian Thief": [2, 4] } }
+  }
+]

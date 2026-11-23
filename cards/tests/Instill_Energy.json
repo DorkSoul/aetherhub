@@ -1,0 +1,85 @@
+[
+  {
+    "name": "enchanted summoning-sick creature can attack as though it had haste",
+    "players": [
+      { "hand": ["Instill Energy"], "battlefield": ["Forest", { "name": "Grizzly Bears", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Instill Energy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "untap ability untaps the enchanted creature once per turn",
+    "players": [
+      { "hand": ["Instill Energy"], "battlefield": ["Forest", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Instill Energy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Instill Energy", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Instill Energy", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: the untap ability is on the stack until it resolves",
+    "players": [
+      { "hand": ["Instill Energy"], "battlefield": ["Forest", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Instill Energy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Instill Energy", "ability": 0 }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: can untap an opponent's creature it enchants during your turn",
+    "players": [
+      { "hand": ["Instill Energy"], "battlefield": ["Forest"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+    ],
+    "steps": [
+      { "cast": "Instill Energy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Instill Energy", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: an Aura that stops the creature untapping does not stop Instill Energy's untap",
+    "players": [
+      { "hand": ["Claustrophobia", "Instill Energy"], "battlefield": ["Forest", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Claustrophobia", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Instill Energy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Instill Energy", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false }
+    }
+  }
+]

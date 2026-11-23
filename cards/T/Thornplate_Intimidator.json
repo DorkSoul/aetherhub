@@ -1,0 +1,50 @@
+{
+  "name": "Thornplate Intimidator",
+  "mana_cost": "{3}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Rat", "Rogue"],
+  "power": 4,
+  "toughness": 3,
+  "abilities": [
+    { "type": "Kicker", "cost": [{ "type": "Mana", "cost": "{3}" }], "multi": false },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "condition": { "type": "Kicked" },
+      "effects": [
+        {
+          "type": "CopyPermanent",
+          "what": { "type": "This" },
+          "n": { "type": "Fixed", "n": 1 },
+          "except": [{ "type": "SetPT", "power": 1, "toughness": 1 }]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" }
+      ],
+      "effects": [
+        {
+          "type": "Unless",
+          "payer": { "type": "Target", "idx": 0 },
+          "cost": [
+            {
+              "type": "Or",
+              "options": [
+                [{ "type": "Sacrifice", "filter": { "not_types": ["Land"], "controller": "Opponent" }, "n": 1 }],
+                [{ "type": "Discard", "filter": { "controller": "Any" }, "n": 1 }]
+              ]
+            }
+          ],
+          "effects": [
+            { "type": "LoseLife", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 3 } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Offspring {3} (You may pay an additional {3} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nWhen this creature enters, target opponent loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card."
+}

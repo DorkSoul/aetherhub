@@ -1,0 +1,131 @@
+[
+ {
+  "name": "one-mode modal spell: choose up to one mode, +1/+1 counter and trample",
+  "players": [
+   {
+    "hand": ["Izzet Charm"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Island", "Mountain", "Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Izzet Charm", "answers": [1], "targets": ["Hill Giant"]},
+   {"resolve": true, "answers": [[1]]}
+  ],
+  "expect": {
+   "counters": {"Riku of Many Paths": {"PlusOnePlusOne": 1}},
+   "keywords": {"Riku of Many Paths": ["Trample"]}
+  }
+ },
+ {
+  "name": "a two-mode spell lets Riku choose two of its modes: Bird token and counter",
+  "players": [
+   {
+    "hand": ["Cryptic Command"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Island", "Island", "Island", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Cryptic Command", "answers": [[2, 3]]},
+   {"resolve": true, "answers": [[1, 2]]}
+  ],
+  "expect": {
+   "counters": {"Riku of Many Paths": {"PlusOnePlusOne": 1}},
+   "players": [{"battlefield_has": ["Bird 1-1 Blue Flying"]}, {}]
+  }
+ },
+ {
+  "name": "choosing no modes is allowed",
+  "players": [
+   {
+    "hand": ["Cryptic Command"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Island", "Island", "Island", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Cryptic Command", "answers": [[2, 3]]},
+   {"resolve": true, "answers": [[]]}
+  ],
+  "expect": {
+   "counters": {"Riku of Many Paths": {"PlusOnePlusOne": 0}},
+   "players": [{"battlefield_lacks": ["Bird 1-1 Blue Flying"]}, {}]
+  }
+ },
+ {
+  "name": "a spell that is not modal does not trigger Riku",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["p1"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "counters": {"Riku of Many Paths": {"PlusOnePlusOne": 0}},
+   "players": [{}, {"life": 17}]
+  }
+ },
+ {
+  "name": "mode 1 exiles the top card of your library to play",
+  "players": [
+   {
+    "hand": ["Izzet Charm"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Island", "Mountain", "Hill Giant"],
+    "library": ["Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Izzet Charm", "answers": [1], "targets": ["Hill Giant"]},
+   {"resolve": true, "answers": [[0]]}
+  ],
+  "expect": {
+   "players": [{"exile": ["Grizzly Bears"]}, {}]
+  }
+ },
+ {
+  "name": "ruling: a land exiled by mode 1 cannot be played during combat",
+  "players": [
+   {
+    "hand": ["Izzet Charm"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Island", "Mountain", "Hill Giant"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Izzet Charm", "answers": [1], "targets": ["Hill Giant"]},
+   {"resolve": true, "answers": [[0]]},
+   {"advance_to": "BeginCombat"},
+   {"play_land": "Forest", "illegal": true}
+  ],
+  "expect": {
+   "players": [{"exile": ["Forest"]}, {}]
+  }
+ },
+ {
+  "name": "ruling: a land exiled by mode 1 can be played in the main phase with the stack empty",
+  "players": [
+   {
+    "hand": ["Izzet Charm"],
+    "battlefield": [{"name": "Riku of Many Paths", "sick": false}, "Island", "Mountain", "Hill Giant"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Izzet Charm", "answers": [1], "targets": ["Hill Giant"]},
+   {"resolve": true, "answers": [[0]]},
+   {"play_land": "Forest"}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Forest"], "exile": []}, {}]
+  }
+ }
+]

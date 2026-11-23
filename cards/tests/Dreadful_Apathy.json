@@ -1,0 +1,129 @@
+[
+  {
+    "name": "enchanted creature cannot attack or block",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Dreadful Apathy": "Grizzly Bears" },
+      "players": [
+        { "battlefield_has": ["Dreadful Apathy"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "{2}{W}: exile enchanted creature",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Dreadful Apathy", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dreadful Apathy"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "exile ability needs three mana",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Dreadful Apathy", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dreadful Apathy"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature cannot attack: its declared attack is dropped, Hill Giant's 3 damage connects",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "enchanted creature cannot block: Hill Giant's declared block is dropped, Bears connect for 2",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Craw Wurm"] }
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: the creature exiled is the one enchanted when the ability resolves (Grizzly Bears stays)",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Dreadful Apathy", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dreadful Apathy"] },
+        { "exile": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Dreadful Apathy leaves while its exile ability is on the stack; the creature it enchanted is still exiled",
+    "players": [
+      { "hand": ["Dreadful Apathy"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Dreadful Apathy", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Dreadful Apathy", "ability": 0 },
+      { "pass": true },
+      { "cast": "Disenchant", "player": 1, "targets": ["Dreadful Apathy"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dreadful Apathy"] },
+        { "exile": ["Hill Giant"], "graveyard_has": ["Disenchant"] }
+      ]
+    }
+  }
+]

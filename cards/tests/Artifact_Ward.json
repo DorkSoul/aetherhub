@@ -1,0 +1,96 @@
+[
+  {
+    "name": "enchanted creature can't be blocked by an artifact creature",
+    "players": [
+      { "hand": ["Artifact Ward"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Ornithopter"] }
+    ],
+    "steps": [
+      { "cast": "Artifact Ward", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "auto": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18, "battlefield_has": ["Ornithopter"] } ],
+      "attached": { "Artifact Ward": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "an artifact creature blocked by the enchanted creature deals no damage to it",
+    "players": [
+      { "hand": ["Artifact Ward"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Juggernaut"] }
+    ],
+    "steps": [
+      { "cast": "Artifact Ward", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "DeclareAttackers" },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Juggernaut" } ], "player": 0 },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Artifact Ward"], "life": 20 }, { "battlefield_has": ["Juggernaut"] } ]
+    }
+  },
+  {
+    "name": "the same blocker without the Aura would die",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Juggernaut"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "DeclareAttackers" },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Juggernaut" } ], "player": 0 },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Grizzly Bears"] }, { "battlefield_has": ["Juggernaut"] } ]
+    }
+  },
+  {
+    "name": "abilities of artifact sources can't target the enchanted creature",
+    "players": [
+      { "hand": ["Artifact Ward"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Iron Lance", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Artifact Ward", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Iron Lance", "player": 1, "illegal": true }
+    ]
+  },
+  {
+    "name": "an artifact ability can still target an unenchanted creature",
+    "players": [
+      { "hand": ["Artifact Ward"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Iron Lance", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Artifact Ward", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Iron Lance", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "keywords": { "Hill Giant": ["FirstStrike"] } }
+  },
+  {
+    "name": "an artifact creature's block on the enchanted creature is not legal; the other block still works",
+    "players": [
+      { "hand": ["Artifact Ward"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Ornithopter", "Savannah Lions"] }
+    ],
+    "steps": [
+      { "cast": "Artifact Ward", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Ornithopter", "attacker": "Grizzly Bears" }, { "blocker": "Savannah Lions", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 18 } ] }
+  }
+]

@@ -1,0 +1,174 @@
+{
+  "name": "Musician",
+  "mana_cost": "{2}{U}",
+  "types": [
+    "Creature"
+  ],
+  "subtypes": [
+    "Human",
+    "Wizard"
+  ],
+  "colors": [
+    "U"
+  ],
+  "power": 1,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BeginningOfStep",
+        "step": "Upkeep",
+        "whose": "You"
+      },
+      "effects": [
+        {
+          "type": "CumulativeUpkeep",
+          "cost": [
+            {
+              "type": "Mana",
+              "cost": "{1}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        {
+          "type": "Tap"
+        }
+      ],
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "types": [
+                "Creature"
+              ]
+            }
+          },
+          "label": "target creature"
+        }
+      ],
+      "effects": [
+        {
+          "type": "AddCounters",
+          "what": {
+            "type": "Target",
+            "idx": 0
+          },
+          "kind": "Music",
+          "n": {
+            "type": "Fixed",
+            "n": 1
+          }
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Not",
+            "c": {
+              "type": "SelIs",
+              "what": {
+                "type": "Target",
+                "idx": 0
+              },
+              "filter": {
+                "has_ability": {
+                  "type": "Triggered",
+                  "trigger": {
+                    "type": "BeginningOfStep",
+                    "step": "Upkeep",
+                    "whose": "You"
+                  },
+                  "effects": [
+                    {
+                      "type": "Unless",
+                      "payer": {
+                        "type": "You"
+                      },
+                      "cost": [
+                        {
+                          "type": "ManaAmount",
+                          "amount": {
+                            "type": "CountersOn",
+                            "kind": "Music",
+                            "of": {
+                              "type": "This"
+                            }
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "type": "Destroy",
+                          "what": {
+                            "type": "This"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "then": [
+            {
+              "type": "GrantStatic",
+              "what": {
+                "type": "Target",
+                "idx": 0
+              },
+              "effect": {
+                "type": "GrantAbility",
+                "affects": {},
+                "ability": {
+                  "type": "Triggered",
+                  "trigger": {
+                    "type": "BeginningOfStep",
+                    "step": "Upkeep",
+                    "whose": "You"
+                  },
+                  "effects": [
+                    {
+                      "type": "Unless",
+                      "payer": {
+                        "type": "You"
+                      },
+                      "cost": [
+                        {
+                          "type": "ManaAmount",
+                          "amount": {
+                            "type": "CountersOn",
+                            "kind": "Music",
+                            "of": {
+                              "type": "This"
+                            }
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "type": "Destroy",
+                          "what": {
+                            "type": "This"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "duration": "Forever"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cumulative upkeep {1} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\n{T}: Put a music counter on target creature. If it doesn't have \"At the beginning of your upkeep, destroy this creature unless you pay {1} for each music counter on it,\" it gains that ability."
+}

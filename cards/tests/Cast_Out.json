@@ -1,0 +1,252 @@
+[
+ {
+  "name": "exiles a nonland permanent until it leaves",
+  "players": [
+   {
+    "hand": [
+     "Cast Out"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cast Out"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Cast Out"
+     ]
+    },
+    {
+     "battlefield": [],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "the permanent returns when Cast Out leaves",
+  "players": [
+   {
+    "hand": [
+     "Cast Out"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Cathar Commando",
+     "Plains"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cast Out"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "activate": "Cathar Commando",
+    "ability": 0,
+    "player": 1,
+    "targets": [
+     "Cast Out"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Cast Out"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "cycling {W}",
+  "players": [
+   {
+    "hand": [
+     "Cast Out"
+    ],
+    "battlefield": [
+     "Plains"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Cast Out",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest"
+     ],
+     "graveyard": [
+      "Cast Out"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't target a land",
+  "players": [
+   {
+    "hand": [
+     "Cast Out"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cast Out"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Cast Out"
+     ]
+    },
+    {
+     "battlefield": [
+      "Forest"
+     ],
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Cast Out leaves before its trigger resolves, so the target is never exiled",
+  "players": [
+   {"hand": ["Cast Out"], "battlefield": ["Plains", "Plains", "Plains", "Plains"]},
+   {"battlefield": ["Grizzly Bears", "Cathar Commando", "Plains"]}
+  ],
+  "steps": [
+   {"cast": "Cast Out"},
+   {"resolve": true, "targets": ["Grizzly Bears"]},
+   {"pass": true},
+   {"activate": "Cathar Commando", "ability": 0, "player": 1, "targets": ["Cast Out"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Cast Out"]}, {"battlefield_has": ["Grizzly Bears"], "exile": []}]}
+ },
+ {
+  "name": "ruling: an exiled token ceases to exist and does not come back when Cast Out leaves",
+  "players": [
+   {"hand": ["Cast Out"], "battlefield": ["Plains", "Plains", "Plains", "Plains"]},
+   {"battlefield": ["Saproling", "Cathar Commando", "Plains"]}
+  ],
+  "steps": [
+   {"cast": "Cast Out"},
+   {"resolve": true, "targets": ["Saproling"]},
+   {"advance_to": "Main2"},
+   {"pass": true},
+   {"activate": "Cathar Commando", "ability": 0, "player": 1, "targets": ["Cast Out"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Cast Out"]}, {"battlefield_lacks": ["Saproling"], "exile": []}]}
+ },
+ {
+  "name": "ruling: an Aura on the exiled permanent goes to its owner's graveyard",
+  "players": [
+   {"hand": ["Pacifism", "Cast Out"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Pacifism", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Cast Out"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Pacifism"], "battlefield_has": ["Cast Out"]}, {"exile": ["Grizzly Bears"]}]}
+ },
+ {
+  "name": "ruling: counters on the exiled creature cease to exist, so it returns without them",
+  "players": [
+   {"hand": ["Cast Out"], "battlefield": ["Plains", "Plains", "Plains", "Plains"]},
+   {"battlefield": [{"name": "Grizzly Bears", "counters": {"PlusOnePlusOne": 1}}, "Cathar Commando", "Plains"]}
+  ],
+  "steps": [
+   {"cast": "Cast Out"},
+   {"resolve": true, "targets": ["Grizzly Bears"]},
+   {"advance_to": "Main2"},
+   {"pass": true},
+   {"activate": "Cathar Commando", "ability": 0, "player": 1, "targets": ["Cast Out"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard": ["Cast Out"]}, {"battlefield_has": ["Grizzly Bears"]}], "pt": {"Grizzly Bears": [2, 2]}}
+ }
+]

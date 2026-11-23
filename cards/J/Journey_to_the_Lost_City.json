@@ -1,0 +1,89 @@
+{
+  "name": "Journey to the Lost City",
+  "mana_cost": "{3}{G}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        {
+          "type": "LookAtTop",
+          "who": { "type": "You" },
+          "n": { "type": "Fixed", "n": 4 },
+          "filter": {},
+          "all": true,
+          "take": 4,
+          "to": "Exile",
+          "rest": "Graveyard"
+        },
+        {
+          "type": "RollDie",
+          "sides": 20,
+          "outcomes": [
+            {
+              "min": 1, "max": 9,
+              "effects": [
+                {
+                  "type": "Choose",
+                  "who": { "type": "You" },
+                  "zone": "Exile",
+                  "min": 0,
+                  "max": 1,
+                  "filter": { "types": ["Land"], "among_remembered": true },
+                  "then": [
+                    { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" }
+                  ]
+                }
+              ]
+            },
+            {
+              "min": 10, "max": 19,
+              "effects": [
+                {
+                  "type": "Repeat",
+                  "n": { "type": "Count", "filter": { "types": ["Creature"], "among_remembered": true }, "player": { "type": "You" }, "zone": "Exile" },
+                  "effects": [
+                    { "type": "AddCounters", "what": { "type": "This" }, "kind": "Collection", "n": { "type": "Fixed", "n": 1 } }
+                  ]
+                },
+                { "type": "CreateToken", "token": "Wolf 2-2", "n": { "type": "Fixed", "n": 1 }, "controller": { "type": "You" }, "tapped": false, "attacking": false, "attach_to": null },
+                {
+                  "type": "AddCounters",
+                  "what": { "type": "Remembered" },
+                  "kind": "PlusOnePlusOne",
+                  "n": { "type": "CountersOn", "kind": "Collection", "of": { "type": "This" } }
+                },
+                {
+                  "type": "RemoveCounters",
+                  "what": { "type": "This" },
+                  "kind": "Collection",
+                  "n": { "type": "CountersOn", "kind": "Collection", "of": { "type": "This" } }
+                }
+              ]
+            },
+            {
+              "min": 20, "max": 20,
+              "effects": [
+                {
+                  "type": "ForEach",
+                  "objects": { "type": "ExiledWithThis" },
+                  "effects": [
+                    {
+                      "type": "If",
+                      "cond": { "type": "RememberedIs", "filter": { "types": ["Artifact", "Creature", "Enchantment", "Land", "Planeswalker", "Battle"] } },
+                      "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" } ],
+                      "else": []
+                    }
+                  ]
+                },
+                { "type": "Sacrifice", "filter": { "this": true }, "n": { "type": "Fixed", "n": 1 }, "who": { "type": "You" } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of your upkeep, exile the top four cards of your library, then roll a d20.\n1—9 | You may put a land card from among those cards onto the battlefield.\n10—19 | Create a 2/2 green Wolf creature token, then put a +1/+1 counter on it for each creature card among those cards.\n20 | Put all permanent cards exiled with this enchantment onto the battlefield, then sacrifice it."
+}

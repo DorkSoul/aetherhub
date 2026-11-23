@@ -1,0 +1,206 @@
+[
+ {
+  "name": "the chosen name's activated abilities can't be activated",
+  "players": [
+   {
+    "hand": [
+     "Sorcerous Spyglass"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Soulcoil Viper"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Sorcerous Spyglass"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Soulcoil Viper"
+    ]
+   },
+   {
+    "activate": "Soulcoil Viper",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a different chosen name does not stop a Soulcoil Viper activation",
+  "players": [
+   {
+    "hand": [
+     "Sorcerous Spyglass"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Soulcoil Viper"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Sorcerous Spyglass"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   },
+   {
+    "activate": "Soulcoil Viper",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "mana abilities of the chosen name still work (the Elves' tap ability)",
+  "players": [
+   {
+    "hand": [
+     "Sorcerous Spyglass"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Llanowar Elves"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Sorcerous Spyglass"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Llanowar Elves"
+    ]
+   },
+   {
+    "tap_for_mana": "Llanowar Elves"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Llanowar Elves",
+      "Sorcerous Spyglass"
+     ],
+     "pool": {
+      "G": 1
+     }
+    },
+    {}
+   ]
+  }
+  },
+  {
+    "name": "ruling: naming a card stops its activation from hand (cycling Renewed Faith in hand)",
+    "players": [
+      { "hand": ["Sorcerous Spyglass", "Renewed Faith"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sorcerous Spyglass" },
+      { "resolve": true, "answers": ["Renewed Faith"] },
+      { "activate": "Renewed Faith", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Renewed Faith"], "battlefield_has": ["Sorcerous Spyglass"] }, {} ] }
+  },
+  {
+    "name": "ruling: naming a different card leaves cycling from hand legal",
+    "players": [
+      { "hand": ["Sorcerous Spyglass", "Renewed Faith"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sorcerous Spyglass" },
+      { "resolve": true, "answers": ["Forest"] },
+      { "activate": "Renewed Faith", "ability": 0 },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": { "players": [ { "hand": ["Forest"], "graveyard": ["Renewed Faith"] }, {} ] }
+  },
+  {
+    "name": "ruling: an activated ability with a mana cost is not a mana ability (Spikeshot Goblin's ping is blocked)",
+    "players": [
+      { "hand": ["Sorcerous Spyglass"], "battlefield": ["Swamp", "Swamp", "Mountain", "Spikeshot Goblin"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sorcerous Spyglass" },
+      { "resolve": true, "answers": ["Spikeshot Goblin"] },
+      { "activate": "Spikeshot Goblin", "ability": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Spikeshot Goblin", "Sorcerous Spyglass"], "life": 20 }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: triggered abilities of the named card still trigger (Manaplasm's cast trigger)",
+    "players": [
+      { "hand": ["Sorcerous Spyglass", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain", "Manaplasm"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sorcerous Spyglass" },
+      { "resolve": true, "answers": ["Manaplasm"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Manaplasm", "Sorcerous Spyglass"] }, {} ], "pt": { "Manaplasm": [4, 4] } }
+  }
+]

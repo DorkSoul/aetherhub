@@ -1,0 +1,287 @@
+[
+  {
+    "name": "taps and mills a card to add one mana of the chosen colour to target player",
+    "players": [
+      {
+        "battlefield": [
+          "The Warring Triad"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "The Warring Triad",
+        "ability": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "G"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "pool": {
+            "G": 1
+          }
+        }
+      ],
+      "tapped": {
+        "The Warring Triad": true
+      }
+    }
+  },
+  {
+    "name": "can target itself controller and gets the mana in their own pool",
+    "players": [
+      {
+        "battlefield": [
+          "The Warring Triad"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "The Warring Triad",
+        "ability": 0,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "U"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "U": 1
+          }
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "tap cost: a second activation in the same turn is not legal",
+    "players": [
+      {
+        "battlefield": [
+          "The Warring Triad"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "The Warring Triad",
+        "ability": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "G"
+        ]
+      },
+      {
+        "activate": "The Warring Triad",
+        "ability": 0,
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "pool": {
+            "G": 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "with fewer than eight cards in graveyard it is not a creature: Doom Blade can't target it",
+    "players": [
+      {
+        "battlefield": [
+          "The Warring Triad"
+        ],
+        "graveyard": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Doom Blade"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Doom Blade",
+        "player": 1,
+        "targets": [
+          "The Warring Triad"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "The Warring Triad"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "with eight cards in graveyard it is a creature: Doom Blade can destroy it",
+    "players": [
+      {
+        "battlefield": [
+          "The Warring Triad"
+        ],
+        "graveyard": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Doom Blade"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Doom Blade",
+        "player": 1,
+        "targets": [
+          "The Warring Triad"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "The Warring Triad"
+          ]
+        },
+        {}
+      ]
+    }
+  }
+  ,{
+    "name": "ruling: with eight cards in graveyard the Triad enters as a creature, so Soul Warden triggers on it",
+    "players": [
+      {
+        "hand": ["The Warring Triad"],
+        "battlefield": ["Soul Warden", "Island", "Island", "Island"],
+        "graveyard": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Warring Triad" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Warring Triad", "Soul Warden"], "life": 21 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with seven cards in graveyard the Triad enters as a non-creature, so Soul Warden does not trigger",
+    "players": [
+      {
+        "hand": ["The Warring Triad"],
+        "battlefield": ["Soul Warden", "Island", "Island", "Island"],
+        "graveyard": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Warring Triad" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Warring Triad", "Soul Warden"], "life": 20 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature card in the graveyard (the Triad, though fewer than eight cards are there) can be returned by Archpriest",
+    "players": [
+      { "battlefield": ["Archpriest of Shadows"], "graveyard": ["The Warring Triad"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Archpriest of Shadows", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Warring Triad", "Archpriest of Shadows"], "graveyard": [] },
+        { "life": 16 }
+      ]
+    }
+  }
+]

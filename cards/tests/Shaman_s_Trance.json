@@ -1,0 +1,67 @@
+[
+  {
+    "name": "play a land and cast a spell from the opponent's graveyard",
+    "players": [
+      { "battlefield": ["Mountain", "Forest", "Island", "Taiga"], "hand": ["Shaman's Trance"] },
+      { "graveyard": ["Lightning Bolt", "Swamp"], "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "tap_for_mana": "Mountain" },
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Island" },
+      { "cast": "Shaman's Trance" },
+      { "resolve": true },
+      { "play_land": "Swamp" },
+      { "tap_for_mana": "Taiga" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Swamp"] }, { "graveyard": ["Grizzly Bears", "Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "without Shaman's Trance the opponent's graveyard is off limits",
+    "players": [
+      { "battlefield": ["Mountain"] },
+      { "graveyard": ["Lightning Bolt"], "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: Trance does not let you activate abilities of cards in the opponent's graveyard",
+    "players": [
+      { "hand": ["Shaman's Trance"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Island", "Island"] },
+      { "graveyard": ["Dread Wanderer"] }
+    ],
+    "steps": [
+      { "cast": "Shaman's Trance" },
+      { "resolve": true },
+      { "activate": "p1:Dread Wanderer", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Dread Wanderer"] } ]
+    }
+  },
+  {
+    "name": "ruling: flashback can be used on a card in the opponent's graveyard",
+    "players": [
+      { "hand": ["Shaman's Trance"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island"], "library": ["Forest"] },
+      { "graveyard": ["Think Twice"] }
+    ],
+    "steps": [
+      { "cast": "Shaman's Trance" },
+      { "resolve": true },
+      { "cast": "Think Twice", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Forest"] }, { "graveyard": [], "exile": ["Think Twice"] } ]
+    }
+  }
+]

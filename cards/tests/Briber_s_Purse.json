@@ -1,0 +1,43 @@
+[
+  { "name": "enters with X gem counters",
+    "players": [ { "hand": ["Briber's Purse"], "battlefield": ["Plains", "Plains"] }, {} ],
+    "steps": [ { "cast": "Briber's Purse", "answers": [2] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Briber's Purse"] }, {} ], "counters": { "Briber's Purse": { "gem": 2 } } } },
+  { "name": "{1}, {T}, remove a counter: target creature can't attack or block this turn",
+    "players": [ { "hand": ["Briber's Purse"], "battlefield": ["Plains", "Plains", "Plains", "Llanowar Elves"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Briber's Purse", "answers": [2] },
+      { "resolve": true },
+      { "activate": "Briber's Purse", "ability": 0, "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Llanowar Elves" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 19 } ], "counters": { "Briber's Purse": { "gem": 1 } }, "tapped": { "Briber's Purse": true } } },
+  { "name": "ruling: the Purse stays on the battlefield after its last gem counter is removed",
+    "players": [ { "hand": ["Briber's Purse"], "battlefield": ["Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Briber's Purse", "answers": [1] },
+      { "resolve": true },
+      { "activate": "Briber's Purse", "ability": 0, "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Briber's Purse"] }, { "battlefield_has": ["Grizzly Bears"] } ], "counters": { "Briber's Purse": { "gem": 0 } }, "tapped": { "Briber's Purse": true } } },
+  { "name": "ruling: a Purse with no gem counters cannot activate its last ability",
+    "players": [ { "battlefield": ["Briber's Purse", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Briber's Purse", "ability": 0, "targets": ["p1:Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Briber's Purse"] }, { "battlefield_has": ["Grizzly Bears"] } ] } },
+  { "name": "ruling: targeting an already blocking creature does not remove it from combat",
+    "players": [ { "hand": ["Briber's Purse"], "battlefield": ["Plains", "Plains", { "name": "Llanowar Elves", "sick": false }] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Briber's Purse", "answers": [1] },
+      { "resolve": true },
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Llanowar Elves" } ] },
+      { "activate": "Briber's Purse", "ability": 0, "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Llanowar Elves"] }, { "life": 20, "battlefield_has": ["Grizzly Bears"] } ] } }
+]

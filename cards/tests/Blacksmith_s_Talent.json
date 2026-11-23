@@ -1,0 +1,239 @@
+[
+  {
+    "name": "entering creates a Sword equipment token",
+    "players": [
+      {
+        "hand": [
+          "Blacksmith's Talent"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Blacksmith's Talent"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Blacksmith's Talent",
+            "Sword"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "level 2: at the beginning of combat attaches the Sword to a creature",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Blacksmith's Talent",
+            "counters": {
+              "level": 1
+            }
+          },
+          "Sword",
+          "Grizzly Bears",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Blacksmith's Talent",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Blacksmith's Talent": {
+          "level": 2
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "level 3 for 3R: equipped creatures get double strike and haste on your turn",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blacksmith's Talent", "counters": { "level": 2 } },
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Sword",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Blacksmith's Talent", "ability": 1 },
+      { "resolve": true },
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Blacksmith's Talent": { "level": 3 } },
+      "keywords": { "Grizzly Bears": ["DoubleStrike", "Haste"] },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "level 3 needs level 2 first",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blacksmith's Talent", "counters": { "level": 1 } },
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Blacksmith's Talent", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Blacksmith's Talent": { "level": 1 } }
+    }
+  },
+  {
+    "name": "entering gives a Level counter, so Level 2 can be bought right away",
+    "players": [
+      { "hand": ["Blacksmith's Talent"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blacksmith's Talent" },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Blacksmith's Talent", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Blacksmith's Talent": { "level": 2 } }
+    }
+  },
+  {
+    "name": "ruling: a level 1 Class has no level 2 trigger, so combat does not attach the Sword",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blacksmith's Talent", "counters": { "level": 1 } },
+          "Sword",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: a level 2 Class cannot activate its Level 2 ability again",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blacksmith's Talent", "counters": { "level": 2 } },
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Blacksmith's Talent", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Blacksmith's Talent": { "level": 2 } }
+    }
+  },
+  {
+    "name": "ruling: gaining a level is an ability on the stack; the new level appears only when it resolves",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blacksmith's Talent", "counters": { "level": 1 } },
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Blacksmith's Talent", "ability": 0 }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "counters": { "Blacksmith's Talent": { "level": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a level 3 Class keeps its level 2 combat trigger",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Blacksmith's Talent", "counters": { "level": 3 } },
+          "Sword",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Blacksmith's Talent": { "level": 3 } },
+      "keywords": { "Grizzly Bears": ["DoubleStrike", "Haste"] },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  }
+]

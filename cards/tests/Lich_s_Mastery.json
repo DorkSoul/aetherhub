@@ -1,0 +1,140 @@
+[
+  {
+    "name": "losing 3 life: exile three cards (permanent, hand, graveyard) one at a time",
+    "players": [
+      {
+        "battlefield": ["Lich's Mastery", "Forest", "Grizzly Bears"],
+        "hand": ["Island"],
+        "graveyard": ["Hill Giant"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": ["Grizzly Bears", "Island", "Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 17,
+          "battlefield": ["Lich's Mastery", "Forest"],
+          "hand": [],
+          "graveyard": [],
+          "exile": ["Grizzly Bears", "Island", "Hill Giant"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "gaining 3 life draws 3 cards",
+    "players": [
+      {
+        "hand": ["Healing Salve"],
+        "battlefield": ["Lich's Mastery", "Plains"],
+        "library": ["Grizzly Bears", "Hill Giant", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Healing Salve", "targets": ["p0"], "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23,
+          "hand": ["Grizzly Bears", "Hill Giant", "Forest"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "can't lose the game at 0 life while it is on the battlefield",
+    "players": [
+      {
+        "life": 3,
+        "battlefield": ["Lich's Mastery", "Forest", "Grizzly Bears"],
+        "hand": ["Island"],
+        "graveyard": ["Hill Giant"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": ["Grizzly Bears", "Island", "Hill Giant"] }
+    ],
+    "expect": {
+      "winner": -1,
+      "players": [
+        { "life": 0, "battlefield": ["Lich's Mastery", "Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Lich's Mastery leaving the battlefield: you lose the game",
+    "players": [
+      { "hand": ["Naturalize"], "battlefield": ["Lich's Mastery", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Naturalize", "targets": ["Lich's Mastery"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": 1,
+      "players": [
+        { "battlefield_lacks": ["Lich's Mastery"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: losing more life than there are cards to exile: exile everything you can, then Lich's Mastery itself and you lose",
+    "players": [
+      { "battlefield": ["Lich's Mastery", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": ["Forest"] }
+    ],
+    "expect": {
+      "winner": 1,
+      "players": [
+        { "exile": ["Forest", "Lich's Mastery"], "battlefield_lacks": ["Lich's Mastery"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no other permanents, hand or graveyard cards, Lich's Mastery is exiled and you lose",
+    "players": [
+      { "battlefield": ["Lich's Mastery"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": 1,
+      "players": [
+        { "exile": ["Lich's Mastery"] },
+        {}
+      ]
+    }
+  }
+]

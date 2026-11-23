@@ -1,0 +1,217 @@
+[
+ {
+  "name": "returns a creature card from the graveyard with a finality counter and exiles itself with three time counters",
+  "players": [
+   {
+    "hand": [
+     "Charnel Serenade"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Charnel Serenade"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Charnel Serenade"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "finality": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "a finality creature is exiled instead of dying",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "finality": 1
+      }
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "graveyard": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "no creature card in the graveyard: it still resolves (surveil first), returning nothing, and exiles itself",
+  "players": [
+   {
+    "hand": [
+     "Charnel Serenade"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Charnel Serenade"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Charnel Serenade"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "suspend for {2}{B} exiles it with three time counters",
+  "players": [
+   {
+    "hand": [
+     "Charnel Serenade"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Charnel Serenade",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Charnel Serenade"
+     ],
+     "hand": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a permanent with a finality counter that is bounced goes to hand normally",
+  "players": [
+   { "hand": ["Unsummon"], "battlefield": ["Island"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "finality": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Unsummon", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [] },
+    { "hand": ["Grizzly Bears"], "exile": [] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the last time counter removed lets you cast it for free, returning the creature with a finality counter",
+  "players": [
+   { "hand": ["Charnel Serenade"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Charnel Serenade", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "answers": [true] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ],
+   "counters": { "Grizzly Bears": { "finality": 1 } }
+  }
+ }
+]

@@ -1,0 +1,264 @@
+[
+  {
+    "name": "commander you own: combat damage to a player lets you goad a creature they control",
+    "players": [
+      {
+        "battlefield": [
+          "Popular Entertainer",
+          "Derevi, Empyrial Tactician"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Derevi, Empyrial Tactician",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "targets": [
+          "Hill Giant"
+        ],
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Popular Entertainer",
+            "Derevi, Empyrial Tactician"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    },
+    "commander": true
+  },
+  {
+    "name": "goaded creature must attack on the opponent's next turn even if they leave it out",
+    "players": [
+      {
+        "command": ["Derevi, Empyrial Tactician"],
+        "hand": [],
+        "battlefield": ["Popular Entertainer", "Forest", "Plains", "Island"]
+      },
+      {
+        "battlefield": [
+          { "name": "Hill Giant", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "cast": "Derevi, Empyrial Tactician" },
+      { "resolve": true, "answers": ["Hill Giant", false] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      {
+        "attack": [
+          {
+            "card": "Derevi, Empyrial Tactician",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          "Hill Giant",
+          false
+        ]
+      },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      {
+        "attack": [],
+        "player": 1
+      },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 17,
+          "battlefield_has": ["Derevi, Empyrial Tactician"]
+        },
+        {
+          "life": 18
+        }
+      ]
+    },
+    "commander": true
+  },
+  {
+    "name": "a non-commander creature you own does not get the ability",
+    "players": [
+      {
+        "battlefield": [
+          "Popular Entertainer",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Popular Entertainer",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the commander tax is tracked per commander: casting one does not tax the other",
+    "players": [
+      {
+        "command": ["Shadowheart, Dark Justiciar", "Derevi, Empyrial Tactician"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Plains", "Island"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Shadowheart, Dark Justiciar" },
+      { "resolve": true },
+      { "cast": "Derevi, Empyrial Tactician" },
+      { "resolve": true, "answers": ["Hill Giant", false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Shadowheart, Dark Justiciar", "Derevi, Empyrial Tactician"] },
+        {}
+      ]
+    },
+    "commander": true
+  },
+  {
+    "name": "ruling: a second commander you own also has the granted goad ability",
+    "players": [
+      {
+        "command": ["Derevi, Empyrial Tactician", "Shadowheart, Dark Justiciar"],
+        "battlefield": ["Popular Entertainer", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Shadowheart, Dark Justiciar" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Shadowheart, Dark Justiciar", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, { "life": 17 } ]
+    },
+    "commander": true
+  },
+  {
+    "name": "ruling: 21 combat damage from one commander loses the game",
+    "rolls": [1, 1, 1],
+    "players": [
+      {
+        "command": ["Ancient Gold Dragon"],
+        "battlefield": ["Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      { "life": 50 }
+    ],
+    "steps": [
+      { "cast": "Ancient Gold Dragon" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Ancient Gold Dragon", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Ancient Gold Dragon", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Ancient Gold Dragon", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 0,
+      "players": [ {}, { "life": 29 } ]
+    },
+    "commander": true
+  }
+]

@@ -1,0 +1,111 @@
+[
+  {
+    "name": "creature spell paid with its mana gains haste and can attack the turn it comes in",
+    "players": [
+      { "hand": ["Juggernaut"], "battlefield": ["Generator Servant", "Plains", "Plains"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Juggernaut" },
+      { "resolve": true },
+      { "attack": [{ "card": "Juggernaut", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Generator Servant"], "battlefield_has": ["Juggernaut"] },
+        { "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "creature spell paid with lands only does not gain haste",
+    "players": [
+      { "hand": ["Juggernaut"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Juggernaut" },
+      { "resolve": true },
+      { "attack": [{ "card": "Juggernaut", "at": "p1" }], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }]
+    }
+  },
+  {
+    "name": "sacrifice for mana without casting leaves the mana floating and the servant in the graveyard",
+    "players": [
+      { "hand": [], "battlefield": ["Generator Servant"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "tap_for_mana": "Generator Servant" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Generator Servant"], "restricted_pool": { "C": 2 } },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: mana spent on a sorcery that makes a creature token does not give the token haste",
+    "players": [
+      { "hand": ["Dance of the Tumbleweeds"], "battlefield": ["Generator Servant", "Forest", "Plains", "Plains"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "tap_for_mana": "Generator Servant" },
+      { "cast": "Dance of the Tumbleweeds", "answers": [[1]] },
+      { "resolve": true },
+      { "attack": [{ "card": "Elemental 0-0 Green", "at": "p1" }], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ],
+      "pt": { "Elemental 0-0 Green": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: one sacrifice's mana can give haste to two different creature spells",
+    "players": [
+      { "hand": ["Juggernaut", "Grizzly Bears"], "battlefield": ["Generator Servant", "Forest", "Plains", "Plains", "Plains"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "tap_for_mana": "Generator Servant" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Juggernaut" },
+      { "resolve": true },
+      { "attack": [{ "card": "Juggernaut", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Juggernaut", "Grizzly Bears"] }, { "life": 13 } ]
+    }
+  },
+  {
+    "name": "ruling: mana paid into a web-slinging alternative cost still gives the creature haste",
+    "players": [
+      { "hand": ["Spider-Man, Brooklyn Visionary"], "battlefield": ["Generator Servant", "Forest", { "name": "Grizzly Bears", "tapped": true }], "library": ["Plains"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "tap_for_mana": "Generator Servant" },
+      { "cast": "Spider-Man, Brooklyn Visionary", "alt": 0 },
+      { "resolve": true, "answers": ["Plains"] },
+      { "attack": [{ "card": "Spider-Man, Brooklyn Visionary", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Spider-Man, Brooklyn Visionary"] }, { "life": 16 } ]
+    }
+  }
+]

@@ -1,0 +1,173 @@
+[
+  {
+    "name": "exploit a creature: return target creature to its owner's hand",
+    "players": [
+      {
+        "hand": [
+          "Sidisi's Faithful"
+        ],
+        "battlefield": [
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sidisi's Faithful"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true,
+          "Grizzly Bears"
+        ],
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "hand": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "declining the exploit does nothing",
+    "players": [
+      {
+        "hand": [
+          "Sidisi's Faithful"
+        ],
+        "battlefield": [
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sidisi's Faithful"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Sidisi's Faithful",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exploit sacrifices only one creature, the others stay",
+    "players": [
+      {
+        "hand": ["Sidisi's Faithful"],
+        "battlefield": ["Island", "Grizzly Bears", "Savannah Lions"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Sidisi's Faithful" },
+      { "resolve": true, "answers": [true, "Grizzly Bears"], "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Sidisi's Faithful", "Savannah Lions"] },
+        { "hand": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: sacrificing the exploit creature itself still makes it exploit and triggers its other ability",
+    "players": [
+      {
+        "hand": ["Sidisi's Faithful"],
+        "battlefield": ["Island"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Sidisi's Faithful" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Sidisi's Faithful"] },
+        { "hand": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exploit bonus is lost if the creature left the battlefield before the exploit resolves",
+    "players": [
+      {
+        "hand": ["Sidisi's Faithful"],
+        "battlefield": ["Island", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Unsummon"],
+        "battlefield": ["Island", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Sidisi's Faithful" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Sidisi's Faithful"] },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Sidisi's Faithful"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  }
+]

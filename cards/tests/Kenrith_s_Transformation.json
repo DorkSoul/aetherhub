@@ -1,0 +1,267 @@
+[
+ {
+  "name": "Serra Angel becomes a 3/3 and you draw",
+  "players": [
+   {
+    "hand": [
+     "Kenrith's Transformation"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Kenrith's Transformation",
+    "targets": [
+     "Serra Angel"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Serra Angel": [
+     3,
+     3
+    ]
+   },
+   "attached": {
+    "Kenrith's Transformation": "Serra Angel"
+   },
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "loses abilities (mana ability gone)",
+  "players": [
+   {
+    "hand": [
+     "Kenrith's Transformation",
+     "Giant Growth"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     {
+      "name": "Llanowar Elves",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Kenrith's Transformation",
+    "targets": [
+     "Llanowar Elves"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Giant Growth",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Llanowar Elves": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "must target a creature",
+  "players": [
+   {
+    "hand": [
+     "Kenrith's Transformation"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Short Sword"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Kenrith's Transformation",
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "enchanted creature is a green Elk (loses its creature types and colour)",
+  "players": [
+   {
+    "hand": ["Kenrith's Transformation"],
+    "battlefield": ["Forest", "Forest"]
+   },
+   {
+    "battlefield": ["Serra Angel"]
+   }
+  ],
+  "steps": [
+   {"cast": "Kenrith's Transformation", "targets": ["Serra Angel"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "subtypes": {"Serra Angel": ["Elk"]},
+   "not_subtypes": {"Serra Angel": ["Angel"]},
+   "colors": {"Serra Angel": ["G"]},
+   "pt": {"Serra Angel": [3, 3]}
+  }
+ },
+ {
+  "name": "ruling: if the enchanted creature is gone when the Aura resolves, it doesn't enter and draws nothing",
+  "players": [
+   { "hand": ["Kenrith's Transformation"], "battlefield": ["Forest", "Forest"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Kenrith's Transformation", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "graveyard_has": ["Kenrith's Transformation"] },
+    { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a later base power/toughness effect (Lignify) overwrites Kenrith's Transformation",
+  "players": [
+   { "hand": ["Kenrith's Transformation", "Lignify"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Kenrith's Transformation", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lignify", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [0, 4] }
+  }
+ },
+ {
+  "name": "ruling: Kenrith's Transformation overwrites an earlier base power/toughness effect (Lignify first)",
+  "players": [
+   { "hand": ["Kenrith's Transformation", "Lignify"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lignify", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Kenrith's Transformation", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: a -2/-2 that started before Kenrith's Transformation still applies to the Elk",
+  "players": [
+   { "hand": ["Kenrith's Transformation", "Disfigure"], "battlefield": ["Forest", "Forest", "Swamp"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Disfigure", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Kenrith's Transformation", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Serra Angel": [1, 1] }
+  }
+ },
+ {
+  "name": "ruling: a -2/-2 that starts after Kenrith's Transformation still applies to the Elk",
+  "players": [
+   { "hand": ["Kenrith's Transformation", "Disfigure"], "battlefield": ["Forest", "Forest", "Swamp"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Kenrith's Transformation", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Disfigure", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Serra Angel": [1, 1] }
+  }
+ },
+ {
+  "name": "ruling: nonlethal damage becomes lethal when Kenrith's Transformation makes the creature 3/3",
+  "players": [
+   { "hand": ["Kenrith's Transformation", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Mountain"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Kenrith's Transformation", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "graveyard_has": ["Serra Angel"] }]
+  }
+ },
+ {
+  "name": "control: Lightning Bolt alone leaves a 4/4 Serra Angel alive with 3 damage",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "battlefield_has": ["Serra Angel"] }]
+  }
+ },
+ {
+  "name": "ruling: a granted ability (Rancor's trample) is kept after Kenrith's Transformation is attached",
+  "players": [
+   { "hand": ["Kenrith's Transformation", "Rancor"], "battlefield": ["Forest", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Kenrith's Transformation", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Rancor", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [5, 3] },
+   "keywords": { "Grizzly Bears": ["Trample"] }
+  }
+ }
+]

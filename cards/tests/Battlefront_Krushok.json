@@ -1,0 +1,44 @@
+[
+ { "name": "can't be blocked by two creatures",
+   "players": [ { "battlefield": ["Battlefront Krushok"] }, { "battlefield": ["Forest", "Grizzly Bears", "Goblin Piker"] } ],
+   "steps": [
+     { "attack": [ { "card": "Battlefront Krushok", "at": "p1" } ] },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Battlefront Krushok" }, { "blocker": "Goblin Piker", "attacker": "Battlefront Krushok" } ], "illegal": true }
+   ],
+   "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears", "Goblin Piker"] } ] } },
+ { "name": "one blocker is fine and kills the blocker",
+   "players": [ { "battlefield": ["Battlefront Krushok"] }, { "battlefield": ["Forest", "Grizzly Bears"] } ],
+   "steps": [
+     { "attack": [ { "card": "Battlefront Krushok", "at": "p1" } ] },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Battlefront Krushok" } ] },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Battlefront Krushok"] }, { "graveyard": ["Grizzly Bears"] } ] } },
+ { "name": "a creature you control with a +1/+1 counter can't be double-blocked",
+   "players": [ { "battlefield": [ "Battlefront Krushok", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } } ] }, { "battlefield": ["Forest", "Goblin Piker", "Elvish Visionary"] } ],
+   "steps": [
+     { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+     { "block": [ { "blocker": "Goblin Piker", "attacker": "Grizzly Bears" }, { "blocker": "Elvish Visionary", "attacker": "Grizzly Bears" } ], "illegal": true }
+   ],
+   "expect": { "players": [ {}, {} ] } },
+ { "name": "a creature without a +1/+1 counter can still be double-blocked",
+   "players": [ { "battlefield": ["Battlefront Krushok", "Grizzly Bears"] }, { "battlefield": ["Forest", "Goblin Piker", "Elvish Visionary"] } ],
+   "steps": [
+     { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+     { "block": [ { "blocker": "Goblin Piker", "attacker": "Grizzly Bears" }, { "blocker": "Elvish Visionary", "attacker": "Grizzly Bears" } ] },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, {} ] } },
+ { "name": "two blockers on it: it can't be blocked by more than one creature, so it survives", "players": [ { "battlefield": ["Battlefront Krushok"] }, { "battlefield": ["Grizzly Bears", "Hill Giant"] } ], "steps": [ { "attack": [ {"card": "Battlefront Krushok", "at": "p1"} ] }, { "block": [ {"blocker": "Grizzly Bears", "attacker": "Battlefront Krushok"}, {"blocker": "Hill Giant", "attacker": "Battlefront Krushok"} ] }, { "advance_to": "Main2" } ], "expect": { "players": [ {"battlefield_has": ["Battlefront Krushok"]}, {} ] } },
+ { "name": "a creature you control with a +1/+1 counter cannot be double-blocked: it survives a two-creature block", "players": [ { "battlefield": [ "Battlefront Krushok", {"name": "Grizzly Bears", "sick": false, "counters": {"PlusOnePlusOne": 1}} ] }, { "battlefield": ["Goblin Piker", "Elvish Visionary"] } ], "steps": [ { "attack": [ {"card": "Grizzly Bears", "at": "p1"} ] }, { "block": [ {"blocker": "Goblin Piker", "attacker": "Grizzly Bears"}, {"blocker": "Elvish Visionary", "attacker": "Grizzly Bears"} ] }, { "advance_to": "Main2" } ], "expect": { "players": [ {"battlefield_has": ["Grizzly Bears"]}, {} ] } },
+ { "name": "ruling: a +1/+1 counter put on a double-blocked creature after blocks does not undo the block",
+   "players": [ { "hand": ["Biosynthic Burst"], "battlefield": ["Battlefront Krushok", "Grizzly Bears", "Forest", "Forest"] }, { "battlefield": ["Goblin Piker", "Elvish Visionary"] } ],
+   "steps": [
+     { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+     { "block": [ { "blocker": "Goblin Piker", "attacker": "Grizzly Bears" }, { "blocker": "Elvish Visionary", "attacker": "Grizzly Bears" } ] },
+     { "cast": "Biosynthic Burst", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Goblin Piker", "Elvish Visionary"], "life": 19 } ] } }
+]

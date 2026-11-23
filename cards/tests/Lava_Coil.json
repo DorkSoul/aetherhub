@@ -1,0 +1,71 @@
+[
+  {
+    "name": "4 damage kills a creature and it is exiled instead of dying",
+    "players": [
+      { "hand": ["Lava Coil"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lava Coil", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lava Coil"], "battlefield": ["Mountain", "Mountain"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "no creature to target: cannot cast",
+    "players": [
+      { "hand": ["Lava Coil"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lava Coil", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lava Coil"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that would die this turn for any reason is exiled, even if it dies later to Doom Blade",
+    "players": [
+      { "hand": ["Lava Coil", "Doom Blade"], "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp"] },
+      { "battlefield": ["Silverback Ape"] }
+    ],
+    "steps": [
+      { "cast": "Lava Coil", "targets": ["Silverback Ape"] },
+      { "resolve": true },
+      { "cast": "Doom Blade", "targets": ["Silverback Ape"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lava Coil", "Doom Blade"] },
+        { "exile": ["Silverback Ape"], "battlefield_lacks": ["Silverback Ape"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Lava Coil's exile clause does not apply when the 5/5 survives its 4 damage",
+    "players": [
+      { "hand": ["Lava Coil"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Silverback Ape"] }
+    ],
+    "steps": [
+      { "cast": "Lava Coil", "targets": ["Silverback Ape"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lava Coil"] },
+        { "battlefield_has": ["Silverback Ape"], "exile": [] }
+      ]
+    }
+  }
+]

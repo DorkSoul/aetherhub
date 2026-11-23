@@ -1,0 +1,161 @@
+[
+ {
+  "name": "casting a spell on another permanent copies it",
+  "players": [
+   {
+    "hand": [
+     "Giant Growth"
+    ],
+    "battlefield": [
+     "Orvar, the All-Form",
+     "Forest",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "an opponent's discard spell makes a copy of a target permanent",
+  "players": [
+   {
+    "hand": [
+     "Orvar, the All-Form"
+    ]
+   },
+   {
+    "hand": [
+     "Hymn to Tourach"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Hymn to Tourach",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Orvar, the All-Form"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the copy token's enters-the-battlefield trigger fires (Mulldrifter draws two)",
+  "players": [
+   { "hand": ["Giant Growth"], "battlefield": ["Orvar, the All-Form", "Mulldrifter", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Giant Growth", "targets": ["Mulldrifter"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Mulldrifter"], "hand_count": 2 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: if the targeted permanent is gone when the trigger resolves, no copy is made",
+  "players": [
+   { "hand": ["Giant Growth"], "battlefield": ["Orvar, the All-Form", "Mulldrifter", "Forest"] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Giant Growth", "targets": ["Mulldrifter"] },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Mulldrifter"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Mulldrifter"], "hand_count": 0, "graveyard_has": ["Mulldrifter", "Giant Growth"] },
+    { "graveyard": ["Shock"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a discard caused by my own spell does not trigger the copy",
+  "players": [
+   { "hand": ["Hymn to Tourach", "Orvar, the All-Form"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Hymn to Tourach", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Orvar, the All-Form"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: changeling makes Orvar a Sliver, so Hibernation Sliver's granted ability applies to it",
+  "players": [
+   { "battlefield": ["Hibernation Sliver", "Orvar, the All-Form"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Orvar, the All-Form", "ability": 32768 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Orvar, the All-Form"], "life": 18 }, {} ]
+  }
+ }
+]

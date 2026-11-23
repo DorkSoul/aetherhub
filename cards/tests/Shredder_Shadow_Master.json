@@ -1,0 +1,69 @@
+[
+  {
+    "name": "attacking a player makes a tapped attacking copy for each other opponent, sacrificed at end of combat",
+    "players": [ { "battlefield": ["Shredder, Shadow Master"] }, {}, {} ],
+    "steps": [
+      { "attack": [ { "card": "Shredder, Shadow Master", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "tapped": { "Shredder, Shadow Master": true },
+      "players": [
+        { "battlefield": ["Shredder, Shadow Master"] },
+        { "life": 7 },
+        { "life": 7 }
+      ]
+    }
+  },
+  {
+    "name": "two-player game: no copy, but combat damage halves life rounded up (20 - 5 = 15, loses 8)",
+    "players": [ { "battlefield": ["Shredder, Shadow Master"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Shredder, Shadow Master", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Shredder, Shadow Master"] }, { "life": 7 } ]
+    }
+  },
+  {
+    "name": "not attacking: no copies and no life loss",
+    "players": [ { "battlefield": ["Shredder, Shadow Master"] }, {}, {} ],
+    "steps": [
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: if Shredder leaves before its trigger resolves, the copy still enters as a copy of it",
+    "players": [ { "hand": ["Murder"], "battlefield": ["Shredder, Shadow Master", "Swamp", "Swamp", "Swamp"] }, {}, {} ],
+    "steps": [
+      { "attack": [ { "card": "Shredder, Shadow Master", "at": "p1" } ] },
+      { "cast": "Murder", "targets": ["Shredder, Shadow Master"] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Murder", "Shredder, Shadow Master"] }, { "life": 20 }, { "life": 7 } ]
+    }
+  },
+  {
+    "name": "ruling: the copies do not copy counters on Shredder (token deals 5, Shredder deals 7)",
+    "players": [ { "battlefield": [ { "name": "Shredder, Shadow Master", "counters": { "p1p1": 2 } } ] }, {}, {} ],
+    "steps": [
+      { "attack": [ { "card": "Shredder, Shadow Master", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Shredder, Shadow Master": [7, 7] },
+      "players": [ {}, { "life": 6 }, { "life": 7 } ]
+    }
+  },
+  {"name": "another spell resolving during combat does not stop the copies from being sacrificed at end of combat", "players": [{"battlefield": ["Shredder, Shadow Master", "Island", "Island"], "hand": ["Time and Tide"]}, {}, {}], "steps": [{"attack": [{"card": "Shredder, Shadow Master", "at": "p1"}]}, {"resolve": true}, {"cast": "Time and Tide"}, {"resolve": true}, {"block": []}, {"advance_to": "Main2"}], "expect": {"turn": 1, "players": [{"battlefield": ["Shredder, Shadow Master", "Island", "Island"]}, {"life": 7}, {"life": 7}]}}
+]

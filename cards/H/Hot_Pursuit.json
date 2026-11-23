@@ -1,0 +1,31 @@
+{
+  "name": "Hot Pursuit",
+  "mana_cost": "{1}{R}",
+  "types": ["Enchantment"],
+  "colors": ["R"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "Opponent" } }, "label": "target creature an opponent controls" } ],
+      "effects": [
+        { "type": "Suspect", "what": { "type": "Target", "idx": 0 } },
+        { "type": "Goad", "what": { "type": "Target", "idx": 0 }, "while_source_on_battlefield": true }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "BeginCombat", "whose": "You" },
+      "condition": { "type": "Compare", "a": { "type": "PlayersLost" }, "cmp": { "op": "Ge", "n": 2 } },
+      "effects": [
+        { "type": "GainControl", "what": { "type": "All", "filter": { "types": ["Creature"], "goaded": true }, "zone": "Battlefield" }, "duration": "UntilEndOfTurn" },
+        { "type": "GainControl", "what": { "type": "All", "filter": { "types": ["Creature"], "suspected": true }, "zone": "Battlefield" }, "duration": "UntilEndOfTurn" },
+        { "type": "Untap", "what": { "type": "All", "filter": { "types": ["Creature"], "goaded": true }, "zone": "Battlefield" } },
+        { "type": "Untap", "what": { "type": "All", "filter": { "types": ["Creature"], "suspected": true }, "zone": "Battlefield" } },
+        { "type": "GrantKeyword", "what": { "type": "All", "filter": { "types": ["Creature"], "goaded": true }, "zone": "Battlefield" }, "keyword": "Haste", "duration": "UntilEndOfTurn" },
+        { "type": "GrantKeyword", "what": { "type": "All", "filter": { "types": ["Creature"], "suspected": true }, "zone": "Battlefield" }, "keyword": "Haste", "duration": "UntilEndOfTurn" }
+      ]
+    }
+  ],
+  "oracle_text": "When this enchantment enters, suspect target creature an opponent controls. As long as this enchantment remains on the battlefield, that creature is also goaded.\nAt the beginning of combat on your turn, if two or more players have lost the game, gain control of all goaded and/or suspected creatures until end of turn. Untap them. They gain haste until end of turn."
+}

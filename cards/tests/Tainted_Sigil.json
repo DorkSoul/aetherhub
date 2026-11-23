@@ -1,0 +1,115 @@
+[
+  {
+    "name": "gains life equal to the life all players lost this turn, including its controller",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Tainted Sigil", "Mountain", "Mountain"] },
+      { "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true },
+      { "activate": "Tainted Sigil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard": ["Lightning Bolt", "Lightning Bolt", "Tainted Sigil"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "gains nothing when no life was lost this turn, but still sacrifices",
+    "players": [
+      { "battlefield": ["Tainted Sigil"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Tainted Sigil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Tainted Sigil"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: life lost before Tainted Sigil entered still counts",
+    "players": [
+      { "hand": ["Lightning Bolt", "Tainted Sigil"], "battlefield": ["Mountain", "Mountain", "Plains", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Tainted Sigil" },
+      { "resolve": true },
+      { "activate": "Tainted Sigil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard": ["Lightning Bolt", "Tainted Sigil"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: life lost by its own controller counts",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Tainted Sigil", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true },
+      { "activate": "Tainted Sigil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Lightning Bolt", "Tainted Sigil"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: life gained does not offset life lost (Helix to self loses 3, gains 3, Sigil gains 3)",
+    "players": [
+      { "hand": ["Lightning Helix"], "battlefield": ["Tainted Sigil", "Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Helix", "targets": ["p0"] },
+      { "resolve": true },
+      { "activate": "Tainted Sigil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard": ["Lightning Helix", "Tainted Sigil"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: losing enough life ends the game before Tainted Sigil can be activated",
+    "players": [
+      { "battlefield": ["Tainted Sigil"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "set_life": 3 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "winner": 1
+    }
+  }
+]

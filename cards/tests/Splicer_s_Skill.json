@@ -1,0 +1,94 @@
+[
+  {
+    "name": "plain cast creates a 3/3 colorless Golem",
+    "players": [
+      { "hand": ["Splicer's Skill"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Splicer's Skill" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Phyrexian Golem 3-3"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "splice onto Lightning Bolt (instant): the Golem is created too",
+    "players": [
+      { "hand": ["Lightning Bolt", "Splicer's Skill"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Phyrexian Golem 3-3"], "hand": ["Splicer's Skill"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "declining the splice creates no Golem",
+    "players": [
+      { "hand": ["Lightning Bolt", "Splicer's Skill"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Phyrexian Golem 3-3"], "hand": ["Splicer's Skill"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered spell leaves the spliced card in hand and makes no Golem",
+    "players": [
+      { "hand": ["Lightning Bolt", "Splicer's Skill"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Counterspell"], "battlefield": ["Grizzly Bears", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true, "player": 1 },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Phyrexian Golem 3-3"], "hand": ["Splicer's Skill"], "graveyard": ["Lightning Bolt"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: all targets illegal on resolution: the spell does nothing and no Golem is created",
+    "players": [
+      { "hand": ["Lightning Bolt", "Splicer's Skill"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Phyrexian Golem 3-3"], "hand": ["Splicer's Skill"], "graveyard": ["Lightning Bolt"] },
+        { "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears", "Lightning Bolt"] }
+      ]
+    }
+  }
+]

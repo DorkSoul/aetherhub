@@ -1,0 +1,240 @@
+[
+ {
+  "name": "no trigger when the attacker is blocked",
+  "players": [
+   {
+    "battlefield": [
+     "Gonti, Canny Acquisitor",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Gonti, Canny Acquisitor",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Gonti, Canny Acquisitor"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "combat damage to a player: exile their top card face down and it can be played",
+  "players": [
+   {
+    "battlefield": [
+     "Gonti, Canny Acquisitor"
+    ]
+   },
+   {
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Gonti, Canny Acquisitor",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 15,
+     "library_top": [
+      "Island"
+     ],
+     "exile": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "exiled card can be cast with mana of any type (Island pays for red)",
+  "players": [
+   {
+    "battlefield": [
+     "Gonti, Canny Acquisitor",
+     "Island"
+    ]
+   },
+   {
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Gonti, Canny Acquisitor",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "life": 12
+    }
+   ]
+  }
+ },
+ {
+  "name": "spell you cast but don't own costs {1} less: exiled opponent's Grizzly Bears castable with one Forest",
+  "players": [
+   { "battlefield": ["Gonti, Canny Acquisitor", "Forest"] },
+   { "library": ["Grizzly Bears", "Island"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gonti, Canny Acquisitor", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "resolve": true },
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 15 } ] }
+ },
+ {
+  "name": "ruling: playing the exiled card removes it from exile",
+  "players": [
+   { "battlefield": ["Gonti, Canny Acquisitor", "Island"] },
+   { "library": ["Lightning Bolt", "Island"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gonti, Canny Acquisitor", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "exile": [], "graveyard": ["Lightning Bolt"], "life": 12 } ] }
+ },
+ {
+  "name": "ruling: exiled card stays playable after Gonti leaves the battlefield",
+  "players": [
+   { "battlefield": ["Gonti, Canny Acquisitor", "Island"] },
+   { "hand": ["Red Elemental Blast"], "battlefield": ["Mountain"], "library": ["Lightning Bolt", "Island"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gonti, Canny Acquisitor", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "resolve": true },
+   { "pass": true },
+   { "player": 1, "cast": "Red Elemental Blast", "answers": [1], "targets": ["Gonti, Canny Acquisitor"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Gonti, Canny Acquisitor"] }, { "life": 12, "graveyard": ["Lightning Bolt", "Red Elemental Blast"] } ] }
+ },
+ {
+  "name": "ruling: an exiled land can be played in your main phase",
+  "players": [
+   { "battlefield": ["Gonti, Canny Acquisitor"] },
+   { "library": ["Forest", "Island"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Gonti, Canny Acquisitor", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "resolve": true },
+   { "play_land": "Forest" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"] }, { "life": 15, "exile": [] } ] }
+ }
+]

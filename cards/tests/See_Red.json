@@ -1,0 +1,70 @@
+[
+  {
+    "name": "enchanted creature gets +2/+1 and first strike",
+    "players": [
+      { "hand": ["See Red"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "See Red", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 3] },
+      "keywords": { "Grizzly Bears": ["FirstStrike"] },
+      "attached": { "See Red": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "sacrificed at your end step when no creature attacked this turn",
+    "players": [
+      { "hand": ["See Red"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "See Red", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["See Red"] }
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "stays when a creature attacked this turn, even if not the enchanted one",
+    "players": [
+      { "hand": ["See Red"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "See Red", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["See Red"] }
+      ],
+      "attached": { "See Red": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: an attack by a creature other than the enchanted one still satisfies the end step condition",
+    "players": [ { "hand": ["See Red"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears", "Hill Giant"] }, {} ],
+    "steps": [ { "cast": "See Red", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "attack": [ { "card": "Hill Giant", "at": "p1" } ] }, { "block": [] }, { "advance_to": "End" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["See Red"] } ], "attached": { "See Red": "Grizzly Bears" } }
+  },
+  {
+    "name": "ruling: the enchanted creature attacking alone also satisfies the condition",
+    "players": [ { "hand": ["See Red"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "See Red", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "End" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["See Red"] } ], "attached": { "See Red": "Grizzly Bears" } }
+  }
+]

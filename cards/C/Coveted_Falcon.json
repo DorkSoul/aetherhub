@@ -1,0 +1,57 @@
+{
+  "name": "Coveted Falcon",
+  "mana_cost": "{1}{U}{U}",
+  "types": ["Artifact", "Creature"],
+  "subtypes": ["Bird"],
+  "colors": ["U"],
+  "keywords": ["Flying"],
+  "power": 1,
+  "toughness": 4,
+  "abilities": [
+    { "type": "Morph", "cost": "{1}{U}", "disguise": true },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "owner": "You", "controller": "Opponent" }
+          },
+          "label": "target permanent you own but don't control"
+        }
+      ],
+      "effects": [{ "type": "GainControl", "what": { "type": "Target", "idx": 0 }, "duration": "Forever" }]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "TurnedFaceUp", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" },
+        {
+          "what": { "type": "Permanent", "filter": { "controller": "You" } },
+          "min": 0,
+          "max_amount": { "type": "Count", "filter": { "controller": "You" }, "zone": "Battlefield" },
+          "label": "any number of target permanents you control"
+        }
+      ],
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "Targets" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "RememberedIs", "filter": { "controller": "You" } },
+              "then": [
+                { "type": "GainControl", "what": { "type": "Remembered" }, "to": { "type": "Target", "idx": 0 }, "duration": "Forever" },
+                { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying\nWhenever Coveted Falcon attacks, gain control of target permanent you own but don't control.\nDisguise {1}{U}\nWhen Coveted Falcon is turned face up, target opponent gains control of any number of target permanents you control. Draw a card for each one they gained control of this way."
+}

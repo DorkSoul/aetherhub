@@ -1,0 +1,38 @@
+[
+  { "name": "exile an attacker and make a token copy exiled at end step",
+    "players": [ { "hand": ["Nemesis Trap"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "cast": "Nemesis Trap", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }, {} ] } },
+  { "name": "pay BB when a white creature is attacking",
+    "players": [ { "hand": ["Nemesis Trap"], "battlefield": ["Swamp", "Swamp", "Savannah Lions"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Savannah Lions", "at": "p1" } ] }, { "cast": "Nemesis Trap", "alt": 0, "targets": ["Savannah Lions"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Savannah Lions"], "exile": ["Savannah Lions"] }, {} ] } },
+  { "name": "alternative cost needs a white attacker",
+    "players": [ { "hand": ["Nemesis Trap"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "cast": "Nemesis Trap", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Nemesis Trap"] }, {} ] } },
+  { "name": "ruling: with a white attacker, the BB cast may target any attacking creature",
+    "players": [ { "hand": ["Nemesis Trap"], "battlefield": ["Swamp", "Swamp", "Savannah Lions", "Grizzly Bears"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Savannah Lions", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] }, { "cast": "Nemesis Trap", "alt": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Savannah Lions"], "exile": ["Grizzly Bears"] }, {} ] } },
+  { "name": "ruling: cast in the opponent's declare attackers step, the token can block",
+    "players": [ { "hand": ["Nemesis Trap"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Hill Giant", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Nemesis Trap", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "player": 0 }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "exile": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] } ] } },
+  { "name": "ruling: if the targeted attacker is gone on resolution, no token is created",
+    "players": [ { "hand": ["Nemesis Trap"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Nemesis Trap", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Nemesis Trap"] }, { "graveyard": ["Lightning Bolt"] } ] } }
+]

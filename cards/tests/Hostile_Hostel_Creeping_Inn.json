@@ -1,0 +1,125 @@
+[
+  {
+    "name": "{1},{T}, sacrifice a creature: puts a soul counter on the land",
+    "players": [
+      { "battlefield": ["Hostile Hostel // Creeping Inn", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] } ],
+      "counters": { "Hostile Hostel // Creeping Inn": { "Soul": 1 } },
+      "tapped": { "Hostile Hostel // Creeping Inn": true }
+    }
+  },
+  {
+    "name": "two soul counters: a third activation transforms it and untaps it",
+    "players": [
+      { "battlefield": [ { "name": "Hostile Hostel // Creeping Inn", "counters": { "soul": 2 } }, "Plains", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Creeping Inn": [3, 7] },
+      "tapped": { "Creeping Inn": false }
+    }
+  },
+  {
+    "name": "one soul counter before: second activation leaves it a land and tapped",
+    "players": [
+      { "battlefield": [ { "name": "Hostile Hostel // Creeping Inn", "counters": { "soul": 1 } }, "Plains", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Hostile Hostel // Creeping Inn": { "Soul": 2 } },
+      "tapped": { "Hostile Hostel // Creeping Inn": true }
+    }
+  },
+  {
+    "name": "attack: exile a creature card from your graveyard, drain 1",
+    "players": [
+      { "graveyard": ["Grizzly Bears"], "battlefield": [ { "name": "Hostile Hostel // Creeping Inn", "counters": { "soul": 2 } }, "Plains", "Llanowar Elves" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Creeping Inn", "at": "p1" } ] },
+      { "resolve": true, "answers": [true, "Grizzly Bears"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 21, "exile": ["Grizzly Bears"], "graveyard_has": ["Llanowar Elves"] },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "{4}: the transformed Creeping Inn phases out",
+    "players": [
+      { "battlefield": [ { "name": "Hostile Hostel // Creeping Inn", "counters": { "soul": 2 } }, "Plains", "Plains", "Plains", "Plains", "Plains", "Llanowar Elves" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Creeping Inn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Creeping Inn"] } ]
+    }
+  },
+  {
+    "name": "ruling: a Creeping Inn that phases out while attacking is removed from combat and deals no damage",
+    "players": [
+      { "battlefield": [ { "name": "Hostile Hostel // Creeping Inn", "counters": { "soul": 2 } }, "Plains", "Plains", "Plains", "Plains", "Plains", "Llanowar Elves" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Creeping Inn", "at": "p1" } ] },
+      { "activate": "Creeping Inn", "ability": 0 },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Creeping Inn"] }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: Creeping Inn phases in during its controller's untap step and can attack that same turn",
+    "players": [
+      { "battlefield": [ { "name": "Hostile Hostel // Creeping Inn", "counters": { "soul": 2 } }, "Plains", "Plains", "Plains", "Plains", "Plains", "Llanowar Elves" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hostile Hostel // Creeping Inn", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Creeping Inn", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Creeping Inn", "at": "p1" } ] },
+      { "resolve": true, "answers": [false] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Creeping Inn"] }, { "life": 17 } ]
+    }
+  }
+]

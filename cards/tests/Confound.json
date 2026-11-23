@@ -1,0 +1,57 @@
+[
+  {
+    "name": "ruling: Confound does nothing once the targeted spell's creature target is gone (no counter, no draw)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Shock"], "battlefield": ["Mountain", "Mountain"] },
+      { "hand": ["Confound"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Confound", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt", "Shock"] },
+        { "graveyard_has": ["Grizzly Bears", "Confound"], "hand_count": 0, "battlefield": ["Island", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "counters a spell that targets a creature and draws a card",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Confound"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Confound", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Confound"], "hand_count": 1, "battlefield": ["Grizzly Bears", "Island", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot counter a spell that targets only a player",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Confound"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Confound", "player": 1, "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 17, "hand": ["Confound"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,220 @@
+[
+ {
+  "name": "becomes a copy of a creature until end of turn, then reverts",
+  "players": [
+   {
+    "battlefield": [
+     "Mirage Mirror",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Mirage Mirror",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Hill Giant": [
+     3,
+     3
+    ]
+   },
+   "players": [
+    {
+     "battlefield": [
+      "Hill Giant",
+      "Plains",
+      "Plains"
+     ]
+    },
+    {
+     "battlefield": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "reverts at end of turn",
+  "players": [
+   {
+    "battlefield": [
+     "Mirage Mirror",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Mirage Mirror",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Mirage Mirror",
+      "Plains",
+      "Plains"
+     ]
+    },
+    {
+     "battlefield": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "copy of an artifact has that artifact's abilities",
+  "players": [
+   {
+    "battlefield": [
+     "Mirage Mirror",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Mirage Mirror",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "tap_for_mana": "p0:Sol Ring"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "C": 2
+     }
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Mirror that entered this turn can't attack after becoming a creature",
+  "players": [
+   { "battlefield": [ { "name": "Mirage Mirror", "sick": true }, "Forest", "Forest" ] },
+   { "battlefield": [ "Grizzly Bears" ] }
+  ],
+  "steps": [
+   { "activate": "Mirage Mirror", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Mirage Mirror", "at": "p1" } ] },
+   { "player": 1, "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: copies printed values only, not the target's +1/+1 counter",
+  "players": [
+   { "battlefield": [ "Mirage Mirror", "Forest", "Forest" ] },
+   { "battlefield": [ { "name": "Elite Vanguard", "counters": { "+1/+1": 1 } } ] }
+  ],
+  "steps": [
+   { "activate": "Mirage Mirror", "targets": [ "Elite Vanguard" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Elite Vanguard": [ 2, 1 ] },
+   "players": [ { "battlefield_has": [ "Elite Vanguard" ] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: copying a legendary permanent you control puts one copy into the graveyard",
+  "players": [
+   { "battlefield": [ "Teysa Karlov", "Mirage Mirror", "Forest", "Forest" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Mirage Mirror", "targets": [ "Teysa Karlov" ] },
+   { "resolve": true, "answers": [ 0 ] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": [ "Mirage Mirror" ], "battlefield_has": [ "Teysa Karlov" ] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: once the ability resolves the Mirror no longer has it",
+  "players": [
+   { "battlefield": [ "Mirage Mirror", "Forest", "Forest", "Forest", "Forest" ] },
+   { "battlefield": [ "Grizzly Bears" ] }
+  ],
+  "steps": [
+   { "activate": "Mirage Mirror", "targets": [ "p1:Grizzly Bears" ] },
+   { "resolve": true },
+   { "activate": "p0:Grizzly Bears", "ability": 0, "targets": [ "p1:Grizzly Bears" ], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": [ "Grizzly Bears" ] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the last ability to resolve decides what the Mirror copies",
+  "players": [
+   { "battlefield": [ "Mirage Mirror", "Forest", "Forest", "Forest", "Forest" ] },
+   { "battlefield": [ "Hill Giant", "Elite Vanguard" ] }
+  ],
+  "steps": [
+   { "activate": "Mirage Mirror", "targets": [ "Elite Vanguard" ] },
+   { "activate": "Mirage Mirror", "targets": [ "Hill Giant" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": [ "Elite Vanguard" ] }, {} ]
+  }
+ }
+]

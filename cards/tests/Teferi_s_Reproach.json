@@ -1,0 +1,74 @@
+[
+  {
+    "name": "nonland permanents of the target opponent phase out; lands stay; Teferi's Reproach is exiled",
+    "players": [
+      { "hand": ["Teferi's Reproach"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Teferi's Reproach", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [
+      { "exile": ["Teferi's Reproach"], "graveyard": [] },
+      { "battlefield_lacks": ["Grizzly Bears"], "battlefield_has": ["Mountain", "Mountain"] }
+    ] }
+  },
+  {
+    "name": "the protected opponent has protection from everything: it cannot be targeted by a second Teferi's Reproach",
+    "players": [
+      { "hand": ["Teferi's Reproach", "Teferi's Reproach"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Teferi's Reproach", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Teferi's Reproach", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 20 } ] }
+  },
+  {
+    "name": "the opponent's life total cannot change: its Lightning Helix deals damage to you but it gains no life",
+    "players": [
+      { "hand": ["Teferi's Reproach"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Helix"], "battlefield": ["Plains", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Teferi's Reproach", "targets": ["p1"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Helix", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17 }, { "life": 20 } ] }
+  },
+  {
+    "name": "the phased out permanents phase in when that player's turn begins and the protection ends when that player's next turn begins",
+    "players": [
+      { "hand": ["Teferi's Reproach", "Lightning Helix"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Teferi's Reproach", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears"], "life": 20 } ] }
+  },
+  {
+    "name": "after the opponent's next turn begins, you can target it again and its life changes",
+    "players": [
+      { "hand": ["Teferi's Reproach", "Lightning Helix"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Teferi's Reproach", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Helix", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 23 }, { "life": 17 } ] }
+  }
+]

@@ -1,0 +1,147 @@
+[
+  {
+    "name": "cast by exiling your creature; ETB exiles the opponent's creature",
+    "players": [
+      {
+        "hand": ["Fear of Abduction"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Serra Angel"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Fear of Abduction"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Fear of Abduction"],
+          "battlefield_lacks": ["Grizzly Bears"],
+          "exile": ["Grizzly Bears"]
+        },
+        {
+          "battlefield_lacks": ["Serra Angel"],
+          "exile": ["Serra Angel"]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "when it leaves the battlefield the exiled creature returns to its owner's hand (the cost creature stays exiled)",
+    "players": [
+      {
+        "hand": ["Fear of Abduction", "Doom Blade"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Serra Angel"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Fear of Abduction"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Doom Blade",
+        "targets": ["Fear of Abduction"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": ["Doom Blade", "Fear of Abduction"],
+          "battlefield_lacks": ["Fear of Abduction"],
+          "exile": ["Grizzly Bears"]
+        },
+        {
+          "battlefield_lacks": ["Serra Angel"],
+          "hand_count": 1
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "no creature to exile as the additional cost: cannot cast",
+    "players": [
+      {
+        "hand": ["Fear of Abduction"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Serra Angel"]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Fear of Abduction",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Fear of Abduction"],
+          "battlefield_lacks": ["Fear of Abduction"]
+        },
+        {
+          "battlefield_has": ["Serra Angel"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: leaving before the ETB exile resolves still exiles the target (the leave trigger finds nothing to return)",
+    "players": [
+      {
+        "hand": ["Fear of Abduction"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Doom Blade"],
+        "battlefield": ["Serra Angel", "Swamp", "Swamp"]
+      }
+    ],
+    "steps": [
+      { "cast": "Fear of Abduction" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Doom Blade", "targets": ["Fear of Abduction"], "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": ["Fear of Abduction"],
+          "battlefield_lacks": ["Fear of Abduction"],
+          "exile": ["Grizzly Bears"]
+        },
+        {
+          "graveyard_has": ["Doom Blade"],
+          "battlefield_lacks": ["Serra Angel"],
+          "exile": ["Serra Angel"],
+          "hand_count": 0
+        }
+      ],
+      "stack_empty": true
+    }
+  }
+]

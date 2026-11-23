@@ -1,0 +1,57 @@
+{
+  "name": "Chronozoa",
+  "mana_cost": "{3}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Illusion"],
+  "power": 3,
+  "toughness": 3,
+  "keywords": ["Flying"],
+  "abilities": [
+    {
+      "type": "EntersWithCounters",
+      "kind": "Time",
+      "n": { "type": "Fixed", "n": 3 }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "SourceHasCounter", "kind": "Time", "at_least": 1 },
+          "then": [
+            {
+              "type": "If",
+              "cond": { "type": "SourceHasCounter", "kind": "Time", "at_least": 2 },
+              "then": [
+                { "type": "RemoveCounters", "kind": "Time", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } }
+              ],
+              "else": [
+                { "type": "RemoveCounters", "kind": "Time", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } },
+                { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "this": true } }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "Time", "of": { "type": "This" } },
+            "cmp": { "op": "Eq", "n": 0 }
+          },
+          "then": [
+            { "type": "CopyPermanent", "what": { "type": "TriggerObject" }, "n": { "type": "Fixed", "n": 2 } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying\nVanishing 3 (This creature enters with three time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nWhen this creature dies, if it had no time counters on it, create two tokens that are copies of it."
+}

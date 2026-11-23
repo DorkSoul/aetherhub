@@ -1,0 +1,62 @@
+[
+  {
+    "name": "exiles a creature card from a graveyard and becomes a copy of it",
+    "players": [
+      { "battlefield": [ { "name": "Dimir Doppelganger", "sick": false }, "Island", "Swamp", "Swamp" ] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Dimir Doppelganger" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Hill Giant", "Island", "Swamp", "Swamp"] }, { "exile": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "the copy keeps the ability: it can become a copy of another creature card later",
+    "players": [
+      { "battlefield": [ { "name": "Dimir Doppelganger", "sick": false }, "Island", "Swamp", "Swamp", "Island", "Swamp", "Swamp" ] },
+      { "graveyard": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Dimir Doppelganger", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Hill Giant", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Grizzly Bears", "Island", "Swamp", "Swamp", "Island", "Swamp", "Swamp"] }, { "exile": ["Hill Giant", "Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "no creature card in any graveyard: the ability has no legal target and cannot be activated",
+    "players": [
+      { "battlefield": [ { "name": "Dimir Doppelganger", "sick": false }, "Island", "Swamp", "Swamp" ] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "activate": "Dimir Doppelganger", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Dimir Doppelganger", "Island", "Swamp", "Swamp"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: a copy of a copy overwrites the earlier copy: P/T follows the newest copied card",
+    "players": [
+      { "battlefield": [ { "name": "Dimir Doppelganger", "sick": false }, "Island", "Swamp", "Swamp", "Island", "Swamp", "Swamp" ] },
+      { "graveyard": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Dimir Doppelganger", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Hill Giant", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "exile": ["Hill Giant", "Grizzly Bears"] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "name": "Xira, the Golden Sting",
+  "mana_cost": "{1}{B}{R}{G}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Insect", "Assassin"],
+  "colors": ["B", "G", "R"],
+  "power": 3,
+  "toughness": 3,
+  "keywords": ["Flying", "Haste"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "types": ["Creature"], "other": true, "not_has_counter": "Egg" }
+          },
+          "label": "another target creature without an egg counter"
+        }
+      ],
+      "effects": [
+        {
+          "type": "AddCounters",
+          "what": { "type": "Target", "idx": 0 },
+          "kind": "Egg",
+          "n": { "type": "Fixed", "n": 1 }
+        },
+        {
+          "type": "AddTrigger",
+          "bind": { "type": "Target", "idx": 0 },
+          "trigger": { "type": "Dies", "filter": {} },
+          "once": true,
+          "until": "Forever",
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "Compare",
+                "a": { "type": "CountersOn", "kind": "Egg", "of": { "type": "TriggerObject" } },
+                "cmp": { "op": "Ge", "n": 1 }
+              },
+              "then": [
+                { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+                { "type": "CreateToken", "token": "Insect 1-1 Black Flying", "n": { "type": "Fixed", "n": 1 } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying, haste\nWhenever Xira, the Golden Sting attacks, put an egg counter on another target creature without an egg counter on it. When that creature dies, if it has an egg counter on it, draw a card and create a 1/1 black Insect creature token with flying."
+}

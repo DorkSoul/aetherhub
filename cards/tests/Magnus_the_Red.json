@@ -1,0 +1,258 @@
+[
+  {
+    "name": "each creature token you control makes instants and sorceries cost {1} less",
+    "players": [
+      {
+        "hand": [
+          "Magma Jet"
+        ],
+        "battlefield": [
+          "Magnus the Red",
+          "Mountain",
+          "Spawn 2-2 Colorless",
+          "Spawn 2-2 Colorless"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Magma Jet",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Magma Jet"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no tokens: Magma Jet still costs two mana",
+    "players": [
+      {
+        "hand": [
+          "Magma Jet"
+        ],
+        "battlefield": [
+          "Magnus the Red",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Magma Jet",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "combat damage to a player creates a 3/3 red Spawn token",
+    "players": [
+      {
+        "battlefield": [
+          "Magnus the Red"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Magnus the Red",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Magnus the Red",
+            "Spawn 3-3 Red"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: total cost is locked in from the token count: {4}{R} costs {1}{R} with three tokens, and paying by sacrificing one token does not raise it",
+    "players": [
+      {
+        "hand": ["Burn Away"],
+        "battlefield": ["Magnus the Red", "Mountain", "Spawn 2-2 Colorless", "Spawn 2-2 Colorless", "Spawn 2-2 Colorless", "Phyrexian Altar"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Burn Away", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Burn Away"], "battlefield": ["Magnus the Red", "Mountain", "Spawn 2-2 Colorless", "Spawn 2-2 Colorless", "Phyrexian Altar"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: unearth is an activated ability, not a spell: Stifle counters it and the card stays in the graveyard",
+    "players": [
+      { "graveyard": ["Dregscape Zombie"], "battlefield": ["Swamp"] },
+      { "hand": ["Stifle"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "activate": "Dregscape Zombie", "ability": 0 },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Dregscape Zombie" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dregscape Zombie"], "battlefield_lacks": ["Dregscape Zombie"] },
+        { "graveyard": ["Stifle"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the unearthed card leaves the graveyard before the unearth ability resolves, the ability does nothing",
+    "players": [
+      { "graveyard": ["Dregscape Zombie"], "battlefield": ["Swamp"] },
+      { "hand": ["Purify the Grave"], "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "activate": "Dregscape Zombie", "ability": 0 },
+      { "pass": true },
+      { "cast": "Purify the Grave", "player": 1, "targets": ["Dregscape Zombie"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Dregscape Zombie"], "battlefield_lacks": ["Dregscape Zombie"] },
+        { "graveyard": ["Purify the Grave"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an unearthed creature that loses all its abilities (Lignify) is still exiled at the end step",
+    "players": [
+      { "hand": ["Lignify"], "graveyard": ["Dregscape Zombie"], "battlefield": ["Swamp", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dregscape Zombie", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lignify", "targets": ["Dregscape Zombie"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Dregscape Zombie"], "battlefield_lacks": ["Dregscape Zombie"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an unearthed creature that would die is exiled instead of going to the graveyard",
+    "players": [
+      { "graveyard": ["Dregscape Zombie"], "battlefield": ["Swamp"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Dregscape Zombie", "ability": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Dregscape Zombie"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Dregscape Zombie"], "graveyard": [] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Stifle on the delayed end-step exile trigger stops the exile; the unearthed creature stays on the battlefield",
+    "players": [
+      { "graveyard": ["Dregscape Zombie"], "battlefield": ["Swamp"] },
+      { "hand": ["Stifle"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "activate": "Dregscape Zombie", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End", "hold": true },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Dregscape Zombie" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dregscape Zombie"], "exile": [] },
+        { "graveyard": ["Stifle"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after the exile trigger was countered, the replacement still exiles the creature if it later leaves the battlefield",
+    "players": [
+      { "graveyard": ["Dregscape Zombie"], "battlefield": ["Swamp"] },
+      { "hand": ["Stifle", "Lightning Bolt"], "battlefield": ["Island", "Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Dregscape Zombie", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End", "hold": true },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Dregscape Zombie" }] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Dregscape Zombie"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Dregscape Zombie"], "graveyard": [] },
+        { "graveyard": ["Stifle", "Lightning Bolt"] }
+      ]
+    }
+  }
+]

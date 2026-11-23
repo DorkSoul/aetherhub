@@ -1,0 +1,83 @@
+[
+  {
+    "name": "{3},{T}: create a token copy of itself",
+    "players": [
+      { "battlefield": ["Myr Propagator", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Myr Propagator", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myr Propagator", "Myr Propagator"] }, {} ],
+      "tapped": { "Myr Propagator": true }
+    }
+  },
+  {
+    "name": "needs three mana",
+    "players": [
+      { "battlefield": ["Myr Propagator", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Myr Propagator", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myr Propagator"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: token is still created when the Propagator is killed in response to its ability",
+    "players": [
+      { "battlefield": ["Myr Propagator", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Myr Propagator", "ability": 0 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Myr Propagator"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myr Propagator"], "graveyard": ["Myr Propagator"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: token copies the printed values, not the counters of the original",
+    "players": [
+      { "battlefield": [ { "name": "Myr Propagator", "counters": { "p1p1": 1 } }, "Mountain", "Mountain", "Mountain" ] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Myr Propagator", "ability": 0 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Myr Propagator"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myr Propagator"] }, {} ],
+      "pt": { "Myr Propagator": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: the token is a Myr Propagator with the same ability and can activate it next turn",
+    "players": [
+      { "battlefield": ["Myr Propagator", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Myr Propagator", "ability": 0 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Myr Propagator"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Myr Propagator", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Myr Propagator", "Myr Propagator"], "graveyard": ["Myr Propagator"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  }
+]

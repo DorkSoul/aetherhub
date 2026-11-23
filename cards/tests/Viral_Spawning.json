@@ -1,0 +1,50 @@
+[
+  {
+    "name": "cast from hand creates a 3/3 Phyrexian Beast with toxic",
+    "players": [{ "hand": ["Viral Spawning"], "battlefield": ["Forest", "Forest", "Forest"] }, {}],
+    "steps": [{ "cast": "Viral Spawning" }, { "resolve": true }],
+    "expect": { "players": [{ "graveyard": ["Viral Spawning"], "battlefield_has": ["Phyrexian Beast 3-3 Green Toxic"] }, {}] }
+  },
+  {
+    "name": "flashback from graveyard once an opponent has three poison counters",
+    "players": [
+      { "hand": ["Caress of Phyrexia"], "graveyard": ["Viral Spawning"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest", "Forest"], "library": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Caress of Phyrexia", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Viral Spawning", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "exile": ["Viral Spawning"], "battlefield_has": ["Phyrexian Beast 3-3 Green Toxic"] }, { "poison": 3 }] }
+  },
+  {
+    "name": "no flashback with only two poison counters",
+    "players": [
+      { "graveyard": ["Viral Spawning"], "battlefield": [{ "name": "Blightwidow", "sick": false }, "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Blightwidow", "at": "p1" }] },
+      { "advance_to": "Main2" },
+      { "cast": "Viral Spawning", "alt": 0, "illegal": true }
+    ],
+    "expect": { "players": [{ "graveyard": ["Viral Spawning"] }, { "poison": 2 }] }
+  },
+  {
+    "name": "ruling: sorcery flashback cannot be cast on an opponent's turn, even with three poison counters",
+    "players": [
+      { "hand": ["Caress of Phyrexia"], "graveyard": ["Viral Spawning"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest", "Forest"], "library": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Caress of Phyrexia", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Viral Spawning", "alt": 0, "illegal": true }
+    ],
+    "expect": { "players": [{ "graveyard": ["Caress of Phyrexia", "Viral Spawning"] }, { "poison": 3 }] }
+  }
+]

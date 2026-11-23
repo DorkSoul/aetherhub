@@ -1,0 +1,143 @@
+[
+  {
+    "name": "opponent's spell targeting it: controller may draw",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Island"
+        ],
+        "battlefield": [
+          "Cactarantula"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Cactarantula"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "hand_count": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "its controller targeting it does not draw",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "library": [
+          "Forest",
+          "Island"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Cactarantula"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Cactarantula"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "with a Desert in play it costs {1} less: four Forests and a Desert cast it",
+    "players": [
+      { "hand": ["Cactarantula"], "battlefield": ["Cactus Preserve", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cactarantula" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Cactarantula", "Cactus Preserve"], "hand": [] }, {} ]
+    }
+  },
+  {
+    "name": "without a Desert it costs six: five Forests cannot cast it",
+    "players": [
+      { "hand": ["Cactarantula"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cactarantula", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Cactarantula"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: two Deserts still reduce the cost by only {1}: two Deserts and two Forests cannot cast it",
+    "players": [
+      { "hand": ["Cactarantula"], "battlefield": ["Desert", "Desert", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "cast": "Cactarantula", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Cactarantula"] }, {} ] }
+  },
+  {
+    "name": "ruling: with two Deserts it still costs five: two Deserts and three Forests cast it",
+    "players": [
+      { "hand": ["Cactarantula"], "battlefield": ["Desert", "Desert", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "cast": "Cactarantula" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Cactarantula"], "hand": [] }, {} ] }
+  },
+  {
+    "name": "ruling: the draw trigger resolves before the Bolt, and still resolves after the Bolt is countered",
+    "players": [
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Cactarantula"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Cactarantula"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Counterspell", "targets": [ { "stack": "Lightning Bolt" } ], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "graveyard": ["Counterspell"], "battlefield_has": ["Cactarantula"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  }
+]

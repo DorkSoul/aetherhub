@@ -1,0 +1,61 @@
+{
+  "name": "Raging River",
+  "mana_cost": "{R}{R}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "types": ["Creature"], "controller": "You" }, "batched": true },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "DefendingPlayer" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "not_keywords": ["Flying"], "controller": "You" },
+          "min": 0,
+          "max": 255,
+          "then": [ { "type": "StoreRemembered", "slot": 0, "append": true } ]
+        },
+        {
+          "type": "Remember",
+          "what": {
+            "type": "All",
+            "filter": { "types": ["Creature"], "not_keywords": ["Flying"], "controlled_by": { "type": "DefendingPlayer" }, "not_among_stored": 0 }
+          }
+        },
+        { "type": "StoreRemembered", "slot": 1, "append": true },
+        {
+          "type": "ForEach",
+          "objects": {
+            "type": "All",
+            "filter": { "types": ["Creature"], "controller": "You", "attacking": true, "attacking_player": { "type": "DefendingPlayer" } }
+          },
+          "effects": [
+            {
+              "type": "ChooseModes",
+              "choose_min": 1,
+              "choose_max": 1,
+              "modes": [
+                { "text": "Left", "effects": [ { "type": "Remember", "what": { "type": "EachObject" } }, { "type": "StoreRemembered", "slot": 2, "append": true } ] },
+                { "text": "Right", "effects": [ { "type": "Remember", "what": { "type": "EachObject" } }, { "type": "StoreRemembered", "slot": 3, "append": true } ] }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "GrantStatic",
+          "what": { "type": "Stored", "slot": 2 },
+          "effect": { "type": "CantBeBlockedBy", "affects": {}, "by": { "not_keywords": ["Flying"], "not_among_stored": 0 } },
+          "duration": "UntilEndOfCombat"
+        },
+        {
+          "type": "GrantStatic",
+          "what": { "type": "Stored", "slot": 3 },
+          "effect": { "type": "CantBeBlockedBy", "affects": {}, "by": { "not_keywords": ["Flying"], "not_among_stored": 1 } },
+          "duration": "UntilEndOfCombat"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever one or more creatures you control attack, each defending player divides all creatures without flying they control into a \"left\" pile and a \"right\" pile. Then, for each attacking creature you control, choose \"left\" or \"right.\" That creature can't be blocked this combat except by creatures with flying and creatures in a pile with the chosen label."
+}

@@ -1,0 +1,23 @@
+[
+  { "name": "main phase: opponent discards two cards",
+    "players": [ { "battlefield": ["Cao Cao, Lord of Wei"] }, { "hand": ["Forest","Mountain","Island"] } ],
+    "steps": [ { "activate": "Cao Cao, Lord of Wei", "targets": ["p1"] }, { "resolve": true, "answers": [["Forest","Mountain"]] } ],
+    "expect": { "players": [ {}, { "hand": ["Island"], "graveyard": ["Forest","Mountain"] } ], "tapped": { "Cao Cao, Lord of Wei": true } } },
+  { "name": "beginning of combat is still before attackers",
+    "players": [ { "battlefield": ["Cao Cao, Lord of Wei"] }, { "hand": ["Forest","Mountain"] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "activate": "Cao Cao, Lord of Wei", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "hand": [], "graveyard_has": ["Forest","Mountain"] } ] } },
+  { "name": "after combat (second main) it can no longer be activated",
+    "players": [ { "battlefield": ["Cao Cao, Lord of Wei"] }, { "hand": ["Forest","Mountain"] } ],
+    "steps": [ { "advance_to": "Main2" }, { "activate": "Cao Cao, Lord of Wei", "targets": ["p1"], "illegal": true } ],
+    "expect": { "players": [ {}, { "hand": ["Forest","Mountain"] } ] } },
+  { "name": "not on the opponent's turn",
+    "players": [ { "battlefield": ["Cao Cao, Lord of Wei"] }, { "hand": ["Forest","Mountain"] } ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "Upkeep" }, { "pass": true, "player": 1 }, { "activate": "Cao Cao, Lord of Wei", "targets": ["p1"], "illegal": true } ],
+    "expect": { "players": [ {}, { "hand_count": 2 } ], "turn": 2 } },
+  { "name": "ruling: in an additional combat phase after the first combat, it cannot be activated at the beginning of combat",
+    "players": [ { "hand": ["Relentless Assault"], "battlefield": ["Cao Cao, Lord of Wei", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "advance_to": "Main2" }, { "cast": "Relentless Assault" }, { "resolve": true }, { "advance_to": "BeginCombat" }, { "activate": "Cao Cao, Lord of Wei", "targets": ["p1"], "illegal": true } ],
+    "expect": { "players": [ {}, {} ], "tapped": { "Cao Cao, Lord of Wei": false } } },
+  {"name": "ruling: in a second combat phase it cannot be activated before attackers are declared", "players": [{"battlefield": [{"name": "Cao Cao, Lord of Wei", "sick": false}, "Aggravated Assault", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "sick": false}]}, {}], "steps": [{"activate": "Aggravated Assault"}, {"resolve": true}, {"advance_to": "EndCombat"}, {"pass": true}, {"pass": true, "player": 1}, {"activate": "Cao Cao, Lord of Wei", "targets": ["p1"], "illegal": true}], "expect": {"turn": 1, "step": "BeginCombat", "players": [{"battlefield_has": ["Cao Cao, Lord of Wei"]}, {}]}}
+]

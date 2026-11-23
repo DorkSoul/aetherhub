@@ -1,0 +1,88 @@
+[
+  {
+    "name": "entering the battlefield draws a card",
+    "players": [
+      { "hand": ["Suurok-Class Science Vessel"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Suurok-Class Science Vessel" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "station taps another creature and adds charge counters equal to its power",
+    "players": [
+      { "battlefield": ["Suurok-Class Science Vessel", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Suurok-Class Science Vessel" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "counters": { "Suurok-Class Science Vessel": { "charge": 2 } }
+    }
+  },
+  {
+    "name": "reaching exactly 5 charge counters makes it a 3/2 flying artifact creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Suurok-Class Science Vessel", "sick": false, "counters": { "charge": 3 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Suurok-Class Science Vessel" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Suurok-Class Science Vessel": { "charge": 5 } },
+      "pt": { "Suurok-Class Science Vessel": [3, 2] }
+    }
+  },
+  {
+    "name": "at 4 charge counters it is not yet a creature and cannot attack",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Suurok-Class Science Vessel", "sick": false, "counters": { "charge": 2 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Suurok-Class Science Vessel" },
+      { "resolve": true },
+      { "illegal": true, "attack": [ { "card": "Suurok-Class Science Vessel", "at": "p1" } ] }
+    ],
+    "expect": {
+      "counters": { "Suurok-Class Science Vessel": { "charge": 4 } }
+    }
+  },
+  {
+    "name": "at 5+ it is a flying creature: Grizzly Bears cannot block it, so 3 damage gets through",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Suurok-Class Science Vessel", "sick": false, "counters": { "charge": 5 } }
+        ]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Suurok-Class Science Vessel", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  }
+]

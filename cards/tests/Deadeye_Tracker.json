@@ -1,0 +1,159 @@
+[
+  {
+    "name": "exiles two targeted cards from an opponent's graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Deadeye Tracker",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "graveyard": [
+          "Grizzly Bears",
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Deadeye Tracker",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears",
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Deadeye Tracker"
+          ]
+        },
+        {
+          "graveyard": [],
+          "exile": [
+            "Grizzly Bears",
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "needs two cards to target in the opponent's graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Deadeye Tracker",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Deadeye Tracker",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot target cards in your own graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Deadeye Tracker",
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Deadeye Tracker",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears",
+          "Lightning Bolt"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears",
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that left the battlefield still explores; a land goes to hand",
+    "players": [
+      { "battlefield": ["Deadeye Tracker", "Swamp", "Swamp"], "library": ["Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "graveyard": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Deadeye Tracker", "ability": 0, "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Deadeye Tracker"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Mountain"], "battlefield_lacks": ["Deadeye Tracker"] },
+        { "exile": ["Grizzly Bears", "Hill Giant"], "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an explored nonland card can go to the graveyard, and the creature gets a +1/+1 counter",
+    "players": [
+      { "battlefield": ["Deadeye Tracker", "Swamp", "Swamp"], "library": ["Grizzly Bears"] },
+      { "graveyard": ["Hill Giant", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "activate": "Deadeye Tracker", "ability": 0, "targets": ["Hill Giant", "Lightning Bolt"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Deadeye Tracker"], "graveyard": ["Grizzly Bears"] },
+        { "exile": ["Hill Giant", "Lightning Bolt"] }
+      ],
+      "counters": { "Deadeye Tracker": { "p1p1": 1 } }
+    }
+  }
+]

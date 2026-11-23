@@ -1,0 +1,189 @@
+[
+ {
+  "name": "+1: an opponent with an empty hand loses 3 life; the discard is unaffected",
+  "players": [
+   {
+    "hand": [
+     "Island"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Liliana, Waker of the Dead"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Liliana, Waker of the Dead",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Island"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "+1: an opponent who discards a card does not lose life",
+  "players": [
+   {
+    "hand": [
+     "Island"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Liliana, Waker of the Dead"
+    ]
+   },
+   {
+    "hand": [
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Liliana, Waker of the Dead",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Island"
+     ]
+    },
+    {
+     "graveyard": [
+      "Forest"
+     ],
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "-3: target creature gets -X/-X where X is the cards in your graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Liliana, Waker of the Dead"
+    ],
+    "graveyard": [
+     "Island",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Liliana, Waker of the Dead",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "-7 emblem: an emblem that puts a creature card from a graveyard onto the battlefield at the beginning of your combat",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     {
+      "name": "Liliana, Waker of the Dead",
+      "counters": {
+       "loyalty": 7
+      }
+     }
+    ]
+   },
+   {
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Liliana, Waker of the Dead",
+    "ability": 2
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ { "name": "ruling: the -X/-X value is fixed on resolution, so a later graveyard change does not alter it",
+   "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Swamp", "Liliana, Waker of the Dead"], "graveyard": ["Grizzly Bears", "Savannah Lions"] },
+                { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "activate": "Liliana, Waker of the Dead", "ability": 1, "targets": ["Hill Giant"] }, { "resolve": true },
+              { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 17, "battlefield_has": ["Hill Giant"] } ], "pt": { "Hill Giant": [1, 1] } } },
+ { "name": "ruling: with no cards in hand Liliana's +1 costs you nothing, while an opponent who can discard still does",
+   "players": [ { "battlefield": ["Swamp", "Liliana, Waker of the Dead"] }, { "hand": ["Lightning Bolt"] } ],
+   "steps": [ { "activate": "Liliana, Waker of the Dead", "ability": 0 }, { "resolve": true } ],
+   "expect": { "players": [ { "life": 20 }, { "graveyard": ["Lightning Bolt"], "life": 20 } ] } },
+ { "name": "ruling: a creature put in by the emblem has haste and can attack in that combat",
+   "players": [ { "battlefield": ["Swamp", { "name": "Liliana, Waker of the Dead", "counters": { "loyalty": 7 } }] },
+                { "graveyard": ["Grizzly Bears"] } ],
+   "steps": [ { "activate": "Liliana, Waker of the Dead", "ability": 2 }, { "resolve": true },
+              { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] }, { "resolve": true },
+              { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 18 } ] } }
+]

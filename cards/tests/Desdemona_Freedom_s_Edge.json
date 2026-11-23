@@ -1,0 +1,94 @@
+[
+ {
+  "name": "attack: creature card with mana value 3 or less in graveyard gains escape, castable exiling two other cards",
+  "players": [
+   {
+    "battlefield": ["Desdemona, Freedom's Edge", "Forest", "Plains"],
+    "graveyard": ["Grizzly Bears", "Shock", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Desdemona, Freedom's Edge", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Grizzly Bears", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "exile": ["Shock", "Shock"], "graveyard": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "creature card with mana value 4 or more (not an artifact) cannot be targeted",
+  "players": [
+   {
+    "battlefield": ["Desdemona, Freedom's Edge", "Forest", "Plains", "Mountain"],
+    "graveyard": ["Hill Giant", "Shock", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Desdemona, Freedom's Edge", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "cast": "Hill Giant", "alt": 100, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Hill Giant", "Shock", "Shock"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "escape needs two other cards in the graveyard",
+  "players": [
+   {
+    "battlefield": ["Desdemona, Freedom's Edge", "Forest", "Plains"],
+    "graveyard": ["Grizzly Bears", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Desdemona, Freedom's Edge", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Grizzly Bears", "alt": 100, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears", "Shock"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an escaped creature that dies later goes to its owner's graveyard",
+  "players": [
+   {
+    "hand": ["Shock"],
+    "battlefield": ["Desdemona, Freedom's Edge", "Forest", "Plains", "Mountain"],
+    "graveyard": ["Grizzly Bears", "Shock", "Shock"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Desdemona, Freedom's Edge", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "cast": "Grizzly Bears", "alt": 100 },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears", "Shock"], "exile": ["Shock", "Shock"] },
+    {}
+   ]
+  }
+ }
+]

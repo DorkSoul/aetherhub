@@ -1,0 +1,86 @@
+[
+  {
+    "name": "landfall: playing a land puts a +1/+1 counter on it",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Undergrowth Champion", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Undergrowth Champion": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "with a +1/+1 counter, damage is prevented and one counter is removed instead",
+    "players": [
+      { "battlefield": [{ "name": "Undergrowth Champion", "counters": { "p1p1": 1 } }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Undergrowth Champion"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Undergrowth Champion"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Undergrowth Champion": { "p1p1": 0 } }
+    }
+  },
+  {
+    "name": "boundary: without a +1/+1 counter the damage is not prevented and it dies",
+    "players": [
+      { "battlefield": ["Undergrowth Champion"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Undergrowth Champion"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Undergrowth Champion"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two blockers' damage is prevented once, so only one counter is removed",
+    "players": [
+      { "battlefield": [{ "name": "Undergrowth Champion", "counters": { "p1p1": 2 } }] },
+      { "battlefield": ["Grizzly Bears", "Malakir Blood-Priest"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Malakir Blood-Priest", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Undergrowth Champion", "attacker": "Grizzly Bears" }, { "blocker": "Undergrowth Champion", "attacker": "Malakir Blood-Priest" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Undergrowth Champion"] }, {} ],
+      "counters": { "Undergrowth Champion": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a land put onto the battlefield by Cultivate (not played) triggers landfall",
+    "players": [
+      { "hand": ["Cultivate"], "battlefield": ["Undergrowth Champion", "Forest", "Forest", "Forest"], "library": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cultivate" },
+      { "resolve": true, "answers": ["Forest", "Forest"] }
+    ],
+    "expect": {
+      "counters": { "Undergrowth Champion": { "p1p1": 1 } }
+    }
+  }
+]

@@ -1,0 +1,240 @@
+[
+  {
+    "name": "no gift: the chosen nonland card is exiled and cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Cruelclaw's Heist"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cruelclaw's Heist",
+        "targets": [
+          "p1"
+        ],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Cruelclaw's Heist"
+          ]
+        },
+        {
+          "hand": [
+            "Forest",
+            "Grizzly Bears"
+          ],
+          "exile": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gift promised: opponent draws first, then the card can be cast spending any mana",
+    "players": [
+      {
+        "hand": [
+          "Cruelclaw's Heist"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Forest"
+        ],
+        "library": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cruelclaw's Heist",
+        "targets": [
+          "p1"
+        ],
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Cruelclaw's Heist"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "hand": [
+            "Forest",
+            "Island"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gift promised: a land is not a legal choice",
+    "players": [
+      {
+        "hand": [
+          "Cruelclaw's Heist"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Forest"
+        ],
+        "library": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cruelclaw's Heist",
+        "targets": [
+          "p1"
+        ],
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Cruelclaw's Heist"
+          ]
+        },
+        {
+          "hand": [
+            "Forest",
+            "Island"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered Heist gives no gift: the opponent does not draw",
+    "players": [
+      { "hand": ["Cruelclaw's Heist"], "battlefield": ["Swamp", "Swamp"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Cruelclaw's Heist", "targets": ["p1"], "answers": [true] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Cruelclaw's Heist" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Cruelclaw's Heist"] },
+        { "hand_count": 0, "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled sorcery from a gift Heist cannot be cast during combat",
+    "players": [
+      { "hand": ["Cruelclaw's Heist"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Wrath of God"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Cruelclaw's Heist", "targets": ["p1"], "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Wrath of God", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Cruelclaw's Heist"] },
+        { "exile": ["Wrath of God"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the same exiled sorcery can be cast in the main phase with an empty stack",
+    "players": [
+      { "hand": ["Cruelclaw's Heist"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Wrath of God"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Cruelclaw's Heist", "targets": ["p1"], "answers": [true] },
+      { "resolve": true },
+      { "cast": "Wrath of God" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Cruelclaw's Heist"] },
+        { "graveyard": ["Wrath of God"], "exile": [] }
+      ]
+    }
+  }
+]

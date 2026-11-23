@@ -1,0 +1,59 @@
+[
+  {
+    "name": "Killer deals 3 damage to the target and each other creature sharing a creature type with it",
+    "players": [
+      { "hand": ["Coward"], "battlefield": ["Mountain", "Mountain", "Island", "Island"] },
+      { "battlefield": ["Llanowar Elves", "Elvish Visionary", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Coward", "face": true, "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Coward"] },
+        { "battlefield": ["Grizzly Bears"], "graveyard": ["Llanowar Elves", "Elvish Visionary"] }
+      ]
+    }
+  },
+  {
+    "name": "Killer does not damage a creature that shares no creature type with the target",
+    "players": [
+      { "hand": ["Coward"], "battlefield": ["Mountain", "Mountain", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Coward", "face": true, "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield": ["Grizzly Bears"], "graveyard": ["Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "Coward target creature can't block this turn",
+    "players": [
+      { "hand": ["Coward"], "battlefield": ["Mountain", "Island", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Coward", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Coward"] },
+        { "life": 18, "battlefield": ["Llanowar Elves"] }
+      ]
+    }
+  }
+]

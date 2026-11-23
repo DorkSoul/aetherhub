@@ -1,0 +1,53 @@
+[
+  { "name": "unblockable when another Warrior entered under your control this turn",
+    "players": [ { "hand": ["Falkenrath Pit Fighter"], "battlefield": ["Mountain", "Nimble Trapfinder"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Falkenrath Pit Fighter" }, { "resolve": true },
+      { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nimble Trapfinder" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "blockable when no other party creature entered this turn",
+    "players": [ { "battlefield": ["Nimble Trapfinder"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nimble Trapfinder" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Nimble Trapfinder"] }, { "graveyard_has": ["Grizzly Bears"] } ] } },
+  { "name": "full party: creatures you control draw a card on combat damage to a player",
+    "players": [ { "battlefield": ["Nimble Trapfinder", "Falkenrath Pit Fighter", "Human Cleric", "Human Wizard"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" }, { "resolve": true },
+      { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" } ] },
+      { "advance_to": "Main2" }, { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1 }, { "life": 18 } ] } },
+  { "name": "unblockable after another Warrior entered this turn: the Grizzly Bears block is dropped",
+    "players": [ { "hand": ["Falkenrath Pit Fighter"], "battlefield": ["Mountain", "Nimble Trapfinder", "Savannah Lions"] }, { "battlefield": ["Grizzly Bears", "Hill Giant"] } ],
+    "steps": [
+      { "cast": "Falkenrath Pit Fighter" }, { "resolve": true },
+      { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nimble Trapfinder" }, { "blocker": "Hill Giant", "attacker": "Savannah Lions" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "ruling: three party types are not a full party, so no creature gains the draw ability",
+    "players": [ { "battlefield": ["Nimble Trapfinder", "Falkenrath Pit Fighter", "Human Cleric"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "hand_count": 0 }, { "life": 18 } ] } },
+  { "name": "ruling: a Warrior that entered and then left still makes Nimble Trapfinder unblockable",
+    "players": [ { "hand": ["Falkenrath Pit Fighter"], "battlefield": ["Mountain", "Nimble Trapfinder"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] } ],
+    "steps": [ { "cast": "Falkenrath Pit Fighter" }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Falkenrath Pit Fighter"] }, { "resolve": true },
+               { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" } ] },
+               { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nimble Trapfinder" } ], "illegal": true },
+               { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "graveyard_has": ["Falkenrath Pit Fighter"] }, { "life": 18 } ] } },
+  { "name": "ruling: after the party breaks in combat, creatures keep the draw ability for the turn",
+    "players": [ { "battlefield": ["Nimble Trapfinder", "Falkenrath Pit Fighter", "Human Cleric", "Human Wizard"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Human Wizard"] }, { "resolve": true },
+               { "attack": [ { "card": "Nimble Trapfinder", "at": "p1" } ] },
+               { "advance_to": "Main2" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1 }, { "life": 18 } ] } }
+]

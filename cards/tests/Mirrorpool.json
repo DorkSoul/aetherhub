@@ -1,0 +1,269 @@
+[
+  {
+    "name": "enters tapped",
+    "players": [
+      {
+        "hand": [
+          "Mirrorpool"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Mirrorpool"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Mirrorpool": true
+      }
+    }
+  },
+  {
+    "name": "taps for C",
+    "players": [
+      {
+        "battlefield": [
+          "Mirrorpool"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Mirrorpool"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "C": 1
+          }
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "copy a Lightning Bolt",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "activate": "Mirrorpool",
+        "ability": 0,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Mountain",
+            "Mirrorpool",
+            "Mirrorpool",
+            "Mirrorpool"
+          ]
+        },
+        {
+          "life": 14
+        }
+      ]
+    }
+  },
+  {
+    "name": "copy a creature: token copy",
+    "players": [
+      {
+        "battlefield": [
+          "Hill Giant",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Mirrorpool",
+        "ability": 1,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Hill Giant",
+            "Hill Giant",
+            "Mirrorpool",
+            "Mirrorpool",
+            "Mirrorpool",
+            "Mirrorpool",
+            "Mirrorpool"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "needs colorless mana: coloured mana is not enough",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mirrorpool"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "activate": "Mirrorpool",
+        "ability": 0,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "cannot copy a creature spell",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Mirrorpool",
+          "Mirrorpool",
+          "Mirrorpool"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "activate": "Mirrorpool",
+        "ability": 0,
+        "targets": [
+          {
+            "stack": "Grizzly Bears"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: the token copy's enters-the-battlefield trigger fires (Mulldrifter draws two)",
+    "players": [
+      { "battlefield": ["Mulldrifter", "Sol Ring", "Island", "Island", "Island", "Mirrorpool"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mirrorpool", "ability": 1, "targets": ["Mulldrifter"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2, "battlefield_has": ["Mulldrifter", "Mulldrifter"] }, {} ] }
+  },
+  {
+    "name": "ruling: copying a spell with no targets (Divination) makes a copy that resolves too",
+    "players": [
+      { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Mirrorpool", "Mirrorpool"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "activate": "Mirrorpool", "ability": 0, "targets": [{ "stack": "Divination" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 4 }, {} ] }
+  },
+  {
+    "name": "ruling: the copy of an X spell has the same X (Fireball X=3 deals 3 twice)",
+    "players": [
+      { "hand": ["Fireball"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mirrorpool", "Mirrorpool"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fireball", "targets": ["p1"], "answers": [3] },
+      { "activate": "Mirrorpool", "ability": 0, "targets": [{ "stack": "Fireball" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 14 } ] }
+  },
+  {
+    "name": "ruling: the copy of Fling has the same sacrificed creature, so it deals the same damage",
+    "players": [
+      { "hand": ["Fling"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant", "Mirrorpool", "Mirrorpool"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fling", "targets": ["p1"] },
+      { "activate": "Mirrorpool", "ability": 0, "targets": [{ "stack": "Fling" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant"] }, { "life": 14 } ] }
+  }
+]

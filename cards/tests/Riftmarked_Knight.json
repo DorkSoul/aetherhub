@@ -1,0 +1,234 @@
+[
+  {
+    "name": "suspend for {1}{W}{W} exiles it with three time counters",
+    "players": [
+      {
+        "hand": [
+          "Riftmarked Knight"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Riftmarked Knight"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Riftmarked Knight"
+          ],
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the last time counter removed while exiled makes a 2/2 black flanking Knight token",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Riftmarked Knight",
+            "counters": {
+              "time": 1
+            }
+          }
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "battlefield_has": [
+            "Knight 2-2 Black Flanking Protection from White Haste"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a time counter removed while exiled with more left does not make the token",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Riftmarked Knight",
+            "counters": {
+              "time": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Riftmarked Knight"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "protection from black: a black Vampire Nighthawk can't block the Knight; the Knight's 2 damage goes through",
+    "players": [
+      {
+        "battlefield": [
+          "Plains",
+          {
+            "name": "Riftmarked Knight",
+            "sick": false
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Vampire Nighthawk",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Riftmarked Knight",
+            "at": "p1"
+          },
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Vampire Nighthawk",
+            "attacker": "Riftmarked Knight"
+          },
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ],
+        "player": 1
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Riftmarked Knight"
+          ],
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18,
+          "battlefield_has": [
+            "Vampire Nighthawk",
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining to cast the suspended card leaves it exiled and it is never cast",
+    "players": [
+      { "exile": [ { "name": "Riftmarked Knight", "counters": { "time": 1 } } ], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Riftmarked Knight"], "battlefield_lacks": ["Riftmarked Knight"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature cast with suspend has haste and attacks the turn it is cast",
+    "players": [
+      { "exile": [ { "name": "Riftmarked Knight", "counters": { "time": 1 } } ], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Riftmarked Knight", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Riftmarked Knight"] },
+        { "life": 18 }
+      ]
+    }
+  }
+]

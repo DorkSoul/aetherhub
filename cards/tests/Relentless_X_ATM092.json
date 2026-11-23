@@ -1,0 +1,38 @@
+[
+  {
+    "name": "can't be blocked by fewer than three creatures",
+    "players": [ { "battlefield": ["Relentless X-ATM092"] }, { "battlefield": ["Grizzly Bears", "Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Relentless X-ATM092", "at": "p1" } ] }, { "block": [ { "blocker": "Grizzly Bears", "attacker": "Relentless X-ATM092" } ], "illegal": true } ],
+    "expect": { "players": [ {}, {} ] }
+  },
+  {
+    "name": "{8} from the graveyard: returns tapped with a finality counter",
+    "players": [ { "graveyard": ["Relentless X-ATM092"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Relentless X-ATM092" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Relentless X-ATM092"] }, {} ], "counters": { "Relentless X-ATM092": { "finality": 1 } } }
+  },
+  {
+    "name": "can't be blocked by only two creatures: the double block is illegal, so X deals 6",
+    "players": [ { "battlefield": ["Relentless X-ATM092"] }, { "battlefield": ["Grizzly Bears", "Savannah Lions"] } ],
+    "steps": [ { "attack": [ { "card": "Relentless X-ATM092", "at": "p1" } ] }, { "block": [ { "blocker": "Grizzly Bears", "attacker": "Relentless X-ATM092" }, { "blocker": "Savannah Lions", "attacker": "Relentless X-ATM092" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 14, "battlefield_has": ["Grizzly Bears", "Savannah Lions"] } ] }
+  },
+  {
+    "name": "three blockers are legal: X is blocked and dies to 7 damage",
+    "players": [ { "battlefield": ["Relentless X-ATM092"] }, { "battlefield": ["Grizzly Bears", "Savannah Lions", "Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Relentless X-ATM092", "at": "p1" } ] }, { "block": [ { "blocker": "Grizzly Bears", "attacker": "Relentless X-ATM092" }, { "blocker": "Savannah Lions", "attacker": "Relentless X-ATM092" }, { "blocker": "Hill Giant", "attacker": "Relentless X-ATM092" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "graveyard": ["Relentless X-ATM092"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: a permanent with a finality counter is exiled instead of going to the graveyard",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "sick": false, "counters": { "finality": 1 } }] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ] }
+  },
+  {
+    "name": "ruling: multiple finality counters are redundant; the creature is still exiled",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "sick": false, "counters": { "finality": 2 } }] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ] }
+  }
+]

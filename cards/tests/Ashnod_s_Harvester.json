@@ -1,0 +1,70 @@
+[
+ {
+  "name": "attack trigger exiles target card from a graveyard",
+  "players": [
+   { "battlefield": [{ "name": "Ashnod's Harvester", "sick": false }] },
+   { "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Ashnod's Harvester", "at": "p1" } ] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "exile": ["Grizzly Bears"], "graveyard": [] } ] }
+ },
+ {
+  "name": "unearth returns it to the battlefield",
+  "players": [
+   { "battlefield": ["Swamp", "Island"], "graveyard": ["Ashnod's Harvester"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ashnod's Harvester", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Ashnod's Harvester"] }, {} ] }
+ },
+ {
+  "name": "ruling: unearth grants haste, so the returned Harvester can attack this turn",
+  "players": [
+   { "battlefield": ["Swamp", "Island"], "graveyard": ["Ashnod's Harvester"] },
+   { "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Ashnod's Harvester", "ability": 0 },
+   { "resolve": true },
+   { "attack": [ { "card": "Ashnod's Harvester", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Ashnod's Harvester"] }, { "life": 17, "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: an unearthed Harvester that would die is exiled instead",
+  "players": [
+   { "battlefield": ["Swamp", "Island"], "graveyard": ["Ashnod's Harvester"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "activate": "Ashnod's Harvester", "ability": 0 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Ashnod's Harvester"], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "exile": ["Ashnod's Harvester"], "graveyard": [] }, { "graveyard": ["Lightning Bolt"] } ] }
+ },
+ {
+  "name": "ruling: an unearthed Harvester is exiled at the beginning of the next end step",
+  "players": [
+   { "battlefield": ["Swamp", "Island"], "graveyard": ["Ashnod's Harvester"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Ashnod's Harvester", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" }
+  ],
+  "expect": { "players": [ { "exile": ["Ashnod's Harvester"], "battlefield_lacks": ["Ashnod's Harvester"] }, {} ] }
+ }
+]

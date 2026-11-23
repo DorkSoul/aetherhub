@@ -1,0 +1,97 @@
+[
+  {
+    "name": "remove three quest counters and sacrifice to return two creature cards",
+    "players": [
+      {
+        "battlefield": [{ "name": "Soul Stair Expedition", "counters": { "quest": 3 } }],
+        "graveyard": ["Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul Stair Expedition", "ability": 0, "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears", "Hill Giant"], "graveyard": ["Soul Stair Expedition"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot activate with only two quest counters",
+    "players": [
+      {
+        "battlefield": [{ "name": "Soul Stair Expedition", "counters": { "quest": 2 } }],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Soul Stair Expedition", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Soul Stair Expedition"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "landfall: may put a quest counter",
+    "players": [
+      {
+        "hand": ["Plains"],
+        "battlefield": ["Soul Stair Expedition"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Plains" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "counters": { "Soul Stair Expedition": { "quest": 1 } },
+      "players": [
+        { "battlefield_has": ["Soul Stair Expedition", "Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: each landfall ability of permanents you control triggers (two copies each trigger)",
+    "players": [
+      { "hand": ["Plains"], "battlefield": ["Soul Stair Expedition", "Soul Stair Expedition"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Plains" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Soul Stair Expedition", "Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land put onto the battlefield by a spell triggers landfall",
+    "players": [
+      { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest", "Soul Stair Expedition"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rampant Growth" },
+      { "resolve": true, "answers": ["Mountain", true] }
+    ],
+    "expect": {
+      "counters": { "Soul Stair Expedition": { "quest": 1 } },
+      "players": [
+        { "battlefield_has": ["Soul Stair Expedition", "Mountain"], "graveyard": ["Rampant Growth"] },
+        {}
+      ]
+    }
+  }
+]

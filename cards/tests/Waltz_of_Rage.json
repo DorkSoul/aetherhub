@@ -1,0 +1,205 @@
+[
+ {
+  "name": "target creature you control deals damage equal to its power to each other creature (the source itself takes none)",
+  "players": [
+   {
+    "hand": [
+     "Waltz of Rage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Waltz of Rage",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears",
+      "Savannah Lions"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "until end of turn, a creature you control dying exiles the top card of your library (you may play it)",
+  "players": [
+   {
+    "hand": [
+     "Waltz of Rage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Hill Giant"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ],
+    "graveyard": []
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Waltz of Rage",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Island"
+     ],
+     "graveyard": [
+      "Hill Giant",
+      "Waltz of Rage"
+     ]
+    },
+    {}
+   ]
+  }
+ }
+,
+ {
+  "name": "ruling: if the target is gone on resolution (bolted in response) the whole spell does nothing",
+  "players": [
+   { "hand": ["Waltz of Rage"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest", "Hill Giant"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Waltz of Rage", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Hill Giant"], "graveyard_has": ["Waltz of Rage", "Hill Giant"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the damage uses the target's power as Waltz resolves (pumped by Giant Growth in response)",
+  "players": [
+   { "hand": ["Waltz of Rage", "Giant Growth"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Hill Giant"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Waltz of Rage", "targets": ["Hill Giant"] },
+   { "cast": "Giant Growth", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant"] },
+    { "graveyard_has": ["Serra Angel"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled land from the delayed trigger can only be played in a main phase with the stack empty",
+  "players": [
+   { "hand": ["Waltz of Rage"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest", "Hill Giant"], "library": ["Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Waltz of Rage", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "play_land": "Island", "illegal": true },
+   { "advance_to": "Main2" },
+   { "play_land": "Island" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Island"], "exile": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the creature is the damage source, not Waltz (green Grizzly Bears kills a protection-from-red Silver Knight)",
+  "players": [
+   { "hand": ["Waltz of Rage"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+   { "battlefield": ["Silver Knight"] }
+  ],
+  "steps": [
+   { "cast": "Waltz of Rage", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Silver Knight"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,263 @@
+[
+  {
+    "name": "X=2 paid with mana: taps both targets, then 3 stun counters spread over the tapped opposing creatures",
+    "players": [
+      {
+        "hand": [
+          "Crashing Wave"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Crashing Wave",
+        "targets": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ],
+        "answers": [
+          2
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          0,
+          1,
+          0
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Hill Giant"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 2
+        },
+        "Hill Giant": {
+          "stun": 1
+        }
+      },
+      "tapped": {
+        "Grizzly Bears": true,
+        "Hill Giant": true
+      }
+    }
+  },
+  {
+    "name": "X=0: no targets, no counters (no tapped opposing creature)",
+    "players": [
+      {
+        "hand": [
+          "Crashing Wave"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Crashing Wave",
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Crashing Wave"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 0
+        }
+      },
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "untapped opposing creature that was not targeted gets no counter; all 3 counters go on the only tapped one",
+    "players": [
+      {
+        "hand": [
+          "Crashing Wave"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Crashing Wave",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "answers": [
+          1
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 3
+        },
+        "Serra Angel": {
+          "stun": 0
+        }
+      },
+      "tapped": {
+        "Serra Angel": false
+      }
+    }
+  },
+  {
+    "name": "waterbend X=1 paid by tapping our own creature instead of mana: the targeted creature is tapped",
+    "players": [
+      {
+        "hand": [
+          "Crashing Wave"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Crashing Wave",
+        "targets": [
+          "Hill Giant"
+        ],
+        "answers": [
+          1,
+          [
+            0
+          ]
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Hill Giant": {
+          "stun": 3
+        }
+      },
+      "tapped": {
+        "Hill Giant": true,
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "ruling: if the only target is removed in response, Crashing Wave does nothing (no stun counters)",
+    "players": [
+      { "hand": ["Crashing Wave"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears", { "name": "Hill Giant", "tapped": true }] }
+    ],
+    "steps": [
+      { "cast": "Crashing Wave", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Crashing Wave"] }, { "graveyard": ["Lightning Bolt", "Grizzly Bears"], "battlefield_has": ["Hill Giant"] } ],
+      "counters": { "Hill Giant": { "stun": 0 } },
+      "tapped": { "Hill Giant": true }
+    }
+  },
+  {
+    "name": "ruling: a summoning-sick creature can be tapped to pay the waterbend cost",
+    "players": [
+      { "hand": ["Crashing Wave"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "sick": true }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Crashing Wave", "targets": ["Hill Giant"], "answers": [1, [0]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "stun": 3 } },
+      "tapped": { "Hill Giant": true, "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: stun counters may go on a tapped opposing creature that Crashing Wave did not tap (X=0)",
+    "players": [
+      { "hand": ["Crashing Wave"], "battlefield": ["Island", "Island"] },
+      { "battlefield": [ { "name": "Hill Giant", "tapped": true } ] }
+    ],
+    "steps": [
+      { "cast": "Crashing Wave", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "stun": 3 } },
+      "tapped": { "Hill Giant": true }
+    }
+  }
+]

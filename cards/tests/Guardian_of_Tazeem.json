@@ -1,0 +1,64 @@
+[
+  {
+    "name": "landfall with a non-Island land taps the target creature",
+    "players": [ { "hand": ["Forest"], "battlefield": ["Guardian of Tazeem"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "play_land": "Forest", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "landfall with an Island taps the target creature",
+    "players": [ { "hand": ["Island"], "battlefield": ["Guardian of Tazeem"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "play_land": "Island", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "ruling: the skipped untap follows the creature when its control changes",
+    "players": [
+      { "hand": ["Island", "Control Magic"], "battlefield": ["Guardian of Tazeem", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "play_land": "Island", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Control Magic", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Control Magic"] }, {} ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: landfall can target an already tapped creature, which then does not untap",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Guardian of Tazeem", "Island", "Island", "Island"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+    ],
+    "steps": [
+      { "play_land": "Island", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "players": [ {}, {} ], "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "ruling: a basic Island put onto the battlefield by Cultivate triggers landfall",
+    "players": [
+      { "hand": ["Cultivate"], "battlefield": ["Guardian of Tazeem", "Forest", "Forest", "Forest"], "library": ["Island", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Cultivate" },
+      { "resolve": true, "answers": ["Island", "Forest"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Guardian of Tazeem", "Island"] }, {} ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  }
+]

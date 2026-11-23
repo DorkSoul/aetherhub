@@ -1,0 +1,79 @@
+[
+  {
+    "name": "ETB gets an energy counter",
+    "players": [ { "hand": ["Glint-Sleeve Siphoner"], "battlefield": ["Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "cast": "Glint-Sleeve Siphoner" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 1 }, {} ]
+    }
+  },
+  {
+    "name": "attacking gets an energy counter",
+    "players": [ { "battlefield": ["Glint-Sleeve Siphoner"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Glint-Sleeve Siphoner", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 1 }, {} ]
+    }
+  },
+  {
+    "name": "upkeep pay two energy to draw and lose 1 life",
+    "players": [ { "battlefield": ["Glint-Sleeve Siphoner"], "energy": 2 }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 0, "hand_count": 1, "life": 19 }, {} ]
+    }
+  },
+  {
+    "name": "upkeep declining the energy payment does nothing",
+    "players": [ { "battlefield": ["Glint-Sleeve Siphoner"], "energy": 2 }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 2, "hand_count": 0, "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "upkeep with only one energy cannot pay",
+    "players": [ { "battlefield": ["Glint-Sleeve Siphoner"], "energy": 1 }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 1, "hand_count": 0, "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: energy counters stay on the creature across the end of the turn",
+    "players": [ { "battlefield": ["Glint-Sleeve Siphoner"], "energy": 2 }, {} ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" } ],
+    "expect": { "players": [ { "energy": 2 }, {} ] }
+  },
+  {
+    "name": "ruling: with four energy the payment is made once, not once per pair",
+    "players": [ { "battlefield": ["Glint-Sleeve Siphoner"], "energy": 4 }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 2, "hand_count": 1, "life": 19 }, {} ]
+    }
+  }
+]

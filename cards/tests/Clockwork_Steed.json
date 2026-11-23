@@ -1,0 +1,324 @@
+[
+  {
+    "name": "enters with four +1/+0 counters",
+    "players": [
+      {
+        "hand": [
+          "Clockwork Steed"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Clockwork Steed"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Clockwork Steed": [
+          4,
+          3
+        ]
+      },
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "end of combat: attacking removes one +1/+0 counter",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Clockwork Steed",
+            "counters": {
+              "p1p0": 4
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Clockwork Steed",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 3
+        }
+      }
+    }
+  },
+  {
+    "name": "end of combat: not attacking or blocking removes nothing",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Clockwork Steed",
+            "counters": {
+              "p1p0": 4
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "end of combat: blocking removes one +1/+0 counter",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Clockwork Steed",
+            "counters": {
+              "p1p0": 4
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Clockwork Steed",
+            "attacker": "Grizzly Bears"
+          }
+        ],
+        "player": 1
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 3
+        }
+      }
+    }
+  },
+  {
+    "name": "upkeep: {X},{T} puts up to X counters, capped at four in total",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Clockwork Steed",
+            "counters": {
+              "p1p0": 2
+            }
+          },
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "activate": "Clockwork Steed",
+        "answers": [
+          3
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          3
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 4
+        }
+      },
+      "tapped": {
+        "Clockwork Steed": true
+      }
+    }
+  },
+  {
+    "name": "upkeep: putting fewer than X counters is allowed",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Clockwork Steed",
+            "counters": {
+              "p1p0": 0
+            }
+          },
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "activate": "Clockwork Steed",
+        "answers": [
+          3
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          1
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "only during your upkeep",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Clockwork Steed",
+            "counters": {
+              "p1p0": 2
+            }
+          },
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Clockwork Steed",
+        "answers": [
+          1
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Clockwork Steed": {
+          "p1p0": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "can't be blocked by an artifact creature",
+    "players": [
+      { "battlefield": [{ "name": "Clockwork Steed", "counters": { "p1p0": 4 } }] },
+      { "battlefield": ["Clockwork Swarm", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Clockwork Steed", "at": "p1" }] },
+      { "block": [{ "blocker": "Clockwork Swarm", "attacker": "Clockwork Steed" }], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 16 }] }
+  },
+  {
+    "name": "ruling: with no counters it can still attack",
+    "players": [ { "battlefield": [{ "name": "Clockwork Steed", "counters": { "p1p0": 0 } }] }, {} ],
+    "steps": [ { "attack": [{ "card": "Clockwork Steed", "at": "p1" }] }, { "advance_to": "Main2" } ],
+    "expect": { "tapped": { "Clockwork Steed": true }, "players": [ {}, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: with no counters it can still block",
+    "players": [ { "battlefield": ["Grizzly Bears"] }, { "battlefield": [{ "name": "Clockwork Steed", "counters": { "p1p0": 0 } }] } ],
+    "steps": [ { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] }, { "block": [{ "blocker": "Clockwork Steed", "attacker": "Grizzly Bears" }], "player": 1 }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: loses its counter even when combat damage is prevented",
+    "players": [ { "battlefield": [{ "name": "Clockwork Steed", "counters": { "p1p0": 4 } }] }, { "hand": ["Fog"], "battlefield": ["Forest"] } ],
+    "steps": [ { "attack": [{ "card": "Clockwork Steed", "at": "p1" }] }, { "pass": true }, { "cast": "Fog", "player": 1 }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 20 } ], "counters": { "Clockwork Steed": { "p1p0": 3 } } }
+  },
+  {
+    "name": "ruling: at four counters the upkeep ability adds nothing",
+    "players": [ { "battlefield": [{ "name": "Clockwork Steed", "counters": { "p1p0": 4 } }, "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "activate": "Clockwork Steed", "answers": [3] },
+      { "resolve": true, "answers": [3] }
+    ],
+    "expect": { "counters": { "Clockwork Steed": { "p1p0": 4 } } }
+  }
+]

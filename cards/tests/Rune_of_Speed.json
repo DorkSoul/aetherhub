@@ -1,0 +1,282 @@
+[
+ {
+  "name": "draws a card and gives the enchanted creature +1/+0 and haste",
+  "players": [
+   {
+    "hand": [
+     "Rune of Speed"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rune of Speed",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1,
+     "battlefield_has": [
+      "Rune of Speed"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "enchanted creature that came under your control this turn can attack (haste)",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Rune of Speed"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Rune of Speed",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "enchanting an Equipment gives its equipped creature +1/+0 and haste",
+  "players": [
+   {
+    "hand": [
+     "Rune of Speed"
+    ],
+    "battlefield": [
+     "Forest",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Grizzly Bears",
+     "Barbed Battlegear"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Barbed Battlegear",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Rune of Speed",
+    "targets": [
+     "Barbed Battlegear"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     7,
+     1
+    ]
+   }
+  }
+ },
+ {
+  "name": "creature cast this turn without Rune cannot attack",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     },
+     {
+      "card": "Savannah Lions",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "enchanted sick creature attacks (haste); unenchanted sick creature does not",
+  "players": [
+   {
+    "hand": [
+     "Rune of Speed"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     {"name": "Grizzly Bears", "sick": true},
+     {"name": "Savannah Lions", "sick": true}
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rune of Speed",
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {"card": "Grizzly Bears", "at": "p1"},
+     {"card": "Savannah Lions", "at": "p1"}
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the enchanted creature is illegal as the Rune resolves, the Rune does not enter and its draw does not happen",
+  "players": [
+   { "hand": ["Rune of Speed"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Forest"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Rune of Speed", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears", "Rune of Speed"], "hand_count": 0, "library_top": ["Forest"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Rune can enchant a land; it still draws, and does nothing while the land is not a creature",
+  "players": [ { "hand": ["Rune of Speed"], "battlefield": ["Mountain", "Mountain", "Forest"], "library": ["Lightning Bolt"] }, {} ],
+  "steps": [ { "cast": "Rune of Speed", "targets": ["Forest"] }, { "resolve": true } ],
+  "expect": { "players": [ { "hand": ["Lightning Bolt"], "battlefield_has": ["Rune of Speed", "Forest"] }, {} ] }
+ }
+]

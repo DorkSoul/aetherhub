@@ -1,0 +1,68 @@
+[
+ {
+  "name": "an opponent's creature dies while Skirge is an enchantment: it becomes a 3/2 Imp with flying",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Lurking Skirge"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Lurking Skirge"] }, { "graveyard": ["Grizzly Bears"] } ],
+   "pt": { "Lurking Skirge": [3, 2] },
+   "keywords": { "Lurking Skirge": ["Flying"] }
+  }
+ },
+ {
+  "name": "your own creature dying does not trigger it: Skirge stays an enchantment",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Lurking Skirge", { "name": "Grizzly Bears", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Lurking Skirge"], "graveyard": ["Grizzly Bears", "Lightning Bolt"] }, {} ],
+   "keywords": { "Lurking Skirge": [] }
+  }
+ },
+ {
+   "name": "ruling: a permanent that came under my control this turn cannot attack after it becomes a creature",
+   "players": [ { "hand": ["Lurking Skirge", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+    { "cast": "Lurking Skirge" },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "resolve": true },
+    { "advance_to": "BeginCombat" },
+    { "attack": [ { "card": "Lurking Skirge", "at": "p1" } ], "illegal": true }
+   ],
+   "expect": {
+    "players": [ { "battlefield_has": ["Lurking Skirge"] }, { "graveyard": ["Grizzly Bears"], "life": 20 } ],
+    "pt": { "Lurking Skirge": [3, 2] }
+   }
+  },
+  {
+   "name": "ruling: a permanent under my control since the start of the turn can attack after it becomes a creature this turn",
+   "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Lurking Skirge"] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "resolve": true },
+    { "advance_to": "BeginCombat" },
+    { "attack": [ { "card": "Lurking Skirge", "at": "p1" } ] },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [ {}, { "life": 17 } ],
+    "pt": { "Lurking Skirge": [3, 2] }
+   }
+  }
+]

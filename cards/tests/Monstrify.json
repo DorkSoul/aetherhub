@@ -1,0 +1,149 @@
+[
+ {
+  "name": "gets +4/+4 until end of turn",
+  "players": [
+   {
+    "hand": [
+     "Monstrify"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Monstrify",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     6,
+     6
+    ]
+   }
+  }
+ },
+ {
+  "name": "retrace: cast from graveyard discarding a land",
+  "players": [
+   {
+    "graveyard": [
+     "Monstrify"
+    ],
+    "hand": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Monstrify",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "alt": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     6,
+     6
+    ]
+   },
+   "players": [
+    {
+     "graveyard": [
+      "Monstrify",
+      "Forest"
+     ],
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a retrace card returns to the graveyard after resolving, so it can be cast from there again",
+  "players": [
+   {
+    "graveyard": ["Monstrify"],
+    "hand": ["Forest", "Forest"],
+    "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Monstrify", "targets": ["Grizzly Bears"], "alt": 0, "answers": ["Forest"] },
+   { "resolve": true },
+   { "cast": "Monstrify", "targets": ["Grizzly Bears"], "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [10, 10] },
+   "players": [ { "graveyard_has": ["Monstrify"], "hand_count": 0 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery-speed retrace card cannot be cast from the graveyard during the opponent's turn",
+  "players": [
+   {
+    "graveyard": ["Monstrify"],
+    "hand": ["Forest"],
+    "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Monstrify", "targets": ["Grizzly Bears"], "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "players": [ { "graveyard_has": ["Monstrify"], "hand_count": 1 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: retrace needs a land card to discard, so with no land in hand it cannot be cast from the graveyard",
+  "players": [
+   {
+    "graveyard": ["Monstrify"],
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Monstrify", "targets": ["Grizzly Bears"], "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "players": [ { "graveyard_has": ["Monstrify"], "hand_count": 1 }, {} ]
+  }
+ }
+]

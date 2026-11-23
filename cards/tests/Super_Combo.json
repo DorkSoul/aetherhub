@@ -1,0 +1,23 @@
+[
+  { "name": "your creature deals damage equal to its power to an opposing creature",
+    "players": [ { "hand": ["Super Combo"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Super Combo", "targets": ["Grizzly Bears", "Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Grizzly Bears"] } ] } },
+  { "name": "cannot be cast without an opposing creature to target",
+    "players": [ { "hand": ["Super Combo"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Super Combo", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Super Combo"] }, {} ] } },
+  { "name": "damage is from the creature's power, the target survives if tougher",
+    "players": [ { "hand": ["Super Combo"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Super Combo", "targets": ["Grizzly Bears", "Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ] } }
+  ,
+  { "name": "replicate paid once: the original and the copy each deal 2 damage, killing a 3/3",
+    "players": [ { "hand": ["Super Combo"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Super Combo", "targets": ["Grizzly Bears", "Hill Giant"], "answers": [1] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Hill Giant"] } ], "stack_empty": true } },
+  { "name": "ruling: countering one replicate spell does not affect the copies: the other two still deal 4 and kill a 3/3",
+    "players": [ { "hand": ["Super Combo"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, { "hand": ["Cancel"], "battlefield": ["Hill Giant", "Island", "Island", "Island"] } ],
+    "steps": [ { "cast": "Super Combo", "targets": ["Grizzly Bears", "Hill Giant"], "answers": [2] }, { "pass": true }, { "pass": true, "player": 1 }, { "pass": true }, { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Super Combo" }] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard_has": ["Hill Giant", "Cancel"], "battlefield_lacks": ["Hill Giant"] } ], "stack_empty": true } }
+]

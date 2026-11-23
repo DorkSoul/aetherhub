@@ -1,0 +1,193 @@
+[
+  {
+    "name": "a spell's damage to me (you) is prevented",
+    "players": [
+      {
+        "battlefield": [
+          "Rem Karolus, Stalwart Slayer"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "battlefield_has": [
+            "Rem Karolus, Stalwart Slayer"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a spell's damage to an opponent is increased by 1 (Bolt deals 4)",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Rem Karolus, Stalwart Slayer",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "a spell's damage to another permanent I control is prevented; the creature survives",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Rem Karolus, Stalwart Slayer",
+          "Grizzly Bears",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Rem Karolus, Stalwart Slayer",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "boundary: the prevention does not cover Rem itself (\"another\" permanent), so Bolt kills it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Rem Karolus, Stalwart Slayer",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Rem Karolus, Stalwart Slayer"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Rem Karolus, Stalwart Slayer"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a spell's damage to an opponent's other permanent is increased by 1 (Bolt deals 4 to a 4-toughness Serra Angel)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Rem Karolus, Stalwart Slayer", "Mountain"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "graveyard": ["Serra Angel"], "battlefield_lacks": ["Serra Angel"] } ] }
+  },
+  {
+    "name": "ruling: fight damage is not spell damage (Rem adds nothing; Hill Giant survives 2 damage, Bears dies)",
+    "players": [
+      { "hand": ["Prey Upon"], "battlefield": ["Rem Karolus, Stalwart Slayer", "Grizzly Bears", "Forest"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Prey Upon", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears", "Prey Upon"], "battlefield_has": ["Rem Karolus, Stalwart Slayer"] }, { "battlefield_has": ["Hill Giant"], "life": 20 } ] }
+  },
+  {
+    "name": "ruling: a permanent's trigger is not spell damage (Hellrider's 1 deals 1, not 2; total 4, life 16)",
+    "players": [ { "battlefield": ["Rem Karolus, Stalwart Slayer", "Hellrider"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Hellrider", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ] }
+  }
+]

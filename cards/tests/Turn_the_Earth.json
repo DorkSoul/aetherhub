@@ -1,0 +1,74 @@
+[
+  {
+    "name": "shuffles a card from an opponent's graveyard into its owner's library and gains 2 life",
+    "players": [ { "hand": ["Turn the Earth"], "battlefield": ["Forest"] }, { "graveyard": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Turn the Earth", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22, "graveyard": ["Turn the Earth"] }, { "graveyard": [], "library_count": 21 } ]
+    }
+  },
+  {
+    "name": "flashback {1}{G} casts from graveyard and exiles it",
+    "players": [ { "graveyard": ["Turn the Earth"], "battlefield": ["Forest", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Turn the Earth", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22, "exile": ["Turn the Earth"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: choosing no targets still gains 2 life and shuffles nothing",
+    "players": [ { "hand": ["Turn the Earth"], "battlefield": ["Forest"] }, { "graveyard": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Turn the Earth", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22, "graveyard": ["Turn the Earth"] }, { "graveyard": ["Grizzly Bears"], "library_count": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: every target gone on resolution means no life gain",
+    "players": [ { "hand": ["Turn the Earth"], "battlefield": ["Forest"] }, { "hand": ["Turn the Earth"], "battlefield": ["Forest"], "graveyard": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Turn the Earth", "targets": ["Grizzly Bears"] },
+      { "player": 1, "cast": "Turn the Earth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "graveyard": ["Turn the Earth"] }, { "life": 22, "graveyard": ["Turn the Earth"], "library_count": 21 } ]
+    }
+  },
+  {
+    "name": "ruling: a flashback spell that fizzles is still exiled",
+    "players": [ { "graveyard": ["Turn the Earth"], "battlefield": ["Forest", "Forest"] }, { "hand": ["Turn the Earth"], "battlefield": ["Forest"], "graveyard": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Turn the Earth", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "player": 1, "cast": "Turn the Earth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "exile": ["Turn the Earth"] }, { "life": 22, "graveyard": ["Turn the Earth"], "library_count": 21 } ]
+    }
+  },
+  {
+    "name": "ruling: a flashback card milled without being cast can be cast with flashback",
+    "players": [ { "battlefield": ["Millstone", "Island", "Island", "Forest", "Forest"], "library": ["Turn the Earth", "Island"] }, { "graveyard": ["Grizzly Bears"] } ],
+    "steps": [
+      { "activate": "Millstone", "ability": 0, "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Turn the Earth", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22, "exile": ["Turn the Earth"] }, { "library_count": 21 } ]
+    }
+  }
+]

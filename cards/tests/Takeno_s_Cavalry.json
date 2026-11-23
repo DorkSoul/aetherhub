@@ -1,0 +1,120 @@
+[
+  {
+    "name": "bushido 1: gets +1/+1 when it becomes blocked",
+    "players": [
+      {
+        "battlefield": ["Takeno's Cavalry"]
+      },
+      {
+        "battlefield": ["Llanowar Elves"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Takeno's Cavalry", "at": "p1" }] },
+      { "block": [{ "blocker": "Llanowar Elves", "attacker": "Takeno's Cavalry" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Takeno's Cavalry"] },
+        { "graveyard": ["Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "unblocked: no bushido bonus",
+    "players": [
+      {
+        "battlefield": ["Takeno's Cavalry"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Takeno's Cavalry", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 19 }],
+      "pt": { "Takeno's Cavalry": [1, 1] }
+    }
+  },
+  {
+    "name": "bushido 1 when blocking: survives 1 damage as a 2/2",
+    "players": [
+      {
+        "battlefield": ["Takeno's Cavalry"]
+      },
+      {
+        "battlefield": ["Blademane Baku"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Blademane Baku", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Takeno's Cavalry", "attacker": "Blademane Baku" }], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Takeno's Cavalry"] },
+        { "graveyard": ["Blademane Baku"] }
+      ],
+      "pt": { "Takeno's Cavalry": [2, 2] }
+    }
+  },
+  {
+    "name": "tap: 1 damage to attacking Spirit kills a 1/1 Spirit",
+    "players": [
+      {
+        "battlefield": ["Takeno's Cavalry"]
+      },
+      {
+        "battlefield": ["Blademane Baku"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Blademane Baku", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Takeno's Cavalry", "attacker": "Blademane Baku" }], "player": 0 },
+      { "activate": "Takeno's Cavalry", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Takeno's Cavalry"] },
+        { "graveyard": ["Blademane Baku"] }
+      ],
+      "tapped": { "Takeno's Cavalry": true }
+    }
+  },
+  {
+    "name": "tap ability: no attacking or blocking Spirit means it is illegal",
+    "players": [
+      {
+        "battlefield": ["Takeno's Cavalry"]
+      },
+      {
+        "battlefield": ["Blademane Baku"]
+      }
+    ],
+    "steps": [
+      { "activate": "Takeno's Cavalry", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Takeno's Cavalry"] },
+        { "battlefield_has": ["Blademane Baku"] }
+      ],
+      "tapped": { "Takeno's Cavalry": false }
+    }
+  }
+]

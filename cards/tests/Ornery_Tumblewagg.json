@@ -1,0 +1,459 @@
+[
+  {
+    "name": "beginning of combat puts a +1/+1 counter on target creature",
+    "players": [
+      {
+        "battlefield": [
+          "Ornery Tumblewagg",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "PlusOnePlusOne": 1
+        },
+        "Ornery Tumblewagg": {
+          "PlusOnePlusOne": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "saddled and attacking doubles the +1/+1 counters on target creature",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ornery Tumblewagg",
+            "counters": {
+              "PlusOnePlusOne": 2
+            },
+            "sick": false
+          },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Ornery Tumblewagg",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Ornery Tumblewagg"
+        ]
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Hill Giant": true
+      },
+      "counters": {
+        "Ornery Tumblewagg": {
+          "PlusOnePlusOne": 4
+        },
+        "Hill Giant": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "attacking without being saddled does not double the counters",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ornery Tumblewagg",
+            "counters": {
+              "PlusOnePlusOne": 2
+            },
+            "sick": false
+          },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Ornery Tumblewagg",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ornery Tumblewagg": {
+          "PlusOnePlusOne": 2
+        },
+        "Hill Giant": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: a creature with saddle can attack normally without being saddled",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ornery Tumblewagg",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Ornery Tumblewagg"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Ornery Tumblewagg",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17
+        }
+      ],
+      "counters": {
+        "Ornery Tumblewagg": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: a saddled Mount can be saddled again after it is already saddled",
+    "players": [
+      {
+        "battlefield": [
+          "Ornery Tumblewagg",
+          "Hill Giant",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0,
+        "auto": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0,
+        "auto": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Ornery Tumblewagg", "Hill Giant", "Grizzly Bears"]
+        },
+        {}
+      ],
+      "tapped": {
+        "Hill Giant": true,
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "ruling: saddled status lasts until end of turn, so the Mount attacking on a later turn is not doubled",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ornery Tumblewagg",
+            "counters": {
+              "PlusOnePlusOne": 2
+            },
+            "sick": false
+          },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0,
+        "auto": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Ornery Tumblewagg",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Ornery Tumblewagg"
+        ]
+      },
+      {
+        "advance_to": "End",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Ornery Tumblewagg",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ornery Tumblewagg": {
+          "PlusOnePlusOne": 4
+        },
+        "Hill Giant": {
+          "PlusOnePlusOne": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: saddle needs other untapped creatures with total power at least 2, a tapped creature does not count",
+    "players": [
+      {
+        "battlefield": [
+          "Ornery Tumblewagg",
+          {
+            "name": "Grizzly Bears",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Ornery Tumblewagg", "Grizzly Bears"]
+        },
+        {}
+      ],
+      "tapped": {
+        "Ornery Tumblewagg": false,
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "ruling: saddle needs total power at least 2, a 1-power creature is not enough",
+    "players": [
+      {
+        "battlefield": [
+          "Ornery Tumblewagg",
+          "Llanowar Elves"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Ornery Tumblewagg", "Llanowar Elves"]
+        },
+        {}
+      ],
+      "tapped": {
+        "Ornery Tumblewagg": false,
+        "Llanowar Elves": false
+      }
+    }
+  },
+  {
+    "name": "ruling: the attack trigger doubles the counters the creature has at resolution, including the one from beginning of combat",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ornery Tumblewagg",
+            "counters": {
+              "PlusOnePlusOne": 3
+            },
+            "sick": false
+          },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ornery Tumblewagg",
+        "ability": 0,
+        "auto": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat",
+        "targets": [
+          "Ornery Tumblewagg"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Ornery Tumblewagg",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Ornery Tumblewagg"
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ornery Tumblewagg": {
+          "PlusOnePlusOne": 8
+        },
+        "Hill Giant": {
+          "PlusOnePlusOne": 0
+        }
+      }
+    }
+  }
+]

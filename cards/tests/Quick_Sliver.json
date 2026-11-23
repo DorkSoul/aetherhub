@@ -1,0 +1,163 @@
+[
+ {
+  "name": "any player may cast a Sliver spell at instant speed (flash)",
+  "players": [
+   {},
+   {
+    "hand": [
+     "Quick Sliver"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Quick Sliver",
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "battlefield_has": [
+      "Quick Sliver"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "non-Sliver creature spells do not gain flash",
+  "players": [
+   {},
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "hand": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "its controller may cast Sliver spells at flash speed too",
+  "players": [
+   {
+    "hand": [
+     "Quick Sliver"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Quick Sliver"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Quick Sliver"
+     ]
+    },
+    {}
+   ],
+   "keywords": {
+    "Quick Sliver": [
+     "Flash"
+    ]
+   }
+  }
+ },
+ {
+  "name": "a non-flash Sliver spell can be cast by the opponent at instant speed while Quick Sliver is out",
+  "players": [{"battlefield": ["Quick Sliver"]}, {"hand": ["Acidic Sliver"], "battlefield": ["Swamp", "Mountain"]}],
+  "steps": [{"pass": true}, {"cast": "Acidic Sliver", "player": 1}, {"resolve": true}],
+  "expect": {"players": [{}, {"battlefield_has": ["Acidic Sliver"]}]}
+ },
+ {
+  "name": "without Quick Sliver the opponent cannot cast Acidic Sliver at instant speed",
+  "players": [{}, {"hand": ["Acidic Sliver"], "battlefield": ["Swamp", "Mountain"]}],
+  "steps": [{"pass": true}, {"cast": "Acidic Sliver", "player": 1, "illegal": true}],
+  "expect": {"players": [{}, {"hand": ["Acidic Sliver"]}]}
+ },
+ {
+  "name": "ruling: in hand, Quick Sliver's own flash lets its controller cast it in the opponent's turn",
+  "players": [
+   {
+    "hand": ["Quick Sliver"],
+    "battlefield": ["Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Quick Sliver", "player": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Quick Sliver"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: P/T boosts from several Sliver lords are cumulative (two Muscle Slivers give Quick Sliver +2/+2)",
+  "players": [
+   { "battlefield": ["Quick Sliver", "Muscle Sliver", "Muscle Sliver"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" }
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "pt": { "Quick Sliver": [3, 3] }
+  }
+ }
+]

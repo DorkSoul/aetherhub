@@ -1,0 +1,93 @@
+[
+  {
+    "name": "ETB: target player exiles their hand and draws that many",
+    "players": [
+      { "hand": ["Induced Amnesia", "Grizzly Bears", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Induced Amnesia" },
+      { "resolve": true, "targets": ["p0"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "exile": ["Grizzly Bears", "Lightning Bolt"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB: targeting an opponent exiles only their hand and they draw that many",
+    "players": [
+      { "hand": ["Induced Amnesia", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Island", "Forest", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Induced Amnesia" },
+      { "resolve": true, "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"] },
+        { "hand_count": 3, "exile": ["Island", "Forest", "Plains"] }
+      ]
+    }
+  },
+  {
+    "name": "ETB with an empty target hand draws nothing",
+    "players": [
+      { "hand": ["Induced Amnesia"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Induced Amnesia" },
+      { "resolve": true, "targets": ["p0"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "put into graveyard from battlefield: exiled cards return to owner's hand",
+    "players": [
+      { "hand": ["Induced Amnesia", "Naturalize"], "battlefield": ["Island", "Island", "Island", "Forest", "Forest"] },
+      { "hand": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Induced Amnesia" },
+      { "resolve": true, "targets": ["p1"] },
+      { "cast": "Naturalize", "targets": ["Induced Amnesia"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Induced Amnesia", "Naturalize"] },
+        { "hand_count": 2, "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Amnesia leaves before its ETB resolves: the exile still happens and the cards stay exiled",
+    "players": [
+      { "hand": ["Induced Amnesia", "Grizzly Bears", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Naturalize"], "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Induced Amnesia" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true, "targets": ["p0"] },
+      { "cast": "Naturalize", "targets": ["Induced Amnesia"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "graveyard": ["Induced Amnesia"], "exile": ["Grizzly Bears", "Lightning Bolt"] },
+        { "graveyard": ["Naturalize"] }
+      ]
+    }
+  }
+]

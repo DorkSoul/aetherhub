@@ -1,0 +1,73 @@
+[
+ {"name": "defender pays {2}, gets a counter and redirects the attack to the third player",
+  "players": [
+   {"battlefield": [{"name": "Capricopian", "sick": false, "counters": {"p1p1": 2}}]},
+   {"battlefield": ["Plains", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"advance_to": "Main1"},
+   {"attack": [{"card": "Capricopian", "at": "p1"}]},
+   {"pass": true},
+   {"activate": "Capricopian", "player": 1},
+   {"resolve": true, "answers": [true, "p2"]},
+   {"advance_to": "Main2", "auto": true}
+  ],
+  "expect": {"counters": {"Capricopian": {"p1p1": 3}}, "players": [{}, {"life": 20}, {"life": 17}]}
+ },
+ {"name": "the attacking player cannot activate",
+  "players": [
+   {"battlefield": [{"name": "Capricopian", "sick": false, "counters": {"p1p1": 2}}, "Forest", "Swamp"]},
+   {},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"advance_to": "Main1"},
+   {"attack": [{"card": "Capricopian", "at": "p1"}]},
+   {"activate": "Capricopian", "illegal": true}
+  ]
+ },
+ {"name": "cast with X=3: enters with 3 +1/+1 counters, a 3/3",
+  "players": [ { "hand": ["Capricopian"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] }, {} ],
+  "steps": [ { "cast": "Capricopian", "answers": [3] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Capricopian"] }, {} ], "pt": { "Capricopian": [3, 3] } }
+ },
+ {"name": "ruling: attacking a planeswalker, no player may activate the redirect",
+  "players": [
+   {"battlefield": [{"name": "Capricopian", "sick": false, "counters": {"p1p1": 2}}]},
+   {"battlefield": ["Jace, the Mind Sculptor", "Plains", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"advance_to": "Main1"},
+   {"attack": [{"card": "Capricopian", "at": "Jace, the Mind Sculptor"}]},
+   {"pass": true},
+   {"activate": "Capricopian", "player": 1, "illegal": true}
+  ],
+  "expect": {"counters": {"Capricopian": {"p1p1": 2}}}
+ },
+ {"name": "ruling: the newly attacked player may redirect it back",
+  "players": [
+   {"battlefield": [{"name": "Capricopian", "sick": false, "counters": {"p1p1": 2}}]},
+   {"battlefield": ["Plains", "Island"]},
+   {"battlefield": ["Plains", "Island"]}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"advance_to": "Main1"},
+   {"attack": [{"card": "Capricopian", "at": "p1"}]},
+   {"pass": true},
+   {"activate": "Capricopian", "player": 1},
+   {"resolve": true, "answers": [true, "p2"]},
+   {"pass": true},
+   {"pass": true, "player": 1},
+   {"activate": "Capricopian", "player": 2},
+   {"resolve": true, "answers": [true, "p1"]},
+   {"advance_to": "Main2", "auto": true}
+  ],
+  "expect": {"counters": {"Capricopian": {"p1p1": 4}}, "players": [{}, {"life": 16}, {"life": 20}]}
+ }
+]

@@ -1,0 +1,151 @@
+[
+ {
+  "name": "enchanted creature attacks only if its controller pays 3",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 18 } ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "enchanted creature can't attack when its controller can't pay 3",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Grizzly Bears"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20 } ],
+   "tapped": { "Grizzly Bears": false }
+  }
+ },
+ {
+  "name": "other creatures attack without a payment",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17 } ],
+   "tapped": { "Hill Giant": true }
+  }
+ },
+ {
+  "name": "blocking with the enchanted creature costs {3}: paid, Grizzly Bears blocks Hill Giant",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", { "name": "Hill Giant", "sick": false }, { "name": "Savannah Lions", "sick": false }] },
+   { "battlefield": ["Grizzly Bears", "Giant Spider", "Forest", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Giant Spider", "attacker": "Savannah Lions" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20, "battlefield_has": ["Giant Spider"] } ]
+  }
+ },
+ {
+  "name": "blocking with the enchanted creature costs {3}: unpaid (2 lands), Grizzly Bears cannot block Hill Giant",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", { "name": "Hill Giant", "sick": false }, { "name": "Savannah Lions", "sick": false }] },
+   { "battlefield": ["Grizzly Bears", "Giant Spider", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Giant Spider", "attacker": "Savannah Lions" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17, "battlefield_has": ["Grizzly Bears", "Giant Spider"] } ]
+  }
+ },
+ {
+  "name": "activated abilities of the enchanted creature cost {3} more: {R} first strike needs 4 mana",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Orcish Veteran"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Orcish Veteran"] },
+   { "resolve": true },
+   { "activate": "Orcish Veteran", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "keywords": { "Orcish Veteran": ["FirstStrike"] }
+  }
+ },
+ {
+  "name": "activated abilities of the enchanted creature cost {3} more: with 3 Mountains the first strike activation is illegal",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Mountain", "Mountain", "Mountain", "Orcish Veteran"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Orcish Veteran"] },
+   { "resolve": true },
+   { "activate": "Orcish Veteran", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Orcish Veteran"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: triggered abilities of the enchanted creature are unaffected: Stangg's attack trigger still makes the Twin without a payment",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Stangg, Echo Warrior"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Stangg, Echo Warrior"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Stangg, Echo Warrior", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Stangg, Echo Warrior", "Stangg Twin"] }, { "life": 14 } ]
+  }
+ },
+ {
+  "name": "ruling: the controller may decline to attack with the enchanted creature when it must attack; no payment is forced",
+  "players": [
+   { "hand": ["Oppressive Rays"], "battlefield": ["Plains", "Juggernaut"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Oppressive Rays", "targets": ["Juggernaut"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Juggernaut"] }, { "life": 20 } ],
+   "tapped": { "Juggernaut": false }
+  }
+ }
+]

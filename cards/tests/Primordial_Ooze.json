@@ -1,0 +1,39 @@
+[
+  {
+    "name": "upkeep: paying X (1 counter) keeps it untapped",
+    "players": [ { "battlefield": ["Primordial Ooze", "Mountain"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Primordial Ooze"], "life": 20 }, {} ] }
+  },
+  {
+    "name": "upkeep: not paying taps it and deals X damage to its controller",
+    "players": [ { "battlefield": ["Primordial Ooze"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Primordial Ooze"], "life": 19 }, {} ] }
+  },
+  {
+    "name": "attacks each combat: the Ooze must attack even though only the Bears are declared (Bears 2 damage, Ooze 1 more)",
+    "players": [ { "battlefield": ["Primordial Ooze", "Grizzly Bears"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: damage prevented from the upkeep payment still taps the Ooze (Circle of Protection: Red prevents the 1 damage)",
+    "start": "Untap",
+    "players": [ { "battlefield": ["Primordial Ooze", "Circle of Protection: Red", "Mountain"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep", "hold": true, "answers": [false] },
+      { "activate": "Circle of Protection: Red", "ability": 0 },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Primordial Ooze"], "life": 20 }, {} ], "tapped": { "Primordial Ooze": true } }
+  }
+]

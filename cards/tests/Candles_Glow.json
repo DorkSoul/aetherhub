@@ -1,0 +1,229 @@
+[
+ {
+  "name": "on the opponent's player: prevents up to 3 of 5 damage and gains 3 life",
+  "players": [
+   {
+    "hand": [
+     "Candles' Glow"
+    ],
+    "battlefield": [
+     "Plains",
+     "Island",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": []
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Candles' Glow",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     },
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 23
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "on a creature: damage to a different player is not prevented and no life is gained",
+  "players": [
+   {
+    "hand": [
+     "Candles' Glow"
+    ],
+    "battlefield": [
+     "Plains",
+     "Island",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": []
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Candles' Glow",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     },
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "spliced onto Consuming Vortex: both effects happen",
+  "players": [
+   {
+    "hand": [
+     "Consuming Vortex",
+     "Candles' Glow"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Plains",
+     "Swamp",
+     "Mountain",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Consuming Vortex",
+    "targets": [
+     "p0",
+     "Grizzly Bears"
+    ],
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Candles' Glow"
+     ]
+    },
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ],
+     "hand": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: two different splice cards can both be spliced onto one spell; the host and Consuming Vortex effects both happen",
+  "players": [
+   { "hand": ["Glacial Ray", "Candles' Glow", "Consuming Vortex"], "battlefield": ["Mountain", "Plains", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Glacial Ray", "targets": ["p1", "p0", "Grizzly Bears"], "answers": [true, true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "hand": ["Candles' Glow", "Consuming Vortex"] },
+    { "life": 18, "battlefield_lacks": ["Grizzly Bears"], "hand": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the spliced Candles' Glow picks its own target (the creature), while Glacial Ray hits the player",
+  "players": [
+   { "hand": ["Glacial Ray", "Candles' Glow"], "battlefield": ["Mountain", "Plains", "Island", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Glacial Ray", "targets": ["p1", "Grizzly Bears"], "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "hand": ["Candles' Glow"] },
+    { "life": 18, "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: if all targets of a spliced spell are illegal, the spliced effects do nothing either",
+  "players": [
+   { "hand": ["Glacial Ray", "Candles' Glow"], "battlefield": ["Mountain", "Plains", "Island", "Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Glacial Ray", "targets": ["Grizzly Bears", "Grizzly Bears"], "answers": [true] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Glacial Ray"], "hand": ["Candles' Glow"] },
+    { "life": 20, "graveyard": ["Grizzly Bears", "Lightning Bolt"] }
+   ]
+  }
+ }
+]

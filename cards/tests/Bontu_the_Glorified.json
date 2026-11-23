@@ -1,0 +1,255 @@
+[
+  {
+    "name": "cannot attack unless a creature died under your control this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Bontu the Glorified"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Bontu the Glorified",
+            "at": "p1"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "sacrificing another creature lets it attack this turn and drains 1",
+    "players": [
+      {
+        "battlefield": [
+          "Bontu the Glorified",
+          "Grizzly Bears",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Bontu the Glorified",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Bontu the Glorified",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 21,
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "sacrifice ability cannot sacrifice Bontu itself",
+    "players": [
+      {
+        "battlefield": [
+          "Bontu the Glorified",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Bontu the Glorified",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "battlefield_has": [
+            "Bontu the Glorified"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot block unless a creature died under your control this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Bontu the Glorified"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "player": 1
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p0"
+          }
+        ],
+        "player": 1
+      },
+      {
+        "block": [
+          {
+            "blocker": "Bontu the Glorified",
+            "attacker": "Grizzly Bears"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "menace: a lone blocker is dropped, so Bontu's 4 damage goes through (drain 1 too)",
+    "players": [
+      { "battlefield": ["Bontu the Glorified", "Elite Vanguard", "Swamp", "Swamp", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Savannah Lions"] }
+    ],
+    "steps": [
+      { "activate": "Bontu the Glorified", "ability": 0, "answers": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Bontu the Glorified", "at": "p1" }, { "card": "Elite Vanguard", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Bontu the Glorified" }, { "blocker": "Savannah Lions", "attacker": "Elite Vanguard" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 21 }, { "life": 15 } ] }
+  },
+  {
+    "name": "indestructible: Terminate does not destroy Bontu",
+    "players": [
+      { "hand": ["Terminate"], "battlefield": ["Bontu the Glorified", "Swamp", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Terminate", "targets": ["Bontu the Glorified"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Bontu the Glorified"] }, {} ] }
+  },
+  {
+    "name": "without a creature dying this turn Bontu can't attack; its companion's damage still lands",
+    "players": [
+      { "battlefield": ["Bontu the Glorified", "Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Bontu the Glorified", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "without a creature dying this turn Bontu can't block; the attacker it would block is unblocked",
+    "players": [
+      { "battlefield": ["Bontu the Glorified", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Elite Vanguard"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Elite Vanguard", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Bontu the Glorified", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Elite Vanguard" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 17 }, {} ] }
+  },
+  {
+    "name": "ruling: attackers are chosen at once; sacrificing a creature after attacking does not let Bontu attack",
+    "players": [
+      { "battlefield": ["Bontu the Glorified", "Grizzly Bears", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Bontu the Glorified", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "activate": "Bontu the Glorified", "ability": 0 },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 21, "battlefield_has": ["Bontu the Glorified"], "battlefield_lacks": ["Grizzly Bears"] },
+        { "life": 19 }
+      ]
+    }
+  }
+]

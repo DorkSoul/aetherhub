@@ -1,0 +1,195 @@
+[
+  {
+    "name": "ETB search finds a creature with mana value 1 or less",
+    "players": [
+      {
+        "hand": [
+          "Ranger-Captain of Eos"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Llanowar Elves"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ranger-Captain of Eos"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true,
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Llanowar Elves"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "search can't find a creature with mana value above 1",
+    "players": [
+      {
+        "hand": [
+          "Ranger-Captain of Eos"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ranger-Captain of Eos"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sacrifice: opponents can't cast noncreature spells this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Ranger-Captain of Eos",
+          "Plains"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Spectral Sailor"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Ranger-Captain of Eos",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ],
+        "illegal": true
+      },
+      {
+        "cast": "Spectral Sailor",
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Ranger-Captain of Eos"
+          ]
+        },
+        {
+          "hand": [
+            "Lightning Bolt"
+          ],
+          "battlefield": [
+            "Island",
+            "Mountain",
+            "Spectral Sailor"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast before the sacrifice still resolves",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": ["Ranger-Captain of Eos"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "activate": "Ranger-Captain of Eos", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "graveyard": ["Ranger-Captain of Eos"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature with {X} in its cost counts as mana value 0 in the library",
+    "players": [
+      {
+        "hand": ["Ranger-Captain of Eos"],
+        "battlefield": ["Plains", "Plains", "Plains"],
+        "library": ["Walking Ballista"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ranger-Captain of Eos" },
+      { "resolve": true, "answers": [true, "Walking Ballista"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Walking Ballista"] },
+        {}
+      ]
+    }
+  }
+]

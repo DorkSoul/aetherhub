@@ -1,0 +1,93 @@
+[
+  {
+    "name": "enters: exiles the opponent's nonland permanent until it leaves",
+    "players": [
+      { "hand": ["Chains of Custody"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [ { "cast": "Chains of Custody", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Chains of Custody", "Grizzly Bears"] },
+        { "battlefield": [], "exile": ["Serra Angel"] }
+      ],
+      "attached": { "Chains of Custody": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "enchanted creature has ward {2}: an opponent who cannot pay has the spell countered",
+    "players": [
+      { "hand": ["Chains of Custody"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Chains of Custody", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"], "exile": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "no nonland opponent permanent: nothing is exiled",
+    "players": [
+      { "hand": ["Chains of Custody"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Forest"] }
+    ],
+    "steps": [ { "cast": "Chains of Custody", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Chains of Custody"] },
+        { "battlefield": ["Forest"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Aura exiled by Chains returns when Chains leaves, under its owner's control",
+    "players": [
+      { "hand": ["Chains of Custody"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Qasali Pridemage", "Grizzly Bears"] },
+      { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains", "Serra Angel"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Pacifism", "targets": ["Serra Angel"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "cast": "Chains of Custody", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "targets": ["Pacifism"] },
+      { "activate": "Qasali Pridemage", "targets": ["Chains of Custody"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Qasali Pridemage", "Chains of Custody"] },
+        { "battlefield_has": ["Pacifism", "Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Auras attached to the exiled permanent go to their owners' graveyards",
+    "players": [
+      { "hand": ["Pacifism", "Chains of Custody"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "cast": "Chains of Custody", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Pacifism"], "battlefield_has": ["Chains of Custody", "Grizzly Bears"] },
+        { "battlefield": [], "exile": ["Serra Angel"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,189 @@
+[
+  {
+    "name": "level 1: attacking puts a +1/+1 counter on the target attacking creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Leader's Talent", "counters": { "level": 1 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "level 1 only: level 2 gain-life trigger is not active",
+    "players": [
+      {
+        "hand": [ "Lightning Bolt" ],
+        "battlefield": [
+          { "name": "Leader's Talent", "counters": { "level": 1 } },
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "Grizzly Bears" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "level 2: a creature with a counter leaving gains you 2 life",
+    "players": [
+      {
+        "hand": [ "Lightning Bolt" ],
+        "battlefield": [
+          { "name": "Leader's Talent", "counters": { "level": 2 } },
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "Grizzly Bears" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22 }, {} ]
+    }
+  },
+  {
+    "name": "level 2: a creature without a counter leaving gains no life",
+    "players": [
+      {
+        "hand": [ "Lightning Bolt" ],
+        "battlefield": [
+          { "name": "Leader's Talent", "counters": { "level": 2 } },
+          "Grizzly Bears",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "Grizzly Bears" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "level 3: casting a spell puts a +1/+1 counter on each creature you control",
+    "players": [
+      {
+        "hand": [ "Lightning Bolt" ],
+        "battlefield": [
+          { "name": "Leader's Talent", "counters": { "level": 3 } },
+          "Grizzly Bears",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [ "Hill Giant" ]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "Hill Giant" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "{2}{W}: level 2 is gained from level 1 and adds a level counter",
+    "players": [ { "battlefield": [ { "name": "Leader's Talent", "counters": { "level": 1 } }, "Plains", "Plains", "Plains" ] }, {} ],
+    "steps": [ { "activate": "Leader's Talent", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Leader's Talent": { "level": 2 } } }
+  },
+  {
+    "name": "{3}{W}: level 3 is gained from level 2",
+    "players": [ { "battlefield": [ { "name": "Leader's Talent", "counters": { "level": 2 } }, "Plains", "Plains", "Plains", "Plains" ] }, {} ],
+    "steps": [ { "activate": "Leader's Talent", "ability": 1 }, { "resolve": true } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Leader's Talent": { "level": 3 } } }
+  },
+  {
+    "name": "level 3 cannot be bought at level 1",
+    "players": [ { "battlefield": [ { "name": "Leader's Talent", "counters": { "level": 1 } }, "Plains", "Plains", "Plains", "Plains" ] }, {} ],
+    "steps": [ { "activate": "Leader's Talent", "ability": 1, "illegal": true } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Leader's Talent": { "level": 1 } } }
+  },
+  {
+    "name": "entering the battlefield gives Leader's Talent level 1, so its attack trigger works without any counters placed",
+    "players": [
+      {
+        "battlefield": [
+          "Leader's Talent",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Grizzly Bears": [3, 3] },
+      "counters": { "Leader's Talent": { "level": 1 } }
+    }
+  },
+  {
+    "name": "ruling: gaining level 2 keeps the level 1 attack trigger",
+    "players": [ { "battlefield": [ { "name": "Leader's Talent", "counters": { "level": 1 } }, "Grizzly Bears", "Plains", "Plains", "Plains" ] }, {} ],
+    "steps": [
+      { "activate": "Leader's Talent", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, {} ], "pt": { "Grizzly Bears": [3, 3] }, "counters": { "Leader's Talent": { "level": 2 } } }
+  },
+  {
+    "name": "ruling: a Class already at level 2 cannot advance to level 2 again",
+    "players": [ { "battlefield": [ { "name": "Leader's Talent", "counters": { "level": 2 } }, "Plains", "Plains", "Plains" ] }, {} ],
+    "steps": [ { "activate": "Leader's Talent", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Leader's Talent": { "level": 2 } } }
+  },
+  {
+    "name": "ruling: level 3 trigger still resolves when the spell that caused it is countered",
+    "players": [
+      { "hand": [ "Lightning Bolt" ], "battlefield": [ { "name": "Leader's Talent", "counters": { "level": 3 } }, "Grizzly Bears", "Mountain" ] },
+      { "hand": [ "Confirm Suspicions" ], "battlefield": [ "Island", "Island", "Island", "Island", "Island" ] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "p1" ] },
+      { "pass": true },
+      { "cast": "Confirm Suspicions", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": [ "Lightning Bolt" ] }, { "graveyard_has": [ "Confirm Suspicions" ] } ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  }
+]

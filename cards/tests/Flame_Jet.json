@@ -1,0 +1,180 @@
+[
+  {
+    "name": "deals 3 damage to target player",
+    "players": [
+      {
+        "hand": [
+          "Flame Jet"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Flame Jet",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Flame Jet"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "deals 3 damage to target planeswalker",
+    "players": [
+      {
+        "hand": [
+          "Flame Jet"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Ajani, Adversary of Tyrants"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Flame Jet",
+        "targets": [
+          "p1:Ajani, Adversary of Tyrants"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Ajani, Adversary of Tyrants"
+          ]
+        }
+      ],
+      "counters": {
+        "Ajani, Adversary of Tyrants": {
+          "loyalty": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "cycling {2}: discard to draw a card",
+    "players": [
+      {
+        "hand": [
+          "Flame Jet"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Flame Jet",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Flame Jet"
+          ],
+          "hand": [
+            "Plains"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cycling is an activated ability, so Stifle counters it: the card is still discarded and nothing is drawn",
+    "players": [
+      {
+        "hand": ["Flame Jet"],
+        "battlefield": ["Mountain", "Mountain"],
+        "library": ["Plains"]
+      },
+      {
+        "hand": ["Stifle"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "activate": "Flame Jet", "ability": 0 },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [ { "stack": "Flame Jet" } ] },
+      { "pass": true },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Flame Jet"], "hand_count": 0, "library_top": ["Plains"] },
+        { "graveyard": ["Stifle"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell that counters only creature spells (Essence Scatter) cannot target the cycling ability",
+    "players": [
+      {
+        "hand": ["Flame Jet"],
+        "battlefield": ["Mountain", "Mountain"],
+        "library": ["Plains"]
+      },
+      {
+        "hand": ["Essence Scatter"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "activate": "Flame Jet", "ability": 0 },
+      { "pass": true },
+      { "cast": "Essence Scatter", "player": 1, "targets": [ { "stack": "Flame Jet" } ], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Flame Jet"], "hand": ["Plains"] },
+        {}
+      ]
+    }
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "name": "Turtles Forever",
+  "mana_cost": "{3}{W}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "Choose",
+          "who": {"type": "You"},
+          "zone": "Library",
+          "also_zones": ["Sideboard"],
+          "filter": {"owner": "You", "types": ["Creature"], "supertypes": ["Legendary"]},
+          "min": 0,
+          "max": 4,
+          "distinct": "Name",
+          "then": [
+            {
+              "type": "If",
+              "cond": {"type": "Compare", "a": {"type": "RememberedCount"}, "cmp": {"op": "Ge", "n": 4}},
+              "then": [
+                {"type": "StoreRemembered", "slot": 1},
+                {"type": "Reveal", "what": {"type": "Remembered"}},
+                {"type": "ChoosePlayer", "who": {"type": "You"}, "among": "Opponent"},
+                {
+                  "type": "Choose",
+                  "who": {"type": "ChosenPlayer"},
+                  "from": {"type": "You"},
+                  "zone": "Library",
+                  "also_zones": ["Sideboard"],
+                  "filter": {"among_stored": 1},
+                  "min": 2,
+                  "max": 2,
+                  "then": [
+                    {"type": "StoreRemembered", "slot": 0},
+                    {"type": "Move", "what": {"type": "Remembered"}, "to": "Hand"}
+                  ]
+                },
+                {
+                  "type": "Move",
+                  "what": {"type": "All", "zone": "Sideboard", "filter": {"among_stored": 1, "not_among_stored": 0}},
+                  "to": "Library"
+                }
+              ]
+            }
+          ]
+        },
+        {"type": "Shuffle", "who": {"type": "You"}}
+      ]
+    }
+  ],
+  "oracle_text": "Search your library and/or outside the game for exactly four legendary creature cards you own with different names, then reveal those cards. An opponent chooses two of them. Put the chosen cards into your hand and shuffle the rest into your library."
+}

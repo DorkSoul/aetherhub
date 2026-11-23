@@ -1,0 +1,136 @@
+[
+  {
+    "name": "+1 gives up to one target creature +1/+1 until end of turn",
+    "players": [
+      { "battlefield": ["Ajani Steadfast", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ajani Steadfast", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": { "Ajani Steadfast": { "Loyalty": 5 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "+1 with no target still adds loyalty and pumps nothing",
+    "players": [
+      { "battlefield": ["Ajani Steadfast", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ajani Steadfast", "ability": 0, "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": { "Ajani Steadfast": { "Loyalty": 5 } },
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "-2 puts a +1/+1 counter on each creature you control and loyalty on each other planeswalker you control",
+    "players": [
+      { "battlefield": ["Ajani Steadfast", "Ajani Goldmane", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ajani Steadfast", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": {
+        "Ajani Steadfast": { "Loyalty": 2 },
+        "Ajani Goldmane": { "Loyalty": 5 },
+        "Grizzly Bears": { "PlusOnePlusOne": 1 }
+      },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "-7 gives you the emblem and leaves Ajani at 1 loyalty",
+    "players": [
+      { "battlefield": [{ "name": "Ajani Steadfast", "counters": { "Loyalty": 8 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ajani Steadfast", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "command": ["Ajani Steadfast Emblem"] }, {}],
+      "counters": { "Ajani Steadfast": { "Loyalty": 1 } }
+    }
+  },
+  {
+    "name": "emblem prevents all but 1 of damage dealt to you",
+    "players": [
+      { "command": ["Ajani Steadfast Emblem"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 19 }, {}]
+    }
+  },
+  {
+    "name": "emblem also covers damage dealt to a planeswalker you control",
+    "players": [
+      { "command": ["Ajani Steadfast Emblem"], "battlefield": ["Ajani Goldmane"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Ajani Goldmane"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": { "Ajani Goldmane": { "Loyalty": 3 } }
+    }
+  },
+  {
+    "name": "negative: damage to your creature is not reduced",
+    "players": [
+      { "command": ["Ajani Steadfast Emblem"], "battlefield": ["Grizzly Bears"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Grizzly Bears"], "life": 20 }, {}]
+    }
+  },
+  {
+    "name": "ruling: the emblem does not check who controls the source: my own Shock to myself is reduced to 1",
+    "players": [ { "command": ["Ajani Steadfast Emblem"], "hand": ["Shock"], "battlefield": ["Mountain"] }, {} ],
+    "steps": [ { "cast": "Shock", "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 19 }, {} ] }
+  },
+  {
+    "name": "ruling: each attacking creature is a separate source: two unblocked 3/3s deal 1 each under the emblem",
+    "players": [ { "command": ["Ajani Steadfast Emblem"] }, { "battlefield": ["Hill Giant", "Centaur Courser"] } ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Centaur Courser", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2", "player": 1 }
+    ],
+    "expect": { "players": [ { "life": 18 }, {} ] }
+  }
+]

@@ -1,0 +1,301 @@
+[
+ {
+  "name": "normal cost: exiles a spell (not countered, goes to exile)",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Mindbreak Trap"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Mindbreak Trap",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "exile": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 20,
+     "graveyard": [
+      "Mindbreak Trap"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "after an opponent cast three spells it costs {0} and exiles all three",
+  "players": [
+   {
+    "hand": [
+     "Shock",
+     "Lightning Bolt",
+     "Terror"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "hand": [
+     "Mindbreak Trap"
+    ],
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Terror",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Mindbreak Trap",
+    "player": 1,
+    "alt": 0,
+    "targets": [
+     {
+      "stack": "Shock"
+     },
+     {
+      "stack": "Lightning Bolt"
+     },
+     {
+      "stack": "Terror"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "exile": [
+      "Shock",
+      "Lightning Bolt",
+      "Terror"
+     ]
+    },
+    {
+     "life": 20,
+     "graveyard": [
+      "Mindbreak Trap"
+     ],
+     "hand": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "with only two opposing spells the free cost is not available",
+  "players": [
+   {
+    "hand": [
+     "Shock",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Mindbreak Trap"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Mindbreak Trap",
+    "player": 1,
+    "alt": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "your own spells do not count",
+  "players": [
+   {
+    "hand": [
+     "Mindbreak Trap",
+     "Shock",
+     "Lightning Bolt",
+     "Terror"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Terror",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "cast": "Mindbreak Trap",
+    "alt": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "ruling: the three-spell count still holds after those spells have resolved",
+  "players": [
+   {
+    "hand": ["Shock", "Lightning Bolt", "Terror"],
+    "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp"]
+   },
+   {
+    "hand": ["Mindbreak Trap"],
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Terror", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Mindbreak Trap", "player": 1, "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Shock", "Lightning Bolt", "Terror"] },
+    { "life": 15, "graveyard": ["Mindbreak Trap", "Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell that can't be countered is still exiled",
+  "players": [
+   {
+    "hand": ["Abrupt Decay"],
+    "battlefield": ["Forest", "Swamp"]
+   },
+   {
+    "hand": ["Mindbreak Trap"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Abrupt Decay", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Mindbreak Trap", "player": 1, "targets": [{ "stack": "Abrupt Decay" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Abrupt Decay"] },
+    { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Mindbreak Trap"] }
+   ]
+  }
+ }
+]

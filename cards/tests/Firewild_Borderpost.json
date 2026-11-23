@@ -1,0 +1,203 @@
+[
+  {
+    "name": "enters tapped",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Forest",
+          "Plains"
+        ],
+        "hand": [
+          "Firewild Borderpost"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Firewild Borderpost"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Firewild Borderpost"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Firewild Borderpost": true
+      }
+    }
+  },
+  {
+    "name": "alternative cost: pay 1 and return a basic land you control",
+    "players": [
+      {
+        "battlefield": [
+          "Forest",
+          "Plains"
+        ],
+        "hand": [
+          "Firewild Borderpost"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Firewild Borderpost",
+        "alt": 0,
+        "answers": [
+          "Plains"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Plains"
+          ],
+          "battlefield_has": [
+            "Firewild Borderpost"
+          ],
+          "battlefield_lacks": [
+            "Plains"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "alternative cost cannot be used on the opponent's turn (artifact timing)",
+    "players": [
+      { "battlefield": ["Forest", "Plains"], "hand": ["Firewild Borderpost"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Firewild Borderpost", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Firewild Borderpost"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "alternative cost may return a tapped basic land",
+    "players": [
+      { "battlefield": ["Plains", { "name": "Forest", "tapped": true }], "hand": ["Firewild Borderpost"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Firewild Borderpost", "alt": 0, "answers": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "battlefield_has": ["Firewild Borderpost"], "battlefield_lacks": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a land tapped for mana first can still be returned for the alternative cost",
+    "players": [
+      { "battlefield": ["Forest", "Plains"], "hand": ["Firewild Borderpost"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Forest" },
+      { "cast": "Firewild Borderpost", "alt": 0, "answers": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "battlefield_has": ["Firewild Borderpost", "Plains"], "battlefield_lacks": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Thalia's extra {1} applies to the alternative cost too (one land is not enough)",
+    "players": [
+      { "battlefield": ["Plains"], "hand": ["Firewild Borderpost"] },
+      { "battlefield": ["Thalia, Guardian of Thraben"] }
+    ],
+    "steps": [
+      { "cast": "Firewild Borderpost", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Firewild Borderpost"], "battlefield_lacks": ["Firewild Borderpost"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with Thalia out, the alternative cost is {2} plus returning a basic land",
+    "players": [
+      { "battlefield": ["Forest", "Mountain", "Plains"], "hand": ["Firewild Borderpost"] },
+      { "battlefield": ["Thalia, Guardian of Thraben"] }
+    ],
+    "steps": [
+      { "cast": "Firewild Borderpost", "alt": 0, "answers": ["Plains"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Plains"], "battlefield_has": ["Firewild Borderpost", "Forest", "Mountain"], "battlefield_lacks": ["Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the only basic land can be tapped for mana and then returned to pay the alternative cost",
+    "players": [
+      { "battlefield": ["Plains"], "hand": ["Firewild Borderpost"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Plains" },
+      { "cast": "Firewild Borderpost", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Plains"], "battlefield_has": ["Firewild Borderpost"], "battlefield_lacks": ["Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: any basic land can be returned, including a snow-covered basic",
+    "players": [
+      { "battlefield": ["Snow-Covered Forest", "Plains"], "hand": ["Firewild Borderpost"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Firewild Borderpost", "alt": 0, "answers": ["Snow-Covered Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Snow-Covered Forest"], "battlefield_has": ["Firewild Borderpost", "Plains"], "battlefield_lacks": ["Snow-Covered Forest"] },
+        {}
+      ]
+    }
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "name": "Black Panther, Wakandan King",
+  "mana_cost": "{G}{W}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Noble", "Hero"],
+  "colors": ["G", "W"],
+  "power": 2,
+  "toughness": 2,
+  "keywords": ["FirstStrike"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "types": ["Creature"], "controller": "You" } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Land"], "controller": "You" } }, "label": "target land you control" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{3}" }],
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Land"], "controller": "You" } }, "label": "target land you control" },
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "All",
+            "cs": [
+              { "type": "TargetIs", "idx": 1, "filter": { "types": ["Creature"] } },
+              { "type": "Compare", "a": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "Target", "idx": 0 } }, "cmp": { "op": "Ge", "n": 1 } }
+            ]
+          },
+          "then": [
+            { "type": "GainLife", "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "Target", "idx": 0 } }, "who": { "type": "You" } },
+            { "type": "Draw", "n": { "type": "Fixed", "n": 1 }, "who": { "type": "You" } },
+            { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "Target", "idx": 0 } }, "what": { "type": "Target", "idx": 1 } },
+            { "type": "RemoveCounters", "kind": "PlusOnePlusOne", "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "Target", "idx": 0 } }, "what": { "type": "Target", "idx": 0 } }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "First strike\nSurvey the Realm — Whenever Black Panther or another creature you control enters, put a +1/+1 counter on target land you control.\nMine Vibranium — {3}: Move all +1/+1 counters from target land you control onto target creature. If one or more +1/+1 counters are moved this way, you gain that much life and draw a card."
+}

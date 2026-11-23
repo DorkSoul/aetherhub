@@ -1,0 +1,144 @@
+[
+  {
+    "name": "two creatures attacking puts an oil counter on it",
+    "players": [
+      {
+        "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 2 } }, "Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Argent Dais": { "oil": 3 } }
+    }
+  },
+  {
+    "name": "a single attacking creature does not put an oil counter on it",
+    "players": [
+      {
+        "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 2 } }, "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Argent Dais": { "oil": 2 } }
+    }
+  },
+  {
+    "name": "pay 2, tap and remove two oil counters to exile another nonland permanent; its controller draws two",
+    "players": [
+      {
+        "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 2 } }, "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Argent Dais", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_lacks": ["Grizzly Bears"],
+          "exile": ["Grizzly Bears"],
+          "hand_count": 2
+        }
+      ],
+      "tapped": { "Argent Dais": true },
+      "counters": { "Argent Dais": { "oil": 0 } }
+    }
+  },
+  {
+    "name": "cannot be activated with fewer than two oil counters",
+    "players": [
+      {
+        "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 1 } }, "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Argent Dais", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "cannot target itself with its own ability",
+    "players": [
+      {
+        "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 2 } }, "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Argent Dais", "ability": 0, "targets": ["Argent Dais"], "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Argent Dais": { "oil": 2 } }
+    }
+  },
+  {
+    "name": "enters with two oil counters when cast",
+    "players": [ { "hand": ["Argent Dais"], "battlefield": ["Plains", "Plains"] }, {} ],
+    "steps": [ { "cast": "Argent Dais" }, { "resolve": true } ],
+    "expect": { "counters": { "Argent Dais": { "oil": 2 } } }
+  },
+  {
+    "name": "ruling: if the target is gone when the ability resolves, nothing happens and no player draws",
+    "players": [
+      { "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 2 } }, "Plains", "Plains"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Argent Dais", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "hand": ["Grizzly Bears"], "hand_count": 1, "battlefield_lacks": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Argent Dais": true },
+      "counters": { "Argent Dais": { "oil": 0 } }
+    }
+  },
+  {
+    "name": "ruling: two creatures attacking on the opponent's turn also put an oil counter on it",
+    "players": [
+      { "battlefield": [{ "name": "Argent Dais", "counters": { "oil": 2 } }] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p0" }, { "card": "Hill Giant", "at": "p0" }], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Argent Dais": { "oil": 3 } }
+    }
+  }
+]

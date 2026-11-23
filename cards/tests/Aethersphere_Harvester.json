@@ -1,0 +1,212 @@
+[
+  {
+    "name": "enters and gets two energy",
+    "players": [
+      {
+        "hand": [
+          "Aethersphere Harvester"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Aethersphere Harvester"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "energy": 2,
+          "battlefield_has": [
+            "Aethersphere Harvester"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "pay E for lifelink until end of turn",
+    "players": [
+      {
+        "hand": [
+          "Aethersphere Harvester"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Aethersphere Harvester"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Aethersphere Harvester",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "keywords": {
+        "Aethersphere Harvester": [
+          "Flying",
+          "Lifelink"
+        ]
+      },
+      "players": [
+        {
+          "energy": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "crew 1: tapping a creature makes the Vehicle a creature that can attack",
+    "players": [ { "battlefield": ["Aethersphere Harvester", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true },
+      { "attack": [ { "card": "Aethersphere Harvester", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ],
+      "tapped": { "Grizzly Bears": true, "Aethersphere Harvester": true }
+    }
+  },
+  {
+    "name": "crew 1: needs a creature with power 1 or more to tap",
+    "players": [ { "battlefield": ["Aethersphere Harvester"] }, {} ],
+    "steps": [ { "activate": "Aethersphere Harvester", "ability": 1, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Aethersphere Harvester"] }, {} ] }
+  },
+  {
+    "name": "ruling: paying E twice for lifelink is redundant; both energy are spent, lifelink is still there",
+    "players": [ { "energy": 2, "battlefield": ["Aethersphere Harvester"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 0 },
+      { "activate": "Aethersphere Harvester", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Aethersphere Harvester": ["Lifelink"] },
+      "players": [ { "energy": 0 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: no energy means lifelink cannot be paid for",
+    "players": [ { "battlefield": ["Aethersphere Harvester"] }, {} ],
+    "steps": [ { "activate": "Aethersphere Harvester", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "energy": 0, "battlefield_has": ["Aethersphere Harvester"] }, {} ] }
+  },
+  {
+    "name": "ruling: crewing creates no enter trigger; Soul Warden does not gain life when the Vehicle becomes a creature",
+    "players": [ { "battlefield": ["Aethersphere Harvester", "Soul Warden"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Soul Warden": true, "Aethersphere Harvester": false },
+      "players": [ { "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: crewing at beginning of combat still lets the Vehicle attack",
+    "players": [ { "battlefield": ["Aethersphere Harvester", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true },
+      { "attack": [ { "card": "Aethersphere Harvester", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "ruling: a crewed Vehicle has its printed power and toughness (3/5)",
+    "players": [ { "battlefield": ["Aethersphere Harvester", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Aethersphere Harvester": [3, 5] }
+    }
+  },
+  {
+    "name": "ruling: a creature that just came under my control can crew",
+    "players": [ { "battlefield": ["Aethersphere Harvester", { "name": "Grizzly Bears", "sick": true }] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Aethersphere Harvester": false },
+      "players": [ { "battlefield_has": ["Aethersphere Harvester", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: crewing an already crewed Vehicle changes nothing about its P/T",
+    "players": [ { "battlefield": ["Aethersphere Harvester", "Grizzly Bears", "Hill Giant"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true },
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true, "Aethersphere Harvester": false },
+      "pt": { "Aethersphere Harvester": [3, 5] }
+    }
+  },
+  {
+    "name": "ruling: creatures that crewed stay on the battlefield when the Vehicle is destroyed",
+    "players": [ { "hand": ["Structural Assault"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Aethersphere Harvester", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Structural Assault" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [ { "graveyard": ["Aethersphere Harvester", "Structural Assault"], "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: energy belongs to the player and stays after the Vehicle leaves the battlefield",
+    "players": [ { "energy": 2, "hand": ["Structural Assault"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Aethersphere Harvester", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Aethersphere Harvester", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Structural Assault" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 2, "graveyard": ["Aethersphere Harvester", "Structural Assault"] }, {} ]
+    }
+  }
+]

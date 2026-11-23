@@ -1,0 +1,101 @@
+[
+  {
+    "name": "an instant cast adds a book counter that can be tapped for colorless",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Spell Satchel",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "tap_for_mana": "Spell Satchel"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "C": 1
+          }
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "no counters: cannot tap it for mana",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": [
+          "Spell Satchel"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Spell Satchel",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "{3}, {T}, remove three book counters: draw a card",
+    "players": [ { "battlefield": [ { "name": "Spell Satchel", "counters": { "book": 3 } }, "Island", "Island", "Island" ], "library": ["Grizzly Bears"] }, {} ],
+    "steps": [ { "activate": "Spell Satchel", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "draw ability needs three book counters (two counters: illegal)",
+    "players": [ { "battlefield": [ { "name": "Spell Satchel", "counters": { "book": 2 } }, "Island", "Island", "Island" ], "library": ["Grizzly Bears"] }, {} ],
+    "steps": [ { "activate": "Spell Satchel", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "hand": [], "battlefield_has": ["Spell Satchel"] }, {} ] }
+  },
+  {
+    "name": "ruling: a spell copied by an effect triggers magecraft (once per cast and once per copy)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Twincast"],
+        "battlefield": ["Spell Satchel", "Mountain", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Twincast", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Spell Satchel": { "book": 3 } },
+      "players": [
+        { "battlefield_has": ["Spell Satchel"] },
+        {}
+      ]
+    }
+  }
+]

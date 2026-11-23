@@ -1,0 +1,137 @@
+[
+  {
+    "name": "enchanted artifact cannot activate its mana ability",
+    "players": [
+      { "hand": ["Encrust"], "battlefield": ["Island", "Island", "Island", "Sol Ring"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Sol Ring"] },
+      { "resolve": true },
+      { "tap_for_mana": "Sol Ring", "illegal": true }
+    ],
+    "expect": { "tapped": { "Sol Ring": false } }
+  },
+  {
+    "name": "enchanted creature cannot activate its mana ability",
+    "players": [
+      { "hand": ["Encrust"], "battlefield": ["Island", "Island", "Island", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "tap_for_mana": "Llanowar Elves", "color": "G", "illegal": true }
+    ],
+    "expect": { "tapped": { "Llanowar Elves": false } }
+  },
+  {
+    "name": "enchanted creature does not untap during its controller's untap step",
+    "players": [
+      { "hand": ["Encrust"], "battlefield": ["Island", "Island", "Island", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "control: a tapped creature without Encrust untaps in its controller's untap step",
+    "players": [
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "start": "End",
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": false } }
+  },
+  {
+    "name": "enchanted Llanowar Elves cannot tap for the only green mana (Giant Growth is illegal)",
+    "players": [
+      { "hand": ["Encrust", "Giant Growth"], "battlefield": ["Island", "Island", "Island", { "name": "Llanowar Elves", "sick": false }, "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Giant Growth"] }, {} ], "pt": { "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "control: unenchanted Llanowar Elves pays for Giant Growth",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": [{ "name": "Llanowar Elves", "sick": false }, "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "ruling: static abilities still work on an enchanted creature (vigilance: attacking does not tap it)",
+    "players": [
+      { "hand": ["Encrust"], "battlefield": ["Island", "Island", "Island", "Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Serra Angel", "at": "p1" } ] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ],
+      "tapped": { "Serra Angel": false }
+    }
+  },
+  {
+    "name": "ruling: another spell can untap the enchanted creature",
+    "players": [
+      { "hand": ["Encrust", "Burst of Energy"], "battlefield": ["Island", "Island", "Island", "Plains", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Burst of Energy", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": false } }
+  },
+  {
+    "name": "ruling: an enchanted Equipment cannot be equipped (Equip is an activated ability)",
+    "players": [
+      { "hand": ["Encrust"], "battlefield": ["Island", "Island", "Island", "Mountain", "Bonesplitter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Encrust", "targets": ["Bonesplitter"] },
+      { "resolve": true },
+      { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "control: unenchanted Equipment equips for {1}",
+    "players": [
+      { "battlefield": ["Mountain", "Bonesplitter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [4, 2] } }
+  }
+]

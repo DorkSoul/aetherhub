@@ -1,0 +1,50 @@
+[
+  {
+    "name": "ETB gives a Royal Role to another creature you control, which becomes 3/3",
+    "players": [
+      { "hand": ["Charmed Clothier"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "cast": "Charmed Clothier" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Charmed Clothier", "Grizzly Bears", "Royal Role"] },
+        { "battlefield_has": ["Savannah Lions"], "battlefield_lacks": ["Royal Role"] }
+      ],
+      "keywords": { "Charmed Clothier": ["Flying"] },
+      "pt": { "Charmed Clothier": [3, 3], "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "no other creature you control: no Royal Role is created",
+    "players": [
+      { "hand": ["Charmed Clothier"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "cast": "Charmed Clothier" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Charmed Clothier"], "battlefield_lacks": ["Royal Role"] },
+        { "battlefield_lacks": ["Royal Role"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Royal Role is not created if its target is gone when the trigger resolves",
+    "players": [ { "hand": ["Charmed Clothier"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "cast": "Charmed Clothier" }, { "pass": true }, { "pass": true, "player": 1 }, { "pass": true }, { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Charmed Clothier"], "battlefield_lacks": ["Royal Role"], "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: a second Royal Role on the same creature puts the older one into the graveyard (it gets only +1/+1)",
+    "players": [ { "hand": ["Charmed Clothier", "Charmed Clothier"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Charmed Clothier" }, { "resolve": true }, { "cast": "Charmed Clothier" }, { "resolve": true, "targets": ["Grizzly Bears"] } ],
+    "expect": { "players": [ { "battlefield_has": ["Charmed Clothier", "Grizzly Bears", "Royal Role"] }, {} ], "pt": { "Grizzly Bears": [3, 3] } }
+  }
+]

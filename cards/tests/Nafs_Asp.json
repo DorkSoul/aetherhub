@@ -1,0 +1,104 @@
+[
+  {
+    "name": "dealing combat damage: the player loses 1 life at their next draw step if they don't pay",
+    "players": [
+      { "battlefield": ["Nafs Asp"] },
+      { "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }] },
+      { "advance_to": "Draw", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "paying {1} avoids the life loss",
+    "players": [
+      { "battlefield": ["Nafs Asp"] },
+      { "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }] },
+      { "advance_to": "Draw", "answers": [true] }
+    ],
+    "expect": {
+      "tapped": { "Plains": true },
+      "players": [ {}, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "a player who can't pay loses the life",
+    "players": [
+      { "battlefield": ["Nafs Asp"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }] },
+      { "advance_to": "Draw" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "no damage dealt (blocked): nothing happens at the draw step",
+    "players": [
+      { "battlefield": ["Nafs Asp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Nafs Asp" }] },
+      { "advance_to": "Draw" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "the life loss only happens once, at the first draw step",
+    "players": [
+      { "battlefield": ["Nafs Asp"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }] },
+      { "advance_to": "Draw" },
+      { "advance_to": "Draw" },
+      { "advance_to": "Draw" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "two Nafs Asps each cause a separate draw-step payment (one paid, one not)",
+    "players": [
+      { "battlefield": ["Nafs Asp", "Nafs Asp"] },
+      { "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }, { "card": "Nafs Asp", "at": "p1" }] },
+      { "advance_to": "Draw", "answers": [true, false] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "ruling: each damage event gets its own draw-step payment (two unpaid, two life losses)",
+    "players": [
+      { "battlefield": ["Nafs Asp", "Nafs Asp"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Nafs Asp", "at": "p1" }, { "card": "Nafs Asp", "at": "p1" }] },
+      { "advance_to": "Draw" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ]
+    }
+  }
+]

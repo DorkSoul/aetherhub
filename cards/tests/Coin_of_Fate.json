@@ -1,0 +1,77 @@
+[
+  {
+    "name": "pay {3}{W} tap and exile two creature cards: opponent picks one to library bottom, the other returns tapped",
+    "players": [
+      { "battlefield": ["Coin of Fate", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Grizzly Bears", "Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Coin of Fate", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Serra Angel"], "battlefield_lacks": ["Coin of Fate", "Grizzly Bears"], "graveyard": ["Coin of Fate"] },
+        {}
+      ],
+      "tapped": { "Serra Angel": true }
+    }
+  },
+  {
+    "name": "cannot activate with only one creature card in graveyard",
+    "players": [
+      { "battlefield": ["Coin of Fate", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Coin of Fate", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Coin of Fate"] }, {} ]
+    }
+  },
+  {
+    "name": "ETB surveil 1: the top card goes to the graveyard",
+    "players": [ { "hand": [ "Coin of Fate" ], "battlefield": [ "Plains", "Plains" ], "library": [ "Grizzly Bears", "Forest" ] }, {} ],
+    "steps": [ { "cast": "Coin of Fate" }, { "resolve": true, "answers": [ [ "Grizzly Bears" ] ] } ],
+    "expect": { "players": [ { "battlefield_has": [ "Coin of Fate" ], "graveyard": [ "Grizzly Bears" ], "library_top": [ "Forest" ] }, {} ] }
+  },
+  {
+    "name": "ETB surveil 1: the top card can stay on top",
+    "players": [ { "hand": [ "Coin of Fate" ], "battlefield": [ "Plains", "Plains" ], "library": [ "Grizzly Bears", "Forest" ] }, {} ],
+    "steps": [ { "cast": "Coin of Fate" }, { "resolve": true, "answers": [ [] ] } ],
+    "expect": { "players": [ { "library_top": [ "Grizzly Bears", "Forest" ] }, {} ] }
+  },
+  {
+    "name": "ruling: the monarch draws a card at the beginning of their own end step",
+    "players": [
+      { "battlefield": ["Coin of Fate", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Grizzly Bears", "Serra Angel"], "library": ["Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Coin of Fate", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "hand": ["Island"] }, {} ] }
+  },
+  {
+    "name": "ruling: a creature dealing combat damage to the monarch makes its controller the monarch",
+    "players": [
+      { "battlefield": ["Coin of Fate", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Grizzly Bears", "Serra Angel"], "library": ["Island", "Forest"] },
+      { "battlefield": ["Hill Giant"], "library": ["Plains", "Forest"] }
+    ],
+    "steps": [
+      { "activate": "Coin of Fate", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "life": 17, "hand": ["Island"] }, { "hand": ["Plains", "Forest"] } ] }
+  }
+]

@@ -1,0 +1,174 @@
+[
+  {
+    "name": "ETB destroys the target noncreature permanent then deals 4 to each creature",
+    "players": [
+      {
+        "hand": ["Extinguisher Battleship"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Forest", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Extinguisher Battleship" },
+      { "resolve": true, "targets": ["p1:Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Extinguisher Battleship"], "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Forest", "Hill Giant"] }
+      ],
+      "counters": {
+        "Extinguisher Battleship": { "Charge": 0 }
+      }
+    }
+  },
+  {
+    "name": "the Battleship is not a creature, so it takes none of its own 4 damage",
+    "players": [
+      {
+        "hand": ["Extinguisher Battleship"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Forest", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Extinguisher Battleship" },
+      { "resolve": true, "targets": ["p1:Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Extinguisher Battleship"] },
+        { "graveyard": ["Forest", "Hill Giant"] }
+      ],
+      "counters": {
+        "Extinguisher Battleship": { "Charge": 0 }
+      }
+    }
+  },
+  {
+    "name": "station taps another creature and adds charge counters equal to its power",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Extinguisher Battleship", "counters": { "Charge": 2 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Extinguisher Battleship" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": {
+        "Extinguisher Battleship": { "Charge": 4 }
+      }
+    }
+  },
+  {
+    "name": "at 5 charge counters the Battleship is a 10/10 flying trample artifact creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Extinguisher Battleship", "counters": { "Charge": 3 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Extinguisher Battleship" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": {
+        "Extinguisher Battleship": { "Charge": 5 }
+      },
+      "pt": {
+        "Extinguisher Battleship": [10, 10]
+      }
+    }
+  },
+  {
+    "name": "at five charge counters it is a creature: Unsummon can target it",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Island", { "name": "Extinguisher Battleship", "counters": { "Charge": 5 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unsummon", "targets": ["Extinguisher Battleship"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Extinguisher Battleship"] }, {} ]
+    }
+  },
+  {
+    "name": "at five charge counters it flies: a ground creature cannot block it, so 10 damage goes through",
+    "players": [
+      { "battlefield": [ { "name": "Extinguisher Battleship", "counters": { "Charge": 5 } }, "Grizzly Bears" ] },
+      { "battlefield": ["Hill Giant", "Wall of Stone"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Extinguisher Battleship", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Extinguisher Battleship" }, { "blocker": "Wall of Stone", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 10 } ]
+    }
+  },
+  {
+    "name": "at five charge counters it has trample: 6 of its 10 damage tramples over a 4-toughness reach blocker",
+    "players": [
+      { "battlefield": [ { "name": "Extinguisher Battleship", "counters": { "Charge": 5 } } ] },
+      { "battlefield": ["Giant Spider"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Extinguisher Battleship", "at": "p1" } ] },
+      { "block": [ { "blocker": "Giant Spider", "attacker": "Extinguisher Battleship" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 14 } ]
+    }
+  },
+  {
+    "name": "ruling: the ETB target is illegal when it resolves (Disenchant removes the Sol Ring first): no damage to any creature",
+    "players": [
+      {
+        "hand": ["Extinguisher Battleship", "Disenchant"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Sol Ring", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Extinguisher Battleship" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Disenchant", "answers": ["Sol Ring", "Sol Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Extinguisher Battleship", "Grizzly Bears"], "graveyard_has": ["Disenchant"] },
+        { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Sol Ring"] }
+      ]
+    }
+  }
+]

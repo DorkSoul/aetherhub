@@ -1,0 +1,116 @@
+[
+  {
+    "name": "trample counter and Bear type on the target, other Bears get +2/+2",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Llanowar Elves", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Beorn the Fierce", "Llanowar Elves"] }, {} ],
+      "counters": { "Llanowar Elves": { "Trample": 1 } },
+      "pt": { "Llanowar Elves": [3, 3], "Beorn the Fierce": [6, 6] },
+      "keywords": { "Llanowar Elves": ["Trample"] }
+    }
+  },
+  {
+    "name": "draws two when three Bears are controlled after the trigger",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Grizzly Bears", "Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "no draw with only two Bears",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "up to one: no target means no counter",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Beorn the Fierce", "Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "trample counter: the Elf (now a 3/3 Bear) tramples over a 2/2 blocker",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Llanowar Elves"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Llanowar Elves" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "ruling: the Bear type from the trigger lasts past cleanup",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Llanowar Elves", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Cleanup", "auto": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Beorn the Fierce", "Llanowar Elves"] }, {} ],
+      "subtypes": { "Llanowar Elves": ["Bear"] }
+    }
+  },
+  {
+    "name": "ruling: the Bear type stays after Beorn leaves the battlefield",
+    "players": [
+      { "battlefield": ["Beorn the Fierce", "Llanowar Elves", "Forest"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Beorn the Fierce"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Llanowar Elves"], "battlefield_lacks": ["Beorn the Fierce"] }, {} ],
+      "subtypes": { "Llanowar Elves": ["Bear"] },
+      "pt": { "Llanowar Elves": [1, 1] },
+      "keywords": { "Llanowar Elves": ["Trample"] }
+    }
+  }
+]

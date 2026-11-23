@@ -1,0 +1,105 @@
+[
+ {
+  "name": "casting a Merfolk spell and paying {1} creates a 1/1 blue Merfolk",
+  "players": [
+   { "hand": ["Merfolk Looter"], "battlefield": ["Emperor Mihail II", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Merfolk Looter" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Merfolk Looter", "Merfolk 1-1"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining the {1} payment creates no token",
+  "players": [
+   { "hand": ["Merfolk Looter"], "battlefield": ["Emperor Mihail II", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Merfolk Looter" },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Merfolk Looter"], "battlefield_lacks": ["Merfolk 1-1"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a non-Merfolk spell does not trigger the payment",
+  "players": [
+   { "hand": ["Grizzly Bears"], "battlefield": ["Emperor Mihail II", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Merfolk 1-1"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a Merfolk spell can be cast from the top of the library",
+  "players": [
+   { "battlefield": ["Emperor Mihail II", "Island", "Island", "Island"], "library": ["Merfolk Looter", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Merfolk Looter" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Merfolk Looter", "Merfolk 1-1"], "library_count": 1 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Merfolk spell countered on the stack still gets its trigger, which resolves and makes the Merfolk",
+  "players": [
+   { "hand": ["Merfolk Looter"], "battlefield": ["Emperor Mihail II", "Island", "Island", "Island"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Merfolk Looter" },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Merfolk Looter" }] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Emperor Mihail II", "Merfolk 1-1"], "graveyard": ["Merfolk Looter"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Merfolk creature on top of the library follows sorcery timing and cannot be cast in combat",
+  "players": [
+   { "battlefield": ["Emperor Mihail II", "Island", "Island", "Island"], "library": ["Merfolk Looter"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Merfolk Looter", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "library_top": ["Merfolk Looter"] },
+    {}
+   ]
+  }
+ }
+]

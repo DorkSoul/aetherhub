@@ -1,0 +1,120 @@
+[
+ {"name": "ETB: target opponent gets two rad counters; at their precombat main they mill two and lose 1 life per nonland card (top card drawn first)",
+  "players": [
+    {"hand": ["The Master, Transcendent"], "battlefield": ["Swamp", "Forest", "Island", "Island"]},
+    {"library": ["Forest", "Grizzly Bears", "Llanowar Elves"]}
+  ],
+  "steps": [
+    {"cast": "The Master, Transcendent"},
+    {"resolve": true, "targets": ["p1"]},
+    {"resolve": true},
+    {"advance_to": "Main1"},
+    {"advance_to": "Main1"}
+  ],
+  "expect": {"players": [
+    {"battlefield_has": ["The Master, Transcendent"]},
+    {"life": 18, "graveyard": ["Grizzly Bears", "Llanowar Elves"]}
+  ]}},
+ {"name": "boundary: a land milled by rad counters costs no life",
+  "players": [
+    {"hand": ["The Master, Transcendent"], "battlefield": ["Swamp", "Forest", "Island", "Island"]},
+    {"library": ["Grizzly Bears", "Forest", "Llanowar Elves"]}
+  ],
+  "steps": [
+    {"cast": "The Master, Transcendent"},
+    {"resolve": true, "targets": ["p1"]},
+    {"resolve": true},
+    {"advance_to": "Main1"},
+    {"advance_to": "Main1"}
+  ],
+  "expect": {"players": [
+    {"battlefield_has": ["The Master, Transcendent"]},
+    {"life": 19, "graveyard": ["Forest", "Llanowar Elves"]}
+  ]}},
+ {"name": "{T}: a creature card milled from an opponent's library this turn enters under your control as a green 3/3 Mutant",
+  "players": [
+    {"battlefield": ["The Master, Transcendent", "Millstone", "Island", "Island"]},
+    {"library": ["Grizzly Bears", "Llanowar Elves", "Forest"]}
+  ],
+  "steps": [
+    {"activate": "Millstone", "targets": ["p1"]},
+    {"resolve": true},
+    {"activate": "The Master, Transcendent", "targets": ["Grizzly Bears"]},
+    {"resolve": true}
+  ],
+  "expect": {
+    "players": [
+      {"battlefield_has": ["The Master, Transcendent", "Millstone", "Grizzly Bears"]},
+      {"graveyard": ["Llanowar Elves"]}
+    ],
+    "pt": {"Grizzly Bears": [3, 3]}
+  }},
+ {"name": "a creature card that was not milled this turn is not a legal target",
+  "players": [
+    {"battlefield": ["The Master, Transcendent"]},
+    {"graveyard": ["Grizzly Bears"]}
+  ],
+  "steps": [
+    {"activate": "The Master, Transcendent", "illegal": true}
+  ],
+  "expect": {"players": [
+    {"battlefield_has": ["The Master, Transcendent"]},
+    {"graveyard": ["Grizzly Bears"]}
+  ]}},
+ {"name": "a milled noncreature card is not a legal target",
+  "players": [
+    {"battlefield": ["The Master, Transcendent", "Millstone", "Island", "Island"]},
+    {"library": ["Lightning Bolt", "Forest", "Mountain"]}
+  ],
+  "steps": [
+    {"activate": "Millstone", "targets": ["p1"]},
+    {"resolve": true},
+    {"activate": "The Master, Transcendent", "illegal": true}
+  ],
+  "expect": {"players": [
+    {"battlefield_has": ["The Master, Transcendent", "Millstone"]},
+    {"graveyard": ["Lightning Bolt", "Forest"]}
+  ]}},
+ {"name": "ruling: effects that change power/toughness still apply to the reanimated creature (Giant Growth makes the 3/3 Mutant a 6/6)",
+  "players": [
+    {"hand": ["Giant Growth"], "battlefield": ["The Master, Transcendent", "Millstone", "Island", "Island", "Forest"]},
+    {"library": ["Grizzly Bears", "Llanowar Elves", "Forest"]}
+  ],
+  "steps": [
+    {"activate": "Millstone", "targets": ["p1"]},
+    {"resolve": true},
+    {"activate": "The Master, Transcendent", "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"cast": "Giant Growth", "targets": ["Grizzly Bears"]},
+    {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Grizzly Bears"]}, {}], "pt": {"Grizzly Bears": [6, 6]}}},
+ {"name": "ruling: rad counters stay on the player through the end step (they leave only when an effect removes them)",
+  "players": [{"battlefield": ["The Master, Transcendent"]}, {"rad": 2}],
+  "steps": [{"advance_to": "End"}],
+  "expect": {"players": [{}, {"rad": 2}]}},
+ {"name": "ruling: the rad mill belongs to the active player: at your precombat main you mill your own rad count",
+  "players": [{"battlefield": ["The Master, Transcendent"], "rad": 2, "library": ["Island", "Grizzly Bears", "Forest"]}, {}],
+  "steps": [{"advance_to": "Main1"}, {"advance_to": "Main1"}],
+  "expect": {"players": [{"life": 19, "rad": 1, "hand_count": 1, "graveyard": ["Grizzly Bears", "Forest"]}, {}]}},
+ {"name": "ruling: Robobrain War Mind's hand-size power is overridden by The Master's base 3/3",
+  "players": [
+    {"hand": ["Island", "Island", "Island", "Island", "Island", "Island"], "battlefield": ["The Master, Transcendent", "Millstone", "Island", "Island"]},
+    {"library": ["Robobrain War Mind", "Llanowar Elves", "Forest"]}
+  ],
+  "steps": [
+    {"activate": "Millstone", "targets": ["p1"]},
+    {"resolve": true},
+    {"activate": "The Master, Transcendent", "targets": ["Robobrain War Mind"]},
+    {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Robobrain War Mind"]}, {}], "pt": {"Robobrain War Mind": [3, 3]}}},
+ {"name": "ruling: proliferate adds a rad counter to a player who has rad counters",
+  "players": [{"hand": ["Elite Vanguard"], "battlefield": ["Metastatic Evangel", "Plains"]}, {"rad": 2}],
+  "steps": [{"cast": "Elite Vanguard"}, {"resolve": true, "auto": true}],
+  "expect": {"players": [{}, {"rad": 3}]}},
+ {"name": "ruling: rad counters belong to the player, not to The Master: they stay after The Master dies",
+  "players": [{"hand": ["Lightning Bolt", "Tragic Slip"], "battlefield": ["The Master, Transcendent", "Mountain", "Swamp"]}, {"rad": 2}],
+  "steps": [{"cast": "Lightning Bolt", "targets": ["The Master, Transcendent"]}, {"resolve": true}, {"cast": "Tragic Slip", "targets": ["The Master, Transcendent"]}, {"resolve": true}],
+  "expect": {"players": [{"graveyard_has": ["The Master, Transcendent"]}, {"rad": 2}]}}
+]

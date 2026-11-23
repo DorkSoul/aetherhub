@@ -1,0 +1,45 @@
+{
+  "name": "Zoyowa's Justice",
+  "mana_cost": "{1}{R}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "any_of": [ { "types": ["Artifact"], "mana_value": { "n": 1, "op": "Ge" } }, { "types": ["Creature"], "mana_value": { "n": 1, "op": "Ge" } } ]
+            }
+          },
+          "label": "target artifact or creature with mana value 1 or greater"
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Library", "remember": true },
+        { "type": "Shuffle", "who": { "type": "OwnerOf", "of": { "type": "Target", "idx": 0 } } },
+        {
+          "type": "RevealUntil",
+          "who": { "type": "OwnerOf", "of": { "type": "Target", "idx": 0 } },
+          "filter": {
+            "not_types": ["Land"],
+            "mana_value_vs": { "amount": { "type": "ManaValueOf", "of": { "type": "Target", "idx": 0 } }, "op": "Le" }
+          },
+          "count": { "type": "Fixed", "n": 1 },
+          "to": "Exile",
+          "rest": "Library",
+          "rest_random": true
+        },
+        {
+          "type": "CastFree",
+          "what": { "type": "Remembered" },
+          "may": true,
+          "by": { "type": "OwnerOf", "of": { "type": "Target", "idx": 0 } },
+          "decline_to_hand": true
+        }
+      ]
+    }
+  ],
+  "oracle_text": "The owner of target artifact or creature with mana value 1 or greater shuffles it into their library. Then that player discovers X, where X is its mana value. (They exile cards from the top of their library until they exile a nonland card with that mana value or less. They cast it without paying its mana cost or put it into their hand. They put the rest on the bottom in a random order.)"
+}

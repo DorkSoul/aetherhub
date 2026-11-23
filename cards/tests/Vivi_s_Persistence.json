@@ -1,0 +1,164 @@
+[
+ {
+  "name": "instant: create a 0/1 black Wizard token",
+  "players": [
+   {
+    "battlefield": ["Mountain", "Island"],
+    "hand": ["Vivi's Persistence"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Vivi's Persistence" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Wizard 0-1"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "your commander enters, pay {2}: return Vivi's Persistence from the graveyard to hand",
+  "commander": true,
+  "players": [
+   {
+    "command": ["Savannah Lions"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "graveyard": ["Vivi's Persistence"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Savannah Lions" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Vivi's Persistence"], "battlefield_has": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "your commander enters, decline to pay: Vivi's Persistence stays in the graveyard",
+  "commander": true,
+  "players": [
+   {
+    "command": ["Savannah Lions"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "graveyard": ["Vivi's Persistence"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Savannah Lions" },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Vivi's Persistence"], "battlefield_has": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a non-commander creature entering does not trigger it",
+  "players": [
+   {
+    "battlefield": ["Forest", "Forest"],
+    "hand": ["Grizzly Bears"],
+    "graveyard": ["Vivi's Persistence"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Vivi's Persistence"], "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "commander attacks, pay {2}: Vivi's Persistence returns to hand",
+  "commander": true,
+  "players": [
+   {
+    "command": ["Savannah Lions"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "graveyard": ["Vivi's Persistence"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Savannah Lions" },
+   { "resolve": true, "answers": [false] },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Savannah Lions", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": [], "hand_count": 2, "battlefield_has": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "commander attacks, decline to pay: Vivi's Persistence stays in the graveyard",
+  "commander": true,
+  "players": [
+   {
+    "command": ["Savannah Lions"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "graveyard": ["Vivi's Persistence"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Savannah Lions" },
+   { "resolve": true, "answers": [false] },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Savannah Lions", "at": "p1" } ] },
+   { "resolve": true, "answers": [false] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Vivi's Persistence"], "hand_count": 1, "battlefield_has": ["Savannah Lions"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the Wizard's trigger resolves before the Bolt and still deals 1 when the Bolt is countered",
+  "players": [
+   { "hand": ["Vivi's Persistence", "Lightning Bolt"], "battlefield": ["Mountain", "Island", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Vivi's Persistence" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Wizard 0-1"], "graveyard_has": ["Lightning Bolt"] },
+    { "life": 19, "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ }
+]

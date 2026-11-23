@@ -1,0 +1,129 @@
+[
+  {
+    "name": "+1 puts a loyalty counter for each creature the target opponent controls",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Gideon, Champion of Justice": { "Loyalty": 7 } }
+    }
+  },
+  {
+    "name": "0: becomes an indestructible creature with P/T equal to its loyalty",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Gideon, Champion of Justice": [4, 4] },
+      "keywords": { "Gideon, Champion of Justice": ["Indestructible"] },
+      "counters": { "Gideon, Champion of Justice": { "Loyalty": 4 } }
+    }
+  },
+  {
+    "name": "0: damage dealt to him this turn is prevented",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Gideon, Champion of Justice"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Gideon, Champion of Justice": { "Loyalty": 4 } },
+      "players": [
+        { "battlefield": ["Gideon, Champion of Justice"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "-15 is not available with only 4 loyalty",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 2, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Gideon, Champion of Justice", "Grizzly Bears"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "-15 exiles all other permanents on both sides; Gideon is not exiled (he drops to 0 loyalty and dies)",
+    "players": [
+      { "battlefield": [{ "name": "Gideon, Champion of Justice", "counters": { "Loyalty": 15 } }, "Grizzly Bears", "Island"] },
+      { "battlefield": ["Hill Giant", "Forest"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Gideon, Champion of Justice"], "battlefield_lacks": ["Grizzly Bears", "Island"] },
+        { "battlefield_lacks": ["Hill Giant", "Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: +1 against an opponent with no creatures adds only the loyalty counter paid as a cost",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Gideon, Champion of Justice": { "Loyalty": 5 } }
+    }
+  },
+  {
+    "name": "ruling: 0 makes him a Human Soldier creature while he keeps the Gideon planeswalker type",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Gideon, Champion of Justice": ["Human", "Soldier", "Gideon"] },
+      "pt": { "Gideon, Champion of Justice": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: Gideon becoming a creature is not a creature entering, so Soul Warden does not trigger",
+    "players": [
+      { "battlefield": ["Gideon, Champion of Justice", "Soul Warden"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, Champion of Justice", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ]
+    }
+  }
+]

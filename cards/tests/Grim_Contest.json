@@ -1,0 +1,84 @@
+[
+  {
+    "name": "each creature deals damage equal to its own toughness to the other",
+    "players": [
+      {"hand": ["Grim Contest"], "battlefield": ["Swamp", "Forest", "Plains", "Wall of Stone"]},
+      {"battlefield": ["Serra Angel"]}
+    ],
+    "steps": [
+      {"cast": "Grim Contest", "targets": ["Wall of Stone", "Serra Angel"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield": ["Swamp", "Forest", "Plains", "Wall of Stone"], "graveyard": ["Grim Contest"]},
+        {"battlefield": [], "graveyard": ["Serra Angel"]}
+      ]
+    }
+  },
+  {
+    "name": "damage uses toughness, not power: the 0-power Wall deals 8 and kills the Angel",
+    "players": [
+      {"hand": ["Grim Contest"], "battlefield": ["Swamp", "Forest", "Plains", "Serra Angel"]},
+      {"battlefield": ["Wall of Stone"]}
+    ],
+    "steps": [
+      {"cast": "Grim Contest", "targets": ["Serra Angel", "Wall of Stone"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield": ["Swamp", "Forest", "Plains"], "graveyard": ["Grim Contest", "Serra Angel"]},
+        {"battlefield": ["Wall of Stone"], "graveyard": []}
+      ]
+    }
+  },
+  {
+    "name": "if one target is gone on resolution neither creature deals damage",
+    "players": [
+      {"hand": ["Grim Contest"], "battlefield": ["Swamp", "Forest", "Plains", "Wall of Stone"]},
+      {"hand": ["Unsummon"], "battlefield": ["Island", "Serra Angel"]}
+    ],
+    "steps": [
+      {"cast": "Grim Contest", "targets": ["Wall of Stone", "Serra Angel"]},
+      {"pass": true},
+      {"cast": "Unsummon", "player": 1, "targets": ["Serra Angel"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield": ["Swamp", "Forest", "Plains", "Wall of Stone"], "graveyard": ["Grim Contest"]},
+        {"battlefield": ["Island"], "graveyard": ["Unsummon"]}
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast without a creature an opponent controls to target",
+    "players": [
+      {"hand": ["Grim Contest"], "battlefield": ["Swamp", "Forest", "Plains", "Wall of Stone"]},
+      {"battlefield": ["Plains"]}
+    ],
+    "steps": [
+      {"cast": "Grim Contest", "illegal": true}
+    ]
+  },
+  {
+    "name": "ruling: if my creature becomes illegal in response, neither creature deals damage (the opposing Serra Angel survives)",
+    "players": [
+      {"hand": ["Grim Contest"], "battlefield": ["Swamp", "Forest", "Plains", "Wall of Stone"]},
+      {"hand": ["Unsummon"], "battlefield": ["Island", "Serra Angel"]}
+    ],
+    "steps": [
+      {"cast": "Grim Contest", "targets": ["Wall of Stone", "Serra Angel"]},
+      {"pass": true},
+      {"cast": "Unsummon", "player": 1, "targets": ["Wall of Stone"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Swamp", "Forest", "Plains"], "battlefield_lacks": ["Wall of Stone"], "graveyard": ["Grim Contest"], "hand": ["Wall of Stone"]},
+        {"battlefield_has": ["Serra Angel"], "graveyard": ["Unsummon"]}
+      ]
+    }
+  }
+]

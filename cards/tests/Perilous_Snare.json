@@ -1,0 +1,219 @@
+[
+  {
+    "name": "exiles an opposing creature when it enters",
+    "players": [
+      {
+        "hand": [
+          "Perilous Snare"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Perilous Snare"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Perilous Snare"
+          ]
+        },
+        {
+          "battlefield": [],
+          "exile": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "exiled card returns when the snare leaves the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Perilous Snare"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Forest"
+        ],
+        "hand": [
+          "Nature's Claim"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Perilous Snare"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Nature's Claim",
+        "targets": [
+          "Perilous Snare"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Perilous Snare"
+          ]
+        },
+        {
+          "battlefield": [
+            "Grizzly Bears",
+            "Forest"
+          ],
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "max speed: put a +1/+1 counter on your creature",
+    "players": [
+      {
+        "battlefield": [
+          "Perilous Snare",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "set_speed": 4
+      },
+      {
+        "activate": "Perilous Snare",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Perilous Snare",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "below max speed the counter ability is not available",
+    "players": [
+      {
+        "battlefield": [
+          "Perilous Snare",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "set_speed": 3
+      },
+      {
+        "activate": "Perilous Snare",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Perilous Snare"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "start your engines: speed starts at 1 when the Snare enters",
+    "players": [
+      { "hand": ["Perilous Snare"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Perilous Snare" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "speed": 1, "battlefield_has": ["Perilous Snare"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: speed is per player: raising my speed leaves the opponent at speed 0",
+    "players": [
+      { "battlefield": ["Perilous Snare"] },
+      {}
+    ],
+    "steps": [ { "set_speed": 4 } ],
+    "expect": { "players": [ { "speed": 4 }, { "speed": 0 } ] }
+  },
+  {
+    "name": "ruling: an opponent losing life on my turn raises my speed by one",
+    "players": [
+      { "hand": ["Perilous Snare", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Perilous Snare" }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "speed": 2, "battlefield_has": ["Perilous Snare"] }, { "life": 17, "speed": 0 } ] }
+  }
+]

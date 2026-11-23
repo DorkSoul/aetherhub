@@ -1,0 +1,95 @@
+[
+  {
+    "name": "casting a noncreature spell: a +1/+1 counter and flying until end of turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Estinien Varlineau"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Estinien Varlineau": [4, 4] }, "keywords": { "Estinien Varlineau": ["Flying"] } }
+  },
+  {
+    "name": "casting a creature spell does nothing",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Estinien Varlineau"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Estinien Varlineau": [3, 3] } }
+  },
+  {
+    "name": "Estinien dealt combat damage to the opponent: draw 1 and lose 1 in the second main phase",
+    "players": [
+      { "battlefield": [{ "name": "Estinien Varlineau", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Estinien Varlineau", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 19, "hand_count": 1 }, { "life": 17 } ] }
+  },
+  {
+    "name": "no combat damage this turn: nothing is drawn or lost",
+    "players": [
+      { "battlefield": [{ "name": "Estinien Varlineau", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20, "hand_count": 0 }, { "life": 20 } ] }
+  },
+  {
+    "name": "counts each opponent separately: Estinien and a Dragon hit different opponents",
+    "players": [
+      { "battlefield": [{ "name": "Estinien Varlineau", "sick": false }, { "name": "Shivan Dragon", "sick": false }] },
+      {},
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Estinien Varlineau", "at": "p1" }, { "card": "Shivan Dragon", "at": "p2" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "hand_count": 2 }, { "life": 17 }, { "life": 15 } ] }
+  },
+  {
+    "name": "a Dragon and Estinien hitting the same opponent count that opponent once",
+    "players": [
+      { "battlefield": [{ "name": "Estinien Varlineau", "sick": false }, { "name": "Shivan Dragon", "sick": false }] },
+      {},
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Estinien Varlineau", "at": "p1" }, { "card": "Shivan Dragon", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 19, "hand_count": 1 }, { "life": 12 }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: Estinien's trigger still resolves when the noncreature spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Estinien Varlineau"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Counterspell"], "life": 20 } ],
+      "pt": { "Estinien Varlineau": [4, 4] }
+    }
+  }
+]

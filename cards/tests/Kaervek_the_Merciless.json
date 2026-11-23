@@ -1,0 +1,126 @@
+[
+  {
+    "name": "deals damage equal to the spell's mana value",
+    "players": [
+      {
+        "battlefield": [
+          "Kaervek the Merciless"
+        ]
+      },
+      {
+        "hand": [
+          "Boros Charm"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Boros Charm",
+        "player": 1,
+        "targets": [
+          "p0",
+          "p1"
+        ],
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 16
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "own spells do not trigger",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Kaervek the Merciless",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: X counts toward the mana value (Blaze with X=3 is a mana value 4 spell)",
+    "players": [
+      { "battlefield": ["Kaervek the Merciless"] },
+      { "hand": ["Blaze"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Blaze", "player": 1, "targets": ["p0"], "answers": [3, "p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17 }, { "life": 16 } ] }
+  },
+  {
+    "name": "ruling: Kaervek's trigger resolves before the spell and still deals damage when that spell is countered",
+    "players": [
+      { "battlefield": ["Kaervek the Merciless", "Island", "Island"], "hand": ["Counterspell"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "answers": ["p1"] },
+      { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20, "graveyard_has": ["Counterspell"] }, { "life": 19, "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: a cost reduction does not change the mana value Kaervek counts (Angelic Destiny is 4, not 3)",
+    "players": [
+      { "battlefield": ["Kaervek the Merciless"] },
+      { "hand": ["Angelic Destiny"], "battlefield": ["Inquisitive Glimmer", "Plains", "Plains", "Swamp", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Angelic Destiny", "player": 1, "targets": ["Grizzly Bears"], "answers": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 16 } ] }
+  }
+]

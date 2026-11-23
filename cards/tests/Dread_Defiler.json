@@ -1,0 +1,45 @@
+[
+  { "name": "exiling a 4-power creature card makes the opponent lose 4",
+    "players": [
+      { "battlefield": ["Dread Defiler", "Wastes", "Swamp", "Swamp", "Swamp"], "graveyard": ["Serra Angel", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "activate": "Dread Defiler", "answers": [["Serra Angel"]] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Serra Angel"], "graveyard": ["Grizzly Bears"] }, { "life": 16 } ] } },
+  { "name": "uses the exiled card's own power (2)",
+    "players": [
+      { "battlefield": ["Dread Defiler", "Wastes", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "activate": "Dread Defiler" }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"] }, { "life": 18 } ] } },
+  { "name": "needs colorless mana for {C}",
+    "players": [
+      { "battlefield": ["Dread Defiler", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "activate": "Dread Defiler", "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, { "life": 20 } ] } },
+  { "name": "needs a creature card in the graveyard",
+    "players": [
+      { "battlefield": ["Dread Defiler", "Wastes", "Swamp", "Swamp", "Swamp"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [ { "activate": "Dread Defiler", "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 20 } ] } },
+  { "name": "devoid makes it colorless, so an opponent's Doom Blade can target it",
+    "players": [ { "battlefield": ["Dread Defiler"] }, { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] } ],
+    "steps": [ { "pass": true }, { "cast": "Doom Blade", "player": 1, "targets": ["Dread Defiler"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Dread Defiler"] }, { "graveyard": ["Doom Blade"] } ] } },
+  { "name": "ruling: a token that dies ceases to exist, so it cannot be exiled from the graveyard",
+    "players": [
+      { "hand": ["Raise the Alarm", "Lightning Bolt"], "battlefield": ["Dread Defiler", "Plains", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Wastes"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raise the Alarm" }, { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Soldier"] }, { "resolve": true },
+      { "activate": "Dread Defiler", "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Raise the Alarm"], "battlefield_has": ["Dread Defiler"] }, { "life": 20 } ] } }
+]

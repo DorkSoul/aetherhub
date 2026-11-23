@@ -1,0 +1,89 @@
+[
+  {
+    "name": "casts a noncreature spell from the top of your library",
+    "players": [
+      { "battlefield": ["Madame Web, Clairvoyant", "Mountain"], "library": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "battlefield_lacks": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "cannot cast a non-Spider creature spell from the top of your library",
+    "players": [
+      { "battlefield": ["Madame Web, Clairvoyant", "Forest", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "whenever you attack you may mill a card",
+    "players": [
+      { "battlefield": ["Madame Web, Clairvoyant"], "library": ["Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Madame Web, Clairvoyant", "at": "p1" }] },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Island"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery cast from the top of your library follows sorcery timing (not in combat)",
+    "players": [
+      { "battlefield": ["Madame Web, Clairvoyant", "Mountain", "Mountain"], "library": ["Wild Guess", "Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Wild Guess", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "library_top": ["Wild Guess"], "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the same sorcery from the top is castable in the second main phase",
+    "players": [
+      { "hand": ["Mountain"], "battlefield": ["Madame Web, Clairvoyant", "Mountain", "Mountain"], "library": ["Wild Guess", "Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "advance_to": "Main2" },
+      { "cast": "Wild Guess" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Wild Guess", "Mountain"], "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: once the top card is cast, the next card on top can be cast too",
+    "players": [
+      { "battlefield": ["Madame Web, Clairvoyant", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 17, "battlefield_lacks": ["Grizzly Bears"] } ]
+    }
+  }
+]

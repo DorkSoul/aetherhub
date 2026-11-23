@@ -1,0 +1,76 @@
+{
+  "name": "Summon: Yojimbo",
+  "mana_cost": "{3}{W}",
+  "types": ["Enchantment", "Creature"],
+  "subtypes": ["Saga", "Samurai"],
+  "power": 5,
+  "toughness": 5,
+  "keywords": ["Vigilance"],
+  "abilities": [
+    {
+      "type": "Saga",
+      "chapters": [
+        {
+          "numbers": [1],
+          "targets": [
+            {
+              "what": {
+                "type": "Permanent",
+                "filter": {
+                  "controller": "Opponent",
+                  "any_of": [
+                    { "types": ["Artifact"] },
+                    { "types": ["Enchantment"] },
+                    { "types": ["Creature"], "tapped": true }
+                  ]
+                }
+              },
+              "min": 1,
+              "max": 1,
+              "label": "target artifact, enchantment, or tapped creature an opponent controls"
+            }
+          ],
+          "effects": [
+            { "type": "Exile", "what": { "type": "Target", "idx": 0 } }
+          ]
+        },
+        {
+          "numbers": [2, 3],
+          "effects": [
+            {
+              "type": "GrantStatic",
+              "what": { "type": "This" },
+              "duration": "UntilYourNextTurn",
+              "effect": { "type": "AttackTax", "generic": 2 },
+              "dynamic": true
+            }
+          ]
+        },
+        {
+          "numbers": [4],
+          "effects": [
+            {
+              "type": "ForEach",
+              "objects": { "type": "EachOpponent" },
+              "effects": [
+                {
+                  "type": "If",
+                  "cond": {
+                    "type": "Control",
+                    "who": { "type": "EachObject" },
+                    "at_least": 1,
+                    "filter": { "types": ["Creature"], "controller": "You", "power": { "op": "Ge", "n": 4 } }
+                  },
+                  "then": [
+                    { "type": "CreateToken", "token": "Treasure", "n": { "type": "Fixed", "n": 1 } }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI — Exile target artifact, enchantment, or tapped creature an opponent controls.\nII, III — Until your next turn, creatures can't attack you unless their controller pays {2} for each of those creatures.\nIV — Create X Treasure tokens, where X is the number of opponents who control a creature with power 4 or greater.\nVigilance"
+}

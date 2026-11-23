@@ -1,0 +1,61 @@
+[
+ {"name": "reveals chosen-type cards to hand, rest to bottom",
+  "players": [
+   {"hand": ["For the Ancestors"], "battlefield": ["Forest", "Forest", "Forest"], "library": ["Llanowar Elves", "Grizzly Bears", "Elvish Visionary"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "For the Ancestors"},
+   {"resolve": true, "answers": ["Elf", ["Llanowar Elves", "Elvish Visionary"]]}
+  ],
+  "expect": {"players": [{"hand": ["Llanowar Elves", "Elvish Visionary"], "graveyard": ["For the Ancestors"]}, {}]}
+ },
+ {"name": "flashback from the graveyard exiles the card",
+  "players": [
+   {"graveyard": ["For the Ancestors"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Llanowar Elves"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "For the Ancestors", "alt": 0},
+   {"resolve": true, "answers": ["Elf", ["Llanowar Elves"]]}
+  ],
+  "expect": {"players": [{"hand": ["Llanowar Elves"], "exile": ["For the Ancestors"]}, {}]}
+ },
+ {"name": "flashback needs its own cost (three lands is not enough)",
+  "players": [
+   {"graveyard": ["For the Ancestors"], "battlefield": ["Forest", "Forest", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "For the Ancestors", "alt": 0, "illegal": true}
+  ],
+  "expect": {"players": [{"graveyard": ["For the Ancestors"]}, {}]}
+ },
+ {"name": "ruling: flashback follows the card's own timing (an instant can be flashed back in the opponent's end step)",
+  "players": [
+   {"graveyard": ["For the Ancestors"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Llanowar Elves"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Upkeep", "player": 1},
+   {"advance_to": "End"},
+   {"pass": true, "player": 1},
+   {"cast": "For the Ancestors", "alt": 0},
+   {"resolve": true, "answers": ["Elf", ["Llanowar Elves"]]}
+  ],
+  "expect": {"players": [{"hand": ["Llanowar Elves"], "exile": ["For the Ancestors"]}, {}]}
+ },
+ {"name": "ruling: a flashback spell that is countered is still exiled",
+  "players": [
+   {"graveyard": ["For the Ancestors"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Llanowar Elves"]},
+   {"battlefield": ["Island", "Island"], "hand": ["Counterspell"]}
+  ],
+  "steps": [
+   {"cast": "For the Ancestors", "alt": 0},
+   {"pass": true},
+   {"cast": "Counterspell", "targets": [{"stack": "For the Ancestors"}], "player": 1},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"exile": ["For the Ancestors"], "library_top": ["Llanowar Elves"]}, {"graveyard": ["Counterspell"]}]}
+ }
+]

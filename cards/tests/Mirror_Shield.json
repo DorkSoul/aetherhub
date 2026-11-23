@@ -1,0 +1,131 @@
+[
+  {
+    "name": "equip gives +0/+2 and hexproof",
+    "players": [
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mirror Shield", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Hexproof"] },
+      "attached": { "Mirror Shield": "Grizzly Bears" },
+      "pt": { "Grizzly Bears": [2, 4] }
+    }
+  },
+  {
+    "name": "a deathtouch creature blocking the equipped creature is destroyed",
+    "players": [
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Deadly Recluse"] }
+    ],
+    "steps": [
+      { "activate": "Mirror Shield", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Deadly Recluse", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Deadly Recluse"] } ]
+    }
+  },
+  {
+    "name": "a blocker without deathtouch is not destroyed",
+    "players": [
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Mirror Shield", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "a deathtouch attacker blocked by the equipped creature is destroyed",
+    "players": [
+      { "battlefield": ["Deadly Recluse"] },
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "activate": "Mirror Shield", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Deadly Recluse", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Deadly Recluse" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Deadly Recluse"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "a non-deathtouch attacker blocked by the equipped creature is not destroyed",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "activate": "Mirror Shield", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: a deathtouch blocker is destroyed, but the equipped creature stays blocked and deals no damage",
+    "players": [
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Deadly Recluse"] }
+    ],
+    "steps": [
+      { "activate": "Mirror Shield", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Deadly Recluse", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Deadly Recluse"], "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: deathtouch granted to a blocker after the block does not trigger the destroy ability",
+    "players": [
+      { "battlefield": ["Mirror Shield", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Swamp", "Swamp"], "hand": ["Bladebrand"] }
+    ],
+    "steps": [
+      { "activate": "Mirror Shield", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "pass": true },
+      { "cast": "Bladebrand", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  }
+]

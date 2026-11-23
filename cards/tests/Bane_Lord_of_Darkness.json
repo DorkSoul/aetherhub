@@ -1,0 +1,106 @@
+[
+  {
+    "name": "opponent declines: controller puts a creature with lesser toughness from hand onto the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt", "Llanowar Elves", "Hill Giant"], "battlefield": ["Bane, Lord of Darkness", "Grizzly Bears", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false, ["Llanowar Elves"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Bane, Lord of Darkness", "Llanowar Elves", "Mountain"], "hand": ["Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent accepts: controller draws a card and no creature is put onto the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt", "Llanowar Elves", "Hill Giant"], "battlefield": ["Bane, Lord of Darkness", "Grizzly Bears", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Bane, Lord of Darkness", "Mountain"], "hand_count": 3 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent declines: a creature with greater toughness than the dead creature cannot be put onto the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt", "Hill Giant"], "battlefield": ["Bane, Lord of Darkness", "Llanowar Elves", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Bane, Lord of Darkness", "Mountain"], "hand": ["Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "indestructible at 10 life (half of starting life)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Bane, Lord of Darkness", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "set_life": 10 },
+      { "cast": "Lightning Bolt", "targets": ["Bane, Lord of Darkness"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Bane, Lord of Darkness", "Mountain"], "life": 10 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "not indestructible above half of starting life",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Bane, Lord of Darkness", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "set_life": 11 },
+      { "cast": "Lightning Bolt", "targets": ["Bane, Lord of Darkness"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Bane, Lord of Darkness", "Lightning Bolt"], "life": 11 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: last ability checks the dead creature's toughness, not Bane's (a 3-toughness creature is put in)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Hill Giant"], "battlefield": ["Bane, Lord of Darkness", "Hill Giant", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [false, ["Hill Giant"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Bane, Lord of Darkness", "Hill Giant", "Mountain"], "hand": [] },
+        {}
+      ]
+    }
+  }
+]

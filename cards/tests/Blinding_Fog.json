@@ -1,0 +1,109 @@
+[
+ {
+  "name": "prevents damage dealt to an opposing creature this turn: Shock deals nothing",
+  "players": [
+   {
+    "hand": ["Blinding Fog", "Shock"],
+    "battlefield": ["Forest", "Forest", "Forest", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Blinding Fog" },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Blinding Fog", "Shock"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "does not prevent damage dealt to players",
+  "players": [
+   {
+    "hand": ["Blinding Fog", "Shock"],
+    "battlefield": ["Forest", "Forest", "Forest", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Blinding Fog" },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Blinding Fog", "Shock"] }, { "life": 18 } ]
+  }
+ },
+ {
+  "name": "creatures the caster controls gain hexproof: opponent cannot target them",
+  "players": [
+   {
+    "hand": ["Blinding Fog"],
+    "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears"]
+   },
+   {
+    "hand": ["Doom Blade"],
+    "battlefield": ["Swamp"]
+   }
+  ],
+  "steps": [
+   { "cast": "Blinding Fog" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Blinding Fog"] }, { "hand": ["Doom Blade"] } ]
+  }
+ },
+  {
+    "name": "ruling: a creature that comes under my control after Blinding Fog still has damage to it prevented this turn",
+    "players": [
+      { "hand": ["Blinding Fog", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Plains"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Blinding Fog" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Shock"] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: a creature that comes under my control after Blinding Fog does not gain hexproof",
+    "players": [
+      { "hand": ["Blinding Fog", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Plains"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Blinding Fog" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] },
+        { "graveyard_has": ["Doom Blade"] }
+      ]
+    }
+  }
+]

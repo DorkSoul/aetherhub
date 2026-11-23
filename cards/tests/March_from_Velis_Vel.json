@@ -1,0 +1,131 @@
+[
+  {
+    "name": "each Gate you control becomes a copy of the target creature; lands of other types and basics are unaffected",
+    "players": [
+      { "hand": ["March from Velis Vel"], "battlefield": ["Dimir Guildgate", "Dimir Guildgate", "Desert", "Island", "Island", "Island", "Hill Giant"] },
+      { "battlefield": ["Dimir Guildgate"] }
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": ["Gate"] }
+    ],
+    "expect": { "players": [
+      { "battlefield": ["Hill Giant", "Hill Giant", "Hill Giant", "Desert", "Island", "Island", "Island"], "graveyard": ["March from Velis Vel"] },
+      { "battlefield": ["Dimir Guildgate"] }
+    ] }
+  },
+  {
+    "name": "the lands gain haste: a land that just entered attacks as a copy",
+    "players": [
+      { "hand": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", { "name": "Desert", "sick": true }, { "name": "Hill Giant", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": ["Desert"] },
+      { "attack": [{"card": "Hill Giant", "at": "p1"}] },
+      { "advance_to": "EndCombat" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "the copy lasts until end of turn: the Gate is a land again next turn",
+    "players": [
+      { "hand": ["March from Velis Vel"], "battlefield": ["Dimir Guildgate", "Island", "Island", "Island", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": ["Gate"] },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ { "battlefield": ["Dimir Guildgate", "Island", "Island", "Island", "Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "flashback {4}{U} from the graveyard exiles the spell",
+    "players": [
+      { "graveyard": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Dimir Guildgate", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "alt": 0, "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": ["Gate"] }
+    ],
+    "expect": { "players": [ { "exile": ["March from Velis Vel"], "graveyard": [], "battlefield": ["Hill Giant", "Hill Giant", "Island", "Island", "Island", "Island", "Island"] }, {} ] }
+  },
+  {
+    "name": "needs a target creature you control: an opponent's creature is not legal",
+    "players": [
+      { "hand": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", "Dimir Guildgate"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["March from Velis Vel"] }, {} ] }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing: not castable during combat",
+    "players": [
+      { "graveyard": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "cast": "March from Velis Vel", "alt": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["March from Velis Vel"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a flashback spell whose target is gone is exiled instead of going to the graveyard",
+    "players": [
+      { "graveyard": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["March from Velis Vel"], "graveyard_has": ["Grizzly Bears"] },
+        { "hand_count": 0, "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land copying a creature with an enters-the-battlefield ability does not trigger it",
+    "players": [
+      { "hand": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", "Dimir Guildgate", "Mulldrifter"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "targets": ["Mulldrifter"] },
+      { "resolve": true, "answers": ["Gate"] }
+    ],
+    "expect": { "players": [ { "hand_count": 0, "library_count": 20 }, {} ] }
+  },
+  {
+    "name": "ruling: the land copy takes only the copiable values (not the tapped status or counters of the copied creature)",
+    "players": [
+      { "hand": ["March from Velis Vel"], "battlefield": ["Island", "Island", "Island", "Dimir Guildgate", { "name": "Hill Giant", "tapped": true, "counters": { "p1p1": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "March from Velis Vel", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": ["Gate"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"] }, {} ],
+      "pt": { "Hill Giant": [3, 3] },
+      "tapped": { "Hill Giant": false },
+      "counters": { "Hill Giant": { "p1p1": 0 } }
+    }
+  }
+]

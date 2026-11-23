@@ -1,0 +1,53 @@
+[
+  {
+    "name": "target creature must be blocked if able, and draws a card",
+    "players": [ { "hand": ["Irresistible Prey"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Forest"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Irresistible Prey", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Irresistible Prey", "Grizzly Bears"], "hand": ["Forest"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: the target is killed in response, so Irresistible Prey does not resolve and nothing is drawn",
+    "players": [ { "hand": ["Irresistible Prey"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Forest"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "cast": "Irresistible Prey", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 0, "library_top": ["Forest"], "graveyard": ["Irresistible Prey", "Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: can target an opponent's creature",
+    "players": [ { "hand": ["Irresistible Prey"], "battlefield": ["Forest"], "library": ["Forest"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Irresistible Prey", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": ["Forest"], "graveyard": ["Irresistible Prey"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: can target a creature that could not attack this turn (summoning sick)",
+    "players": [ { "hand": ["Irresistible Prey"], "battlefield": ["Forest", { "name": "Grizzly Bears", "sick": true }], "library": ["Forest"] }, {} ],
+    "steps": [
+      { "cast": "Irresistible Prey", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": ["Forest"], "graveyard": ["Irresistible Prey"], "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: the affected creature does not have to attack",
+    "players": [ { "hand": ["Irresistible Prey"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Forest"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Irresistible Prey", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 20 } ] }
+  }
+]

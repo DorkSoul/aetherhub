@@ -1,0 +1,222 @@
+[
+  {
+    "name": "paying 2 for another creature entering proliferates a counter",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Tainted Observer",
+          "Forest",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Hill Giant",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": {
+        "Hill Giant": {
+          "p1p1": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "declining the payment does not proliferate",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Tainted Observer",
+          "Forest",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Hill Giant",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": {
+        "Hill Giant": {
+          "p1p1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "the Observer entering itself does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Tainted Observer"
+        ],
+        "battlefield": [
+          "Forest",
+          "Island",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Hill Giant",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Tainted Observer"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Tainted Observer"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Hill Giant": {
+          "p1p1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: toxic does not change the damage; 2 power deals 2 life and one poison counter",
+    "players": [
+      { "battlefield": ["Tainted Observer"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Tainted Observer", "at": "p1" } ] },
+      { "block": [], "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18, "poison": 1 }]
+    }
+  },
+  {
+    "name": "ruling: ten poison counters lose the game as a state-based action",
+    "players": [
+      { "battlefield": ["Tainted Observer"] },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Tainted Observer", "at": "p1" } ] },
+      { "block": [], "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 0
+    }
+  },
+  {
+    "name": "ruling: toxic does nothing when the creature deals combat damage to a creature (blocked by Serra Angel)",
+    "players": [
+      { "battlefield": ["Tainted Observer"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Tainted Observer", "at": "p1" } ] },
+      { "player": 1, "block": [ { "blocker": "Serra Angel", "attacker": "Tainted Observer" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Tainted Observer"] },
+        { "life": 20, "poison": 0, "battlefield_has": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: proliferate adds one of each kind of counter the permanent already has",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Tainted Observer", "Forest", "Island", "Island", "Island"] },
+      { "battlefield": [ { "name": "Hill Giant", "counters": { "p1p1": 1, "shield": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": { "Hill Giant": { "p1p1": 2, "shield": 2 } }
+    }
+  },
+  {
+    "name": "ruling: a +1/+1 and a -1/-1 counter on the same creature are removed in pairs",
+    "players": [
+      { "battlefield": ["Tainted Observer"] },
+      { "battlefield": [ { "name": "Hill Giant", "counters": { "p1p1": 1, "m1m1": 1 } } ] }
+    ],
+    "steps": [
+      { "pass": true }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "p1p1": 0, "m1m1": 0 } }
+    }
+  }
+]

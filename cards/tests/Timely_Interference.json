@@ -1,0 +1,83 @@
+[
+  {
+    "name": "ruling: kicked total cost is three mana, so three lands pay it",
+    "players": [
+      { "hand": ["Timely Interference"], "battlefield": ["Island", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Timely Interference", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ],
+      "pt": { "Grizzly Bears": [1, 2] }
+    }
+  },
+  {
+    "name": "ruling: kicked total cost is three mana, so two lands cannot cast it kicked",
+    "players": [
+      { "hand": ["Timely Interference"], "battlefield": ["Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Timely Interference", "targets": ["Grizzly Bears"], "answers": [true], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Timely Interference"] }, { "battlefield": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "unkicked: -1/-0 and draw a card; no must-block",
+    "players": [
+      { "hand": ["Timely Interference"], "battlefield": ["Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Timely Interference", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ],
+      "pt": { "Grizzly Bears": [1, 2] }
+    }
+  },
+  {
+    "name": "kicked: the creature must block this turn",
+    "players": [
+      { "hand": ["Timely Interference"], "battlefield": ["Island", "Island", "Mountain", "Mountain", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Timely Interference", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "kicked: declining to block is illegal while the creature must block",
+    "players": [
+      { "hand": ["Timely Interference"], "battlefield": ["Island", "Island", "Mountain", "Mountain", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Timely Interference", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  }
+]

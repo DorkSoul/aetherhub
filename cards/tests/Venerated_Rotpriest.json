@@ -1,0 +1,162 @@
+[
+  {
+    "name": "spell targeting my creature gives opponent a poison counter",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Venerated Rotpriest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears",
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "poison": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "spell targeting an opponent's creature gives no poison counter",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Venerated Rotpriest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "poison": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: toxic does not change damage; a 2-power toxic attacker deals 2 and gives one poison",
+    "players": [ { "battlefield": ["Blightbelly Rat"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Blightbelly Rat", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: Gratuitous Violence doubles the damage but the poison counter count is unchanged",
+    "players": [ { "battlefield": ["Venerated Rotpriest", "Gratuitous Violence"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Venerated Rotpriest", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: Vorinclex doubles the poison counters placed by toxic",
+    "players": [ { "battlefield": ["Venerated Rotpriest", "Vorinclex, Monstrous Raider"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Venerated Rotpriest", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 19, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: ten poison counters lose the game as a state-based action",
+    "players": [ { "battlefield": ["Venerated Rotpriest"] }, { "poison": 9 } ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Venerated Rotpriest", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "winner": 0 }
+  },
+  {
+    "name": "ruling: a toxic creature blocked by a creature gives no poison counter",
+    "players": [ { "battlefield": ["Venerated Rotpriest"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Venerated Rotpriest", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Venerated Rotpriest" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: noncombat damage from a spell gives no poison counter",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Venerated Rotpriest"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: lifelink still applies to the damage of a toxic creature (Venser gains 1 and deals 1 with one poison)",
+    "players": [ { "battlefield": ["Venser, Corpse Puppet"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [ { "card": "Venser, Corpse Puppet", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 21 }, { "life": 19, "poison": 1 } ] }
+  }
+]

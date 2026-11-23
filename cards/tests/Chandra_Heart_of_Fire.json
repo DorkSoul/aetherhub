@@ -1,0 +1,367 @@
+[
+  {
+    "name": "+1 discards the hand, exiles the top three, and one of them can be played this turn",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears",
+          "Island"
+        ],
+        "battlefield": [
+          {
+            "name": "Chandra, Heart of Fire",
+            "counters": {
+              "loyalty": 5
+            }
+          },
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Heart of Fire",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest",
+            "Mountain"
+          ],
+          "graveyard": [
+            "Grizzly Bears",
+            "Island",
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "+1 with an empty hand still exiles three cards",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": [
+          {
+            "name": "Chandra, Heart of Fire",
+            "counters": {
+              "loyalty": 5
+            }
+          },
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Lightning Bolt",
+          "Island",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Heart of Fire",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest",
+            "Mountain"
+          ],
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "+1 deals 2 damage to any target",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears",
+          "Island"
+        ],
+        "battlefield": [
+          {
+            "name": "Chandra, Heart of Fire",
+            "counters": {
+              "loyalty": 5
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Heart of Fire",
+        "ability": 1,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "-9 exiles any number of red instants and sorceries from graveyard and library, you may cast them, and add RRRRRR",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Chandra, Heart of Fire",
+            "counters": {
+              "loyalty": 9
+            }
+          }
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ],
+        "library": [
+          "Forest",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Heart of Fire",
+        "ability": 2
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Lightning Bolt"
+          ]
+        ]
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Chandra, Heart of Fire",
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "-9 cannot take a green instant",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Chandra, Heart of Fire",
+            "counters": {
+              "loyalty": 9
+            }
+          }
+        ],
+        "graveyard": [
+          "Giant Growth"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Chandra, Heart of Fire",
+        "ability": 2
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Chandra, Heart of Fire",
+            "Giant Growth"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played once the land drop is used",
+    "players": [
+      {
+        "hand": ["Island"],
+        "battlefield": [ { "name": "Chandra, Heart of Fire", "counters": { "loyalty": 5 } }, "Mountain" ],
+        "library": ["Forest", "Lightning Bolt", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Island" },
+      { "activate": "Chandra, Heart of Fire", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest", "Lightning Bolt", "Island"], "battlefield_has": ["Island", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a loyalty ability cannot be activated while a spell is on the stack",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [ { "name": "Chandra, Heart of Fire", "counters": { "loyalty": 5 } }, "Mountain" ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Chandra, Heart of Fire", "ability": 1, "targets": ["p1"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ],
+      "counters": { "Chandra, Heart of Fire": { "loyalty": 5 } }
+    }
+  },
+  {
+    "name": "ruling: the -9 uses the stack, so an instant cast in response resolves first",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [ { "name": "Chandra, Heart of Fire", "counters": { "loyalty": 9 } }, "Mountain" ],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chandra, Heart of Fire", "ability": 2 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Chandra, Heart of Fire", "Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with an empty hand the +1 still exiles three cards, and they stay exiled after the turn",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": [ { "name": "Chandra, Heart of Fire", "counters": { "loyalty": 5 } }, "Mountain" ],
+        "library": ["Forest", "Lightning Bolt", "Island", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chandra, Heart of Fire", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest", "Lightning Bolt", "Island"], "library_count": 1, "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled spell is still paid for, so without a red source the exiled Lightning Bolt cannot be cast",
+    "players": [
+      {
+        "battlefield": [ { "name": "Chandra, Heart of Fire", "counters": { "loyalty": 5 } }, "Forest" ],
+        "library": ["Lightning Bolt", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chandra, Heart of Fire", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt", "Island", "Island"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

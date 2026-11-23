@@ -1,0 +1,167 @@
+[
+  {
+    "name": "enters with three +1/+1 counters",
+    "players": [
+      {
+        "hand": [
+          "Triskelion"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Triskelion"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Triskelion": {
+          "p1p1": 3
+        }
+      },
+      "pt": {
+        "Triskelion": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "remove a counter: 1 damage to any target",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Triskelion",
+            "counters": {
+              "p1p1": 3
+            }
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Triskelion",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Triskelion",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Triskelion",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Triskelion": {
+          "p1p1": 0
+        }
+      },
+      "pt": {
+        "Triskelion": [
+          1,
+          1
+        ]
+      },
+      "players": [
+        {},
+        {
+          "life": 19,
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no counters left: cannot activate",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Triskelion",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Triskelion",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Triskelion",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: activating in the declare blockers step removes a counter before combat damage",
+    "players": [ { "battlefield": [ { "name": "Triskelion", "counters": { "p1p1": 3 } } ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Triskelion", "at": "p1" } ] }, { "block": [] }, { "activate": "Triskelion", "targets": ["p1"] }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 16 } ], "counters": { "Triskelion": { "p1p1": 2 } }, "pt": { "Triskelion": [3, 3] } }
+  },
+  {
+    "name": "ruling: damage marked on it makes removing a counter lethal, and the first activation still resolves",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Triskelion", "counters": { "p1p1": 3 } }] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Triskelion"] }, { "resolve": true }, { "activate": "Triskelion", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Triskelion"] }, { "life": 19 } ] }
+  }
+]

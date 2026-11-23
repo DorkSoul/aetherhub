@@ -1,0 +1,36 @@
+[
+ { "name": "exiles a creature you control to return a creature card from your graveyard, and taps the Altar",
+   "players": [ { "battlefield": ["Altar of Bhaal // Bone Offering", "Grizzly Bears", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] }, {} ],
+   "steps": [ { "activate": "Altar of Bhaal // Bone Offering", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "tapped": { "Altar of Bhaal // Bone Offering": true }, "players": [ { "battlefield_has": ["Hill Giant", "Altar of Bhaal // Bone Offering"], "exile": ["Grizzly Bears"] }, {} ] }
+ },
+ { "name": "needs a creature card in your graveyard",
+   "players": [ { "battlefield": ["Altar of Bhaal // Bone Offering", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "activate": "Altar of Bhaal // Bone Offering", "illegal": true } ]
+ },
+ { "name": "needs a creature you control to exile",
+   "players": [ { "battlefield": ["Altar of Bhaal // Bone Offering", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] }, {} ],
+   "steps": [ { "activate": "Altar of Bhaal // Bone Offering", "illegal": true } ]
+ },
+ { "name": "Bone Offering creates a tapped 4/1 menace Skeleton and the card is exiled for the artifact",
+   "players": [ { "hand": ["Altar of Bhaal // Bone Offering"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Altar of Bhaal // Bone Offering", "face": true }, { "resolve": true } ],
+   "expect": { "tapped": { "Skeleton 4-1 Black Menace": true }, "players": [ { "battlefield_has": ["Skeleton 4-1 Black Menace"], "exile": ["Altar of Bhaal // Bone Offering"] }, {} ] }
+ },
+ { "name": "ruling: the Adventure is exiled on resolution, and the Altar is then castable from exile as a permanent",
+   "players": [ { "hand": ["Altar of Bhaal // Bone Offering"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Altar of Bhaal // Bone Offering", "face": true }, { "resolve": true }, { "cast": "Altar of Bhaal // Bone Offering" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Skeleton 4-1 Black Menace", "Altar of Bhaal // Bone Offering"], "exile": [] }, {} ] }
+ },
+ { "name": "ruling: an exiled Adventure permanent can only be cast at sorcery speed (not during combat)",
+   "players": [ { "hand": ["Altar of Bhaal // Bone Offering"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Altar of Bhaal // Bone Offering", "face": true }, { "resolve": true }, { "advance_to": "BeginCombat" }, { "cast": "Altar of Bhaal // Bone Offering", "illegal": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Skeleton 4-1 Black Menace"], "exile": ["Altar of Bhaal // Bone Offering"], "battlefield_lacks": ["Altar of Bhaal // Bone Offering"] }, {} ] }
+ },
+ { "name": "ruling: an Adventure countered on the stack is not exiled, so its permanent half cannot be cast later",
+   "players": [ { "hand": ["Altar of Bhaal // Bone Offering"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+                { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+   "steps": [ { "cast": "Altar of Bhaal // Bone Offering", "face": true }, { "pass": true }, { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Bone Offering" }] }, { "pass": true, "player": 1 }, { "resolve": true }, { "cast": "Altar of Bhaal // Bone Offering", "illegal": true } ],
+   "expect": { "players": [ { "graveyard": ["Altar of Bhaal // Bone Offering"], "exile": [] }, { "graveyard": ["Counterspell"] } ] }
+ }
+]

@@ -1,0 +1,123 @@
+[
+ {
+  "name": "ETB detains both chosen creatures: the Hill Giant is unblocked",
+  "players": [
+   {
+    "hand": ["Azorius Justiciar"],
+    "battlefield": ["Plains", "Plains", "Island", "Island", "Hill Giant"]
+   },
+   {
+    "battlefield": ["Grizzly Bears", "Savannah Lions"]
+   }
+  ],
+  "steps": [
+   { "cast": "Azorius Justiciar" },
+   { "resolve": true, "targets": ["Grizzly Bears", "Savannah Lions"] },
+   {
+    "attack": [{ "card": "Hill Giant", "at": "p1" }]
+   },
+   {
+    "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }],
+    "illegal": true
+   },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "only one creature chosen: the other opposing creature can still block",
+  "players": [
+   {
+    "hand": ["Azorius Justiciar"],
+    "battlefield": ["Plains", "Plains", "Island", "Island", "Hill Giant"]
+   },
+   {
+    "battlefield": ["Grizzly Bears", "Savannah Lions"]
+   }
+  ],
+  "steps": [
+   { "cast": "Azorius Justiciar" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   {
+    "attack": [{ "card": "Hill Giant", "at": "p1" }]
+   },
+   {
+    "block": [{ "blocker": "Savannah Lions", "attacker": "Hill Giant" }]
+   },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 20, "battlefield_lacks": ["Savannah Lions"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a detained creature's activated ability cannot be activated (opponent cannot discard to switch P/T)",
+  "players": [
+   { "hand": ["Azorius Justiciar"], "battlefield": ["Plains", "Plains", "Island", "Island"] },
+   { "hand": ["Mountain"], "battlefield": ["Aeromoeba"] }
+  ],
+  "steps": [
+   { "cast": "Azorius Justiciar" },
+   { "resolve": true, "targets": ["Aeromoeba"] },
+   { "pass": true },
+   { "activate": "Aeromoeba", "ability": 0, "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "hand_count": 1, "battlefield_has": ["Aeromoeba"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a detained permanent's static ability still applies (Steelform Sliver still pumps the Basal Sliver)",
+  "players": [
+   { "hand": ["Azorius Justiciar"], "battlefield": ["Plains", "Plains", "Island", "Island"] },
+   { "battlefield": ["Steelform Sliver", "Basal Sliver"] }
+  ],
+  "steps": [
+   { "cast": "Azorius Justiciar" },
+   { "resolve": true, "targets": ["Steelform Sliver"] }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "pt": { "Steelform Sliver": [2, 3], "Basal Sliver": [2, 3] }
+  }
+ },
+ {
+  "name": "ruling: an activated ability already on the stack is unaffected by the detain (Aeromoeba still switches)",
+  "players": [
+   { "hand": ["Azorius Justiciar"], "battlefield": ["Plains", "Plains", "Island", "Island"] },
+   { "hand": ["Mountain"], "battlefield": ["Aeromoeba"] }
+  ],
+  "steps": [
+   { "cast": "Azorius Justiciar" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true, "targets": ["Aeromoeba"] },
+   { "activate": "Aeromoeba", "ability": 0, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "hand_count": 0, "battlefield_has": ["Aeromoeba"] }
+   ],
+   "pt": { "Aeromoeba": [4, 2] }
+  }
+ }
+]

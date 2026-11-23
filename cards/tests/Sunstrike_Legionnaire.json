@@ -1,0 +1,27 @@
+[
+  { "name": "taps target creature with mana value 3 or less",
+    "players": [ { "battlefield": [ { "name": "Sunstrike Legionnaire", "sick": false } ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Sunstrike Legionnaire", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "tapped": { "Grizzly Bears": true } } },
+  { "name": "targets the mana value 3 creature; the mana value 4 creature is untouched",
+    "players": [ { "battlefield": [ { "name": "Sunstrike Legionnaire", "sick": false } ] }, { "battlefield": ["Aether Adept", "Hill Giant"] } ],
+    "steps": [ { "activate": "Sunstrike Legionnaire", "ability": 0, "targets": ["Aether Adept"] }, { "resolve": true } ],
+    "expect": { "tapped": { "Aether Adept": true, "Hill Giant": false } } },
+  { "name": "a tapped Legionnaire cannot activate",
+    "players": [ { "battlefield": [ { "name": "Sunstrike Legionnaire", "tapped": true } ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Sunstrike Legionnaire", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ {}, {} ] } },
+  { "name": "another creature entering untaps the tapped Legionnaire",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": [ { "name": "Sunstrike Legionnaire", "tapped": true }, "Forest", "Forest" ] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Sunstrike Legionnaire", "Grizzly Bears"] }, {} ], "tapped": { "Sunstrike Legionnaire": false } } },
+  { "name": "a noncreature spell entering does not untap the Legionnaire",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Sunstrike Legionnaire", "tapped": true }, "Mountain" ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "graveyard": ["Grizzly Bears"] } ], "tapped": { "Sunstrike Legionnaire": true } } }
+  ,
+  { "name": "a tapped Legionnaire stays tapped through its controller's untap step",
+    "players": [ { "battlefield": [ { "name": "Sunstrike Legionnaire", "tapped": true } ] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" } ],
+    "expect": { "tapped": { "Sunstrike Legionnaire": true } } }
+]

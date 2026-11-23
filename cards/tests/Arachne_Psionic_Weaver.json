@@ -1,0 +1,39 @@
+[
+  { "name": "as it enters, the chosen card type (Instant) makes instants cost {1} more",
+    "players": [ { "hand": ["Arachne, Psionic Weaver", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Mountain"] }, { "hand": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Arachne, Psionic Weaver" },
+      { "resolve": true, "answers": ["Instant"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1 }, { "life": 20 } ] } },
+  { "name": "spells of the chosen type cost {1} more: Lightning Bolt is castable with two lands left",
+    "players": [ { "hand": ["Arachne, Psionic Weaver", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain"] }, { "hand": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Arachne, Psionic Weaver" },
+      { "resolve": true, "answers": ["Instant"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Arachne, Psionic Weaver"] }, { "life": 17 } ] } },
+  { "name": "a creature spell (not the chosen type) is not taxed",
+    "players": [ { "hand": ["Arachne, Psionic Weaver", "Grizzly Bears"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest"] }, { "hand": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Arachne, Psionic Weaver" },
+      { "resolve": true, "answers": ["Instant"] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Arachne, Psionic Weaver", "Grizzly Bears"] }, {} ] } },
+  { "name": "web-slinging {W}: return a tapped creature you control to hand to cast it",
+    "players": [ { "hand": ["Arachne, Psionic Weaver"], "battlefield": ["Plains", { "name": "Grizzly Bears", "tapped": true }] }, {} ],
+    "steps": [
+      { "cast": "Arachne, Psionic Weaver", "alt": 0 },
+      { "resolve": true, "answers": ["Instant"] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Arachne, Psionic Weaver"], "hand_count": 1 }, {} ] } },
+  { "name": "ruling: web-slinging is a main-phase cast, so during combat it is illegal and the tapped creature stays on the battlefield",
+    "players": [ { "hand": ["Arachne, Psionic Weaver"], "battlefield": ["Plains", { "name": "Grizzly Bears", "tapped": true }] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "cast": "Arachne, Psionic Weaver", "alt": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Arachne, Psionic Weaver"] }, {} ] } }
+]

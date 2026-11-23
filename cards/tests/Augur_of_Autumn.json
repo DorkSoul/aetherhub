@@ -1,0 +1,138 @@
+[
+  {
+    "name": "may play a land from the top of your library",
+    "players": [
+      {
+        "battlefield": [
+          "Augur of Autumn"
+        ],
+        "library": [
+          "Forest",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest",
+            "Augur of Autumn"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "coven: may cast a creature from the top of your library with three different powers",
+    "players": [
+      {
+        "battlefield": [
+          "Augur of Autumn",
+          "Hill Giant",
+          "Llanowar Elves",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no creature cast from the top of the library with fewer than three different powers",
+    "players": [
+      {
+        "battlefield": [
+          "Augur of Autumn",
+          "Grizzly Bears",
+          "Forest"
+        ],
+        "library": [
+          "Llanowar Elves"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Llanowar Elves",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Augur of Autumn",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: coven lets a flash creature from the top be cast on the opponent's turn",
+    "players": [ { "battlefield": ["Augur of Autumn", "Hill Giant", "Elvish Visionary", "Island"], "library": ["Spectral Sailor"] }, {} ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "End" }, { "pass": true, "player": 1 }, { "cast": "Spectral Sailor" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Spectral Sailor"] }, {} ] }
+  },
+  {
+    "name": "ruling: without flash a coven creature from the top cannot be cast on the opponent's turn",
+    "players": [ { "battlefield": ["Augur of Autumn", "Hill Giant", "Elvish Visionary", "Forest", "Forest"], "library": ["Grizzly Bears"] }, {} ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "End" }, { "pass": true, "player": 1 }, { "cast": "Grizzly Bears", "illegal": true } ],
+    "expect": { "players": [ { "library_top": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: powers 2, 1 and 2 are not three different powers, so the coven creature stays on top",
+    "players": [ { "battlefield": ["Augur of Autumn", "Elvish Visionary", "Grizzly Bears", "Island"], "library": ["Spectral Sailor"] }, {} ],
+    "steps": [ { "cast": "Spectral Sailor", "illegal": true } ],
+    "expect": { "players": [ { "library_top": ["Spectral Sailor"] }, {} ] }
+  },
+  {
+    "name": "ruling: playing a land from the top uses your land drop",
+    "players": [ { "hand": ["Plains"], "battlefield": ["Augur of Autumn"], "library": ["Forest"] }, {} ],
+    "steps": [ { "play_land": "Forest" }, { "play_land": "Plains", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"], "hand": ["Plains"] }, {} ] }
+  },
+  {
+    "name": "ruling: a land from the top cannot be played outside your main phase",
+    "players": [ { "battlefield": ["Augur of Autumn"], "library": ["Forest"] }, {} ],
+    "steps": [ { "advance_to": "End" }, { "play_land": "Forest", "illegal": true } ],
+    "expect": { "players": [ { "library_top": ["Forest"] }, {} ] }
+  },
+  {
+    "name": "ruling: a coven creature cast from the top still pays its additional kicker cost",
+    "players": [ { "battlefield": ["Augur of Autumn", "Hill Giant", "Elvish Visionary", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Academy Drake"] }, {} ],
+    "steps": [ { "cast": "Academy Drake", "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Academy Drake"] }, {} ], "pt": { "Academy Drake": [4, 4] }, "counters": { "Academy Drake": { "p1p1": 2 } } }
+  }
+]

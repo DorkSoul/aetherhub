@@ -1,0 +1,88 @@
+[
+ {"name": "ETB moves any number of +1/+1 counters from other permanents onto it",
+  "players": [
+   {"hand": ["Aetherborn Marauder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", {"name": "Grizzly Bears", "counters": {"p1p1": 2}}, {"name": "Hill Giant", "counters": {"p1p1": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Aetherborn Marauder"},
+   {"resolve": true, "answers": [["Grizzly Bears", "Hill Giant"]]}
+  ],
+  "expect": {
+   "pt": {"Aetherborn Marauder": [5, 5], "Grizzly Bears": [2, 2], "Hill Giant": [3, 3]},
+   "counters": {"Aetherborn Marauder": {"p1p1": 3}, "Grizzly Bears": {"p1p1": 0}, "Hill Giant": {"p1p1": 0}}
+  }
+ },
+ {"name": "choosing no permanents moves nothing",
+  "players": [
+   {"hand": ["Aetherborn Marauder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", {"name": "Grizzly Bears", "counters": {"p1p1": 2}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Aetherborn Marauder"},
+   {"resolve": true, "answers": [[]]}
+  ],
+  "expect": {
+   "pt": {"Aetherborn Marauder": [2, 2], "Grizzly Bears": [4, 4]},
+   "counters": {"Grizzly Bears": {"p1p1": 2}}
+  }
+ },
+ {"name": "opponent's counters are not moved",
+  "players": [
+   {"hand": ["Aetherborn Marauder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]},
+   {"battlefield": [{"name": "Grizzly Bears", "counters": {"p1p1": 2}}]}
+  ],
+  "steps": [
+   {"cast": "Aetherborn Marauder"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "pt": {"Aetherborn Marauder": [2, 2], "Grizzly Bears": [4, 4]},
+   "counters": {"Grizzly Bears": {"p1p1": 2}}
+  }
+ },
+ {"name": "counters moved off a damaged creature: the lethal damage now destroys it",
+  "players": [
+   {"hand": ["Aetherborn Marauder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", {"name": "Grizzly Bears", "counters": {"p1p1": 2}}, {"name": "Hill Giant", "counters": {"p1p1": 1}}]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Aetherborn Marauder"},
+   {"resolve": true, "answers": [["Grizzly Bears"]]}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Aetherborn Marauder", "Hill Giant"], "graveyard": ["Grizzly Bears"]},
+    {"graveyard": ["Lightning Bolt"]}
+   ],
+   "counters": {"Hill Giant": {"p1p1": 1}}
+  }
+ },
+ {"name": "ruling: counters are chosen as the ability resolves (a creature that loses its counters in response is not offered)",
+  "players": [
+   {"hand": ["Aetherborn Marauder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", {"name": "Grizzly Bears", "counters": {"p1p1": 2}}, {"name": "Llanowar Elves", "counters": {"p1p1": 1}}]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Aetherborn Marauder"},
+   {"pass": true},
+   {"pass": true, "player": 1},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["Llanowar Elves"]},
+   {"pass": true, "player": 1},
+   {"pass": true},
+   {"resolve": true, "answers": [["Grizzly Bears"]]}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Aetherborn Marauder", "Grizzly Bears"], "graveyard": ["Llanowar Elves"]},
+    {"graveyard": ["Lightning Bolt"]}
+   ],
+   "pt": {"Aetherborn Marauder": [4, 4], "Grizzly Bears": [2, 2]},
+   "counters": {"Aetherborn Marauder": {"p1p1": 2}, "Grizzly Bears": {"p1p1": 0}}
+  }
+ }
+]

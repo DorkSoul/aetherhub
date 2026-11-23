@@ -1,0 +1,64 @@
+[
+  {
+    "name": "cast from hand draws one card",
+    "players": [
+      { "hand": ["Plunder the Trollshaws"], "battlefield": ["Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plunder the Trollshaws" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Plunder the Trollshaws"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "flashback from graveyard draws two cards and is exiled",
+    "players": [
+      { "graveyard": ["Plunder the Trollshaws"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Plunder the Trollshaws", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Plunder the Trollshaws"], "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: flashback spell countered on the stack is still exiled",
+    "players": [
+      { "graveyard": ["Plunder the Trollshaws"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Plunder the Trollshaws", "alt": 0 },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Plunder the Trollshaws" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Plunder the Trollshaws"], "hand_count": 0 }, { "graveyard": ["Counterspell"] } ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: flashback is an instant-speed permission, castable on the opponent's turn",
+    "players": [
+      { "graveyard": ["Plunder the Trollshaws"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Plunder the Trollshaws", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Plunder the Trollshaws"], "hand_count": 2 }, {} ],
+      "turn": 2
+    }
+  }
+]

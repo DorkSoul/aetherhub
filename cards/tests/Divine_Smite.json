@@ -1,0 +1,91 @@
+[
+  {"name": "ruling: an Aura on the phased-out creature phases out with it instead of going to the graveyard",
+  "players": [
+   {"hand": ["Shiv's Embrace", "Divine Smite"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Plains", "Plains"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Shiv's Embrace", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Divine Smite", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Divine Smite"], "battlefield_lacks": ["Shiv's Embrace"]},
+    {"battlefield_lacks": ["Grizzly Bears"], "graveyard": []}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a phased-out creature can't be the target of a spell",
+  "players": [
+   {"hand": ["Divine Smite", "Lightning Bolt"], "battlefield": ["Plains", "Mountain", "Mountain"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Divine Smite", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Lightning Bolt"]},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an attacking creature that phases out is removed from combat and deals no damage",
+  "players": [
+   {"hand": ["Divine Smite"], "battlefield": ["Plains", "Plains"]},
+   {"battlefield": [{"name": "Hill Giant", "sick": false}]}
+  ],
+  "steps": [
+   {"advance_to": "Main2"},
+   {"advance_to": "Main1"},
+   {"advance_to": "BeginCombat"},
+   {"attack": [{"card": "Hill Giant", "at": "p0"}], "player": 1},
+   {"pass": true, "player": 1},
+   {"cast": "Divine Smite", "targets": ["Hill Giant"]},
+   {"resolve": true},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [
+    {"life": 20},
+    {"battlefield_lacks": ["Hill Giant"]}
+   ]
+  }
+ },
+ {
+  "name": "nonblack opposing creature phases out: off the battlefield until its controller's untap step",
+   "players": [{"hand": ["Divine Smite"], "battlefield": ["Plains", "Plains"]}, {"battlefield": ["Grizzly Bears"]}],
+   "steps": [
+     {"cast": "Divine Smite", "targets": ["Grizzly Bears"]},
+     {"resolve": true}
+   ],
+   "expect": {"players": [{"graveyard": ["Divine Smite"]}, {"battlefield_lacks": ["Grizzly Bears"], "graveyard": []}]}},
+  {"name": "phased-out creature phases back in during its controller's untap step",
+   "players": [{"hand": ["Divine Smite"], "battlefield": ["Plains", "Plains"]}, {"battlefield": ["Grizzly Bears"]}],
+   "steps": [
+     {"cast": "Divine Smite", "targets": ["Grizzly Bears"]},
+     {"resolve": true},
+     {"advance_to": "Main2"},
+     {"advance_to": "Upkeep"}
+   ],
+   "expect": {"players": [{}, {"battlefield_has": ["Grizzly Bears"]}]}},
+  {"name": "black creature is exiled instead of phasing out",
+   "players": [{"hand": ["Divine Smite"], "battlefield": ["Plains", "Plains"]}, {"battlefield": ["Gravedigger"]}],
+   "steps": [
+     {"cast": "Divine Smite", "targets": ["Gravedigger"]},
+     {"resolve": true}
+   ],
+   "expect": {"players": [{}, {"battlefield_lacks": ["Gravedigger"], "graveyard": [], "exile": ["Gravedigger"]}]}},
+  {"name": "cannot target your own creature",
+   "players": [{"hand": ["Divine Smite"], "battlefield": ["Plains", "Plains", "Grizzly Bears"]}, {}],
+   "steps": [
+     {"cast": "Divine Smite", "targets": ["Grizzly Bears"], "illegal": true}
+   ],
+   "expect": {"players": [{"battlefield": ["Plains", "Plains", "Grizzly Bears"], "hand": ["Divine Smite"]}, {}]}}
+]

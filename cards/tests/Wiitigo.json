@@ -1,0 +1,72 @@
+[
+  {
+    "name": "blocked during the opponent's turn: gets a +1/+1 counter at its controller's upkeep",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Wiitigo"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Wiitigo", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "pt": { "Wiitigo": [7, 7] }
+    }
+  },
+  {
+    "name": "neither blocked nor blocking since the last upkeep: loses a +1/+1 counter",
+    "players": [
+      {},
+      { "battlefield": ["Wiitigo"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "pt": { "Wiitigo": [5, 5] }
+    }
+  },
+  {
+    "name": "blocked by a creature since the last upkeep: gets a +1/+1 counter at its controller's upkeep",
+    "players": [ { "battlefield": ["Wiitigo"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [{ "card": "Wiitigo", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Wiitigo" }] },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "pt": { "Wiitigo": [7, 7] } }
+  },
+  {
+    "name": "attacked but never blocked: loses a +1/+1 counter at its controller's upkeep",
+    "players": [ { "battlefield": ["Wiitigo"] }, {} ],
+    "steps": [
+      { "attack": [{ "card": "Wiitigo", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ {}, { "life": 14 } ], "pt": { "Wiitigo": [5, 5] } }
+  },
+  {
+    "name": "ruling: a +1/+1 counter from another source is removed by the upkeep ability",
+    "players": [
+      { "battlefield": [{ "name": "Wiitigo", "counters": { "p1p1": 1 } }, "Forest"], "hand": ["Test Sprinkler"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Test Sprinkler", "targets": ["Wiitigo"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Wiitigo"] }, {} ],
+      "counters": { "Wiitigo": { "p1p1": 1 } },
+      "pt": { "Wiitigo": [1, 1] }
+    }
+  }
+]

@@ -1,0 +1,81 @@
+[
+  {
+    "name": "upkeep puts a +1/+1 counter on it",
+    "players": [
+      { "battlefield": ["Myr Prototype"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Myr Prototype": [3, 3] },
+      "counters": { "Myr Prototype": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "attacking costs {1} for each +1/+1 counter",
+    "players": [
+      { "battlefield": [{ "name": "Myr Prototype", "counters": { "p1p1": 2 } }, "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Myr Prototype", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 16 }],
+      "tapped": { "Mountain": true }
+    }
+  },
+  {
+    "name": "cannot attack without enough mana for the counters",
+    "players": [
+      { "battlefield": [{ "name": "Myr Prototype", "counters": { "p1p1": 2 } }, "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Myr Prototype", "at": "p1" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }],
+      "tapped": { "Mountain": false }
+    }
+  },
+  {
+    "name": "cannot block without enough mana for the counters",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": [{ "name": "Myr Prototype", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Myr Prototype", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "blocking costs {1} for each +1/+1 counter",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": [{ "name": "Myr Prototype", "counters": { "p1p1": 1 } }, "Mountain"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Myr Prototype", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }],
+      "tapped": { "Mountain": true }
+    }
+  }
+]

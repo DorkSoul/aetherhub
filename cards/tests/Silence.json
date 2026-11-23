@@ -1,0 +1,79 @@
+[
+  {
+    "name": "opponents can't cast spells this turn",
+    "players": [
+      {
+        "hand": ["Silence"],
+        "battlefield": ["Plains"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Silence" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Silence"] }, { "hand": ["Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "Silence does not stop your own spells this turn",
+    "players": [
+      {
+        "hand": ["Silence", "Lightning Bolt"],
+        "battlefield": ["Plains", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Silence" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Silence", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: opponents can still activate abilities (Witching Well draws them two)",
+    "players": [
+      { "hand": ["Silence"], "battlefield": ["Plains"] },
+      { "battlefield": ["Witching Well", "Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Silence" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "activate": "Witching Well", "ability": 0 },
+      { "player": 1, "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Silence"] }, { "graveyard": ["Witching Well"], "hand_count": 2 } ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast in response to Silence (before it resolves) is not stopped",
+    "players": [
+      { "hand": ["Silence"], "battlefield": ["Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Silence" },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 17, "graveyard": ["Silence"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  }
+]

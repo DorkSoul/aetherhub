@@ -1,0 +1,95 @@
+[
+  {
+    "name": "casting an instant creates a Sorcerer Role on another creature you control",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Splashy Spellcaster", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Splashy Spellcaster", "Sorcerer Role", "Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] },
+        { "life": 17 }
+      ],
+      "attached": { "Sorcerer Role": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "casting a creature spell does not trigger it",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Splashy Spellcaster"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Splashy Spellcaster", "Grizzly Bears"], "battlefield_lacks": ["Sorcerer Role"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "up to one target: with no other creature no Role is made",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Splashy Spellcaster"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Sorcerer Role"], "graveyard_has": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second Role on the same creature replaces the first (Bears 3/3, not 4/4)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Splashy Spellcaster", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 11 }
+      ]
+    }
+  },
+  {
+    "name": "control: one Role on Grizzly Bears makes it 3/3 (3 damage)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Splashy Spellcaster", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 14 }
+      ],
+      "attached": { "Sorcerer Role": "Grizzly Bears" }
+    }
+  }
+]

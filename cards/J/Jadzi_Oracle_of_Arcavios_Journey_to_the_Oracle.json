@@ -1,0 +1,71 @@
+{
+  "name": "Jadzi, Oracle of Arcavios",
+  "mana_cost": "{6}{U}{U}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Wizard"],
+  "power": 5,
+  "toughness": 5,
+  "layout": "Modal",
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Discard", "filter": {}, "n": 1, "random": false }],
+      "effects": [ { "type": "Move", "what": { "type": "This" }, "to": "Hand" } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "SpellCast",
+        "by": "You",
+        "filter": { "any_of": [ { "types": ["Instant"] }, { "types": ["Sorcery"] } ] },
+        "or_copy": true
+      },
+      "effects": [
+        { "type": "RevealTop", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "RememberedIs", "filter": { "types": ["Land"] } },
+          "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" } ],
+          "else": [ { "type": "CastFree", "what": { "type": "Remembered" }, "may": true, "pay": true, "extra_mana": "={1}", "face_choice": true } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Discard a card: Return Jadzi to its owner's hand.\nMagecraft — Whenever you cast or copy an instant or sorcery spell, reveal the top card of your library. If it's a nonland card, you may cast it by paying {1} rather than paying its mana cost. If it's a land card, put it onto the battlefield.\n//\nYou may put any number of land cards from your hand onto the battlefield. Then if you control eight or more lands, you may discard a card. If you do, return Journey to the Oracle to its owner's hand.",
+  "back": {
+    "name": "Journey to the Oracle",
+    "mana_cost": "{2}{G}{G}",
+    "types": ["Sorcery"],
+    "abilities": [
+      {
+        "type": "Spell",
+        "effects": [
+          {
+            "type": "Choose",
+            "who": { "type": "You" },
+            "zone": "Hand",
+            "filter": { "types": ["Land"] },
+            "min": 0,
+            "max": 255,
+            "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" } ]
+          },
+          {
+            "type": "If",
+            "cond": { "type": "Compare", "a": { "type": "Count", "filter": { "types": ["Land"], "controller": "You" } }, "cmp": { "op": "Ge", "n": 8 } },
+            "then": [
+              {
+                "type": "MayPay",
+                "payer": { "type": "You" },
+                "cost": [ { "type": "Discard", "filter": {}, "n": 1, "random": false } ],
+                "effects": [ { "type": "Move", "what": { "type": "This" }, "to": "Hand" } ]
+              }
+            ],
+            "else": []
+          }
+        ]
+      }
+    ],
+    "oracle_text": "You may put any number of land cards from your hand onto the battlefield. Then if you control eight or more lands, you may discard a card. If you do, return Journey to the Oracle to its owner's hand."
+  }
+}

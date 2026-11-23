@@ -1,0 +1,218 @@
+[
+  {
+    "name": "drawing two cards creates one Cat",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Jolrael, Mwonvuli Recluse",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Jolrael, Mwonvuli Recluse",
+            "Island",
+            "Island",
+            "Island",
+            "Cat 2-2"
+          ],
+          "hand_count": 2
+        },
+        {}
+      ],
+      "pt": {
+        "Cat 2-2": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "a single draw does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Wall of Omens"
+        ],
+        "battlefield": [
+          "Jolrael, Mwonvuli Recluse",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Wall of Omens"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Wall of Omens"
+          ],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "only the second draw of the turn counts",
+    "players": [
+      {
+        "hand": [
+          "Divination",
+          "Wall of Omens"
+        ],
+        "battlefield": [
+          "Jolrael, Mwonvuli Recluse",
+          "Island",
+          "Island",
+          "Island",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Wall of Omens"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Cat 2-2",
+            "Wall of Omens"
+          ],
+          "hand_count": 3
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "base P/T becomes X/X for the hand size",
+    "players": [
+      {
+        "hand": [
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "battlefield": [
+          "Jolrael, Mwonvuli Recluse",
+          "Hill Giant",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Jolrael, Mwonvuli Recluse"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Jolrael, Mwonvuli Recluse": [
+          3,
+          3
+        ],
+        "Hill Giant": [
+          3,
+          3
+        ],
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a +1/+1 counter already on a creature still adds on top of the X/X base",
+    "players": [
+      { "hand": ["Island", "Island"], "battlefield": ["Jolrael, Mwonvuli Recluse", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [ { "activate": "Jolrael, Mwonvuli Recluse" }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [3, 3] } }
+  },
+  {
+    "name": "ruling: X is fixed when the ability resolves, so a later land drop leaves the creatures X/X",
+    "players": [
+      { "hand": ["Island", "Island", "Island"], "battlefield": ["Jolrael, Mwonvuli Recluse", "Grizzly Bears", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "activate": "Jolrael, Mwonvuli Recluse" }, { "resolve": true }, { "play_land": "Island" } ],
+    "expect": {
+      "players": [ { "hand_count": 2 }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: Jolrael cast after the second draw of the turn does not trigger",
+    "players": [
+      { "hand": ["Divination", "Jolrael, Mwonvuli Recluse"], "battlefield": ["Island", "Island", "Island", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" }, { "resolve": true },
+      { "cast": "Jolrael, Mwonvuli Recluse" }, { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Jolrael, Mwonvuli Recluse"], "battlefield_lacks": ["Cat 2-2"], "hand_count": 2 },
+        {}
+      ]
+    }
+  }
+]

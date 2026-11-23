@@ -1,0 +1,47 @@
+[
+  { "name": "puts a creature from the top seven onto the battlefield and it deals damage",
+    "players": [
+      { "hand": ["Vivien's Invocation"], "battlefield": ["Forest", "Forest", "Swamp", "Swamp", "Island", "Mountain", "Plains"], "library": ["Island", "Serra Angel", "Swamp", "Forest", "Mountain", "Plains", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Vivien's Invocation" },
+      { "resolve": true, "answers": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Serra Angel"], "graveyard": ["Vivien's Invocation"] }, { "graveyard": ["Grizzly Bears"] } ] } },
+  { "name": "no creature among the seven means no damage",
+    "players": [
+      { "hand": ["Vivien's Invocation"], "battlefield": ["Forest", "Forest", "Swamp", "Swamp", "Island", "Mountain", "Plains"], "library": ["Island", "Swamp", "Forest", "Mountain", "Plains", "Island", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Vivien's Invocation" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Vivien's Invocation"] }, { "battlefield_has": ["Grizzly Bears"] } ] } },
+  { "name": "ruling: the damage target is chosen when the trigger goes on the stack, not when Invocation is cast",
+    "players": [
+      { "hand": ["Vivien's Invocation"], "battlefield": ["Forest", "Forest", "Swamp", "Swamp", "Island", "Mountain", "Plains"], "library": ["Island", "Serra Angel", "Swamp", "Forest", "Mountain", "Plains", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Vivien's Invocation" },
+      { "resolve": true, "answers": ["Serra Angel", "Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Serra Angel"], "graveyard": ["Vivien's Invocation"] }, { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Llanowar Elves"] } ] } },
+  { "name": "ruling: the creature put onto the battlefield dies in response, its last known power still deals the damage",
+    "players": [
+      { "hand": ["Vivien's Invocation", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Swamp", "Swamp", "Island", "Mountain", "Plains", "Mountain"], "library": ["Island", "Hill Giant", "Swamp", "Forest", "Mountain", "Plains", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Vivien's Invocation" },
+      { "resolve": true, "answers": ["Hill Giant"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Vivien's Invocation", "Lightning Bolt", "Hill Giant"] }, { "graveyard": ["Grizzly Bears"] } ] } }
+]

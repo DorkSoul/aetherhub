@@ -1,0 +1,123 @@
+[
+  {
+    "name": "enters and creates a Food token",
+    "players": [
+      { "hand": ["Night of the Sweets' Revenge"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Night of the Sweets' Revenge" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Night of the Sweets' Revenge", "Food"] }, {}]
+    }
+  },
+  {
+    "name": "sorcery-speed sacrifice: creatures get +X/+X where X is the number of Foods you control",
+    "players": [
+      {
+        "battlefield": [
+          "Night of the Sweets' Revenge", "Food", "Food", "Grizzly Bears",
+          "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Night of the Sweets' Revenge", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4] },
+      "players": [{ "graveyard_has": ["Night of the Sweets' Revenge"] }, {}]
+    }
+  },
+  {
+    "name": "Foods you control tap for G: the Food from the ETB pays for Llanowar Elves after four Forests paid for the enchantment",
+    "players": [
+      {
+        "hand": ["Night of the Sweets' Revenge", "Llanowar Elves"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Night of the Sweets' Revenge" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Food", "Llanowar Elves"], "hand": [] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a creature cast after the ability resolves is not pumped",
+    "players": [
+      {
+        "hand": ["Llanowar Elves"],
+        "battlefield": ["Night of the Sweets' Revenge", "Food", "Food", "Grizzly Bears", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Night of the Sweets' Revenge", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4], "Llanowar Elves": [1, 1] },
+      "players": [{ "battlefield_has": ["Llanowar Elves"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a Food artifact creature (Tough Cookie) counts as a Food for X",
+    "players": [
+      {
+        "battlefield": ["Night of the Sweets' Revenge", "Tough Cookie", "Grizzly Bears", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Night of the Sweets' Revenge", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [{ "graveyard_has": ["Night of the Sweets' Revenge"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: Tough Cookie can be sacrificed to pay Maraleaf Rider's sacrifice-a-Food cost",
+    "players": [
+      { "battlefield": ["Maraleaf Rider", "Tough Cookie"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Maraleaf Rider", "ability": 0, "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Tough Cookie"], "battlefield_has": ["Maraleaf Rider"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a Food sacrificed for its own ability cannot also pay for Maraleaf Rider",
+    "players": [
+      { "battlefield": ["Maraleaf Rider", "Food", "Forest", "Forest", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Food", "ability": 0 },
+      { "activate": "Maraleaf Rider", "ability": 0, "targets": ["p1:Grizzly Bears"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 23, "battlefield_has": ["Maraleaf Rider"], "battlefield_lacks": ["Food"] }, {}]
+    }
+  }
+]

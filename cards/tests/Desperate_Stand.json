@@ -1,0 +1,104 @@
+[
+  {
+    "name": "two targets cost {R}{W} + {R}{W}: both get +2/+0, first strike and vigilance",
+    "players": [
+      { "hand": ["Desperate Stand"], "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Desperate Stand", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 2], "Hill Giant": [5, 3] },
+      "keywords": { "Grizzly Bears": ["FirstStrike", "Vigilance"], "Hill Giant": ["FirstStrike", "Vigilance"] }
+    }
+  },
+  {
+    "name": "one target costs only {R}{W}: the other creature is unchanged",
+    "players": [
+      { "hand": ["Desperate Stand"], "battlefield": ["Mountain", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Desperate Stand", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 2], "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "three targets cost RW three times: all six lands are spent, so a Lightning Bolt in hand can't be cast",
+    "players": [
+      { "hand": ["Desperate Stand", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant", "Air Elemental"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Desperate Stand", "targets": ["Grizzly Bears", "Hill Giant", "Air Elemental"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "illegal": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 2], "Hill Giant": [5, 3], "Air Elemental": [6, 4] }
+    }
+  },
+  {
+    "name": "ruling: cast with no targets is legal and does nothing",
+    "players": [
+      { "hand": ["Desperate Stand"], "battlefield": ["Mountain", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Desperate Stand" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2], "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: an illegal target is skipped, the legal target still gets the effect",
+    "players": [
+      { "hand": ["Desperate Stand"], "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Desperate Stand", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Desperate Stand", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "pt": { "Hill Giant": [5, 3] },
+      "keywords": { "Hill Giant": ["FirstStrike", "Vigilance"] }
+    }
+  },
+  {
+    "name": "ruling: if all targets are illegal the spell does not resolve",
+    "players": [
+      { "hand": ["Desperate Stand"], "battlefield": ["Mountain", "Plains", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Desperate Stand", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Desperate Stand", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

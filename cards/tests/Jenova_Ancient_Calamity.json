@@ -1,0 +1,172 @@
+[
+  {
+    "name": "beginning of combat: counters equal to its power on another target creature, which becomes a Mutant",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": ["Jenova, Ancient Calamity", "Forest", "Swamp", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "targets": ["Grizzly Bears"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Jenova, Ancient Calamity", "Grizzly Bears"]
+        },
+        {}
+      ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "a Mutant you control dies on your turn: draw cards equal to its power (3 with the counter)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Jenova, Ancient Calamity", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat",
+        "targets": ["Grizzly Bears"]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Grizzly Bears"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 3,
+          "graveyard_has": ["Lightning Bolt", "Grizzly Bears"],
+          "battlefield_has": ["Jenova, Ancient Calamity"]
+        },
+        {}
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "up to one: with no target chosen no creature becomes a Mutant or gets counters",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Jenova, Ancient Calamity", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": ["Grizzly Bears"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "battlefield_has": ["Jenova, Ancient Calamity"]
+        },
+        {
+          "graveyard_has": ["Grizzly Bears"]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: counters use Jenova's power as it last existed when Jenova leaves before its trigger resolves",
+    "players": [
+      { "battlefield": ["Jenova, Ancient Calamity", "Forest", "Swamp", "Mountain", "Grizzly Bears"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Murder", "targets": ["Jenova, Ancient Calamity"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Jenova, Ancient Calamity"] },
+        { "graveyard_has": ["Murder"] }
+      ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: a Mutant that dies on your turn draws cards equal to its power as it last existed, counters included",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Jenova, Ancient Calamity", "Swamp", "Swamp", "Forest", { "name": "Grizzly Bears", "counters": { "p1p1": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 5, "graveyard_has": ["Grizzly Bears", "Murder"] },
+        {}
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: Jenova dying with two Mutants triggers its draw ability once per Mutant (sweeper)",
+    "players": [
+      { "hand": ["Wrath of God"], "battlefield": ["Jenova, Ancient Calamity", "Plains", "Plains", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "advance_to": "BeginCombat", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Wrath of God" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 8, "graveyard_has": ["Jenova, Ancient Calamity", "Grizzly Bears", "Hill Giant"] },
+        {}
+      ],
+      "stack_empty": true
+    }
+  }
+]

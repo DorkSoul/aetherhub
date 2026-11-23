@@ -1,0 +1,70 @@
+[
+  {
+    "name": "equipped creature attacking a player deals damage equal to its power",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Mage Slayer", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mage Slayer", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 14 }]
+    }
+  },
+  {
+    "name": "equipped creature attacking a planeswalker deals damage to that planeswalker",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Mage Slayer", "Hill Giant"] },
+      { "battlefield": ["Test Walker", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Mage Slayer", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Hill Giant", "at": "Test Walker" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }],
+      "counters": { "Test Walker": { "Loyalty": 1 } }
+    }
+  },
+  {
+    "name": "an unequipped attacker does not trigger the ability",
+    "players": [
+      { "battlefield": ["Mage Slayer", "Elite Vanguard"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Elite Vanguard", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "ruling: the attack trigger deals damage in declare attackers, combat damage still happens later",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Mage Slayer", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Mage Slayer", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Hill Giant"] }, { "life": 17, "graveyard_has": ["Grizzly Bears"] }]
+    }
+  }
+]

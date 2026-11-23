@@ -1,0 +1,57 @@
+{
+  "name": "Hangar Scrounger",
+  "mana_cost": "{2}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Dwarf", "Pilot"],
+  "power": 2,
+  "toughness": 1,
+  "keywords": ["Backup"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "If",
+          "cond": { "type": "TargetIs", "filter": { "other": true }, "idx": 0 },
+          "then": [
+            {
+              "type": "AddTrigger",
+              "trigger": { "type": "BecomesTapped", "filter": {} },
+              "bind": { "type": "Target", "idx": 0 },
+              "until": "EndOfTurn",
+              "effects": [
+                {
+                  "type": "May",
+                  "effects": [
+                    { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+                    { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+                  ]
+                }
+              ]
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BecomesTapped", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "May",
+          "effects": [
+            { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+            { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nWhenever this creature becomes tapped, you may discard a card. If you do, draw a card."
+}

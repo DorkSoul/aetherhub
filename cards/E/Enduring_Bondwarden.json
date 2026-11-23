@@ -1,0 +1,57 @@
+{
+  "name": "Enduring Bondwarden",
+  "mana_cost": "{W}",
+  "types": ["Creature"],
+  "subtypes": ["Human", "Scout"],
+  "power": 0,
+  "toughness": 1,
+  "keywords": ["Backup"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "If",
+          "cond": { "type": "TargetIs", "filter": { "other": true }, "idx": 0 },
+          "then": [
+            {
+              "type": "GrantStatic",
+              "what": { "type": "Target", "idx": 0 },
+              "effect": {
+                "type": "GrantAbility",
+                "affects": { "this": true },
+                "ability": {
+                  "type": "Triggered",
+                  "trigger": { "type": "Dies", "filter": { "this": true } },
+                  "targets": [
+                    { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "target creature you control" }
+                  ],
+                  "effects": [
+                    { "type": "MoveCounters", "from": { "type": "This" }, "to": { "type": "Target", "idx": 0 }, "kind": null, "n": null }
+                  ]
+                }
+              },
+              "duration": "UntilEndOfTurn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "target creature you control" }
+      ],
+      "effects": [
+        { "type": "MoveCounters", "from": { "type": "This" }, "to": { "type": "Target", "idx": 0 }, "kind": null, "n": null }
+      ]
+    }
+  ],
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nWhen this creature dies, put its counters on target creature you control."
+}

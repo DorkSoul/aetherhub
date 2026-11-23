@@ -1,0 +1,74 @@
+[
+  { "name": "job select: entering creates a 1/1 Hero and attaches the Cane to it, which is a 1/3 Wizard",
+    "players": [ { "hand": ["Blue Mage's Cane"], "battlefield": ["Island", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Blue Mage's Cane" }, { "resolve": true } ],
+    "expect": {
+      "attached": { "Blue Mage's Cane": "Hero" },
+      "pt": { "Hero": [1, 3] },
+      "players": [ { "battlefield_has": ["Hero", "Blue Mage's Cane"] }, {} ]
+    } },
+  { "name": "equipped creature attacks: exile a target instant from defending player's graveyard, decline to copy it",
+    "players": [
+      { "battlefield": ["Blue Mage's Cane", "Grizzly Bears", "Island", "Island", "Island", "Island", "Island"] },
+      { "graveyard": ["Lightning Bolt"], "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Blue Mage's Cane", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true, "answers": [["Lightning Bolt"], false] }
+    ],
+    "expect": {
+      "attached": { "Blue Mage's Cane": "Grizzly Bears" },
+      "players": [ {}, { "exile": ["Lightning Bolt"], "graveyard": [] } ]
+    } },
+  { "name": "equipped creature attacks: pay {3} to cast a copy of the exiled instant",
+    "players": [
+      { "battlefield": ["Blue Mage's Cane", "Grizzly Bears", "Island", "Island", "Island", "Island", "Island"] },
+      { "graveyard": ["Lightning Bolt"], "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Blue Mage's Cane", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true, "answers": [["Lightning Bolt"], true, [2]] }
+    ],
+    "expect": {
+      "players": [ {}, { "exile": ["Lightning Bolt"], "life": 17 } ]
+    } },
+  { "name": "equipped creature attacks with no instant or sorcery in the graveyard: nothing is exiled",
+    "players": [
+      { "battlefield": ["Blue Mage's Cane", "Grizzly Bears", "Island", "Island"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Blue Mage's Cane", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Grizzly Bears"], "exile": [] } ]
+    } },
+ {
+  "name": "job select: the equipped Hero is a Wizard in addition to its other types",
+  "players": [{"hand": ["Blue Mage's Cane"], "battlefield": ["Island", "Forest", "Forest"]}, {}],
+  "steps": [{"cast": "Blue Mage's Cane"}, {"resolve": true}],
+  "expect": {"attached": {"Blue Mage's Cane": "Hero"}, "subtypes": {"Hero": ["Wizard"]}, "players": [{"battlefield_has": ["Hero", "Blue Mage's Cane"]}, {}]}
+ },
+ { "name": "ruling: the Hero token dies to damage but the Cane stays on the battlefield unattached",
+   "players": [ { "hand": ["Blue Mage's Cane", "Lightning Bolt"], "battlefield": ["Island", "Forest", "Forest", "Mountain"] }, {} ],
+   "steps": [ { "cast": "Blue Mage's Cane" }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Hero"] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Blue Mage's Cane"], "battlefield_lacks": ["Hero"], "graveyard": ["Lightning Bolt"] }, {} ] }
+ },
+ { "name": "ruling: paying the equip cost moves the Cane off the Hero token to another creature; the Hero stays as a 1/1",
+   "players": [ { "hand": ["Blue Mage's Cane"], "battlefield": ["Island", "Forest", "Forest", "Island", "Island", "Grizzly Bears"] }, {} ],
+   "steps": [ { "cast": "Blue Mage's Cane" }, { "resolve": true }, { "activate": "Blue Mage's Cane", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+   "expect": { "attached": { "Blue Mage's Cane": "Grizzly Bears" }, "pt": { "Hero": [1, 1] }, "players": [ { "battlefield_has": ["Hero", "Blue Mage's Cane", "Grizzly Bears"] }, {} ] }
+ },
+ { "name": "ruling: with Doubling Season two Hero tokens are created, and the Cane attaches to only one of them",
+   "players": [ { "hand": ["Blue Mage's Cane"], "battlefield": ["Doubling Season", "Island", "Forest", "Forest"] }, {} ],
+   "steps": [ { "cast": "Blue Mage's Cane" }, { "resolve": true } ],
+   "expect": { "attached": { "Blue Mage's Cane": "Hero" }, "players": [ { "battlefield_has": ["Hero", "Hero", "Blue Mage's Cane"] }, {} ] }
+ }
+]

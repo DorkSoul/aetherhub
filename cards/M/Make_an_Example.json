@@ -1,0 +1,48 @@
+{
+  "name": "Make an Example",
+  "mana_cost": "{3}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Battlefield",
+              "filter": { "types": ["Creature"], "controller": "You" },
+              "min": 0,
+              "max": 99,
+              "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+            },
+            {
+              "type": "ChooseModes",
+              "choose_min": 1,
+              "choose_max": 1,
+              "modes": [
+                {
+                  "text": "Each opponent sacrifices the creatures in pile 1 (the creatures the opponent chose to put in it).",
+                  "effects": [
+                    { "type": "Sacrifice", "who": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 99 }, "filter": { "types": ["Creature"], "among_stored": 0 } }
+                  ]
+                },
+                {
+                  "text": "Each opponent sacrifices the creatures in pile 2 (the creatures the opponent did not put in pile 1).",
+                  "effects": [
+                    { "type": "Sacrifice", "who": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 99 }, "filter": { "types": ["Creature"], "not_among_stored": 0, "controlled_by": { "type": "EachObject" } } }
+                  ]
+                }
+              ]
+            },
+            { "type": "ClearRemembered" }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)"
+}

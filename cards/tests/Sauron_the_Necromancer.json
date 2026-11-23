@@ -1,0 +1,132 @@
+[
+  {
+    "name": "attack exiles a creature card from your graveyard and makes a tapped attacking Wraith copy",
+    "players": [
+      { "battlefield": ["Sauron, the Necromancer"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sauron, the Necromancer", "Grizzly Bears"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the Wraith copy is exiled at the next end step",
+    "players": [
+      { "battlefield": ["Sauron, the Necromancer"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sauron, the Necromancer"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no creature card in graveyard: attack creates nothing",
+    "players": [
+      { "battlefield": ["Sauron, the Necromancer"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sauron, the Necromancer"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Sauron leaving before the end step does not stop the Wraith copy being exiled",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Sauron, the Necromancer", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Sauron, the Necromancer"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Sauron, the Necromancer"], "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Wraith copy is a black 3/3 Wraith with menace, not a Bear",
+    "players": [
+      { "battlefield": ["Sauron, the Necromancer"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [3, 3] },
+      "colors": { "Grizzly Bears": ["B"] },
+      "subtypes": { "Grizzly Bears": ["Wraith"] },
+      "not_subtypes": { "Grizzly Bears": ["Bear"] },
+      "keywords": { "Grizzly Bears": ["Menace"] }
+    }
+  },
+  {
+    "name": "ruling: a copy of a creature with an enters ability triggers it when created (Mulldrifter draws two)",
+    "players": [
+      { "battlefield": ["Sauron, the Necromancer"], "graveyard": ["Mulldrifter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the copy of Walking Ballista enters with no counters (X is 0)",
+    "players": [
+      { "battlefield": ["Sauron, the Necromancer"], "graveyard": ["Walking Ballista"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sauron, the Necromancer", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Walking Ballista"] },
+        {}
+      ],
+      "counters": { "Walking Ballista": { "+1/+1": 0 } },
+      "pt": { "Walking Ballista": [3, 3] }
+    }
+  }
+]

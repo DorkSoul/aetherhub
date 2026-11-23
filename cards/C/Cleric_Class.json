@@ -1,0 +1,69 @@
+{
+  "name": "Cleric Class",
+  "mana_cost": "{W}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Replace",
+      "what": { "type": "GainLife", "who": "You", "add": 1 }
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{3}{W}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "GainsLife", "who": "You" },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "target creature you control" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{4}{W}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "filter": { "this": true }, "kind": "Level" },
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 4 } }
+        ]
+      },
+      "targets": [
+        { "what": { "type": "CardIn", "zone": "Graveyard", "whose": "You", "filter": { "types": ["Creature"] } }, "label": "target creature card from your graveyard" }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Battlefield", "remember": true },
+        { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "ToughnessOf", "of": { "type": "Remembered" } } }
+      ]
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nIf you would gain life, you gain that much life plus 1 instead.\n{3}{W}: Level 2\nWhenever you gain life, put a +1/+1 counter on target creature you control.\n{4}{W}: Level 3\nWhen this Class becomes level 3, return target creature card from your graveyard to the battlefield. You gain life equal to that creature's toughness."
+}

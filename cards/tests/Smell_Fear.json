@@ -1,0 +1,195 @@
+[
+ {
+  "name": "proliferates, then your creature fights the targeted opposing creature",
+  "players": [
+   {
+    "hand": [
+     "Smell Fear"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Smell Fear",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Grizzly Bears",
+      "Smell Fear"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "graveyard": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "up to one: with only your creature targeted nothing fights",
+  "players": [
+   {
+    "hand": [
+     "Smell Fear"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Smell Fear",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Smell Fear"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: no creature of your own to target: Smell Fear can't be cast",
+  "players": [
+   { "hand": ["Smell Fear"], "battlefield": ["Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Smell Fear", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Smell Fear"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: one of two targets illegal on resolution: no fight, but still proliferates",
+  "players": [
+   { "hand": ["Smell Fear"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Smell Fear", "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Hill Giant"] },
+   { "resolve": true, "answers": [["Grizzly Bears"]] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2 } },
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: choosing no permanents to proliferate still lets the fight happen",
+  "players": [
+   { "hand": ["Smell Fear"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }] },
+   { "battlefield": ["Elite Vanguard"] }
+  ],
+  "steps": [
+   { "cast": "Smell Fear", "targets": ["Elite Vanguard"] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } },
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Elite Vanguard"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: proliferate adds one counter of each kind the chosen permanent has",
+  "players": [
+   { "hand": ["Smell Fear"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1, "Charge": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Smell Fear", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [["Grizzly Bears"]] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2, "Charge": 2 } }
+  }
+ },
+ {
+  "name": "ruling: proliferate can add a counter to an opponent's permanent",
+  "players": [
+   { "hand": ["Smell Fear"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] },
+   { "battlefield": [{ "name": "Hill Giant", "counters": { "PlusOnePlusOne": 1 } }] }
+  ],
+  "steps": [
+   { "cast": "Smell Fear", "targets": ["Hill Giant"] },
+   { "resolve": true, "answers": [["Hill Giant"]] }
+  ],
+  "expect": {
+   "counters": { "Hill Giant": { "PlusOnePlusOne": 2 } },
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: all targets illegal on resolution: Smell Fear does nothing, no proliferate",
+  "players": [
+   { "hand": ["Smell Fear"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", { "name": "Hill Giant", "counters": { "PlusOnePlusOne": 1 } }] }
+  ],
+  "steps": [
+   { "cast": "Smell Fear" },
+   { "pass": true },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Hill Giant": { "PlusOnePlusOne": 1 } },
+   "players": [
+    { "graveyard_has": ["Grizzly Bears", "Smell Fear"] },
+    { "graveyard_has": ["Doom Blade"] }
+   ]
+  }
+ }
+]

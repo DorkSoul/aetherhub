@@ -1,0 +1,206 @@
+[
+ {
+  "name": "cast normally it is a 2/1 that can't block",
+  "players": [
+   {
+    "hand": [
+     "Gnarled Scarhide"
+    ],
+    "battlefield": [
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Gnarled Scarhide"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Gnarled Scarhide": [
+     2,
+     1
+    ]
+   }
+  }
+ },
+ {
+  "name": "bestowed on the opponent's Hill Giant: it is 5/4 and can't block",
+  "players": [
+   {
+    "hand": [
+     "Gnarled Scarhide"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Gnarled Scarhide",
+    "alt": 0,
+    "targets": [
+     "p1:Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Grizzly Bears"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Hill Giant": [
+     5,
+     4
+    ]
+   },
+   "players": [
+    {},
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "bestow needs black mana (no black source: neither cast is legal)",
+  "players": [
+   {
+    "hand": [
+     "Gnarled Scarhide"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Gnarled Scarhide",
+    "alt": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "Gnarled Scarhide can't block: its block is dropped and the attacker connects",
+  "players": [
+   { "battlefield": [ { "name": "Gnarled Scarhide", "sick": false }, "Hill Giant" ] },
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "block": [ { "blocker": "Gnarled Scarhide", "attacker": "Grizzly Bears" } ], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "life": 18 }, {} ] }
+ },
+ {
+  "name": "bestowed on the opponent's Hill Giant: the enchanted Giant's block is dropped and the attacker connects",
+  "players": [
+   { "hand": ["Gnarled Scarhide"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Gnarled Scarhide", "alt": 0, "targets": ["p1:Hill Giant"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: bestow target illegal on resolution: enters as an enchantment creature under my control",
+  "players": [
+   { "hand": ["Gnarled Scarhide"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Gnarled Scarhide", "alt": 0, "targets": ["p1:Hill Giant"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p1:Hill Giant"] },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Gnarled Scarhide": [2, 1] },
+   "players": [ { "battlefield_has": ["Gnarled Scarhide"] }, { "graveyard_has": ["Hill Giant"] } ]
+  }
+ },
+ {
+  "name": "ruling: bestowed Aura on the opponent's creature is still controlled by its caster",
+  "players": [
+   { "hand": ["Gnarled Scarhide"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Gnarled Scarhide", "alt": 0, "targets": ["p1:Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Hill Giant": [5, 4] },
+   "players": [ { "battlefield_has": ["Gnarled Scarhide"] }, { "battlefield_has": ["Hill Giant"] } ]
+  }
+ },
+ {
+  "name": "ruling: enchanted creature dies, the bestowed Scarhide stays on the battlefield as a creature",
+  "players": [
+   { "hand": ["Gnarled Scarhide", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Gnarled Scarhide", "alt": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Gnarled Scarhide": [2, 1] },
+   "players": [ { "battlefield_has": ["Gnarled Scarhide"], "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }, {} ]
+  }
+ }
+]

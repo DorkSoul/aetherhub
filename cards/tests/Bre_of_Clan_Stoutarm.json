@@ -1,0 +1,245 @@
+[
+ {
+  "name": "{1}{W}, {T}: another creature you control gains flying and lifelink until end of turn",
+  "players": [
+   {
+    "battlefield": [
+     "Bre of Clan Stoutarm",
+     "Plains",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Bre of Clan Stoutarm",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Bre of Clan Stoutarm",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Bre of Clan Stoutarm": true
+   },
+   "keywords": {
+    "Grizzly Bears": [
+     "Flying",
+     "Lifelink"
+    ]
+   }
+  }
+ },
+ {
+  "name": "end step after gaining life: exile until a nonland card, cast it free if its mana value is at most the life gained",
+  "players": [
+   {
+    "hand": [
+     "Lightning Helix"
+    ],
+    "battlefield": [
+     "Bre of Clan Stoutarm",
+     "Plains",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Helix",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End",
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 23,
+     "exile": [
+      "Mountain"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "nonland card with mana value above the life gained goes to hand",
+  "players": [
+   {
+    "hand": [
+     "Lightning Helix"
+    ],
+    "battlefield": [
+     "Bre of Clan Stoutarm",
+     "Plains",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Mountain",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Helix",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Hill Giant"
+     ],
+     "exile": [
+      "Mountain"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining the free cast leaves the card exiled",
+  "players": [
+   {
+    "hand": [
+     "Lightning Helix"
+    ],
+    "battlefield": [
+     "Bre of Clan Stoutarm",
+     "Plains",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Helix",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End",
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Mountain",
+      "Grizzly Bears"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a free-cast X spell uses X=0 (Gelatinous Genesis makes no tokens); it is cast during the end step",
+  "players": [
+   {
+    "hand": ["Lightning Helix"],
+    "battlefield": ["Bre of Clan Stoutarm", "Plains", "Mountain", "Mountain"],
+    "library": ["Gelatinous Genesis"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Lightning Helix", "targets": ["p1"]},
+   {"resolve": true},
+   {"advance_to": "End", "answers": [true, 0]}
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Gelatinous Genesis", "Lightning Helix"], "exile": [], "battlefield_lacks": ["Ooze 0-0 Green"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: life gained during your end step does not make Bre's end step ability trigger",
+  "players": [
+   {
+    "hand": ["Lightning Helix"],
+    "battlefield": ["Bre of Clan Stoutarm", "Plains", "Mountain", "Mountain"],
+    "library": ["Mountain", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"cast": "Lightning Helix", "targets": ["p1"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [ { "life": 23, "library_top": ["Mountain", "Grizzly Bears"], "exile": [], "graveyard": ["Lightning Helix"] }, { "life": 17 } ]
+  }
+ }
+]

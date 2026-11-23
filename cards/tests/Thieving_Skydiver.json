@@ -1,0 +1,303 @@
+[
+  {
+    "name": "kicked with X=2 steals a mana value 2 artifact",
+    "players": [
+      {
+        "hand": [
+          "Thieving Skydiver"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Mind Stone"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Thieving Skydiver",
+        "answers": [
+          true,
+          2
+        ]
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Thieving Skydiver",
+            "Mind Stone"
+          ]
+        },
+        {
+          "battlefield": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "mana value above X can't be taken",
+    "players": [
+      {
+        "hand": [
+          "Thieving Skydiver"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Mind Stone"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Thieving Skydiver",
+        "answers": [
+          true,
+          1
+        ]
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Thieving Skydiver"
+          ],
+          "battlefield_lacks": [
+            "Mind Stone"
+          ]
+        },
+        {
+          "battlefield": [
+            "Mind Stone"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "unkicked does nothing",
+    "players": [
+      {
+        "hand": [
+          "Thieving Skydiver"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Sol Ring"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Thieving Skydiver",
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Thieving Skydiver",
+            "Island",
+            "Island",
+            "Island",
+            "Island"
+          ]
+        },
+        {
+          "battlefield": [
+            "Sol Ring"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "stolen Equipment gets attached",
+    "players": [
+      {
+        "hand": [
+          "Thieving Skydiver"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Short Sword"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Thieving Skydiver",
+        "answers": [
+          true,
+          1
+        ]
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Short Sword"
+          ]
+        },
+        {}
+      ],
+      "attached": {
+        "Short Sword": "Thieving Skydiver"
+      },
+      "pt": {
+        "Thieving Skydiver": [
+          3,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "kicker X is at least 1 (X=1 takes a mana value 0 artifact)",
+    "players": [
+      {
+        "hand": [
+          "Thieving Skydiver"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Ornithopter"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Thieving Skydiver",
+        "answers": [
+          true,
+          1
+        ]
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ornithopter"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: can target an artifact you already control and attach it if it is Equipment",
+    "players": [
+      { "hand": ["Thieving Skydiver"], "battlefield": ["Island", "Island", "Island", "Short Sword"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Thieving Skydiver", "answers": [true, 1] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Thieving Skydiver", "Short Sword"] },
+        {}
+      ],
+      "attached": { "Short Sword": "Thieving Skydiver" }
+    }
+  },
+  {
+    "name": "ruling: the stolen artifact stays under your control after Thieving Skydiver leaves",
+    "players": [
+      { "hand": ["Thieving Skydiver", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Ornithopter"] }
+    ],
+    "steps": [
+      { "cast": "Thieving Skydiver", "answers": [true, 1] },
+      { "resolve": true, "auto": true },
+      { "cast": "Lightning Bolt", "targets": ["Thieving Skydiver"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ornithopter"], "graveyard_has": ["Thieving Skydiver", "Lightning Bolt"] },
+        { "battlefield_lacks": ["Ornithopter"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if Thieving Skydiver is gone when its trigger resolves, the stolen Equipment is simply not attached",
+    "players": [
+      { "hand": ["Thieving Skydiver", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Short Sword"] }
+    ],
+    "steps": [
+      { "cast": "Thieving Skydiver", "answers": [true, 1] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Thieving Skydiver"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Short Sword"], "graveyard_has": ["Thieving Skydiver", "Lightning Bolt"] },
+        { "battlefield_lacks": ["Short Sword"] }
+      ]
+    }
+  }
+]

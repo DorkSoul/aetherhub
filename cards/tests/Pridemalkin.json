@@ -1,0 +1,76 @@
+[
+  {
+    "name": "counter gives the creature trample: excess damage goes through a blocker",
+    "players": [
+      { "hand": ["Pridemalkin"], "battlefield": ["Grizzly Bears", "Forest", "Forest", "Forest"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Pridemalkin" },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18, "battlefield_lacks": ["Llanowar Elves"] }],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "creature without a +1/+1 counter has no trample",
+    "players": [
+      { "battlefield": ["Grizzly Bears", "Pridemalkin"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20, "battlefield_lacks": ["Llanowar Elves"] }]
+    }
+  },
+  {
+    "name": "ruling: a creature with its own +1/+1 counter gains trample from Pridemalkin",
+    "players": [
+      { "battlefield": [{ "name": "Pridemalkin", "counters": { "+1/+1": 1 } }, "Forest"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Pridemalkin", "at": "p1" }] },
+      { "block": [{ "blocker": "Llanowar Elves", "attacker": "Pridemalkin" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18, "battlefield_lacks": ["Llanowar Elves"] }]
+    }
+  },
+  {
+    "name": "ruling: Pridemalkin can target itself with its own enters ability",
+    "players": [
+      { "hand": ["Pridemalkin"], "battlefield": ["Grizzly Bears", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Pridemalkin" },
+      { "resolve": true, "targets": ["Pridemalkin"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Pridemalkin", "Grizzly Bears"] }, {}],
+      "counters": { "Pridemalkin": { "+1/+1": 1 } },
+      "pt": { "Pridemalkin": [3, 2], "Grizzly Bears": [2, 2] }
+    }
+  }
+]

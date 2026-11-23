@@ -1,0 +1,33 @@
+[
+ { "name": "entering takes the initiative: Undercity's Secret Entrance fetches a basic land",
+   "players": [ { "hand": ["Seasoned Dungeoneer"], "battlefield": ["Plains", "Plains", "Plains", "Plains"], "library": ["Forest", "Island", "Island"] }, {} ],
+   "steps": [ { "cast": "Seasoned Dungeoneer" }, { "resolve": true, "answers": ["Forest"] } ],
+   "expect": { "players": [ { "hand": ["Forest"] }, {} ] } },
+ { "name": "attacking with a Warrior: it explores, a land goes to hand",
+   "players": [ { "battlefield": ["Seasoned Dungeoneer"], "library": ["Forest", "Island"] }, {} ],
+   "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Seasoned Dungeoneer", "at": "p1" } ] }, { "resolve": true } ],
+   "expect": { "players": [ { "hand": ["Forest"], "library_top": ["Island"] }, {} ] } },
+ { "name": "attacking with a Warrior: explore on a nonland adds a +1/+1 counter",
+   "players": [ { "battlefield": ["Seasoned Dungeoneer"], "library": ["Shock", "Island"] }, {} ],
+   "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Seasoned Dungeoneer", "at": "p1" } ] }, { "resolve": true, "answers": [true] } ],
+   "expect": { "players": [ { "hand": [], "graveyard": ["Shock"] }, {} ], "counters": { "Seasoned Dungeoneer": { "p1p1": 1 } }, "pt": { "Seasoned Dungeoneer": [4, 5] } } },
+ { "name": "attacking with only a non-Cleric/Rogue/Warrior/Wizard: no target, no explore",
+   "players": [ { "battlefield": ["Seasoned Dungeoneer", "Grizzly Bears"], "library": ["Forest", "Island"] }, {} ],
+   "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "resolve": true } ],
+   "expect": { "players": [ { "hand": [], "library_top": ["Forest"] }, {} ], "counters": { "Seasoned Dungeoneer": { "p1p1": 0 } } } },
+ { "name": "ruling: taking the initiative again ventures into the next room, not a new dungeon",
+   "players": [ { "hand": ["Seasoned Dungeoneer", "Seasoned Dungeoneer"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }], "library": ["Forest", "Island", "Island"] }, {} ],
+   "steps": [ { "cast": "Seasoned Dungeoneer" }, { "resolve": true, "answers": ["Forest"] }, { "cast": "Seasoned Dungeoneer" }, { "resolve": true, "answers": ["Forge"], "targets": ["Grizzly Bears"] } ],
+   "expect": { "players": [ { "hand": ["Forest"] }, {} ], "counters": { "Grizzly Bears": { "p1p1": 2 } }, "pt": { "Grizzly Bears": [4, 4] } } },
+ { "name": "ruling: a creature dealing combat damage to the initiative holder takes the initiative; the holder does not venture again",
+   "players": [ { "hand": ["Seasoned Dungeoneer"], "battlefield": ["Plains", "Plains", "Plains", "Plains"], "library": ["Forest", "Island", "Island"] }, { "battlefield": ["Hill Giant"], "library": ["Forest", "Island", "Island"] } ],
+   "steps": [
+     { "cast": "Seasoned Dungeoneer" }, { "resolve": true, "answers": ["Forest"] },
+     { "advance_to": "Main1", "auto": true },
+     { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 }, { "resolve": true, "auto": true },
+     { "block": [], "player": 0 },
+     { "advance_to": "Main2", "answers": ["Island"] }, { "resolve": true },
+     { "advance_to": "Main1" }
+   ],
+   "expect": { "players": [ { "hand_count": 2 }, { "hand_count": 2 } ], "counters": { "Seasoned Dungeoneer": { "p1p1": 0 } } } }
+]

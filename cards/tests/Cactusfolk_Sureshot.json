@@ -1,0 +1,58 @@
+[
+  {
+    "name": "beginning of combat: other creatures with power 4+ gain haste and trample",
+    "players": [
+      { "battlefield": ["Cactusfolk Sureshot", { "name": "Serra Angel", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "resolve": true },
+      { "attack": [ { "card": "Serra Angel", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Serra Angel"] }, { "life": 16 } ]
+    }
+  },
+  {
+    "name": "a creature with power under 4 does not gain haste",
+    "players": [
+      { "battlefield": ["Cactusfolk Sureshot", { "name": "Hill Giant", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ward {2}: opponent pays 2 with spare mana, Swords exiles it",
+    "players": [ { "battlefield": ["Cactusfolk Sureshot"] }, { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Plains", "Plains"] } ],
+    "steps": [ { "pass": true }, { "cast": "Swords to Plowshares", "player": 1, "targets": ["Cactusfolk Sureshot"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "exile": ["Cactusfolk Sureshot"] }, {} ] }
+  },
+  {
+    "name": "ward {2}: opponent has only one spare mana and cannot pay, Swords is countered",
+    "players": [ { "battlefield": ["Cactusfolk Sureshot"] }, { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Plains"] } ],
+    "steps": [ { "pass": true }, { "cast": "Swords to Plowshares", "player": 1, "targets": ["Cactusfolk Sureshot"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Cactusfolk Sureshot"] }, { "graveyard_has": ["Swords to Plowshares"] } ] }
+  },
+  {
+    "name": "ruling: a creature that entered after the combat trigger resolved does not gain haste",
+    "players": [ { "battlefield": ["Cactusfolk Sureshot", "Forest", "Forest", "Mountain", "Mountain"], "hand": ["Nightpack Ambusher"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat", "hold": true },
+      { "resolve": true },
+      { "cast": "Nightpack Ambusher" },
+      { "resolve": true },
+      { "attack": [ { "card": "Nightpack Ambusher", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Nightpack Ambusher"] }, { "life": 20 } ] }
+  }
+]

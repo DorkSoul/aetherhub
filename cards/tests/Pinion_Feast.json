@@ -1,0 +1,89 @@
+[
+  {
+    "name": "destroys a flying creature and bolsters the creature with the least toughness",
+    "players": [
+      { "hand": ["Pinion Feast"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Aven Tactician"] }
+    ],
+    "steps": [
+      { "cast": "Pinion Feast", "targets": ["Aven Tactician"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "battlefield_has": ["Grizzly Bears", "Hill Giant"] },
+        { "graveyard": ["Aven Tactician"] }
+      ],
+      "pt": { "Grizzly Bears": [4, 4], "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "a creature without flying is not a legal target",
+    "players": [
+      { "hand": ["Pinion Feast"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Pinion Feast", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Pinion Feast"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: no creature with flying anywhere means it cannot be cast just to bolster",
+    "players": [
+      { "hand": ["Pinion Feast"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pinion Feast", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Pinion Feast"], "battlefield_has": ["Grizzly Bears", "Hill Giant"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [2, 2], "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: bolster is determined on resolution, so the flyer destroyed by the spell is no longer a candidate",
+    "players": [
+      { "hand": ["Pinion Feast"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Pegasus 1-1", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pinion Feast", "targets": ["Pegasus 1-1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Pegasus 1-1"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: bolster does not target, so a hexproof creature with the least toughness still gets the counters",
+    "players": [
+      { "hand": ["Pinion Feast"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Merfolk 1-1 Hexproof", "Hill Giant"] },
+      { "battlefield": ["Aven Tactician"] }
+    ],
+    "steps": [
+      { "cast": "Pinion Feast", "targets": ["Aven Tactician"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Merfolk 1-1 Hexproof", "Hill Giant"] },
+        { "graveyard": ["Aven Tactician"] }
+      ],
+      "pt": { "Merfolk 1-1 Hexproof": [3, 3], "Hill Giant": [3, 3] }
+    }
+  }
+]

@@ -1,0 +1,143 @@
+[
+ {
+  "name": "domain: five basic land types cost only {W}; exiles an opponent's creature until it leaves",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Island", "Swamp", "Mountain", "Forest", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Leyline Binding" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Leyline Binding"] },
+    { "exile": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "domain: only one basic land type gives no reduction",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Leyline Binding", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Leyline Binding"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "domain: two basic land types reduce the cost by two",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Island", "Plains", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Leyline Binding" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Leyline Binding"] },
+    { "exile": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "Swamp domain reduction: Plains and three Swamps (cost {3}{W}) can cast it",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [ { "cast": "Leyline Binding" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Leyline Binding"] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "Mountain domain reduction: Plains and three Mountains can cast it",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [ { "cast": "Leyline Binding" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Leyline Binding"] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "Forest domain reduction: Plains and three Forests can cast it",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [ { "cast": "Leyline Binding" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Leyline Binding"] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: an Aura on the exiled creature goes to its owner's graveyard",
+  "players": [
+   { "hand": ["Pacifism", "Leyline Binding"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Swamp", "Mountain", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Leyline Binding" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Pacifism"], "battlefield_has": ["Leyline Binding"] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: Leyline Binding leaves before its ability resolves: the creature is not exiled",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Island", "Swamp", "Mountain", "Forest"] },
+   { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Leyline Binding" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Disenchant", "player": 1, "targets": ["Leyline Binding"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Leyline Binding"] }, { "battlefield_has": ["Grizzly Bears"], "exile": [], "graveyard": ["Disenchant"] } ] }
+ },
+ {
+  "name": "ruling: when Leyline Binding leaves, the exiled creature returns to the battlefield",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Island", "Swamp", "Mountain", "Forest"] },
+   { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Leyline Binding" },
+   { "resolve": true },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Disenchant", "player": 1, "targets": ["Leyline Binding"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Leyline Binding"] }, { "battlefield_has": ["Grizzly Bears"], "exile": [] } ] }
+ },
+ {
+  "name": "ruling: an exiled token ceases to exist and does not return",
+  "players": [
+   { "hand": ["Leyline Binding"], "battlefield": ["Plains", "Island", "Swamp", "Mountain", "Forest"] },
+   { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", "Soldier"] }
+  ],
+  "steps": [
+   { "cast": "Leyline Binding" },
+   { "resolve": true },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Disenchant", "player": 1, "targets": ["Leyline Binding"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Leyline Binding"] }, { "battlefield_lacks": ["Soldier"], "exile": [] } ] }
+ }
+]

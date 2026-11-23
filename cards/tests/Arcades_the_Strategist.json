@@ -1,0 +1,57 @@
+[
+  {
+    "name": "creature with defender entering draws a card",
+    "players": [ { "hand": ["Angelic Wall"], "battlefield": ["Arcades, the Strategist", "Plains", "Plains"] }, {} ],
+    "steps": [ { "cast": "Angelic Wall" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Angelic Wall"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "creature without defender entering does not draw",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Arcades, the Strategist", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "defender creature attacks and assigns damage equal to its toughness",
+    "players": [ { "battlefield": ["Arcades, the Strategist", "Angelic Wall"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Angelic Wall", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 16 } ]
+    }
+  },
+  {
+    "name": "ruling: Rabid Bite uses the defender's power (0), not its toughness",
+    "players": [
+      { "hand": ["Rabid Bite"], "battlefield": ["Arcades, the Strategist", "Angelic Wall", "Forest", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Rabid Bite", "targets": ["Angelic Wall", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Rabid Bite"] }, { "battlefield_has": ["Grizzly Bears"] } ],
+      "pt": { "Angelic Wall": [0, 4] }
+    }
+  },
+  {
+    "name": "ruling: Arcades leaves after the defender attacked, so it assigns damage by its power (0)",
+    "players": [ { "hand": ["Doom Blade"], "battlefield": ["Arcades, the Strategist", "Angelic Wall", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Angelic Wall", "at": "p1" } ] },
+      { "cast": "Doom Blade", "targets": ["Arcades, the Strategist"] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20, "graveyard_has": ["Arcades, the Strategist"] }, { "life": 20 } ] }
+  }
+]

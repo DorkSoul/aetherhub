@@ -1,0 +1,67 @@
+[
+ {
+  "name": "a one-mana spell can't be cast with two lands",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Trinisphere", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Lightning Bolt"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "a one-mana spell costs three: castable with three lands, all tapped",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Trinisphere", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17 } ], "tapped": { "Mountain": true } }
+ },
+ {
+  "name": "the cost keeps its coloured mana: a two-mana spell needs three, one of each colour",
+  "players": [ { "hand": ["Terminate"], "battlefield": ["Trinisphere", "Swamp", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Terminate", "targets": ["Grizzly Bears"], "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Terminate"] }, { "battlefield": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "a two-mana spell costs {1}{B}{R}: castable with a third land of any type",
+  "players": [ { "hand": ["Terminate"], "battlefield": ["Trinisphere", "Swamp", "Mountain", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Terminate", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Terminate"] }, { "graveyard": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "a spell that already costs three or more is not changed",
+  "players": [ { "hand": ["Hill Giant"], "battlefield": ["Trinisphere", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Hill Giant", "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Hill Giant"] }, {} ] }
+ },
+ {
+  "name": "X spell: {X}{R} with X=1 would cost two, so it costs three",
+  "players": [ { "hand": ["Blaze"], "battlefield": ["Trinisphere", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Blaze", "targets": ["p1"], "answers": [1], "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Blaze"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "X spell: X=1 castable with three lands and deals 1",
+  "players": [ { "hand": ["Blaze"], "battlefield": ["Trinisphere", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Blaze", "targets": ["p1"], "answers": [1] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Blaze"] }, { "life": 19 } ] }
+ },
+ {
+  "name": "a tapped Trinisphere does nothing",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Trinisphere", "Icy Manipulator", "Island", "Mountain"] }, {} ],
+  "steps": [
+   { "activate": "Icy Manipulator", "targets": ["Trinisphere"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17 } ], "tapped": { "Trinisphere": true } }
+ },
+ {
+  "name": "ruling: cost reduction applies first, then Trinisphere: Doom Blade costs {B} after Electromancer, so three lands are needed",
+  "players": [ { "hand": ["Doom Blade"], "battlefield": ["Trinisphere", "Goblin Electromancer", "Swamp", "Swamp"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Doom Blade", "targets": ["Grizzly Bears"], "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Doom Blade"] }, { "battlefield": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: the same reduced spell is castable with three lands",
+  "players": [ { "hand": ["Doom Blade"], "battlefield": ["Trinisphere", "Goblin Electromancer", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Doom Blade", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Doom Blade"] }, { "graveyard": ["Grizzly Bears"] } ] }
+ }
+]

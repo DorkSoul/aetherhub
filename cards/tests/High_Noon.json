@@ -1,0 +1,114 @@
+[
+  {
+    "name": "ruling: a countered spell still counts as cast, so no second spell that turn",
+    "players": [
+      { "hand": ["Grizzly Bears", "Lightning Bolt"], "battlefield": ["High Noon", "Forest", "Forest", "Mountain"] },
+      { "hand": ["Essence Scatter"], "battlefield": ["Island", "Island", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Essence Scatter", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["High Noon"], "hand": ["Lightning Bolt"], "graveyard": ["Grizzly Bears"] },
+        { "battlefield_has": ["Hill Giant"], "graveyard": ["Essence Scatter"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: High Noon on the battlefield before any spell is cast lets its controller cast one spell",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["High Noon", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "after casting one spell, its controller can't cast another that turn; the opponent still can",
+    "players": [
+      { "hand": ["Lightning Bolt", "Giant Growth"], "battlefield": ["High Noon", "Mountain", "Forest", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"], "illegal": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Grizzly Bears"], "hand": ["Giant Growth"] },
+        { "graveyard": ["Lightning Bolt", "Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "High Noon itself counts as the first spell: its controller can't cast a second spell that turn",
+    "players": [
+      { "hand": ["High Noon", "Lightning Bolt"], "battlefield": ["Plains", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "High Noon" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["High Noon"], "hand": ["Lightning Bolt"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the sacrifice ability deals 5 damage to any target and does not count as casting a spell",
+    "players": [
+      { "battlefield": ["High Noon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "hand": ["Lightning Bolt"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "High Noon", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["High Noon", "Lightning Bolt"], "hand": [] },
+        { "life": 15, "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "after the opponent casts one spell, they can't cast a second that turn",
+    "players": [
+      { "battlefield": ["High Noon", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["High Noon"], "graveyard_has": ["Grizzly Bears"] },
+        { "hand": ["Lightning Bolt"], "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

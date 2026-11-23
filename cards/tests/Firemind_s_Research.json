@@ -1,0 +1,193 @@
+[
+  {
+    "name": "instants and sorceries add charge counters; two counters draw",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Firemind's Research",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "life": 14
+        }
+      ],
+      "counters": {
+        "Firemind's Research": {
+          "Charge": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "draw ability needs two counters",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Firemind's Research",
+            "counters": {
+              "Charge": 1
+            }
+          },
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Firemind's Research",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "five counters: 5 damage to any target and removes five",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Firemind's Research",
+            "counters": {
+              "Charge": 5
+            }
+          },
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Firemind's Research",
+        "targets": [
+          "p1"
+        ],
+        "ability": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "{1}{U}, remove two counters: draw a card (exactly two counters removed)",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Firemind's Research", "counters": { "Charge": 3 } },
+          "Island",
+          "Mountain"
+        ],
+        "library": ["Forest", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Firemind's Research", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"] },
+        {}
+      ],
+      "counters": { "Firemind's Research": { "Charge": 1 } }
+    }
+  },
+  {
+    "name": "draw ability needs blue mana: {1}{U} is illegal with only red sources",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Firemind's Research", "counters": { "Charge": 2 } },
+          "Mountain",
+          "Mountain"
+        ],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Firemind's Research", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        {}
+      ],
+      "counters": { "Firemind's Research": { "Charge": 2 } }
+    }
+  },
+  {
+    "name": "ruling: the charge trigger resolves even though the Bolt that caused it is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Firemind's Research", "Mountain"] },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Cancel"], "life": 20 }
+      ],
+      "counters": { "Firemind's Research": { "Charge": 1 } }
+    }
+  }
+]

@@ -1,0 +1,113 @@
+[
+  {
+    "name": "ETB: exile a cheap nonland card from hand, it becomes plotted and cannot be cast that turn",
+    "players": [
+      { "hand": ["Kellan Joins Up", "Grizzly Bears", "Forest"], "battlefield": ["Forest", "Plains", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kellan Joins Up" },
+      { "resolve": true, "answers": [[0]] },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"], "hand": ["Forest"], "battlefield_has": ["Kellan Joins Up"] }, {} ] }
+  },
+  {
+    "name": "the plotted card is cast for free on a later turn at sorcery speed",
+    "players": [
+      { "hand": ["Kellan Joins Up", "Grizzly Bears"], "battlefield": ["Forest", "Plains", "Island"] },
+      { "library": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Kellan Joins Up" },
+      { "resolve": true, "answers": [[0]] },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "turn": 3, "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ETB: lands and cards with mana value 4 or more are not eligible; nothing is exiled",
+    "players": [
+      { "hand": ["Kellan Joins Up", "Forest", "Hill Giant", "Serra Angel"], "battlefield": ["Forest", "Plains", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kellan Joins Up" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": [], "hand": ["Forest", "Hill Giant", "Serra Angel"] }, {} ] }
+  },
+  {
+    "name": "ETB: the exile is optional; declining leaves the card in hand",
+    "players": [
+      { "hand": ["Kellan Joins Up", "Grizzly Bears"], "battlefield": ["Forest", "Plains", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kellan Joins Up" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": { "players": [ { "exile": [], "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "a legendary creature entering puts a +1/+1 counter on each creature you control",
+    "players": [
+      { "hand": ["Kenessos, Priest of Thassa"], "battlefield": ["Kellan Joins Up", "Grizzly Bears", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Kenessos, Priest of Thassa" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [3, 3], "Kenessos, Priest of Thassa": [2, 4], "Hill Giant": [3, 3] } }
+  },
+  {
+    "name": "a nonlegendary creature entering does not trigger it",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Kellan Joins Up", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant" },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2], "Hill Giant": [3, 3] } }
+  },
+  {
+    "name": "ruling: a card plotted this turn is castable only on a later turn (same-turn cast illegal, later turn free)",
+    "players": [
+      { "hand": ["Kellan Joins Up", "Grizzly Bears"], "battlefield": ["Forest", "Plains", "Island"] },
+      { "library": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Kellan Joins Up" },
+      { "resolve": true, "answers": [[0]] },
+      { "cast": "Grizzly Bears", "illegal": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "turn": 3, "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a plotted instant is cast only in its controller's main phase with an empty stack (not on the opponent's turn)",
+    "players": [
+      { "hand": ["Kellan Joins Up", "Lightning Bolt"], "battlefield": ["Forest", "Plains", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kellan Joins Up" },
+      { "resolve": true, "answers": [[0]] },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Lightning Bolt"], "battlefield_has": ["Kellan Joins Up"] }, {} ] }
+  }
+]

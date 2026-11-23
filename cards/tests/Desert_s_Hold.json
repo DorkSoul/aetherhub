@@ -1,0 +1,41 @@
+[
+  { "name": "no Desert: enchanted creature gets no life gain",
+    "players": [ { "hand": ["Desert's Hold"], "battlefield": ["Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Desert's Hold", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 20, "battlefield_has": ["Desert's Hold"] }, { "battlefield_has": ["Grizzly Bears"] } ] } },
+  { "name": "controlling a Desert gains 3 life on entering",
+    "players": [ { "hand": ["Desert's Hold"], "battlefield": ["Plains", "Plains", "Plains", "Desert"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Desert's Hold", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 23 }, {} ] } },
+  { "name": "enchanted creature can't attack: the unenchanted attacker deals its 3 damage",
+    "players": [ { "hand": ["Desert's Hold"], "battlefield": ["Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Desert's Hold", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "enchanted creature can't block: the opposing Serra Angel is dropped and the Hill Giant hits",
+    "players": [ { "hand": ["Desert's Hold"], "battlefield": ["Plains", "Plains", "Plains", { "name": "Hill Giant", "sick": false }] }, { "battlefield": ["Serra Angel", "Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Desert's Hold", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "enchanted creature's activated ability can't be activated, even with mana to spare",
+    "players": [ { "hand": ["Desert's Hold"], "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", { "name": "Bold Impaler", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Desert's Hold", "targets": ["Bold Impaler"] },
+      { "resolve": true },
+      { "activate": "Bold Impaler", "ability": 0, "illegal": true }
+    ],
+    "expect": { "pt": { "Bold Impaler": [1, 2] } } },
+  { "name": "ruling: two Deserts (plus one in the graveyard) still gain only 3 life",
+    "players": [ { "hand": ["Desert's Hold"], "battlefield": ["Plains", "Plains", "Plains", "Desert", "Desert"], "graveyard": ["Desert"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Desert's Hold", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 23 }, {} ] } }
+]

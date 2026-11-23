@@ -1,0 +1,146 @@
+[
+ {
+  "name": "attack: instant from graveyard to the bottom, exile the top two, playable this turn",
+  "players": [
+   {
+    "battlefield": [
+     "Ardent Dustspeaker"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ],
+    "library": [
+     "Forest",
+     "Mountain",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ardent Dustspeaker",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Forest",
+      "Mountain"
+     ],
+     "graveyard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declined: nothing is exiled",
+  "players": [
+   {
+    "battlefield": [
+     "Ardent Dustspeaker"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ],
+    "library": [
+     "Forest",
+     "Mountain",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ardent Dustspeaker",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [],
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled creature is cast in a main phase only (illegal in combat, castable in main 2)",
+  "players": [
+   { "battlefield": ["Ardent Dustspeaker", "Forest", "Forest"], "graveyard": ["Lightning Bolt"], "library": ["Grizzly Bears", "Mountain", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Ardent Dustspeaker", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "cast": "Grizzly Bears", "illegal": true },
+   { "advance_to": "Main2" },
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": ["Mountain"] }, {} ] }
+ },
+ {
+  "name": "ruling: only one land can be played from the exiled cards, the second stays exiled",
+  "players": [
+   { "battlefield": ["Ardent Dustspeaker"], "graveyard": ["Lightning Bolt"], "library": ["Mountain", "Island", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Ardent Dustspeaker", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "advance_to": "Main2" },
+   { "play_land": "Mountain" },
+   { "play_land": "Island", "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Mountain"], "exile": ["Island"] }, {} ] }
+ },
+ {
+  "name": "ruling: exiled cards stay playable this turn after Ardent Dustspeaker dies (two Bolts in main 2)",
+  "players": [
+   { "battlefield": ["Ardent Dustspeaker"], "graveyard": ["Lightning Bolt"], "library": ["Mountain", "Island", "Grizzly Bears"] },
+   { "battlefield": ["Mountain", "Mountain"], "hand": ["Lightning Bolt", "Lightning Bolt"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Ardent Dustspeaker", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "advance_to": "Main2" },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Ardent Dustspeaker"], "player": 1 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Ardent Dustspeaker"], "player": 1 },
+   { "resolve": true },
+   { "play_land": "Mountain" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Mountain"], "exile": ["Island"], "graveyard": ["Ardent Dustspeaker"] }, {} ] }
+ }
+]

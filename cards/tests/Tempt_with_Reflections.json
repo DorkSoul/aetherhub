@@ -1,0 +1,123 @@
+[
+  {
+    "name": "opponent accepts: opponent gets a copy and you get one more",
+    "players": [
+      {
+        "hand": ["Tempt with Reflections"],
+        "battlefield": ["Grizzly Bears", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tempt with Reflections" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "opponent declines: only your own token copy",
+    "players": [
+      {
+        "hand": ["Tempt with Reflections"],
+        "battlefield": ["Grizzly Bears", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tempt with Reflections" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Grizzly Bears"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: copies do not copy tapped status or counters; the surviving token copy is an untapped 2/2",
+    "players": [
+      {
+        "hand": ["Tempt with Reflections", "Lightning Bolt"],
+        "battlefield": [{ "name": "Grizzly Bears", "tapped": true, "counters": { "+1/+1": 1 } }, "Island", "Island", "Island", "Island", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tempt with Reflections" },
+      { "resolve": true, "answers": [false] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Island", "Island", "Mountain", "Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [2, 2] },
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: a copy of an {X} creature has X = 0, so the token enters with no counters and dies",
+    "players": [
+      {
+        "hand": ["Tempt with Reflections"],
+        "battlefield": [{ "name": "Walking Ballista", "counters": { "+1/+1": 2 } }, "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tempt with Reflections" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Island", "Island", "Walking Ballista"] },
+        {}
+      ],
+      "pt": { "Walking Ballista": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: if the chosen creature is gone when Tempt resolves, nothing is copied",
+    "players": [
+      { "hand": ["Tempt with Reflections"], "battlefield": ["Grizzly Bears", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Tempt with Reflections" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Island", "Island"], "graveyard_has": ["Grizzly Bears"] },
+        { "battlefield": ["Mountain"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: each copy's enters-the-battlefield ability triggers (Mulldrifter copies each draw two)",
+    "players": [
+      { "hand": ["Tempt with Reflections"], "battlefield": ["Mulldrifter", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tempt with Reflections" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 4 },
+        { "hand_count": 2 }
+      ]
+    }
+  }
+]

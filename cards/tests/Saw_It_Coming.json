@@ -1,0 +1,184 @@
+[
+  {
+    "name": "counters target spell cast from hand",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Saw It Coming"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Saw It Coming",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 20,
+          "graveyard": [
+            "Saw It Coming"
+          ]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "foretold on your turn and cast on a later turn to counter a spell",
+    "players": [
+      {
+        "hand": [
+          "Saw It Coming",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Saw It Coming",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Saw It Coming",
+        "alt": 0,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Saw It Coming"
+          ]
+        },
+        {}
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "foretell is not allowed on the opponent's turn",
+    "players": [
+      {
+        "hand": [
+          "Saw It Coming"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "activate": "Saw It Coming",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Saw It Coming"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a foretold card cannot be cast on the turn it was foretold, even while a spell is on the stack",
+    "players": [
+      { "hand": ["Saw It Coming", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Saw It Coming", "ability": 0 },
+      { "cast": "Saw It Coming", "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Saw It Coming"] },
+        { "life": 17 }
+      ]
+    }
+  }
+]

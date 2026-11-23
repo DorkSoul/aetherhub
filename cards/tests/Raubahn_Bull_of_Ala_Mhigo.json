@@ -1,0 +1,96 @@
+[
+  {
+    "name": "attack trigger attaches an Equipment to the attacking creature",
+    "players": [
+      { "battlefield": ["Raubahn, Bull of Ala Mhigo", "Bonesplitter"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Raubahn, Bull of Ala Mhigo", "at": "p1" }] },
+      { "resolve": true, "targets": ["Bonesplitter"] }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Raubahn, Bull of Ala Mhigo", "Bonesplitter"] }, {}],
+      "pt": { "Raubahn, Bull of Ala Mhigo": [4, 2] }
+    }
+  },
+  {
+    "name": "attack trigger with no Equipment chosen still resolves without attaching",
+    "players": [
+      { "battlefield": ["Raubahn, Bull of Ala Mhigo"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Raubahn, Bull of Ala Mhigo", "at": "p1" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Raubahn, Bull of Ala Mhigo"] }, {}],
+      "pt": { "Raubahn, Bull of Ala Mhigo": [2, 2] }
+    }
+  },
+  {
+    "name": "ward: opponent pays life equal to Raubahn's power or the spell is countered",
+    "players": [
+      { "battlefield": ["Raubahn, Bull of Ala Mhigo"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Raubahn, Bull of Ala Mhigo"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": [] }, { "life": 18, "graveyard": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "ward: an opponent who cannot pay the life cost has the spell countered",
+    "players": [
+      { "battlefield": ["Raubahn, Bull of Ala Mhigo"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "life": 1 }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Raubahn, Bull of Ala Mhigo"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Raubahn, Bull of Ala Mhigo"] }, { "life": 1, "graveyard": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "ruling: ward cost is Raubahn's power when the ward resolves (Bonesplitter makes it 4, so 4 life is paid)",
+    "players": [
+      { "battlefield": ["Raubahn, Bull of Ala Mhigo", "Bonesplitter"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Raubahn, Bull of Ala Mhigo", "at": "p1" }] },
+      { "resolve": true, "targets": ["Bonesplitter"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Raubahn, Bull of Ala Mhigo"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Bonesplitter"] }, { "life": 16, "graveyard": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "ruling: Equipment does not move when its target attacking creature is gone by the time the trigger resolves",
+    "players": [
+      { "battlefield": ["Raubahn, Bull of Ala Mhigo", "Bonesplitter", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Raubahn, Bull of Ala Mhigo", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+      { "pass": true, "targets": ["Bonesplitter", "Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Raubahn, Bull of Ala Mhigo", "Bonesplitter"], "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] }],
+      "pt": { "Raubahn, Bull of Ala Mhigo": [2, 2] }
+    }
+  }
+]

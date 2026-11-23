@@ -1,0 +1,323 @@
+[
+  {
+    "name": "draw step trigger: the active player loses 3 life and tutors a card (the first player skips their first draw step)",
+    "players": [
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ],
+        "library": [
+          "Forest",
+          "Mountain"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Draw",
+        "answers": [
+          "Forest"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "hand_count": 0
+        },
+        {
+          "life": 17,
+          "hand_count": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "players can't draw cards: a draw spell draws nothing",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Maralen of the Mornsong",
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Forest",
+          "Mountain",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "draw step: loses 3 life even at 3 life, which ends the game",
+    "players": [
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ],
+        "library": [
+          "Forest",
+          "Mountain"
+        ]
+      },
+      {
+        "life": 3,
+        "library": [
+          "Forest",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Draw",
+        "answers": [
+          "Forest"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 0
+        }
+      ],
+      "winner": 0
+    }
+  },
+  {
+    "name": "ruling: the turn-based draw in the draw step is prevented too (only the search adds a card)",
+    "players": [
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Draw",
+        "answers": [
+          "Forest"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17,
+          "hand_count": 1,
+          "library_count": 21
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with Maralen out a draw spell cannot make a player lose from an empty library",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "exact_library": true
+      },
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "library_count": 0,
+          "graveyard": [
+            "Divination"
+          ]
+        },
+        {}
+      ],
+      "winner": -1
+    }
+  },
+  {
+    "name": "ruling: empty library in the draw step: still lose 3 life, nothing to search for, no loss",
+    "players": [
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ]
+      },
+      {
+        "exact_library": true
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Draw"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17,
+          "hand_count": 0,
+          "library_count": 0
+        }
+      ],
+      "winner": -1
+    }
+  },
+  {
+    "name": "ruling: Development: an opponent can't let you draw under Maralen, so three Elementals",
+    "players": [
+      {
+        "hand": [
+          "Research"
+        ],
+        "battlefield": [
+          "Island",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Research",
+        "face": true
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false,
+          false,
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Elemental 3-1",
+            "Elemental 3-1",
+            "Elemental 3-1"
+          ],
+          "hand": [],
+          "graveyard": [
+            "Research"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Abundance's optional draw replacement declined: Maralen still stops the draw",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "Abundance",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Maralen of the Mornsong"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false,
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "library_count": 20,
+          "graveyard": [
+            "Divination"
+          ],
+          "battlefield_has": [
+            "Abundance"
+          ]
+        },
+        {}
+      ]
+    }
+  }
+]

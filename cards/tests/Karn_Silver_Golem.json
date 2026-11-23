@@ -1,0 +1,87 @@
+[
+ {
+  "name": "{1}: noncreature artifact becomes a creature with P/T equal to its mana value",
+  "players": [
+   { "battlefield": ["Karn, Silver Golem", "Mind Stone", "Mountain"] },
+   { }
+  ],
+  "steps": [
+   { "activate": "Karn, Silver Golem", "targets": ["Mind Stone"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Karn, Silver Golem", "Mind Stone"] },
+    { }
+   ],
+   "pt": { "Mind Stone": [2, 2], "Karn, Silver Golem": [4, 4] }
+  }
+ },
+ {
+  "name": "target must be a noncreature artifact",
+  "players": [
+   { "battlefield": ["Karn, Silver Golem", "Grizzly Bears", "Mountain"] },
+   { }
+  ],
+  "steps": [
+   { "activate": "Karn, Silver Golem", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Karn, Silver Golem", "Grizzly Bears"] },
+    { }
+   ]
+  }
+ },
+ {
+  "name": "becomes blocked: gets -4/+4 until end of turn",
+  "players": [
+   { "battlefield": ["Karn, Silver Golem"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [{ "card": "Karn, Silver Golem", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Karn, Silver Golem" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Karn, Silver Golem"] },
+    { "battlefield_has": ["Grizzly Bears"], "life": 20 }
+   ],
+   "pt": { "Karn, Silver Golem": [0, 8] }
+  }
+ },
+ {"name": "blocking: gets -4/+4 until end of turn", "players": [{"battlefield": ["Hill Giant"]}, {"battlefield": ["Karn, Silver Golem"]}], "steps": [{"attack": [{"card": "Hill Giant", "at": "p1"}]}, {"block": [{"blocker": "Karn, Silver Golem", "attacker": "Hill Giant"}]}, {"resolve": true}], "expect": {"players": [{"battlefield_has": ["Hill Giant"]}, {"battlefield_has": ["Karn, Silver Golem"]}], "pt": {"Karn, Silver Golem": [0, 8]}}},
+ {"name": "another creature blocking leaves Karn at 4/4", "players": [{"battlefield": ["Hill Giant"]}, {"battlefield": ["Karn, Silver Golem", "Grizzly Bears"]}], "steps": [{"attack": [{"card": "Hill Giant", "at": "p1"}]}, {"block": [{"blocker": "Grizzly Bears", "attacker": "Hill Giant"}]}], "expect": {"players": [{}, {}], "pt": {"Karn, Silver Golem": [4, 4]}}},
+ {
+  "name": "ruling: Karn blocking two attackers gets -4/+4 only once",
+  "players": [ { "battlefield": ["Hill Giant", "Grizzly Bears"] }, { "battlefield": ["Karn, Silver Golem"] } ],
+  "steps": [
+   { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Karn, Silver Golem", "attacker": "Hill Giant" }, { "blocker": "Karn, Silver Golem", "attacker": "Grizzly Bears" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "battlefield_has": ["Karn, Silver Golem"] } ],
+   "pt": { "Karn, Silver Golem": [0, 8] }
+  }
+ },
+ {
+  "name": "ruling: a noncreature artifact animated by Karn can attack if controlled since the turn began",
+  "players": [ { "battlefield": ["Karn, Silver Golem", { "name": "Mind Stone", "sick": false }, "Mountain"] }, {} ],
+  "steps": [
+   { "tap_for_mana": "Mountain" },
+   { "activate": "Karn, Silver Golem", "targets": ["Mind Stone"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Mind Stone", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Mind Stone"] }, { "life": 18 } ],
+   "tapped": { "Mind Stone": true }
+  }
+ }
+]

@@ -1,0 +1,94 @@
+[
+  {
+    "name": "enters: draw a card for each opponent dealt combat damage this turn",
+    "players": [ { "hand": ["Moonshae Pixie // Pixie Dust"], "library": ["Forest", "Forest"], "battlefield": ["Grizzly Bears", "Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "advance_to": "Main2" }, { "cast": "Moonshae Pixie // Pixie Dust" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Forest"] }, { "life": 18 } ] }
+  },
+  {
+    "name": "no combat damage this turn: no card",
+    "players": [ { "hand": ["Moonshae Pixie // Pixie Dust"], "library": ["Forest", "Forest"], "battlefield": ["Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Moonshae Pixie // Pixie Dust" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": [] }, {} ] }
+  },
+  {
+    "name": "Pixie Dust: up to three target creatures gain flying until end of turn",
+    "players": [
+      {
+        "hand": ["Moonshae Pixie // Pixie Dust"],
+        "battlefield": ["Island", "Island", "Grizzly Bears", "Hill Giant", "Serra Angel"]
+      },
+      {
+        "battlefield": ["Raging Goblin"]
+      }
+    ],
+    "steps": [
+      { "cast": "Moonshae Pixie // Pixie Dust", "face": true, "targets": ["Grizzly Bears", "Hill Giant", "Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": ["Flying"],
+        "Hill Giant": ["Flying"],
+        "Serra Angel": ["Flying"]
+      },
+      "players": [
+        { "hand": [], "battlefield_has": ["Grizzly Bears", "Hill Giant", "Serra Angel"] },
+        { "battlefield_has": ["Raging Goblin"] }
+      ]
+    }
+  },
+  {
+    "name": "Pixie Dust: a target can be an opponent's creature too",
+    "players": [
+      {
+        "hand": ["Moonshae Pixie // Pixie Dust"],
+        "battlefield": ["Island", "Island"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Moonshae Pixie // Pixie Dust", "face": true, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": {
+        "Hill Giant": ["Flying"]
+      },
+      "players": [
+        { "hand": [] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Adventure is cast for its own cost (two Islands) and exiled on resolution",
+    "players": [ { "hand": ["Moonshae Pixie // Pixie Dust"], "battlefield": ["Island", "Island", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Moonshae Pixie // Pixie Dust", "face": true, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": [], "exile": ["Moonshae Pixie // Pixie Dust"] }, {} ] }
+  },
+  {
+    "name": "ruling: after the Adventure, the creature can be cast from exile in your main phase",
+    "players": [ { "hand": ["Moonshae Pixie // Pixie Dust"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Moonshae Pixie // Pixie Dust", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Moonshae Pixie // Pixie Dust" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": [], "battlefield_has": ["Moonshae Pixie // Pixie Dust"] }, {} ] }
+  },
+  {
+    "name": "ruling: an Adventure countered on the stack goes to the graveyard, not exile",
+    "players": [ { "hand": ["Moonshae Pixie // Pixie Dust"], "battlefield": ["Island", "Island", "Grizzly Bears"] }, { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "cast": "Moonshae Pixie // Pixie Dust", "face": true, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Pixie Dust" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Moonshae Pixie // Pixie Dust"], "exile": [] }, { "graveyard": ["Cancel"] } ] }
+  }
+]

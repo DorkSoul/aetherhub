@@ -1,0 +1,83 @@
+[
+  {
+    "name": "tutors a card to hand, then an opponent gains control of it",
+    "players": [
+      {
+        "battlefield": [{ "name": "Wishclaw Talisman", "counters": { "wish": 3 } }, "Swamp"],
+        "library": ["Lightning Bolt", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Wishclaw Talisman" },
+      { "resolve": true, "answers": ["Lightning Bolt"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"], "battlefield_lacks": ["Wishclaw Talisman"] },
+        { "battlefield_has": ["Wishclaw Talisman"] }
+      ]
+    }
+  },
+  {
+    "name": "no wish counters left: the last ability can't be activated",
+    "players": [
+      {
+        "battlefield": [{ "name": "Wishclaw Talisman", "counters": { "wish": 0 } }, "Swamp"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Wishclaw Talisman", "illegal": true }
+    ]
+  },
+  {
+    "name": "activate only during your turn: not on the opponent's turn",
+    "players": [
+      {
+        "battlefield": [{ "name": "Wishclaw Talisman", "counters": { "wish": 3 } }, "Swamp"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "pass": true, "player": 1 },
+      { "activate": "Wishclaw Talisman", "illegal": true }
+    ]
+  },
+  {
+    "name": "enters with three wish counters when cast",
+    "players": [
+      { "hand": ["Wishclaw Talisman"], "battlefield": ["Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wishclaw Talisman" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Wishclaw Talisman"] }, {}],
+      "counters": { "Wishclaw Talisman": { "wish": 3 } }
+    }
+  },
+  {
+    "name": "ruling: the last wish counter is removed but the Talisman stays on the battlefield under the opponent's control",
+    "players": [
+      { "battlefield": [{ "name": "Wishclaw Talisman", "counters": { "wish": 1 } }, "Swamp"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Wishclaw Talisman" },
+      { "resolve": true, "answers": ["Lightning Bolt"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"], "battlefield_lacks": ["Wishclaw Talisman"] },
+        { "battlefield_has": ["Wishclaw Talisman"] }
+      ],
+      "counters": { "Wishclaw Talisman": { "wish": 0 } }
+    }
+  }
+]

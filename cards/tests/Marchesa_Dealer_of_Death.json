@@ -1,0 +1,79 @@
+[
+  {
+    "name": "crime and paying {1}: look at the top two, one to hand, one to graveyard",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Marchesa, Dealer of Death", "Mountain", "Swamp"],
+        "library": ["Grizzly Bears", "Island"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true, "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Grizzly Bears"], "graveyard": ["Lightning Bolt", "Island"] }, { "graveyard": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "crime but no spare mana to pay {1}: nothing is looked at",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Marchesa, Dealer of Death", "Mountain"],
+        "library": ["Grizzly Bears", "Island"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand": [], "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "crime and declining to pay {1}: nothing is looked at",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Marchesa, Dealer of Death", "Mountain", "Swamp"],
+        "library": ["Grizzly Bears", "Island"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [{ "hand": [], "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: targeting only your own creature is not a crime, so there is no trigger",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Marchesa, Dealer of Death", "Mountain", "Swamp", "Grizzly Bears"], "library": ["Grizzly Bears", "Island"] },
+      {}
+    ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": [], "graveyard": ["Lightning Bolt", "Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: the crime is committed on cast, so the trigger still happens when the spell never resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Marchesa, Dealer of Death", "Mountain", "Swamp"], "library": ["Grizzly Bears", "Island"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true, "answers": [true, "Grizzly Bears"] }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "graveyard": ["Lightning Bolt", "Island"] }, { "hand": ["Grizzly Bears"], "graveyard": ["Unsummon"] } ] }
+  }
+]

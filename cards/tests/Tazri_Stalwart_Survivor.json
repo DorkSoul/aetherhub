@@ -1,0 +1,69 @@
+[
+ {
+  "name": "creature mana pays for a creature's activated ability",
+  "players": [
+   { "battlefield": ["Tazri, Stalwart Survivor", { "name": "Honor Guard", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Honor Guard", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "pt": { "Honor Guard": [1, 2] } }
+ },
+ {
+  "name": "a creature with no other activated ability can't make the mana",
+  "players": [
+   { "battlefield": [{ "name": "Tazri, Stalwart Survivor", "tapped": true }, { "name": "Honor Guard", "tapped": true }, { "name": "Savannah Lions", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Honor Guard", "ability": 0, "illegal": true }
+  ],
+  "expect": { "pt": { "Honor Guard": [1, 1] } }
+ },
+ {
+  "name": "the mana can't be spent on spells",
+  "players": [
+   { "hand": ["Savannah Lions"], "battlefield": ["Tazri, Stalwart Survivor"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Savannah Lions", "illegal": true }
+  ],
+  "expect": { "players": [ { "hand": ["Savannah Lions"] }, {} ] }
+ },
+ {
+  "name": "mill five: creature cards with non-mana activated abilities go to hand",
+  "players": [
+   {
+    "battlefield": ["Tazri, Stalwart Survivor", "Plains", "Island", "Swamp", "Mountain", "Forest"],
+    "library": ["Honor Guard", "Grizzly Bears", "Llanowar Elves", "Mother of Runes", "Island", "Shivan Dragon"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Tazri, Stalwart Survivor", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand": ["Honor Guard", "Mother of Runes"], "graveyard": ["Grizzly Bears", "Llanowar Elves", "Island"] }, {} ] }
+ },
+ {
+  "name": "ruling: the other activated ability can be a from-hand (cycling) ability: the creature still makes the mana",
+  "players": [ { "battlefield": ["Tazri, Stalwart Survivor", "Agonasaur Rex", { "name": "Ancient Silverback", "tapped": true }] }, {} ],
+  "steps": [ { "activate": "Ancient Silverback", "ability": 0 }, { "resolve": true } ],
+  "expect": { "pt": { "Ancient Silverback": [6, 5] } }
+ },
+ {
+  "name": "ruling: with the cycling creature tapped there is no green mana for the regeneration cost",
+  "players": [ { "battlefield": ["Tazri, Stalwart Survivor", { "name": "Agonasaur Rex", "tapped": true }, { "name": "Ancient Silverback", "tapped": true }] }, {} ],
+  "steps": [ { "activate": "Ancient Silverback", "ability": 0, "illegal": true } ],
+  "expect": { "pt": { "Ancient Silverback": [6, 5] } }
+ },
+ {
+  "name": "ruling: a creature's mana can't pay for cycling a card in hand",
+  "players": [ { "hand": ["Agonasaur Rex"], "battlefield": ["Tazri, Stalwart Survivor", "Honor Guard", "Forest", "Plains"] }, {} ],
+  "steps": [ { "activate": "Agonasaur Rex", "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Agonasaur Rex"] }, {} ] }
+ }
+]

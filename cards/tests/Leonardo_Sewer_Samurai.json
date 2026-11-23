@@ -1,0 +1,164 @@
+[
+  {
+    "name": "cast a toughness-1 creature from the graveyard: it enters with a finality counter",
+    "players": [
+      {
+        "battlefield": [
+          "Leonardo, Sewer Samurai",
+          "Plains"
+        ],
+        "graveyard": [
+          "Savannah Lions"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Savannah Lions"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Savannah Lions"
+          ],
+          "graveyard": []
+        },
+        {}
+      ],
+      "counters": {
+        "Savannah Lions": {
+          "Finality": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "a creature with power and toughness above 1 can't be cast from the graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Leonardo, Sewer Samurai",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sneak {2}{W}{W}: return the unblocked Grizzly Bears, Leonardo enters tapped and attacking and deals 6 with double strike",
+    "players": [
+      {
+        "hand": ["Leonardo, Sewer Samurai"],
+        "battlefield": [
+          { "name": "Grizzly Bears", "sick": false },
+          "Plains",
+          "Plains",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Leonardo, Sewer Samurai", "alt": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Leonardo, Sewer Samurai"], "hand": ["Grizzly Bears"] },
+        { "life": 14 }
+      ],
+      "tapped": { "Leonardo, Sewer Samurai": true }
+    }
+  },
+  {
+    "name": "ruling: a finality counter does not stop a bounce to hand from the battlefield",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Leonardo, Sewer Samurai", "Plains", "Island"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Unsummon", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Leonardo, Sewer Samurai"], "hand": ["Savannah Lions"], "graveyard": ["Unsummon"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature with a finality counter that dies is exiled instead of going to the graveyard",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Leonardo, Sewer Samurai", "Plains", "Mountain"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Savannah Lions"], "graveyard": ["Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: sneak returns the unblocked attacker and Leonardo attacks the same planeswalker as it",
+    "players": [
+      {
+        "hand": ["Leonardo, Sewer Samurai"],
+        "battlefield": [ { "name": "Grizzly Bears", "sick": false }, "Plains", "Plains", "Island", "Island" ]
+      },
+      { "battlefield": ["Domri Rade"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "Domri Rade" } ] },
+      { "block": [] },
+      { "cast": "Leonardo, Sewer Samurai", "alt": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Leonardo, Sewer Samurai"], "hand": ["Grizzly Bears"] },
+        { "graveyard": ["Domri Rade"], "life": 20 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "name": "can't block alone",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Craven Hulk"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Craven Hulk", "attacker": "Hill Giant" } ], "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ] }
+  },
+  {
+    "name": "can block together with another creature",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Craven Hulk", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Craven Hulk", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "can't block alone: its block is dropped (Grizzly Bears not declared), so Hill Giant hits me (17)",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Craven Hulk", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Craven Hulk", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: a blocking Craven Hulk stays in combat after its co-blocker leaves",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Craven Hulk", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Craven Hulk", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant"] }, { "life": 20, "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a Craven Hulk may be the only blocker of one attacker while another creature blocks a different attacker",
+    "players": [ { "battlefield": ["Hill Giant", "Grizzly Bears"] }, { "battlefield": ["Craven Hulk", "Llanowar Elves"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Craven Hulk", "attacker": "Hill Giant" }, { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant"], "life": 20 }, { "graveyard_has": ["Llanowar Elves"], "life": 20 } ] }
+  }
+]

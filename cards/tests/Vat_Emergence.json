@@ -1,0 +1,91 @@
+[
+  {
+    "name": "takes a creature card from an opponent's graveyard under your control",
+    "players": [
+      { "hand": ["Vat Emergence"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Vat Emergence", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Vat Emergence"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a non-creature card in a graveyard is not a legal target",
+    "players": [
+      { "hand": ["Vat Emergence"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Vat Emergence", "targets": ["Lightning Bolt"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Vat Emergence"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: proliferate can choose an opponent's permanent that has a counter",
+    "players": [
+      { "hand": ["Vat Emergence"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"], "battlefield": [{ "name": "Hill Giant", "counters": { "+1/+1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Vat Emergence", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [["Hill Giant"]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "counters": { "Hill Giant": { "p1p1": 2 } },
+      "pt": { "Hill Giant": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: proliferate may choose no permanents, leaving counters unchanged",
+    "players": [
+      { "hand": ["Vat Emergence"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"], "battlefield": [{ "name": "Hill Giant", "counters": { "+1/+1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Vat Emergence", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "p1p1": 1 } },
+      "pt": { "Hill Giant": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a player chosen by proliferate gets one of each kind of counter she already has",
+    "players": [
+      { "hand": ["Vat Emergence"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"], "poison": 1, "energy": 2 }
+    ],
+    "steps": [
+      { "cast": "Vat Emergence", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [["p1"]] }
+    ],
+    "expect": {
+      "players": [ {}, { "poison": 2, "energy": 3 } ]
+    }
+  },
+  {
+    "name": "ruling: a permanent with +1/+1 and -1/-1 counters after proliferate keeps no -1/-1 counters",
+    "players": [
+      { "hand": ["Vat Emergence"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"], "battlefield": [{ "name": "Hill Giant", "counters": { "+1/+1": 2, "-1/-1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Vat Emergence", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [["Hill Giant"]] }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "m1m1": 0 } }
+    }
+  }
+]

@@ -1,0 +1,160 @@
+[
+ {
+  "name": "ETB draws a card for each creature you control (itself included)",
+  "players": [
+   {
+    "hand": [
+     "Tishana, Voice of Thunder",
+     "Grizzly Bears",
+     "Shock"
+    ],
+    "battlefield": [
+     "Forest",
+     "Island",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Tishana, Voice of Thunder"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 3,
+     "battlefield_has": [
+      "Tishana, Voice of Thunder"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Tishana, Voice of Thunder": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "power and toughness track the number of cards in your hand",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Shock",
+     "Plains",
+     "Plains"
+    ],
+    "battlefield": [
+     "Tishana, Voice of Thunder"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 4
+    },
+    {}
+   ],
+   "pt": {
+    "Tishana, Voice of Thunder": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "no maximum hand size: eight cards are kept at cleanup",
+  "players": [
+   { "hand": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"], "battlefield": ["Tishana, Voice of Thunder"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep", "auto": true }
+  ],
+  "expect": {
+   "players": [{ "hand_count": 8 }, {}]
+  }
+ },
+ {
+  "name": "control: without Tishana the hand is cut to seven at cleanup",
+  "players": [
+   { "hand": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep", "auto": true }
+  ],
+  "expect": {
+   "players": [{ "hand_count": 7 }, {}]
+  }
+ },
+ {
+  "name": "ruling: with no cards in hand Tishana is 0/0 and dies before its draw trigger does anything",
+  "players": [
+   { "hand": ["Tishana, Voice of Thunder"], "battlefield": ["Forest", "Island", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Tishana, Voice of Thunder" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Tishana, Voice of Thunder"], "hand_count": 0 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: combat damage stays marked, so casting a card in main 2 shrinks Tishana to lethal damage",
+  "players": [
+   { "hand": ["Lightning Bolt", "Forest", "Forest"], "battlefield": ["Tishana, Voice of Thunder", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Tishana, Voice of Thunder", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Tishana, Voice of Thunder" } ], "player": 1 },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Tishana, Voice of Thunder", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "control: with the same three cards still in hand Tishana survives the 2 combat damage",
+  "players": [
+   { "hand": ["Lightning Bolt", "Forest", "Forest"], "battlefield": ["Tishana, Voice of Thunder", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Tishana, Voice of Thunder", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Tishana, Voice of Thunder" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Tishana, Voice of Thunder"], "hand": ["Lightning Bolt", "Forest", "Forest"] }, { "graveyard": ["Grizzly Bears"] } ]
+  }
+ }
+]

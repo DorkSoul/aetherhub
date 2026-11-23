@@ -1,0 +1,59 @@
+[
+  {
+    "name": "puts a bribery counter on target creature you don't control; its controller draws a card",
+    "players": [ { "battlefield": ["Gwafa Hazid, Profiteer", "Island", "Plains"] }, { "battlefield": ["Llanowar Elves"] } ],
+    "steps": [ { "activate": "Gwafa Hazid, Profiteer", "targets": ["Llanowar Elves"] }, { "resolve": true } ],
+    "expect": { "counters": { "Llanowar Elves": { "bribery": 1 } }, "players": [ {}, { "hand_count": 1 } ] }
+  },
+  {
+    "name": "creature with a bribery counter can't block",
+    "players": [ { "battlefield": ["Gwafa Hazid, Profiteer", "Island", "Plains", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Llanowar Elves"] } ],
+    "steps": [
+      { "activate": "Gwafa Hazid, Profiteer", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "p1:Llanowar Elves", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "creature with a bribery counter can't attack: the bribed Grizzly Bears stays home",
+    "players": [ { "battlefield": ["Gwafa Hazid, Profiteer", "Island", "Plains"] }, { "battlefield": ["Grizzly Bears", "Savannah Lions"] } ],
+    "steps": [
+      { "activate": "Gwafa Hazid, Profiteer", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "player": 1, "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Savannah Lions", "at": "p0" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18 }, {} ] }
+  },
+  {
+    "name": "creature with a bribery counter can't block: its declared block is dropped and the attacker is unblocked",
+    "players": [ { "battlefield": ["Gwafa Hazid, Profiteer", "Island", "Plains", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Llanowar Elves", "Savannah Lions"] } ],
+    "steps": [
+      { "activate": "Gwafa Hazid, Profiteer", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: a bribery counter put on an already attacking creature doesn't remove it from combat",
+    "players": [ { "battlefield": ["Gwafa Hazid, Profiteer", "Island", "Plains"] }, { "battlefield": ["Savannah Lions"] } ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "player": 1, "attack": [ { "card": "Savannah Lions", "at": "p0" } ] },
+      { "pass": true, "player": 1 },
+      { "activate": "Gwafa Hazid, Profiteer", "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18 }, { "hand_count": 2 } ] }
+  }
+]

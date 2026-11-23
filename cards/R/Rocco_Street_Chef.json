@@ -1,0 +1,46 @@
+{
+  "name": "Rocco, Street Chef",
+  "mana_cost": "{R}{G}{W}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Elf", "Druid"],
+  "power": 2,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "effects": [
+        { "type": "Exile", "what": { "type": "TopOfLibrary", "who": { "type": "EachPlayer" }, "n": 1 } },
+        { "type": "StoreRemembered", "slot": 0 },
+        {
+          "type": "ForEach",
+          "objects": { "type": "Stored", "slot": 0 },
+          "effects": [
+            { "type": "GrantPlayFromExile", "what": { "type": "EachObject" }, "window": "EndOfYourNextTurn", "by": { "type": "OwnerOf", "of": { "type": "EachObject" } } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "Any", "filter": {} },
+      "condition": { "type": "CastFrom", "zone": "Exile" },
+      "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" } ],
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "Target", "idx": 0 }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } },
+        { "type": "CreateToken", "token": "Food" }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "LandPlayed", "who": "Any", "filter": { "types": ["Land"] }, "from": "Exile" },
+      "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" } ],
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "Target", "idx": 0 }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } },
+        { "type": "CreateToken", "token": "Food" }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of your end step, each player exiles the top card of their library. Until your next end step, each player may play the card they exiled this way.\nWhenever a player plays a land from exile or casts a spell from exile, you put a +1/+1 counter on target creature and create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+}

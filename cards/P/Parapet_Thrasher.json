@@ -1,0 +1,76 @@
+{
+  "name": "Parapet Thrasher",
+  "mana_cost": "{2}{R}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Dragon"],
+  "colors": ["R"],
+  "power": 4,
+  "toughness": 3,
+  "keywords": ["Flying"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "CombatDamageToPlayer",
+        "batched": true,
+        "filter": { "types": ["Creature"], "subtypes": ["Dragon"], "controller": "You" }
+      },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "once_each_turn": true,
+          "modes": [
+            {
+              "text": "Destroy target artifact that opponent controls.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    {
+                      "what": {
+                        "type": "Permanent",
+                        "filter": { "types": ["Artifact"], "controlled_by": { "type": "TriggerPlayer" } }
+                      },
+                      "min": 1,
+                      "max": 1,
+                      "label": "artifact that opponent controls"
+                    }
+                  ],
+                  "effects": [
+                    { "type": "Destroy", "what": { "type": "Target", "idx": 0 } }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "This creature deals 4 damage to each other opponent.",
+              "effects": [
+                {
+                  "type": "DealDamage",
+                  "source": { "type": "This" },
+                  "to": { "type": "EachOpponentExceptTriggerPlayer" },
+                  "amount": { "type": "Fixed", "n": 4 }
+                }
+              ]
+            },
+            {
+              "text": "Exile the top card of your library. You may play it this turn.",
+              "effects": [
+                {
+                  "type": "Move",
+                  "what": { "type": "TopOfLibrary", "who": { "type": "You" }, "n": 1 },
+                  "to": "Exile",
+                  "remember": true
+                },
+                { "type": "GrantPlayFromExile", "what": { "type": "Remembered" }, "window": "ThisTurn" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying\nWhenever one or more Dragons you control deal combat damage to an opponent, choose one that hasn't been chosen this turn —\n• Destroy target artifact that opponent controls.\n• This creature deals 4 damage to each other opponent.\n• Exile the top card of your library. You may play it this turn."
+}

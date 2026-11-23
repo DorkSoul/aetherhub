@@ -1,0 +1,356 @@
+[
+ {
+  "name": "blinks a creature, re-triggering its enter ability",
+  "players": [
+   {
+    "hand": [
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains",
+     "Wall of Omens"
+    ],
+    "library": [
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Wall of Omens"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Wall of Omens"
+     ],
+     "exile": [
+      "Ephemerate"
+     ],
+     "hand_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "rebound: cast again from exile at next upkeep",
+  "players": [
+   {
+    "hand": [
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains",
+     "Wall of Omens"
+    ],
+    "library": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Wall of Omens"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ],
+    "targets": [
+     "Wall of Omens"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [],
+     "graveyard": [
+      "Ephemerate"
+     ],
+     "hand_count": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining rebound leaves it in exile",
+  "players": [
+   {
+    "hand": [
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains",
+     "Wall of Omens"
+    ],
+    "library": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Wall of Omens"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     false
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Ephemerate"
+     ],
+     "hand_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "cannot target an opponent's creature",
+  "players": [
+   {
+    "hand": [
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: blinked creature returns as a new object without its +1/+1 counters",
+  "players": [
+   {
+    "hand": [
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "+1/+1": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   },
+   "counters": {
+    "Grizzly Bears": {
+     "+1/+1": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: an Aura on the blinked creature is put into its owner's graveyard",
+  "players": [
+   {
+    "hand": [
+     "Pacifism",
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Pacifism",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Pacifism"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Ephemerate"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a rebound spell that is countered is put into the graveyard and never cast again",
+  "players": [
+   {
+    "hand": [
+     "Ephemerate"
+    ],
+    "battlefield": [
+     "Plains",
+     "Wall of Omens"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Ephemerate",
+    "targets": [
+     "Wall of Omens"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Ephemerate"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Ephemerate"
+     ],
+     "exile": [],
+     "battlefield_has": [
+      "Wall of Omens"
+     ],
+     "hand_count": 0
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ]
+  }
+ }
+]

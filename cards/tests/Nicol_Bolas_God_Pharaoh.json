@@ -1,0 +1,186 @@
+[
+  {
+    "name": "+2: opponent exiles through the first nonland card, which you may cast free this turn",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "library": [ "Island", "Grizzly Bears", "Forest" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Nicol Bolas, God-Pharaoh": { "Loyalty": 9 } },
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "exile": ["Island"], "library_count": 1 }
+      ]
+    }
+  },
+  {
+    "name": "+2: a card exiled this way stays exiled if you do not cast it this turn",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "library": [ "Island", "Grizzly Bears", "Forest" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"] },
+        { "exile": ["Island", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "+1: each opponent exiles two cards from their hand",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "hand": [ "Island", "Forest", "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 1 },
+      { "resolve": true, "answers": [["Island", "Forest"]] }
+    ],
+    "expect": {
+      "counters": { "Nicol Bolas, God-Pharaoh": { "Loyalty": 8 } },
+      "players": [
+        { "hand_count": 0 },
+        { "hand": ["Grizzly Bears"], "exile": ["Island", "Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "-4: 7 damage to target opponent",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 2, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Nicol Bolas, God-Pharaoh": { "Loyalty": 3 } },
+      "players": [ { "life": 20 }, { "life": 13 } ]
+    }
+  },
+  {
+    "name": "-4: 7 damage to a creature an opponent controls",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "battlefield": [ "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 2, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Nicol Bolas, God-Pharaoh": { "Loyalty": 3 } },
+      "players": [ { "life": 20 }, { "battlefield_lacks": ["Grizzly Bears"], "life": 20 } ]
+    }
+  },
+  {
+    "name": "-12: exile each nonland permanent your opponents control",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 12 } }, "Grizzly Bears" ] },
+      { "battlefield": [ "Island", "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 3 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "battlefield_has": ["Island"], "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: X is 0 when a card with {X} is cast for free (Walking Ballista dies as a 0/0)",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "library": [ "Island", "Walking Ballista", "Forest" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Walking Ballista" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Nicol Bolas, God-Pharaoh": { "Loyalty": 9 } },
+      "players": [
+        { "battlefield_lacks": ["Walking Ballista"] },
+        { "graveyard_has": ["Walking Ballista"], "exile": ["Island"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature exiled by +2 cannot be cast during combat (creature timing)",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "library": [ "Island", "Grizzly Bears", "Forest" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"] },
+        { "exile": ["Island", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an opponent with two cards in hand exiles the whole hand to +1 without a choice",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 7 } } ] },
+      { "hand": [ "Island", "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Nicol Bolas, God-Pharaoh": { "Loyalty": 8 } },
+      "players": [
+        { "hand_count": 0 },
+        { "exile": ["Island", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled card can still be cast after Nicol Bolas has left the battlefield",
+    "players": [
+      { "battlefield": [ { "name": "Nicol Bolas, God-Pharaoh", "counters": { "Loyalty": 1 } } ] },
+      { "hand": [ "Lightning Bolt" ], "battlefield": [ "Mountain" ], "library": [ "Island", "Grizzly Bears", "Forest" ] }
+    ],
+    "steps": [
+      { "activate": "Nicol Bolas, God-Pharaoh", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Nicol Bolas, God-Pharaoh"], "player": 1 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Nicol Bolas, God-Pharaoh"] },
+        { "exile": ["Island"] }
+      ]
+    }
+  }
+]

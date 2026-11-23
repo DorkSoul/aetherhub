@@ -1,0 +1,116 @@
+{
+  "name": "Bronzebeak Foragers",
+  "mana_cost": "{3}{W}",
+  "types": [
+    "Creature"
+  ],
+  "subtypes": [
+    "Dinosaur"
+  ],
+  "power": 3,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "EntersBattlefield",
+        "filter": {
+          "this": true
+        }
+      },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "not_types": [
+                "Land"
+              ],
+              "controller": "Opponent"
+            }
+          },
+          "min": 0,
+          "max": 1,
+          "label": "up to one nonland permanent an opponent controls"
+        }
+      ],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": {
+              "type": "Count",
+              "filter": {
+                "this": true
+              },
+              "zone": "Battlefield"
+            },
+            "cmp": {
+              "op": "Ge",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "Exile",
+              "what": {
+                "type": "Target",
+                "idx": 0
+              },
+              "until_source_leaves": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        {
+          "type": "Mana",
+          "cost": "{X}{W}"
+        }
+      ],
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Exile",
+            "filter": {
+              "exiled_with_this": true,
+              "mana_value_vs": {
+                "op": "Eq",
+                "amount": {
+                  "type": "X"
+                }
+              }
+            },
+            "whose": "Any"
+          },
+          "label": "card exiled with this creature with mana value X"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Move",
+          "what": {
+            "type": "Target",
+            "idx": 0
+          },
+          "to": "Graveyard"
+        },
+        {
+          "type": "GainLife",
+          "who": {
+            "type": "You"
+          },
+          "n": {
+            "type": "X"
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When this creature enters, for each opponent, exile up to one target nonland permanent that player controls until this creature leaves the battlefield.\n{X}{W}: Put target card with mana value X exiled with this creature into its owner's graveyard. You gain X life."
+}

@@ -1,0 +1,189 @@
+[
+ {
+  "name": "+1 drains 2 and puts a corruption counter on another creature",
+  "players": [
+   {
+    "battlefield": [
+     "Geyadrone Dihada",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Geyadrone Dihada",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 22
+    },
+    {
+     "life": 18
+    }
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "corruption": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "+1 with no other creature to target still drains",
+  "players": [
+   {
+    "battlefield": [
+     "Geyadrone Dihada"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Geyadrone Dihada",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 22
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "-3 steals a creature, untaps it and puts a corruption counter on it",
+  "players": [
+   {
+    "battlefield": [
+     "Geyadrone Dihada"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Geyadrone Dihada",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Geyadrone Dihada",
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield": []
+    }
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "corruption": 1
+    }
+   },
+   "tapped": {
+    "Grizzly Bears": false
+   }
+  }
+ },
+ {
+  "name": "-7 is not activatable at 4 loyalty",
+  "players": [
+   {
+    "battlefield": [
+     "Geyadrone Dihada"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Geyadrone Dihada",
+    "ability": 2,
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "-7 gains control of every permanent with a corruption counter; an uncountered creature stays",
+  "players": [
+   {"battlefield": [{"name": "Geyadrone Dihada", "counters": {"Loyalty": 7}}]},
+   {"battlefield": [{"name": "Grizzly Bears", "counters": {"corruption": 1}}, "Hill Giant"]}
+  ],
+  "steps": [
+   {"activate": "Geyadrone Dihada", "ability": 2},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Grizzly Bears"], "graveyard": ["Geyadrone Dihada"]},
+    {"battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Grizzly Bears"]}
+   ],
+   "counters": {"Grizzly Bears": {"corruption": 1}}
+  }
+ },
+ {
+  "name": "protection from corruption-countered permanents: their attack on me cannot damage Dihada",
+  "players": [ { "battlefield": ["Geyadrone Dihada"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false, "counters": { "corruption": 1 } } ] } ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "Geyadrone Dihada" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2", "player": 1 }
+  ],
+  "expect": { "counters": { "Geyadrone Dihada": { "loyalty": 4 } } }
+ },
+ {
+  "name": "ruling: corruption counters stay on permanents after Dihada leaves; a new Dihada has protection from them",
+  "players": [
+   { "hand": ["Geyadrone Dihada", "Lightning Bolt"], "battlefield": [ { "name": "Geyadrone Dihada", "counters": { "Loyalty": 3 } }, "Mountain", "Mountain", "Island", "Swamp", "Forest" ] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "corruption": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Geyadrone Dihada"] },
+   { "resolve": true },
+   { "cast": "Geyadrone Dihada" },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "Geyadrone Dihada" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2", "player": 1 }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Geyadrone Dihada"], "graveyard": ["Lightning Bolt", "Geyadrone Dihada"] }, { "battlefield_has": ["Grizzly Bears"] } ],
+   "counters": { "Grizzly Bears": { "corruption": 1 }, "Geyadrone Dihada": { "loyalty": 4 } }
+  }
+ }
+]

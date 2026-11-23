@@ -1,0 +1,111 @@
+[
+  {
+    "name": "counters an unpaid spell and suspects the chosen creature",
+    "players": [
+      {
+        "hand": [
+          "Reasonable Doubt"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "cast": "Reasonable Doubt",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Reasonable Doubt"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ],
+      "keywords": {
+        "Hill Giant": [
+          "Menace",
+          "CantBlock"
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: with no spell on the stack there is nothing to counter, so it cannot be cast",
+    "players": [
+      { "hand": ["Reasonable Doubt"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Reasonable Doubt", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Reasonable Doubt"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "keywords": { "Grizzly Bears": [] }
+    }
+  },
+  {
+    "name": "ruling: suspecting a second creature does not stop the first from being suspected (no limit)",
+    "players": [
+      {
+        "hand": ["Reasonable Doubt", "Reasonable Doubt", "Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Mountain", "Mountain", "Mountain"]
+      },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Reasonable Doubt", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [false] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Reasonable Doubt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Reasonable Doubt", "Reasonable Doubt", "Lightning Bolt", "Lightning Bolt"] },
+        { "life": 20 }
+      ],
+      "keywords": {
+        "Hill Giant": ["Menace", "CantBlock"],
+        "Grizzly Bears": ["Menace", "CantBlock"]
+      }
+    }
+  }
+]

@@ -1,0 +1,211 @@
+[
+ {
+  "name": "enters with loyalty counters equal to X",
+  "players": [
+   { "hand": ["Nissa, Steward of Elements"], "battlefield": ["Forest", "Island", "Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nissa, Steward of Elements", "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Nissa, Steward of Elements"] },
+    {}
+   ],
+   "counters": { "Nissa, Steward of Elements": { "loyalty": 2 } }
+  }
+ },
+ {
+  "name": "0: a land on top may be put onto the battlefield",
+  "players": [
+   {
+    "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 3 } }],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 1 },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest", "Nissa, Steward of Elements"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "0: a creature with mana value above loyalty stays on top",
+  "players": [
+   {
+    "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 1 } }],
+    "library": ["Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Grizzly Bears"], "battlefield_has": ["Nissa, Steward of Elements"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "0: a creature with mana value equal to loyalty may be put onto the battlefield",
+  "players": [
+   {
+    "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 2 } }],
+    "library": ["Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 1 },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "0: a nonland noncreature card on top is not put onto the battlefield",
+  "players": [
+   {
+    "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 5 } }],
+    "library": ["Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Lightning Bolt"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-6: two lands become 5/5 flying haste Elementals and untap",
+  "players": [
+   {
+    "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 6 } }, { "name": "Forest", "tapped": true }, "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 2, "targets": ["Forest", "Mountain"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Nissa, Steward of Elements"], "battlefield_has": ["Forest", "Mountain"] },
+    {}
+   ],
+   "pt": { "Forest": [5, 5], "Mountain": [5, 5] },
+   "tapped": { "Forest": false },
+   "keywords": { "Forest": ["Flying", "Haste"] }
+  }
+ },
+ {
+  "name": "+2 scry 2: bottom the first card, keep the second on top",
+  "players": [
+   { "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 5 } }], "library": ["Grizzly Bears", "Island", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 0 },
+   { "resolve": true, "answers": [[0]] }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Island", "Forest"], "hand_count": 0 }, {} ],
+   "counters": { "Nissa, Steward of Elements": { "loyalty": 7 } }
+  }
+ },
+ {
+  "name": "+2 scry 2: keeping both leaves them on top in the same order",
+  "players": [
+   { "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 5 } }], "library": ["Grizzly Bears", "Island", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 0 },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Grizzly Bears", "Island", "Forest"] }, {} ],
+   "counters": { "Nissa, Steward of Elements": { "loyalty": 7 } }
+  }
+ },
+ {
+  "name": "ruling: X=0 Nissa enters with no loyalty and goes to the graveyard before her abilities",
+  "players": [
+   { "hand": ["Nissa, Steward of Elements"], "battlefield": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nissa, Steward of Elements", "answers": [0] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Nissa, Steward of Elements"], "battlefield_lacks": ["Nissa, Steward of Elements"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: -6 lands become 5/5 but keep their +1/+1 counters (6/6 Forest, 5/5 Mountain)",
+  "players": [
+   { "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 6 } }, { "name": "Forest", "counters": { "p1p1": 1 } }, "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 2, "targets": ["Forest", "Mountain"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Forest", "Mountain"] }, {} ],
+   "pt": { "Forest": [6, 6], "Mountain": [5, 5] }
+  }
+ },
+ {
+  "name": "ruling: declining the 0 ability's put leaves the land on top of the library",
+  "players": [
+   { "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 3 } }], "library": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 1 },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Forest"], "battlefield_lacks": ["Forest"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: Nissa killed by damage while her 0 ability is on the stack has last known loyalty 0, so nothing is put onto the battlefield",
+  "players": [
+   { "battlefield": [{ "name": "Nissa, Steward of Elements", "counters": { "loyalty": 3 } }], "library": ["Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "activate": "Nissa, Steward of Elements", "ability": 1 },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Nissa, Steward of Elements"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Nissa, Steward of Elements"], "library_top": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ]
+  }
+ }
+]

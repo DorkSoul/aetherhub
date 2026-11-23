@@ -1,0 +1,92 @@
+[
+  {
+    "name": "enchanted creature gets +1/+1 and flying",
+    "players": [
+      { "hand": ["Ghostly Wings"], "battlefield": ["Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghostly Wings", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "keywords": { "Grizzly Bears": ["Flying"] }
+    }
+  },
+  {
+    "name": "discard a card: enchanted creature returns to its owner's hand",
+    "players": [
+      { "hand": ["Ghostly Wings", "Island"], "battlefield": ["Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghostly Wings", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Ghostly Wings" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Island", "Ghostly Wings"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: only the controller of Ghostly Wings can activate its discard ability",
+    "players": [
+      { "hand": ["Ghostly Wings"], "battlefield": ["Island", "Island"] },
+      { "hand": ["Island"], "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Ghostly Wings", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Ghostly Wings", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_has": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: I control Ghostly Wings on an opponent's creature and can bounce it to its owner's hand",
+    "players": [
+      { "hand": ["Ghostly Wings", "Island"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Ghostly Wings", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Ghostly Wings" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Ghostly Wings", "Island"] },
+        { "battlefield_lacks": ["Grizzly Bears"], "hand": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: several activations of the discard ability, only the first to resolve bounces",
+    "players": [
+      { "hand": ["Ghostly Wings", "Island", "Island", "Island"], "battlefield": ["Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ghostly Wings", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Ghostly Wings", "answers": ["Island"] },
+      { "activate": "Ghostly Wings", "answers": ["Island"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Ghostly Wings", "Island", "Island"] },
+        {}
+      ]
+    }
+  }
+]

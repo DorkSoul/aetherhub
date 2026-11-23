@@ -1,0 +1,71 @@
+{
+  "name": "Kozilek, the Broken Reality",
+  "mana_cost": "{9}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Eldrazi"],
+  "power": 9,
+  "toughness": 9,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "from": "Stack",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": { "type": "Player", "filter": "Any" },
+          "min": 0,
+          "max": 2,
+          "label": "up to two target players"
+        }
+      ],
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 1, "append": false },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "Targets" },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Hand",
+              "from": { "type": "EachObject" },
+              "filter": {},
+              "min": 2,
+              "max": 2,
+              "then": [
+                { "type": "StoreRemembered", "slot": 1, "append": true },
+                {
+                  "type": "Move",
+                  "what": { "type": "Remembered" },
+                  "to": "Battlefield",
+                  "face_down": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Draw",
+          "who": { "type": "You" },
+          "n": {
+            "type": "Count",
+            "filter": { "among_stored": 1 },
+            "zone": "Battlefield"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "Modify",
+        "affects": { "types": ["Creature"], "colorless": true, "controller": "You", "other": true },
+        "power": { "type": "Fixed", "n": 3 },
+        "toughness": { "type": "Fixed", "n": 2 }
+      }
+    }
+  ],
+  "oracle_text": "When you cast this spell, up to two target players each manifest two cards from their hands. For each card manifested this way, you draw a card. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nOther colorless creatures you control get +3/+2."
+}

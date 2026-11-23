@@ -1,0 +1,142 @@
+{
+  "name": "Cauldron Dance",
+  "mana_cost": "{4}{B}{R}",
+  "types": [
+    "Instant"
+  ],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": {
+        "type": "AnyOf",
+        "cs": [
+          {
+            "type": "InStep",
+            "step": "BeginCombat"
+          },
+          {
+            "type": "InStep",
+            "step": "DeclareAttackers"
+          },
+          {
+            "type": "InStep",
+            "step": "DeclareBlockers"
+          },
+          {
+            "type": "InStep",
+            "step": "FirstStrikeDamage"
+          },
+          {
+            "type": "InStep",
+            "step": "CombatDamage"
+          },
+          {
+            "type": "InStep",
+            "step": "EndCombat"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Graveyard",
+            "filter": {
+              "types": [
+                "Creature"
+              ]
+            },
+            "whose": "You"
+          },
+          "label": "target creature card in your graveyard"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Move",
+          "what": {
+            "type": "Target",
+            "idx": 0
+          },
+          "to": "Battlefield",
+          "remember": true
+        },
+        {
+          "type": "GrantKeyword",
+          "what": {
+            "type": "Remembered"
+          },
+          "keyword": "Haste",
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [
+            {
+              "type": "Move",
+              "what": {
+                "type": "Remembered"
+              },
+              "to": "Hand",
+              "from": "Battlefield"
+            }
+          ]
+        },
+        {
+          "type": "May",
+          "effects": [
+            {
+              "type": "Choose",
+              "who": {
+                "type": "You"
+              },
+              "zone": "Hand",
+              "filter": {
+                "types": [
+                  "Creature"
+                ]
+              },
+              "min": 1,
+              "max": 1,
+              "then": [
+                {
+                  "type": "Move",
+                  "what": {
+                    "type": "Remembered"
+                  },
+                  "to": "Battlefield",
+                  "remember": true
+                },
+                {
+                  "type": "GrantKeyword",
+                  "what": {
+                    "type": "Remembered"
+                  },
+                  "keyword": "Haste",
+                  "duration": "UntilEndOfTurn"
+                },
+                {
+                  "type": "Delayed",
+                  "at": "NextEndStep",
+                  "effects": [
+                    {
+                      "type": "Sacrifice",
+                      "who": {
+                        "type": "Remembered"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only during combat.\nReturn target creature card from your graveyard to the battlefield. That creature gains haste. Return it to your hand at the beginning of the next end step.\nYou may put a creature card from your hand onto the battlefield. That creature gains haste. Its controller sacrifices it at the beginning of the next end step."
+}

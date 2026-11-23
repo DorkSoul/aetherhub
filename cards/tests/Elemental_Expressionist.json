@@ -1,0 +1,136 @@
+[
+  {
+    "name": "magecraft: the targeted creature that would die is exiled instead and makes a 4/4 Elemental",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Elemental Expressionist", "Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Elemental Expressionist", "Elemental 4-4 UR"], "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "magecraft only affects the chosen creature, not others that die",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Elemental Expressionist", "Grizzly Bears", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant", "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Elemental Expressionist", "Grizzly Bears"], "battlefield_lacks": ["Elemental 4-4 UR"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "a creature spell does not trigger magecraft",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Elemental Expressionist", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Elemental Expressionist", "Grizzly Bears"], "battlefield_lacks": ["Elemental 4-4 UR"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two magecraft triggers on the same creature give it two exile triggers, so two Elementals",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Elemental Expressionist", "Grizzly Bears", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears", "Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears", "Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Elemental Expressionist", "Elemental 4-4 UR", "Elemental 4-4 UR"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a copy of an instant triggers magecraft too, so three triggers give three Elementals",
+    "players": [
+      { "hand": ["Lightning Bolt", "Twincast"], "battlefield": ["Elemental Expressionist", "Grizzly Bears", "Mountain", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears", "Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Twincast", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true, "targets": ["Grizzly Bears"], "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Elemental Expressionist", "Elemental 4-4 UR", "Elemental 4-4 UR", "Elemental 4-4 UR"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an opponent exiling the targeted creature still makes the Elemental",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Elemental Expressionist", "Grizzly Bears", "Mountain"] },
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Elemental Expressionist", "Elemental 4-4 UR"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled targeted token still makes an Elemental and then ceases to exist",
+    "players": [
+      { "hand": ["Raise the Alarm", "Lightning Bolt"], "battlefield": ["Elemental Expressionist", "Grizzly Bears", "Plains", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raise the Alarm", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Soldier", "Soldier"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [], "battlefield_has": ["Elemental Expressionist", "Elemental 4-4 UR", "Soldier"], "graveyard": ["Lightning Bolt", "Raise the Alarm"] },
+        {}
+      ]
+    }
+  }
+]

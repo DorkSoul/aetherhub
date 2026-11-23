@@ -1,0 +1,62 @@
+[
+  {"name": "can't attack with fewer than five +1/+1 counters",
+   "players": [{"battlefield": ["Slumbering Dragon"]}, {}],
+   "steps": [{"attack": [{"card": "Slumbering Dragon", "at": "p1"}], "illegal": true}],
+   "expect": {"tapped": {"Slumbering Dragon": false}}},
+  {"name": "gets a +1/+1 counter whenever a creature attacks you",
+   "players": [{"battlefield": ["Slumbering Dragon"]}, {"battlefield": ["Grizzly Bears"]}],
+   "steps": [
+     {"advance_to": "Main1", "player": 1},
+     {"attack": [{"card": "Grizzly Bears", "at": "p0"}]},
+     {"resolve": true},
+     {"block": []},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"counters": {"Slumbering Dragon": {"p1p1": 1}}, "pt": {"Slumbering Dragon": [4, 4]}}},
+  {"name": "can't attack with fewer than five counters: a second attacker still deals damage",
+   "players": [{"battlefield": ["Slumbering Dragon", "Grizzly Bears"]}, {}],
+   "steps": [
+     {"advance_to": "BeginCombat"},
+     {"attack": [{"card": "Grizzly Bears", "at": "p1"}, {"card": "Slumbering Dragon", "at": "p1"}]},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{}, {"life": 18}], "tapped": {"Slumbering Dragon": false}}},
+  {"name": "can't block with fewer than five counters: the attacker it would block deals damage",
+   "players": [{"battlefield": ["Slumbering Dragon", "Savannah Lions"]}, {"battlefield": ["Hill Giant", "Grizzly Bears"]}],
+   "steps": [
+     {"advance_to": "Main1", "player": 1},
+     {"attack": [{"card": "Hill Giant", "at": "p0"}, {"card": "Grizzly Bears", "at": "p0"}]},
+     {"resolve": true},
+     {"resolve": true},
+     {"block": [{"blocker": "Slumbering Dragon", "attacker": "Hill Giant"}, {"blocker": "Savannah Lions", "attacker": "Grizzly Bears"}], "player": 0},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{"life": 17}, {}]}},
+  {"name": "ruling: the counter comes before blockers, so a dragon with four counters can block the attacker that woke it",
+   "players": [{"battlefield": [{"name": "Slumbering Dragon", "counters": {"p1p1": 4}}]}, {"battlefield": ["Grizzly Bears"]}],
+   "steps": [
+     {"advance_to": "Main1", "player": 1},
+     {"attack": [{"card": "Grizzly Bears", "at": "p0"}]},
+     {"resolve": true},
+     {"block": [{"blocker": "Slumbering Dragon", "attacker": "Grizzly Bears"}], "player": 0},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{}, {"graveyard": ["Grizzly Bears"]}], "counters": {"Slumbering Dragon": {"p1p1": 5}}, "pt": {"Slumbering Dragon": [8, 8]}}},
+  {"name": "ruling: each creature that attacks you adds its own counter (two attackers, two counters)",
+   "players": [{"battlefield": ["Slumbering Dragon"]}, {"battlefield": ["Grizzly Bears", "Hill Giant"]}],
+   "steps": [
+     {"advance_to": "Main1", "player": 1},
+     {"attack": [{"card": "Grizzly Bears", "at": "p0"}, {"card": "Hill Giant", "at": "p0"}]},
+     {"resolve": true},
+     {"block": []},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{"life": 15}, {}], "counters": {"Slumbering Dragon": {"p1p1": 2}}, "pt": {"Slumbering Dragon": [5, 5]}}},
+  {"name": "ruling: the ability counts all +1/+1 counters, so five counters from setup let it attack and its power is 8",
+   "players": [{"battlefield": [{"name": "Slumbering Dragon", "counters": {"p1p1": 5}}]}, {}],
+   "steps": [
+     {"attack": [{"card": "Slumbering Dragon", "at": "p1"}]},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{}, {"life": 12}]}}
+]

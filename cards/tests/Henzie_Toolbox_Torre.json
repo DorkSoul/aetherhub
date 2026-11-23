@@ -1,0 +1,101 @@
+[
+  {
+    "name": "blitz from the library (Future Sight): the top creature is blitzed with haste",
+    "players": [ { "hand": [], "library": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Future Sight", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Hill Giant", "alt": 104 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"] }, {} ], "keywords": { "Hill Giant": ["Haste"] } }
+  },
+  {
+    "name": "blitz from the command zone: the commander-zone creature is blitzed with haste",
+    "players": [ { "hand": [], "command": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Hill Giant", "alt": 101 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"] }, {} ], "keywords": { "Hill Giant": ["Haste"] } }
+  },
+  {
+    "name": "blitz cast of a creature with mana value 4+: haste, sacrificed at the end step, draws a card when it dies",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant", "alt": 100 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Hill Giant"], "graveyard": ["Hill Giant"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "the blitzed creature has haste",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant", "alt": 100 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"] }, {} ], "keywords": { "Hill Giant": ["Haste"] } }
+  },
+  {
+    "name": "cast normally it is an ordinary creature: not sacrificed",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"], "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "blitz costs are {1} less for each time my commander was cast from the command zone",
+    "players": [
+      { "hand": ["Hill Giant"], "command": ["Grizzly Bears"], "battlefield": ["Henzie \"Toolbox\" Torre", "Forest", "Forest", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Hill Giant", "alt": 100 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "ruling: a blitz cast is still a spell and can be countered (no haste, no sacrifice, no draw)",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Hill Giant", "alt": 100 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Hill Giant" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"], "hand_count": 0 }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature that dies for any reason (here Lightning Bolt) still draws a card",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Henzie \"Toolbox\" Torre", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Hill Giant", "alt": 100 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Hill Giant"], "hand_count": 1 }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  }
+]

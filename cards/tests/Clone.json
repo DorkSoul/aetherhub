@@ -1,0 +1,75 @@
+[
+ {
+  "name": "copies a creature and triggers its enters ability",
+  "players": [
+   { "hand": ["Clone"], "battlefield": ["Island", "Island", "Island", "Island", "Mulldrifter"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": {
+   "pt": { "Mulldrifter": [2, 2] },
+   "players": [ { "battlefield_has": ["Mulldrifter", "Mulldrifter"], "hand_count": 2 }, {} ]
+  }
+ },
+ {
+  "name": "no creatures to copy: dies as a 0/0",
+  "players": [
+   { "hand": ["Clone"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Clone"] }, {} ] }
+ },
+ {
+  "name": "ruling: Clone may choose not to copy anything and dies as a 0/0",
+  "players": [
+   { "hand": ["Clone"], "battlefield": ["Island", "Island", "Island", "Island", "Mulldrifter"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": { "players": [ { "graveyard": ["Clone"], "battlefield_has": ["Mulldrifter"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: the copy gets only the printed characteristics (not tapped status or counters)",
+  "players": [
+   { "hand": ["Clone", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "tapped": true, "counters": { "p1p1": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [0] },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "tapped": { "Grizzly Bears": false },
+   "counters": { "Grizzly Bears": { "p1p1": 0 } },
+   "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: Clone can copy a creature with shroud (its ability does not target)",
+  "players": [
+   { "hand": ["Clone"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Blastoderm"] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Blastoderm"], "battlefield_lacks": ["Clone"] }, {} ],
+   "pt": { "Blastoderm": [5, 5] }
+  }
+ }
+]

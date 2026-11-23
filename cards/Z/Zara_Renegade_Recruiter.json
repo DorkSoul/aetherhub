@@ -1,0 +1,56 @@
+{
+  "name": "Zara, Renegade Recruiter",
+  "mana_cost": "{3}{U}{R}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Pirate"],
+  "power": 4,
+  "toughness": 3,
+  "keywords": ["Flying"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "from": { "type": "DefendingPlayer" },
+          "zone": "Hand",
+          "filter": { "types": ["Creature"] },
+          "min": 0,
+          "max": 1,
+          "then": [
+            {
+              "type": "If",
+              "cond": { "type": "Compare", "a": { "type": "RememberedCount" }, "cmp": { "op": "Ge", "n": 1 } },
+              "then": [
+                { "type": "StoreRemembered", "slot": 0 },
+                { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "under_your_control": true, "tapped": true, "attacking": true },
+                {
+                  "type": "Delayed",
+                  "at": "NextEndStep",
+                  "effects": [
+                    { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand", "from": "Battlefield" }
+                  ]
+                },
+                {
+                  "type": "Choose",
+                  "who": { "type": "You" },
+                  "zone": "Battlefield",
+                  "filter": { "types": ["Planeswalker"], "controlled_by": { "type": "DefendingPlayer" } },
+                  "min": 0,
+                  "max": 1,
+                  "then": [
+                    { "type": "ChangeDefender", "what": { "type": "Stored", "slot": 0 }, "to": { "type": "Remembered" } }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying\nWhenever Zara, Renegade Recruiter attacks, look at defending player's hand. You may put a creature card from it onto the battlefield under your control tapped and attacking that player or a planeswalker they control. Return that creature to its owner's hand at the beginning of the next end step."
+}

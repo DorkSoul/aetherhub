@@ -1,0 +1,108 @@
+[
+  {
+    "name": "puts a creature card from hand onto the battlefield with haste",
+    "players": [
+      { "hand": ["Through the Breach", "Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Through the Breach" },
+      { "resolve": true, "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the creature is sacrificed at the next end step",
+    "players": [
+      { "hand": ["Through the Breach", "Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Through the Breach" },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the put: the creature stays in hand",
+    "players": [
+      { "hand": ["Through the Breach", "Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Through the Breach" },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "splice onto Blind with Anger puts a creature onto the battlefield too",
+    "players": [
+      { "hand": ["Blind with Anger", "Through the Breach", "Hill Giant"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true, "answers": ["Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant", "Grizzly Bears"], "hand": ["Through the Breach"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: spliced Glacial Ray's target is chosen with the spell's other targets; the splice still puts a creature in",
+    "players": [
+      { "hand": ["Glacial Ray", "Through the Breach", "Hill Giant"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glacial Ray", "targets": ["p1"], "answers": [true] },
+      { "resolve": true, "answers": ["Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"], "hand": ["Through the Breach"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the target becomes illegal for all targets, so the spell (and its spliced creature) does nothing",
+    "players": [
+      { "hand": ["Blind with Anger", "Through the Breach", "Hill Giant"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Shock"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Hill Giant"], "hand": ["Through the Breach", "Hill Giant"] },
+        { "graveyard_has": ["Shock", "Grizzly Bears"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "name": "Lich",
+  "mana_cost": "{B}{B}{B}{B}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [ { "type": "LoseLife", "who": { "type": "You" }, "n": { "type": "LifeOf", "who": { "type": "You" } } } ]
+    },
+    { "type": "Static", "effect": { "type": "NoLoseAtZeroLife", "who": "You" } },
+    {
+      "type": "Replace",
+      "what": {
+        "type": "GainLife",
+        "who": "You",
+        "instead": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "EventAmount" } } ]
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "DealsDamage", "filter": {}, "to": "You" },
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "CompareAmounts",
+            "a": { "type": "Count", "filter": { "controller": "You", "token": false }, "zone": "Battlefield", "player": { "type": "You" } },
+            "op": "Lt",
+            "b": { "type": "EventAmount" }
+          },
+          "then": [ { "type": "LoseGame", "who": { "type": "You" } } ],
+          "else": [
+            { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "controller": "You", "token": false }, "n": { "type": "EventAmount" } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "effects": [ { "type": "LoseGame", "who": { "type": "You" } } ]
+    }
+  ],
+  "oracle_text": "As this enchantment enters, you lose life equal to your life total.\nYou don't lose the game for having 0 or less life.\nIf you would gain life, draw that many cards instead.\nWhenever you're dealt damage, sacrifice that many nontoken permanents. If you can't, you lose the game.\nWhen this enchantment is put into a graveyard from the battlefield, you lose the game."
+}

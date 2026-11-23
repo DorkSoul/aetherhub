@@ -1,0 +1,121 @@
+[
+  {
+    "name": "equipped creature gets +1/+1 for each color among permanents you control",
+    "players": [
+      { "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Serra Angel", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "only one color among your permanents gives +1/+1",
+    "players": [
+      { "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "while attached to a creature, opponents can't cast spells during your turn",
+    "players": [
+      { "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "hand": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "unattached Flail does not stop opponents casting spells during your turn",
+    "players": [
+      { "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: five colours among your permanents give +5/+5 at most",
+    "players": [
+      { "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Serra Angel", "Man-o'-War", "Hill Giant", "Gravedigger", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [7, 7] }
+    }
+  },
+  {
+    "name": "ruling: re-equipping leaves no gap, so opponents still cannot cast during your turn",
+    "players": [
+      { "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Hill Giant", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "attached": { "Conqueror's Flail": "Hill Giant" },
+      "players": [ {}, { "hand": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: damage marked earlier this turn kills a creature whose toughness drops to lethal",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Conqueror's Flail", "Grizzly Bears", "Hill Giant", "Forest", "Forest", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Conqueror's Flail", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Hill Giant"], "hand_count": 0 }, {} ]
+    }
+  }
+]

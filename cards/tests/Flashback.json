@@ -1,0 +1,121 @@
+[
+  {
+    "name": "the targeted instant can be cast from the graveyard this turn and is exiled when it resolves",
+    "players": [
+      {
+        "hand": ["Flashback"],
+        "battlefield": ["Mountain", "Mountain"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flashback", "targets": ["Lightning Bolt"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Flashback"], "exile": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "a different instant in the graveyard is not granted flashback",
+    "players": [
+      {
+        "hand": ["Flashback"],
+        "battlefield": ["Mountain", "Mountain"],
+        "graveyard": ["Lightning Bolt", "Shock"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flashback", "targets": ["Lightning Bolt"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Flashback", "Lightning Bolt", "Shock"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "a flashback spell that gets countered is exiled instead of going to the graveyard",
+    "players": [
+      {
+        "hand": ["Flashback"],
+        "battlefield": ["Mountain", "Mountain"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Flashback", "targets": ["Lightning Bolt"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt"] },
+        { "graveyard": ["Counterspell"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an X spell cast with flashback still chooses X and pays it (X=2 costs 3 more)",
+    "players": [
+      {
+        "hand": ["Flashback"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Fireball"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flashback", "targets": ["Fireball"] },
+      { "resolve": true },
+      { "cast": "Fireball", "targets": ["p1"], "answers": [2] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Flashback"], "exile": ["Fireball"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery cast with flashback keeps sorcery timing (illegal during combat)",
+    "players": [
+      {
+        "hand": ["Flashback"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Fireball"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flashback", "targets": ["Fireball"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Fireball", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Flashback", "Fireball"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

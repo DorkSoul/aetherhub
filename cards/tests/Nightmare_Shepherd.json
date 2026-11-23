@@ -1,0 +1,251 @@
+[
+ {
+  "name": "exiles a dying nontoken creature and makes a 1/1 copy",
+  "players": [
+   {
+    "battlefield": [
+     "Nightmare Shepherd",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Nightmare Shepherd",
+      "Grizzly Bears"
+     ],
+     "graveyard": [],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     1,
+     1
+    ],
+    "Nightmare Shepherd": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "may decline: the creature stays in the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Nightmare Shepherd",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Nightmare Shepherd"
+     ],
+     "graveyard": [
+      "Grizzly Bears"
+     ],
+     "exile": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "tokens don't trigger it",
+  "players": [
+   {
+    "battlefield": [
+     "Nightmare Shepherd",
+     "Eldrazi Spawn"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Eldrazi Spawn"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Nightmare Shepherd"
+     ],
+     "graveyard": [],
+     "exile": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "itself dying doesn't trigger (another creature)",
+  "players": [
+   {
+    "battlefield": [
+     "Nightmare Shepherd"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Nightmare Shepherd"
+    ],
+    "player": 1
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Nightmare Shepherd"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [],
+     "graveyard": [
+      "Nightmare Shepherd"
+     ],
+     "exile": []
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a */* creature's token is 1/1 (the characteristic-defining P/T is not copied)",
+  "players": [ { "battlefield": ["Nightmare Shepherd", "Tarmogoyf"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "targets": ["Tarmogoyf"], "player": 1 }, { "resolve": true, "answers": [true] } ],
+  "expect": { "players": [ { "battlefield": ["Nightmare Shepherd", "Tarmogoyf"], "exile": ["Tarmogoyf"], "graveyard": [] }, { "graveyard": ["Lightning Bolt"] } ],
+              "pt": { "Tarmogoyf": [1, 1] } }
+ },
+ {
+  "name": "ruling: the token copies only the printed card, not counters or tapped status",
+  "players": [ { "battlefield": ["Nightmare Shepherd", { "name": "Grizzly Bears", "counters": { "p1p1": 1 }, "tapped": true }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 }, { "resolve": true, "answers": [true] } ],
+  "expect": { "players": [ { "battlefield": ["Nightmare Shepherd", "Grizzly Bears"], "exile": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ],
+              "pt": { "Grizzly Bears": [1, 1] }, "tapped": { "Grizzly Bears": false } }
+ },
+ {
+  "name": "ruling: the token's enters-the-battlefield trigger fires (Mulldrifter draws two)",
+  "players": [ { "battlefield": ["Nightmare Shepherd", "Mulldrifter"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "targets": ["Mulldrifter"], "player": 1 }, { "resolve": true, "answers": [true] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield": ["Nightmare Shepherd", "Mulldrifter"], "hand_count": 2 }, { "graveyard": ["Lightning Bolt"] } ] }
+ },
+ {
+  "name": "ruling: a token copy of an X creature has X = 0 (no counters, 1/1)",
+  "players": [ { "battlefield": ["Nightmare Shepherd", { "name": "Walking Ballista", "counters": { "p1p1": 2 } }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "targets": ["Walking Ballista"], "player": 1 }, { "resolve": true, "answers": [true] } ],
+  "expect": { "players": [ { "battlefield": ["Nightmare Shepherd", "Walking Ballista"], "exile": ["Walking Ballista"] }, { "graveyard": ["Lightning Bolt"] } ],
+              "pt": { "Walking Ballista": [1, 1] } }
+ }
+]

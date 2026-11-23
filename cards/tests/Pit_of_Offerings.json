@@ -1,0 +1,293 @@
+[
+ {
+  "name": "enters tapped and exiles up to three cards from graveyards",
+  "players": [
+   {
+    "hand": [
+     "Pit of Offerings"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "graveyard": [
+     "Giant Growth"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "play_land": "Pit of Offerings"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Lightning Bolt",
+     "Grizzly Bears",
+     "Giant Growth"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "exile": [
+      "Lightning Bolt",
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Pit of Offerings"
+     ]
+    },
+    {
+     "graveyard": [],
+     "exile": [
+      "Giant Growth"
+     ]
+    }
+   ],
+   "tapped": {
+    "Pit of Offerings": true
+   }
+  }
+ },
+ {
+  "name": "may exile fewer or none",
+  "players": [
+   {
+    "hand": [
+     "Pit of Offerings"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Pit of Offerings"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "mana of an exiled card's colour pays for a spell of that colour",
+  "players": [
+   {
+    "hand": [
+     "Pit of Offerings",
+     "Shock"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Pit of Offerings"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Shock"
+     ]
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "nothing exiled: only colourless mana (cannot cast Shock)",
+  "players": [
+   {
+    "hand": [
+     "Pit of Offerings",
+     "Shock"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Pit of Offerings"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest",
+      "Shock"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "a colourless card exiled gives no coloured mana",
+  "players": [
+   {
+    "hand": [
+     "Pit of Offerings",
+     "Shock"
+    ],
+    "graveyard": [
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Pit of Offerings"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest",
+      "Shock"
+     ],
+     "exile": [
+      "Sol Ring"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Pit adds any of the five colours (exiled green card pays for {G})",
+  "players": [
+   {
+    "hand": ["Pit of Offerings", "Giant Growth"],
+    "graveyard": ["Grizzly Bears"],
+    "battlefield": ["Serra Angel"]
+   },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Pit of Offerings" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "cast": "Giant Growth", "targets": ["Serra Angel"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Giant Growth"], "exile": ["Grizzly Bears"], "battlefield_has": ["Pit of Offerings", "Serra Angel"] },
+    {}
+   ],
+   "pt": { "Serra Angel": [7, 7] }
+  }
+ },
+ {
+  "name": "ruling: with no cards exiled the colour ability adds no mana",
+  "players": [
+   { "battlefield": ["Pit of Offerings"] },
+   {}
+  ],
+  "steps": [
+   { "tap_for_mana": "Pit of Offerings", "color": "R", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Pit of Offerings"] },
+    {}
+   ],
+   "tapped": { "Pit of Offerings": false }
+  }
+ }
+]

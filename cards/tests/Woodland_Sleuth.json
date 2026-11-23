@@ -1,0 +1,81 @@
+[
+  {
+    "name": "morbid: returns a creature card from your graveyard to hand",
+    "players": [
+      { "hand": ["Woodland Sleuth", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain"], "graveyard": ["Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Woodland Sleuth" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"], "battlefield_has": ["Woodland Sleuth"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no creature died this turn: nothing returns",
+    "players": [
+      { "hand": ["Woodland Sleuth"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Woodland Sleuth" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Grizzly Bears"], "battlefield_has": ["Woodland Sleuth"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "bolting the player is not a creature death: no return",
+    "players": [
+      { "hand": ["Woodland Sleuth", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain"], "graveyard": ["Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Woodland Sleuth" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Grizzly Bears", "Lightning Bolt"], "battlefield_has": ["Woodland Sleuth"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Sleuth killed in response to its morbid trigger returns itself to hand",
+    "players": [
+      { "hand": ["Woodland Sleuth", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Woodland Sleuth" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Woodland Sleuth"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Woodland Sleuth"], "graveyard_has": ["Lightning Bolt"], "battlefield_lacks": ["Woodland Sleuth"] },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

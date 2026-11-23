@@ -1,0 +1,27 @@
+[
+  {
+    "name": "mode 3: 3 damage to each creature with flying",
+    "players": [ { "hand": ["Gruul Charm"], "battlefield": ["Mountain", "Forest"] }, { "battlefield": ["Gryff Vanguard", "Grizzly Bears"] } ],
+    "steps": [ { "cast": "Gruul Charm", "answers": [2] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Gruul Charm"] }, { "graveyard": ["Gryff Vanguard"], "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "mode 1: creatures without flying can't block this turn",
+    "players": [ { "hand": ["Gruul Charm"], "battlefield": ["Mountain", "Forest"] }, { "battlefield": ["Grizzly Bears", "Gryff Vanguard"] } ],
+    "steps": [ { "cast": "Gruul Charm", "answers": [0] }, { "resolve": true } ],
+    "expect": { "keywords": { "Grizzly Bears": ["CantBlock"] }, "players": [ { "graveyard": ["Gruul Charm"] }, { "battlefield_has": ["Grizzly Bears", "Gryff Vanguard"] } ] }
+  },
+  {
+    "name": "ruling: after Gruul Charm resolves in combat, a creature without flying cannot block (attacker goes unblocked)",
+    "players": [ { "hand": ["Gruul Charm"], "battlefield": ["Mountain", "Forest", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "cast": "Gruul Charm", "answers": [0] }, { "resolve": true }, { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "illegal": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 20 }, { "life": 18 } ], "keywords": { "Hill Giant": ["CantBlock"] } }
+  },
+  {
+    "name": "ruling: Gruul Charm mode 2 takes back permanents you own from an opponent's control effect",
+    "players": [ { "hand": ["Gruul Charm"], "battlefield": ["Mountain", "Forest", "Grizzly Bears"] }, { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island"] } ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Control Magic", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Gruul Charm", "answers": [1] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"] } ] }
+  },
+  {"name": "mode 1: a creature without flying that enters after it resolves can't block either", "players": [{"hand": ["Gruul Charm"], "battlefield": ["Mountain", "Forest", {"name": "Hill Giant", "sick": false}]}, {"hand": ["Ambush Viper"], "battlefield": ["Forest", "Forest"]}], "steps": [{"cast": "Gruul Charm", "answers": [0]}, {"resolve": true}, {"pass": true}, {"cast": "Ambush Viper", "player": 1}, {"resolve": true}, {"attack": [{"card": "Hill Giant", "at": "p1"}]}, {"block": [{"blocker": "Ambush Viper", "attacker": "Hill Giant"}], "illegal": true}, {"block": []}, {"advance_to": "Main2"}], "expect": {"players": [{}, {"life": 17, "battlefield_has": ["Ambush Viper"]}], "turn": 1}}
+]

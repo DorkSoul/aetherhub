@@ -1,0 +1,163 @@
+[
+ {
+  "name": "unblocked combat damage hits the player for 2 (rad counter trigger is not observable in scenarios)",
+  "players": [
+   {
+    "battlefield": [
+     "Infesting Radroach"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Infesting Radroach",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't block",
+  "players": [
+   {
+    "battlefield": [
+     "Infesting Radroach"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p0"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Infesting Radroach",
+      "attacker": "Grizzly Bears"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent milling a nonland card: may return it from your graveyard to hand",
+  "players": [
+   {
+    "hand": [
+     "Mind Sculpt"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ],
+    "graveyard": [
+     "Infesting Radroach"
+    ]
+   },
+   {
+    "library": [
+     "Grizzly Bears",
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Mind Sculpt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true,
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Infesting Radroach"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "can't block: Radroach's declared block is dropped, so Grizzly Bears is unblocked and hits for 2",
+  "players": [
+   {"battlefield": ["Infesting Radroach", "Hill Giant"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"advance_to": "Main2"},
+   {"advance_to": "Main1", "player": 1},
+   {"attack": [{"card": "Grizzly Bears", "at": "p0"}], "player": 1},
+   {"block": [{"blocker": "Infesting Radroach", "attacker": "Grizzly Bears"}], "player": 0},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{"life": 18}, {}]}
+ },
+ {
+  "name": "ruling: precombat main, rad counters mill that many cards; each nonland milled costs 1 life and 1 rad counter",
+  "players": [ { "rad": 2, "library": ["Mountain", "Grizzly Bears", "Forest"] }, {} ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "resolve": true } ],
+  "expect": { "players": [ { "life": 19, "rad": 1, "graveyard_has": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: opponent's Raul mills Radroach and a nonland card at once; Radroach's trigger still returns it",
+  "players": [
+   { "library": ["Grizzly Bears", "Forest"] },
+   { "battlefield": [ { "name": "Raul, Trouble Shooter", "sick": false }, "Island", "Swamp" ], "library": ["Mountain", "Infesting Radroach", "Mountain"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "activate": "Raul, Trouble Shooter", "player": 1 },
+   { "resolve": true, "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "hand_count": 2 } ] }
+ }
+]

@@ -1,0 +1,36 @@
+{
+  "name": "Apple of Eden, Isu Relic",
+  "mana_cost": "{4}",
+  "types": ["Artifact"],
+  "supertypes": ["Legendary"],
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" }, { "type": "PayLife", "n": 4 }, { "type": "SacrificeSelf" } ],
+      "timing": "Sorcery",
+      "targets": [ { "what": { "type": "Player", "filter": "Opponent" }, "min": 1, "max": 1, "label": "target opponent" } ],
+      "effects": [
+        { "type": "Move", "what": { "type": "AllOfPlayer", "player": { "type": "Target", "idx": 0 }, "zone": "Hand" }, "to": "Exile", "remember": true },
+        { "type": "GrantPlayFromExile", "what": { "type": "Remembered" }, "window": "ThisTurn", "any_mana": true },
+        {
+          "type": "AddTrigger",
+          "trigger": { "type": "SpellCast", "by": "You", "filter": { "among_remembered": true } },
+          "effects": [ { "type": "Draw", "who": { "type": "OwnerOf", "of": { "type": "TriggerObject" } }, "n": { "type": "Fixed", "n": 1 } } ],
+          "until": "EndOfTurn"
+        },
+        {
+          "type": "AddTrigger",
+          "trigger": { "type": "ChangesZone", "filter": { "types": ["Land"], "among_remembered": true }, "from": "Exile", "to": "Battlefield" },
+          "effects": [ { "type": "Draw", "who": { "type": "OwnerOf", "of": { "type": "TriggerObject" } }, "n": { "type": "Fixed", "n": 1 } } ],
+          "until": "EndOfTurn"
+        },
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand", "from": "Exile" } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{T}, Pay 4 life, Sacrifice Apple of Eden: Look at target opponent's hand and exile those cards face down. You may play those cards this turn, and mana of any type can be spent to cast them. Until end of turn, whenever you play a land or cast a spell this way, its owner draws a card. At the beginning of the next end step, return the exiled cards to their owner's hand. Activate only as a sorcery."
+}

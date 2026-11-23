@@ -1,0 +1,114 @@
+{
+  "name": "Kefka, Dancing Mad",
+  "mana_cost": "{5}{B}{R}",
+  "supertypes": [
+    "Legendary"
+  ],
+  "types": [
+    "Creature"
+  ],
+  "subtypes": [
+    "Human",
+    "Wizard"
+  ],
+  "power": 6,
+  "toughness": 6,
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantKeyword",
+        "affects": {
+          "this": true
+        },
+        "keyword": "Indestructible"
+      },
+      "condition": {
+        "type": "YourTurn"
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BeginningOfStep",
+        "step": "End",
+        "whose": "You"
+      },
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": {
+            "type": "EachOpponent"
+          },
+          "effects": [
+            {
+              "type": "Move",
+              "what": {
+                "type": "RandomOf",
+                "of": {
+                  "type": "AllOfPlayer",
+                  "player": {
+                    "type": "EachObject"
+                  },
+                  "zone": "Graveyard"
+                }
+              },
+              "to": "Exile",
+              "remember": true
+            },
+            {
+              "type": "StoreRemembered",
+              "slot": 0,
+              "append": true
+            }
+          ]
+        },
+        {
+          "type": "ClearRemembered"
+        },
+        {
+          "type": "AppendRemembered",
+          "what": {
+            "type": "Stored",
+            "slot": 0
+          }
+        },
+        {
+          "type": "CastFreeAny",
+          "what": {
+            "type": "Remembered"
+          }
+        },
+        {
+          "type": "ForEach",
+          "objects": {
+            "type": "All",
+            "filter": {
+              "among_stored": 0,
+              "not_among_remembered": true
+            },
+            "zone": "Exile"
+          },
+          "effects": [
+            {
+              "type": "LoseLife",
+              "who": {
+                "type": "OwnerOf",
+                "of": {
+                  "type": "EachObject"
+                }
+              },
+              "n": {
+                "type": "ManaValueOf",
+                "of": {
+                  "type": "EachObject"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "During your turn, Kefka has indestructible.\nAt the beginning of your end step, exile a card at random from each opponent's graveyard. You may cast any number of spells from among cards exiled this way without paying their mana costs. Then each player who owns a spell you cast this way loses life equal to its mana value."
+}

@@ -1,0 +1,151 @@
+[
+ {
+  "name": "enters tapped; casting an artifact untaps it",
+  "players": [
+   {
+    "hand": [
+     "Traxos, Scourge of Kroog",
+     "Sol Ring"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Traxos, Scourge of Kroog"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Sol Ring"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Traxos, Scourge of Kroog": false
+   }
+  }
+ },
+ {
+  "name": "enters tapped; a nonhistoric spell doesn't untap it",
+  "players": [
+   {
+    "hand": [
+     "Traxos, Scourge of Kroog",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Plains",
+     "Forest",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Traxos, Scourge of Kroog"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Traxos, Scourge of Kroog": true
+   }
+  }
+ },
+ {
+  "name": "doesn't untap in its controller's untap step",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Traxos, Scourge of Kroog",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Traxos, Scourge of Kroog": true
+   }
+  }
+ },
+ {
+   "name": "ruling: the untap trigger resolves even if the historic spell is countered",
+   "players": [
+    { "hand": ["Sol Ring"], "battlefield": [{ "name": "Traxos, Scourge of Kroog", "tapped": true }, "Plains"] },
+    { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+   ],
+   "steps": [
+    { "cast": "Sol Ring" },
+    { "pass": true },
+    { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Sol Ring" }] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [{ "graveyard": ["Sol Ring"] }, { "graveyard": ["Counterspell"] }],
+    "tapped": { "Traxos, Scourge of Kroog": false }
+   }
+  },
+  {
+   "name": "ruling: playing a legendary land does not trigger the untap (lands are never cast)",
+   "players": [
+    { "hand": ["Urborg, Tomb of Yawgmoth"], "battlefield": [{ "name": "Traxos, Scourge of Kroog", "tapped": true }] },
+    {}
+   ],
+   "steps": [{ "play_land": "Urborg, Tomb of Yawgmoth" }],
+   "expect": {
+    "players": [{ "battlefield_has": ["Urborg, Tomb of Yawgmoth"] }, {}],
+    "tapped": { "Traxos, Scourge of Kroog": true }
+   }
+  },
+  {
+   "name": "ruling: a historic creature put onto the battlefield without being cast does not untap Traxos",
+   "players": [
+    { "hand": ["Reanimate"], "battlefield": [{ "name": "Traxos, Scourge of Kroog", "tapped": true }, "Swamp"], "graveyard": ["Ornithopter"] },
+    {}
+   ],
+   "steps": [{ "cast": "Reanimate", "targets": ["Ornithopter"] }, { "resolve": true }],
+   "expect": {
+    "players": [{ "battlefield_has": ["Ornithopter"] }, {}],
+    "tapped": { "Traxos, Scourge of Kroog": true }
+   }
+  }
+]

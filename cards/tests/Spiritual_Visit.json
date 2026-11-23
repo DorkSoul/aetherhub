@@ -1,0 +1,108 @@
+[
+  {
+    "name": "creates a 1/1 colorless Spirit token",
+    "players": [
+      { "hand": ["Spiritual Visit"], "battlefield": ["Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spiritual Visit" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spirit 1-1 Colorless"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "splice onto Blind with Anger also creates the Spirit",
+    "players": [
+      { "hand": ["Blind with Anger", "Spiritual Visit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spirit 1-1 Colorless"], "hand": ["Spiritual Visit"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "not an Arcane spell: Spiritual Visit is not offered",
+    "players": [
+      { "hand": ["Lightning Bolt", "Spiritual Visit"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Spiritual Visit"], "battlefield_lacks": ["Spirit 1-1 Colorless"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Spiritual Visit cast from hand cannot be spliced onto itself (exactly one Spirit)",
+    "players": [
+      { "hand": ["Spiritual Visit"], "battlefield": ["Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spiritual Visit" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Plains", "Spirit 1-1 Colorless"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: all targets of a spliced spell illegal on resolution: no effect, the splice does nothing",
+    "players": [
+      { "hand": ["Blind with Anger", "Spiritual Visit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Spirit 1-1 Colorless"], "hand": ["Spiritual Visit"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two copies in hand are each spliced once, giving two Spirits",
+    "players": [
+      { "hand": ["Blind with Anger", "Spiritual Visit", "Spiritual Visit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears"], "answers": [true, true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain", "Plains", "Plains", "Spirit 1-1 Colorless", "Spirit 1-1 Colorless"], "hand": ["Spiritual Visit", "Spiritual Visit"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

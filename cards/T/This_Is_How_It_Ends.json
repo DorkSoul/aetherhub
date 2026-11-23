@@ -1,0 +1,157 @@
+{
+ "name": "This Is How It Ends",
+ "mana_cost": "{3}{B}",
+ "types": [
+  "Instant"
+ ],
+ "abilities": [
+  {
+   "type": "Spell",
+   "targets": [
+    {
+     "what": {
+      "type": "Permanent",
+      "filter": {
+       "types": [
+        "Creature"
+       ]
+      }
+     },
+     "label": "target creature"
+    }
+   ],
+   "effects": [
+    {
+     "type": "Move",
+     "what": {
+      "type": "Target",
+      "idx": 0
+     },
+     "to": "Library"
+    },
+    {
+     "type": "Shuffle",
+     "who": {
+      "type": "OwnerOf",
+      "of": {
+       "type": "Target",
+       "idx": 0
+      }
+     }
+    },
+    {
+     "type": "ChooseModes",
+     "choose_min": 1,
+     "choose_max": 1,
+     "chooser": {
+      "type": "OwnerOf",
+      "of": {
+       "type": "Target",
+       "idx": 0
+      }
+     },
+     "modes": [
+      {
+       "text": "They lose 5 life.",
+       "effects": [
+        {
+         "type": "LoseLife",
+         "who": {
+          "type": "OwnerOf",
+          "of": {
+           "type": "Target",
+           "idx": 0
+          }
+         },
+         "n": {
+          "type": "Fixed",
+          "n": 5
+         }
+        }
+       ]
+      },
+      {
+       "text": "They shuffle another creature they own into their library.",
+       "effects": [
+        {
+         "type": "ClearRemembered"
+        },
+        {
+         "type": "StoreRemembered",
+         "slot": 1
+        },
+        {
+         "type": "ForEach",
+         "objects": {
+          "type": "AllOfPlayer",
+          "player": {
+           "type": "OwnerOf",
+           "of": {
+            "type": "Target",
+            "idx": 0
+           }
+          },
+          "zone": "Battlefield",
+          "filter": {
+           "types": [
+            "Creature"
+           ]
+          },
+          "owned": true
+         },
+         "effects": [
+          {
+           "type": "StoreRemembered",
+           "slot": 1,
+           "append": true
+          }
+         ]
+        },
+        {
+         "type": "Choose",
+         "who": {
+          "type": "OwnerOf",
+          "of": {
+           "type": "Target",
+           "idx": 0
+          }
+         },
+         "zone": "Battlefield",
+         "filter": {
+          "types": [
+           "Creature"
+          ],
+          "among_stored": 1
+         },
+         "min": 1,
+         "max": 1,
+         "then": [
+          {
+           "type": "Move",
+           "what": {
+            "type": "Remembered"
+           },
+           "to": "Library"
+          },
+          {
+           "type": "Shuffle",
+           "who": {
+            "type": "OwnerOf",
+            "of": {
+             "type": "Target",
+             "idx": 0
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "villainous": true
+    }
+   ]
+  }
+ ],
+ "oracle_text": "Target creature's owner shuffles it into their library, then faces a villainous choice — They lose 5 life, or they shuffle another creature they own into their library."
+}

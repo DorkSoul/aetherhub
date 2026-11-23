@@ -1,0 +1,157 @@
+[
+  {
+    "name": "enchanted creature draws a card when it deals combat damage to a player",
+    "players": [
+      {
+        "hand": [
+          "Combat Research"
+        ],
+        "battlefield": [
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Combat Research",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "non-legendary enchanted creature gets no +1/+1",
+    "players": [
+      {
+        "hand": [
+          "Combat Research"
+        ],
+        "battlefield": [
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Combat Research",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "legendary enchanted creature gets +1/+1",
+    "players": [
+      {
+        "hand": [
+          "Combat Research"
+        ],
+        "battlefield": [
+          "Island",
+          "Isamaru, Hound of Konda"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Combat Research",
+        "targets": [
+          "Isamaru, Hound of Konda"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Isamaru, Hound of Konda": [
+          3,
+          3
+        ]
+      },
+      "attached": {
+        "Combat Research": "Isamaru, Hound of Konda"
+      }
+    }
+  },
+  {
+    "name": "legendary enchanted creature has ward {1}: opponent has no spare mana, Murder is countered",
+    "players": [ { "hand": ["Combat Research"], "battlefield": ["Island", "Isamaru, Hound of Konda"] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [ { "cast": "Combat Research", "targets": ["Isamaru, Hound of Konda"] }, { "resolve": true }, { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Isamaru, Hound of Konda"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Isamaru, Hound of Konda"] }, { "graveyard_has": ["Murder"] } ] }
+  },
+  {
+    "name": "legendary enchanted creature has ward {1}: opponent pays 1 with a spare Swamp, Murder destroys it",
+    "players": [ { "hand": ["Combat Research"], "battlefield": ["Island", "Isamaru, Hound of Konda"] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] } ],
+    "steps": [ { "cast": "Combat Research", "targets": ["Isamaru, Hound of Konda"] }, { "resolve": true }, { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Isamaru, Hound of Konda"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Isamaru, Hound of Konda"] }, {} ] }
+  },
+  {
+    "name": "ruling: an opponent who controls the enchanted creature draws when it deals combat damage",
+    "players": [
+      { "hand": ["Combat Research"], "battlefield": ["Island", "Grizzly Bears"] },
+      { "hand": ["Act of Treason"], "battlefield": ["Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Combat Research", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "player": 1, "cast": "Act of Treason", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "player": 1, "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "player": 0, "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "hand_count": 0 },
+        { "hand_count": 2 }
+      ]
+    }
+  }
+]

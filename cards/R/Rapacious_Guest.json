@@ -1,0 +1,49 @@
+{
+  "name": "Rapacious Guest",
+  "mana_cost": "{2}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Halfling", "Citizen"],
+  "power": 2,
+  "toughness": 2,
+  "keywords": ["Menace"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "CombatDamageToPlayer",
+        "batched": true,
+        "filter": { "types": ["Creature"], "controller": "You" }
+      },
+      "effects": [
+        { "type": "CreateToken", "token": "Food", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Sacrificed", "filter": { "subtypes": ["Food"], "controller": "You" } },
+      "effects": [
+        {
+          "type": "AddCounters",
+          "kind": "PlusOnePlusOne",
+          "n": { "type": "Fixed", "n": 1 },
+          "what": { "type": "This" }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "LeavesBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" }
+      ],
+      "effects": [
+        {
+          "type": "LoseLife",
+          "who": { "type": "Target", "idx": 0 },
+          "n": { "type": "PowerOf", "of": { "type": "This" } }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Menace\nWhenever one or more creatures you control deal combat damage to a player, create a Food token.\nWhenever you sacrifice a Food, put a +1/+1 counter on this creature.\nWhen this creature leaves the battlefield, target opponent loses life equal to its power."
+}

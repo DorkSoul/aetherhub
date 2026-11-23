@@ -1,0 +1,155 @@
+[
+ {
+  "name": "exiles a creature until the enchantment leaves",
+  "players": [
+   {
+    "hand": [
+     "Touch the Spirit Realm"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Touch the Spirit Realm"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Touch the Spirit Realm"
+     ]
+    },
+    {
+     "battlefield": [],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "channel exiles and returns at the next end step",
+  "players": [
+   {
+    "hand": [
+     "Touch the Spirit Realm"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Touch the Spirit Realm",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Touch the Spirit Realm"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: channel needs an artifact or creature target, so it is illegal with none",
+  "players": [
+   { "hand": ["Touch the Spirit Realm"], "battlefield": ["Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Touch the Spirit Realm", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Touch the Spirit Realm"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Touch leaves before its ETB resolves, so the creature is never exiled",
+  "players": [
+   { "hand": ["Touch the Spirit Realm"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "hand": ["Naturalize"], "battlefield": ["Grizzly Bears", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "cast": "Touch the Spirit Realm" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true, "targets": ["Grizzly Bears"] },
+   { "player": 1, "cast": "Naturalize", "targets": ["Touch the Spirit Realm"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Touch the Spirit Realm"] },
+    { "battlefield": ["Grizzly Bears", "Forest", "Forest"], "graveyard": ["Naturalize"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an Aura on the exiled creature goes to its owner's graveyard",
+  "players": [
+   { "hand": ["Pacifism", "Touch the Spirit Realm"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Touch the Spirit Realm" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Pacifism"], "battlefield_has": ["Touch the Spirit Realm"] },
+    { "exile": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

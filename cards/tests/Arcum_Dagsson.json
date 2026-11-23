@@ -1,0 +1,106 @@
+[
+  {
+    "name": "target artifact creature is sacrificed and its controller may fetch a noncreature artifact",
+    "players": [
+      { "battlefield": ["Arcum Dagsson"] },
+      { "battlefield": ["Ornithopter"], "library": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "activate": "Arcum Dagsson", "ability": 0 },
+      { "resolve": true, "answers": ["Sol Ring"] }
+    ],
+    "expect": {
+      "tapped": { "Arcum Dagsson": true },
+      "players": [
+        { "battlefield_has": ["Arcum Dagsson"] },
+        { "graveyard": ["Ornithopter"], "battlefield_has": ["Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "the controller may decline the search: nothing enters, the creature is still sacrificed",
+    "players": [
+      { "battlefield": ["Arcum Dagsson"] },
+      { "battlefield": ["Ornithopter"], "library": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "activate": "Arcum Dagsson", "ability": 0 },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Arcum Dagsson"] },
+        { "graveyard": ["Ornithopter"], "battlefield": [] }
+      ]
+    }
+  },
+  {
+    "name": "a creature that is not an artifact cannot be targeted",
+    "players": [
+      { "battlefield": ["Arcum Dagsson"] },
+      { "battlefield": ["Grizzly Bears", "Sol Ring"] }
+    ],
+    "steps": [
+      { "activate": "Arcum Dagsson", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Arcum Dagsson"] },
+        { "battlefield_has": ["Grizzly Bears", "Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "can target its own artifact creature, which is sacrificed and replaced by a fetched artifact",
+    "players": [
+      { "battlefield": ["Arcum Dagsson", "Ornithopter"], "library": ["Sol Ring"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Arcum Dagsson", "ability": 0 },
+      { "resolve": true, "answers": ["Sol Ring"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Ornithopter"], "battlefield_has": ["Arcum Dagsson", "Sol Ring"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: target gone in response: the ability fizzles and no search happens",
+    "players": [
+      { "battlefield": ["Arcum Dagsson"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Ornithopter", "Mountain"], "library": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "activate": "Arcum Dagsson", "ability": 0 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Ornithopter"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Arcum Dagsson"] },
+        { "graveyard_has": ["Ornithopter", "Lightning Bolt"], "battlefield_lacks": ["Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the sacrificed creature's dies trigger resolves alongside the search",
+    "players": [
+      { "battlefield": ["Arcum Dagsson", "Archfiend of the Dross"] },
+      { "battlefield": ["Ornithopter"], "library": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "activate": "Arcum Dagsson", "ability": 0 },
+      { "resolve": true, "answers": ["Sol Ring"] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 18, "graveyard": ["Ornithopter"], "battlefield_has": ["Sol Ring"] }
+      ]
+    }
+  }
+]

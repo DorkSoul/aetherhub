@@ -1,0 +1,55 @@
+{
+  "name": "Jhoira's Timebug",
+  "mana_cost": "{2}",
+  "types": ["Artifact", "Creature"],
+  "subtypes": ["Insect"],
+  "power": 1,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "targets": [
+        {
+          "what": {
+            "type": "AnyOf",
+            "kinds": [
+              { "type": "Permanent", "filter": { "controller": "You" } },
+              { "type": "CardIn", "zone": "Exile", "whose": "You", "filter": { "has_counter": "Time" } }
+            ]
+          },
+          "label": "target permanent you control or suspended card you own"
+        }
+      ],
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "Time", "of": { "type": "Target", "idx": 0 } },
+            "cmp": { "op": "Ge", "n": 1 }
+          },
+          "then": [
+            {
+              "type": "ChooseModes",
+              "choose_min": 0,
+              "choose_max": 1,
+              "modes": [
+                {
+                  "text": "Remove a time counter from it.",
+                  "effects": [ { "type": "RemoveCounters", "kind": "Time", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } } ]
+                },
+                {
+                  "text": "Put another time counter on it.",
+                  "effects": [ { "type": "AddCounters", "what": { "type": "Target", "idx": 0 }, "kind": "Time", "n": { "type": "Fixed", "n": 1 } } ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "timing": "Instant"
+    }
+  ],
+  "oracle_text": "{T}: Choose target permanent you control or suspended card you own. If that permanent or card has a time counter on it, you may remove a time counter from it or put another time counter on it."
+}

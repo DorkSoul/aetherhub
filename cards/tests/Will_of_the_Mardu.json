@@ -1,0 +1,74 @@
+[
+  {
+    "name": "mode 1: target player gets a 1/1 Warrior for each creature they control",
+    "players": [
+      { "hand": ["Will of the Mardu"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Will of the Mardu", "answers": [0], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Plains", "Plains", "Plains", "Warrior 1-1 Red", "Warrior 1-1 Red"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "mode 2: damage equal to the number of creatures you control kills a 2/2",
+    "players": [
+      { "hand": ["Will of the Mardu"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Will of the Mardu", "answers": [1], "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield": [] }
+      ]
+    }
+  },
+  {
+    "name": "mode 2 boundary: one creature deals only 1 damage to a 3/3",
+    "players": [
+      { "hand": ["Will of the Mardu"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Will of the Mardu", "answers": [1], "targets": ["p1:Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a commander that leaves while the spell is cast does not reduce the chosen modes",
+    "commander": true,
+    "players": [
+      { "command": ["Savannah Lions"], "hand": ["Will of the Mardu", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Elvish Visionary", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Will of the Mardu", "answers": [[0, 1]], "targets": ["p1", "p1:Elvish Visionary"] },
+      { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Warrior 1-1 Red"], "battlefield_lacks": ["Savannah Lions"], "graveyard_has": ["Will of the Mardu", "Lightning Bolt"] },
+        { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Elvish Visionary"] }
+      ]
+    }
+  }
+]

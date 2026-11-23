@@ -1,0 +1,161 @@
+[
+  {
+    "name": "grant ability lets a creature card in graveyard escape exiling four other cards",
+    "players": [
+      {
+        "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock", "Shock"],
+        "battlefield": [{ "name": "The Grim Captain's Locker", "sick": false }, "Swamp", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "alt": 100 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears", "The Grim Captain's Locker"],
+          "graveyard": [],
+          "exile": ["Shock", "Shock", "Shock", "Shock"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no escape without activating the Locker",
+    "players": [
+      {
+        "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock", "Shock"],
+        "battlefield": [{ "name": "The Grim Captain's Locker", "sick": false }, "Swamp", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "alt": 100, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock", "Shock"], "battlefield_has": ["The Grim Captain's Locker"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "escape needs four other cards in the graveyard",
+    "players": [
+      {
+        "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock"],
+        "battlefield": [{ "name": "The Grim Captain's Locker", "sick": false }, "Swamp", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "alt": 100, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-creature cards do not gain escape",
+    "players": [
+      {
+        "graveyard": ["Shock", "Grizzly Bears", "Shock", "Shock", "Shock"],
+        "battlefield": [{ "name": "The Grim Captain's Locker", "sick": false }, "Swamp", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "alt": 100, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Shock", "Grizzly Bears", "Shock", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "surveil 1 puts the top card into the graveyard",
+    "players": [
+      { "battlefield": ["The Grim Captain's Locker"], "library": ["Grizzly Bears", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Grizzly Bears"], "library_top": ["Plains"] }, {}]
+    }
+  },
+  {
+    "name": "surveil 1 keeps the top card on top of the library when told to",
+    "players": [
+      { "battlefield": ["The Grim Captain's Locker"], "library": ["Grizzly Bears", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 0 },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [{ "graveyard": [], "library_top": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: an escape spell leaves the graveyard and pays its exile cost as soon as it is cast",
+    "players": [
+      {
+        "graveyard": ["Grizzly Bears", "Shock", "Shock", "Shock", "Shock"],
+        "battlefield": [{ "name": "The Grim Captain's Locker", "sick": false }, "Swamp", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "alt": 100 }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "players": [
+        { "graveyard": [], "exile": ["Shock", "Shock", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: escape cost is reduced after the escape cost is chosen (Bosk Banneret reduces the Shaman)",
+    "players": [
+      {
+        "graveyard": ["Reclamation Sage", "Shock", "Shock", "Shock", "Shock"],
+        "battlefield": [{ "name": "The Grim Captain's Locker", "sick": false }, "Bosk Banneret", "Swamp", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Grim Captain's Locker", "ability": 1 },
+      { "resolve": true },
+      { "cast": "Reclamation Sage", "alt": 100 },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Reclamation Sage", "The Grim Captain's Locker"], "exile": ["Shock", "Shock", "Shock", "Shock"] },
+        {}
+      ]
+    }
+  }
+]

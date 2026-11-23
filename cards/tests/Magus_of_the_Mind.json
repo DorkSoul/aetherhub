@@ -1,0 +1,122 @@
+[
+  {
+    "name": "after casting one spell, sacrificing exiles the top two (1 + spells cast) and I may cast the exiled Bolt free this turn",
+    "seed": 1,
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Island", "Mountain", { "name": "Magus of the Mind", "sick": false }], "library": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Magus of the Mind", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"], "graveyard_has": ["Magus of the Mind", "Lightning Bolt"], "library_count": 22 },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "with no spell cast this turn, only the top card is exiled",
+    "seed": 1,
+    "players": [
+      { "battlefield": ["Island", { "name": "Magus of the Mind", "sick": false }], "library": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Magus of the Mind", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 23 },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "the exiled cards cannot be cast on a later turn",
+    "seed": 1,
+    "players": [
+      { "battlefield": ["Island", { "name": "Magus of the Mind", "sick": false }], "library": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Magus of the Mind", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 22, "exile": ["Forest"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cards exiled but not played stay in exile through the turn change",
+    "seed": 1,
+    "players": [
+      { "battlefield": ["Island", { "name": "Magus of the Mind", "sick": false }], "library": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Magus of the Mind", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 23, "exile": ["Forest"], "graveyard_has": ["Magus of the Mind"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can only be played with a land play still available (land drop already used: illegal)",
+    "seed": 1,
+    "players": [
+      { "hand": ["Swamp"], "battlefield": ["Island", { "name": "Magus of the Mind", "sick": false }], "library": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "play_land": "Swamp" },
+      { "activate": "Magus of the Mind", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"], "graveyard_has": ["Magus of the Mind"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with an unused land play, the exiled land can be played (contrast to the land-drop-used case)",
+    "seed": 1,
+    "players": [
+      { "battlefield": ["Island", { "name": "Magus of the Mind", "sick": false }], "library": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "activate": "Magus of the Mind", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest", "Island"], "exile": [] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

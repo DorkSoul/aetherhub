@@ -1,0 +1,129 @@
+{
+ "name": "Arcum's Whistle",
+ "mana_cost": "{3}",
+ "types": [
+  "Artifact"
+ ],
+ "abilities": [
+  {
+   "type": "Activated",
+   "cost": [
+    {
+     "type": "Mana",
+     "cost": "{3}"
+    },
+    {
+     "type": "Tap"
+    }
+   ],
+   "condition": { "type": "All", "cs": [{
+    "type": "AnyOf",
+    "cs": [
+     {
+      "type": "InStep",
+      "step": "Upkeep"
+     },
+     {
+      "type": "InStep",
+      "step": "Draw"
+     },
+     {
+      "type": "InStep",
+      "step": "Main1"
+     },
+     {
+      "type": "InStep",
+      "step": "BeginCombat"
+     }
+    ]
+   }, { "type": "FirstCombatThisTurn" }] },
+   "targets": [
+    {
+     "what": {
+      "type": "Permanent",
+      "filter": {
+       "types": [
+        "Creature"
+       ],
+       "not_subtypes": [
+        "Wall"
+       ],
+       "controller": "Active",
+       "controlled_since_turn_start": true
+      }
+     },
+     "label": "target non-Wall creature the active player has controlled continuously since the beginning of the turn"
+    }
+   ],
+   "effects": [
+    {
+     "type": "Unless",
+     "payer": {
+      "type": "ControllerOf",
+      "of": {
+       "type": "Target",
+       "idx": 0
+      }
+     },
+     "cost": [
+      {
+       "type": "ManaAmount",
+       "amount": {
+        "type": "ManaValueOf",
+        "of": {
+         "type": "Target",
+         "idx": 0
+        }
+       }
+      }
+     ],
+     "effects": [
+      {
+       "type": "Remember",
+       "what": {
+        "type": "Target",
+        "idx": 0
+       }
+      },
+      {
+       "type": "GrantKeyword",
+       "what": {
+        "type": "Target",
+        "idx": 0
+       },
+       "keyword": "MustAttack",
+       "duration": "UntilEndOfTurn"
+      },
+      {
+       "type": "Delayed",
+       "at": "NextEndStep",
+       "effects": [
+        {
+         "type": "If",
+         "cond": {
+          "type": "SelIs",
+          "what": {
+           "type": "Remembered"
+          },
+          "filter": {
+           "not_attacked_this_turn": true
+          }
+         },
+         "then": [
+          {
+           "type": "Destroy",
+           "what": {
+            "type": "Remembered"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "oracle_text": "{3}, {T}: Choose target non-Wall creature the active player has controlled continuously since the beginning of the turn. That player may pay {X}, where X is that creature's mana value. If they don't pay, the creature attacks this turn if able, and at the beginning of the next end step, destroy it if it didn't attack this turn. Activate only before attackers are declared."
+}

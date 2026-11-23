@@ -1,0 +1,95 @@
+[
+  {
+    "name": "copies a creature you control, keeping the name Chameleon, Master of Disguise",
+    "players": [
+      { "hand": ["Chameleon, Master of Disguise"], "battlefield": ["Island", "Island", "Island", "Island", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Chameleon, Master of Disguise" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": {
+      "pt": { "Chameleon, Master of Disguise": [2, 2] },
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Chameleon, Master of Disguise"], "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "with no other creature to copy it stays a 2/3",
+    "players": [
+      { "hand": ["Chameleon, Master of Disguise"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Chameleon, Master of Disguise" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Chameleon, Master of Disguise": [2, 3] },
+      "players": [ { "battlefield_has": ["Chameleon, Master of Disguise"] }, {} ]
+    }
+  },
+  {
+    "name": "a copy of an opponent's creature is not allowed: only creatures you control",
+    "players": [
+      { "hand": ["Chameleon, Master of Disguise"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "sick": false }] }
+    ],
+    "steps": [
+      { "cast": "Chameleon, Master of Disguise" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Chameleon, Master of Disguise": [2, 3] },
+      "players": [ { "battlefield_has": ["Chameleon, Master of Disguise"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "mayhem: from the graveyard only if discarded this turn; otherwise not castable",
+    "players": [
+      { "graveyard": ["Chameleon, Master of Disguise"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Chameleon, Master of Disguise", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Chameleon, Master of Disguise"] }, {} ]
+    }
+  },
+  {
+    "name": "mayhem: discarded this turn, so it can be cast from the graveyard for {2}{U}",
+    "players": [
+      { "hand": ["Faithless Looting", "Chameleon, Master of Disguise"], "battlefield": ["Mountain", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Chameleon, Master of Disguise", "Forest"]] },
+      { "cast": "Chameleon, Master of Disguise", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Chameleon, Master of Disguise": [2, 3] },
+      "players": [ { "battlefield_has": ["Chameleon, Master of Disguise"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: mayhem keeps sorcery timing: discarded on the opponent's turn, not castable during it",
+    "players": [
+      { "hand": ["Chameleon, Master of Disguise"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Mind Rot", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Chameleon, Master of Disguise", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Chameleon, Master of Disguise"] }, { "graveyard": ["Mind Rot"] } ]
+    }
+  }
+]

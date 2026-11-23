@@ -1,0 +1,90 @@
+[
+  {
+    "name": "unkicked: exiles the top two cards and leaves the creature alone",
+    "players": [
+      { "hand": ["Rob the Archives"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Island", "Plains", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rob the Archives", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Rob the Archives"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "exile": ["Island", "Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "casualty paid by sacrificing a creature with power 1 or more: copies the spell, exiling four cards",
+    "players": [
+      { "hand": ["Rob the Archives"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Island", "Plains", "Forest", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rob the Archives", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Rob the Archives", "Grizzly Bears"], "exile": ["Island", "Plains", "Forest", "Swamp"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a power 0 creature cannot be sacrificed for casualty, so the spell is not kicked",
+    "players": [
+      { "hand": ["Rob the Archives"], "battlefield": ["Mountain", "Mountain", "Wall of Stone"], "library": ["Island", "Plains", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rob the Archives" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Rob the Archives"], "battlefield": ["Mountain", "Mountain", "Wall of Stone"], "exile": ["Island", "Plains"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land exiled by Rob can be played as the land drop this turn",
+    "players": [
+      { "hand": ["Rob the Archives"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rob the Archives", "answers": [false] },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "exile": ["Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played once a land has already been played this turn",
+    "players": [
+      { "hand": ["Rob the Archives", "Forest"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"], "library": ["Swamp", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "cast": "Rob the Archives", "answers": [false] },
+      { "resolve": true },
+      { "play_land": "Swamp", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Swamp"] },
+        {}
+      ]
+    }
+  }
+]

@@ -1,0 +1,101 @@
+[
+ {
+  "name": "taps all nonwhite creatures when it enters",
+  "players": [
+   {
+    "hand": [
+     "Ivory Giant"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Savannah Lions"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Ivory Giant"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Grizzly Bears": true,
+    "Savannah Lions": false
+   },
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "suspend 5 for W exiles it with five time counters",
+  "players": [
+   {
+    "hand": [
+     "Ivory Giant"
+    ],
+    "battlefield": [
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Ivory Giant"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Ivory Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: suspending is not casting: it uses no stack and exiles the card at once",
+  "players": [ { "hand": ["Ivory Giant"], "battlefield": ["Plains"] }, {} ],
+  "steps": [ { "activate": "Ivory Giant" } ],
+  "expect": { "players": [ { "hand": [], "exile": ["Ivory Giant"] }, {} ], "stack_empty": true }
+ },
+ {
+  "name": "ruling: a creature can only be suspended at sorcery speed, not on the opponent's turn",
+  "players": [ { "hand": ["Ivory Giant"], "battlefield": ["Plains"] }, {} ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "pass": true, "player": 1 }, { "illegal": true, "activate": "Ivory Giant" } ],
+  "expect": { "players": [ { "hand": ["Ivory Giant"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: last time counter removed casts the suspended card for free; it enters with haste and its ETB taps nonwhite creatures",
+  "players": [ { "hand": ["Ivory Giant"], "battlefield": ["Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "activate": "Ivory Giant" },
+   { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": ["yes"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Ivory Giant"], "exile": [] }, {} ], "tapped": { "Grizzly Bears": true }, "keywords": { "Ivory Giant": ["Haste"] } }
+ }
+]

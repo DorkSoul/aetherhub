@@ -1,0 +1,64 @@
+{
+  "name": "Papalymo Totolymo",
+  "mana_cost": "{W}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Dwarf", "Wizard"],
+  "supertypes": ["Legendary"],
+  "power": 1,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": { "not_types": ["Creature"] } },
+      "effects": [
+        { "type": "DealDamage", "amount": { "type": "Fixed", "n": 1 }, "source": { "type": "This" }, "to": { "type": "EachOpponent" } },
+        { "type": "GainLife", "n": { "type": "Fixed", "n": 1 }, "who": { "type": "You" } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Mana", "cost": "{4}" },
+        { "type": "Tap" },
+        { "type": "SacrificeSelf" }
+      ],
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "Compare",
+                "a": { "type": "LifeLostThisTurn", "who": { "type": "Remembered" } },
+                "cmp": { "op": "Ge", "n": 1 }
+              },
+              "then": [
+                {
+                  "type": "Sacrifice",
+                  "who": { "type": "Remembered" },
+                  "n": { "type": "Fixed", "n": 1 },
+                  "filter": {
+                    "types": ["Creature"],
+                    "controlled_by": { "type": "Remembered" },
+                    "power_vs": {
+                      "amount": {
+                        "type": "HighestPower",
+                        "filter": { "types": ["Creature"], "controlled_by": { "type": "Remembered" } },
+                        "zone": "Battlefield"
+                      },
+                      "op": "Ge"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "timing": "Instant"
+    }
+  ],
+  "oracle_text": "Whenever you cast a noncreature spell, Papalymo Totolymo deals 1 damage to each opponent and you gain 1 life.\n{4}, {T}, Sacrifice Papalymo Totolymo: Each opponent who lost life this turn sacrifices a creature with the greatest power among creatures they control."
+}

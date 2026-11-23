@@ -1,0 +1,41 @@
+[
+ { "name": "targeted player's creature that died this turn makes one tapped Powerstone",
+   "players": [
+     { "hand": ["Lightning Bolt", "Wreck Hunter"], "battlefield": ["Mountain", "Swamp", "Swamp"] },
+     { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "cast": "Wreck Hunter" },
+     { "resolve": true, "targets": ["p1"] } ],
+   "expect": {
+     "players": [
+       { "battlefield": ["Mountain", "Swamp", "Swamp", "Wreck Hunter", "Powerstone"], "graveyard": ["Lightning Bolt"] },
+       { "graveyard": ["Grizzly Bears"] } ],
+     "tapped": { "Powerstone": true } } },
+ { "name": "a creature that died under the caster's control does not count for target opponent",
+   "players": [
+     { "hand": ["Lightning Bolt", "Wreck Hunter"], "battlefield": ["Mountain", "Swamp", "Swamp", "Grizzly Bears"] },
+     { "battlefield": ["Llanowar Elves"] } ],
+   "steps": [
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "cast": "Wreck Hunter" },
+     { "resolve": true, "targets": ["p1"] } ],
+   "expect": {
+     "players": [
+       { "battlefield": ["Mountain", "Swamp", "Swamp", "Wreck Hunter"], "graveyard": ["Lightning Bolt", "Grizzly Bears"] },
+       { "battlefield": ["Llanowar Elves"] } ] } },
+ { "name": "ruling: Powerstone mana cannot be spent on a nonartifact spell",
+   "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Powerstone"] }, {} ],
+   "steps": [ { "cast": "Grizzly Bears", "illegal": true } ],
+   "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }, {} ] } },
+ { "name": "ruling: Powerstone mana can be spent on an artifact spell",
+   "players": [ { "hand": ["Sol Ring"], "battlefield": ["Powerstone"] }, {} ],
+   "steps": [ { "cast": "Sol Ring" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Sol Ring"] }, {} ] } },
+ { "name": "ruling: Powerstone mana pays the cost of an activated ability of a nonartifact permanent",
+   "players": [ { "battlefield": ["Witching Well", "Island", "Island", "Island", "Powerstone"] }, {} ],
+   "steps": [ { "activate": "Witching Well", "ability": 0 }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard": ["Witching Well"], "hand_count": 2 }, {} ] } }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "draws a card",
+    "players": [
+      { "hand": ["Scout's Warning"], "battlefield": ["Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Scout's Warning" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Scout's Warning"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the next creature spell can be cast at instant speed, and only one",
+    "players": [
+      { "hand": ["Scout's Warning", "Grizzly Bears", "Llanowar Elves"], "battlefield": ["Plains", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Scout's Warning" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Llanowar Elves", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "hand_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "only creature spells get flash: a sorcery still cannot be cast in combat",
+    "players": [
+      { "hand": ["Scout's Warning", "Rampant Growth"], "battlefield": ["Plains", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Scout's Warning" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Rampant Growth", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two Scout's Warnings still only let the next creature spell be cast at instant speed",
+    "players": [{ "hand": ["Scout's Warning", "Scout's Warning", "Grizzly Bears", "Llanowar Elves"], "battlefield": ["Plains", "Plains", "Forest", "Forest", "Forest"] }, {}],
+    "steps": [{ "cast": "Scout's Warning" }, { "resolve": true }, { "cast": "Scout's Warning" }, { "resolve": true }, { "advance_to": "BeginCombat" }, { "cast": "Grizzly Bears" }, { "resolve": true }, { "cast": "Llanowar Elves", "illegal": true }],
+    "expect": { "players": [{ "battlefield_has": ["Grizzly Bears"], "hand_count": 3 }, {}] }
+  }
+]

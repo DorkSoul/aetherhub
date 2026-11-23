@@ -1,0 +1,112 @@
+[
+ {
+  "name": "landfall with a target player resolves and leaves the target's creatures in play",
+  "players": [
+   {
+    "hand": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Geode Rager"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "p1"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Geode Rager",
+      "Forest"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature that enters after the goad resolves is not goaded, so Goblin Guide may stay home",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Geode Rager"] },
+   { "hand": ["Goblin Guide"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "sick": false }] }
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true, "targets": ["p1"] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Goblin Guide", "player": 1 },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "life": 18 }, { "battlefield_has": ["Goblin Guide", "Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: a land put onto the battlefield by a spell triggers landfall, goading the target's creatures",
+  "players": [
+   { "hand": ["Field Trip"], "battlefield": ["Geode Rager", "Forest", "Island", "Island"], "library": ["Forest", "Plains"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false } ] }
+  ],
+  "steps": [
+   { "cast": "Field Trip" },
+   { "resolve": true, "answers": ["Forest", false, "p1"] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1, "illegal": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "life": 15 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a goaded creature must attack again in the additional combat from Aggravated Assault",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Geode Rager"] },
+   { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Aggravated Assault", { "name": "Grizzly Bears", "sick": false }] }
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true, "targets": ["p1"] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2", "player": 1 },
+   { "activate": "Aggravated Assault", "player": 1 },
+   { "resolve": true },
+   { "attack": [], "player": 1, "illegal": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2", "player": 1 }
+  ],
+  "expect": {
+   "players": [ { "life": 16 }, {} ]
+  }
+ }
+]

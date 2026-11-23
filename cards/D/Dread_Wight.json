@@ -1,0 +1,83 @@
+{
+  "name": "Dread Wight",
+  "mana_cost": "{3}{B}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Zombie"],
+  "power": 3,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "EndCombat", "whose": "Any" },
+      "effects": [
+        {
+          "type": "AddCounters",
+          "kind": "Paralyzation",
+          "what": {
+            "type": "All",
+            "filter": { "any_of": [{ "blocked_by_source": true }, { "blocking_source": true }] },
+            "zone": "Battlefield"
+          },
+          "n": { "type": "Fixed", "n": 1 }
+        },
+        {
+          "type": "Tap",
+          "what": {
+            "type": "All",
+            "filter": { "any_of": [{ "blocked_by_source": true }, { "blocking_source": true }] },
+            "zone": "Battlefield"
+          }
+        },
+        {
+          "type": "GrantStatic",
+          "what": {
+            "type": "All",
+            "filter": { "any_of": [{ "blocked_by_source": true }, { "blocking_source": true }] },
+            "zone": "Battlefield"
+          },
+          "duration": "Forever",
+          "effect": {
+            "type": "GrantAbility",
+            "affects": {},
+            "ability": {
+              "type": "Static",
+              "effect": { "type": "DoesntUntap", "filter": { "this": true } },
+              "condition": {
+                "type": "Compare",
+                "a": { "type": "CountersOn", "of": { "type": "This" }, "kind": "Paralyzation" },
+                "cmp": { "op": "Ge", "n": 1 }
+              }
+            }
+          }
+        },
+        {
+          "type": "GrantStatic",
+          "what": {
+            "type": "All",
+            "filter": { "any_of": [{ "blocked_by_source": true }, { "blocking_source": true }] },
+            "zone": "Battlefield"
+          },
+          "duration": "Forever",
+          "effect": {
+            "type": "GrantAbility",
+            "affects": {},
+            "ability": {
+              "type": "Activated",
+              "cost": [{ "type": "Mana", "cost": "{4}" }],
+              "effects": [
+                {
+                  "type": "RemoveCounters",
+                  "kind": "Paralyzation",
+                  "n": { "type": "Fixed", "n": 1 },
+                  "what": { "type": "This" }
+                }
+              ],
+              "timing": "Instant"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At end of combat, put a paralyzation counter on each creature blocking or blocked by Dread Wight and tap those creatures. Each of those creatures doesn't untap during its controller's untap step for as long as it has a paralyzation counter on it. Each of those creatures gains \"{4}: Remove a paralyzation counter from this creature.\""
+}

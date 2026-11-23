@@ -1,0 +1,136 @@
+[
+  {
+    "name": "taps and stuns a creature, then lets you play the chosen card",
+    "players": [
+      {
+        "hand": [
+          "Riverwheel Sweep"
+        ],
+        "battlefield": [
+          "Island",
+          "Mountain",
+          "Plains"
+        ],
+        "library": [
+          "Forest",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Riverwheel Sweep",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Forest"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Forest",
+            "Swamp"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 3
+        }
+      }
+    }
+  },
+  {
+    "name": "no creature to target: cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Riverwheel Sweep"
+        ],
+        "battlefield": [
+          "Island",
+          "Mountain",
+          "Plains"
+        ],
+        "library": [
+          "Forest",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Riverwheel Sweep",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Riverwheel Sweep"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the target is gone on resolution, nothing happens and no cards are exiled",
+    "players": [
+      { "hand": ["Riverwheel Sweep"], "battlefield": ["Island", "Mountain", "Plains"], "library": ["Forest", "Swamp"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Riverwheel Sweep", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "library_top": ["Forest", "Swamp"], "graveyard_has": ["Riverwheel Sweep"] },
+        { "hand": ["Grizzly Bears"], "graveyard_has": ["Unsummon"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the chosen exiled land is played as a land drop in your main phase",
+    "players": [
+      { "hand": ["Riverwheel Sweep"], "battlefield": ["Island", "Mountain", "Plains"], "library": ["Forest", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Riverwheel Sweep", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": ["Forest"] },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Forest"], "exile": ["Swamp"] }, {} ]
+    }
+  }
+]

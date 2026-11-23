@@ -1,0 +1,121 @@
+[
+  {
+    "name": "ETB reanimates a creature card with MV 4 or less with a finality counter, gives it menace, deathtouch and haste, and it is exiled at the next end step",
+    "players": [
+      {
+        "hand": ["Coalstoke Gearhulk"],
+        "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Island"],
+        "graveyard": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Coalstoke Gearhulk" },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Coalstoke Gearhulk"],
+          "battlefield_lacks": ["Hill Giant"],
+          "exile": ["Hill Giant"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "while on the battlefield the reanimated creature has menace, deathtouch and haste and a finality counter",
+    "players": [
+      {
+        "hand": ["Coalstoke Gearhulk"],
+        "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Island"],
+        "graveyard": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Coalstoke Gearhulk" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Coalstoke Gearhulk", "Hill Giant"] },
+        {}
+      ],
+      "counters": { "Hill Giant": { "finality": 1 } },
+      "pt": { "Hill Giant": [3, 3] },
+      "keywords": { "Hill Giant": ["Menace", "Deathtouch", "Haste"] }
+    }
+  },
+  {
+    "name": "a reanimated creature with a finality counter is exiled instead of dying",
+    "players": [
+      {
+        "hand": ["Coalstoke Gearhulk", "Lightning Bolt"],
+        "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Mountain", "Island"],
+        "graveyard": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Coalstoke Gearhulk" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Coalstoke Gearhulk"],
+          "battlefield_lacks": ["Hill Giant"],
+          "graveyard": ["Lightning Bolt"],
+          "exile": ["Hill Giant"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no creature card with mana value 4 or less in a graveyard: the ETB does nothing",
+    "players": [
+      {
+        "hand": ["Coalstoke Gearhulk"],
+        "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Island"],
+        "graveyard": ["Serra Angel"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Coalstoke Gearhulk" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Coalstoke Gearhulk"],
+          "battlefield_lacks": ["Serra Angel"],
+          "graveyard": ["Serra Angel"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a finality creature returned to hand by Unsummon goes to hand, not exile",
+    "players": [ { "hand": ["Unsummon"], "battlefield": [ { "name": "Hill Giant", "counters": { "finality": 1 } }, "Island" ] }, {} ],
+    "steps": [ { "cast": "Unsummon", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a finality creature that loses all abilities is still exiled when it dies",
+    "players": [ { "hand": ["Turn to Frog", "Lightning Bolt"], "battlefield": [ { "name": "Hill Giant", "counters": { "finality": 1 } }, "Island", "Island", "Mountain" ] }, {} ],
+    "steps": [ { "cast": "Turn to Frog", "targets": ["Hill Giant"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"], "graveyard_has": ["Lightning Bolt", "Turn to Frog"] }, {} ] }
+  }
+]

@@ -1,0 +1,125 @@
+[
+  {
+    "name": "ETB exiles another creature you control until Phantom Steed leaves",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Phantom Steed"], "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "no other creature you control: the ETB does nothing",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Phantom Steed"], "exile": [] }, {} ]
+    }
+  },
+  {
+    "name": "when Phantom Steed leaves the battlefield the exiled creature returns",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Phantom Steed"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Phantom Steed"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "attack: creates a tapped and attacking Illusion copy of the exiled creature, sacrificed at end of combat",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Phantom Steed", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Phantom Steed", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "the attack token is sacrificed at end of combat",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Phantom Steed", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Phantom Steed"], "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: if Phantom Steed leaves before its ETB resolves, nothing is exiled",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Phantom Steed"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Phantom Steed"], "exile": [] }, { "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: the creature returns as a new object, so its +1/+1 counters are gone",
+    "players": [
+      { "hand": ["Phantom Steed"], "battlefield": ["Island", "Island", "Island", "Island", { "name": "Grizzly Bears", "counters": { "+1/+1": 1 } }] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Phantom Steed" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Phantom Steed"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Phantom Steed"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

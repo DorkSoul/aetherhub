@@ -1,0 +1,199 @@
+[
+ {
+  "name": "attacking modified creature doubles its counters",
+  "players": [
+   {
+    "battlefield": [
+     "Arna Kennerüd, Skycaptain",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 2
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "a creature that is not attacking does not trigger the doubling",
+  "players": [
+   {
+    "battlefield": [
+     "Arna Kennerüd, Skycaptain",
+     "Grizzly Bears",
+     {
+      "name": "Llanowar Elves",
+      "counters": {
+       "p1p1": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Llanowar Elves": {
+     "p1p1": 1
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "attacking enchanted creature: a token copy of the Aura is attached to it",
+  "players": [
+   {
+    "hand": [
+     "Holy Strength"
+    ],
+    "battlefield": [
+     "Arna Kennerüd, Skycaptain",
+     "Grizzly Bears",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Holy Strength",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     6
+    ]
+   }
+  }
+ },
+ {
+  "name": "ward (discard a card): the opponent has no other card to discard, Helix is countered",
+  "players": [ { "battlefield": ["Arna Kennerüd, Skycaptain"] }, { "hand": ["Lightning Helix"], "battlefield": ["Mountain", "Plains"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Helix", "player": 1, "targets": ["Arna Kennerüd, Skycaptain"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Arna Kennerüd, Skycaptain"] }, { "life": 20, "graveyard_has": ["Lightning Helix"] } ] }
+ },
+ {
+  "name": "ward (discard a card): the opponent discards Grizzly Bears to pay, Helix resolves and gains them 3",
+  "players": [ { "battlefield": ["Arna Kennerüd, Skycaptain"] }, { "hand": ["Lightning Helix", "Grizzly Bears"], "battlefield": ["Mountain", "Plains"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Helix", "player": 1, "targets": ["Arna Kennerüd, Skycaptain"] }, { "resolve": true, "auto": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Arna Kennerüd, Skycaptain"] }, { "life": 23, "graveyard_has": ["Lightning Helix", "Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: attacking modified creature doubles each kind of counter on it",
+  "players": [
+   { "battlefield": ["Arna Kennerüd, Skycaptain", { "name": "Grizzly Bears", "counters": { "p1p1": 1, "charge": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 2, "charge": 2 } }
+  }
+ },
+ {
+  "name": "ruling: a creature with a counter of any kind is modified, so its counters double",
+  "players": [
+   { "battlefield": ["Arna Kennerüd, Skycaptain", { "name": "Grizzly Bears", "counters": { "charge": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "charge": 2 } }
+  }
+ },
+ {
+  "name": "ruling: an Aura controlled by an opponent does not make my creature modified (no token copy)",
+  "players": [
+   { "battlefield": ["Arna Kennerüd, Skycaptain", "Grizzly Bears"] },
+   { "hand": ["Kasmina's Transmutation"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Kasmina's Transmutation", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Arna Kennerüd, Skycaptain", "Grizzly Bears"], "battlefield_lacks": ["Kasmina's Transmutation"] },
+    { "battlefield_has": ["Kasmina's Transmutation"] }
+   ],
+   "attached": { "Kasmina's Transmutation": "Grizzly Bears" }
+  }
+ }
+]

@@ -1,0 +1,89 @@
+[
+ {
+  "name": "enters, destroys the opposing creature and gains 3 life",
+  "players": [
+   { "hand": ["Lamentation"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lamentation" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 23, "battlefield_has": ["Lamentation"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "no opposing creature: no legal target, so the trigger does nothing and no life is gained",
+  "players": [
+   { "hand": ["Lamentation"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lamentation" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield_has": ["Lamentation", "Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "encore for 8 mana exiles it from the graveyard and makes a hasty token copy",
+  "players": [
+   { "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Lamentation"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lamentation", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lamentation"], "battlefield_has": ["Lamentation"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "encore needs 8 mana: seven Swamps is illegal",
+  "players": [
+   { "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Lamentation"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lamentation", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lamentation"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: encore tokens gain haste, so the token can attack the opponent this turn",
+  "players": [
+   { "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Lamentation"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lamentation", "ability": 0 },
+   { "resolve": true },
+   { "attack": [ { "card": "Lamentation", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lamentation"], "battlefield_has": ["Lamentation"] },
+    { "life": 15 }
+   ]
+  }
+ }
+]

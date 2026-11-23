@@ -1,0 +1,168 @@
+[
+ {
+  "name": "protection from opponents on the chosen creature and a card drawn",
+  "players": [
+   {
+    "hand": ["Courageous Resolve"],
+    "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"],
+    "library": ["Forest"],
+    "life": 10
+   },
+   {
+    "hand": ["Doom Blade"],
+    "battlefield": ["Swamp", "Swamp"]
+   }
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Doom Blade", "player": 1, "targets": ["Grizzly Bears"], "illegal": true}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Grizzly Bears"], "hand": ["Forest"], "graveyard": ["Courageous Resolve"]},
+    {"hand": ["Doom Blade"]}
+   ]
+  }
+ },
+ {
+  "name": "up to one target: with no creature chosen the card still draws",
+  "players": [
+   {
+    "hand": ["Courageous Resolve"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "library": ["Forest"],
+    "life": 10
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Forest"], "graveyard": ["Courageous Resolve"], "life": 10},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "fateful hour: at 3 life you can't lose life this turn, so the opponent's Lightning Bolt leaves you at 3",
+  "players": [
+   {
+    "hand": ["Courageous Resolve"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "library": ["Forest"],
+    "life": 3
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve"},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"life": 3},
+    {}
+   ],
+   "winner": -1
+  }
+ },
+ {
+  "name": "above 5 life Fateful hour does not apply: the Lightning Bolt does its 3 damage",
+  "players": [
+   {
+    "hand": ["Courageous Resolve"],
+    "battlefield": ["Plains", "Plains", "Plains"],
+    "library": ["Forest"],
+    "life": 8
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve"},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"life": 5},
+    {}
+   ],
+   "winner": -1
+  }
+ },
+ {
+  "name": "ruling: target killed in response, Courageous Resolve fizzles and nothing is drawn",
+  "players": [
+   {"hand": ["Courageous Resolve"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"], "library": ["Forest"]},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve", "targets": ["Grizzly Bears"]},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand_count": 0, "library_top": ["Forest"], "graveyard_has": ["Courageous Resolve", "Grizzly Bears"]},
+    {"graveyard_has": ["Lightning Bolt"]}
+   ]
+  }
+ },
+ {
+  "name": "ruling: fateful hour is checked on resolution, so life gained later does not let the Bolt take life",
+  "players": [
+   {"hand": ["Courageous Resolve"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Forest"], "life": 4},
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve"},
+   {"resolve": true},
+   {"set_life": 10},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"life": 10}, {}],
+   "winner": -1
+  }
+ },
+ {
+  "name": "ruling: at 4 life, two Lightning Bolts deal no life loss, so you do not lose the game",
+  "players": [
+   {"hand": ["Courageous Resolve"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Forest"], "life": 4},
+   {"hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Courageous Resolve"},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"]},
+   {"resolve": true},
+   {"pass": true},
+   {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"life": 4}, {}],
+   "winner": -1
+  }
+ }
+]

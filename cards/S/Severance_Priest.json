@@ -1,0 +1,57 @@
+{
+  "name": "Severance Priest",
+  "mana_cost": "{W}{B}{G}",
+  "types": ["Creature"],
+  "subtypes": ["Djinn", "Cleric"],
+  "colors": ["W", "B", "G"],
+  "power": 3,
+  "toughness": 3,
+  "keywords": ["Deathtouch"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" }
+      ],
+      "effects": [
+        {
+          "type": "Reveal",
+          "what": { "type": "AllOfPlayer", "player": { "type": "Target", "idx": 0 }, "zone": "Hand", "filter": {} }
+        },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "from": { "type": "Target", "idx": 0 },
+          "zone": "Hand",
+          "filter": { "not_types": ["Land"] },
+          "min": 0,
+          "max": 1,
+          "then": [
+            { "type": "Exile", "what": { "type": "Remembered" } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "LeavesBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "CreateToken",
+          "token": "Spirit 0-0 White",
+          "controller": { "type": "OwnerOf", "of": { "type": "ExiledWithThis" } },
+          "n": { "type": "Fixed", "n": 1 }
+        },
+        {
+          "type": "SetBasePT",
+          "what": { "type": "Remembered" },
+          "power": { "type": "ManaValueOf", "of": { "type": "ExiledWithThis" } },
+          "toughness": { "type": "ManaValueOf", "of": { "type": "ExiledWithThis" } },
+          "duration": "Forever"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Deathtouch\nWhen this creature enters, target opponent reveals their hand. You may choose a nonland card from it. If you do, exile that card.\nWhen this creature leaves the battlefield, the exiled card's owner creates an X/X white Spirit creature token, where X is the mana value of the exiled card."
+}

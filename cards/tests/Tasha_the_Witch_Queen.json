@@ -1,0 +1,186 @@
+[
+ {
+  "name": "+1 exiles an opponent's instant from their graveyard and draws",
+  "players": [
+   {
+    "battlefield": [
+     "Tasha, the Witch Queen"
+    ]
+   },
+   {
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Tasha, the Witch Queen",
+    "ability": 0,
+    "targets": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": []
+    },
+    {
+     "exile": [
+      "Lightning Bolt"
+     ],
+     "graveyard": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "+1 with no target chosen leaves every graveyard alone",
+  "players": [
+   {
+    "battlefield": [
+     "Tasha, the Witch Queen"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Tasha, the Witch Queen",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "exile": []
+    },
+    {
+     "graveyard": [],
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "casting a spell you don't own (opponent's card exiled by Hostage Taker) makes a 3/3 Demon",
+  "players": [
+   {
+    "hand": ["Hostage Taker"],
+    "battlefield": [
+     {"name": "Tasha, the Witch Queen", "counters": {"loyalty": 4}},
+     "Island", "Swamp", "Forest", "Forest", "Forest", "Island"
+    ]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {"cast": "Hostage Taker"},
+   {"resolve": true},
+   {"resolve": true},
+   {"cast": "Grizzly Bears"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Tasha, the Witch Queen", "Hostage Taker", "Grizzly Bears", "Demon 3-3"]},
+    {"battlefield_lacks": ["Grizzly Bears"], "exile": []}
+   ]
+  }
+ },
+ {
+  "name": "-3: cast a card with a page counter from exile for free",
+  "players": [
+   {
+    "battlefield": [
+     {"name": "Tasha, the Witch Queen", "counters": {"loyalty": 4}}
+    ],
+    "exile": [
+     {"name": "Grizzly Bears", "counters": {"Page": 1}}
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {"activate": "Tasha, the Witch Queen", "ability": 1},
+   {"resolve": true, "answers": ["Grizzly Bears", true]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Tasha, the Witch Queen", "Grizzly Bears"], "exile": []},
+    {}
+   ],
+   "counters": {
+    "Tasha, the Witch Queen": {"loyalty": 1}
+   }
+  }
+ },
+ {
+  "name": "-3: declining to cast leaves the page-countered card in exile",
+  "players": [
+   {
+    "battlefield": [
+     {"name": "Tasha, the Witch Queen", "counters": {"loyalty": 4}}
+    ],
+    "exile": [
+     {"name": "Grizzly Bears", "counters": {"Page": 1}}
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {"activate": "Tasha, the Witch Queen", "ability": 1},
+   {"resolve": true, "answers": ["Grizzly Bears", false]}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"]},
+    {}
+   ],
+   "counters": {
+    "Tasha, the Witch Queen": {"loyalty": 1}
+   }
+  }
+ },
+ {
+  "name": "ruling: the page-countered card can be cast only as the -3 resolves, not later in the turn",
+  "players": [
+   {
+    "battlefield": [ {"name": "Tasha, the Witch Queen", "counters": {"loyalty": 4}}, "Mountain" ],
+    "exile": [ {"name": "Lightning Bolt", "counters": {"Page": 1}} ]
+   },
+   {}
+  ],
+  "steps": [
+   {"activate": "Tasha, the Witch Queen", "ability": 1},
+   {"resolve": true, "answers": ["Lightning Bolt", false]},
+   {"advance_to": "Main2"},
+   {"cast": "Lightning Bolt", "illegal": true}
+  ],
+  "expect": {
+   "players": [ {"exile": ["Lightning Bolt"]}, {} ],
+   "counters": { "Tasha, the Witch Queen": {"loyalty": 1} }
+  }
+ }
+]

@@ -1,0 +1,352 @@
+[
+  {
+    "name": "ETB exiles a card from a graveyard (any player's)",
+    "players": [
+      {
+        "hand": [
+          "Cemetery Prowler"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "graveyard": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cemetery Prowler"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Cemetery Prowler"
+          ]
+        },
+        {
+          "exile": [
+            "Hill Giant"
+          ],
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "attacking exiles a card from a graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Cemetery Prowler",
+          "Forest"
+        ]
+      },
+      {
+        "graveyard": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Cemetery Prowler",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "exile": [
+            "Hill Giant"
+          ],
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "a creature spell costs {1} less for each shared type with an exiled creature",
+    "players": [
+      {
+        "hand": [
+          "Cemetery Prowler",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "graveyard": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cemetery Prowler"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Cemetery Prowler",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "exile": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a spell sharing no card type with the exiled card gets no reduction",
+    "players": [
+      {
+        "hand": [
+          "Cemetery Prowler",
+          "Rampant Growth"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "graveyard": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cemetery Prowler"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Rampant Growth",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Rampant Growth"
+          ]
+        },
+        {
+          "exile": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "an exiled artifact card makes your artifact spells cost {1} less: Sol Ring is free",
+    "players": [
+      { "hand": ["Sol Ring"], "battlefield": ["Cemetery Prowler"] },
+      { "graveyard": ["Cement Shoes"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Sol Ring" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Prowler", "Sol Ring"] }, { "exile": ["Cement Shoes"] } ] }
+  },
+  {
+    "name": "an exiled enchantment card makes your enchantment spells cost {1} less: Pacifism costs only {W}",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Cemetery Prowler", "Plains"] },
+      { "battlefield": ["Grizzly Bears"], "graveyard": ["Cast into Darkness"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Prowler", "Pacifism"] }, { "battlefield_has": ["Grizzly Bears"], "exile": ["Cast into Darkness"] } ] }
+  },
+  {
+    "name": "an exiled instant card makes your instant spells cost {1} less: Fact or Fiction costs three",
+    "players": [
+      { "hand": ["Fact or Fiction"], "battlefield": ["Cemetery Prowler", "Island", "Island", "Island"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Fact or Fiction" }
+    ],
+    "expect": { "players": [ { "hand": [] }, { "exile": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "an exiled sorcery card makes your sorcery spells cost {1} less: Divination costs two",
+    "players": [
+      { "hand": ["Divination"], "battlefield": ["Cemetery Prowler", "Island", "Island"] },
+      { "graveyard": ["Warren Weirding"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Divination"] }, { "exile": ["Warren Weirding"] } ] }
+  },
+  {
+    "name": "an exiled Kindred card makes your Kindred spells cost {1} less: Wings of Velis Vel costs one",
+    "players": [
+      { "hand": ["Wings of Velis Vel"], "battlefield": ["Cemetery Prowler", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "graveyard": ["Warren Weirding"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Wings of Velis Vel", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Wings of Velis Vel"] }, { "battlefield_has": ["Grizzly Bears"], "exile": ["Warren Weirding"] } ] }
+  },
+  {
+    "name": "an exiled planeswalker card makes your planeswalker spells cost {1} less: Kaito costs two",
+    "players": [
+      { "hand": ["Kaito, Cunning Infiltrator"], "battlefield": ["Cemetery Prowler", "Island", "Island"] },
+      { "graveyard": ["Koth of the Hammer"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Kaito, Cunning Infiltrator" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Prowler", "Kaito, Cunning Infiltrator"] }, { "exile": ["Koth of the Hammer"] } ] }
+  },
+  {
+    "name": "ruling: two creature cards exiled by one Prowler reduce creature spells by {1}, not {2} (Serra Angel costs four)",
+    "players": [
+      { "hand": ["Serra Angel"], "battlefield": ["Cemetery Prowler", "Plains", "Plains", "Forest", "Forest"] },
+      { "graveyard": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [], "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Serra Angel" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Cemetery Prowler", "Serra Angel"] },
+        { "exile": ["Hill Giant", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two exiled creature cards still give only one {1} reduction (Serra Angel with three lands is illegal)",
+    "players": [
+      { "hand": ["Serra Angel"], "battlefield": ["Cemetery Prowler", "Plains", "Plains", "Forest"] },
+      { "graveyard": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [], "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Cemetery Prowler", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Serra Angel", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Serra Angel"] },
+        { "exile": ["Hill Giant", "Grizzly Bears"] }
+      ]
+    }
+  }
+]

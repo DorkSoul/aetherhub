@@ -1,0 +1,149 @@
+[
+ {
+  "name": "attacking the enchanted player creates one Zombie for the Curse's controller",
+  "players": [
+   {
+    "hand": ["Curse of Disturbance"],
+    "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears", "Zombie 2-2 Black", "Curse of Disturbance"] },
+    { "battlefield": [] }
+   ]
+  }
+ },
+ {
+  "name": "one trigger per combat even when several creatures attack",
+  "players": [
+   {
+    "hand": ["Curse of Disturbance"],
+    "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }, { "name": "Llanowar Elves", "sick": false }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Llanowar Elves", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears", "Llanowar Elves", "Zombie 2-2 Black", "Curse of Disturbance"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "three players: an opponent's creature attacks the enchanted player, so that opponent also gets a Zombie",
+  "players": [
+   { "hand": ["Curse of Disturbance"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   {},
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p1"] },
+   { "resolve": true },
+   { "player": 2, "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Swamp", "Swamp", "Swamp", "Curse of Disturbance", "Zombie 2-2 Black"] },
+    { "life": 18 },
+    { "battlefield": ["Grizzly Bears", "Zombie 2-2 Black"] }
+   ]
+  }
+ },
+ {
+  "name": "three players: an attack on a player the Curse does not enchant makes no Zombie",
+  "players": [
+   { "hand": ["Curse of Disturbance"], "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+   {},
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p2" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Zombie 2-2 Black"] }, {}, {} ]
+  }
+ },
+ {
+  "name": "ruling: attacking a planeswalker the enchanted player controls makes no Zombie",
+  "players": [
+   { "hand": ["Curse of Disturbance"], "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+   { "battlefield": ["Teferi, Hero of Dominaria"] }
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "Teferi, Hero of Dominaria" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Zombie 2-2 Black"] }, { "battlefield_lacks": ["Zombie 2-2 Black"] } ],
+   "counters": { "Teferi, Hero of Dominaria": { "Loyalty": 2 } }
+  }
+ },
+ {
+  "name": "ruling: enchanting yourself, an opponent's attack gives you a Zombie and the attacker a Zombie too",
+  "players": [
+   { "hand": ["Curse of Disturbance"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p0"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Zombie 2-2 Black"] }, { "battlefield_has": ["Grizzly Bears", "Zombie 2-2 Black"] } ]
+  }
+ },
+ {
+  "name": "ruling: if the attacker has left when the trigger resolves, only the Curse's controller gets a Zombie",
+  "players": [
+   { "hand": ["Curse of Disturbance"], "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Curse of Disturbance", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Zombie 2-2 Black"], "graveyard": ["Grizzly Bears"] }, { "battlefield_lacks": ["Zombie 2-2 Black"] } ]
+  }
+ }
+]

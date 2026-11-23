@@ -1,0 +1,98 @@
+[
+  {
+    "name": "won flip: the blocking creature is sacrificed",
+    "players": [
+      { "battlefield": ["Tide of War", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true }
+    ],
+    "seed": 3,
+    "expect": {
+      "players": [ { "graveyard": [] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "lost flip: the blocked attacker is sacrificed",
+    "players": [
+      { "battlefield": ["Tide of War", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true }
+    ],
+    "seed": 2,
+    "expect": {
+      "players": [ { "graveyard": ["Grizzly Bears"] }, { "graveyard": [] } ]
+    }
+  },
+  {
+    "name": "no block: no trigger, nothing sacrificed",
+    "players": [
+      { "battlefield": ["Tide of War", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] }
+    ],
+    "seed": 1,
+    "expect": {
+      "players": [ { "graveyard": [] }, { "graveyard": [] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: the controller flips even when defending; a won flip sacrifices my own blocker",
+    "players": [ { "battlefield": ["Tide of War", "Hill Giant"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [
+      { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "pass": true, "player": 1 }, { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true }
+    ],
+    "seed": 3,
+    "expect": { "players": [ { "graveyard_has": ["Hill Giant"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: the controller flips even when defending; a lost flip sacrifices the blocked attacker",
+    "players": [ { "battlefield": ["Tide of War", "Hill Giant"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [
+      { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "pass": true, "player": 1 }, { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true }
+    ],
+    "seed": 2,
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"] }, { "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a blocked attacker stays blocked after its blocker is sacrificed (no damage to the player)",
+    "players": [ { "battlefield": ["Tide of War", "Mountain", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "seed": 3,
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 20, "battlefield_lacks": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: on a lost flip only the blocked attacker is sacrificed; the unblocked attacker deals its damage",
+    "players": [ { "battlefield": ["Tide of War", "Mountain", { "name": "Grizzly Bears", "sick": false }, { "name": "Thunderblust", "sick": false }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Thunderblust", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "seed": 2,
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Thunderblust"] }, { "life": 13 } ] }
+  }
+]

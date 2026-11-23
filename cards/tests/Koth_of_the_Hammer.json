@@ -1,0 +1,77 @@
+[
+  {
+    "name": "+1 untaps a Mountain and makes it a 4/4 until end of turn",
+    "players": [
+      { "battlefield": ["Koth of the Hammer", { "name": "Mountain", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Koth of the Hammer", "ability": 0, "targets": ["Mountain"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Koth of the Hammer": { "loyalty": 4 } },
+      "pt": { "Mountain": [4, 4] },
+      "tapped": { "Mountain": false }
+    }
+  },
+  {
+    "name": "-2 adds R for each Mountain you control",
+    "players": [
+      { "battlefield": ["Koth of the Hammer", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Koth of the Hammer", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Koth of the Hammer": { "loyalty": 1 } },
+      "players": [{ "pool": { "R": 3 } }, {}]
+    }
+  },
+  {
+    "name": "-5 creates the Mountain-ping emblem",
+    "players": [
+      { "battlefield": [{ "name": "Koth of the Hammer", "counters": { "Loyalty": 5 } }, "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Koth of the Hammer", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "command": ["Koth of the Hammer Emblem"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: the emblem outlives Koth and its ping works on a Mountain",
+    "players": [ { "battlefield": [{ "name": "Koth of the Hammer", "counters": { "Loyalty": 5 } }, "Mountain"] }, {} ],
+    "steps": [ { "activate": "Koth of the Hammer", "ability": 2 }, { "resolve": true }, { "activate": "Mountain", "ability": 32768, "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "command": ["Koth of the Hammer Emblem"], "graveyard": ["Koth of the Hammer"] }, { "life": 19 } ] }
+  },
+  {
+    "name": "ruling: a Mountain that came under control this turn, animated by +1, cannot use the emblem ping",
+    "players": [ { "battlefield": ["Koth of the Hammer", { "name": "Mountain", "sick": true }], "command": ["Koth of the Hammer Emblem"] }, {} ],
+    "steps": [ { "activate": "Koth of the Hammer", "ability": 0, "targets": ["Mountain"] }, { "resolve": true }, { "activate": "Mountain", "ability": 32768, "targets": ["p1"], "illegal": true } ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: the same animated Mountain without summoning sickness can use the emblem ping",
+    "players": [ { "battlefield": ["Koth of the Hammer", "Mountain"], "command": ["Koth of the Hammer Emblem"] }, {} ],
+    "steps": [ { "activate": "Koth of the Hammer", "ability": 0, "targets": ["Mountain"] }, { "resolve": true }, { "activate": "Mountain", "ability": 32768, "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "life": 19 } ] }
+  },
+  {
+    "name": "ruling: a second loyalty ability in the same turn is illegal",
+    "players": [ { "battlefield": ["Koth of the Hammer", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Koth of the Hammer", "ability": 0, "targets": ["Mountain"] }, { "resolve": true }, { "activate": "Koth of the Hammer", "ability": 1, "illegal": true } ],
+    "expect": { "counters": { "Koth of the Hammer": { "loyalty": 4 } } }
+  },
+  {
+    "name": "ruling: +1 can target an opponent's Mountain, which untaps and becomes a 4/4",
+    "players": [ { "battlefield": ["Koth of the Hammer"] }, { "battlefield": [{ "name": "Mountain", "tapped": true }] } ],
+    "steps": [ { "activate": "Koth of the Hammer", "ability": 0, "targets": ["p1:Mountain"] }, { "resolve": true } ],
+    "expect": { "counters": { "Koth of the Hammer": { "loyalty": 4 } }, "pt": { "Mountain": [4, 4] }, "tapped": { "Mountain": false } }
+  }
+]

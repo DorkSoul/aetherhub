@@ -1,0 +1,60 @@
+{
+ "name": "Faithbound Judge // Sinner's Judgment",
+ "mana_cost": "{1}{W}{W}",
+ "types": ["Creature"],
+ "subtypes": ["Spirit", "Soldier"],
+ "power": 4,
+ "toughness": 4,
+ "layout": "Transform",
+ "keywords": ["Defender", "Flying", "Vigilance", "Disturb"],
+ "abilities": [
+  {
+   "type": "Triggered",
+   "trigger": {"type": "BeginningOfStep", "step": "Upkeep", "whose": "You"},
+   "condition": {"type": "Compare", "a": {"type": "CountersOn", "kind": "Judgment", "of": {"type": "This"}}, "cmp": {"op": "Le", "n": 2}},
+   "effects": [
+    {"type": "AddCounters", "what": {"type": "This"}, "kind": "Judgment", "n": {"type": "Fixed", "n": 1}}
+   ]
+  },
+  {
+   "type": "Static",
+   "condition": {"type": "SourceHasCounter", "kind": "Judgment", "at_least": 3},
+   "effect": {"type": "AttackAsThoughNoDefender", "affects": {"this": true}}
+  }
+ ],
+ "oracle_text": "Defender, flying, vigilance\nAt the beginning of your upkeep, if this creature has two or fewer judgment counters on it, put a judgment counter on it.\nAs long as this creature has three or more judgment counters on it, it can attack as though it didn't have defender.\nDisturb {5}{W}{W}",
+ "back": {
+  "name": "Sinner's Judgment",
+  "keywords": ["Disturb"],
+  "types": ["Enchantment"],
+  "subtypes": ["Aura", "Curse"],
+  "abilities": [
+   {"type": "EnchantPlayer"},
+   {
+    "type": "Triggered",
+    "trigger": {"type": "BeginningOfStep", "step": "Upkeep", "whose": "You"},
+    "effects": [
+     {"type": "AddCounters", "what": {"type": "This"}, "kind": "Judgment", "n": {"type": "Fixed", "n": 1}},
+     {"type": "If",
+      "cond": {"type": "Compare", "a": {"type": "CountersOn", "kind": "Judgment", "of": {"type": "This"}}, "cmp": {"op": "Ge", "n": 3}},
+      "then": [{"type": "LoseGame", "who": {"type": "EnchantedPlayer"}}]}
+    ]
+   },
+   {
+    "type": "AlternativeCost",
+    "cost": [{"type": "Mana", "cost": "{5}{W}{W}"}],
+    "from": "Graveyard"
+   },
+   {
+    "type": "Replace",
+    "what": {
+     "type": "ZoneChange",
+     "to": "Graveyard",
+     "instead": "Exile",
+     "filter": {"this": true}
+    }
+   }
+  ],
+  "oracle_text": "Enchant player\nAt the beginning of your upkeep, put a judgment counter on this Aura. Then if there are three or more judgment counters on it, enchanted player loses the game.\nIf Sinner's Judgment would be put into a graveyard from anywhere, exile it instead."
+ }
+}

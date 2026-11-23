@@ -1,0 +1,75 @@
+[
+  {
+    "name": "power counts instant and sorcery cards in your graveyard",
+    "players": [
+      { "battlefield": ["Smoldering Stagecoach"], "graveyard": ["Lightning Bolt", "Snapback", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Smoldering Stagecoach": [2, 5] }
+    }
+  },
+  {
+    "name": "power is zero with no instants or sorceries in your graveyard",
+    "players": [
+      { "battlefield": ["Smoldering Stagecoach"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Smoldering Stagecoach": [0, 5] }
+    }
+  },
+  {
+    "name": "crewed by a power 2 creature it becomes a creature with power from its graveyard",
+    "players": [{ "battlefield": ["Smoldering Stagecoach", "Grizzly Bears"] }, {}],
+    "steps": [{ "activate": "Smoldering Stagecoach" }, { "resolve": true }],
+    "expect": { "pt": { "Smoldering Stagecoach": [0, 5] }, "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "crew 2 needs total power 2: a power 1 creature cannot crew",
+    "players": [{ "battlefield": ["Smoldering Stagecoach", "Llanowar Elves"] }, {}],
+    "steps": [{ "activate": "Smoldering Stagecoach", "illegal": true }],
+    "expect": { "players": [{ "battlefield_has": ["Smoldering Stagecoach", "Llanowar Elves"] }, {}] }
+  },
+  {
+    "name": "after it attacks, the next instant cast has cascade and casts the revealed Ornithopter free",
+    "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Smoldering Stagecoach", "Grizzly Bears", "Mountain"], "library": ["Ornithopter"] }, {}],
+    "steps": [
+      { "activate": "Smoldering Stagecoach" }, { "resolve": true },
+      { "attack": [{ "card": "Smoldering Stagecoach", "at": "p1" }] }, { "resolve": true },
+      { "block": [] }, { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true, "answers": [true] }, { "resolve": true }, { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand": [], "battlefield_has": ["Ornithopter"] }, { "life": 17 }] }
+  },
+  {
+    "name": "without an attack this turn the next instant does not cascade",
+    "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Smoldering Stagecoach", "Mountain"], "library": ["Ornithopter"] }, {}],
+    "steps": [{ "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }],
+    "expect": { "players": [{ "library_top": ["Ornithopter"], "battlefield_lacks": ["Ornithopter"] }, { "life": 17 }] }
+  },
+  {
+    "name": "ruling: declining the cascade cast still puts the exiled card on the bottom of the library",
+    "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Smoldering Stagecoach", "Grizzly Bears", "Mountain"], "library": ["Ornithopter", "Forest"] }, {}],
+    "steps": [
+      { "activate": "Smoldering Stagecoach" }, { "resolve": true },
+      { "attack": [{ "card": "Smoldering Stagecoach", "at": "p1" }] }, { "resolve": true },
+      { "block": [] }, { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true, "answers": [false] }, { "resolve": true }, { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand": [], "exile": [], "battlefield_lacks": ["Ornithopter"], "library_top": ["Forest"] }, { "life": 17 }] }
+  },
+  {
+    "name": "ruling: cascade exiles lands and too-expensive nonlands until the cheap nonland, which is cast",
+    "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Smoldering Stagecoach", "Grizzly Bears", "Mountain"], "library": ["Hill Giant", "Forest", "Ornithopter"] }, {}],
+    "steps": [
+      { "activate": "Smoldering Stagecoach" }, { "resolve": true },
+      { "attack": [{ "card": "Smoldering Stagecoach", "at": "p1" }] }, { "resolve": true },
+      { "block": [] }, { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true, "answers": [true] }, { "resolve": true }, { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand": [], "exile": [], "battlefield_has": ["Ornithopter"] }, { "life": 17 }] }
+  }
+]

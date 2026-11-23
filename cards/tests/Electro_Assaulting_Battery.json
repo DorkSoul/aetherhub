@@ -1,0 +1,143 @@
+[
+ {
+  "name": "casting an instant adds R which persists",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Shock"
+    ],
+    "battlefield": [
+     "Electro, Assaulting Battery",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+  {
+    "name": "leaves the battlefield: pay X=2 to deal 2 damage to target player",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Electro, Assaulting Battery", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Electro, Assaulting Battery"] },
+      { "resolve": true, "answers": [true, 2, 1] }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Lightning Bolt"] }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "leaves the battlefield: declining to pay X deals no damage",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Electro, Assaulting Battery", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Electro, Assaulting Battery"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Lightning Bolt"] }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "ruling: X is chosen on resolution and the reflexive target is chosen then (yourself)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Electro, Assaulting Battery", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Electro, Assaulting Battery"] },
+      { "resolve": true, "answers": [true, 3, 0] }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Lightning Bolt"], "life": 17 }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "ruling: unspent red from Electro stays in the pool into the opponent's turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Electro, Assaulting Battery", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [{ "pool": { "R": 1 } }, {}]
+    }
+  },
+  {
+    "name": "ruling: red from Electro is kept after Electro leaves the battlefield until the end of the step",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Electro, Assaulting Battery", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Electro, Assaulting Battery"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [{ "pool": { "R": 1 }, "graveyard_has": ["Electro, Assaulting Battery"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: red left over after Electro leaves is lost at the end of the step",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Electro, Assaulting Battery", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Electro, Assaulting Battery"] },
+      { "resolve": true, "answers": [false] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "pool": {}, "graveyard_has": ["Electro, Assaulting Battery"] }, {}]
+    }
+  }
+]

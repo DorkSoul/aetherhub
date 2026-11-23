@@ -1,0 +1,69 @@
+[
+ {
+  "name": "chosen type gets +1/+1, other creatures do not",
+  "players": [
+   { "hand": ["Etchings of the Chosen"], "battlefield": ["Plains", "Swamp", "Swamp", "Grizzly Bears", "Elvish Visionary"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Etchings of the Chosen" },
+   { "resolve": true, "answers": ["Bear"] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Etchings of the Chosen"] }, {} ],
+   "pt": { "Grizzly Bears": [3, 3], "Elvish Visionary": [1, 1] }
+  }
+ },
+ {
+  "name": "sacrificing a creature of the chosen type gives another creature indestructible",
+  "players": [
+   { "hand": ["Etchings of the Chosen"], "battlefield": ["Plains", "Swamp", "Swamp", "Swamp", "Grizzly Bears", "Elvish Visionary"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Etchings of the Chosen" },
+   { "resolve": true, "answers": ["Bear"] },
+   { "activate": "Etchings of the Chosen", "ability": 0, "targets": ["Elvish Visionary"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Elvish Visionary"] }, {} ],
+   "keywords": { "Elvish Visionary": ["Indestructible"] }
+  }
+ },
+ {
+  "name": "no creature of the chosen type to sacrifice: ability is not activatable",
+  "players": [
+   { "hand": ["Etchings of the Chosen"], "battlefield": ["Plains", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Etchings of the Chosen" },
+   { "resolve": true, "answers": ["Elf"] },
+   { "activate": "Etchings of the Chosen", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the last ability can target a creature not of the chosen type, which then survives lethal damage",
+  "players": [
+   { "hand": ["Etchings of the Chosen"], "battlefield": ["Plains", "Swamp", "Swamp", "Swamp", "Grizzly Bears", "Elvish Visionary"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Etchings of the Chosen" },
+   { "resolve": true, "answers": ["Bear"] },
+   { "activate": "Etchings of the Chosen", "ability": 0, "targets": ["Elvish Visionary"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Elvish Visionary"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Elvish Visionary", "Etchings of the Chosen"] }, { "graveyard_has": ["Lightning Bolt"] } ],
+   "keywords": { "Elvish Visionary": ["Indestructible"] }
+  }
+ }
+]

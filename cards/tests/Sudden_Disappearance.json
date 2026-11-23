@@ -1,0 +1,51 @@
+[
+  {
+    "name": "exiles nonland permanents of the target player until the next end step",
+    "players": [
+      { "hand": ["Sudden Disappearance"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Disappearance", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Sudden Disappearance"] }, { "battlefield_has": ["Forest"], "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "exiled permanents return at the beginning of the end step",
+    "players": [
+      { "hand": ["Sudden Disappearance"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Disappearance", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Grizzly Bears", "Forest"] } ]
+    }
+  },
+  {
+    "name": "ruling: if the delayed return trigger is countered, the exiled cards stay in exile",
+    "players": [
+      { "hand": ["Sudden Disappearance"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Disallow"], "battlefield": ["Grizzly Bears", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Disappearance", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End", "hold": true },
+      { "pass": true },
+      { "cast": "Disallow", "player": 1, "targets": [{ "stack": "Sudden Disappearance" }] },
+      { "pass": true, "player": 1 },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Sudden Disappearance"] }, { "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"], "graveyard": ["Disallow"] } ]
+    }
+  }
+]

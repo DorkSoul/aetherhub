@@ -1,0 +1,80 @@
+{
+  "name": "Ob Nixilis, the Adversary",
+  "mana_cost": "{1}{B}{R}",
+  "supertypes": ["Legendary"],
+  "types": ["Planeswalker"],
+  "subtypes": ["Nixilis"],
+  "colors": ["B", "R"],
+  "loyalty": 3,
+  "abilities": [
+    {
+      "type": "Kicker",
+      "multi": false,
+      "cost": [
+        { "type": "Sacrifice", "n": 1, "filter": { "types": ["Creature"], "controller": "You" } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "from": "Stack",
+      "trigger": { "type": "SpellCast", "filter": { "this": true }, "by": "You" },
+      "condition": { "type": "Kicked" },
+      "effects": [
+        {
+          "type": "CopySpell",
+          "what": { "type": "TriggerSource" },
+          "except": [
+            { "type": "NotLegendary" },
+            { "type": "SetLoyalty", "amount": { "type": "PowerOf", "of": { "type": "TriggerObject" } } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": 1,
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "Unless",
+              "payer": { "type": "EachObject" },
+              "cost": [{ "type": "Discard", "filter": {}, "n": 1 }],
+              "effects": [{ "type": "LoseLife", "who": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 2 } }]
+            }
+          ]
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Control",
+            "who": { "type": "You" },
+            "filter": { "any_of": [{ "subtypes": ["Demon"] }, { "subtypes": ["Devil"] }] },
+            "at_least": 1
+          },
+          "then": [{ "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } }]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -2,
+      "effects": [{ "type": "CreateToken", "token": "Devil" }]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -7,
+      "targets": [{ "what": { "type": "Player", "filter": "Any" }, "label": "target player" }],
+      "effects": [
+        { "type": "Draw", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 7 } },
+        { "type": "LoseLife", "who": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 7 } }
+      ]
+    }
+  ],
+  "oracle_text": "Casualty X. The copy isn't legendary and has starting loyalty X. (As you cast this spell, you may sacrifice a creature with power X. When you do, copy this spell. The copy becomes a token.)\n+1: Each opponent loses 2 life unless they discard a card. If you control a Demon or Devil, you gain 2 life.\n−2: Create a 1/1 red Devil creature token with \"When this token dies, it deals 1 damage to any target.\"\n−7: Target player draws seven cards and loses 7 life."
+}

@@ -1,0 +1,91 @@
+[
+  {
+    "name": "opponent cannot cast an instant in the owner's end step",
+    "players": [
+      { "battlefield": ["Teferi, Mage of Zhalfir"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Teferi, Mage of Zhalfir"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Teferi, Mage of Zhalfir"] },
+        { "hand": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "controller of Teferi can still cast an instant in the end step",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Teferi, Mage of Zhalfir", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "a creature card you own can be cast with flash while Teferi is out",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Teferi, Mage of Zhalfir", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without Teferi a creature card cannot be cast in the end step",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an opponent cannot cast an instant in your main phase even with an empty stack",
+    "players": [ { "battlefield": ["Teferi, Mage of Zhalfir"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Teferi, Mage of Zhalfir"] }, { "hand": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: an opponent cannot cast an instant while a spell is on the stack during your turn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Teferi, Mage of Zhalfir", "Mountain"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true } ],
+    "expect": { "players": [ { "hand_count": 0 }, { "hand": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: an opponent may cast an instant in their own main phase with an empty stack",
+    "players": [ { "battlefield": ["Teferi, Mage of Zhalfir"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 17 }, { "graveyard": ["Lightning Bolt"] } ] }
+  }
+]

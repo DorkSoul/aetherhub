@@ -1,0 +1,235 @@
+[
+  {
+    "name": "+2 creates a Food and adds 2 loyalty",
+    "players": [
+      {
+        "hand": [
+          "Oko, Thief of Crowns"
+        ],
+        "battlefield": [
+          "Forest",
+          "Island",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Oko, Thief of Crowns"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Oko, Thief of Crowns",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Oko, Thief of Crowns": {
+          "loyalty": 6
+        }
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Food"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "+1 makes target creature a base 3/3 Elk and it loses its mana ability",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Oko, Thief of Crowns",
+            "counters": {
+              "loyalty": 4
+            }
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Oko, Thief of Crowns",
+        "ability": 1,
+        "targets": [
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "tap_for_mana": "Llanowar Elves",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Llanowar Elves": [
+          3,
+          3
+        ]
+      },
+      "counters": {
+        "Oko, Thief of Crowns": {
+          "loyalty": 5
+        }
+      }
+    }
+  },
+  {
+    "name": "-5 exchanges your creature for an opposing creature with power 3 or less",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Oko, Thief of Crowns",
+            "counters": {
+              "loyalty": 5
+            }
+          },
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Oko, Thief of Crowns",
+        "ability": 2,
+        "targets": [
+          "Grizzly Bears",
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Llanowar Elves"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Oko, Thief of Crowns"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "-5 needs an opposing creature with power 3 or less",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Oko, Thief of Crowns",
+            "counters": {
+              "loyalty": 5
+            }
+          },
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Oko, Thief of Crowns",
+        "ability": 2,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Oko, Thief of Crowns": {
+          "loyalty": 5
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: the +1 Elk overwrites colours and types: a targeted Sol Ring is a green Elk, not an artifact",
+    "players": [ { "battlefield": [ { "name": "Oko, Thief of Crowns", "counters": { "loyalty": 4 } }, "Sol Ring" ] }, {} ],
+    "steps": [ { "activate": "Oko, Thief of Crowns", "ability": 1, "targets": ["Sol Ring"] }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sol Ring"] }, {} ],
+      "pt": { "Sol Ring": [3, 3] },
+      "colors": { "Sol Ring": ["G"] },
+      "subtypes": { "Sol Ring": ["Elk"] }
+    }
+  },
+  {
+    "name": "ruling: the +1 Elk effect lasts indefinitely: still a 3/3 on the opponent's next turn",
+    "players": [ { "battlefield": [ { "name": "Oko, Thief of Crowns", "counters": { "loyalty": 4 } } ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "activate": "Oko, Thief of Crowns", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [3, 3] } }
+  },
+  {
+    "name": "ruling: a pump from before the +1 still applies: Giant Growth then Oko's Elk makes a 6/6",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": [ { "name": "Oko, Thief of Crowns", "counters": { "loyalty": 4 } }, "Grizzly Bears", "Forest" ] }, {} ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Oko, Thief of Crowns", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [6, 6] } }
+  },
+  {
+    "name": "ruling: the exchange is indefinite: the taken creature stays yours after its power goes above 3 and back",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": [ { "name": "Oko, Thief of Crowns", "counters": { "loyalty": 5 } }, "Grizzly Bears", "Forest" ] }, { "battlefield": ["Llanowar Elves"] } ],
+    "steps": [
+      { "activate": "Oko, Thief of Crowns", "ability": 2, "targets": ["Grizzly Bears", "Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Llanowar Elves"], "battlefield_lacks": ["Grizzly Bears"] }, { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Llanowar Elves"] } ] }
+  }
+]

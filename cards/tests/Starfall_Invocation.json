@@ -1,0 +1,32 @@
+[
+ { "name": "not kicked: destroys all creatures and returns nothing",
+   "players": [ { "hand": ["Starfall Invocation"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Starfall Invocation", "answers": [false] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": [], "graveyard": ["Starfall Invocation"] }, { "graveyard": ["Hill Giant"] } ] } },
+ { "name": "gift promised: opponent draws, and I return my destroyed creature",
+   "players": [ { "hand": ["Starfall Invocation"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Starfall Invocation", "answers": [true] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Starfall Invocation"] }, { "graveyard": ["Hill Giant"], "hand_count": 1 } ] } },
+ { "name": "gift promised but I had no creature destroyed: nothing returns",
+   "players": [ { "hand": ["Starfall Invocation"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Starfall Invocation", "answers": [true] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": [] }, { "graveyard": ["Hill Giant"], "hand_count": 1 } ] } },
+ { "name": "gift promised: opponent's creature is not returned to my battlefield",
+   "players": [ { "hand": ["Starfall Invocation"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] }, { "battlefield": ["Hill Giant", "Grizzly Bears"] } ],
+   "steps": [ { "cast": "Starfall Invocation", "answers": [true] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": [] }, { "graveyard": ["Hill Giant", "Grizzly Bears"] } ] } },
+ { "name": "ruling: gift promised with two creatures destroyed: I choose which one returns",
+   "players": [ { "hand": ["Starfall Invocation"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Savannah Lions"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Starfall Invocation", "answers": [true] }, { "resolve": true, "answers": ["Savannah Lions"] } ],
+   "expect": { "players": [ { "battlefield_has": ["Savannah Lions"], "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Starfall Invocation"] }, { "graveyard": ["Hill Giant"], "hand_count": 1 } ] } },
+ { "name": "ruling: gift is not given if the spell is countered",
+   "players": [ { "hand": ["Starfall Invocation"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+   "steps": [
+     { "cast": "Starfall Invocation", "answers": [true] },
+     { "pass": true },
+     { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Starfall Invocation" }] },
+     { "pass": true, "player": 1 },
+     { "pass": true }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Starfall Invocation"] }, { "hand_count": 0 } ] } }
+]

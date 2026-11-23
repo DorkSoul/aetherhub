@@ -1,0 +1,171 @@
+[
+  {
+    "name": "enters and creates a 1/1 white Spirit with flying",
+    "players": [
+      {
+        "hand": [
+          "Muster the Departed"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Muster the Departed"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Muster the Departed",
+            "Spirit"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Spirit": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "cannot be cast with only two mana",
+    "players": [
+      {
+        "hand": [
+          "Muster the Departed"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Muster the Departed",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Muster the Departed"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "morbid at end step: populate copies the Spirit after a creature died this turn",
+    "players": [
+      {
+        "hand": ["Muster the Departed", "Lightning Bolt"],
+        "battlefield": ["Plains", "Plains", "Plains", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Muster the Departed" },
+      { "resolve": true },
+      { "resolve": true, "auto": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Muster the Departed", "Spirit", "Spirit"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that died earlier this turn counts when Muster is cast in the second main phase",
+    "players": [
+      {
+        "hand": ["Muster the Departed", "Lightning Bolt"],
+        "battlefield": ["Plains", "Plains", "Plains", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Muster the Departed" },
+      { "resolve": true },
+      { "resolve": true, "auto": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Muster the Departed", "Plains", "Plains", "Plains", "Mountain", "Spirit", "Spirit"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: no creature died this turn, so the end step trigger does nothing (one Spirit only)",
+    "players": [
+      { "hand": ["Muster the Departed"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Muster the Departed" },
+      { "resolve": true },
+      { "resolve": true, "auto": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Muster the Departed", "Plains", "Plains", "Plains", "Spirit"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: populate with no creature token you control does nothing",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Muster the Departed", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Muster the Departed", "Mountain"], "graveyard": ["Grizzly Bears", "Lightning Bolt"] },
+        {}
+      ]
+    }
+  }
+]

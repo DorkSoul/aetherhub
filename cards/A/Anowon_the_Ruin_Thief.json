@@ -1,0 +1,57 @@
+{
+ "name": "Anowon, the Ruin Thief",
+ "mana_cost": "{2}{U}{B}",
+ "types": ["Creature"],
+ "supertypes": ["Legendary"],
+ "subtypes": ["Vampire", "Rogue"],
+ "power": 2,
+ "toughness": 4,
+ "abilities": [
+  {
+   "type": "Static",
+   "effect": {
+    "type": "Modify",
+    "affects": { "subtypes": ["Rogue"], "controller": "You", "other": true },
+    "power": { "type": "Fixed", "n": 1 },
+    "toughness": { "type": "Fixed", "n": 1 }
+   }
+  },
+  {
+   "type": "Triggered",
+   "trigger": {
+    "type": "CombatDamageToPlayer",
+    "filter": { "subtypes": ["Rogue"], "controller": "You" },
+    "batched": true
+   },
+   "effects": [
+    { "type": "ClearRemembered" },
+    { "type": "StoreRemembered", "slot": 0 },
+    {
+     "type": "Repeat",
+     "n": { "type": "EventAmount" },
+     "effects": [
+      { "type": "Remember", "what": { "type": "TopOfLibrary", "who": { "type": "TriggerPlayer" }, "n": 1 } },
+      { "type": "StoreRemembered", "slot": 0, "append": true },
+      { "type": "Mill", "who": { "type": "TriggerPlayer" }, "n": { "type": "Fixed", "n": 1 } }
+     ]
+    },
+    {
+     "type": "If",
+     "cond": {
+      "type": "Compare",
+      "a": {
+       "type": "Count",
+       "filter": { "types": ["Creature"], "among_stored": 0 },
+       "zone": "Graveyard"
+      },
+      "cmp": { "op": "Ge", "n": 1 }
+     },
+     "then": [
+      { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+     ]
+    }
+   ]
+  }
+ ],
+ "oracle_text": "Other Rogues you control get +1/+1.\nWhenever one or more Rogues you control deal combat damage to a player, that player mills a card for each 1 damage dealt to them. If the player mills at least one creature card this way, you draw a card. (To mill a card, a player puts the top card of their library into their graveyard.)"
+}

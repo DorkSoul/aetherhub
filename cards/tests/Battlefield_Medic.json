@@ -1,0 +1,49 @@
+[
+  { "name": "prevents damage equal to the number of Clerics (two Clerics prevent 2 of Bolt's 3)",
+    "players": [ { "battlefield": [ {"name": "Battlefield Medic", "sick": false}, {"name": "Abuna Acolyte", "sick": false}, "Grizzly Bears" ] },
+                 { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+      {"activate": "Battlefield Medic", "ability": 0, "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": { "players": [ {"battlefield_has": ["Grizzly Bears", "Battlefield Medic"]}, {"graveyard": ["Lightning Bolt"]} ],
+                "tapped": {"Battlefield Medic": true} } },
+  { "name": "with only itself on the battlefield it prevents 1, so Bears still die to 2 damage",
+    "players": [ { "battlefield": [ {"name": "Battlefield Medic", "sick": false}, "Grizzly Bears" ] },
+                 { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+      {"activate": "Battlefield Medic", "ability": 0, "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": { "players": [ {"graveyard": ["Grizzly Bears"]}, {"graveyard": ["Lightning Bolt"]} ] } },
+  { "name": "a tapped Medic cannot activate again",
+    "players": [ { "battlefield": [ {"name": "Battlefield Medic", "sick": false}, "Grizzly Bears" ] }, {} ],
+    "steps": [
+      {"activate": "Battlefield Medic", "ability": 0, "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"activate": "Battlefield Medic", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true}
+    ],
+    "expect": { "players": [ {"battlefield_has": ["Battlefield Medic", "Grizzly Bears"]}, {} ], "tapped": {"Battlefield Medic": true} } },
+  { "name": "ruling: X is counted on resolution; a Cleric leaving later does not shrink the prevention (Bears survive 3 with 2 prevented)",
+    "players": [
+      { "battlefield": [ {"name": "Battlefield Medic", "sick": false}, {"name": "Abuna Acolyte", "sick": false}, "Grizzly Bears" ] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      {"activate": "Battlefield Medic", "ability": 0, "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Abuna Acolyte"]},
+      {"resolve": true},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": { "players": [ {"battlefield_has": ["Grizzly Bears", "Battlefield Medic"], "battlefield_lacks": ["Abuna Acolyte"], "graveyard_has": ["Abuna Acolyte"]}, {"graveyard_has": ["Lightning Bolt"]} ] } }
+]

@@ -1,0 +1,83 @@
+[
+ {
+  "name": "unblocked: the defending player's life becomes 1 and it assigns no combat damage",
+  "players": [ { "battlefield": ["Master of Cruelties"] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Master of Cruelties", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 1 } ] }
+ },
+ {
+  "name": "blocked: no trigger, the blocker dies to first strike deathtouch",
+  "players": [ { "battlefield": ["Master of Cruelties"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [
+   { "attack": [ { "card": "Master of Cruelties", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Master of Cruelties" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Master of Cruelties"] }, { "life": 20, "graveyard": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "can only attack alone: declared together with another creature, only it attacks",
+  "players": [ { "battlefield": ["Master of Cruelties", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Master of Cruelties", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 1 } ], "tapped": { "Grizzly Bears": false, "Master of Cruelties": true } }
+ },
+ {
+  "name": "another creature can attack alone as usual",
+  "players": [ { "battlefield": ["Master of Cruelties", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18 } ] }
+ },
+ {
+  "name": "attacking a planeswalker unblocked does not set anyone's life to 1",
+  "players": [ { "battlefield": ["Master of Cruelties"] }, { "battlefield": ["Test Walker"] } ],
+  "steps": [
+   { "attack": [ { "card": "Master of Cruelties", "at": "Test Walker" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 20, "battlefield_has": ["Test Walker"] } ], "counters": { "Test Walker": { "loyalty": 3 } } }
+ },
+ {
+  "name": "ruling: the unblocked trigger still happens when a potential blocker is not declared to block",
+  "players": [ { "battlefield": ["Master of Cruelties"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "attack": [ { "card": "Master of Cruelties", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 1 } ] }
+ },
+ {
+  "name": "ruling: Master cannot attack while a must-attack creature (Juggernaut) would be left out",
+  "players": [ { "battlefield": ["Master of Cruelties", { "name": "Juggernaut", "sick": false }] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Master of Cruelties", "at": "p1" } ], "illegal": true }
+  ],
+  "expect": { "players": [ {}, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: with Master on the battlefield, Juggernaut attacks alone and deals its 5 damage",
+  "players": [ { "battlefield": ["Master of Cruelties", { "name": "Juggernaut", "sick": false }] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Juggernaut", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 15 } ] }
+ }
+]

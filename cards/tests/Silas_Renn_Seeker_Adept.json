@@ -1,0 +1,185 @@
+[
+  {
+    "name": "combat damage to a player lets you cast the chosen artifact card this turn",
+    "players": [
+      {
+        "battlefield": ["Silas Renn, Seeker Adept", "Island"],
+        "graveyard": ["Bloodforged Battle-Axe"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "resolve": true },
+      { "cast": "Bloodforged Battle-Axe" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bloodforged Battle-Axe"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "blocked Silas deals no combat damage to a player, so nothing is granted",
+    "players": [
+      {
+        "battlefield": ["Silas Renn, Seeker Adept", "Island"],
+        "graveyard": ["Bloodforged Battle-Axe"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Silas Renn, Seeker Adept" } ] },
+      { "advance_to": "Main2" },
+      { "cast": "Bloodforged Battle-Axe", "illegal": true }
+    ]
+  },
+  {
+    "name": "no artifact card in the graveyard means no permission",
+    "players": [
+      {
+        "battlefield": ["Silas Renn, Seeker Adept", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ]
+  },
+  {
+    "name": "only the chosen card may be cast, not another artifact in the graveyard",
+    "players": [
+      {
+        "battlefield": ["Silas Renn, Seeker Adept", "Island"],
+        "graveyard": ["Bloodforged Battle-Axe", "Arcane Signet"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Bloodforged Battle-Axe"] },
+      { "resolve": true },
+      { "cast": "Arcane Signet", "illegal": true },
+      { "cast": "Bloodforged Battle-Axe" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bloodforged Battle-Axe"], "graveyard_has": ["Arcane Signet"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the chosen artifact can still be cast after Silas Renn leaves the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Silas Renn, Seeker Adept", "Mountain", "Mountain"], "graveyard": ["Bloodforged Battle-Axe"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Bloodforged Battle-Axe"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Silas Renn, Seeker Adept"] },
+      { "resolve": true },
+      { "cast": "Bloodforged Battle-Axe" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bloodforged Battle-Axe"], "graveyard_has": ["Lightning Bolt", "Silas Renn, Seeker Adept"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an artifact card that is not cast stays in the graveyard",
+    "players": [
+      { "battlefield": ["Silas Renn, Seeker Adept", "Island"], "graveyard": ["Bloodforged Battle-Axe"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Bloodforged Battle-Axe"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Bloodforged Battle-Axe"], "battlefield_lacks": ["Bloodforged Battle-Axe"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the chosen artifact's own mana cost must be paid (one land is not enough)",
+    "players": [
+      { "battlefield": ["Silas Renn, Seeker Adept", "Island"], "graveyard": ["Arcane Signet"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Arcane Signet"] },
+      { "resolve": true },
+      { "cast": "Arcane Signet", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Arcane Signet"], "battlefield_lacks": ["Arcane Signet"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the chosen artifact is cast by paying its mana cost",
+    "players": [
+      { "battlefield": ["Silas Renn, Seeker Adept", "Island", "Island"], "graveyard": ["Arcane Signet"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silas Renn, Seeker Adept", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Arcane Signet"] },
+      { "resolve": true },
+      { "cast": "Arcane Signet" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Arcane Signet"] },
+        { "life": 18 }
+      ]
+    }
+  }
+]

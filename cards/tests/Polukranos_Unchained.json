@@ -1,0 +1,127 @@
+[
+ {
+  "name": "cast from hand: enters with six +1/+1 counters",
+  "players": [
+   {
+    "hand": ["Polukranos, Unchained"],
+    "battlefield": ["Swamp", "Forest", "Plains", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Polukranos, Unchained" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Swamp", "Forest", "Plains", "Plains", "Polukranos, Unchained"] },
+    {}
+   ],
+   "counters": { "Polukranos, Unchained": { "p1p1": 6 } },
+   "pt": { "Polukranos, Unchained": [6, 6] }
+  }
+ },
+ {
+  "name": "escape: enters with twelve +1/+1 counters",
+  "players": [
+   {
+    "battlefield": ["Swamp", "Forest", "Plains", "Plains", "Plains", "Plains"],
+    "graveyard": ["Polukranos, Unchained", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Polukranos, Unchained", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Swamp", "Forest", "Plains", "Plains", "Plains", "Plains", "Polukranos, Unchained"], "graveyard": [] },
+    {}
+   ],
+   "counters": { "Polukranos, Unchained": { "p1p1": 12 } },
+   "pt": { "Polukranos, Unchained": [12, 12] }
+  }
+ },
+ {
+  "name": "Shock prevented: removes two +1/+1 counters instead of taking damage",
+  "players": [
+   {
+    "battlefield": [ { "name": "Polukranos, Unchained", "counters": { "p1p1": 6 } } ]
+   },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Polukranos, Unchained"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Polukranos, Unchained"] },
+    { "graveyard": ["Shock"] }
+   ],
+   "counters": { "Polukranos, Unchained": { "p1p1": 4 } },
+   "pt": { "Polukranos, Unchained": [4, 4] }
+  }
+ },
+ {
+  "name": "fight: Polukranos's damage is prevented by removing counters",
+  "players": [
+   { "battlefield": [ { "name": "Polukranos, Unchained", "counters": { "p1p1": 6 } }, "Swamp", "Forest", "Plains" ] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [ { "activate": "Polukranos, Unchained", "ability": 0 }, { "resolve": true } ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Polukranos, Unchained"] }, { "graveyard_has": ["Grizzly Bears"] } ],
+   "counters": { "Polukranos, Unchained": { "p1p1": 4 } },
+   "pt": { "Polukranos, Unchained": [4, 4] }
+  }
+ },
+ {
+  "name": "no other creature to fight: illegal",
+  "players": [ { "battlefield": [ { "name": "Polukranos, Unchained", "counters": { "p1p1": 6 } }, "Swamp", "Forest", "Plains" ] }, {} ],
+  "steps": [ { "activate": "Polukranos, Unchained", "ability": 0, "illegal": true } ],
+  "expect": { "pt": { "Polukranos, Unchained": [6, 6] } }
+ },
+ {
+  "name": "ruling: Shock that is fully prevented removes every counter, so Polukranos with one counter dies",
+  "players": [
+   { "battlefield": [ { "name": "Polukranos, Unchained", "counters": { "p1p1": 1 } } ] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Polukranos, Unchained"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Polukranos, Unchained"] },
+    { "graveyard": ["Shock"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: fight ability whose source left the battlefield does nothing (the bear survives)",
+  "players": [
+   { "battlefield": [ { "name": "Polukranos, Unchained", "counters": { "p1p1": 2 } }, "Swamp", "Forest", "Plains" ] },
+   { "hand": ["Shock"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Polukranos, Unchained", "ability": 0 },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Polukranos, Unchained"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Polukranos, Unchained"] },
+    { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Shock"] }
+   ]
+  }
+ }
+]

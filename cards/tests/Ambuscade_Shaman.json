@@ -1,0 +1,53 @@
+[
+  { "name": "dash: enters with haste and returns to hand at end step",
+    "players": [ { "hand": ["Ambuscade Shaman"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "cast": "Ambuscade Shaman", "alt": 0 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "hand": ["Ambuscade Shaman"] }, {} ] }
+  },
+  { "name": "enters for normal cost: stays on battlefield",
+    "players": [ { "hand": ["Ambuscade Shaman"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "cast": "Ambuscade Shaman" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "battlefield": ["Swamp", "Swamp", "Swamp", "Ambuscade Shaman"] }, {} ] }
+  },
+  { "name": "another creature entering gets +2/+2 until end of turn",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Ambuscade Shaman"] }, {} ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [4, 4] } }
+  },
+  { "name": "ruling: a dash cast is still a spell and can be countered",
+    "players": [ { "hand": ["Ambuscade Shaman"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+    "steps": [
+      { "cast": "Ambuscade Shaman", "alt": 0 },
+      { "cast": "Counterspell", "targets": [{ "stack": "Ambuscade Shaman" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Ambuscade Shaman"] }, { "graveyard": ["Counterspell"] } ], "stack_empty": true }
+  },
+  { "name": "ruling: a dashed creature that dies before the end step stays in the graveyard and is not returned",
+    "players": [ { "hand": ["Ambuscade Shaman"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+    "steps": [
+      { "cast": "Ambuscade Shaman", "alt": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Ambuscade Shaman"], "player": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Ambuscade Shaman"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Ambuscade Shaman"], "hand_count": 0 }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  }
+]

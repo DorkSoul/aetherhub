@@ -1,0 +1,62 @@
+{
+  "name": "Quicksilver Fountain",
+  "mana_cost": "{3}",
+  "types": ["Artifact"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "Any" },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "TriggerPlayer" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Land"], "not_subtypes": ["Island"], "controller": "You" },
+          "min": 1,
+          "max": 1,
+          "then": [
+            {
+              "type": "AddCounters",
+              "what": { "type": "Remembered" },
+              "kind": "Flood",
+              "n": { "type": "Fixed", "n": 1 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "SetTypes",
+        "affects": { "types": ["Land"], "has_counter": "Flood" },
+        "types": ["Land"],
+        "subtypes": ["Island"]
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "Any" },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "Count", "filter": { "types": ["Land"], "not_subtypes": ["Island"] } },
+        "cmp": { "op": "Eq", "n": 0 }
+      },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "All", "filter": { "types": ["Land"], "has_counter": "Flood" } },
+          "effects": [
+            {
+              "type": "RemoveCounters",
+              "what": { "type": "EachObject" },
+              "kind": "Flood",
+              "n": { "type": "CountersOn", "kind": "Flood", "of": { "type": "EachObject" } }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of each player's upkeep, that player puts a flood counter on target non-Island land they control of their choice. That land is an Island for as long as it has a flood counter on it.\nAt the beginning of each end step, if all lands on the battlefield are Islands, remove all flood counters from them."
+}

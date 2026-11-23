@@ -1,0 +1,125 @@
+[
+  {
+    "name": "unblocked attacker becomes blocked after blockers: no damage, caster draws",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Plains", "Island"], "hand": ["Curtain of Light"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "pass": true },
+      { "cast": "Curtain of Light", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Grizzly Bears"] }, { "life": 20, "hand_count": 1, "graveyard": ["Curtain of Light"] }]
+    }
+  },
+  {
+    "name": "cannot be cast once the attacker is blocked (no unblocked target)",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Plains", "Island", "Hill Giant"], "hand": ["Curtain of Light"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }] },
+      { "pass": true },
+      { "cast": "Curtain of Light", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "hand": ["Curtain of Light"] }]
+    }
+  },
+  {
+    "name": "cannot be cast before blockers are declared",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Plains", "Island"], "hand": ["Curtain of Light"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "pass": true },
+      { "cast": "Curtain of Light", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "hand": ["Curtain of Light"] }]
+    }
+  },
+  {
+    "name": "ruling: after combat there is no unblocked attacker left, so it cannot be cast in main phase 2",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Plains", "Island"], "hand": ["Curtain of Light"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "pass": true },
+      { "cast": "Curtain of Light", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18, "hand": ["Curtain of Light"] }]
+    }
+  },
+  {
+    "name": "ruling: on an unblocked trampler, all damage still goes to the defending player",
+    "players": [
+      { "battlefield": ["Rampaging Baloths"] },
+      { "battlefield": ["Plains", "Island"], "hand": ["Curtain of Light"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Rampaging Baloths", "at": "p1" }] },
+      { "block": [] },
+      { "pass": true },
+      { "cast": "Curtain of Light", "player": 1, "targets": ["Rampaging Baloths"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 14, "hand_count": 1, "graveyard": ["Curtain of Light"] }]
+    }
+  },
+  {
+    "name": "ruling: Curtain of Light can be cast in an additional combat phase after its declare blockers step",
+    "players": [
+      { "battlefield": ["Aggravated Assault", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Plains", "Island"], "hand": ["Curtain of Light"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "activate": "Aggravated Assault", "ability": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "pass": true },
+      { "cast": "Curtain of Light", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "turn": 1,
+      "players": [{}, { "life": 18, "graveyard": ["Curtain of Light"] }]
+    }
+  },
+  {
+    "name": "control: bushido triggers when the Samurai is declared blocked by a creature",
+    "players": [
+      { "battlefield": ["Samurai of the Pale Curtain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Samurai of the Pale Curtain", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Samurai of the Pale Curtain" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Samurai of the Pale Curtain": [3, 3] }
+    }
+  }
+]

@@ -1,0 +1,190 @@
+[
+  {
+    "name": "pay {U}: draw two",
+    "players": [
+      {
+        "hand": [
+          "Tezzeret's Gambit"
+        ],
+        "battlefield": [
+          "Island",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Tezzeret's Gambit"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Forest",
+            "Plains"
+          ],
+          "life": 20,
+          "graveyard": [
+            "Tezzeret's Gambit"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "pay 2 life instead of {U}",
+    "players": [
+      {
+        "hand": [
+          "Tezzeret's Gambit"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Tezzeret's Gambit"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Forest",
+            "Plains"
+          ],
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "proliferates",
+    "players": [
+      {
+        "hand": [
+          "Tezzeret's Gambit"
+        ],
+        "battlefield": [
+          "Island",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Tezzeret's Gambit"
+      },
+      {
+        "resolve": true,
+        "auto": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: at 1 life the {U/P} cannot be paid with 2 life",
+    "players": [
+      { "life": 1, "hand": ["Tezzeret's Gambit"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Plains", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tezzeret's Gambit", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Tezzeret's Gambit"], "life": 1 }, {} ] }
+  },
+  {
+    "name": "ruling: at 3 life paying 2 life for {U/P} leaves 1 life",
+    "players": [
+      { "life": 3, "hand": ["Tezzeret's Gambit"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Plains", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tezzeret's Gambit" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 1, "hand": ["Forest", "Plains"] }, {} ] }
+  },
+  {
+    "name": "ruling: proliferate can choose an opponent with poison and an opponent's permanent with counters",
+    "players": [
+      { "hand": ["Tezzeret's Gambit"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}], "library": ["Forest", "Plains", "Swamp"] },
+      { "poison": 1, "battlefield": [{"name": "Hill Giant", "counters": {"p1p1": 1}}] }
+    ],
+    "steps": [
+      { "cast": "Tezzeret's Gambit" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant", "p1"]] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": {"p1p1": 2}, "Hill Giant": {"p1p1": 2} },
+      "players": [ {}, {"poison": 2} ]
+    }
+  },
+  {
+    "name": "ruling: proliferate may choose no permanents or players",
+    "players": [
+      { "hand": ["Tezzeret's Gambit"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}], "library": ["Forest", "Plains", "Swamp"] },
+      { "poison": 1 }
+    ],
+    "steps": [
+      { "cast": "Tezzeret's Gambit" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": {"p1p1": 1} },
+      "players": [ {}, {"poison": 1} ]
+    }
+  },
+  {
+    "name": "ruling: proliferate gives one counter of each kind a permanent already has",
+    "players": [
+      { "hand": ["Tezzeret's Gambit"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "counters": {"p1p1": 1, "charge": 1}}], "library": ["Forest", "Plains", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tezzeret's Gambit" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": { "counters": { "Grizzly Bears": {"p1p1": 2, "charge": 2} } }
+  }
+]

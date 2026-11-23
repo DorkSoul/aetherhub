@@ -1,0 +1,69 @@
+[
+  { "name": "prevents damage from the attacking creature this turn",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "hand": ["Heavy Fog"], "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Heavy Fog", "player": 1 },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Hill Giant"] },
+        { "life": 20, "graveyard": ["Heavy Fog"] }
+      ]
+    }
+  },
+  { "name": "without Heavy Fog the attacker connects",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ]
+    }
+  },
+  { "name": "cannot be cast outside the declare attackers step",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "hand": ["Heavy Fog"], "battlefield": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Heavy Fog", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "hand": ["Forest", "Heavy Fog"] } ]
+    }
+  },
+  { "name": "ruling: Heavy Fog prevents only damage to you; the blocker takes damage from the attacker normally",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "hand": ["Heavy Fog"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Heavy Fog", "player": 1 },
+      { "resolve": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"] },
+        { "life": 20, "graveyard_has": ["Heavy Fog", "Grizzly Bears"] }
+      ]
+    }
+  }
+]

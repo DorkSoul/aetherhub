@@ -1,0 +1,190 @@
+[
+  {
+    "name": "enters: top card is a land and it is put onto the battlefield tapped",
+    "players": [
+      {
+        "hand": ["Fecund Greenshell"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fecund Greenshell" },
+      { "resolve": true, "answers": [["Forest"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Fecund Greenshell"], "hand_count": 0, "library_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters: top card is a land but declined, so it goes to hand",
+    "players": [
+      {
+        "hand": ["Fecund Greenshell"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fecund Greenshell" },
+      { "resolve": true, "answers": [[]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Fecund Greenshell"], "hand": ["Forest"], "library_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters: top card is a nonland card, so it goes to hand without a choice",
+    "players": [
+      {
+        "hand": ["Fecund Greenshell"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fecund Greenshell" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "library_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "with ten lands you control, creatures you control get +2/+2",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Fecund Greenshell", "sick": false },
+          "Grizzly Bears",
+          "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Grizzly Bears": [4, 4], "Fecund Greenshell": [6, 8] }
+    }
+  },
+  {
+    "name": "with nine lands the anthem does not apply",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Fecund Greenshell", "sick": false },
+          "Grizzly Bears",
+          "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "players": [{}, {}],
+      "pt": { "Grizzly Bears": [2, 2], "Fecund Greenshell": [4, 6] }
+    }
+  },
+  {
+    "name": "another creature with toughness greater than power entering: top land goes onto the battlefield tapped",
+    "players": [
+      {
+        "hand": ["Wall of Stone"],
+        "battlefield": [
+          { "name": "Fecund Greenshell", "sick": false },
+          "Mountain", "Mountain", "Forest"
+        ],
+        "library": ["Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wall of Stone" },
+      { "resolve": true, "answers": [["Forest"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Wall of Stone"], "hand_count": 0, "library_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "another creature whose toughness is not greater than its power does not trigger it",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": [
+          { "name": "Fecund Greenshell", "sick": false },
+          "Forest", "Forest"
+        ],
+        "library": ["Forest", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "hand_count": 0, "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: damage stays marked; Lignify removes the anthem and the damaged Bears dies",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lignify"],
+        "battlefield": ["Fecund Greenshell", "Grizzly Bears", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lignify", "targets": ["Fecund Greenshell"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Fecund Greenshell"], "graveyard_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Fecund Greenshell": [0, 4] }
+    }
+  },
+  {
+    "name": "ruling: with the anthem still applying, 3 damage does not kill the 4/4 Bears",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Fecund Greenshell", "Grizzly Bears", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  }
+]

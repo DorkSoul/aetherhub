@@ -1,0 +1,81 @@
+[
+  {
+    "name": "X=4 (four instants and sorceries in your graveyard) vs a 2/2: 2 excess damage to its controller",
+    "players": [
+      { "hand": ["Gandalf's Sanction"], "battlefield": ["Island", "Mountain", "Island", "Mountain"], "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Gandalf's Sanction" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 18, "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "X=3 vs a 3/3: lethal exactly, no excess damage",
+    "players": [
+      { "hand": ["Gandalf's Sanction"], "battlefield": ["Island", "Mountain", "Island", "Mountain"], "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Gandalf's Sanction" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 20, "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "instants in the opponent's graveyard do not count: X=0, no damage",
+    "players": [
+      { "hand": ["Gandalf's Sanction"], "battlefield": ["Island", "Mountain", "Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"], "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Gandalf's Sanction" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: excess is measured from damage already marked (Shock 2 on a 3/3, then X=3 gives 2 excess)",
+    "players": [
+      { "hand": ["Shock", "Gandalf's Sanction"], "battlefield": ["Mountain", "Mountain", "Island", "Island"], "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Gandalf's Sanction", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 18, "graveyard_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: X counts only cards already in the graveyard, not Gandalf's Sanction itself (X=1 does not kill a 2/2)",
+    "players": [
+      { "hand": ["Gandalf's Sanction"], "battlefield": ["Island", "Mountain", "Island"], "graveyard": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Gandalf's Sanction", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 20 }, { "life": 20, "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: if the target is illegal on resolution, no excess damage reaches its controller",
+    "players": [
+      { "hand": ["Gandalf's Sanction"], "battlefield": ["Island", "Mountain", "Island", "Mountain"], "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Gandalf's Sanction", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 20, "graveyard_has": ["Grizzly Bears"] } ] }
+  }
+]

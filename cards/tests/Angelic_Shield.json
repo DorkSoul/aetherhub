@@ -1,0 +1,61 @@
+[
+  {
+    "name": "creatures you control get +0/+1 only",
+    "players": [
+      { "battlefield": ["Angelic Shield", "Grizzly Bears", "Llanowar Elves"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 3], "Llanowar Elves": [1, 2], "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "sacrifice: return target creature to its owner's hand",
+    "players": [
+      { "battlefield": ["Angelic Shield"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Angelic Shield", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Angelic Shield"] },
+        { "hand": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the shield is sacrificed on activation, so the bonus is gone while the ability is on the stack",
+    "players": [
+      { "battlefield": ["Angelic Shield"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Angelic Shield", "targets": ["Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Angelic Shield"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ],
+      "pt": { "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: the target dies to lost toughness before the return resolves, so it is not returned",
+    "players": [
+      { "battlefield": ["Angelic Shield", { "name": "Llanowar Elves", "counters": { "m1m1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Angelic Shield", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Angelic Shield", "Llanowar Elves"], "hand_count": 0 }, {} ]
+    }
+  }
+]

@@ -1,0 +1,16 @@
+[
+ { "name": "ETB: attaches to your creature, which deals damage equal to its power to an opposing creature",
+   "players": [ { "hand": ["Hunter's Bow"], "battlefield": ["Forest", "Forest", "Hill Giant"] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [ { "cast": "Hunter's Bow" }, { "resolve": true, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Hunter's Bow", "Hill Giant"] }, { "graveyard": ["Grizzly Bears"] } ], "attached": { "Hunter's Bow": "Hill Giant" } } },
+ { "name": "equip {1}: moves to a creature you control and gives reach",
+   "players": [ { "battlefield": ["Hunter's Bow", "Forest", "Grizzly Bears"] }, {} ],
+   "steps": [ { "activate": "Hunter's Bow", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+   "expect": { "attached": { "Hunter's Bow": "Grizzly Bears" }, "keywords": { "Grizzly Bears": ["Reach"] } } },
+ { "name": "ward {2}: the Bolt's controller pays two more and the Bolt resolves, killing the Bears", "players": [ { "battlefield": ["Hunter's Bow", "Forest", { "name": "Grizzly Bears", "sick": false }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] } ], "steps": [ { "activate": "Hunter's Bow", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true, "auto": true } ], "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Lightning Bolt"] } ] } },
+ { "name": "ward {2}: with one Mountain the Bolt's controller cannot pay, so the Bolt is countered", "players": [ { "battlefield": ["Hunter's Bow", "Forest", { "name": "Grizzly Bears", "sick": false }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ], "steps": [ { "activate": "Hunter's Bow", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true, "auto": true } ], "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard_has": ["Lightning Bolt"] } ] } },
+ { "name": "ruling: if your creature is an illegal target when the ETB resolves, it deals no damage",
+   "players": [ { "hand": ["Hunter's Bow"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Hill Giant"] } ],
+   "steps": [ { "cast": "Hunter's Bow" }, { "resolve": true, "targets": ["Hill Giant"] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true, "auto": true } ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ], "pt": { "Hill Giant": [3, 3] } } }
+]

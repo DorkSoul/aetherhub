@@ -1,0 +1,98 @@
+[
+  {
+    "name": "gives ward {2} to commanders you control: opponent's Bolt is countered",
+    "commander": true,
+    "players": [
+      { "command": ["Test Commander"], "battlefield": ["Codsworth, Handy Helper", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Test Commander" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Test Commander"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Test Commander"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "non-commander creatures get no ward",
+    "players": [
+      { "battlefield": ["Codsworth, Handy Helper", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "restricted WW pays for an Aura spell",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Codsworth, Handy Helper", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Pacifism"] } ],
+      "tapped": { "Codsworth, Handy Helper": true }
+    }
+  },
+  {
+    "name": "restricted WW cannot pay for a creature spell",
+    "players": [
+      { "hand": ["Savannah Lions"], "battlefield": ["Codsworth, Handy Helper"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Savannah Lions"] } ]
+    }
+  },
+  {
+    "name": "sorcery-speed attach moves an Equipment onto a creature you control",
+    "players": [
+      { "battlefield": ["Codsworth, Handy Helper", "Short Sword", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Codsworth, Handy Helper", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "tapped": { "Codsworth, Handy Helper": true }
+    }
+  },
+  {
+    "name": "ruling: Codsworth's restricted mana cannot pay an Equipment's equip cost",
+    "players": [
+      { "battlefield": ["Codsworth, Handy Helper", "Short Sword", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Short Sword", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Short Sword", "Codsworth, Handy Helper", "Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

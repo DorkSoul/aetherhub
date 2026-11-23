@@ -1,0 +1,28 @@
+{
+  "name": "Maddening Imp",
+  "mana_cost": "{2}{B}",
+  "colors": ["B"],
+  "types": ["Creature"],
+  "subtypes": ["Imp"],
+  "power": 1, "toughness": 1,
+  "keywords": ["Flying"],
+  "abilities": [
+    { "type": "Activated", "cost": [ { "type": "Tap" } ],
+      "condition": { "type": "All", "cs": [
+        { "type": "OpponentsTurn" },
+        { "type": "AnyOf", "cs": [
+          { "type": "InStep", "step": "Upkeep" },
+          { "type": "InStep", "step": "Draw" },
+          { "type": "InStep", "step": "Main1" } ] } ] },
+      "effects": [
+        { "type": "Remember", "what": { "type": "All", "zone": "Battlefield",
+            "filter": { "types": ["Creature"], "not_subtypes": ["Wall"], "controlled_by": { "type": "ActivePlayer" } } } },
+        { "type": "GrantStatic", "what": { "type": "This" }, "dynamic": true,
+          "effect": { "type": "MustAttack", "affects": { "types": ["Creature"], "not_subtypes": ["Wall"], "controlled_by": { "type": "ActivePlayer" } } }, "duration": "UntilEndOfTurn" },
+        { "type": "Delayed", "at": "NextEndStep", "effects": [
+          { "type": "Destroy", "what": { "type": "All", "zone": "Battlefield",
+              "filter": { "types": ["Creature"], "among_remembered": true, "not_attacked_this_turn": true } } } ] }
+      ] }
+  ],
+  "oracle_text": "Flying\n{T}: Non-Wall creatures the active player controls attack this turn if able. At the beginning of the next end step, destroy each of those creatures that didn't attack this turn. Activate only during an opponent's turn and only before combat."
+}

@@ -1,0 +1,210 @@
+[
+ {
+  "name": "nontoken creature dying costs 1 life and makes a Treasure",
+  "players": [
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Life Insurance",
+     "Grizzly Bears",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 19,
+     "battlefield_has": [
+      "Treasure"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "opponent's nontoken creature dying also triggers it",
+  "players": [
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Life Insurance",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 19,
+     "battlefield_has": [
+      "Treasure"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "token creature dying does nothing",
+  "players": [
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Life Insurance",
+     "Mountain",
+     "Cat 1-1 White Lifelink"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "Cat 1-1 White Lifelink"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "battlefield_lacks": [
+      "Treasure"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "extort drains 1 when paying",
+  "players": [
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Life Insurance",
+     "Mountain",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 21
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: each extort trigger is paid separately (first paid, second declined)",
+  "players": [
+   { "hand": ["Shock", "Shock"], "battlefield": ["Life Insurance", "Mountain", "Mountain", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1"] },
+   { "resolve": true, "answers": [true] },
+   { "cast": "Shock", "targets": ["p1"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [ { "life": 21 }, { "life": 15 } ]
+  }
+ },
+ {
+  "name": "ruling: extort still resolves when the spell is countered (you gain 1, the opponent loses 1)",
+  "players": [
+   { "hand": ["Shock"], "battlefield": ["Life Insurance", "Mountain", "Plains"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Shock" }] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 21, "graveyard_has": ["Shock"] },
+    { "life": 19, "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: opponent's life can't change (Platinum Emperion), so extort gains you nothing",
+  "players": [
+   { "hand": ["Shock"], "battlefield": ["Life Insurance", "Mountain", "Plains"] },
+   { "battlefield": ["Platinum Emperion"] }
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "life": 20 }, { "life": 20 } ]
+  }
+ }
+]

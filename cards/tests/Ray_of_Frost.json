@@ -1,0 +1,367 @@
+[
+  {
+    "name": "enchanting a red creature taps it",
+    "players": [
+      {
+        "hand": [
+          "Ray of Frost"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Raging Cougar"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ray of Frost",
+        "targets": [
+          "Raging Cougar"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Raging Cougar"
+          ]
+        }
+      ],
+      "tapped": {
+        "Raging Cougar": true
+      }
+    }
+  },
+  {
+    "name": "enchanting a non-red creature does not tap it",
+    "players": [
+      {
+        "hand": [
+          "Ray of Frost"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ray of Frost",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "a red enchanted creature loses its firebreathing activated ability",
+    "players": [
+      {
+        "hand": [
+          "Ray of Frost"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Mountain",
+          "Shivan Dragon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ray of Frost",
+        "targets": [
+          "Shivan Dragon"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Shivan Dragon",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ray of Frost",
+            "Shivan Dragon"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Shivan Dragon": [
+          5,
+          5
+        ]
+      }
+    }
+  },
+  {
+    "name": "without Ray of Frost the red creature's firebreathing works",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Shivan Dragon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Shivan Dragon",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": {
+        "Shivan Dragon": [
+          6,
+          5
+        ]
+      }
+    }
+  },
+  {
+    "name": "enchanted creature does not untap in its controller's untap steps",
+    "players": [
+      {
+        "hand": [
+          "Ray of Frost"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          {
+            "name": "Grizzly Bears",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ray of Frost",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Untap",
+        "auto": true
+      },
+      {
+        "advance_to": "Untap",
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ray of Frost",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "tapped creature without Ray of Frost untaps in its controller's untap step",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Untap",
+        "auto": true
+      },
+      {
+        "advance_to": "Untap",
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "ruling control: without Ray of Frost a red CDA creature gets its P/T from the card types in graveyards (2/3)",
+    "players": [
+      {
+        "battlefield": [
+          "Island"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "battlefield": [
+          "Pyrogoyf"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Pyrogoyf"
+          ]
+        }
+      ],
+      "pt": {
+        "Pyrogoyf": [
+          2,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a red creature whose CDA sets P/T loses that ability, so its P/T fall to its printed 0/1 (Pyrogoyf survives)",
+    "players": [
+      {
+        "hand": [
+          "Ray of Frost"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "battlefield": [
+          "Pyrogoyf"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ray of Frost",
+        "targets": [
+          "Pyrogoyf"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Pyrogoyf": [
+          0,
+          1
+        ]
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Ray of Frost"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Pyrogoyf"
+          ]
+        }
+      ]
+    }
+  }
+]

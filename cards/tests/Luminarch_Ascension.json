@@ -1,0 +1,149 @@
+[
+ {
+  "name": "puts a quest counter at the opponent's end step if no life was lost",
+  "players": [
+   {
+    "battlefield": [
+     "Luminarch Ascension",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "End",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Luminarch Ascension": {
+     "quest": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "no quest counter if the controller lost life this turn",
+  "players": [
+   {
+    "battlefield": [
+     "Luminarch Ascension",
+     "Plains"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    }
+   ],
+   "counters": {
+    "Luminarch Ascension": {
+     "quest": 0
+    }
+   }
+  }
+ },
+ {
+  "name": "angel ability is illegal with fewer than four quest counters",
+  "players": [
+   {
+    "battlefield": [
+     "Luminarch Ascension",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Luminarch Ascension",
+    "ability": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "with four quest counters, {1}{W} creates a 4/4 Angel",
+  "players": [ { "battlefield": [ { "name": "Luminarch Ascension", "counters": { "quest": 4 } }, "Plains", "Plains" ] }, {} ],
+  "steps": [ { "activate": "Luminarch Ascension", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Angel 4-4"] }, {} ], "pt": { "Angel 4-4": [4, 4] }, "counters": { "Luminarch Ascension": { "quest": 4 } } }
+ },
+ {
+  "name": "with three quest counters the Angel ability is illegal",
+  "players": [ { "battlefield": [ { "name": "Luminarch Ascension", "counters": { "quest": 3 } }, "Plains", "Plains" ] }, {} ],
+  "steps": [ { "activate": "Luminarch Ascension", "ability": 0, "illegal": true } ],
+  "expect": { "players": [ {}, {} ], "counters": { "Luminarch Ascension": { "quest": 3 } } }
+ },
+ {
+  "name": "ruling: gaining more life than was lost still counts as losing life: no quest counter",
+  "players": [ { "hand": ["Healing Salve"], "battlefield": ["Luminarch Ascension", "Plains"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "pass": true, "player": 1 },
+   { "cast": "Healing Salve", "targets": ["p0"], "answers": [0] },
+   { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": { "players": [ { "life": 20 }, {} ], "counters": { "Luminarch Ascension": { "quest": 0 } } }
+ },
+ {
+  "name": "ruling: the Angel ability can be activated in the end step where the fourth quest counter is added",
+  "players": [ { "battlefield": [ { "name": "Luminarch Ascension", "counters": { "quest": 3 } }, "Plains", "Plains" ] }, {} ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "End", "answers": [true] },
+   { "resolve": true },
+   { "pass": true, "player": 1 },
+   { "activate": "Luminarch Ascension", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Angel 4-4"] }, {} ], "pt": { "Angel 4-4": [4, 4] }, "counters": { "Luminarch Ascension": { "quest": 4 } } }
+ }
+]

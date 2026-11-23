@@ -1,0 +1,80 @@
+[
+ {
+  "name": "attack on enchanted player untaps your nonland permanents",
+  "players": [
+   {
+    "hand": ["Curse of Bounty"],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     { "name": "Llanowar Elves", "tapped": true, "sick": false },
+     { "name": "Grizzly Bears", "sick": false }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of Bounty", "targets": ["p1"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Curse of Bounty", "Llanowar Elves", "Grizzly Bears"] },
+    {}
+   ],
+   "tapped": { "Llanowar Elves": false }
+  }
+ },
+ {
+  "name": "no attack on the enchanted player means no untap",
+  "players": [
+   {
+    "hand": ["Curse of Bounty"],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     { "name": "Llanowar Elves", "tapped": true, "sick": false }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of Bounty", "targets": ["p1"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "tapped": { "Llanowar Elves": true }
+  }
+ },
+ {
+  "name": "ruling: untapping an attacking creature does not remove it from combat (still deals 2)",
+  "players": [ { "hand": ["Curse of Bounty"], "battlefield": ["Forest", "Forest", { "name": "Llanowar Elves", "tapped": true, "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, {} ],
+  "steps": [ { "cast": "Curse of Bounty", "targets": ["p1"] }, { "resolve": true }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+  "expect": { "players": [ {}, { "life": 18 } ], "tapped": { "Grizzly Bears": false, "Llanowar Elves": false } }
+ },
+ {
+  "name": "ruling: an enchanted player who is the Curse's controller also gets the untap when attacked by an opponent",
+  "players": [ { "battlefield": ["Forest", "Island", { "name": "Knight of Meadowgrain", "tapped": true, "sick": false }] , "hand": ["Curse of Bounty"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+  "steps": [
+   { "cast": "Curse of Bounty", "targets": ["p0"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "life": 18 }, {} ], "tapped": { "Knight of Meadowgrain": false } }
+ },
+ {
+  "name": "ruling: attacking a planeswalker the enchanted player controls does not trigger the Curse",
+  "players": [ { "hand": ["Curse of Bounty"], "battlefield": ["Forest", "Forest", { "name": "Llanowar Elves", "tapped": true, "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Jace Beleren"] } ],
+  "steps": [ { "cast": "Curse of Bounty", "targets": ["p1"] }, { "resolve": true }, { "attack": [ { "card": "Grizzly Bears", "at": "Jace Beleren" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+  "expect": { "tapped": { "Llanowar Elves": true }, "counters": { "Jace Beleren": { "Loyalty": 1 } } }
+ }
+]

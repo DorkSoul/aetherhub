@@ -1,0 +1,71 @@
+{
+  "name": "Angrath, the Flame-Chained",
+  "mana_cost": "{3}{B}{R}",
+  "supertypes": ["Legendary"],
+  "types": ["Planeswalker"],
+  "subtypes": ["Angrath"],
+  "loyalty": 4,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": 1,
+      "effects": [
+        { "type": "Discard", "who": { "type": "EachOpponent" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "LoseLife", "who": { "type": "EachOpponent" }, "n": { "type": "Fixed", "n": 2 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -3,
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        { "type": "Remember", "what": { "type": "Target", "idx": 0 } },
+        { "type": "GainControl", "what": { "type": "Target", "idx": 0 }, "duration": "UntilEndOfTurn" },
+        { "type": "Untap", "what": { "type": "Target", "idx": 0 } },
+        { "type": "GrantKeyword", "what": { "type": "Target", "idx": 0 }, "keyword": "Haste", "duration": "UntilEndOfTurn" },
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "TargetIs",
+                "idx": 0,
+                "filter": { "mana_value": { "op": "Le", "n": 3 } }
+              },
+              "then": [
+                {
+                  "type": "Sacrifice",
+                  "who": { "type": "You" },
+                  "filter": { "among_remembered": true },
+                  "n": { "type": "Fixed", "n": 1 }
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -8,
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            { "type": "LoseLife", "who": { "type": "EachObject" }, "n": { "type": "GraveyardSize", "who": { "type": "EachObject" } } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "+1: Each opponent discards a card and loses 2 life.\n−3: Gain control of target creature until end of turn. Untap it. It gains haste until end of turn. Sacrifice it at the beginning of the next end step if it has mana value 3 or less.\n−8: Each opponent loses life equal to the number of cards in their graveyard."
+}

@@ -1,0 +1,180 @@
+[
+ {
+  "name": "another creature dies: two +1/+1 counters",
+  "players": [
+   {
+    "battlefield": [
+     "Sengir, the Dark Baron",
+     "Grizzly Bears",
+     "Mountain"
+    ],
+    "hand": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Sengir, the Dark Baron": {
+     "PlusOnePlusOne": 2
+    }
+   },
+   "pt": {
+    "Sengir, the Dark Baron": [
+     6,
+     6
+    ]
+   }
+  }
+ },
+ {
+  "name": "an opponent's creature dying also counts",
+  "players": [
+   {
+    "battlefield": [
+     "Sengir, the Dark Baron",
+     "Mountain"
+    ],
+    "hand": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Sengir, the Dark Baron": {
+     "PlusOnePlusOne": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "Sengir itself dying triggers nothing; flying",
+  "players": [
+   {
+    "battlefield": [
+     "Sengir, the Dark Baron"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "keywords": {
+    "Sengir, the Dark Baron": [
+     "Flying"
+    ]
+   },
+   "pt": {
+    "Sengir, the Dark Baron": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "an opponent losing the game gains life equal to their life total as the turn began",
+  "players": [
+   {
+    "battlefield": [ "Sengir, the Dark Baron", "Mountain", "Mountain", "Mountain", "Mountain" ],
+    "hand": [ "Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt" ]
+   },
+   { "life": 10 },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": [ "p1" ] }, { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": [ "p1" ] }, { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": [ "p1" ] }, { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": [ "p1" ] }, { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 30 },
+    { "life": -2 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "an opponent who stays in the game does not gain Sengir's life",
+  "players": [
+   {
+    "battlefield": [ "Sengir, the Dark Baron", "Mountain" ],
+    "hand": [ "Lightning Bolt" ]
+   },
+   { "life": 10 },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": [ "p1" ] }, { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20 },
+    { "life": 7 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a player who concedes (any reason they lose) still makes Sengir's controller gain their life as the turn began",
+  "players": [
+   { "battlefield": [ "Sengir, the Dark Baron" ] },
+   {},
+   {}
+  ],
+  "steps": [
+   { "concede": true, "player": 1 }, { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 40 }, {}, {} ]
+  }
+ },
+ {
+  "name": "ruling: Sengir dealt lethal damage at the same time as another creature dies, and its own trigger does not save it",
+  "players": [
+   { "battlefield": [ "Sengir, the Dark Baron" ] },
+   { "battlefield": [ "Bear 4-4" ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Bear 4-4", "at": "p0" } ], "player": 1 },
+   { "block": [ { "blocker": "Sengir, the Dark Baron", "attacker": "Bear 4-4" } ], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "graveyard": [ "Sengir, the Dark Baron" ] }, { "battlefield_lacks": [ "Bear 4-4" ] } ]
+  }
+ }
+]

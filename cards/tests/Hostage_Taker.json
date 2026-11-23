@@ -1,0 +1,101 @@
+[
+  {
+    "name": "exiles the target; its controller may cast it with mana of any type",
+    "players": [
+      { "hand": ["Hostage Taker"], "battlefield": ["Island", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Merfolk Looter"] }
+    ],
+    "steps": [
+      { "cast": "Hostage Taker" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Merfolk Looter" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hostage Taker", "Merfolk Looter"] },
+        { "battlefield_has": [], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "the exiled card returns when Hostage Taker leaves the battlefield",
+    "players": [
+      { "hand": ["Hostage Taker", "Lightning Bolt"], "battlefield": ["Island", "Swamp", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Merfolk Looter"] }
+    ],
+    "steps": [
+      { "cast": "Hostage Taker" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hostage Taker"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": [], "graveyard": ["Hostage Taker", "Lightning Bolt"] },
+        { "battlefield_has": ["Merfolk Looter"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no other creature or artifact around, Hostage Taker cannot target itself",
+    "players": [
+      { "hand": ["Hostage Taker"], "battlefield": ["Island", "Swamp", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hostage Taker" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hostage Taker"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature cast from exile stays under its caster's control when Hostage Taker leaves",
+    "players": [
+      { "hand": ["Hostage Taker", "Lightning Bolt"], "battlefield": ["Island", "Island", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Merfolk Looter"] }
+    ],
+    "steps": [
+      { "cast": "Hostage Taker" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Merfolk Looter" },
+      { "cast": "Lightning Bolt", "targets": ["Hostage Taker"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Merfolk Looter"], "graveyard": ["Hostage Taker", "Lightning Bolt"] },
+        { "battlefield_lacks": ["Merfolk Looter"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled creature loses its counters and returns as a new object",
+    "players": [
+      { "hand": ["Hostage Taker", "Lightning Bolt"], "battlefield": ["Island", "Swamp", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": [ { "name": "Merfolk Looter", "counters": { "p1p1": 2 } } ] }
+    ],
+    "steps": [
+      { "cast": "Hostage Taker" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hostage Taker"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Merfolk Looter"] }
+      ],
+      "pt": { "Merfolk Looter": [1, 1] }
+    }
+  }
+]

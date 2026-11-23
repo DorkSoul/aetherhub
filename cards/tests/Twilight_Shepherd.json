@@ -1,0 +1,94 @@
+[
+  {
+    "name": "returns the cards put into your graveyard from the battlefield this turn to hand",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Twilight Shepherd"],
+        "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"cast": "Twilight Shepherd"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand": ["Grizzly Bears"], "battlefield_has": ["Twilight Shepherd"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cards put into your graveyard on an earlier turn are not returned",
+    "players": [
+      {
+        "hand": ["Twilight Shepherd"],
+        "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Twilight Shepherd"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Twilight Shepherd"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: persist returns a new object whose ETB trigger fires again",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Twilight Shepherd", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["Twilight Shepherd"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["Twilight Shepherd"]},
+      {"resolve": true},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand": ["Grizzly Bears"], "battlefield_has": ["Twilight Shepherd"]},
+        {}
+      ],
+      "pt": {"Twilight Shepherd": [4, 4]}
+    }
+  },
+  {
+    "name": "ruling: a creature with a -1/-1 counter does not persist",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": [{"name": "Twilight Shepherd", "counters": {"m1m1": 1}}, "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["Twilight Shepherd"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["Twilight Shepherd"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard_has": ["Twilight Shepherd"], "battlefield_lacks": ["Twilight Shepherd"]},
+        {}
+      ]
+    }
+  }
+]

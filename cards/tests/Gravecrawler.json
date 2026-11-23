@@ -1,0 +1,196 @@
+[
+  {
+    "name": "castable from graveyard while you control a Zombie",
+    "players": [
+      {
+        "graveyard": [
+          "Gravecrawler"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Lord of the Undead"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravecrawler",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Swamp",
+            "Lord of the Undead",
+            "Gravecrawler"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "not castable from graveyard without a Zombie",
+    "players": [
+      {
+        "graveyard": [
+          "Gravecrawler"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravecrawler",
+        "alt": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Gravecrawler"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "castable from hand with no Zombie",
+    "players": [
+      {
+        "hand": [
+          "Gravecrawler"
+        ],
+        "battlefield": [
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravecrawler"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Swamp",
+            "Gravecrawler"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "can't block",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Gravecrawler"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "keywords": {
+        "Gravecrawler": [
+          "CantBlock"
+        ]
+      },
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: once cast, Gravecrawler resolves even if the Zombie it needed leaves",
+    "players": [
+      {
+        "graveyard": ["Gravecrawler"],
+        "battlefield": ["Swamp", "Lord of the Undead"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "cast": "Gravecrawler", "alt": 0 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Lord of the Undead"], "auto": true },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Swamp", "Gravecrawler"], "graveyard": ["Lord of the Undead"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cast permission is checked on the controller's own turn only (sorcery timing)",
+    "players": [
+      {
+        "graveyard": ["Gravecrawler"],
+        "battlefield": ["Swamp", "Lord of the Undead"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Gravecrawler", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "graveyard": ["Gravecrawler"] },
+        {}
+      ]
+    }
+  }
+]

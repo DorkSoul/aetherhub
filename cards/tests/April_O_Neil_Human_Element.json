@@ -1,0 +1,66 @@
+[
+  {
+    "name": "opponent's instant creates a Mutagen token",
+    "players": [
+      { "battlefield": ["April O'Neil, Human Element", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mutagen", "April O'Neil, Human Element"] }, { "graveyard": ["Lightning Bolt", "Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "a creature spell creates no token",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["April O'Neil, Human Element", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Mutagen"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the Mutagen trigger resolves even when the spell leaves the stack first",
+    "players": [
+      { "hand": ["Swords to Plowshares"], "battlefield": ["April O'Neil, Human Element", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Swords to Plowshares", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mutagen", "April O'Neil, Human Element"] }, { "graveyard": ["Lightning Bolt"], "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: the Mutagen token has the ability to put a +1/+1 counter on a creature",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["April O'Neil, Human Element", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Mutagen", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Mutagen"] }, { "life": 17 } ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } }
+    }
+  }
+]

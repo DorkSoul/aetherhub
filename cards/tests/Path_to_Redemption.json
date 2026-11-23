@@ -1,0 +1,75 @@
+[
+  {
+    "name": "sacrifice on your turn: exile the enchanted creature and make a 1/1 Ally",
+    "players": [
+      { "hand": ["Path to Redemption"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Path to Redemption", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Path to Redemption" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Path to Redemption"], "battlefield_has": ["Ally 1-1"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot activate with only four mana",
+    "players": [
+      { "hand": ["Path to Redemption"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Path to Redemption", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Path to Redemption", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Path to Redemption"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature can't attack: only the other creature's damage gets through",
+    "players": [
+      { "hand": ["Path to Redemption"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Path to Redemption", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "enchanted creature can't block: the free blocker must take the Hill Giant",
+    "players": [
+      { "hand": ["Path to Redemption"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Hill Giant", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Path to Redemption", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Hill Giant", "at": "p0" }, { "card": "Llanowar Elves", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Savannah Lions", "attacker": "Llanowar Elves" }], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 17 }, {}]
+    }
+  }
+]

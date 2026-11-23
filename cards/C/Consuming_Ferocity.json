@@ -1,0 +1,43 @@
+{
+  "name": "Consuming Ferocity",
+  "mana_cost": "{1}{R}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Creature"], "not_subtypes": ["Wall"] } },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "EnchantedGets",
+        "power": { "type": "Fixed", "n": 1 },
+        "toughness": { "type": "Fixed", "n": 0 },
+        "keywords": []
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "Enchanted" }, "kind": "PlusOnePlusZero", "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "PlusOnePlusZero", "of": { "type": "Enchanted" } },
+            "cmp": { "op": "Ge", "n": 3 }
+          },
+          "then": [
+            {
+              "type": "DealDamage",
+              "to": { "type": "ControllerOf", "of": { "type": "Enchanted" } },
+              "amount": { "type": "PowerOf", "of": { "type": "Enchanted" } },
+              "source": { "type": "Enchanted" }
+            },
+            { "type": "Destroy", "what": { "type": "Enchanted" }, "no_regeneration": true }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant non-Wall creature\nEnchanted creature gets +1/+0.\nAt the beginning of your upkeep, put a +1/+0 counter on enchanted creature. If that creature has three or more +1/+0 counters on it, it deals damage equal to its power to its controller, then destroy that creature and it can't be regenerated."
+}

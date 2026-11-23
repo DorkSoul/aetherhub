@@ -1,0 +1,194 @@
+[
+  {
+    "name": "postcombat: exile one of the top X cards (X = life opponents lost) and play it this turn",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Florian, Voldaren Scion",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Swamp",
+          "Forest",
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Florian, Voldaren Scion",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          [
+            "Swamp"
+          ]
+        ]
+      },
+      {
+        "play_land": "Swamp"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "battlefield_has": [
+            "Swamp"
+          ],
+          "library_count": 23
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "no life lost this turn: X is 0, nothing is exiled",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Florian, Voldaren Scion",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Swamp",
+          "Forest",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "library_count": 23
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if Florian leaves before your postcombat main phase, its last ability does not trigger",
+    "players": [
+      { "battlefield": [{ "name": "Florian, Voldaren Scion", "sick": false }], "library": ["Swamp", "Forest", "Island", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Florian, Voldaren Scion", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "EndCombat" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Florian, Voldaren Scion"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Florian, Voldaren Scion"], "exile": [], "library_count": 24 },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the trigger happens even if no creature attacked (X from a Bolt to the opponent)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Florian, Voldaren Scion", "Mountain"], "library": ["Swamp", "Forest", "Island", "Mountain"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2", "answers": [["Swamp"]] },
+      { "play_land": "Swamp" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swamp"], "exile": [] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled card is cast paying its full cost (Grizzly Bears with two mana)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Florian, Voldaren Scion", "Mountain", "Mountain", "Forest"], "library": ["Grizzly Bears", "Swamp", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2", "answers": [["Grizzly Bears"]] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": [] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled card's costs must still be paid (one mana left cannot cast Grizzly Bears)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Florian, Voldaren Scion", "Mountain", "Forest"], "library": ["Grizzly Bears", "Swamp", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main2", "answers": [["Grizzly Bears"]] },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Florian, Voldaren Scion", "Mountain", "Forest"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: life lost counts even if the opponent later gains it back (Bolt 3, Healing Salve 3: X is 3)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Healing Salve"], "battlefield": ["Florian, Voldaren Scion", "Mountain", "Plains"], "library": ["Swamp", "Forest", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Healing Salve", "targets": ["p1"], "answers": [0] },
+      { "resolve": true },
+      { "advance_to": "Main2", "answers": [["Swamp"]] },
+      { "play_land": "Swamp" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swamp"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

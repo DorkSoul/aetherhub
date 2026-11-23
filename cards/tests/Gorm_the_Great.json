@@ -1,0 +1,58 @@
+[
+  {
+    "name": "must be blocked by two creatures if able (declared no blocks)",
+    "players": [ { "battlefield": ["Gorm the Great"] }, { "battlefield": ["Grizzly Bears", "Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Gorm the Great", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  },
+  {
+    "name": "with only one potential blocker it still must be blocked",
+    "players": [ { "battlefield": ["Gorm the Great"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Gorm the Great", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  },
+  {
+    "name": "ETB: target player (yourself) puts Virtus the Veiled from library into hand",
+    "players": [
+      { "hand": ["Gorm the Great"], "battlefield": ["Forest", "Forest", "Forest", "Forest"], "library": ["Virtus the Veiled"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Gorm the Great" },
+      { "resolve": true, "targets": ["p0"], "answers": ["Virtus the Veiled"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Gorm the Great"], "hand": ["Virtus the Veiled"], "library_count": 20 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB: target opponent searches their own library for Virtus, not yours",
+    "players": [
+      { "hand": ["Gorm the Great"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "library": ["Virtus the Veiled"] }
+    ],
+    "steps": [
+      { "cast": "Gorm the Great" },
+      { "resolve": true, "targets": ["p1"], "answers": ["Virtus the Veiled"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        { "hand": ["Virtus the Veiled"], "library_count": 20 }
+      ]
+    }
+  },
+  { "name": "must be blocked by two creatures: two 6/4 Craw Wurms are both forced to block, 12 damage kills Gorm",
+    "players": [ { "battlefield": ["Gorm the Great"] }, { "battlefield": ["Craw Wurm", "Craw Wurm"] } ],
+    "steps": [ { "attack": [ { "card": "Gorm the Great", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "graveyard": ["Gorm the Great"] }, { "life": 20 } ] } },
+  { "name": "ruling: a tapped creature can't block, so with no able blocker Gorm is unblocked (2 damage)",
+    "players": [ { "battlefield": ["Gorm the Great"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "attack": [ { "card": "Gorm the Great", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 18 } ] } }
+]

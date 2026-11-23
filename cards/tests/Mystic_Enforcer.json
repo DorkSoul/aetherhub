@@ -1,0 +1,73 @@
+[
+  {
+    "name": "seven cards in graveyard: 6/6 flying",
+    "players": [
+      { "battlefield": ["Mystic Enforcer"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "pass": true } ],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Mystic Enforcer": [6, 6] },
+      "keywords": { "Mystic Enforcer": ["Flying"] }
+    }
+  },
+  {
+    "name": "six cards in graveyard: still 3/3 without flying",
+    "players": [
+      { "battlefield": ["Mystic Enforcer"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "pass": true } ],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Mystic Enforcer": [3, 3] }
+    }
+  },
+  {
+    "name": "protection from black: a black spell cannot target it",
+    "players": [
+      { "battlefield": ["Mystic Enforcer"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Murder", "player": 1, "targets": ["Mystic Enforcer"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mystic Enforcer"] }, { "hand": ["Murder"] } ]
+    }
+  },
+  {
+    "name": "protection from black: a black creature cannot block it, a green one can",
+    "players": [
+      { "battlefield": [ { "name": "Mystic Enforcer", "sick": false } ] },
+      { "battlefield": ["Bog Wraith", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Mystic Enforcer", "at": "p1" } ] },
+      { "block": [ { "blocker": "Bog Wraith", "attacker": "Mystic Enforcer" }, { "blocker": "Grizzly Bears", "attacker": "Mystic Enforcer" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mystic Enforcer"] }, { "battlefield_has": ["Bog Wraith"], "graveyard_has": ["Grizzly Bears"], "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: nonlethal damage becomes lethal when the graveyard drops below seven",
+    "players": [
+      { "battlefield": [ { "name": "Mystic Enforcer", "sick": false }, "Battlefield Scrounger" ], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Forest"] },
+      { "battlefield": ["Air Elemental"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Mystic Enforcer", "at": "p1" } ] },
+      { "block": [ { "blocker": "Air Elemental", "attacker": "Mystic Enforcer" } ] },
+      { "advance_to": "Main2" },
+      { "activate": "Battlefield Scrounger", "answers": [[0, 1, 2]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Mystic Enforcer"] }, { "graveyard_has": ["Air Elemental"] } ]
+    }
+  }
+]

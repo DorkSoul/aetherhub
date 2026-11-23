@@ -1,0 +1,115 @@
+[
+  {
+    "name": "ETB puts a +1/+1 counter on each creature you control but not on opponents' creatures",
+    "players": [
+      {
+        "hand": ["Atmospheric Greenhouse"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Atmospheric Greenhouse" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [3, 3],
+        "Hill Giant": [3, 3]
+      },
+      "counters": {
+        "Grizzly Bears": { "P1P1": 1 }
+      }
+    }
+  },
+  {
+    "name": "station taps another creature and adds charge counters equal to its power",
+    "players": [
+      {
+        "battlefield": ["Atmospheric Greenhouse", "Grizzly Bears", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Atmospheric Greenhouse" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Atmospheric Greenhouse": false },
+      "counters": { "Atmospheric Greenhouse": { "charge": 2 } }
+    }
+  },
+  {
+    "name": "below 8 charge counters the Greenhouse is not a creature and cannot attack",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Atmospheric Greenhouse", "counters": { "charge": 4 } },
+          "Grizzly Bears",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Atmospheric Greenhouse" },
+      { "resolve": true },
+      { "attack": [{ "card": "Atmospheric Greenhouse", "at": "p1" }], "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Atmospheric Greenhouse": { "charge": 6 } }
+    }
+  },
+  {
+    "name": "at 8 charge counters it is a 5/4 flying trample artifact creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Atmospheric Greenhouse", "counters": { "charge": 7 } },
+          "Grizzly Bears",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Atmospheric Greenhouse" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Atmospheric Greenhouse": { "charge": 9 } },
+      "pt": { "Atmospheric Greenhouse": [5, 4] },
+      "keywords": { "Atmospheric Greenhouse": ["Flying", "Trample"] }
+    }
+  },
+  {
+    "name": "at 9 charge counters after station it is an artifact creature and attacks for 5 in the air",
+    "players": [
+      { "battlefield": [ { "name": "Atmospheric Greenhouse", "counters": { "charge": 7 } }, "Grizzly Bears", "Forest" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Atmospheric Greenhouse" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Atmospheric Greenhouse", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15 } ]
+    }
+  },
+  {
+    "name": "ruling: station still works above the last symbol (9 charge counters plus 2 more)",
+    "players": [ { "battlefield": [ { "name": "Atmospheric Greenhouse", "counters": { "charge": 9 } }, "Grizzly Bears", "Forest" ] }, {} ],
+    "steps": [ { "activate": "Atmospheric Greenhouse" }, { "resolve": true } ],
+    "expect": {
+      "counters": { "Atmospheric Greenhouse": { "charge": 11 } },
+      "pt": { "Atmospheric Greenhouse": [5, 4] },
+      "keywords": { "Atmospheric Greenhouse": ["Flying", "Trample"] }
+    }
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "name": "Body Launderer",
+  "mana_cost": "{2}{B}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Ogre", "Rogue"],
+  "power": 3,
+  "toughness": 3,
+  "keywords": ["Deathtouch"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "types": ["Creature"], "controller": "You", "other": true, "token": false } },
+      "effects": [
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "RememberedIs", "filter": { "not_types": ["Land"] } },
+          "then": [
+            { "type": "AddCounters", "what": { "type": "This" }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Graveyard",
+            "filter": {
+              "types": ["Creature"],
+              "not_subtypes": ["Rogue"],
+              "other": true,
+              "power_vs": { "amount": { "type": "PowerOf", "of": { "type": "This" } }, "op": "Le" }
+            },
+            "whose": "You"
+          },
+          "label": "another target non-Rogue creature card with equal or lesser power"
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Target", "idx": 0 }, "from": "Graveyard", "to": "Battlefield" }
+      ]
+    }
+  ],
+  "oracle_text": "Deathtouch\nWhenever another nontoken creature you control dies, this creature connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)\nWhen this creature dies, return another target non-Rogue creature card with equal or lesser power from your graveyard to the battlefield."
+}

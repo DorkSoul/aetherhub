@@ -1,0 +1,42 @@
+[
+  { "name": "explores: a land revealed goes to hand",
+    "players": [ { "hand": ["Enter the Unknown"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Plains"] }, {} ],
+    "steps": [ { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Plains"], "graveyard": ["Enter the Unknown"] }, {} ], "pt": { "Grizzly Bears": [2, 2] } } },
+  { "name": "grants an additional land drop this turn",
+    "players": [ { "hand": ["Enter the Unknown", "Plains", "Plains"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Island"] }, {} ],
+    "steps": [ { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "play_land": "Plains" }, { "play_land": "Plains" } ],
+    "expect": { "players": [ { "hand": ["Island"] }, {} ] } },
+  { "name": "ruling: explore of a nonland card: +1/+1 counter, and the card goes to the graveyard when you choose",
+    "players": [ { "hand": ["Enter the Unknown"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Lightning Bolt", "Island"] }, {} ],
+    "steps": [ { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [true] } ],
+    "expect": { "players": [ { "graveyard": ["Enter the Unknown", "Lightning Bolt"], "library_top": ["Island"] }, {} ], "pt": { "Grizzly Bears": [3, 3] } } },
+  { "name": "ruling: explore of a nonland card: the card may stay on top of the library instead",
+    "players": [ { "hand": ["Enter the Unknown"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Lightning Bolt", "Island"] }, {} ],
+    "steps": [ { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [false] } ],
+    "expect": { "players": [ { "graveyard": ["Enter the Unknown"], "library_top": ["Lightning Bolt", "Island"] }, {} ], "pt": { "Grizzly Bears": [3, 3] } } },
+  { "name": "ruling: if the target is illegal on resolution, Enter the Unknown does nothing: no explore, no additional land",
+    "players": [ { "hand": ["Enter the Unknown", "Plains", "Plains"], "battlefield": ["Forest", "Grizzly Bears"], "library": ["Lightning Bolt", "Island"] }, { "battlefield": ["Mountain"], "hand": ["Lightning Bolt"] } ],
+    "steps": [
+      { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "play_land": "Plains" },
+      { "play_land": "Plains", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Plains"], "library_top": ["Lightning Bolt", "Island"], "graveyard_has": ["Enter the Unknown", "Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ] } },
+  { "name": "ruling: several Enter the Unknown in one turn are cumulative (three land plays, the fourth is illegal)",
+    "players": [ { "hand": ["Enter the Unknown", "Enter the Unknown", "Plains", "Plains"], "battlefield": ["Forest", "Forest", "Grizzly Bears"], "library": ["Plains", "Plains"] }, {} ],
+    "steps": [
+      { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Enter the Unknown", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "play_land": "Plains" },
+      { "play_land": "Plains" },
+      { "play_land": "Plains" },
+      { "play_land": "Plains", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Plains"], "battlefield_has": ["Plains", "Plains", "Plains"] }, {} ] } }
+]

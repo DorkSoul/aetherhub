@@ -1,0 +1,121 @@
+{
+ "name": "Mardu Siegebreaker",
+ "mana_cost": "{1}{R}{W}{B}",
+ "types": [
+  "Creature"
+ ],
+ "subtypes": [
+  "Human",
+  "Warrior"
+ ],
+ "power": 4,
+ "toughness": 4,
+ "keywords": [
+  "Deathtouch",
+  "Haste"
+ ],
+ "abilities": [
+  {
+   "type": "Triggered",
+   "trigger": {
+    "type": "EntersBattlefield",
+    "filter": {
+     "this": true
+    }
+   },
+   "targets": [
+    {
+     "what": {
+      "type": "Permanent",
+      "filter": {
+       "types": [
+        "Creature"
+       ],
+       "controller": "You",
+       "other": true
+      }
+     },
+     "min": 0,
+     "max": 1,
+     "label": "up to one other target creature you control"
+    }
+   ],
+   "effects": [
+    {
+     "type": "If",
+     "cond": {
+      "type": "Compare",
+      "a": {
+       "type": "Count",
+       "filter": {
+        "this": true
+       },
+       "zone": "Battlefield"
+      },
+      "cmp": {
+       "op": "Ge",
+       "n": 1
+      }
+     },
+     "then": [
+      {
+       "type": "Exile",
+       "what": {
+        "type": "Target",
+        "idx": 0
+       },
+       "until_source_leaves": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "Triggered",
+   "trigger": {
+    "type": "Attacks",
+    "filter": {
+     "this": true
+    }
+   },
+   "effects": [
+    {
+     "type": "ForEachPlayer",
+     "players": {
+      "type": "EachOpponent"
+     },
+     "effects": [
+      {
+       "type": "CopyPermanent",
+       "what": {
+        "type": "ExiledWithThis"
+       },
+       "n": {
+        "type": "Fixed",
+        "n": 1
+       },
+       "tapped": true,
+       "attacking": true,
+       "attack_at": {
+        "type": "EachObject"
+       }
+      },
+      {
+       "type": "Delayed",
+       "at": "NextEndStep",
+       "effects": [
+        {
+         "type": "Sacrifice",
+         "who": {
+          "type": "Remembered"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "oracle_text": "Deathtouch, haste\nWhen this creature enters, exile up to one other target creature you control until this creature leaves the battlefield.\nWhenever this creature attacks, for each opponent, create a tapped token that's a copy of the exiled card attacking that opponent. At the beginning of your next end step, sacrifice those tokens."
+}

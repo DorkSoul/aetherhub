@@ -1,0 +1,72 @@
+{
+  "name": "Bane, Lord of Darkness",
+  "mana_cost": "{1}{W}{U}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["God"],
+  "colors": ["W", "U", "B"],
+  "power": 5,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Static",
+      "condition": {
+        "type": "CompareAmounts",
+        "a": { "type": "LifeOf", "who": { "type": "You" } },
+        "op": "Le",
+        "b": { "type": "Half", "a": { "type": "StartingLife" }, "round_up": false }
+      },
+      "effect": {
+        "type": "GrantKeyword",
+        "affects": { "this": true },
+        "keyword": "Indestructible"
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Dies",
+        "filter": { "types": ["Creature"], "token": false, "other": true, "controller": "You" }
+      },
+      "targets": [
+        {
+          "what": { "type": "Player", "filter": "Opponent" },
+          "label": "target opponent"
+        }
+      ],
+      "effects": [
+        {
+          "type": "May",
+          "who": { "type": "Target", "idx": 0 },
+          "effects": [
+            { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+          ],
+          "otherwise": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Hand",
+              "filter": {
+                "types": ["Creature"],
+                "toughness_vs": {
+                  "op": "Le",
+                  "amount": { "type": "ToughnessOf", "of": { "type": "TriggerObject" } }
+                }
+              },
+              "min": 0,
+              "max": 1,
+              "then": [
+                {
+                  "type": "Move",
+                  "what": { "type": "Remembered" },
+                  "to": "Battlefield"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "As long as your life total is less than or equal to half your starting life total, Bane, Lord of Darkness has indestructible.\nWhenever another nontoken creature you control dies, target opponent may have you draw a card. If they don't, you may put a creature card with equal or lesser toughness from your hand onto the battlefield."
+}

@@ -1,0 +1,160 @@
+[
+ {
+  "name": "draws for a creature entering this turn",
+  "players": [
+   {
+    "hand": [
+     "Rite of Harmony",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rite of Harmony"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a land entering is not a creature or enchantment: no draw",
+  "players": [
+   {
+    "hand": [
+     "Rite of Harmony",
+     "Forest"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rite of Harmony"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "play_land": "Forest"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "flashback from graveyard draws for a creature entering this turn",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "graveyard": [
+     "Rite of Harmony"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains",
+     "Forest",
+     "Forest",
+     "Plains",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rite of Harmony",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell cast with flashback is exiled when it resolves, not put in the graveyard",
+  "players": [
+   { "graveyard": ["Rite of Harmony"], "battlefield": ["Forest", "Plains", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [ { "cast": "Rite of Harmony", "alt": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "exile": ["Rite of Harmony"], "graveyard": [] }, {} ] }
+ },
+ {
+  "name": "ruling: a card put into the graveyard this turn can be flashed back before anyone else acts",
+  "players": [
+   { "hand": ["Rite of Harmony"], "battlefield": ["Forest", "Plains", "Forest", "Forest", "Plains", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Rite of Harmony" },
+   { "resolve": true },
+   { "cast": "Rite of Harmony", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand": [], "graveyard": [], "exile": ["Rite of Harmony"] }, {} ] }
+ },
+ {
+  "name": "ruling: an instant cast with flashback follows instant timing, so it can be cast on the opponent's turn",
+  "players": [
+   { "graveyard": ["Rite of Harmony"], "battlefield": ["Forest", "Plains", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Rite of Harmony", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "exile": ["Rite of Harmony"] }, {} ] }
+ }
+]

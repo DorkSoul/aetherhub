@@ -1,0 +1,171 @@
+[
+  { "name": "Shock from a source you control to an opponent: may put a quest counter",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", "Quest for Pure Flame"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ],
+      "counters": { "Quest for Pure Flame": { "quest": 1 } }
+    }
+  },
+  { "name": "four quest counters: sacrifice it, then your Shock to the opponent deals double damage",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Quest for Pure Flame", "Shock"] }, { "life": 16 } ]
+    }
+  },
+  { "name": "three quest counters: the ability cannot be activated",
+    "players": [
+      { "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 3 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Quest for Pure Flame": { "quest": 3 } }
+    }
+  },
+  { "name": "damage from an opponent's source is not doubled",
+    "players": [
+      { "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Quest for Pure Flame"], "life": 18 }, {} ]
+    }
+  },
+  { "name": "ruling: the spell itself is the damage source: Lightning Bolt is doubled to 6 after the second ability",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 14 } ] }
+  },
+  { "name": "ruling: an ability is a damage source too: Prodigal Pyromancer's 1 damage is doubled to 2",
+    "players": [
+      { "battlefield": ["Prodigal Pyromancer", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Prodigal Pyromancer", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  { "name": "ruling: one quest counter per trigger, however much damage the source dealt (Bolt for 3 gives one)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Quest for Pure Flame"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ],
+      "counters": { "Quest for Pure Flame": { "quest": 1 } }
+    }
+  },
+  { "name": "ruling: each source that damages the opponent at once triggers separately (two attackers = two counters)",
+    "players": [
+      { "battlefield": ["Mountain", "Quest for Pure Flame", "Grizzly Bears", "Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 16 } ],
+      "counters": { "Quest for Pure Flame": { "quest": 2 } }
+    }
+  },
+  { "name": "ruling: the second ability doubles combat damage too (Grizzly Bears 2 -> 4)",
+    "players": [
+      { "battlefield": ["Mountain", "Grizzly Bears", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ] }
+  },
+  { "name": "ruling: doubling applies to damage to a creature (Shock 2 -> 4 kills Hill Giant 3/3)",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "graveyard_has": ["Hill Giant"] } ] }
+  },
+  { "name": "ruling: two activated Quests make damage four times as much (Shock 2 -> 8)",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }, { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 12 } ] }
+  },
+  { "name": "ruling: three activated Quests make damage eight times as much (Shock 2 -> 16)",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }, { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }, { "name": "Quest for Pure Flame", "counters": { "quest": 4 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Quest for Pure Flame", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 4 } ] }
+  }
+]

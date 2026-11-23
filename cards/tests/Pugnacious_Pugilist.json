@@ -1,0 +1,55 @@
+[
+  {
+    "name": "blitz cost: haste attack makes a Devil, then it is sacrificed at end step and draws a card",
+    "players": [
+      { "hand": ["Pugnacious Pugilist"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pugnacious Pugilist", "alt": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Pugnacious Pugilist", "at": "p1" }] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Pugnacious Pugilist"], "hand": ["Island"], "battlefield_has": ["Devil"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "hard cast without blitz: no haste, and it stays on the battlefield at end step",
+    "players": [
+      { "hand": ["Pugnacious Pugilist"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pugnacious Pugilist" },
+      { "resolve": true },
+      { "attack": [{ "card": "Pugnacious Pugilist", "at": "p1" }], "illegal": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Pugnacious Pugilist"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: blitz creature need not attack; no Devil is created and it is still sacrificed at end step",
+    "players": [ { "hand": ["Pugnacious Pugilist"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island"] }, {} ],
+    "steps": [ { "cast": "Pugnacious Pugilist", "alt": 0 }, { "resolve": true }, { "advance_to": "End" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Pugnacious Pugilist"], "hand": ["Island"], "battlefield_lacks": ["Devil"] }, {} ] } },
+  { "name": "ruling: blitz creature that dies for any reason (Murder) draws a card",
+    "players": [ { "hand": ["Pugnacious Pugilist"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island"] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [ { "cast": "Pugnacious Pugilist", "alt": 0 }, { "resolve": true }, { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Pugnacious Pugilist"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Pugnacious Pugilist"], "hand": ["Island"] }, { "graveyard": ["Murder"] } ] } },
+  { "name": "ruling: a blitz creature that already died is not sacrificed again at end step (no second draw)",
+    "players": [ { "hand": ["Pugnacious Pugilist"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Island"] }, { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] } ],
+    "steps": [ { "cast": "Pugnacious Pugilist", "alt": 0 }, { "resolve": true }, { "pass": true }, { "cast": "Murder", "player": 1, "targets": ["Pugnacious Pugilist"] }, { "resolve": true }, { "resolve": true }, { "advance_to": "End" } ],
+    "expect": { "players": [ { "graveyard": ["Pugnacious Pugilist"], "hand_count": 1 }, { "graveyard": ["Murder"] } ] } }
+]

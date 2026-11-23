@@ -1,0 +1,74 @@
+[
+ {
+  "name": "attack trigger puts a +1/+1 counter on an opposing creature",
+  "players": [
+   { "battlefield": [{ "name": "Sunset Saboteur", "sick": false }] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Sunset Saboteur", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 16 } ],
+   "counters": { "Grizzly Bears": { "+1/+1": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "with no opposing creature the attack trigger does nothing",
+  "players": [
+   { "battlefield": [{ "name": "Sunset Saboteur", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Sunset Saboteur", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ward: opponent discards a card to pay, Bolt resolves and kills the Saboteur",
+  "players": [
+   { "battlefield": [{ "name": "Sunset Saboteur", "sick": false }] },
+   { "hand": ["Lightning Bolt", "Grizzly Bears"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Sunset Saboteur"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Sunset Saboteur"] },
+    { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "hand_count": 0, "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ward: opponent has no other card to discard, Bolt is countered",
+  "players": [
+   { "battlefield": [{ "name": "Sunset Saboteur", "sick": false }] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Sunset Saboteur"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Sunset Saboteur"] },
+    { "graveyard_has": ["Lightning Bolt"], "life": 20 }
+   ]
+  }
+ }
+]

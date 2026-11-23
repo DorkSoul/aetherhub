@@ -1,0 +1,86 @@
+[
+  {
+    "name": "lifegain is increased by 1 once per event",
+    "players": [
+      { "battlefield": ["Bilbo, Birthday Celebrant", "Bishop's Soldier"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Bishop's Soldier", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 23 }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "cannot be activated below 111 life",
+    "players": [
+      { "battlefield": ["Plains", "Swamp", "Forest", "Forest", "Forest", "Bilbo, Birthday Celebrant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bilbo, Birthday Celebrant", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Plains", "Swamp", "Forest", "Forest", "Forest", "Bilbo, Birthday Celebrant"] }, {}]
+    }
+  },
+  {
+    "name": "at 111 life, exile to put any number of creatures from library onto battlefield",
+    "players": [
+      {
+        "life": 111,
+        "battlefield": ["Plains", "Swamp", "Forest", "Forest", "Forest", "Bilbo, Birthday Celebrant"],
+        "library": ["Grizzly Bears", "Elvish Mystic", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bilbo, Birthday Celebrant", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears", "Elvish Mystic"]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears", "Elvish Mystic"],
+          "battlefield_lacks": ["Bilbo, Birthday Celebrant"],
+          "exile": ["Bilbo, Birthday Celebrant"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "at 110 life the ability cannot be activated",
+    "players": [
+      {
+        "life": 110,
+        "battlefield": ["Plains", "Swamp", "Forest", "Forest", "Forest", "Bilbo, Birthday Celebrant"],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bilbo, Birthday Celebrant", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Bilbo, Birthday Celebrant"], "life": 110 }, {}]
+    }
+  },
+  {
+    "name": "ruling: a single life-gain event of 3 gains only 1 extra life (Bilbo applies once per event)",
+    "players": [
+      { "hand": ["Healing Salve"], "battlefield": ["Plains", "Bilbo, Birthday Celebrant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Healing Salve", "targets": ["p0"], "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 24 }, {} ] }
+  }
+]

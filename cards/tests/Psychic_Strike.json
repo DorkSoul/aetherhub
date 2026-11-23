@@ -1,0 +1,136 @@
+[
+  {
+    "name": "ruling: a spell that can't be countered is unaffected, but its controller still mills two",
+    "players": [
+      { "hand": ["Carnage Tyrant"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Psychic Strike"], "battlefield": ["Island", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Carnage Tyrant" },
+      { "cast": "Psychic Strike", "player": 1, "targets": [ { "stack": "Carnage Tyrant" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Carnage Tyrant"], "library_count": 18 },
+        { "graveyard_has": ["Psychic Strike"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second counter aimed at the same spell fizzles, so its controller mills only once",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Psychic Strike", "Psychic Strike"], "battlefield": ["Island", "Island", "Swamp", "Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Psychic Strike", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "cast": "Psychic Strike", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"], "library_count": 18, "life": 20 },
+        { "graveyard_has": ["Psychic Strike"], "hand_count": 0 }
+      ]
+    }
+  },
+  {
+    "name": "counters the spell and its controller mills two",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Psychic Strike"
+        ],
+        "battlefield": [
+          "Island",
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Psychic Strike",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Lightning Bolt"
+          ],
+          "library_count": 18
+        },
+        {
+          "life": 20,
+          "graveyard": [
+            "Psychic Strike"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "needs a spell on the stack to target",
+    "players": [
+      {},
+      {
+        "hand": [
+          "Psychic Strike"
+        ],
+        "battlefield": [
+          "Island",
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Psychic Strike",
+        "player": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 20
+        },
+        {
+          "hand": [
+            "Psychic Strike"
+          ]
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,265 @@
+[
+ {
+  "name": "three {R} activations give +3/+0 and no sacrifice",
+  "players": [
+   {
+    "battlefield": [
+     "Nalathni Dragon",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Nalathni Dragon": [
+     4,
+     1
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Nalathni Dragon"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "fourth activation in a turn: sacrificed at the beginning of the next end step",
+  "players": [
+   {
+    "battlefield": [
+     "Nalathni Dragon",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nalathni Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Nalathni Dragon"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "banding: a band with Grizzly Bears is blocked as a group when one member is blocked",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Nalathni Dragon",
+      "sick": false
+     },
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Nalathni Dragon",
+      "at": "p1",
+      "band": 1
+     },
+     {
+      "card": "Grizzly Bears",
+      "at": "p1",
+      "band": 1
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: band members must attack the same player or planeswalker (split between player and planeswalker is illegal)",
+  "players": [
+   { "battlefield": [ { "name": "Nalathni Dragon", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] },
+   { "battlefield": ["Test Walker"] }
+  ],
+  "steps": [
+   {
+    "attack": [
+     { "card": "Nalathni Dragon", "at": "p1", "band": 1 },
+     { "card": "Grizzly Bears", "at": "Test Walker", "band": 1 }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Nalathni Dragon", "Grizzly Bears"] },
+    { "battlefield_has": ["Test Walker"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a band may include only one nonbanding creature (two nonbanding creatures is illegal)",
+  "players": [
+   { "battlefield": [ { "name": "Nalathni Dragon", "sick": false }, { "name": "Grizzly Bears", "sick": false }, { "name": "Savannah Lions", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   {
+    "attack": [
+     { "card": "Nalathni Dragon", "at": "p1", "band": 1 },
+     { "card": "Grizzly Bears", "at": "p1", "band": 1 },
+     { "card": "Savannah Lions", "at": "p1", "band": 1 }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Nalathni Dragon", "Grizzly Bears", "Savannah Lions"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the attacking player divides the damage of the blocker of a banding band (Hill Giant's 3 damage all to Grizzly Bears)",
+  "players": [
+   { "battlefield": [ { "name": "Nalathni Dragon", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   {
+    "attack": [
+     { "card": "Nalathni Dragon", "at": "p1", "band": 1 },
+     { "card": "Grizzly Bears", "at": "p1", "band": 1 }
+    ]
+   },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2", "answers": ["Grizzly Bears=3"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Nalathni Dragon"], "graveyard_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a banding blocker's controller divides the damage of the attacker it blocks (Hill Giant's 3 all to Grizzly Bears)",
+  "players": [
+   { "battlefield": [ { "name": "Nalathni Dragon", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] },
+   { "battlefield": [ { "name": "Hill Giant", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   {
+    "block": [
+     { "blocker": "Nalathni Dragon", "attacker": "Hill Giant" },
+     { "blocker": "Grizzly Bears", "attacker": "Hill Giant" }
+    ],
+    "player": 0
+   },
+   { "advance_to": "Main2", "answers": ["Grizzly Bears=3"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Nalathni Dragon"], "graveyard_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Hill Giant"] }
+   ]
+  }
+ }
+]

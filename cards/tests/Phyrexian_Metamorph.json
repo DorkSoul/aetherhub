@@ -1,0 +1,279 @@
+[
+ {
+  "name": "copies a creature and is an artifact in addition (Terror can't target it)",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Metamorph"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Terror",
+     "Terror"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Metamorph"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     0
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Terror",
+    "player": 1,
+    "targets": [
+     "p1:Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Terror",
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "graveyard": [
+      "Terror",
+      "Grizzly Bears"
+     ],
+     "hand": [
+      "Terror"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "copies an artifact",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Metamorph"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Metamorph"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     0
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Sol Ring",
+      "Sol Ring"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Phyrexian mana: pay 2 life instead of blue",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Metamorph"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Metamorph"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     0
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 18,
+     "battlefield_has": [
+      "Grizzly Bears",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "nothing to copy: dies as a 0/0",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Metamorph"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Metamorph"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Phyrexian Metamorph"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: copying a Clone that copies Grizzly Bears makes a Grizzly Bears",
+  "players": [
+   {
+    "hand": ["Clone", "Phyrexian Metamorph"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+   },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [0] },
+   { "cast": "Phyrexian Metamorph" },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Grizzly Bears"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy of Hangarback Walker has X = 0 and dies as a 0/0",
+  "players": [
+   { "hand": ["Phyrexian Metamorph"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "battlefield": [{ "name": "Hangarback Walker", "counters": { "+1/+1": 2 } }] }
+  ],
+  "steps": [
+   { "cast": "Phyrexian Metamorph" },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Phyrexian Metamorph"] },
+    { "battlefield_has": ["Hangarback Walker"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the copy does not copy the original's counters",
+  "players": [
+   { "hand": ["Phyrexian Metamorph"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp", { "name": "Grizzly Bears", "counters": { "+1/+1": 1 } }] }
+  ],
+  "steps": [
+   { "cast": "Phyrexian Metamorph" },
+   { "resolve": true, "answers": [0] },
+   { "pass": true },
+   { "cast": "Terror", "player": 1, "targets": ["p1:Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "graveyard": ["Terror", "Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy of Sun Titan gets its enters trigger",
+  "players": [
+   { "hand": ["Phyrexian Metamorph"], "graveyard": ["Grizzly Bears"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Sun Titan"] }
+  ],
+  "steps": [
+   { "cast": "Phyrexian Metamorph" },
+   { "resolve": true, "answers": [0, true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Sun Titan", "Grizzly Bears"], "graveyard": [] },
+    { "battlefield_has": ["Sun Titan"] }
+   ]
+  }
+ }
+]

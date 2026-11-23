@@ -1,0 +1,213 @@
+[
+ {
+  "name": "two targets: both gain the attack trigger, attacking one makes a tapped attacking Soldier",
+  "players": [
+   {
+    "hand": [
+     "Launch the Fleet"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Forest",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Launch the Fleet",
+    "targets": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Soldier"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Grizzly Bears": true,
+    "Hill Giant": false
+   }
+  }
+ },
+ {
+  "name": "a creature that was not targeted gets no token when it attacks",
+  "players": [
+   {
+    "hand": [
+     "Launch the Fleet"
+    ],
+    "battlefield": [
+     "Plains",
+     "Forest",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Launch the Fleet",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Plains",
+      "Forest",
+      "Grizzly Bears",
+      "Hill Giant"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Hill Giant": true
+   }
+  }
+ },
+ {
+   "name": "strive: three targets cost W + 2x{1}{W}; castable with five lands, the attacking Bears brings its Soldier token",
+   "players": [
+    {
+     "hand": ["Launch the Fleet"],
+     "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }, "Hill Giant", "Craw Wurm"]
+    },
+    {}
+   ],
+   "steps": [
+    { "cast": "Launch the Fleet", "targets": ["Grizzly Bears", "Hill Giant", "Craw Wurm"] },
+    { "resolve": true },
+    { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Soldier"] },
+     { "life": 17 }
+    ]
+   }
+  },
+  {
+   "name": "strive: three targets use all five lands, so a Grizzly Bears in hand cannot then be cast",
+   "players": [
+    {
+     "hand": ["Launch the Fleet", "Grizzly Bears"],
+     "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest"]
+    },
+    {
+     "battlefield": ["Hill Giant", "Craw Wurm", "Llanowar Elves"]
+    }
+   ],
+   "steps": [
+    { "cast": "Launch the Fleet", "targets": ["Hill Giant", "Craw Wurm", "Llanowar Elves"] },
+    { "resolve": true },
+    { "cast": "Grizzly Bears", "illegal": true }
+   ],
+   "expect": {
+    "players": [
+     { "hand": ["Grizzly Bears"] },
+     {}
+    ]
+   }
+  },
+  {
+   "name": "ruling: a token that enters attacking was never declared, so Hellrider pings only for the two declared attackers",
+   "players": [
+    { "hand": ["Launch the Fleet"], "battlefield": ["Plains", { "name": "Hellrider", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Launch the Fleet", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "attack": [{ "card": "Hellrider", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+    { "resolve": true },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [{ "battlefield_has": ["Soldier"] }, { "life": 12 }]
+   }
+  },
+  {
+   "name": "ruling: one target becomes illegal in response, so the spell affects only the legal creature",
+   "players": [
+    { "hand": ["Launch the Fleet"], "battlefield": ["Plains", "Plains", "Forest", "Grizzly Bears", "Hill Giant"] },
+    { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+    { "cast": "Launch the Fleet", "targets": ["Grizzly Bears", "Hill Giant"] },
+    { "pass": true },
+    { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+    { "resolve": true },
+    { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+    { "resolve": true },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [{ "graveyard_has": ["Hill Giant"], "battlefield_has": ["Grizzly Bears", "Soldier"] }, { "life": 17 }]
+   }
+  },
+  {
+   "name": "ruling: a strive spell can be cast with no targets; it then creates no tokens",
+   "players": [
+    { "hand": ["Launch the Fleet"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }] },
+    {}
+   ],
+   "steps": [
+    { "cast": "Launch the Fleet" },
+    { "resolve": true },
+    { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+    { "block": [] },
+    { "advance_to": "Main2" }
+   ],
+   "expect": {
+    "players": [{ "battlefield_lacks": ["Soldier"], "graveyard_has": ["Launch the Fleet"] }, { "life": 18 }]
+   }
+  }
+ ]

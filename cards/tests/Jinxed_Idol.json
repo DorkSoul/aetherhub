@@ -1,0 +1,133 @@
+[
+  {
+    "name": "sacrificing a creature hands the Idol to the target opponent",
+    "players": [
+      {
+        "battlefield": [
+          "Jinxed Idol",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Jinxed Idol",
+        "ability": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield": [
+            "Jinxed Idol"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "the sacrifice ability needs a creature to sacrifice",
+    "players": [
+      {
+        "battlefield": [
+          "Jinxed Idol"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Jinxed Idol",
+        "ability": 0,
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Jinxed Idol"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "at the start of my upkeep it deals 2 damage to me",
+    "players": [{ "battlefield": ["Jinxed Idol"] }, {}],
+    "steps": [{ "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "resolve": true }],
+    "expect": { "players": [{ "life": 18 }, { "life": 20 }] }
+  },
+  {
+    "name": "the opponent's upkeep does not trigger it",
+    "players": [{ "battlefield": ["Jinxed Idol"] }, {}],
+    "steps": [{ "advance_to": "Upkeep" }],
+    "expect": { "players": [{ "life": 20 }, {}] }
+  },
+  {
+    "name": "ruling: the opponent can sacrifice a creature to give the Idol back to me",
+    "players": [
+      { "battlefield": ["Jinxed Idol", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": [{ "name": "Grizzly Bears", "sick": false }] }
+    ],
+    "steps": [
+      { "activate": "Jinxed Idol", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Jinxed Idol", "ability": 0, "targets": ["p0"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "life": 18, "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "ruling: sacrificing an attacking creature in the declare blockers step means it deals no combat damage",
+    "players": [
+      { "battlefield": ["Jinxed Idol", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "advance_to": "DeclareBlockers" },
+      { "activate": "Jinxed Idol", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [{ "graveyard_has": ["Grizzly Bears"] }, { "life": 20 }] }
+  },
+  {
+    "name": "ruling: the control change has no duration, so the opponent is charged in its next upkeep",
+    "players": [
+      { "battlefield": ["Jinxed Idol", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Jinxed Idol", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "life": 20 }, { "life": 18 }] }
+  }
+]

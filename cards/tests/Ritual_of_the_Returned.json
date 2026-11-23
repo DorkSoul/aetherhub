@@ -1,0 +1,41 @@
+[
+  {
+    "name": "exiles a creature card and makes a Zombie with its power and toughness",
+    "players": [
+      { "hand": ["Ritual of the Returned"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [ { "cast": "Ritual of the Returned", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "exile": ["Hill Giant"], "battlefield_has": ["Zombie"] }, {} ],
+      "pt": { "Zombie": [3, 3] }
+    }
+  },
+  {
+    "name": "a non-creature card in graveyard is not a legal target",
+    "players": [
+      { "hand": ["Ritual of the Returned"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Forest"] },
+      {}
+    ],
+    "steps": [ { "cast": "Ritual of the Returned", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Ritual of the Returned"] }, {} ] }
+  },
+  {
+    "name": "ruling: creature card leaves the graveyard in response, so the second Ritual makes no token",
+    "players": [
+      { "hand": ["Ritual of the Returned", "Ritual of the Returned"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ritual of the Returned", "targets": ["Hill Giant"] },
+      { "cast": "Ritual of the Returned", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Hill Giant"], "graveyard": ["Ritual of the Returned", "Ritual of the Returned"], "battlefield_has": ["Zombie"] }, {} ],
+      "pt": { "Zombie": [3, 3] }
+    }
+  }
+]

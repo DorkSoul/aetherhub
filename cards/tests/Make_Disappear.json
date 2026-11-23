@@ -1,0 +1,124 @@
+[
+  {
+    "name": "unkicked: counters the spell when its controller declines to pay {2}",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Make Disappear"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Make Disappear", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Mountain"] },
+        { "life": 20, "graveyard": ["Make Disappear"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "unkicked: the spell resolves when its controller pays {2}",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Make Disappear"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Make Disappear", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 17, "graveyard": ["Make Disappear"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "casualty: sacrificing a power-1 creature copies the spell (the copy counters first)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Make Disappear"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Make Disappear", "player": 1, "targets": [{ "stack": "Lightning Bolt" }], "answers": [true] },
+      { "pass": true },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Make Disappear", "Grizzly Bears"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "casualty: a power-0 creature cannot be sacrificed, so there is no copy",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Make Disappear"], "battlefield": ["Island", "Island", "Ornithopter"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Make Disappear", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Make Disappear"], "battlefield_has": ["Ornithopter"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: the casualty copy is not cast, so Razzle-Dazzler's second-spell trigger does not see it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Make Disappear"], "battlefield": ["Island", "Island", "Grizzly Bears", { "name": "Razzle-Dazzler", "sick": false }] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Make Disappear", "player": 1, "targets": [{ "stack": "Lightning Bolt" }], "answers": [true, "Grizzly Bears"] },
+      { "pass": true },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Razzle-Dazzler": { "p1p1": 0 } },
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Make Disappear", "Grizzly Bears"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: casualty sacrifices only one creature and the spell is copied once",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Make Disappear"], "battlefield": ["Island", "Island", "Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Make Disappear", "player": 1, "targets": [{ "stack": "Lightning Bolt" }], "answers": [true, "Grizzly Bears"] },
+      { "pass": true },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Make Disappear", "Grizzly Bears"], "battlefield_has": ["Llanowar Elves"] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "name": "attaches to a tapped creature",
+    "players": [
+      {
+        "hand": [
+          "Glimmerdust Nap"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "tapped": true
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Glimmerdust Nap",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "attached": {
+        "Glimmerdust Nap": "Grizzly Bears"
+      },
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "can't target an untapped creature",
+    "players": [
+      {
+        "hand": [
+          "Glimmerdust Nap"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Glimmerdust Nap",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Glimmerdust Nap"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature does not untap in its controller's untap step",
+    "players": [
+      { "hand": ["Glimmerdust Nap"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+    ],
+    "steps": [
+      { "cast": "Glimmerdust Nap", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "attached": { "Glimmerdust Nap": "Grizzly Bears" },
+      "tapped": { "Grizzly Bears": true },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "control: a tapped creature without the aura untaps in its controller's untap step",
+    "players": [
+      {},
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false },
+      "players": [ {}, {} ]
+    }
+  },
+  {
+    "name": "ruling: if the target untaps in response, Glimmerdust Nap does not resolve (illegal target)",
+    "players": [
+      { "hand": ["Glimmerdust Nap"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Refocus"], "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, "Island", "Island" ] }
+    ],
+    "steps": [
+      { "cast": "Glimmerdust Nap", "targets": ["Grizzly Bears"] },
+      { "player": 1, "cast": "Refocus", "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 0 },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false },
+      "players": [ { "graveyard": ["Glimmerdust Nap"] }, { "graveyard": ["Refocus"], "battlefield": ["Grizzly Bears", "Island", "Island"] } ]
+    }
+  },
+  {
+    "name": "ruling: if the enchanted creature becomes untapped, the Aura goes to its owner's graveyard as a state-based action",
+    "players": [
+      { "hand": ["Glimmerdust Nap"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Refocus"], "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, "Island", "Island" ] }
+    ],
+    "steps": [
+      { "cast": "Glimmerdust Nap", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true, "player": 0 },
+      { "player": 1, "cast": "Refocus", "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "pass": true, "player": 0 }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false },
+      "players": [ { "graveyard": ["Glimmerdust Nap"] }, { "graveyard": ["Refocus"], "battlefield": ["Grizzly Bears", "Island", "Island"] } ]
+    }
+  }
+]

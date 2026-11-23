@@ -1,0 +1,63 @@
+[
+  {
+    "name": "combat damage to a player makes that player sacrifice a creature",
+    "players": [
+      { "battlefield": ["Cabal Executioner"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Cabal Executioner", "at": "p1" }] },
+      { "advance_to": "CombatDamage" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18, "battlefield_lacks": ["Hill Giant"], "graveyard_has": ["Hill Giant"] }]
+    }
+  },
+  {
+    "name": "no creature to sacrifice when combat damage is dealt",
+    "players": [
+      { "battlefield": ["Cabal Executioner"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Cabal Executioner", "at": "p1" }] },
+      { "advance_to": "CombatDamage" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }]
+    }
+  },
+  {
+    "name": "morph {3}{B}{B}: turned face up with five lands, then its combat damage trigger makes the opponent sacrifice",
+    "players": [
+      { "battlefield": [ { "name": "Cabal Executioner", "face_down": true }, "Swamp", "Swamp", "Plains", "Plains", "Plains" ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Cabal Executioner", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Cabal Executioner", "at": "p1" } ] },
+      { "advance_to": "CombatDamage" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18, "battlefield_lacks": ["Hill Giant"] }]
+    }
+  },
+  {
+    "name": "turning up costs the morph cost {3}{B}{B} (five mana): with six lands one is left, too little for Cagemail",
+    "players": [
+      { "hand": ["Cagemail"], "battlefield": [ { "name": "Cabal Executioner", "face_down": true }, "Swamp", "Swamp", "Plains", "Plains", "Plains", "Plains" ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Cabal Executioner", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Cagemail", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Cagemail"] }, { "battlefield_has": ["Hill Giant"] }]
+    }
+  }
+]

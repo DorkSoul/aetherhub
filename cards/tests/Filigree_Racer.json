@@ -1,0 +1,126 @@
+[
+  {
+    "name": "entering the battlefield gives four energy",
+    "players": [
+      {
+        "hand": ["Filigree Racer"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Filigree Racer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 4, "battlefield": ["Filigree Racer", "Mountain", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "attacking: pay two energy to give an instant in your graveyard jump-start (cast it by discarding a card)",
+    "players": [
+      {
+        "battlefield": ["Filigree Racer", "Grizzly Bears", "Bespoke Battlewagon", "Mountain"],
+        "graveyard": ["Lightning Bolt"],
+        "hand": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bespoke Battlewagon", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Filigree Racer", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Filigree Racer", "at": "p1" } ] },
+      { "resolve": true, "answers": [true] },
+      { "cast": "Lightning Bolt", "alt": 100, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 0, "exile": ["Lightning Bolt"], "graveyard": ["Forest"], "hand": [] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "not enough energy to pay: no jump-start, the instant cannot be cast from the graveyard",
+    "players": [
+      {
+        "battlefield": ["Filigree Racer", "Grizzly Bears", "Mountain"],
+        "graveyard": ["Lightning Bolt"],
+        "hand": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Filigree Racer", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Filigree Racer", "at": "p1" } ] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "alt": 100, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 0, "graveyard": ["Lightning Bolt"], "hand": ["Forest"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "jump-start needs a card to discard: with an empty hand the instant cannot be cast",
+    "players": [
+      {
+        "battlefield": ["Filigree Racer", "Grizzly Bears", "Bespoke Battlewagon", "Mountain"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bespoke Battlewagon", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Filigree Racer", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Filigree Racer", "at": "p1" } ] },
+      { "resolve": true, "answers": [true] },
+      { "cast": "Lightning Bolt", "alt": 100, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "energy": 0, "graveyard": ["Lightning Bolt"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery with jump-start cannot be cast during combat, but can in a main phase",
+    "players": [
+      {
+        "battlefield": ["Filigree Racer", "Grizzly Bears", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"],
+        "graveyard": ["Sublime Exhalation"],
+        "hand": ["Forest"],
+        "energy": 2
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Filigree Racer", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Filigree Racer", "at": "p1" } ] },
+      { "resolve": true, "answers": [true] },
+      { "cast": "Sublime Exhalation", "alt": 100, "illegal": true },
+      { "advance_to": "Main2" },
+      { "cast": "Sublime Exhalation", "alt": 100 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Sublime Exhalation"], "hand": [], "battlefield_lacks": ["Filigree Racer", "Grizzly Bears"] },
+        { "life": 15 }
+      ]
+    }
+  }
+]

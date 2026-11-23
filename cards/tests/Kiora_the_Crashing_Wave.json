@@ -1,0 +1,90 @@
+[
+ { "name": "+1 prevents all damage dealt to the targeted opponent creature; loyalty goes up",
+   "players": [
+    { "hand": ["Lightning Bolt"], "battlefield": ["Kiora, the Crashing Wave", "Mountain"] },
+    { "battlefield": ["Grizzly Bears"] }
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "activate": "Kiora, the Crashing Wave", "ability": 0, "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Lightning Bolt"] },
+     { "battlefield_has": ["Grizzly Bears"] }
+    ],
+    "counters": { "Kiora, the Crashing Wave": { "loyalty": 3 } },
+    "pt": { "Grizzly Bears": [2, 2] }
+   }
+ },
+ { "name": "-1 draws a card (plus the turn's draw step card) and leaves Kiora at 1 loyalty",
+   "players": [
+    { "battlefield": ["Kiora, the Crashing Wave"] },
+    {}
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "activate": "Kiora, the Crashing Wave", "ability": 1 },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "hand_count": 2 },
+     {}
+    ],
+    "counters": { "Kiora, the Crashing Wave": { "loyalty": 1 } }
+   }
+ },
+ { "name": "-5 emblem: at your end step create a 9/9 Kraken; Kiora dies at 0 loyalty",
+   "players": [
+    { "battlefield": [{ "name": "Kiora, the Crashing Wave", "counters": { "loyalty": 5 } }] },
+    {}
+   ],
+   "steps": [
+    { "activate": "Kiora, the Crashing Wave", "ability": 2 },
+    { "resolve": true },
+    { "advance_to": "End" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Kiora, the Crashing Wave"], "battlefield_has": ["Kraken 9-9"] },
+     {}
+    ],
+    "pt": { "Kraken 9-9": [9, 9] }
+   }
+ },
+ { "name": "-5 needs five loyalty: illegal at 4",
+   "players": [
+    { "battlefield": [{ "name": "Kiora, the Crashing Wave", "counters": { "loyalty": 4 } }] },
+    {}
+   ],
+   "steps": [
+    { "activate": "Kiora, the Crashing Wave", "ability": 2, "illegal": true }
+   ],
+   "expect": {
+    "players": [
+     { "battlefield_has": ["Kiora, the Crashing Wave"] },
+     {}
+    ],
+    "counters": { "Kiora, the Crashing Wave": { "loyalty": 4 } }
+   }
+ },
+ { "name": "ruling: -1 lets you play an additional land this turn",
+   "players": [ { "hand": ["Mountain", "Mountain"], "battlefield": ["Kiora, the Crashing Wave"] }, {} ],
+   "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "activate": "Kiora, the Crashing Wave", "ability": 1 }, { "resolve": true }, { "play_land": "Mountain" }, { "play_land": "Mountain" } ],
+   "expect": { "players": [ { "hand_count": 2, "battlefield_has": ["Mountain"] }, {} ] } },
+ { "name": "ruling: Kiora dies in response to -1; the additional land still applies",
+   "players": [ { "hand": ["Mountain", "Mountain"], "battlefield": ["Kiora, the Crashing Wave"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+   "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "activate": "Kiora, the Crashing Wave", "ability": 1 }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Kiora, the Crashing Wave"] }, { "pass": true, "player": 1 }, { "resolve": true }, { "play_land": "Mountain" }, { "play_land": "Mountain" } ],
+   "expect": { "players": [ { "hand_count": 2, "battlefield_has": ["Mountain"], "graveyard": ["Kiora, the Crashing Wave"] }, { "graveyard": ["Lightning Bolt"] } ] } },
+ { "name": "ruling: +1 can target a land an opponent controls (not only a creature)",
+   "players": [ { "battlefield": ["Kiora, the Crashing Wave"] }, { "battlefield": ["Mountain"] } ],
+   "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "activate": "Kiora, the Crashing Wave", "ability": 0, "targets": ["Mountain"] }, { "resolve": true } ],
+   "expect": { "players": [ {}, { "battlefield_has": ["Mountain"] } ], "counters": { "Kiora, the Crashing Wave": { "loyalty": 3 } } } }
+]

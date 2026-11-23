@@ -1,0 +1,149 @@
+[
+ {
+  "name": "cycling a card: may become a 5/4 haste trample Dinosaur until end of turn",
+  "players": [
+   {
+    "hand": [
+     "Rescind"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Reptilian Reflection"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Rescind"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Reptilian Reflection": [
+     5,
+     4
+    ]
+   },
+   "players": [
+    {
+     "graveyard": [
+      "Rescind"
+     ],
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent cycling does not trigger it",
+  "players": [
+   {
+    "battlefield": [
+     "Island",
+     "Island",
+     "Reptilian Reflection"
+    ]
+   },
+   {
+    "hand": [
+     "Rescind"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "activate": "Rescind",
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "stack_empty": true,
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Rescind"
+     ]
+    }
+   ]
+  }
+ },
+ {
+   "name": "ruling: Stifle on the cycling ability: no card is drawn, but the Reflection trigger still resolves",
+   "players": [
+    { "hand": ["Rescind"], "battlefield": ["Island", "Island", "Reptilian Reflection"] },
+    { "hand": ["Stifle"], "battlefield": ["Island"] }
+   ],
+   "steps": [
+    { "activate": "Rescind" },
+    { "pass": true },
+    { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Rescind" }] },
+    { "resolve": true, "answers": [true] }
+   ],
+   "expect": {
+    "pt": { "Reptilian Reflection": [5, 4] },
+    "players": [
+     { "graveyard": ["Rescind"], "hand_count": 0 },
+     { "graveyard": ["Stifle"] }
+    ]
+   }
+  },
+  {
+   "name": "ruling: Stifle on the Reflection trigger: the cycling still draws and the enchantment stays an enchantment",
+   "players": [
+    { "hand": ["Rescind"], "battlefield": ["Island", "Island", "Reptilian Reflection"] },
+    { "hand": ["Stifle"], "battlefield": ["Island"] }
+   ],
+   "steps": [
+    { "activate": "Rescind" },
+    { "pass": true },
+    { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Reptilian Reflection" }] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Rescind"], "hand_count": 1, "battlefield_has": ["Reptilian Reflection"] },
+     { "graveyard": ["Stifle"] }
+    ]
+   }
+  },
+  {
+   "name": "ruling: Cancel cannot target the cycling ability or its trigger (they are not spells)",
+   "players": [
+    { "hand": ["Rescind"], "battlefield": ["Island", "Island", "Reptilian Reflection"] },
+    { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+   ],
+   "steps": [
+    { "activate": "Rescind" },
+    { "pass": true },
+    { "cast": "Cancel", "player": 1, "illegal": true },
+    { "resolve": true, "answers": [true] }
+   ],
+   "expect": {
+    "pt": { "Reptilian Reflection": [5, 4] },
+    "players": [
+     { "graveyard": ["Rescind"], "hand_count": 1 },
+     { "hand": ["Cancel"] }
+    ]
+   }
+  }
+]

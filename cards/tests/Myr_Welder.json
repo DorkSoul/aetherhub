@@ -1,0 +1,104 @@
+[
+  {
+    "name": "imprint taps Myr Welder and exiles target artifact card from a graveyard",
+    "players": [
+      {
+        "battlefield": ["Myr Welder"]
+      },
+      {
+        "graveyard": ["Shadowspear"]
+      }
+    ],
+    "steps": [
+      { "activate": "Myr Welder", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "exile": ["Shadowspear"], "graveyard": [] }
+      ],
+      "tapped": { "Myr Welder": true }
+    }
+  },
+  {
+    "name": "Myr Welder has the activated abilities of the artifact it exiled",
+    "players": [
+      {
+        "battlefield": ["Myr Welder", "Mountain", "Swamp", "Swamp"],
+        "hand": ["Terror"]
+      },
+      {
+        "graveyard": ["Shadowspear"],
+        "battlefield": ["Paradise Druid"]
+      }
+    ],
+    "steps": [
+      { "activate": "Myr Welder", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Myr Welder", "ability": 32768 },
+      { "resolve": true },
+      { "cast": "Terror", "targets": ["Paradise Druid"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [] },
+        { "graveyard": ["Paradise Druid"] }
+      ]
+    }
+  },
+  {
+    "name": "without an exiled artifact Myr Welder has no granted abilities",
+    "players": [
+      {
+        "battlefield": ["Myr Welder", "Mountain"]
+      },
+      {
+        "graveyard": ["Shadowspear"]
+      }
+    ],
+    "steps": [
+      { "activate": "Myr Welder", "ability": 32768, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "graveyard": ["Shadowspear"] }]
+    }
+  },
+  {
+    "name": "imprint cannot exile a non-artifact card from a graveyard",
+    "players": [
+      {
+        "battlefield": ["Myr Welder"]
+      },
+      {
+        "graveyard": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Myr Welder", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "graveyard": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: a granted self-named ability affects Myr Welder, so the charge counter goes on Myr Welder",
+    "players": [
+      {"battlefield": ["Myr Welder"]},
+      {"graveyard": ["Lux Cannon"]}
+    ],
+    "steps": [
+      {"activate": "Myr Welder", "ability": 0},
+      {"resolve": true},
+      {"advance_to": "Main1"},
+      {"advance_to": "Main1"},
+      {"activate": "Myr Welder", "ability": 32768},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Myr Welder"]}, {"exile": ["Lux Cannon"]}],
+      "counters": {"Myr Welder": {"Charge": 1}}
+    }
+  }
+]

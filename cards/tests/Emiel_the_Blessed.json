@@ -1,0 +1,276 @@
+[
+ {
+  "name": "blink removes counters",
+  "players": [
+   {
+    "battlefield": [
+     "Emiel the Blessed",
+     "Plains",
+     "Plains",
+     "Plains",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 2
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Emiel the Blessed",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Emiel the Blessed",
+      "Plains",
+      "Plains",
+      "Plains",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "cannot target itself",
+  "players": [
+   {
+    "battlefield": [
+     "Emiel the Blessed",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Emiel the Blessed",
+    "targets": [
+     "Emiel the Blessed"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "pay for a counter",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Emiel the Blessed",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   },
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "decline to pay",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Emiel the Blessed",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "unicorn gets two counters",
+  "players": [
+   {
+    "hand": [
+     "Pearled Unicorn"
+    ],
+    "battlefield": [
+     "Emiel the Blessed",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Pearled Unicorn"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Pearled Unicorn": [
+     4,
+     4
+    ]
+   },
+   "counters": {
+    "Pearled Unicorn": {
+     "p1p1": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: blinking the creature puts the Aura attached to it into the graveyard",
+  "players": [
+   { "hand": ["Holy Strength"], "battlefield": ["Emiel the Blessed", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Holy Strength", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Emiel the Blessed", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Emiel the Blessed", "Grizzly Bears"], "graveyard_has": ["Holy Strength"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: blinking the creature leaves an Equipment on the battlefield, unattached",
+  "players": [
+   { "hand": ["Short Sword"], "battlefield": ["Emiel the Blessed", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Short Sword" },
+   { "resolve": true },
+   { "activate": "Short Sword", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Emiel the Blessed", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Emiel the Blessed", "Short Sword", "Grizzly Bears"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: a Unicorn still has to pay {G/W} for its two counters; declining leaves it 2/2",
+  "players": [
+   { "hand": ["Pearled Unicorn"], "battlefield": ["Emiel the Blessed", "Plains", "Plains", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Pearled Unicorn" },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "pt": { "Pearled Unicorn": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: a creature returned by Emiel's ability triggers Emiel's enters ability",
+  "players": [
+   { "battlefield": ["Emiel the Blessed", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Emiel the Blessed", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [3, 3] },
+   "counters": { "Grizzly Bears": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a token exiled by the blink ceases to exist and does not return",
+  "players": [
+   { "hand": ["Raise the Alarm"], "battlefield": ["Emiel the Blessed", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Raise the Alarm" },
+   { "resolve": true, "answers": [false, false] },
+   { "activate": "Emiel the Blessed", "targets": ["Soldier"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield": ["Emiel the Blessed", "Plains", "Plains", "Plains", "Plains", "Plains", "Soldier"], "graveyard_has": ["Raise the Alarm"] }, {} ]
+  }
+ }
+]

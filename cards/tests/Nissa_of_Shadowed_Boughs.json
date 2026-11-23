@@ -1,0 +1,298 @@
+[
+ {
+  "name": "+1 untaps target land and animates it (may)",
+  "players": [
+   {
+    "battlefield": [
+     "Nissa of Shadowed Boughs",
+     "Forest",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Nissa of Shadowed Boughs",
+    "ability": 0,
+    "targets": ["Forest"]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Nissa of Shadowed Boughs": {
+     "loyalty": 5
+    }
+   },
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "landfall puts a loyalty counter on Nissa",
+  "players": [
+   {
+    "hand": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Nissa of Shadowed Boughs"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Nissa of Shadowed Boughs": {
+     "loyalty": 5
+    }
+   },
+   "players": [
+    {
+     "battlefield_has": ["Forest"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-5 puts a creature with MV <= lands from hand or graveyard onto the battlefield with two +1/+1 counters",
+  "players": [
+   {
+    "hand": [
+     "Forest",
+     "Grizzly Bears",
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Nissa of Shadowed Boughs",
+     "Mountain",
+     "Plains",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nissa of Shadowed Boughs",
+    "ability": 1
+   },
+   {
+    "resolve": true,
+    "answers": [
+     ["Hill Giant"]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Hill Giant", "Forest"],
+     "hand": ["Grizzly Bears"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-5 finds nothing when the only creature has MV above the land count",
+  "players": [
+   {
+    "hand": [
+     "Forest",
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Nissa of Shadowed Boughs",
+     "Mountain",
+     "Plains",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Nissa of Shadowed Boughs",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": ["Serra Angel"],
+     "battlefield_lacks": ["Serra Angel"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: +1 can target a land that is already a creature (Soulstone Sanctuary animated earlier)",
+  "players": [
+   {
+    "battlefield": ["Nissa of Shadowed Boughs", "Soulstone Sanctuary", "Mountain", "Island", "Swamp", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "tap_for_mana": "Mountain" },
+   { "tap_for_mana": "Island" },
+   { "tap_for_mana": "Swamp" },
+   { "tap_for_mana": "Forest" },
+   { "activate": "Soulstone Sanctuary" },
+   { "resolve": true },
+   { "activate": "Nissa of Shadowed Boughs", "ability": 0, "targets": ["Soulstone Sanctuary"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "counters": { "Nissa of Shadowed Boughs": { "loyalty": 5 } },
+   "pt": { "Soulstone Sanctuary": [3, 3] },
+   "keywords": { "Soulstone Sanctuary": ["Haste", "Menace"] }
+  }
+ },
+ {
+  "name": "ruling: an anthem already in play applies to the land creature made by +1 (new base P/T)",
+  "players": [
+   { "battlefield": ["Nissa of Shadowed Boughs", "Glorious Anthem", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa of Shadowed Boughs", "ability": 0, "targets": ["Forest"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "pt": { "Forest": [4, 4] }
+  }
+ },
+ {
+  "name": "ruling: a creature card with {X} in its cost has mana value 0 in hand, so -5 takes Walking Ballista with no lands",
+  "players": [
+   {
+    "hand": ["Walking Ballista"],
+    "battlefield": [ { "name": "Nissa of Shadowed Boughs", "counters": { "Loyalty": 6 } } ]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa of Shadowed Boughs", "ability": 1 },
+   { "resolve": true, "answers": [["Walking Ballista"]] }
+  ],
+  "expect": {
+   "counters": {
+    "Nissa of Shadowed Boughs": { "loyalty": 1 },
+    "Walking Ballista": { "p1p1": 2 }
+   },
+   "players": [
+    { "battlefield_has": ["Walking Ballista"], "hand_count": 0 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: +1 overwrites the 2/2 set by Mutavault's earlier ability, making the land 3/3",
+  "players": [
+   { "battlefield": ["Nissa of Shadowed Boughs", "Mutavault", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "tap_for_mana": "Mountain" },
+   { "activate": "Mutavault", "ability": 0 },
+   { "resolve": true },
+   { "activate": "Nissa of Shadowed Boughs", "ability": 0, "targets": ["Mutavault"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "pt": { "Mutavault": [3, 3] },
+   "keywords": { "Mutavault": ["Haste", "Menace"] }
+  }
+ },
+ {
+  "name": "ruling: +1 does not remove the land's own mana ability (Forest still taps for mana)",
+  "players": [
+   { "battlefield": ["Nissa of Shadowed Boughs", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Nissa of Shadowed Boughs", "ability": 0, "targets": ["Forest"] },
+   { "resolve": true, "answers": [true] },
+   { "tap_for_mana": "Forest", "color": "G" }
+  ],
+  "expect": {
+   "tapped": { "Forest": true },
+   "pt": { "Forest": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: one land drop triggers both Nissa's landfall and Tireless Tracker's landfall",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Nissa of Shadowed Boughs", "Tireless Tracker"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Nissa of Shadowed Boughs": { "loyalty": 5 } },
+   "players": [
+    { "battlefield_has": ["Clue", "Forest", "Tireless Tracker"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land put onto the battlefield by a spell (Nature's Lore) triggers Nissa's landfall",
+  "players": [
+   {
+    "hand": ["Nature's Lore"],
+    "battlefield": ["Nissa of Shadowed Boughs", "Forest", "Forest"],
+    "library": ["Forest", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nature's Lore" },
+   { "resolve": true, "answers": ["Forest"] }
+  ],
+  "expect": {
+   "counters": { "Nissa of Shadowed Boughs": { "loyalty": 5 } },
+   "players": [
+    { "battlefield_has": ["Forest"] },
+    {}
+   ]
+  }
+ }
+]

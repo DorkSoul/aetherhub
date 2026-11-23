@@ -1,0 +1,197 @@
+[
+ {
+  "name": "draws a card at end step if two creatures attacked this turn",
+  "players": [
+   {
+    "battlefield": [
+     "Wedding Announcement // Wedding Festivity",
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     },
+     {
+      "name": "Hill Giant",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     },
+     {
+      "card": "Hill Giant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1,
+     "battlefield_lacks": [
+      "Human"
+     ]
+    }
+   ],
+   "counters": {
+    "Wedding Announcement // Wedding Festivity": {
+     "invitation": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "creates a 1/1 Human at end step if fewer than two creatures attacked",
+  "players": [
+   {
+    "battlefield": [
+     "Wedding Announcement // Wedding Festivity",
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0,
+     "battlefield_has": [
+      "Human"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "transforms once it has three invitation counters",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Wedding Announcement // Wedding Festivity",
+      "counters": {
+       "invitation": 2
+      }
+     },
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Wedding Festivity",
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: invitation counters are kept when it transforms",
+  "players": [
+   { "battlefield": [ { "name": "Wedding Announcement // Wedding Festivity", "counters": { "invitation": 2 } }, { "name": "Grizzly Bears", "sick": false } ] },
+   {}
+  ],
+  "steps": [ { "advance_to": "End" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Wedding Festivity"] }, {} ], "counters": { "Wedding Festivity": { "invitation": 3 } } }
+ },
+ {
+  "name": "ruling: three counters from another effect do not transform it until its trigger resolves",
+  "players": [
+   { "battlefield": [ { "name": "Wedding Announcement // Wedding Festivity", "counters": { "invitation": 3 } } ] },
+   {}
+  ],
+  "steps": [ { "advance_to": "Main2" } ],
+  "expect": { "players": [ { "battlefield_has": ["Wedding Announcement // Wedding Festivity"], "battlefield_lacks": ["Wedding Festivity"] }, {} ] }
+ },
+ {
+  "name": "ruling: attacked with two creatures, cast it after combat: still draws at end step",
+  "players": [
+   { "hand": ["Wedding Announcement // Wedding Festivity"], "battlefield": ["Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "cast": "Wedding Announcement // Wedding Festivity" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Wedding Announcement // Wedding Festivity"], "battlefield_lacks": ["Human"] }, {} ] }
+ },
+ {
+  "name": "ruling: a creature that attacked and then died still counts toward the draw",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Wedding Announcement // Wedding Festivity", "Mountain", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 1, "battlefield_lacks": ["Human"], "graveyard_has": ["Hill Giant", "Lightning Bolt"] }, {} ] }
+ }
+]

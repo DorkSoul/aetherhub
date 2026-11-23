@@ -1,0 +1,72 @@
+[
+ { "name": "power 1: creature activated abilities cost {1} less",
+   "players": [ { "battlefield": ["Agatha of the Vile Cauldron", "Narstad Scrapper", "Plains"] }, {} ],
+   "steps": [ { "activate": "Narstad Scrapper", "ability": 0 }, { "resolve": true } ],
+   "expect": { "pt": { "Narstad Scrapper": [4, 3] } } },
+ { "name": "only creatures you control: opponent's creature unaffected",
+   "players": [ { "battlefield": ["Agatha of the Vile Cauldron"] }, { "battlefield": ["Narstad Scrapper", "Plains"] } ],
+   "steps": [ { "pass": true }, { "activate": "Narstad Scrapper", "ability": 0, "player": 1, "illegal": true } ] },
+  {
+    "name": "{4}{R}{G} pump: other creatures get +1/+1, trample and haste (its own cost is reduced by Agatha's power)",
+    "players": [
+      {
+        "battlefield": ["Agatha of the Vile Cauldron", "Mountain", "Forest", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": true }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Agatha of the Vile Cauldron", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ],
+      "pt": { "Grizzly Bears": [3, 3], "Agatha of the Vile Cauldron": [1, 1] },
+      "keywords": { "Grizzly Bears": ["Trample", "Haste"] }
+    }
+  },
+  {
+    "name": "pump costs five mana with Agatha at power 1: four lands is not enough",
+    "players": [
+      {
+        "battlefield": ["Agatha of the Vile Cauldron", "Mountain", "Forest", "Plains", "Plains", { "name": "Grizzly Bears", "sick": true }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Agatha of the Vile Cauldron", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: cycling a creature card in hand is not reduced by Agatha (Bloated Toad cycling {2} needs two lands)",
+    "players": [
+      { "hand": ["Bloated Toad"], "battlefield": ["Agatha of the Vile Cauldron", "Forest"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bloated Toad", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Bloated Toad"], "library_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: cycling a creature card in hand costs the full {2} with Agatha out (two lands draw)",
+    "players": [
+      { "hand": ["Bloated Toad"], "battlefield": ["Agatha of the Vile Cauldron", "Forest", "Forest"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bloated Toad" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Island"], "graveyard": ["Bloated Toad"] }, {} ]
+    }
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "name": "beginning of combat puts four +1/+1 counters after a noncreature spell was cast this turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "The Thing"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Thing"] }, { "battlefield_lacks": ["Grizzly Bears"] } ],
+      "counters": { "The Thing": { "PlusOnePlusOne": 4 } }
+    }
+  },
+  {
+    "name": "no counters at beginning of combat when only a creature spell was cast this turn",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "The Thing"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Thing", "Grizzly Bears"] }, {} ],
+      "counters": { "The Thing": { "PlusOnePlusOne": 0 } }
+    }
+  },
+  {
+    "name": "attack trigger: paying RGWU doubles the counters on the chosen permanent",
+    "players": [
+      { "battlefield": [ {"name": "The Thing", "counters": {"p1p1": 3}}, "Mountain", "Forest", "Plains", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "The Thing", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [true, ["The Thing"]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Thing"] }, {} ],
+      "counters": { "The Thing": { "PlusOnePlusOne": 6 } }
+    }
+  },
+  {
+    "name": "attack trigger: declining to pay leaves the counters alone",
+    "players": [
+      { "battlefield": [ {"name": "The Thing", "counters": {"p1p1": 3}}, "Mountain", "Forest", "Plains", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "The Thing", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Thing"] }, {} ],
+      "counters": { "The Thing": { "PlusOnePlusOne": 3 } }
+    }
+  }
+]

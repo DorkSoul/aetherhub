@@ -1,0 +1,132 @@
+[
+  {
+    "name": "attached: may play a land from the top of your library",
+    "players": [
+      {
+        "battlefield": ["Island", "Island", "Island", "The Reality Chip", "Grizzly Bears"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Reality Chip", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Reality Chip", "Grizzly Bears", "Forest"] }, {} ],
+      "attached": { "The Reality Chip": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "unattached: the top card of your library cannot be played",
+    "players": [
+      {
+        "battlefield": ["Island", "Island", "Island", "The Reality Chip", "Grizzly Bears"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Reality Chip", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "attached it is not a creature; unattaching restores the permission to be off",
+    "players": [
+      {
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "The Reality Chip", "Grizzly Bears"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Reality Chip", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "The Reality Chip", "ability": 1 },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Reality Chip", "Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2], "The Reality Chip": [0, 4] }
+    }
+  },
+  {
+    "name": "attached: it is no longer a Jellyfish creature (set to Equipment)",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "The Reality Chip", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Reality Chip", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "The Reality Chip": ["Equipment"] },
+      "not_subtypes": { "The Reality Chip": ["Jellyfish"] }
+    }
+  },
+  {
+    "name": "unattached: still a Jellyfish creature",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "The Reality Chip", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "subtypes": { "The Reality Chip": ["Jellyfish"] }
+    }
+  },
+  {
+    "name": "ruling: a tapped Equipment attaches and stays tapped",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", { "name": "The Reality Chip", "tapped": true }, "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Reality Chip", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Reality Chip", "Grizzly Bears"] }, {} ],
+      "attached": { "The Reality Chip": "Grizzly Bears" },
+      "tapped": { "The Reality Chip": true }
+    }
+  },
+  {
+    "name": "ruling: after a land was played this turn, the top card of the library can't be played as a land",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Island", "Island", "Island", "The Reality Chip", "Grizzly Bears"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Reality Chip", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "play_land": "Island" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Reality Chip", "Grizzly Bears", "Island"], "library_top": ["Forest"] }, {} ],
+      "attached": { "The Reality Chip": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: an Equipment creature cannot attach to itself, so nothing happens",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "The Reality Chip"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Reality Chip", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["The Reality Chip"] }, {} ],
+      "pt": { "The Reality Chip": [0, 4] }
+    }
+  }
+]

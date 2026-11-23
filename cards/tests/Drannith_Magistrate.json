@@ -1,0 +1,134 @@
+[
+ {
+  "name": "opponent can't flashback a spell from their graveyard",
+  "players": [
+   { "battlefield": ["Drannith Magistrate"] },
+   { "graveyard": ["Lingering Souls"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lingering Souls", "alt": 0, "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "graveyard": ["Lingering Souls"] }
+   ]
+  }
+ },
+ {
+  "name": "opponent can still cast a spell from their hand",
+  "players": [
+   { "battlefield": ["Drannith Magistrate", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "opponent cannot cast a flashback spell from their graveyard during their own turn",
+  "players": [
+   { "battlefield": ["Drannith Magistrate"] },
+   { "graveyard": ["Lingering Souls"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Lingering Souls", "alt": 0, "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [{}, { "graveyard": ["Lingering Souls"] }]
+  }
+ },
+ {
+  "name": "control: without Drannith Magistrate the opponent can flash back Lingering Souls on their own turn",
+  "players": [
+   {},
+   { "graveyard": ["Lingering Souls"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Lingering Souls", "alt": 0, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "exile": ["Lingering Souls"] }]
+  }
+ },
+ {
+  "name": "ruling: the opponent may still play a land from the graveyard (Drannith only stops spells)",
+  "players": [
+   { "battlefield": ["Drannith Magistrate"] },
+   { "battlefield": ["Crucible of Worlds"], "graveyard": ["Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "play_land": "Forest", "player": 1 }
+  ],
+  "expect": {
+   "players": [{}, { "battlefield_has": ["Forest"] }]
+  }
+ },
+ {
+  "name": "ruling: Drannith overrules the opponent's own graveyard permission (Oathsworn Vampire after gaining life)",
+  "players": [
+   { "battlefield": ["Drannith Magistrate"] },
+   { "hand": ["Healing Salve"], "battlefield": ["Plains", "Swamp", "Swamp"], "graveyard": ["Oathsworn Vampire"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Healing Salve", "player": 1, "targets": ["p1"], "answers": [0] },
+   { "resolve": true },
+   { "cast": "Oathsworn Vampire", "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 23, "graveyard_has": ["Oathsworn Vampire"] }]
+  }
+ },
+ {
+  "name": "control: without Drannith Magistrate the opponent can cast Oathsworn Vampire from the graveyard after gaining life",
+  "players": [
+   {},
+   { "hand": ["Healing Salve"], "battlefield": ["Plains", "Swamp", "Swamp"], "graveyard": ["Oathsworn Vampire"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Healing Salve", "player": 1, "targets": ["p1"], "answers": [0] },
+   { "resolve": true },
+   { "cast": "Oathsworn Vampire", "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 23, "battlefield_has": ["Oathsworn Vampire"] }]
+  }
+ },
+ {
+  "name": "ruling: an effect can still put a card from a graveyard onto the battlefield under the opponent's control (Reanimate)",
+  "players": [
+   { "battlefield": ["Drannith Magistrate"] },
+   { "hand": ["Reanimate"], "battlefield": ["Swamp"], "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1", "player": 1 },
+   { "cast": "Reanimate", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, { "life": 18, "battlefield_has": ["Grizzly Bears"] }]
+  }
+ }
+]

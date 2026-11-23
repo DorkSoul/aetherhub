@@ -1,0 +1,62 @@
+[
+  {
+    "name": "X=2: destroys the nonland permanents with MV 2 of the player it dealt combat damage to",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears", "Hill Giant", "Forest"] } ],
+    "steps": [ { "attack": [ { "card": "Steel Hellkite", "at": "p1" } ] }, { "advance_to": "Main2" }, { "activate": "Steel Hellkite", "ability": 1, "answers": [2] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "graveyard": ["Grizzly Bears"], "battlefield": ["Forest", "Hill Giant"], "life": 15 } ] }
+  },
+  {
+    "name": "without combat damage dealt, nothing is destroyed",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Steel Hellkite", "ability": 1, "answers": [2] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "battlefield": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "{2}: gets +1/+0 until end of turn (5/5 becomes 6/5)",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Steel Hellkite", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Steel Hellkite"] }, {} ], "pt": { "Steel Hellkite": [6, 5] } }
+  },
+  {
+    "name": "pump twice with four mana: 7/5",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Steel Hellkite", "ability": 0 }, { "resolve": true }, { "activate": "Steel Hellkite", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ {}, {} ], "pt": { "Steel Hellkite": [7, 5] } }
+  },
+  {
+    "name": "the pump needs {2}: with one Mountain it cannot be activated",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Steel Hellkite", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ {}, {} ], "pt": { "Steel Hellkite": [5, 5] } }
+  },
+  {
+    "name": "pumped before damage: the extra power is dealt to the player",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Steel Hellkite", "at": "p1" } ] }, { "activate": "Steel Hellkite", "ability": 0 }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 14 } ] }
+  },
+  {
+    "name": "ruling: mana value counts all mana symbols regardless of colour: X=5 destroys Serra Angel ({3}{W}{W})",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [ { "attack": [ { "card": "Steel Hellkite", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "activate": "Steel Hellkite", "ability": 1, "answers": [5] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Steel Hellkite"] }, { "graveyard": ["Serra Angel"], "life": 15 } ] }
+  },
+  {
+    "name": "ruling: only nonland permanents controlled by a damaged player: my own Grizzly Bears (MV 2) survives X=2",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain", "Grizzly Bears"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Steel Hellkite", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "activate": "Steel Hellkite", "ability": 1, "answers": [2] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Mountain", "Grizzly Bears"] }, { "graveyard": ["Grizzly Bears"], "life": 15 } ] }
+  },
+  {
+    "name": "ruling: a token has mana value 0; X=0 destroys the damaged player's Treasure but not mine",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Treasure"] }, { "battlefield": ["Treasure", "Forest"] } ],
+    "steps": [ { "attack": [ { "card": "Steel Hellkite", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "activate": "Steel Hellkite", "ability": 1, "answers": [0] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield": ["Steel Hellkite", "Mountain", "Treasure"] }, { "battlefield": ["Forest"], "life": 15 } ] }
+  },
+  {
+    "name": "ruling: {X} in the mana cost counts as 0: X=0 destroys Walking Ballista (mana value 0)",
+    "players": [ { "battlefield": ["Steel Hellkite", "Mountain"] }, { "battlefield": [ { "name": "Walking Ballista", "counters": { "+1/+1": 3 } } ] } ],
+    "steps": [ { "attack": [ { "card": "Steel Hellkite", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "activate": "Steel Hellkite", "ability": 1, "answers": [0] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "graveyard": ["Walking Ballista"], "life": 15 } ] }
+  }
+]

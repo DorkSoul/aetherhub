@@ -1,0 +1,364 @@
+[
+ {
+  "name": "+1 draws a card and untaps up to two lands at the next end step",
+  "players": [
+   {
+    "hand": [],
+    "battlefield": [
+     "Teferi, Hero of Dominaria",
+     {
+      "name": "Plains",
+      "tapped": true
+     },
+     {
+      "name": "Island",
+      "tapped": true
+     },
+     {
+      "name": "Forest",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Teferi, Hero of Dominaria",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End",
+    "answers": [
+     [
+      0,
+      1
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ],
+   "tapped": {
+    "Plains": false,
+    "Island": false,
+    "Forest": true
+   }
+  }
+ },
+ {
+  "name": "+1 untaps nothing when no land is chosen",
+  "players": [
+   {
+    "hand": [],
+    "battlefield": [
+     "Teferi, Hero of Dominaria",
+     {
+      "name": "Plains",
+      "tapped": true
+     },
+     {
+      "name": "Island",
+      "tapped": true
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Teferi, Hero of Dominaria",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Plains": true,
+    "Island": true
+   }
+  }
+ },
+ {
+  "name": "-3 needs three loyalty",
+  "players": [
+   {
+    "hand": [],
+    "battlefield": [
+     {
+      "name": "Teferi, Hero of Dominaria",
+      "counters": {
+       "Loyalty": 2
+      }
+     },
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Teferi, Hero of Dominaria",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-3 puts a nonland permanent third from the top of its owner's library",
+  "players": [
+   {
+    "hand": [
+     "Divination"
+    ],
+    "battlefield": [
+     "Teferi, Hero of Dominaria",
+     "Grizzly Bears",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Island",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Teferi, Hero of Dominaria",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Island",
+      "Plains",
+      "Grizzly Bears"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-8 gives an emblem in the command zone",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Teferi, Hero of Dominaria",
+      "counters": {
+       "Loyalty": 8
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Teferi, Hero of Dominaria",
+    "ability": 2
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "command": [
+      "Teferi, Hero of Dominaria Emblem"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-8 is not available with only seven loyalty",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Teferi, Hero of Dominaria",
+      "counters": {
+       "Loyalty": 7
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Teferi, Hero of Dominaria",
+    "ability": 2,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "command": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "emblem exiles an opposing permanent whenever you draw",
+  "players": [
+   {
+    "hand": [
+     "Divination"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "command": [
+     "Teferi, Hero of Dominaria Emblem"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {
+     "exile": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the emblem trigger's target is chosen when it goes on the stack, so you pick which opposing permanent to exile",
+  "players": [
+   {
+    "hand": [
+     "Divination"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "command": [
+     "Teferi, Hero of Dominaria Emblem"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [1],
+     [0]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {
+     "exile": [
+      "Serra Angel",
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ }
+]

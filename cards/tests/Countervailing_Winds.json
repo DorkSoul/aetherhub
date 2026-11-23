@@ -1,0 +1,268 @@
+[
+  {
+    "name": "countered when the controller cannot pay the per-card cost",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "graveyard": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Countervailing Winds"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Countervailing Winds",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Forest",
+            "Forest"
+          ]
+        },
+        {
+          "life": 20,
+          "graveyard": [
+            "Countervailing Winds"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "not countered when the controller pays one mana per card in graveyard",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "graveyard": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Countervailing Winds"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Countervailing Winds",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Forest",
+            "Forest",
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard": [
+            "Countervailing Winds"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "empty graveyard means nothing to pay",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Countervailing Winds"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "cast": "Countervailing Winds",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard": [
+            "Countervailing Winds"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cycling {2}: discard it and draw a card",
+    "players": [
+      { "hand": ["Countervailing Winds"], "battlefield": ["Plains", "Plains"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Countervailing Winds", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Island"], "graveyard": ["Countervailing Winds"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cycling needs {2}: with one land it is illegal",
+    "players": [
+      { "hand": ["Countervailing Winds"], "battlefield": ["Plains"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Countervailing Winds", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Countervailing Winds"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the count is your graveyard (the Winds controller's), not the caster's; 1 spare mana cannot pay for 2 cards, so the spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] },
+      { "hand": ["Countervailing Winds"], "battlefield": ["Island", "Island", "Island"], "graveyard": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Countervailing Winds", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"] },
+        { "life": 20, "graveyard_has": ["Countervailing Winds"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the count is taken as it resolves and Countervailing Winds itself is not counted: 2 cards cost exactly 2 and the spell resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Countervailing Winds"], "battlefield": ["Island", "Island", "Island"], "graveyard": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Countervailing Winds", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"] },
+        { "life": 17, "graveyard_has": ["Countervailing Winds"] }
+      ]
+    }
+  }
+]

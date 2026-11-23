@@ -1,0 +1,239 @@
+[
+ {
+  "name": "fights a creature when it enters",
+  "players": [
+   {
+    "hand": [
+     "Wicked Wolf"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Wicked Wolf"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Wicked Wolf"
+     ]
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "enters without a target: no fight",
+  "players": [
+   {
+    "hand": [
+     "Wicked Wolf"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Wicked Wolf"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Wicked Wolf"
+     ]
+    },
+    {
+     "battlefield": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "sacrifice a Food: counter, indestructible, tapped",
+  "players": [
+   {
+    "battlefield": [
+     "Wicked Wolf",
+     "Food"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Wicked Wolf"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Wicked Wolf": {
+     "p1p1": 1
+    }
+   },
+   "keywords": {
+    "Wicked Wolf": [
+     "Indestructible"
+    ]
+   },
+   "tapped": {
+    "Wicked Wolf": true
+   },
+   "players": [
+    {
+     "battlefield": [
+      "Wicked Wolf"
+     ]
+    }
+   ],
+   "pt": {
+    "Wicked Wolf": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "can activate while already tapped",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Wicked Wolf",
+      "tapped": true
+     },
+     "Food"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Wicked Wolf"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Wicked Wolf": {
+     "p1p1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "needs a Food",
+  "players": [
+   {
+    "battlefield": [
+     "Wicked Wolf",
+     "Treasure"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Wicked Wolf",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: the Food sacrifice can be activated again and again while the fight trigger is on the stack",
+  "players": [
+   { "hand": ["Wicked Wolf"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Food", "Food"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Wicked Wolf" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "activate": "Wicked Wolf", "targets": ["Grizzly Bears"], "answers": [0] },
+   { "activate": "Wicked Wolf" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Wicked Wolf": { "p1p1": 2 } },
+   "pt": { "Wicked Wolf": [5, 5] },
+   "players": [ { "battlefield_has": ["Wicked Wolf"] }, { "graveyard": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: if the Wolf leaves before its fight resolves, the target neither deals nor takes damage",
+  "players": [
+   { "hand": ["Wicked Wolf", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Wicked Wolf" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears", "Wicked Wolf"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Wicked Wolf"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: a Food artifact creature (Tough Cookie) can be sacrificed to the Wolf's ability",
+  "players": [
+   { "battlefield": ["Wicked Wolf", "Tough Cookie"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Wicked Wolf" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Wicked Wolf": { "p1p1": 1 } },
+   "players": [ { "battlefield_has": ["Wicked Wolf"], "graveyard_has": ["Tough Cookie"] }, {} ]
+  }
+ }
+]

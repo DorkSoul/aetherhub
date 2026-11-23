@@ -1,0 +1,91 @@
+[
+  {
+    "name": "shuffles hand and graveyard into library, draws seven, ends the turn",
+    "players": [
+      {
+        "hand": ["Day's Undoing", "Lightning Bolt", "Shock"],
+        "graveyard": ["Giant Growth"],
+        "battlefield": ["Island", "Island", "Island"]
+      },
+      {
+        "hand": ["Giant Growth"],
+        "graveyard": ["Terror"]
+      }
+    ],
+    "steps": [
+      { "cast": "Day's Undoing" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "hand_count": 7, "graveyard_has": ["Day's Undoing"] },
+        { "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "empty hand and graveyard: just draw seven, then end the turn",
+    "players": [
+      {
+        "hand": ["Day's Undoing"],
+        "battlefield": ["Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Day's Undoing" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "hand_count": 7, "graveyard_has": ["Day's Undoing"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a next-end-step trigger made on the ended turn does not fire in that turn's skipped end step",
+    "players": [
+      {
+        "hand": ["Day's Undoing", "Hill Giant"],
+        "battlefield": ["Sneak Attack", "Mountain", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sneak Attack" },
+      { "resolve": true, "answers": [["Hill Giant"]] },
+      { "cast": "Day's Undoing" },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [ { "battlefield_has": ["Hill Giant"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the delayed sacrifice happens at the end step of the next turn instead",
+    "players": [
+      {
+        "hand": ["Day's Undoing", "Hill Giant"],
+        "battlefield": ["Sneak Attack", "Mountain", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sneak Attack" },
+      { "resolve": true, "answers": [["Hill Giant"]] },
+      { "cast": "Day's Undoing" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [ { "graveyard_has": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"] }, {} ]
+    }
+  }
+]

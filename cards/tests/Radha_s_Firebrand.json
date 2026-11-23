@@ -1,0 +1,81 @@
+[
+  { "name": "attack trigger: a smaller defender can't block",
+    "players": [ { "battlefield": ["Radha's Firebrand"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Radha's Firebrand", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Radha's Firebrand" } ], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "attack trigger: an equal-power defender is not a legal target and can block",
+    "players": [ { "battlefield": ["Radha's Firebrand"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Radha's Firebrand", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Radha's Firebrand" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Radha's Firebrand"] }, { "graveyard": ["Hill Giant"] } ] } },
+  { "name": "five basic land types: the domain ability costs only {R}",
+    "players": [ { "battlefield": ["Radha's Firebrand", "Mountain", "Island", "Forest", "Plains", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Radha's Firebrand", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Radha's Firebrand": [5, 3] } } },
+  { "name": "three basic land types: costs {2}{R}, so three lands are enough",
+    "players": [ { "battlefield": ["Radha's Firebrand", "Mountain", "Island", "Forest"] }, {} ],
+    "steps": [
+      { "activate": "Radha's Firebrand", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Radha's Firebrand": [5, 3] } } },
+  { "name": "two basic land types: costs {3}{R}, two lands are not enough",
+    "players": [ { "battlefield": ["Radha's Firebrand", "Mountain", "Island"] }, {} ],
+    "steps": [
+      { "activate": "Radha's Firebrand", "ability": 0, "illegal": true }
+    ],
+    "expect": { "pt": { "Radha's Firebrand": [3, 1] } } },
+  { "name": "activate only once each turn",
+    "players": [ { "battlefield": ["Radha's Firebrand", "Mountain", "Island", "Forest", "Plains", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Radha's Firebrand", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Radha's Firebrand", "ability": 0, "illegal": true }
+    ],
+    "expect": { "pt": { "Radha's Firebrand": [5, 3] } } },
+  { "name": "ruling: a power increase after the trigger resolves does not undo can't block",
+    "players": [ { "battlefield": ["Radha's Firebrand"] }, { "battlefield": ["Grizzly Bears", "Plains", "Plains", "Plains"], "hand": ["Rally the Peasants"] } ],
+    "steps": [
+      { "attack": [ { "card": "Radha's Firebrand", "at": "p1" } ] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Rally the Peasants", "player": 1 },
+      { "resolve": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Radha's Firebrand" } ], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "ruling: a power increase in response to the trigger makes the target illegal, so the defender can block",
+    "players": [ { "battlefield": ["Radha's Firebrand"] }, { "battlefield": ["Grizzly Bears", "Plains", "Plains", "Plains"], "hand": ["Rally the Peasants"] } ],
+    "steps": [
+      { "attack": [ { "card": "Radha's Firebrand", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Rally the Peasants", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Radha's Firebrand" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Radha's Firebrand"] }, { "graveyard": ["Grizzly Bears", "Rally the Peasants"], "life": 20 } ] } },
+  { "name": "ruling: domain counts basic land types, not lands: four Mountains (one type) still cost {4}{R}",
+    "players": [ { "battlefield": ["Radha's Firebrand", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Radha's Firebrand", "ability": 0, "illegal": true }
+    ],
+    "expect": { "pt": { "Radha's Firebrand": [3, 1] } } }
+]

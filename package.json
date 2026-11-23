@@ -1,0 +1,38 @@
+{
+  "name": "aetherhub",
+  "private": true,
+  "version": "3.0.0",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "workspaces": [
+    "packages/shared",
+    "packages/rules",
+    "packages/server",
+    "packages/client"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @aetherhub/server & npm run dev -w @aetherhub/client",
+    "build": "npm run build -w @aetherhub/client && npm run build -w @aetherhub/server",
+    "start": "node packages/server/dist/index.js",
+    "reset-password": "node packages/server/dist/cli.js reset-password",
+    "import-cards": "node packages/server/dist/cli.js import-cards",
+    "typecheck": "tsc -p packages/shared && tsc -p packages/rules && tsc -p packages/server && tsc -p packages/client",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "fixture": "tsx scripts/make-fixture.ts",
+    "rules:build": "cargo build --release -p mtg-node --manifest-path engine/Cargo.toml",
+    "rules:types": "RUST_MIN_STACK=67108864 cargo test --manifest-path engine/Cargo.toml --workspace >/dev/null && node scripts/rules-types.mjs",
+    "dist": "bash packaging/build.sh"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.3",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
+  }
+}

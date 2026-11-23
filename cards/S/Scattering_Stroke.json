@@ -1,0 +1,143 @@
+{
+  "name": "Scattering Stroke",
+  "mana_cost": "{2}{U}{U}",
+  "types": [
+    "Instant"
+  ],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "Spell",
+            "filter": {}
+          },
+          "label": "target spell"
+        }
+      ],
+      "effects": [
+        {
+          "type": "CounterSpell",
+          "what": {
+            "type": "Target",
+            "idx": 0
+          },
+          "remember": true
+        },
+        {
+          "type": "StoreRemembered",
+          "slot": 0
+        },
+        {
+          "type": "Clash",
+          "win": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "All",
+                "cs": [
+                  {
+                    "type": "YourTurn"
+                  },
+                  {
+                    "type": "Not",
+                    "c": {
+                      "type": "AnyOf",
+                      "cs": [
+                        {
+                          "type": "InStep",
+                          "step": "Main2"
+                        },
+                        {
+                          "type": "InStep",
+                          "step": "End"
+                        },
+                        {
+                          "type": "InStep",
+                          "step": "Cleanup"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "then": [
+                {
+                  "type": "AddTrigger",
+                  "carry": { "type": "Stored", "slot": 0 },
+                  "trigger": {
+                    "type": "BeginningOfStep",
+                    "step": "Main2",
+                    "whose": "You"
+                  },
+                  "effects": [
+                    {
+                      "type": "May",
+                      "effects": [
+                        {
+                          "type": "AddMana",
+                          "mana": [
+                            {
+                              "t": "Scaled",
+                              "m": "C",
+                              "amount": {
+                                "type": "ManaValueOf",
+                                "of": {
+                                  "type": "Remembered"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "once": true,
+                  "until": "EndOfTurn"
+                }
+              ],
+              "else": [
+                {
+                  "type": "AddTrigger",
+                  "carry": { "type": "Stored", "slot": 0 },
+                  "trigger": {
+                    "type": "BeginningOfStep",
+                    "step": "Main1",
+                    "whose": "You"
+                  },
+                  "effects": [
+                    {
+                      "type": "May",
+                      "effects": [
+                        {
+                          "type": "AddMana",
+                          "mana": [
+                            {
+                              "t": "Scaled",
+                              "m": "C",
+                              "amount": {
+                                "type": "ManaValueOf",
+                                "of": {
+                                  "type": "Remembered"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "once": true,
+                  "until": "Forever"
+                }
+              ]
+            }
+          ],
+          "lose": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Counter target spell. Clash with an opponent. If you win, at the beginning of your next main phase, you may add an amount of {C} equal to that spell's mana value. (Each clashing player reveals the top card of their library, then puts that card on the top or bottom. A player wins if their card had a higher mana value.)"
+}

@@ -1,0 +1,451 @@
+[
+  {
+    "name": "persist returns it from the graveyard and it draws a card",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "River Kelpie"
+        ],
+        "library": [
+          "Island"
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "River Kelpie"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Island"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "battlefield_has": [
+            "River Kelpie"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "River Kelpie": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "a spell cast from hand does not draw",
+    "players": [
+      {
+        "hand": [
+          "Divination"
+        ],
+        "battlefield": [
+          "River Kelpie",
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Plains",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Divination"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Plains",
+            "Forest"
+          ],
+          "graveyard": [
+            "Divination"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "casting a spell from a graveyard draws an extra card",
+    "players": [
+      {
+        "graveyard": [
+          "Think Twice"
+        ],
+        "battlefield": [
+          "River Kelpie",
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Plains",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Think Twice",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2,
+          "exile": [
+            "Think Twice"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback from a graveyard draws only the spell's own card without River Kelpie",
+    "players": [
+      {
+        "graveyard": [
+          "Think Twice"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Plains",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Think Twice",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "exile": [
+            "Think Twice"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: River Kelpie does not let you cast creatures from your graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "River Kelpie",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature cast from the graveyard draws once (cast trigger only, not the enters trigger)",
+    "players": [
+      {
+        "hand": [
+          "Yawgmoth's Will"
+        ],
+        "battlefield": [
+          "River Kelpie",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Yawgmoth's Will"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 19,
+          "battlefield_has": [
+            "Grizzly Bears",
+            "River Kelpie"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: casting River Kelpie itself from the graveyard triggers neither ability",
+    "players": [
+      {
+        "hand": [
+          "Yawgmoth's Will"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "graveyard": [
+          "River Kelpie"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Yawgmoth's Will"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "River Kelpie"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 20,
+          "battlefield_has": [
+            "River Kelpie"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a persisted River Kelpie is a new object, so a second death does not return it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "River Kelpie"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "River Kelpie"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "River Kelpie"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 19,
+          "graveyard_has": [
+            "River Kelpie"
+          ],
+          "battlefield_lacks": [
+            "River Kelpie"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a -1/-1 counter on River Kelpie when it dies stops persist (last known information)",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "River Kelpie",
+            "counters": {
+              "-1/-1": 1
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "River Kelpie"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 20,
+          "graveyard_has": [
+            "River Kelpie"
+          ],
+          "battlefield_lacks": [
+            "River Kelpie"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land played from the graveyard draws once (only the enters ability)",
+    "players": [
+      {
+        "battlefield": [
+          "River Kelpie",
+          "Crucible of Worlds"
+        ],
+        "graveyard": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 19,
+          "battlefield_has": [
+            "Forest"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  }
+]

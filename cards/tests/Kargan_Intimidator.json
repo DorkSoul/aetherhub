@@ -1,0 +1,137 @@
+[
+ {
+  "name": "{1}: choose +1/+1 until end of turn",
+  "players": [
+   {
+    "battlefield": ["Kargan Intimidator", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Kargan Intimidator", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Kargan Intimidator": [4, 2] }
+  }
+ },
+ {
+  "name": "each mode can be chosen only once per turn",
+  "players": [
+   {
+    "battlefield": ["Kargan Intimidator", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Kargan Intimidator", "ability": 0 },
+   { "resolve": true },
+   { "activate": "Kargan Intimidator", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Kargan Intimidator": [4, 2] }
+  }
+ },
+ {
+  "name": "a Coward can't block a Warrior: target creature becomes a Coward and is no legal blocker",
+  "players": [
+   {
+    "battlefield": ["Kargan Intimidator", "Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "activate": "Kargan Intimidator", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Kargan Intimidator", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Kargan Intimidator" }], "illegal": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "a creature that is not a Coward can block a Warrior",
+  "players": [
+   {
+    "battlefield": ["Kargan Intimidator"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "attack": [{ "card": "Kargan Intimidator", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Kargan Intimidator" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Kargan Intimidator"] },
+    { "life": 20, "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "target Warrior gains trample: excess damage goes to the player",
+  "players": [
+   {
+    "battlefield": ["Kargan Intimidator", "Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "activate": "Kargan Intimidator", "ability": 2 },
+   { "resolve": true },
+   { "attack": [{ "card": "Kargan Intimidator", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Kargan Intimidator" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Kargan Intimidator"] },
+    { "life": 19, "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "a Coward can't block a Warrior: Grizzly Bears (Coward) stays out and Wall of Stone blocks, Kargan survives",
+  "players": [ { "battlefield": ["Kargan Intimidator", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears", "Wall of Stone"] } ],
+  "steps": [
+   { "activate": "Kargan Intimidator", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Kargan Intimidator", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Kargan Intimidator" }, { "blocker": "Wall of Stone", "attacker": "Kargan Intimidator" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Kargan Intimidator"] }, { "battlefield_has": ["Grizzly Bears", "Wall of Stone"] } ]
+  }
+ },
+ {
+  "name": "ruling: a blocked Warrior stays blocked when its blocker becomes a Coward",
+  "players": [
+   { "battlefield": ["Kargan Intimidator", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [{ "card": "Kargan Intimidator", "at": "p1" }] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Kargan Intimidator" }] },
+   { "activate": "Kargan Intimidator", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Kargan Intimidator"] }, { "life": 20, "graveyard_has": ["Grizzly Bears"] } ]
+  }
+ }
+]

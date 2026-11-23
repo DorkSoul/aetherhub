@@ -1,0 +1,69 @@
+{
+  "name": "Steal the Show",
+  "mana_cost": "{2}{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 1,
+      "choose_max": 2,
+      "modes": [
+        {
+          "text": "Target player discards any number of cards, then draws that many cards.",
+          "targets": [
+            { "what": { "type": "Player", "filter": "Any" }, "label": "target player" }
+          ],
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "Target", "idx": 0 },
+              "from": { "type": "Target", "idx": 0 },
+              "zone": "Hand",
+              "min": 0,
+              "max": 99,
+              "then": [
+                { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard", "discard": true },
+                { "type": "Draw", "who": { "type": "Target", "idx": 0 }, "n": { "type": "RememberedCount" } }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Steal the Show deals damage equal to the number of instant and sorcery cards in your graveyard to target creature or planeswalker.",
+          "targets": [
+            {
+              "what": {
+                "type": "Permanent",
+                "filter": {
+                  "any_of": [
+                    { "types": ["Creature"] },
+                    { "types": ["Planeswalker"] }
+                  ]
+                }
+              },
+              "label": "target creature or planeswalker"
+            }
+          ],
+          "effects": [
+            {
+              "type": "DealDamage",
+              "to": { "type": "Target", "idx": 0 },
+              "amount": {
+                "type": "Count",
+                "filter": {
+                  "any_of": [
+                    { "types": ["Instant"] },
+                    { "types": ["Sorcery"] }
+                  ]
+                },
+                "zone": "Graveyard",
+                "player": { "type": "You" }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose one or both —\n• Target player discards any number of cards, then draws that many cards.\n• Steal the Show deals damage equal to the number of instant and sorcery cards in your graveyard to target creature or planeswalker."
+}

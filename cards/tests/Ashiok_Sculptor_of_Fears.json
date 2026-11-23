@@ -1,0 +1,83 @@
+[
+ {
+  "name": "+2 draws a card and raises loyalty to 6",
+  "players": [
+   { "hand": ["Ashiok, Sculptor of Fears"], "battlefield": ["Island", "Island", "Island", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ashiok, Sculptor of Fears" },
+   { "resolve": true },
+   { "activate": "Ashiok, Sculptor of Fears", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 }, {} ],
+   "counters": { "Ashiok, Sculptor of Fears": { "loyalty": 6 } }
+  }
+ },
+ {
+  "name": "-5 cannot be activated at loyalty 4",
+  "players": [
+   { "hand": ["Ashiok, Sculptor of Fears"], "battlefield": ["Island", "Island", "Island", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Ashiok, Sculptor of Fears" },
+   { "resolve": true },
+   { "activate": "Ashiok, Sculptor of Fears", "ability": 1, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, {} ], "counters": { "Ashiok, Sculptor of Fears": { "loyalty": 4 } } }
+ },
+ {
+  "name": "-5: put a creature card from a graveyard onto the battlefield under your control",
+  "players": [
+   { "battlefield": [{ "name": "Ashiok, Sculptor of Fears", "counters": { "loyalty": 5 } }] },
+   { "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Ashiok, Sculptor of Fears", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": [] } ] }
+ },
+ {
+  "name": "-11: gain control of all creatures target opponent controls",
+  "players": [
+   { "battlefield": [{ "name": "Ashiok, Sculptor of Fears", "counters": { "loyalty": 11 } }] },
+   { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Ashiok, Sculptor of Fears", "ability": 2, "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"] }, { "battlefield_lacks": ["Grizzly Bears", "Hill Giant"] } ] }
+ },
+ {
+  "name": "-11 cannot be activated at loyalty 10",
+  "players": [
+   { "battlefield": [{ "name": "Ashiok, Sculptor of Fears", "counters": { "loyalty": 10 } }] },
+   { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Ashiok, Sculptor of Fears", "ability": 2, "targets": ["p1"], "illegal": true }
+  ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears", "Hill Giant"] } ] }
+ },
+ {
+  "name": "ruling: the control effect lasts after Ashiok leaves (it dies at 0 loyalty) and past the end of the turn",
+  "players": [
+   { "battlefield": [{ "name": "Ashiok, Sculptor of Fears", "counters": { "loyalty": 11 } }] },
+   { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Ashiok, Sculptor of Fears", "ability": 2, "targets": ["p1"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "turn": 2,
+   "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"], "graveyard_has": ["Ashiok, Sculptor of Fears"] }, { "battlefield_lacks": ["Grizzly Bears", "Hill Giant"] } ]
+  }
+ }
+]

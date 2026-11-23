@@ -1,0 +1,61 @@
+{
+  "name": "Lost in Memories",
+  "mana_cost": "{1}{R}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "keywords": ["Flash"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Creature"], "controller": "You" } },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "Modify",
+        "affects": { "types": ["Creature"], "attached_by_source": true },
+        "power": { "type": "Fixed", "n": 1 },
+        "toughness": { "type": "Fixed", "n": 1 }
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "types": ["Creature"], "attached_by_source": true },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "DealsCombatDamage", "filter": { "this": true }, "to": "Player" },
+          "targets": [
+            {
+              "what": { "type": "CardIn", "zone": "Graveyard", "filter": { "types": ["Instant", "Sorcery"] }, "whose": "You" },
+              "label": "target instant or sorcery card in your graveyard"
+            }
+          ],
+          "effects": [
+            { "type": "Remember", "what": { "type": "Target", "idx": 0 } },
+            { "type": "MayPlayThisTurn", "zone": "Graveyard", "filter": { "among_remembered": true } },
+            {
+              "type": "AddReplacement",
+              "what": {
+                "type": "ZoneChange",
+                "from": "Stack",
+                "to": "Graveyard",
+                "instead": "Exile",
+                "filter": { "types": ["Instant", "Sorcery"], "cast_from": "Graveyard" }
+              }
+            },
+            {
+              "type": "AddReplacement",
+              "what": {
+                "type": "ZoneChange",
+                "from": "Stack",
+                "to": "Hand",
+                "instead": "Exile",
+                "filter": { "types": ["Instant", "Sorcery"], "cast_from": "Graveyard" }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "oracle_text": "Flash\nEnchant creature you control\nEnchanted creature gets +1/+1 and has \"Whenever this creature deals combat damage to a player, target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to its mana cost.\" (You may cast that card from your graveyard for its flashback cost. Then exile it.)"
+}

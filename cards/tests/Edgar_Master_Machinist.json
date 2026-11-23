@@ -1,0 +1,205 @@
+[
+ {
+  "name": "artifact cast from your graveyard enters tapped",
+  "players": [
+   {
+    "graveyard": ["Sol Ring"],
+    "battlefield": ["Edgar, Master Machinist", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Sol Ring"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Sol Ring": true
+   },
+   "players": [
+    {
+     "battlefield_has": ["Sol Ring"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "artifact cast from hand enters untapped",
+  "players": [
+   {
+    "hand": ["Sol Ring"],
+    "battlefield": ["Edgar, Master Machinist", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Sol Ring"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Sol Ring": false
+   }
+  }
+ },
+ {
+  "name": "only once during each of your turns",
+  "players": [
+   {
+    "graveyard": ["Sol Ring", "Mind Stone"],
+    "battlefield": ["Edgar, Master Machinist", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Sol Ring"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Mind Stone",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "non-artifact cards cannot be cast from your graveyard",
+  "players": [
+   {
+    "graveyard": ["Grizzly Bears"],
+    "battlefield": ["Edgar, Master Machinist", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "attacks: gets +X/+0, X = greatest mana value among your artifacts",
+  "players": [
+   {
+    "battlefield": ["Edgar, Master Machinist", "Sol Ring", "Mind Stone"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Edgar, Master Machinist",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Edgar, Master Machinist": [4, 4]
+   }
+  }
+ },
+ {
+  "name": "attacks with no artifacts: no bonus",
+  "players": [
+   {
+    "battlefield": ["Edgar, Master Machinist"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Edgar, Master Machinist",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Edgar, Master Machinist": [2, 4]
+   }
+  }
+ },
+ {
+  "name": "ruling: the artifact cast from graveyard still resolves after Edgar is destroyed in response",
+  "players": [
+   {
+    "hand": ["Lightning Bolt", "Lightning Bolt"],
+    "graveyard": ["Sol Ring"],
+    "battlefield": ["Edgar, Master Machinist", "Mountain", "Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "cast": "Lightning Bolt", "targets": ["Edgar, Master Machinist"] },
+   { "cast": "Lightning Bolt", "targets": ["Edgar, Master Machinist"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Sol Ring"],
+     "battlefield_lacks": ["Edgar, Master Machinist"],
+     "graveyard_has": ["Edgar, Master Machinist"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an artifact cast from graveyard follows sorcery timing: not during combat",
+  "players": [
+   {
+    "graveyard": ["Sol Ring"],
+    "battlefield": ["Edgar, Master Machinist", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Sol Ring", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Sol Ring"] },
+    {}
+   ]
+  }
+ }
+]

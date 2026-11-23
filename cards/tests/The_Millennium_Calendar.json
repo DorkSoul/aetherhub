@@ -1,0 +1,256 @@
+[
+  {
+    "name": "each permanent untapped in your untap step adds one time counter",
+    "start": "End",
+    "players": [
+      {},
+      {
+        "battlefield": [
+          "The Millennium Calendar",
+          {
+            "name": "Mountain",
+            "tapped": true
+          },
+          {
+            "name": "Forest",
+            "tapped": true
+          },
+          {
+            "name": "Island",
+            "tapped": true
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "The Millennium Calendar": {
+          "time": 3
+        }
+      },
+      "tapped": {
+        "Mountain": false
+      },
+      "step": "Upkeep"
+    }
+  },
+  {
+    "name": "no permanents untapped means no time counters",
+    "start": "End",
+    "players": [
+      {},
+      {
+        "battlefield": [
+          "The Millennium Calendar",
+          {
+            "name": "Mountain",
+            "tapped": false
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "The Millennium Calendar": {
+          "time": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "{2},{T}: doubles the time counters",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "The Millennium Calendar",
+            "counters": {
+              "time": 3
+            }
+          },
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "The Millennium Calendar",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "The Millennium Calendar": {
+          "time": 6
+        }
+      }
+    }
+  },
+  {
+    "name": "1,000 time counters: sacrificed and each opponent loses 1,000 life",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "The Millennium Calendar",
+            "counters": {
+              "time": 1000
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "The Millennium Calendar"
+          ]
+        },
+        {
+          "life": -980
+        }
+      ]
+    }
+  },
+  {
+    "name": "999 time counters: no sacrifice",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "The Millennium Calendar",
+            "counters": {
+              "time": 999
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "The Millennium Calendar"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the sacrifice trigger with Stifle makes it trigger again immediately",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "The Millennium Calendar",
+            "counters": {
+              "time": 1000
+            }
+          }
+        ]
+      },
+      {
+        "hand": [
+          "Stifle"
+        ],
+        "battlefield": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Stifle",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "The Millennium Calendar"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "The Millennium Calendar"
+          ]
+        },
+        {
+          "life": -980
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the untap trigger waits until upkeep; at upkeep priority it is still on the stack",
+    "start": "End",
+    "players": [
+      {},
+      {
+        "battlefield": [
+          "The Millennium Calendar",
+          {
+            "name": "Mountain",
+            "tapped": true
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "hold": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "The Millennium Calendar": {
+          "time": 0
+        }
+      },
+      "stack_empty": false,
+      "step": "Upkeep"
+    }
+  }
+]

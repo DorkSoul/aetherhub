@@ -1,0 +1,481 @@
+[
+  {
+    "name": "puts that many counters on each creature you control",
+    "players": [
+      {
+        "hand": [
+          "Congregate"
+        ],
+        "battlefield": [
+          "Nykthos Paragon",
+          "Grizzly Bears",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Nykthos Paragon": {
+          "p1p1": 6
+        },
+        "Grizzly Bears": {
+          "p1p1": 6
+        }
+      },
+      "players": [
+        {
+          "life": 26
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining puts no counters",
+    "players": [
+      {
+        "hand": [
+          "Congregate"
+        ],
+        "battlefield": [
+          "Nykthos Paragon",
+          "Grizzly Bears",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {},
+      "pt": {
+        "Nykthos Paragon": [
+          4,
+          6
+        ]
+      },
+      "players": [
+        {
+          "life": 26
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "only once each turn",
+    "players": [
+      {
+        "hand": [
+          "Congregate",
+          "Congregate"
+        ],
+        "battlefield": [
+          "Nykthos Paragon",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Nykthos Paragon": {
+          "p1p1": 2
+        }
+      },
+      "players": [
+        {
+          "life": 24
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two instances on the stack, counters are put only once",
+    "players": [
+      {
+        "hand": [
+          "Congregate",
+          "Congregate"
+        ],
+        "battlefield": [
+          "Nykthos Paragon",
+          "Grizzly Bears",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 6
+        }
+      },
+      "players": [
+        {
+          "life": 32
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: lifelink damage at the same time as a creature's lethal damage: that creature gets no counters",
+    "players": [
+      {
+        "battlefield": [
+          "Nykthos Paragon",
+          "Vampire Nighthawk",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Vampire Nighthawk",
+            "at": "p1"
+          },
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Vampire Nighthawk": {
+          "p1p1": 2
+        }
+      },
+      "players": [
+        {
+          "life": 22,
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: each Nykthos Paragon may use its own once-per-turn ability",
+    "players": [
+      {
+        "hand": [
+          "Congregate"
+        ],
+        "battlefield": [
+          "Nykthos Paragon",
+          "Nykthos Paragon",
+          "Grizzly Bears",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true,
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 16
+        }
+      },
+      "players": [
+        {
+          "life": 28
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two lifelink creatures dealing damage at once trigger separately; declining the first leaves the second",
+    "players": [
+      {
+        "battlefield": [
+          "Nykthos Paragon",
+          "Vampire Nighthawk",
+          "Vampire Nighthawk"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Vampire Nighthawk",
+            "at": "p1"
+          },
+          {
+            "card": "Vampire Nighthawk",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          false,
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Nykthos Paragon": {
+          "p1p1": 2
+        }
+      },
+      "players": [
+        {
+          "life": 24
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the first gain does not use up the once-per-turn ability",
+    "players": [
+      {
+        "hand": [
+          "Congregate",
+          "Congregate"
+        ],
+        "battlefield": [
+          "Nykthos Paragon",
+          "Grizzly Bears",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      },
+      {
+        "cast": "Congregate",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 6
+        }
+      },
+      "players": [
+        {
+          "life": 32
+        },
+        {}
+      ]
+    }
+  }
+]

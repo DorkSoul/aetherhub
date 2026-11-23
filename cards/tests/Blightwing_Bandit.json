@@ -1,0 +1,234 @@
+[
+  {
+    "name": "first spell in the opponent's turn exiles their top card, castable with any mana",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Blightwing Bandit",
+          "Mountain"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Island",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "exile": [
+            "Island"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "second spell in the opponent's turn does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Blightwing Bandit",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Island",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "exile": [
+            "Island"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "first spell on your own turn does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Blightwing Bandit",
+          "Mountain"
+        ]
+      },
+      {
+        "library": [
+          "Forest",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "exile": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled creature cannot be cast on the opponent's turn (sorcery speed)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Blightwing Bandit", "Mountain", "Forest", "Forest"] },
+      { "library": ["Forest", "Grizzly Bears", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled creature is castable in your own main phase; casting it removes it from exile",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Blightwing Bandit", "Mountain", "Forest", "Forest"] },
+      { "library": ["Forest", "Grizzly Bears", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Blightwing Bandit", "Grizzly Bears"] },
+        { "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled card stays castable after Blightwing Bandit leaves the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Blightwing Bandit", "Mountain", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "library": ["Forest", "Grizzly Bears", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Blightwing Bandit"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Lightning Bolt", "Blightwing Bandit"] },
+        { "exile": [] }
+      ]
+    }
+  }
+]

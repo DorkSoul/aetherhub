@@ -1,0 +1,159 @@
+[
+  {
+    "name": "puts a +1/+1 counter on each of up to two targets; declining the searches finds nothing",
+    "players": [
+      {
+        "hand": [
+          "Basri's Aegis"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Basri's Aegis",
+        "targets": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false,
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ],
+        "Hill Giant": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "may search your graveyard for Basri, Devoted Paladin and put it into hand",
+    "players": [
+      {
+        "hand": [
+          "Basri's Aegis"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Basri, Devoted Paladin"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Basri's Aegis"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true,
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Basri, Devoted Paladin"
+          ],
+          "graveyard": [
+            "Basri's Aegis"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cast with no target creatures still searches the library for Basri",
+    "players": [
+      { "hand": ["Basri's Aegis"], "battlefield": ["Plains", "Plains", "Plains", "Plains"], "library": ["Basri, Devoted Paladin"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Basri's Aegis" },
+      { "resolve": true, "answers": [false, true, "Basri, Devoted Paladin"] }
+    ],
+    "expect": { "players": [ { "hand": ["Basri, Devoted Paladin"], "graveyard_has": ["Basri's Aegis"] }, {} ] }
+  },
+  {
+    "name": "ruling: one target dies in response, the other still gets a counter and Basri is found",
+    "players": [
+      { "hand": ["Basri's Aegis"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"], "library": ["Basri, Devoted Paladin"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Basri's Aegis", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true, "answers": [false, true, "Basri, Devoted Paladin"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Basri, Devoted Paladin"], "graveyard_has": ["Grizzly Bears", "Basri's Aegis"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ],
+      "pt": { "Hill Giant": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: both targets illegal, the spell does not resolve and no search happens",
+    "players": [
+      { "hand": ["Basri's Aegis"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"], "library": ["Basri, Devoted Paladin"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Basri's Aegis", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Basri's Aegis", "Grizzly Bears", "Hill Giant"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

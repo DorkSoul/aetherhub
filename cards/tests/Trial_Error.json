@@ -1,0 +1,44 @@
+[
+  { "name": "Trial returns the creature blocking the target attacker to its owner's hand",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "hand": ["Trial"], "battlefield": ["Plains", "Island", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Hill Giant" } ] },
+      { "pass": true },
+      { "cast": "Trial", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"] }, { "hand": ["Llanowar Elves"], "graveyard": ["Trial"] } ]
+    } },
+  { "name": "Error counters a multicolored spell",
+    "players": [
+      { "hand": ["Lightning Helix"], "battlefield": ["Mountain", "Plains"] },
+      { "hand": ["Trial"], "battlefield": ["Island", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Helix", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Trial", "face": true, "player": 1, "targets": [{ "stack": "Lightning Helix" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "graveyard": ["Lightning Helix"] }, { "graveyard": ["Trial"] } ]
+    } },
+  { "name": "Error cannot counter a monocolored spell: illegal",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Trial"], "battlefield": ["Island", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Trial", "face": true, "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "hand": ["Trial"] } ]
+    } }
+]

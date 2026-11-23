@@ -1,0 +1,531 @@
+[
+  {
+    "name": "level 1: a creature you control leaving makes each opponent lose 1 life",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Ninja Teen",
+          "Grizzly Bears",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "an opponent's creature leaving does not trigger it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Ninja Teen",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20,
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "{1}{B}: Level 2 gives creatures +1/+0 and menace",
+    "players": [
+      {
+        "battlefield": [
+          "Ninja Teen",
+          "Grizzly Bears",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ninja Teen",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ninja Teen": {
+          "level": 2
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          2
+        ]
+      },
+      "keywords": {
+        "Grizzly Bears": [
+          "Menace"
+        ]
+      }
+    }
+  },
+  {
+    "name": "level 2 cannot be gained twice and level 3 needs level 2",
+    "players": [
+      {
+        "battlefield": [
+          "Ninja Teen",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ninja Teen",
+        "ability": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ninja Teen": {
+          "level": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "{B}: Level 3 after level 2",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ninja Teen",
+            "counters": {
+              "level": 2
+            }
+          },
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ninja Teen",
+        "ability": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ninja Teen": {
+          "level": 3
+        }
+      }
+    }
+  },
+  {
+    "name": "level 3: sneak a creature card from the graveyard for {3}{B}, returning an unblocked attacker",
+    "players": [
+      {
+        "graveyard": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          {
+            "name": "Ninja Teen",
+            "counters": {
+              "level": 3
+            }
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "block": []
+      },
+      {
+        "cast": "Hill Giant"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ],
+          "hand": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 15
+        }
+      ],
+      "tapped": {
+        "Hill Giant": true
+      }
+    }
+  },
+  {
+    "name": "without level 3 the graveyard creature cannot be sneaked",
+    "players": [
+      {
+        "graveyard": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          {
+            "name": "Ninja Teen",
+            "counters": {
+              "level": 2
+            }
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "block": []
+      },
+      {
+        "cast": "Hill Giant",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sneak cast from the graveyard is not possible in the main phase",
+    "players": [
+      {
+        "graveyard": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          {
+            "name": "Ninja Teen",
+            "counters": {
+              "level": 3
+            }
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Hill Giant",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: gaining level 3 keeps the level 2 abilities",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ninja Teen",
+            "counters": {
+              "level": 2
+            }
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Ninja Teen",
+        "ability": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ninja Teen": {
+          "level": 3
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          2
+        ]
+      },
+      "keywords": {
+        "Grizzly Bears": [
+          "Menace"
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: the level-up is an ability on the stack; a response resolves first and the level-up still resolves",
+    "players": [
+      {
+        "battlefield": [
+          "Ninja Teen",
+          "Grizzly Bears",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Ninja Teen",
+        "ability": 0
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ninja Teen": {
+          "level": 2
+        }
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 19,
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: sneak still needs an unblocked attacker to return: a blocked attacker (menace, double-blocked) cannot pay for it",
+    "players": [
+      {
+        "graveyard": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          {
+            "name": "Ninja Teen",
+            "counters": {
+              "level": 3
+            }
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Goblin Piker",
+          "Savannah Lions"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Goblin Piker",
+            "attacker": "Grizzly Bears"
+          },
+          {
+            "blocker": "Savannah Lions",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "cast": "Hill Giant",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  }
+]

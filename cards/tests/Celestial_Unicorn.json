@@ -1,0 +1,85 @@
+[
+  {
+    "name": "gaining life puts a +1/+1 counter on it",
+    "players": [
+      { "hand": ["Angel's Mercy"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Celestial Unicorn"] },
+      {}
+    ],
+    "steps": [ { "cast": "Angel's Mercy" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "life": 27 }, { "life": 20 } ],
+      "counters": { "Celestial Unicorn": { "PlusOnePlusOne": 1 } },
+      "pt": { "Celestial Unicorn": [4, 3] }
+    }
+  },
+  {
+    "name": "an opponent gaining life does not trigger it",
+    "players": [
+      { "battlefield": ["Celestial Unicorn"] },
+      { "hand": ["Angel's Mercy"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }
+    ],
+    "steps": [ { "pass": true }, { "cast": "Angel's Mercy", "player": 1 }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 27 } ],
+      "pt": { "Celestial Unicorn": [3, 2] }
+    }
+  },
+  {
+    "name": "ruling: lethal combat damage at the same time as lifegain: the counter comes too late to save it",
+    "players": [
+      { "battlefield": ["Kunoros, Hound of Athreos", "Celestial Unicorn"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kunoros, Hound of Athreos", "at": "p1" }, { "card": "Celestial Unicorn", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Celestial Unicorn" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "battlefield_has": ["Kunoros, Hound of Athreos"], "graveyard_has": ["Celestial Unicorn"] },
+        { "life": 17, "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two lifelink creatures dealing combat damage are two lifegain events: two counters",
+    "players": [
+      { "battlefield": ["Kunoros, Hound of Athreos", "Baneslayer Angel", "Celestial Unicorn"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kunoros, Hound of Athreos", "at": "p1" }, { "card": "Baneslayer Angel", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 28 }, { "life": 12 } ],
+      "counters": { "Celestial Unicorn": { "PlusOnePlusOne": 2 } },
+      "pt": { "Celestial Unicorn": [5, 4] }
+    }
+  },
+  {
+    "name": "ruling: one lifelink event of 3 life puts exactly one counter, not one per life point",
+    "players": [
+      { "battlefield": ["Kunoros, Hound of Athreos", "Celestial Unicorn"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Kunoros, Hound of Athreos", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 23 }, { "life": 17 } ],
+      "counters": { "Celestial Unicorn": { "PlusOnePlusOne": 1 } },
+      "pt": { "Celestial Unicorn": [4, 3] }
+    }
+  }
+]

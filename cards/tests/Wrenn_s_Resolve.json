@@ -1,0 +1,173 @@
+[
+  {
+    "name": "exile top two and play them until end of your next turn",
+    "players": [
+      {
+        "hand": [
+          "Wrenn's Resolve"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Wrenn's Resolve"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest"
+          ],
+          "graveyard": [
+            "Wrenn's Resolve",
+            "Lightning Bolt"
+          ],
+          "hand_count": 0
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "only one land drop: the second exiled land cannot be played the same turn",
+    "players": [
+      {
+        "hand": [
+          "Wrenn's Resolve"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Wrenn's Resolve"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      },
+      {
+        "play_land": "Island",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest"
+          ],
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: exiled cards are cast only by paying their costs (Grizzly Bears needs green)",
+    "players": [
+      { "hand": ["Wrenn's Resolve"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wrenn's Resolve" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true },
+      { "play_land": "Forest" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest", "Grizzly Bears"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled creature follows sorcery timing and cannot be cast on the opponent's turn",
+    "players": [
+      { "hand": ["Wrenn's Resolve"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wrenn's Resolve" },
+      { "resolve": true },
+      { "play_land": "Forest" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"], "exile": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cards not played stay in exile after the window ends",
+    "players": [
+      { "hand": ["Wrenn's Resolve"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wrenn's Resolve" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt", "Island"], "graveyard": ["Wrenn's Resolve"] },
+        {}
+      ]
+    }
+  }
+]

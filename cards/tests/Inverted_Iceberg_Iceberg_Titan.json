@@ -1,0 +1,121 @@
+[
+ {
+  "name": "ETB mills the top card then draws a card",
+  "players": [
+   { "hand": ["Inverted Iceberg // Iceberg Titan"], "battlefield": ["Island", "Island"], "library": ["Grizzly Bears", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Inverted Iceberg // Iceberg Titan" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears"], "hand": ["Mountain"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "craft exiles this and an artifact card from the graveyard, returns as the 6/6 Titan",
+  "players": [
+   { "battlefield": ["Inverted Iceberg // Iceberg Titan", "Island", "Island", "Island", "Island", "Mountain", "Mountain", "Grizzly Bears"], "graveyard": ["Bonesplitter"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Inverted Iceberg // Iceberg Titan", "ability": 0, "answers": [[1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Iceberg Titan": [6, 6] }
+  }
+ },
+ {
+  "name": "craft with another artifact on the battlefield (exiled as the material)",
+  "players": [
+   { "battlefield": ["Inverted Iceberg // Iceberg Titan", "Bonesplitter", "Island", "Island", "Island", "Island", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Inverted Iceberg // Iceberg Titan", "ability": 0, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Iceberg Titan": [6, 6] }
+  }
+ },
+ {
+  "name": "craft needs {4}{U}{U}: five lands is not enough",
+  "players": [
+   { "battlefield": ["Inverted Iceberg // Iceberg Titan", "Island", "Island", "Island", "Mountain", "Mountain"], "graveyard": ["Bonesplitter"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Inverted Iceberg // Iceberg Titan", "ability": 0, "illegal": true }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "Iceberg Titan attacks: may tap target creature",
+  "players": [
+   { "battlefield": ["Iceberg Titan"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Iceberg Titan", "at": "p1" } ] },
+   { "resolve": true, "targets": ["Grizzly Bears"], "answers": [true, [0]] }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "Iceberg Titan attacks: may untap target creature",
+  "players": [
+   { "battlefield": ["Iceberg Titan"] },
+   { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Iceberg Titan", "at": "p1" } ] },
+   { "resolve": true, "targets": ["Grizzly Bears"], "answers": [true, [1]] }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "tapped": { "Grizzly Bears": false }
+  }
+ },
+ {
+  "name": "Iceberg Titan attacks: declining the may leaves the creature tapped",
+  "players": [
+   { "battlefield": ["Iceberg Titan"] },
+   { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Iceberg Titan", "at": "p1" } ] },
+   { "resolve": true, "targets": ["Grizzly Bears"], "answers": [false] }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "ruling: a Clue token can be exiled as the craft material and does not come back",
+  "players": [
+   { "hand": ["Thraben Inspector"], "battlefield": ["Plains", "Inverted Iceberg // Iceberg Titan", "Island", "Island", "Island", "Island", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Thraben Inspector" },
+   { "resolve": true },
+   { "activate": "Inverted Iceberg // Iceberg Titan", "ability": 0, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Iceberg Titan", "Thraben Inspector"], "battlefield_lacks": ["Clue"] }, {} ],
+   "pt": { "Iceberg Titan": [6, 6] }
+  }
+ }
+]

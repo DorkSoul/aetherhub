@@ -1,0 +1,131 @@
+[
+  {
+    "name": "returns a white or black creature card from your graveyard to the battlefield",
+    "players": [
+      { "battlefield": ["Dreams of the Dead", "Island", "Swamp"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Savannah Lions"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a green creature card cannot be returned",
+    "players": [
+      { "battlefield": ["Dreams of the Dead", "Island", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the returned creature is exiled instead of dying",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Dreams of the Dead", "Island", "Swamp", "Mountain"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"], "exile": ["Savannah Lions"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining cumulative upkeep sacrifices the creature, which is exiled",
+    "players": [
+      { "battlefield": ["Dreams of the Dead", "Island", "Swamp"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": [], "exile": ["Savannah Lions"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "paying cumulative upkeep keeps the creature on the battlefield",
+    "players": [
+      { "battlefield": ["Dreams of the Dead", "Island", "Swamp", "Swamp", "Swamp"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Savannah Lions"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a returned creature that would go to hand (bounced by Unsummon) is exiled instead",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Dreams of the Dead", "Island", "Island", "Swamp"], "graveyard": ["Savannah Lions"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "targets": ["Savannah Lions"] },
+      { "resolve": true },
+      { "cast": "Unsummon", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "exile": ["Savannah Lions"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two cumulative upkeep instances each add an age counter and pay for the total at resolution",
+    "players": [
+      { "battlefield": ["Dreams of the Dead", "Island", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Phobian Phantasm"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dreams of the Dead", "targets": ["Phobian Phantasm"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Phobian Phantasm"], "exile": [] },
+        {}
+      ],
+      "counters": { "Phobian Phantasm": { "Age": 2 } }
+    }
+  }
+]

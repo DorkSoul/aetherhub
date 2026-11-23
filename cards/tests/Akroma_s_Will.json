@@ -1,0 +1,161 @@
+[
+  {
+    "name": "mode 1: creatures you control gain flying, vigilance and double strike",
+    "players": [
+      {
+        "hand": [
+          "Akroma's Will"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Akroma's Will",
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": [
+          "Flying",
+          "Vigilance",
+          "DoubleStrike"
+        ]
+      }
+    }
+  },
+  {
+    "name": "mode 2: lifelink and indestructible to your creatures, not the opponent's",
+    "players": [
+      {
+        "hand": [
+          "Akroma's Will"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Akroma's Will",
+        "answers": [
+          1
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": [
+          "Lifelink",
+          "Indestructible"
+        ],
+        "Hill Giant": []
+      }
+    }
+  },
+  {
+    "name": "control a commander: the alternative cost lets you choose both modes",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Akroma's Will"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Akroma's Will", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": ["Flying", "Vigilance", "DoubleStrike", "Lifelink", "Indestructible"],
+        "Hill Giant": []
+      },
+      "players": [ { "battlefield_has": ["Savannah Lions", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a commander that leaves before the spell resolves does not reduce the chosen modes",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Akroma's Will", "Lightning Bolt"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Akroma's Will", "alt": 0 },
+      { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": ["Flying", "Vigilance", "DoubleStrike", "Lifelink", "Indestructible"]
+      },
+      "players": [ { "battlefield_lacks": ["Savannah Lions"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: protection from each color means a red creature cannot block the creature",
+    "players": [
+      {
+        "hand": ["Akroma's Will"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Akroma's Will", "answers": [1] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": ["Lifelink", "Indestructible"]
+      },
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 18 } ]
+    }
+  }
+]

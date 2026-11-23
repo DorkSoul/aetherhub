@@ -1,0 +1,236 @@
+[
+ {
+  "name": "enters: you get two energy counters",
+  "players": [
+   {
+    "hand": [
+     "Primal Prayers"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Primal Prayers"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 2,
+     "battlefield_has": [
+      "Primal Prayers"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature with mana value 3 or less can be cast by paying energy",
+  "players": [
+   {
+    "battlefield": [
+     "Primal Prayers"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "energy": 2
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 1,
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "hand": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature with mana value 4 can't be cast with energy",
+  "players": [
+   {
+    "battlefield": [
+     "Primal Prayers"
+    ],
+    "hand": [
+     "Hill Giant"
+    ],
+    "energy": 2
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Hill Giant",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 2,
+     "hand": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a noncreature spell can't be cast with energy",
+  "players": [
+   {
+    "battlefield": [
+     "Primal Prayers"
+    ],
+    "hand": [
+     "Giant Growth"
+    ],
+    "energy": 2
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Giant Growth",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 2,
+     "hand": [
+      "Giant Growth"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature cast with energy has flash: cast on the opponent's upkeep",
+  "players": [
+   {
+    "battlefield": [
+     "Primal Prayers"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "energy": 2
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 1,
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "without energy a creature paid for with mana still has no flash",
+  "players": [
+   {
+    "battlefield": [
+     "Primal Prayers",
+     "Forest",
+     "Forest"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature in the command zone is cast for {E} with no mana",
+  "commander": true,
+  "players": [ { "command": ["Grizzly Bears"], "battlefield": ["Primal Prayers"], "energy": 2 }, {} ],
+  "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "energy": 1, "battlefield_has": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: with no energy left a creature can't be cast for {E}",
+  "players": [ { "battlefield": ["Primal Prayers"], "hand": ["Grizzly Bears"], "energy": 0 }, {} ],
+  "steps": [ { "cast": "Grizzly Bears", "illegal": true } ],
+  "expect": { "players": [ { "energy": 0, "hand": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: energy counters are not removed as steps, phases and turns end",
+  "players": [ { "battlefield": ["Primal Prayers"], "energy": 2 }, {} ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" } ],
+  "expect": { "players": [ { "energy": 2 }, {} ] }
+ }
+]

@@ -1,0 +1,51 @@
+{
+  "name": "Aleatory",
+  "mana_cost": "{1}{R}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": {
+        "type": "AnyOf",
+        "cs": [
+          { "type": "InStep", "step": "DeclareBlockers" },
+          { "type": "InStep", "step": "FirstStrikeDamage" },
+          { "type": "InStep", "step": "CombatDamage" },
+          { "type": "InStep", "step": "EndCombat" }
+        ]
+      }
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature"] } },
+          "label": "target creature"
+        }
+      ],
+      "effects": [
+        {
+          "type": "FlipCoin",
+          "win": [
+            {
+              "type": "Pump",
+              "what": { "type": "Target", "idx": 0 },
+              "power": { "type": "Fixed", "n": 1 },
+              "toughness": { "type": "Fixed", "n": 1 },
+              "duration": "UntilEndOfTurn"
+            }
+          ],
+          "lose": []
+        },
+        {
+          "type": "Delayed",
+          "at": "NextUpkeep",
+          "effects": [
+            { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only during combat after blockers are declared.\nFlip a coin. If you win the flip, target creature gets +1/+1 until end of turn.\nDraw a card at the beginning of the next turn's upkeep."
+}

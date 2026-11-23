@@ -1,0 +1,259 @@
+[
+ {
+  "name": "affinity: four Gates plus four Plains cast it",
+  "players": [
+   {
+    "hand": [
+     "Gate Colossus"
+    ],
+    "battlefield": [
+     "Golgari Guildgate",
+     "Golgari Guildgate",
+     "Golgari Guildgate",
+     "Golgari Guildgate",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Gate Colossus"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Gate Colossus"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "without enough Gates it is uncastable",
+  "players": [
+   {
+    "hand": [
+     "Gate Colossus"
+    ],
+    "battlefield": [
+     "Golgari Guildgate",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Gate Colossus",
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "cannot be blocked by power 2 or less",
+  "players": [
+   {
+    "battlefield": [
+     "Gate Colossus"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Gate Colossus",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Gate Colossus"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "can be blocked by power 3",
+  "players": [
+   {
+    "battlefield": [
+     "Gate Colossus"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Gate Colossus",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Gate Colossus"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Gate Colossus"
+     ]
+    },
+    {
+     "graveyard": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gate entering returns it from graveyard to top of library",
+  "players": [
+   {
+    "graveyard": [
+     "Gate Colossus"
+    ],
+    "hand": [
+     "Golgari Guildgate"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Golgari Guildgate"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "battlefield": [
+      "Golgari Guildgate"
+     ],
+     "library_count": 21
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "non-Gate land does nothing",
+  "players": [
+   {
+    "graveyard": [
+     "Gate Colossus"
+    ],
+    "hand": [
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Plains"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Gate Colossus"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "affinity: four Gates plus two Plains cost 4 and it is castable",
+  "players": [ { "hand": ["Gate Colossus"], "battlefield": ["Golgari Guildgate", "Golgari Guildgate", "Golgari Guildgate", "Golgari Guildgate", "Plains", "Plains"] }, {} ],
+  "steps": [ { "cast": "Gate Colossus" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Gate Colossus"] }, {} ] }
+ },
+ {
+  "name": "can't be blocked by power 2 or less: Grizzly Bears' block is dropped, Hill Giant is not declared, 8 damage goes through",
+  "players": [ { "battlefield": ["Gate Colossus"] }, { "battlefield": ["Grizzly Bears", "Hill Giant"] } ],
+  "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "attack": [ { "card": "Gate Colossus", "at": "p1" } ] }, { "block": [ { "blocker": "Grizzly Bears", "attacker": "Gate Colossus" } ] }, { "advance_to": "Main2" } ],
+  "expect": { "players": [ {}, { "life": 12 } ] }
+ },
+ {
+  "name": "ruling: a blocker whose power drops below 3 after blocking does not unblock Gate Colossus",
+  "players": [ { "hand": ["Disfigure"], "battlefield": ["Gate Colossus", "Swamp"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Gate Colossus", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Gate Colossus" } ] },
+   { "cast": "Disfigure", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Gate Colossus"] }, { "life": 20, "graveyard_has": ["Hill Giant"] } ] }
+ }
+]

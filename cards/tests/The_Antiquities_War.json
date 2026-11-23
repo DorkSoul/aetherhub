@@ -1,0 +1,71 @@
+[
+  {
+    "name": "chapter I: may put an artifact card from the top five into hand, the rest to the bottom",
+    "players": [ { "hand": ["The Antiquities War"], "battlefield": ["Island", "Island", "Island", "Island"], "library": ["Forest", "Short Sword", "Lightning Bolt"] }, {} ],
+    "steps": [ { "cast": "The Antiquities War" }, { "resolve": true, "answers": ["Short Sword"] } ],
+    "expect": {
+      "players": [ { "hand": ["Short Sword"], "library_count": 22, "battlefield_has": ["The Antiquities War"] }, {} ]
+    }
+  },
+  {
+    "name": "chapter I finds nothing when the top five have no artifact",
+    "players": [ { "hand": ["The Antiquities War"], "battlefield": ["Island", "Island", "Island", "Island"], "library": ["Forest", "Lightning Bolt"] }, {} ],
+    "steps": [ { "cast": "The Antiquities War" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "hand_count": 0, "library_count": 22 }, {} ]
+    }
+  },
+  {
+    "name": "chapter III: artifacts you control become 5/5 artifact creatures until end of turn",
+    "start": "Upkeep",
+    "players": [ { "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 2 } }, "Mind Stone" ] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": {
+      "pt": { "Mind Stone": [5, 5] }
+    }
+  },
+  {
+    "name": "chapter II: takes an artifact from the top five into hand, the rest goes to the bottom",
+    "players": [ { "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 1 } } ], "library": ["Forest", "Short Sword", "Lightning Bolt"] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1", "answers": ["Short Sword"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 2, "library_count": 21, "battlefield_has": ["The Antiquities War"] }, {} ] }
+  },
+  {
+    "name": "chapter II finds nothing when the top five have no artifact",
+    "players": [ { "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 1 } } ], "library": ["Forest", "Lightning Bolt"] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "library_count": 21 }, {} ] }
+  },
+  {
+    "name": "ruling: a pump applied before chapter III still counts on the artifact creature that is set to 5/5",
+    "start": "Upkeep",
+    "players": [ { "hand": ["Titanic Growth"], "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 2 } }, "Ornithopter", "Forest", "Forest" ] }, {} ],
+    "steps": [ { "cast": "Titanic Growth", "targets": ["Ornithopter"] }, { "resolve": true }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": {
+      "pt": { "Ornithopter": [9, 9] }
+    }
+  },
+  {
+    "name": "ruling: an artifact creature that enters after chapter III is not made 5/5",
+    "start": "Upkeep",
+    "players": [ { "hand": ["Ornithopter"], "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 2 } }, "Plains", "Plains" ] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "resolve": true }, { "cast": "Ornithopter" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Ornithopter"] }, {} ],
+      "pt": { "Ornithopter": [0, 2] }
+    }
+  },
+  {
+    "name": "ruling: chapter II still resolves after the Saga is destroyed in response to its trigger",
+    "players": [ { "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 1 } } ], "library": ["Forest", "Short Sword", "Lightning Bolt"] }, { "hand": ["Naturalize"], "battlefield": ["Forest", "Forest"] } ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1", "answers": ["Short Sword"] }, { "pass": true }, { "player": 1, "cast": "Naturalize", "targets": ["The Antiquities War"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 2, "library_count": 21, "graveyard_has": ["The Antiquities War"] }, { "graveyard_has": ["Naturalize"] } ] }
+  },
+  {
+    "name": "ruling: the Saga is sacrificed once its final chapter ability has left the stack",
+    "start": "Upkeep",
+    "players": [ { "battlefield": [ { "name": "The Antiquities War", "counters": { "lore": 2 } } ] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["The Antiquities War"] }, {} ] }
+  }
+]

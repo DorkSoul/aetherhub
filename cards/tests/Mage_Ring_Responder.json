@@ -1,0 +1,84 @@
+[
+  {
+    "name": "ruling: the attack trigger kills the only blocker before blockers are declared",
+    "players": [
+      { "battlefield": ["Mage-Ring Responder"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Mage-Ring Responder", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Mage-Ring Responder" }], "player": 1, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Responder"] }, { "battlefield_lacks": ["Grizzly Bears"], "life": 13 } ]
+    }
+  },
+  {
+    "name": "whenever it attacks it deals 7 damage to a creature the defending player controls",
+    "players": [
+      { "battlefield": ["Mage-Ring Responder"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Mage-Ring Responder", "at": "p1" }] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Responder"] }, { "battlefield_lacks": ["Grizzly Bears"], "life": 13 } ]
+    }
+  },
+  {
+    "name": "{7}: untaps it, with seven mana",
+    "players": [
+      { "battlefield": ["Mage-Ring Responder", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Mage-Ring Responder", "at": "p1" }] },
+      { "advance_to": "Main2" },
+      { "activate": "Mage-Ring Responder", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Responder"] }, {} ],
+      "tapped": { "Mage-Ring Responder": false }
+    }
+  },
+  {
+    "name": "the untap ability cannot be paid with six mana",
+    "players": [
+      { "battlefield": ["Mage-Ring Responder", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Mage-Ring Responder", "at": "p1" }] },
+      { "advance_to": "Main2" },
+      { "activate": "Mage-Ring Responder", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Responder"] }, {} ],
+      "tapped": { "Mage-Ring Responder": true }
+    }
+  },
+  {
+    "name": "does not untap in my untap step: after attacking, it is still tapped at my next upkeep",
+    "players": [
+      { "battlefield": ["Mage-Ring Responder"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Mage-Ring Responder", "at": "p1" }] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Responder"] }, { "life": 13 } ],
+      "tapped": { "Mage-Ring Responder": true }
+    }
+  }
+]

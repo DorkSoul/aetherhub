@@ -1,0 +1,86 @@
+[
+  {
+    "name": "haste: can attack the turn it is cast",
+    "players": [
+      { "hand": ["Goblin Smuggler"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Goblin Smuggler" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Goblin Smuggler", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }],
+      "keywords": { "Goblin Smuggler": ["Haste"] }
+    }
+  },
+  {
+    "name": "{T}: another creature with power 2 or less can't be blocked this turn",
+    "players": [
+      { "battlefield": ["Goblin Smuggler", "Goblin Assailant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Goblin Smuggler", "ability": 0, "targets": ["Goblin Assailant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Goblin Assailant": ["Unblockable"] },
+      "tapped": { "Goblin Smuggler": true }
+    }
+  },
+  {
+    "name": "power 3 or more is not a legal target",
+    "players": [
+      { "battlefield": ["Goblin Smuggler", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Goblin Smuggler", "ability": 0, "targets": ["Hill Giant"], "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: creature pumped after the ability resolves is still unblockable this turn",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Goblin Smuggler", "Grizzly Bears", "Forest"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Goblin Smuggler", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15, "battlefield_has": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "ruling: creature pumped above 2 in response, the ability does not resolve and it can be blocked",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Goblin Smuggler", "Grizzly Bears", "Forest"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Goblin Smuggler", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  }
+]

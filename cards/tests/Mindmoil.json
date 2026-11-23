@@ -1,0 +1,90 @@
+[
+  {
+    "name": "casting a spell puts the hand on the bottom of the library and draws that many",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Island", "Forest"],
+        "battlefield": ["Mindmoil", "Mountain"],
+        "library": ["Swamp", "Plains"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Swamp", "Plains"], "library_count": 2, "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "empty hand after casting draws nothing",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mindmoil", "Mountain"],
+        "library": ["Swamp", "Plains"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "library_count": 2, "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "an opponent casting a spell does not trigger Mindmoil",
+    "players": [
+      {
+        "hand": ["Island", "Forest"],
+        "battlefield": ["Mindmoil"],
+        "library": ["Swamp", "Plains"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"],
+        "library": ["Swamp", "Plains"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Island", "Forest"], "life": 17 },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after Mindmoil resolves, an instant from the new hand cast in response triggers it again",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mindmoil", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "library_count": 2, "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+        { "life": 14 }
+      ]
+    }
+  }
+]

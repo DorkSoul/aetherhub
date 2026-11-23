@@ -1,0 +1,151 @@
+[
+  {
+    "name": "{2}, {Q}: put a +1/+1 counter on this creature (untaps it)",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Farmstead Gleaner",
+            "tapped": true,
+            "sick": false
+          },
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Farmstead Gleaner",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Farmstead Gleaner": false
+      },
+      "counters": {
+        "Farmstead Gleaner": {
+          "p1p1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "{Q} cannot be paid while the creature is untapped",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Farmstead Gleaner",
+            "sick": false
+          },
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Farmstead Gleaner",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Farmstead Gleaner": {
+          "p1p1": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "doesn't untap during your untap step",
+    "start": "Untap",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Farmstead Gleaner",
+            "tapped": true,
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Farmstead Gleaner": true
+      }
+    }
+  },
+  {
+    "name": "tapped at the end of my turn stays tapped through my next untap step",
+    "start": "End",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Farmstead Gleaner",
+            "tapped": true,
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "tapped": {
+        "Farmstead Gleaner": true
+      }
+    }
+  },
+  {
+    "name": "ruling: untapping an attacking Gleaner with {Q} keeps it in combat (it still deals 3 damage)",
+    "players": [
+      { "battlefield": [ { "name": "Farmstead Gleaner", "sick": false }, "Plains", "Plains" ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Farmstead Gleaner", "at": "p1" } ] },
+      { "activate": "Farmstead Gleaner", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ],
+      "tapped": { "Farmstead Gleaner": false },
+      "counters": { "Farmstead Gleaner": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: {Q} cannot be paid by a creature that came under my control this turn",
+    "players": [
+      { "battlefield": [ { "name": "Farmstead Gleaner", "tapped": true, "sick": true }, "Plains", "Plains" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Farmstead Gleaner", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "tapped": { "Farmstead Gleaner": true },
+      "counters": { "Farmstead Gleaner": { "p1p1": 0 } }
+    }
+  }
+]

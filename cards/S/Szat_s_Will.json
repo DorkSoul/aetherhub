@@ -1,0 +1,60 @@
+{
+  "name": "Szat's Will",
+  "mana_cost": "{4}{B}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 1,
+      "choose_max": 1,
+      "max_if": [
+        { "type": "Control", "who": { "type": "You" }, "filter": { "commander": true }, "at_least": 1 },
+        2
+      ],
+      "modes": [
+        {
+          "text": "Each opponent sacrifices a creature they control with the greatest power.",
+          "effects": [
+            {
+              "type": "ForEachPlayer",
+              "players": { "type": "EachOpponent" },
+              "effects": [
+                {
+                  "type": "Sacrifice",
+                  "who": { "type": "EachObject" },
+                  "filter": {
+                    "types": ["Creature"],
+                    "controlled_by": { "type": "EachObject" },
+                    "power_vs": {
+                      "amount": { "type": "HighestPower", "filter": { "types": ["Creature"], "controlled_by": { "type": "EachObject" } } },
+                      "op": "Eq"
+                    }
+                  },
+                  "n": { "type": "Fixed", "n": 1 }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Exile all opponents' graveyards, then create X 0/1 black Thrull creature tokens, where X is the greatest power among creature cards exiled this way.",
+          "effects": [
+            {
+              "type": "Move",
+              "what": { "type": "AllOfPlayer", "player": { "type": "EachOpponent" }, "zone": "Graveyard" },
+              "to": "Exile",
+              "remember": true
+            },
+            {
+              "type": "CreateToken",
+              "token": "Thrull 0-1",
+              "controller": { "type": "You" },
+              "n": { "type": "HighestPower", "filter": { "types": ["Creature"], "among_remembered": true }, "zone": "Exile" }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n• Each opponent sacrifices a creature they control with the greatest power.\n• Exile all opponents' graveyards, then create X 0/1 black Thrull creature tokens, where X is the greatest power among creature cards exiled this way."
+}

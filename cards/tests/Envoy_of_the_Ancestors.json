@@ -1,0 +1,82 @@
+[
+  {
+    "name": "outlast puts a +1/+1 counter on it",
+    "players": [
+      {
+        "battlefield": ["Envoy of the Ancestors", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Envoy of the Ancestors" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Envoy of the Ancestors": [3, 4] },
+      "counters": { "Envoy of the Ancestors": { "+1/+1": 1 } }
+    }
+  },
+  {
+    "name": "a modified creature you control has lifelink",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Envoy of the Ancestors", "counters": { "+1/+1": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Envoy of the Ancestors", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "keywords": { "Envoy of the Ancestors": ["Lifelink"] },
+      "players": [
+        { "life": 23 },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "an unmodified creature does not gain lifelink",
+    "players": [
+      {
+        "battlefield": ["Envoy of the Ancestors", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: outlast needs the creature under your control since your turn began (summoning sick: illegal)",
+    "players": [ { "battlefield": [ { "name": "Envoy of the Ancestors", "sick": true }, "Plains" ] }, {} ],
+    "steps": [ { "activate": "Envoy of the Ancestors", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Envoy of the Ancestors"] }, {} ], "pt": { "Envoy of the Ancestors": [2, 3] } }
+  },
+  {
+    "name": "ruling: a counter of any kind makes a creature modified (charge counter gives lifelink)",
+    "players": [ { "battlefield": ["Envoy of the Ancestors", { "name": "Grizzly Bears", "counters": { "charge": 1 } }] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "resolve": true }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "keywords": { "Grizzly Bears": ["Lifelink"] }, "players": [ { "life": 22 }, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: an Aura controlled by an opponent does not make your creature modified (opponent's Rancor gives no lifelink)",
+    "players": [ { "battlefield": ["Envoy of the Ancestors", "Grizzly Bears"] }, { "hand": ["Rancor"], "battlefield": ["Forest"] } ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Rancor", "player": 1, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Main1" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "resolve": true }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 20 }, { "life": 16 } ] }
+  }
+]

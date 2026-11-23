@@ -1,0 +1,74 @@
+[
+  {
+    "name": "enters tapped with a +1/+1 counter (modular 1)",
+    "players": [ { "hand": ["Power Depot"] }, {} ],
+    "steps": [ { "play_land": "Power Depot" } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Power Depot"] }, {} ],
+      "tapped": { "Power Depot": true },
+      "counters": { "Power Depot": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "the any-color mana pays for a colored artifact spell",
+    "players": [ { "hand": ["Bloodthorn Flail"], "battlefield": ["Power Depot"] }, {} ],
+    "steps": [ { "cast": "Bloodthorn Flail" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Bloodthorn Flail"] }, {} ] }
+  },
+  {
+    "name": "the any-color mana pays for an ability of an artifact",
+    "players": [ { "battlefield": ["Power Depot", "Experimental Synthesizer", "Plains", "Plains"] }, {} ],
+    "steps": [ { "activate": "Experimental Synthesizer" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Samurai 2-2 White Vigilance"], "graveyard_has": ["Experimental Synthesizer"] }, {} ] }
+  },
+  {
+    "name": "the any-color mana cannot pay for a non-artifact spell",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Power Depot"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Lightning Bolt"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "the colorless mana pays for any spell's generic cost",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Power Depot", "Forest"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "modular: dies, puts its +1/+1 counters on target artifact creature",
+    "players": [
+      { "hand": ["Naturalize"], "battlefield": [{ "name": "Power Depot", "counters": { "p1p1": 1 } }, "Ornithopter", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Naturalize", "targets": ["Power Depot"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Ornithopter"], "graveyard_has": ["Power Depot"] }, {} ],
+      "counters": { "Ornithopter": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "modular: declining the optional trigger leaves the artifact creature without counters",
+    "players": [
+      { "hand": ["Naturalize"], "battlefield": [{ "name": "Power Depot", "counters": { "p1p1": 1 } }, "Ornithopter", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Naturalize", "targets": ["Power Depot"] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Ornithopter"], "graveyard_has": ["Power Depot"] }, {} ],
+      "counters": { "Ornithopter": { "p1p1": 0 } }
+    }
+  },
+  {
+    "name": "ruling: Power Depot is a land only and cannot be cast as a spell from hand",
+    "players": [ { "hand": ["Power Depot"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Power Depot", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Power Depot"] }, {} ] }
+  }
+]

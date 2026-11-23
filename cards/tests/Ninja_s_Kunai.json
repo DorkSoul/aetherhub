@@ -1,0 +1,66 @@
+[
+  {
+    "name": "equipped creature deals 3 damage with the Kunai sacrificed as cost",
+    "players": [
+      { "hand": ["Ninja's Kunai"], "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ninja's Kunai" },
+      { "resolve": true },
+      { "activate": "Ninja's Kunai", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Ninja's Kunai"] },
+        { "life": 17 }
+      ],
+      "attached": {}
+    }
+  },
+  {
+    "name": "an unequipped creature does not have the granted ability",
+    "players": [
+      { "hand": ["Ninja's Kunai"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ninja's Kunai" },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ninja's Kunai", "Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a player who gains control of the equipped creature (not the Kunai) cannot sacrifice the Kunai for the granted ability",
+    "players": [
+      { "hand": ["Ninja's Kunai"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] },
+      { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Ninja's Kunai" },
+      { "resolve": true },
+      { "activate": "Ninja's Kunai", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ninja's Kunai"], "life": 20 },
+        { "battlefield_has": ["Grizzly Bears", "Control Magic"], "life": 20 }
+      ]
+    }
+  }
+]

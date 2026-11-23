@@ -1,0 +1,110 @@
+[
+  {
+    "name": "rust counters destroy artifacts whose mana value is not above them",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Corrosion", "Plains"] },
+      { "battlefield": [{ "name": "Mind Stone", "counters": { "rust": 1 } }, "Sol Ring"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Corrosion"] },
+        { "graveyard": ["Mind Stone", "Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "an artifact with more mana value than its rust counters survives",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Corrosion", "Plains"] },
+      { "battlefield": ["Mind Stone"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Mind Stone"] }
+      ],
+      "counters": { "Mind Stone": { "rust": 1 } }
+    }
+  },
+  {
+    "name": "only artifacts the opponent controls get rust counters",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Corrosion", "Plains", "Sol Ring"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Corrosion", "Sol Ring"] },
+        {}
+      ],
+      "counters": { "Sol Ring": { "rust": 0 } }
+    }
+  },
+  {
+    "name": "when the enchantment leaves the battlefield, all rust counters are removed",
+    "start": "Untap",
+    "players": [
+      { "hand": ["Disenchant"], "battlefield": ["Corrosion", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Mind Stone"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "advance_to": "Main1" },
+      { "cast": "Disenchant", "targets": ["Corrosion"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Corrosion", "Disenchant"] },
+        { "battlefield_has": ["Mind Stone"] }
+      ],
+      "counters": { "Mind Stone": { "rust": 0 } }
+    }
+  },
+  {
+    "name": "ruling: rust counters from another Corrosion count too (two rust destroys the Mind Stone)",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Corrosion", "Corrosion", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Mind Stone"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Corrosion", "Corrosion"] },
+        { "graveyard_has": ["Mind Stone"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: it destroys artifacts with enough rust counters even if its controller owns them",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Corrosion", "Plains", { "name": "Mind Stone", "counters": { "rust": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Corrosion"], "graveyard_has": ["Mind Stone"] },
+        {}
+      ]
+    }
+  }
+]

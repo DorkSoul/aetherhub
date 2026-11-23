@@ -1,0 +1,85 @@
+{
+  "name": "Torrent Sculptor",
+  "mana_cost": "{2}{U}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Merfolk", "Wizard"],
+  "power": 2,
+  "toughness": 2,
+  "layout": "Modal",
+  "abilities": [
+    { "type": "Ward", "cost": [ { "type": "Mana", "cost": "{2}" } ] },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Graveyard",
+          "filter": { "types": ["Instant", "Sorcery"] },
+          "min": 1,
+          "max": 1,
+          "then": [
+            {
+              "type": "AddCounters",
+              "kind": "PlusOnePlusOne",
+              "what": { "type": "This" },
+              "n": {
+                "type": "Half",
+                "a": { "type": "ManaValueOf", "of": { "type": "Remembered" } },
+                "round_up": true
+              }
+            },
+            { "type": "Move", "what": { "type": "Remembered" }, "to": "Exile" }
+          ]
+        }
+      ]
+    }
+  ],
+  "back": {
+    "name": "Flamethrower Sonata",
+    "mana_cost": "{1}{R}",
+    "types": ["Sorcery"],
+    "abilities": [
+      {
+        "type": "Spell",
+        "effects": [
+          { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+          {
+            "type": "If",
+            "cond": {
+              "type": "All",
+              "cs": [
+                { "type": "Compare", "a": { "type": "RememberedCount" }, "cmp": { "op": "Ge", "n": 1 } },
+                { "type": "RememberedIs", "filter": { "types": ["Instant", "Sorcery"] } }
+              ]
+            },
+            "then": [
+              {
+                "type": "Reflexive",
+                "targets": [
+                  {
+                    "what": {
+                      "type": "Permanent",
+                      "filter": {
+                        "any_of": [ { "types": ["Creature"], "controller": "Opponent" }, { "types": ["Planeswalker"], "controller": "Opponent" } ]
+                      }
+                    },
+                    "label": "creature or planeswalker you don't control"
+                  }
+                ],
+                "effects": [
+                  { "type": "DealDamage", "amount": { "type": "ManaValueOf", "of": { "type": "Remembered" } }, "to": { "type": "Target", "idx": 0 } }
+                ]
+              }
+            ],
+            "else": []
+          },
+          { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+        ]
+      }
+    ],
+    "oracle_text": "Discard a card, then draw a card. When you discard an instant or sorcery card this way, Flamethrower Sonata deals damage equal to that card's mana value to target creature or planeswalker you don't control."
+  },
+  "oracle_text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nWhen this creature enters, exile an instant or sorcery card from your graveyard. Put a number of +1/+1 counters on this creature equal to half that card's mana value, rounded up.\n//\nDiscard a card, then draw a card. When you discard an instant or sorcery card this way, Flamethrower Sonata deals damage equal to that card's mana value to target creature or planeswalker you don't control."
+}

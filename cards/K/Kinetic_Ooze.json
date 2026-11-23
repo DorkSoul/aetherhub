@@ -1,0 +1,65 @@
+{
+  "name": "Kinetic Ooze",
+  "mana_cost": "{X}{G}",
+  "types": ["Creature"],
+  "subtypes": ["Ooze"],
+  "power": 0,
+  "toughness": 0,
+  "colors": ["G"],
+  "abilities": [
+    {
+      "type": "EntersWithCounters",
+      "kind": "PlusOnePlusOne",
+      "n": { "type": "X" }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "any_of": [ { "types": ["Artifact"] }, { "types": ["Enchantment"] } ],
+              "mana_value_vs": { "op": "Le", "amount": { "type": "X" } }
+            }
+          },
+          "label": "up to one artifact or enchantment with mana value X or less",
+          "min": 0,
+          "max": 1
+        }
+      ],
+      "effects": [
+        { "type": "Destroy", "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "If",
+          "cond": { "type": "Compare", "a": { "type": "X" }, "cmp": { "n": 5, "op": "Ge" } },
+          "then": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "condition": { "type": "Compare", "a": { "type": "X" }, "cmp": { "n": 10, "op": "Ge" } },
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature"], "other": true } },
+          "label": "any number of other target creatures",
+          "min": 0,
+          "max_amount": { "type": "Count", "filter": { "types": ["Creature"], "other": true }, "zone": "Battlefield" }
+        }
+      ],
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "Targets" },
+          "effects": [
+            { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "PlusOnePlusOne", "n": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "Remembered" } } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "This creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy up to one target artifact or enchantment with mana value X or less. If X is 5 or more, you draw a card. If X is 10 or more, double the number of +1/+1 counters on any number of other target creatures."
+}

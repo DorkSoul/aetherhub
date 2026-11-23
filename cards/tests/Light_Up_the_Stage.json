@@ -1,0 +1,406 @@
+[
+ {
+  "name": "cast the exiled spell and play the exiled land this turn",
+  "players": [
+   {
+    "hand": [
+     "Light Up the Stage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Light Up the Stage"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "play_land": "Forest"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest"
+     ],
+     "graveyard": [
+      "Light Up the Stage",
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "still castable on your next turn",
+  "players": [
+   {
+    "hand": [
+     "Light Up the Stage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Light Up the Stage"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Light Up the Stage",
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "expired by the turn after",
+  "players": [
+   {
+    "hand": [
+     "Light Up the Stage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Light Up the Stage"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "spectacle: castable for {R} after an opponent lost life",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Light Up the Stage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Forest",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Light Up the Stage",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Light Up the Stage"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "spectacle: not castable for {R} when no opponent lost life",
+  "players": [
+   {
+    "hand": [
+     "Light Up the Stage"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Light Up the Stage",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Light Up the Stage"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card cast from exile leaves exile and cannot be cast again",
+  "players": [
+   { "hand": ["Light Up the Stage"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Light Up the Stage" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Island"], "graveyard": ["Light Up the Stage", "Lightning Bolt"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled land can only be played if a land play is still available",
+  "players": [
+   { "hand": ["Light Up the Stage"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Light Up the Stage" },
+   { "resolve": true },
+   { "play_land": "Forest" },
+   { "play_land": "Island", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"], "exile": ["Island"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card that is not played stays in exile through the end of the turn",
+  "players": [
+   { "hand": ["Light Up the Stage"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Light Up the Stage" },
+   { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Forest", "Island"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the spectacle cost still pays a cost increase (Thalia adds {1})",
+  "players": [
+   { "hand": ["Lightning Bolt", "Light Up the Stage"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   { "battlefield": ["Thalia, Guardian of Thraben"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Light Up the Stage", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Light Up the Stage"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with Thalia's {1} on top of spectacle, {R} alone is not enough",
+  "players": [
+   { "hand": ["Lightning Bolt", "Light Up the Stage"], "battlefield": ["Mountain", "Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   { "battlefield": ["Thalia, Guardian of Thraben"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Light Up the Stage", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Light Up the Stage"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: spectacle still works after the opponent gets back the life it lost",
+  "players": [
+   { "hand": ["Lightning Bolt", "Light Up the Stage"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "set_life": 20, "player": 1 },
+   { "cast": "Light Up the Stage", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Light Up the Stage"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the spectacle cost does not depend on how much life was lost",
+  "players": [
+   { "hand": ["Shock", "Light Up the Stage"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shock", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Light Up the Stage", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Shock", "Light Up the Stage"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: spectacle does not make a sorcery castable on the opponent's turn",
+  "players": [
+   { "hand": ["Lightning Bolt", "Light Up the Stage"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Light Up the Stage", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Light Up the Stage"] },
+    { "life": 17 }
+   ]
+  }
+ }
+]

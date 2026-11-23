@@ -1,0 +1,88 @@
+[
+ {
+  "name": "exiles a creature card put into a graveyard this turn and makes a Nightmare copy of it",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Abyssal Harvester", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Abyssal Harvester", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Abyssal Harvester", "Mountain", "Grizzly Bears"], "graveyard": ["Lightning Bolt"] },
+    { "graveyard": [], "exile": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "a creature card that was already in a graveyard before this turn is not a target",
+  "players": [
+   { "battlefield": ["Abyssal Harvester"] },
+   { "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Abyssal Harvester", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Abyssal Harvester"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the Nightmare copy keeps the card's own creature types and adds Nightmare",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Abyssal Harvester", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Abyssal Harvester", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "subtypes": { "Grizzly Bears": ["Nightmare", "Bear"] }
+  }
+ },
+ {
+  "name": "ruling: the copy is the printed card, not the creature as it was on the battlefield (no -1/-1 counter)",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Abyssal Harvester", "Mountain"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "minus1minus1": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Abyssal Harvester", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: the Nightmare copy of a creature with an enters trigger triggers it (Mulldrifter draws two)",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Abyssal Harvester", "Mountain"] },
+   { "battlefield": ["Mulldrifter"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Mulldrifter"] },
+   { "resolve": true },
+   { "activate": "Abyssal Harvester", "targets": ["Mulldrifter"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 2 }, { "exile": ["Mulldrifter"] } ]
+  }
+ }
+]

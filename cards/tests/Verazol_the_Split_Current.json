@@ -1,0 +1,22 @@
+[
+ { "name": "cast for X=2 (4 mana): enters with four +1/+1 counters",
+   "players": [ { "hand": ["Verazol, the Split Current"], "battlefield": ["Forest", "Forest", "Island", "Island"] }, {} ],
+   "steps": [ { "cast": "Verazol, the Split Current", "answers": [2] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Verazol, the Split Current"] }, {} ], "pt": { "Verazol, the Split Current": [4, 4] } } },
+ { "name": "cast for X=0 (2 mana): enters with two +1/+1 counters",
+   "players": [ { "hand": ["Verazol, the Split Current"], "battlefield": ["Forest", "Island"] }, {} ],
+   "steps": [ { "cast": "Verazol, the Split Current", "answers": [0] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Verazol, the Split Current"] }, {} ], "pt": { "Verazol, the Split Current": [2, 2] } } },
+ { "name": "kicked spell: may remove two +1/+1 counters to copy it",
+   "players": [ { "hand": ["Baloth Gorger"], "battlefield": [ { "name": "Verazol, the Split Current", "counters": { "p1p1": 4 } }, "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest" ] }, {} ],
+   "steps": [ { "cast": "Baloth Gorger", "answers": [true] }, { "resolve": true, "answers": [true] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Verazol, the Split Current", "Baloth Gorger"] }, {} ], "counters": { "Verazol, the Split Current": { "p1p1": 2 } }, "pt": { "Verazol, the Split Current": [2, 2] } } },
+ { "name": "kicked spell: declining the MayPay leaves the counters and makes no copy",
+   "players": [ { "hand": ["Baloth Gorger"], "battlefield": [ { "name": "Verazol, the Split Current", "counters": { "p1p1": 4 } }, "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest" ] }, {} ],
+   "steps": [ { "cast": "Baloth Gorger", "answers": [true] }, { "resolve": true, "answers": [false] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Verazol, the Split Current", "Baloth Gorger"] }, {} ], "counters": { "Verazol, the Split Current": { "p1p1": 4 } } } },
+ { "name": "ruling: entering without being cast (no mana spent) gives no counters, so it dies as a 0/0", "players": [ { "battlefield": ["Verazol, the Split Current"] }, {} ], "steps": [ { "advance_to": "Main2" } ], "expect": { "players": [ { "graveyard": ["Verazol, the Split Current"] }, {} ] } },
+ { "name": "ruling: a copy of a kicked spell is also kicked (4+4 damage) and is not cast, so the trigger does not repeat", "players": [ { "hand": ["Burst Lightning"], "battlefield": [ { "name": "Verazol, the Split Current", "counters": { "p1p1": 4 } }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ], "steps": [ { "cast": "Burst Lightning", "targets": ["p1"], "answers": [true] }, { "resolve": true, "answers": [true] } ], "expect": { "players": [ { "battlefield_has": ["Verazol, the Split Current"] }, { "life": 12 } ], "counters": { "Verazol, the Split Current": { "p1p1": 2 } }, "pt": { "Verazol, the Split Current": [2, 2] } } },
+ { "name": "ruling: with only one counter Verazol cannot remove two, so no copy is made", "players": [ { "hand": ["Burst Lightning"], "battlefield": [ { "name": "Verazol, the Split Current", "counters": { "p1p1": 1 } }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ], "steps": [ { "cast": "Burst Lightning", "targets": ["p1"], "answers": [true] }, { "resolve": true } ], "expect": { "players": [ {}, { "life": 16 } ], "counters": { "Verazol, the Split Current": { "p1p1": 1 } }, "pt": { "Verazol, the Split Current": [1, 1] } } },
+ { "name": "ruling: if Verazol leaves while its trigger is on the stack, no counters are removed and no copy is made", "players": [ { "hand": ["Burst Lightning"], "battlefield": [ { "name": "Verazol, the Split Current", "counters": { "p1p1": 2 } }, "Mountain", "Mountain", "Mountain", "Mountain", "Mountain" ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ], "steps": [ { "cast": "Burst Lightning", "targets": ["p1"], "answers": [true] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Verazol, the Split Current"] }, { "resolve": true } ], "expect": { "players": [ { "graveyard": ["Burst Lightning", "Verazol, the Split Current"] }, { "life": 16, "graveyard": ["Lightning Bolt"] } ] } }
+]

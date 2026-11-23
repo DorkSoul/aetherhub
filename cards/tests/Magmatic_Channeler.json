@@ -1,0 +1,279 @@
+[
+ {
+  "name": "3 instants/sorceries: 1/3",
+  "players": [
+   {
+    "battlefield": [
+     "Magmatic Channeler"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Lightning Bolt",
+     "Divination"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Magmatic Channeler": [
+     1,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "4 instants/sorceries: 4/4",
+  "players": [
+   {
+    "battlefield": [
+     "Magmatic Channeler"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Lightning Bolt",
+     "Lightning Bolt",
+     "Divination"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Magmatic Channeler": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "creature cards in graveyard do not count",
+  "players": [
+   {
+    "battlefield": [
+     "Magmatic Channeler"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Lightning Bolt",
+     "Lightning Bolt",
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Magmatic Channeler": [
+     1,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "discard, exile top two, choose a nonland and cast it",
+  "players": [
+   {
+    "hand": [
+     "Island"
+    ],
+    "battlefield": [
+     "Magmatic Channeler",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Mountain",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Magmatic Channeler",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Grizzly Bears"
+     ]
+    ]
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Island"
+     ],
+     "exile": [
+      "Mountain"
+     ],
+     "battlefield": [
+      "Magmatic Channeler",
+      "Forest",
+      "Forest",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Magmatic Channeler": true
+   }
+  }
+ },
+ {
+  "name": "choose the land and play it; the other card cannot be played",
+  "players": [
+   {
+    "hand": [
+     "Island"
+    ],
+    "battlefield": [
+     "Magmatic Channeler",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Mountain",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Magmatic Channeler",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Mountain"
+     ]
+    ]
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   },
+   {
+    "play_land": "Mountain"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Magmatic Channeler",
+      "Forest",
+      "Forest",
+      "Mountain"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "needs a card to discard",
+  "players": [
+   {
+    "battlefield": [
+     "Magmatic Channeler"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Magmatic Channeler",
+    "ability": 0,
+    "illegal": true
+   }
+  ]
+ },
+  {
+    "name": "ruling: a card cast from exile still pays its mana cost",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Magmatic Channeler", "Forest"], "library": ["Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magmatic Channeler", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Island"], "exile": ["Grizzly Bears", "Mountain"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a chosen card you do not play stays exiled",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Magmatic Channeler", "Forest", "Forest"], "library": ["Grizzly Bears", "Mountain", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magmatic Channeler", "ability": 0 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Island"], "exile": ["Grizzly Bears", "Mountain"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: the bonus does not grow beyond four instants and sorceries",
+    "players": [
+      {
+        "battlefield": ["Magmatic Channeler"],
+        "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt", "Divination", "Shock", "Giant Growth"]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Magmatic Channeler": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a chosen land cannot be played once the land drop is used",
+    "players": [
+      { "hand": ["Forest", "Island"], "battlefield": ["Magmatic Channeler"], "library": ["Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "activate": "Magmatic Channeler", "ability": 0 },
+      { "resolve": true, "answers": [["Mountain"]] },
+      { "play_land": "Mountain", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Island"], "exile": ["Grizzly Bears", "Mountain"], "battlefield_has": ["Forest"] }, {}]
+    }
+  }
+]

@@ -1,0 +1,174 @@
+[
+ {
+  "name": "an instant in your graveyard can be cast with flashback for its mana cost and is then exiled",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lier, Disciple of the Drowned"], "exile": ["Lightning Bolt"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "a creature card in your graveyard does not gain flashback",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Forest", "Forest"], "graveyard": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "spells can't be countered: opponent's Counterspell on my Lightning Bolt fails",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Lier, Disciple of the Drowned", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Lier, Disciple of the Drowned"] },
+    { "life": 17, "graveyard": ["Counterspell"] }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "ruling: a flashback spell that fizzles is still exiled afterward",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"] },
+    { "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a split card with flashback costs only the half being cast ({1}{R} for Fire)",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Mountain", "Mountain"], "graveyard": ["Fire"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Fire", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Fire"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a cost increase on the spell counts toward the flashback total cost (Thalia)",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   { "battlefield": ["Thalia, Guardian of Thraben"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an X spell cast with flashback has X chosen and paid (X=2 costs three Mountains)",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Mountain", "Mountain", "Mountain"], "graveyard": ["Fireball"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Fireball", "targets": ["p1"], "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Fireball"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery in the graveyard can't be cast with flashback during combat",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Island", "Island", "Island"], "graveyard": ["Divination"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Divination", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Divination"], "hand_count": 0 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the same sorcery flashback is castable in a main phase",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Island", "Island", "Island"], "graveyard": ["Divination"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Divination"], "hand_count": 2 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an Adventure in the graveyard can be cast as Stomp with flashback",
+  "players": [
+   { "battlefield": ["Lier, Disciple of the Drowned", "Mountain", "Mountain"], "graveyard": ["Bonecrusher Giant // Stomp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bonecrusher Giant // Stomp", "face": true, "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Bonecrusher Giant // Stomp"] },
+    { "life": 18 }
+   ]
+  }
+ }
+]

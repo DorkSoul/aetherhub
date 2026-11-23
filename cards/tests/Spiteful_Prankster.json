@@ -1,0 +1,201 @@
+[
+  {
+    "name": "another creature dying deals 1 damage to the chosen player",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Spiteful Prankster",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Llanowar Elves"
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "battlefield": [
+            "Mountain",
+            "Spiteful Prankster"
+          ]
+        },
+        {
+          "life": 19,
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "its own death does not trigger it",
+    "players": [
+      {
+        "battlefield": [
+          "Spiteful Prankster"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Spiteful Prankster"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Spiteful Prankster"
+          ],
+          "life": 20
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "during your turn it has first strike: kills a 2-power blocker and survives",
+    "players": [
+      {
+        "battlefield": ["Spiteful Prankster"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Spiteful Prankster",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Grizzly Bears",
+            "attacker": "Spiteful Prankster"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2",
+        "targets": ["p1"]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Spiteful Prankster"]
+        },
+        {
+          "life": 19,
+          "graveyard": ["Grizzly Bears"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature dying at the same time as Prankster still triggers it for that creature",
+    "players": [
+      {
+        "hand": ["Pyroclasm"],
+        "battlefield": ["Mountain", "Mountain", "Spiteful Prankster"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Pyroclasm" },
+      { "resolve": true, "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Pyroclasm", "Spiteful Prankster"] },
+        { "graveyard": ["Grizzly Bears"], "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: my life reaching 0 at the same time a creature dies loses the game before the trigger",
+    "players": [
+      {
+        "life": 2,
+        "battlefield": ["Spiteful Prankster", "Llanowar Elves"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      {
+        "attack": [
+          { "card": "Grizzly Bears", "at": "p0" },
+          { "card": "Hill Giant", "at": "p0" }
+        ]
+      },
+      {
+        "block": [
+          { "blocker": "Llanowar Elves", "attacker": "Hill Giant" }
+        ],
+        "player": 0
+      },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 1
+    }
+  }
+]

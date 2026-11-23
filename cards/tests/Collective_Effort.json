@@ -1,0 +1,245 @@
+[
+ {
+  "name": "mode 3: +1/+1 counter on each creature the target player controls only",
+  "players": [
+   {
+    "hand": [
+     "Collective Effort"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     {
+      "name": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Collective Effort",
+    "answers": [
+     [
+      2
+     ]
+    ],
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ],
+    "Hill Giant": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "mode 1: destroy power 4 or greater, a 3-power creature is not a legal target",
+  "players": [
+   {
+    "hand": [
+     "Collective Effort"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant",
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Collective Effort",
+    "answers": [
+     [
+      0
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Serra Angel"
+     ],
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "escalate: tap a creature per extra mode (destroy power 4+ and counters)",
+  "players": [
+   {
+    "hand": [
+     "Collective Effort"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     {
+      "name": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Collective Effort",
+    "answers": [
+     [
+      0,
+      2
+     ]
+    ],
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Serra Angel"
+     ]
+    }
+   ],
+   "tapped": {
+    "Grizzly Bears": true
+   },
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: a cost reduction applies to the escalated total (Goblin Electromancer: two Plains pay for 2 modes)",
+  "players": [
+   { "hand": ["Collective Effort"], "battlefield": ["Plains", "Plains", "Goblin Electromancer"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Collective Effort", "answers": [[0, 2]], "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Goblin Electromancer"] }, { "graveyard": ["Serra Angel"] } ],
+   "tapped": { "Goblin Electromancer": true },
+   "pt": { "Goblin Electromancer": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: without the reduction two Plains cannot pay for the escalated spell",
+  "players": [
+   { "hand": ["Collective Effort"], "battlefield": ["Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Collective Effort", "illegal": true }
+  ],
+  "expect": { "players": [ { "hand": ["Collective Effort"] }, { "battlefield_has": ["Serra Angel"] } ] }
+ },
+ {
+  "name": "ruling: exile-until creature returns before the counter mode resolves (modes 2 and 3, enchantment destroyed)",
+  "players": [
+   { "hand": ["Journey to Nowhere", "Collective Effort"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Journey to Nowhere" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Collective Effort", "answers": [[1, 2]], "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Hill Giant"], "battlefield_lacks": ["Journey to Nowhere"], "graveyard": ["Journey to Nowhere", "Collective Effort"] },
+    {}
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: a summoning-sick creature can be tapped to pay the escalate cost",
+  "players": [
+   { "hand": ["Collective Effort"], "battlefield": ["Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": true }] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Collective Effort", "answers": [[0, 2]], "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "graveyard": ["Serra Angel"] } ],
+   "tapped": { "Grizzly Bears": true },
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: a free cast from the Geode Golem trigger still pays escalate when two modes are chosen",
+  "commander": true,
+  "players": [
+   { "command": ["Collective Effort"], "battlefield": ["Geode Golem", "Grizzly Bears"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Geode Golem", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2", "answers": [true, [0, 2]], "targets": ["Serra Angel", "p0"] }
+  ],
+  "expect": {
+   "players": [ { "command": ["Collective Effort"] }, { "graveyard": ["Serra Angel"], "life": 15 } ],
+   "tapped": { "Grizzly Bears": true },
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ }
+]

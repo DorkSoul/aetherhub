@@ -1,0 +1,228 @@
+[
+  {
+    "name": "ruling: an exiled land can be played in your main phase",
+    "players": [ { "battlefield": ["Yasmin Khan", "Mountain"], "library": ["Island", "Lightning Bolt"] }, {} ],
+    "steps": [ { "activate": "Yasmin Khan", "ability": 0 }, { "resolve": true }, { "play_land": "Island" } ],
+    "expect": { "players": [ { "battlefield_has": ["Island", "Yasmin Khan"], "library_count": 1 }, {} ] }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played on the opponent's turn",
+    "players": [ { "battlefield": ["Yasmin Khan", "Mountain"], "library": ["Island", "Lightning Bolt"] }, {} ],
+    "steps": [ { "activate": "Yasmin Khan", "ability": 0 }, { "resolve": true }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "pass": true, "player": 1 }, { "play_land": "Island", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Yasmin Khan"] }, {} ] }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played while the stack is not empty",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Yasmin Khan", "Mountain"], "library": ["Island", "Forest"] }, {} ],
+    "steps": [ { "activate": "Yasmin Khan", "ability": 0 }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "play_land": "Island", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Yasmin Khan"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "exiled card is playable for the rest of your turn",
+    "players": [
+      {
+        "battlefield": [
+          "Yasmin Khan",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Yasmin Khan",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Yasmin Khan"
+          ],
+          "library_count": 1
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "not playable after the turn ends when activated on your turn",
+    "players": [
+      {
+        "battlefield": [
+          "Yasmin Khan",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Yasmin Khan",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "activated on the opponent's turn: playable through your next turn",
+    "players": [
+      {
+        "battlefield": [
+          "Yasmin Khan",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "activate": "Yasmin Khan",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Yasmin Khan"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "opponent-turn exile expires at the end of your next turn",
+    "players": [
+      {
+        "battlefield": [
+          "Yasmin Khan",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "activate": "Yasmin Khan",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  }
+]

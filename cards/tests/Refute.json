@@ -1,0 +1,117 @@
+[
+  {
+    "name": "counters a spell, then draws and discards a card",
+    "players": [
+      {
+        "hand": [
+          "Refute"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Mountain"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p0"
+        ],
+        "player": 1
+      },
+      {
+        "cast": "Refute",
+        "targets": [
+          {
+            "stack": "Lightning Bolt"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "graveyard": [
+            "Refute",
+            "Mountain"
+          ],
+          "library_count": 0
+        },
+        {
+          "life": 20,
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no spell on the stack: Refute has no legal target",
+    "players": [
+      {
+        "hand": [
+          "Refute"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Refute",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Refute"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the target spell is gone when Refute resolves, Refute does nothing (no draw or discard)",
+    "players": [
+      { "hand": ["Refute"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt", "Refute"], "battlefield": ["Mountain", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "cast": "Refute", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "cast": "Refute", "targets": [{ "stack": "Lightning Bolt" }], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": [], "graveyard": ["Refute"], "library_count": 20 }, { "graveyard_has": ["Lightning Bolt", "Refute"] } ] }
+  }
+]

@@ -1,0 +1,65 @@
+[
+ {
+  "name": "a creature with a decayed counter has decayed (can't block)",
+  "players": [
+   { "battlefield": [ { "name": "Hill Giant", "sick": false }, "Rot-Curse Rakshasa" ] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "decayed": 1 } } ] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "keywords": { "Grizzly Bears": ["Decayed"] }
+  }
+ },
+ {
+  "name": "renew: exile from graveyard, X = 2 puts a decayed counter on each of two creatures",
+  "players": [
+   { "graveyard": ["Rot-Curse Rakshasa"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Rot-Curse Rakshasa", "ability": 0, "answers": [2], "targets": ["Grizzly Bears", "Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Rot-Curse Rakshasa"] }, {} ],
+   "counters": { "Grizzly Bears": { "decayed": 1 }, "Hill Giant": { "decayed": 1 } }
+  }
+ },
+ {
+  "name": "renew with X = 1 puts one decayed counter on the single target",
+  "players": [
+   { "graveyard": ["Rot-Curse Rakshasa"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Rot-Curse Rakshasa", "ability": 0, "answers": [1], "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Rot-Curse Rakshasa"] }, {} ],
+   "counters": { "Grizzly Bears": { "decayed": 1 } }
+  }
+ },
+ {
+  "name": "ruling: renew activated in Main2 right after a decayed attacker is sacrificed at end of combat",
+  "players": [
+   { "battlefield": [ { "name": "Rot-Curse Rakshasa", "sick": false }, "Hill Giant", "Swamp", "Swamp", "Swamp" ] },
+   { "battlefield": [] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Rot-Curse Rakshasa", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "activate": "Rot-Curse Rakshasa", "ability": 0, "answers": [1], "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Rot-Curse Rakshasa"], "graveyard": [] }, {} ],
+   "counters": { "Hill Giant": { "decayed": 1 } }
+  }
+ }
+]

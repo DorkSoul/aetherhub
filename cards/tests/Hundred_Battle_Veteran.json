@@ -1,0 +1,160 @@
+[
+  {
+    "name": "gets +2/+4 with three different counter kinds among your creatures",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          { "name": "Hundred-Battle Veteran" },
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+          { "name": "Serra Angel", "counters": { "stun": 1 } },
+          { "name": "Llanowar Elves", "counters": { "shield": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hundred-Battle Veteran"] },
+        {}
+      ],
+      "pt": { "Hundred-Battle Veteran": [6, 6] }
+    }
+  },
+  {
+    "name": "stays 4/2 with only two different counter kinds",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          { "name": "Hundred-Battle Veteran" },
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+          { "name": "Serra Angel", "counters": { "stun": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hundred-Battle Veteran"] },
+        {}
+      ],
+      "pt": { "Hundred-Battle Veteran": [4, 2] }
+    }
+  },
+  {
+    "name": "counters on an opponent's creatures don't count",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          { "name": "Hundred-Battle Veteran" }
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+          { "name": "Serra Angel", "counters": { "stun": 1 } },
+          { "name": "Llanowar Elves", "counters": { "shield": 1 } }
+        ]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": { "Hundred-Battle Veteran": [4, 2] }
+    }
+  },
+  {
+    "name": "cast from the graveyard enters with a finality counter",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Hundred-Battle Veteran"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hundred-Battle Veteran", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hundred-Battle Veteran"], "graveyard": [] },
+        {}
+      ],
+      "counters": { "Hundred-Battle Veteran": { "finality": 1 } }
+    }
+  },
+  {
+    "name": "dying with a finality counter exiles it instead",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Hundred-Battle Veteran", "counters": { "finality": 1 } }
+        ]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hundred-Battle Veteran"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Hundred-Battle Veteran"], "graveyard": [] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countered while cast from the graveyard, it goes back to the graveyard",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Hundred-Battle Veteran"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Hundred-Battle Veteran", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Hundred-Battle Veteran" }] },
+      { "pass": true, "player": 1 },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Hundred-Battle Veteran"] },
+        { "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "name": "draws a card when the target opponent has at least two more cards in hand",
+    "players": [
+      {
+        "battlefield": ["Keeper of the Mind", "Island"],
+        "library": ["Plains"]
+      },
+      {
+        "hand": ["Forest", "Mountain"]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Keeper of the Mind",
+        "targets": ["p1"]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {"Keeper of the Mind": true},
+      "players": [
+        {
+          "hand": ["Plains"]
+        },
+        {
+          "hand_count": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "opponent with only one more card in hand can't be targeted",
+    "players": [
+      {
+        "battlefield": ["Keeper of the Mind", "Island"],
+        "library": ["Plains"]
+      },
+      {
+        "hand": ["Forest"]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Keeper of the Mind",
+        "targets": ["p1"],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {"Keeper of the Mind": false},
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "hand_count": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the condition is checked only on activation, so the draw still happens after the opponent's hand shrinks",
+    "players": [
+      { "battlefield": ["Keeper of the Mind", "Island"], "library": ["Plains"] },
+      { "hand": ["Lightning Bolt", "Forest"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Keeper of the Mind", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": {"Keeper of the Mind": true},
+      "players": [
+        { "hand": ["Plains"], "life": 17 },
+        { "hand": ["Forest"] }
+      ]
+    }
+  }
+]

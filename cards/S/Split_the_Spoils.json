@@ -1,0 +1,44 @@
+{
+  "name": "Split the Spoils",
+  "mana_cost": "{2}{G}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "CardIn", "filter": { "types": ["Artifact", "Creature", "Enchantment", "Land", "Planeswalker", "Battle"] }, "whose": "You", "zone": "Graveyard" },
+          "label": "up to five target permanent cards from your graveyard",
+          "min": 0,
+          "max": 5
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Targets" }, "to": "Exile", "remember": true },
+        { "type": "StoreRemembered", "slot": 1 },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Exile",
+          "filter": { "among_remembered": true },
+          "min": 0,
+          "max": 5,
+          "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+        },
+        {
+          "type": "May",
+          "who": { "type": "EachOpponent" },
+          "effects": [
+            { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "from": "Exile", "to": "Hand" },
+            { "type": "Move", "what": { "type": "All", "filter": { "among_stored": 1, "not_among_stored": 0 }, "zone": "Exile" }, "to": "Graveyard" }
+          ],
+          "otherwise": [
+            { "type": "Move", "what": { "type": "All", "filter": { "among_stored": 1, "not_among_stored": 0 }, "zone": "Exile" }, "from": "Exile", "to": "Hand" },
+            { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "from": "Exile", "to": "Graveyard" }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Exile up to five target permanent cards from your graveyard and separate them into two piles. An opponent chooses one of those piles. Put that pile into your hand and the other into your graveyard. (Piles can be empty.)"
+}

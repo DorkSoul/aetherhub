@@ -1,0 +1,120 @@
+[
+  {
+    "name": "crime, accept the draw and discard: power equals cards drawn this turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [{ "name": "Duelist of the Mind", "sick": false }, "Mountain"],
+        "library": ["Forest"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "pt": { "Duelist of the Mind": [1, 3] }
+    }
+  },
+  {
+    "name": "crime, decline the draw: no card drawn, power stays 0",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [{ "name": "Duelist of the Mind", "sick": false }, "Mountain"],
+        "library": ["Forest"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "pt": { "Duelist of the Mind": [0, 3] }
+    }
+  },
+  {
+    "name": "the crime ability triggers only once each turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": [{ "name": "Duelist of the Mind", "sick": false }, "Mountain", "Mountain"],
+        "library": ["Forest"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Duelist of the Mind": [0, 3] }
+    }
+  },
+  {
+    "name": "ruling: targeting a card in an opponent's graveyard commits a crime",
+    "players": [
+      {
+        "hand": ["Raven Eagle"],
+        "battlefield": [{ "name": "Duelist of the Mind", "sick": false }, "Swamp", "Swamp", "Swamp"],
+        "library": ["Forest"]
+      },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Raven Eagle" },
+      { "resolve": true, "targets": ["Grizzly Bears"], "answers": [true] }
+    ],
+    "expect": {
+      "pt": { "Duelist of the Mind": [1, 3] }
+    }
+  },
+  {
+    "name": "ruling: a crime counts when the spell is cast, even if it is countered",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": [{ "name": "Duelist of the Mind", "sick": false }, "Mountain"],
+        "library": ["Forest"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Grizzly Bears", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Forest", "Lightning Bolt"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Counterspell"] }
+      ],
+      "pt": { "Duelist of the Mind": [1, 3] }
+    }
+  },
+  {
+    "name": "ruling: targeting only a card in your own graveyard is not a crime",
+    "players": [
+      {
+        "hand": ["Raven Eagle"],
+        "battlefield": [{ "name": "Duelist of the Mind", "sick": false }, "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raven Eagle" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Duelist of the Mind": [0, 3] }
+    }
+  }
+]

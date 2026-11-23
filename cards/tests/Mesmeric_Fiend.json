@@ -1,0 +1,75 @@
+[
+ {
+  "name": "you choose a nonland card from the opponent's hand and it is exiled",
+  "players": [
+   { "hand": ["Mesmeric Fiend"], "battlefield": ["Swamp", "Swamp"] },
+   { "hand": ["Lightning Bolt", "Grizzly Bears", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Mesmeric Fiend" },
+   { "resolve": true, "answers": ["Lightning Bolt"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Mesmeric Fiend"] },
+    { "hand": ["Grizzly Bears", "Island"], "exile": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "the exiled card returns to its owner's hand (not the battlefield) when Mesmeric Fiend leaves",
+  "players": [
+   { "hand": ["Mesmeric Fiend", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain"] },
+   { "hand": ["Lightning Bolt", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Mesmeric Fiend" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Mesmeric Fiend"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt", "Mesmeric Fiend"], "battlefield_lacks": ["Mesmeric Fiend"] },
+    { "hand_count": 2, "exile": [] }
+   ]
+  }
+ },
+ {
+  "name": "the Fiend's own ETB can't take a land from the opponent's hand (nothing is exiled when only lands are held)",
+  "players": [
+   { "hand": ["Mesmeric Fiend"], "battlefield": ["Swamp", "Swamp"] },
+   { "hand": ["Island", "Forest"] }
+  ],
+  "steps": [
+   { "cast": "Mesmeric Fiend" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Mesmeric Fiend"] },
+    { "hand": ["Island", "Forest"], "exile": [] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Fiend leaves before its ETB resolves; the card is exiled for good (its leave trigger finds nothing to return)",
+  "players": [
+   { "hand": ["Mesmeric Fiend", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain"] },
+   { "hand": ["Grizzly Bears", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Mesmeric Fiend" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Lightning Bolt", "targets": ["Mesmeric Fiend"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt", "Mesmeric Fiend"] },
+    { "hand": ["Island"], "exile": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

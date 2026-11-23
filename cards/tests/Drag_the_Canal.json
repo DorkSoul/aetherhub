@@ -1,0 +1,97 @@
+[
+ {
+  "name": "creates a Detective and nothing else when no creature died this turn",
+  "players": [
+   {"hand": ["Drag the Canal"], "battlefield": ["Island", "Swamp"], "library": ["Forest", "Mountain"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Drag the Canal"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Detective"], "graveyard": ["Drag the Canal"], "life": 20}, {}]}
+ },
+ {
+  "name": "after a creature died this turn: gain 2, surveil 2, investigate",
+  "players": [
+   {"hand": ["Drag the Canal", "Lightning Bolt"], "battlefield": ["Island", "Swamp", "Mountain"], "library": ["Forest", "Mountain"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"cast": "Drag the Canal"},
+   {"resolve": true, "answers": [[]]}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Detective", "Clue"], "graveyard": ["Drag the Canal", "Lightning Bolt"], "life": 22}, {"graveyard": ["Grizzly Bears"]}]}
+ },
+ {
+  "name": "ruling: sacrificing a Clue to pay Alquist's cost (not the Clue's own ability) triggers Tireless Tracker",
+  "players": [
+   {"battlefield": ["Alquist Proft, Master Sleuth", "Tireless Tracker", "Clue", "Plains", "Island", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Main1"},
+   {"advance_to": "Main1"},
+   {"activate": "Alquist Proft, Master Sleuth", "answers": [0]},
+   {"resolve": true},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Tireless Tracker"], "battlefield_lacks": ["Clue"]}, {}], "counters": {"Tireless Tracker": {"p1p1": 1}}}
+ },
+ {
+  "name": "ruling: a Clue is not a creature, so Lightning Bolt cannot target it",
+  "players": [
+   {"hand": ["Lightning Bolt"], "battlefield": ["Clue", "Mountain"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["Clue"], "illegal": true}
+  ],
+  "expect": {"players": [{"hand": ["Lightning Bolt"], "battlefield_has": ["Clue"]}, {}]}
+ },
+ {
+  "name": "ruling: a Clue sacrificed for its own ability cannot also pay Alquist's cost",
+  "players": [
+   {"battlefield": ["Alquist Proft, Master Sleuth", "Clue", "Plains", "Island", "Island", "Island", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Main1"},
+   {"advance_to": "Main1"},
+   {"activate": "Clue", "ability": 0},
+   {"resolve": true},
+   {"activate": "Alquist Proft, Master Sleuth", "answers": [0], "illegal": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Alquist Proft, Master Sleuth"], "battlefield_lacks": ["Clue"], "hand_count": 2}, {}]}
+ },
+ {
+  "name": "ruling: Wrench is a Clue artifact, so Alquist can sacrifice it",
+  "players": [
+   {"battlefield": ["Alquist Proft, Master Sleuth", "Wrench", "Plains", "Island", "Island", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "Main1"},
+   {"advance_to": "Main1"},
+   {"activate": "Alquist Proft, Master Sleuth", "answers": [1]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard_has": ["Wrench"], "battlefield_lacks": ["Wrench"], "hand_count": 2, "life": 21}, {}], "tapped": {"Alquist Proft, Master Sleuth": true}}
+ },
+ {
+  "name": "ruling: an investigate spell whose only target became illegal does not resolve and makes no Clue",
+  "players": [
+   {"hand": ["Press for Answers", "Lightning Bolt"], "battlefield": ["Island", "Island", "Mountain"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Press for Answers", "targets": ["Grizzly Bears"]},
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_lacks": ["Clue"], "graveyard": ["Press for Answers", "Lightning Bolt"]}, {"graveyard": ["Grizzly Bears"]}]}
+ }
+]

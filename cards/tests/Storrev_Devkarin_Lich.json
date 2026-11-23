@@ -1,0 +1,167 @@
+[
+ {
+  "name": "returns a creature card that was already in the graveyard",
+  "players": [
+   {
+    "graveyard": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Storrev, Devkarin Lich"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Storrev, Devkarin Lich",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "CombatDamage",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "graveyard": []
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "a creature that died this combat cannot be returned",
+  "players": [
+   {
+    "battlefield": [
+     "Storrev, Devkarin Lich",
+     "Llanowar Elves"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Storrev, Devkarin Lich",
+      "at": "p1"
+     },
+     {
+      "card": "Llanowar Elves",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Llanowar Elves"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [],
+     "graveyard_has": [
+      "Llanowar Elves"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+  {
+    "name": "combat damage to a planeswalker returns a creature card from the graveyard",
+    "players": [
+      { "graveyard": ["Grizzly Bears"], "battlefield": ["Storrev, Devkarin Lich"] },
+      { "battlefield": [ { "name": "Ajani Unyielding", "counters": { "loyalty": 8 } } ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Storrev, Devkarin Lich", "at": "Ajani Unyielding" } ] },
+      { "advance_to": "CombatDamage", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"], "graveyard": [] }, { "battlefield_has": ["Ajani Unyielding"] } ],
+      "counters": { "Ajani Unyielding": { "loyalty": 3 } }
+    }
+  },
+  {
+    "name": "planeswalker damage with no creature or planeswalker card in the graveyard returns nothing",
+    "players": [
+      { "battlefield": ["Storrev, Devkarin Lich"] },
+      { "battlefield": [ { "name": "Ajani Unyielding", "counters": { "loyalty": 8 } } ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Storrev, Devkarin Lich", "at": "Ajani Unyielding" } ] },
+      { "advance_to": "CombatDamage" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": [] }, { "battlefield_has": ["Ajani Unyielding"] } ],
+      "counters": { "Ajani Unyielding": { "loyalty": 3 } }
+    }
+  },
+  {
+    "name": "ruling: a creature that died to a spell during this combat cannot be returned",
+    "players": [
+      { "graveyard": ["Grizzly Bears"], "battlefield": ["Storrev, Devkarin Lich", "Llanowar Elves"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Storrev, Devkarin Lich", "at": "p1" }] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "advance_to": "CombatDamage" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand": ["Grizzly Bears"], "graveyard_has": ["Llanowar Elves"] }, { "life": 15 }] }
+  },
+  {
+    "name": "ruling: Storrev dying in the same combat damage step still triggers and returns a card",
+    "players": [
+      { "hand": ["Lightning Bolt"], "graveyard": ["Grizzly Bears"], "battlefield": ["Mountain", "Storrev, Devkarin Lich"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Storrev, Devkarin Lich"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Storrev, Devkarin Lich", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Storrev, Devkarin Lich" }], "player": 1 },
+      { "advance_to": "CombatDamage" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand": ["Grizzly Bears"], "graveyard_has": ["Storrev, Devkarin Lich"] }, { "life": 18 }] }
+  }
+]

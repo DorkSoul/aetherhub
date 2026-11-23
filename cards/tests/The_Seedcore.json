@@ -1,0 +1,84 @@
+[
+  {
+    "name": "taps for colorless",
+    "players": [
+      { "battlefield": ["The Seedcore"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "The Seedcore" }
+    ],
+    "expect": {
+      "players": [{ "pool": { "C": 1 } }, {}]
+    }
+  },
+  {
+    "name": "its coloured mana pays for a Phyrexian creature spell",
+    "players": [
+      { "hand": ["Swooping Lookout"], "battlefield": ["The Seedcore"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Swooping Lookout" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Swooping Lookout"], "hand": [] }, {}]
+    }
+  },
+  {
+    "name": "its coloured mana cannot pay for a noncreature spell",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["The Seedcore"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Lightning Bolt"] }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "corrupted is not activatable without three poison counters on an opponent",
+    "players": [
+      { "battlefield": ["The Seedcore", "Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Seedcore", "targets": ["Llanowar Elves"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Llanowar Elves"] }, {}]
+    }
+  },
+  {
+    "name": "corrupted gives target 1/1 creature +2/+1 when an opponent has three poison counters",
+    "players": [
+      { "battlefield": ["The Seedcore", "Llanowar Elves"] },
+      { "poison": 3 }
+    ],
+    "steps": [
+      { "activate": "The Seedcore", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Llanowar Elves"] }, {}],
+      "pt": { "Llanowar Elves": [3, 2] }
+    }
+  },
+  {
+    "name": "corrupted cannot target a creature that is not 1/1",
+    "players": [
+      { "battlefield": ["The Seedcore", "Grizzly Bears"] },
+      { "poison": 3 }
+    ],
+    "steps": [
+      { "activate": "The Seedcore", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"] }, {}],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

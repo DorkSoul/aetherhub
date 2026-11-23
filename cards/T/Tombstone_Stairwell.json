@@ -1,0 +1,31 @@
+{
+  "name": "Tombstone Stairwell",
+  "mana_cost": "{2}{B}{B}",
+  "types": ["Enchantment"],
+  "supertypes": ["World"],
+  "abilities": [
+    { "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [{ "type": "CumulativeUpkeep", "cost": [{ "type": "Mana", "cost": "{1}{B}" }] }] },
+    { "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "Any" },
+      "effects": [
+        { "type": "ForEach", "objects": { "type": "EachPlayer" },
+          "effects": [
+            { "type": "CreateToken", "token": "Tombspawn", "controller": { "type": "EachObject" },
+              "n": { "type": "Count", "filter": { "types": ["Creature"] }, "zone": "Graveyard", "player": { "type": "EachObject" } } }
+          ] }
+      ] },
+    { "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "Any" },
+      "effects": [
+        { "type": "Destroy", "what": { "type": "All", "filter": { "name": "Tombspawn", "token": true } }, "no_regeneration": true }
+      ] },
+    { "type": "Triggered",
+      "trigger": { "type": "LeavesBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "Destroy", "what": { "type": "All", "filter": { "name": "Tombspawn", "token": true } }, "no_regeneration": true }
+      ] }
+  ],
+  "oracle_text": "Cumulative upkeep {1}{B}\nAt the beginning of each upkeep, if this enchantment is on the battlefield, each player creates a 2/2 black Zombie creature token with haste named Tombspawn for each creature card in their graveyard.\nAt the beginning of each end step and when this enchantment leaves the battlefield, destroy all tokens created with this enchantment. They can't be regenerated."
+}

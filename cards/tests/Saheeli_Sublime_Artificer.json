@@ -1,0 +1,230 @@
+[
+ {
+  "name": "noncreature spell makes a Servo",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Saheeli, Sublime Artificer",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Servo"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "creature spell makes no Servo",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Saheeli, Sublime Artificer",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Saheeli, Sublime Artificer",
+      "Forest",
+      "Forest",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "minus 2: Sol Ring becomes a copy of Grizzly Bears",
+  "players": [
+   {
+    "battlefield": [
+     "Saheeli, Sublime Artificer",
+     "Sol Ring",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Saheeli, Sublime Artificer",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Saheeli, Sublime Artificer",
+      "Grizzly Bears",
+      "Grizzly Bears"
+     ],
+     "graveyard": []
+    },
+    {}
+   ],
+   "counters": {
+    "Saheeli, Sublime Artificer": {
+     "loyalty": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "the copy reverts at end of turn",
+  "players": [
+   {
+    "battlefield": [
+     "Saheeli, Sublime Artificer",
+     "Sol Ring",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Saheeli, Sublime Artificer",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Saheeli, Sublime Artificer",
+      "Sol Ring",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "needs two different permanents: a lone Sol Ring is not enough (another target)",
+  "players": [
+   {
+    "battlefield": [
+     "Saheeli, Sublime Artificer",
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Saheeli, Sublime Artificer",
+    "ability": 0,
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: the Servo trigger resolves even if the noncreature spell is countered",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Saheeli, Sublime Artificer", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Servo"], "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Counterspell"], "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: the copy takes only printed values, not the counters on the target",
+  "players": [
+   { "battlefield": ["Saheeli, Sublime Artificer", "Sol Ring", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Saheeli, Sublime Artificer", "ability": 0, "targets": ["Sol Ring", "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Saheeli, Sublime Artificer", "Grizzly Bears", "Grizzly Bears"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: an Equipment that becomes a copy of a non-Equipment creature becomes unattached",
+  "players": [
+   { "battlefield": ["Grizzly Bears", "Saheeli, Sublime Artificer", "Bonesplitter", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Saheeli, Sublime Artificer", "ability": 0, "targets": ["Bonesplitter", "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Saheeli, Sublime Artificer", "Grizzly Bears", "Grizzly Bears"] }, {} ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ }
+]

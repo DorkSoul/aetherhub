@@ -1,0 +1,108 @@
+[
+  {
+    "name": "activation lets you cast a graveyard creature this turn",
+    "players": [
+      {
+        "battlefield": ["Magus of the Will", "Swamp", "Swamp", "Swamp", "Forest"],
+        "graveyard": ["Llanowar Elves"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magus of the Will" },
+      { "resolve": true },
+      { "cast": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Llanowar Elves"],
+          "exile": ["Magus of the Will"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast from graveyard without activating",
+    "players": [
+      {
+        "battlefield": ["Forest"],
+        "graveyard": ["Llanowar Elves"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Llanowar Elves", "illegal": true }
+    ]
+  },
+  {
+    "name": "cards put into your graveyard this turn are exiled instead",
+    "players": [
+      {
+        "battlefield": ["Magus of the Will", "Swamp", "Swamp", "Swamp", "Mountain", "Grizzly Bears"],
+        "hand": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magus of the Will" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [],
+          "exile": ["Lightning Bolt", "Grizzly Bears", "Magus of the Will"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with a spell on the stack, a graveyard creature without flash cannot be cast",
+    "players": [
+      {
+        "battlefield": ["Magus of the Will", "Swamp", "Swamp", "Swamp", "Mountain", "Forest"],
+        "hand": ["Lightning Bolt"],
+        "graveyard": ["Llanowar Elves"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magus of the Will" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Llanowar Elves", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Llanowar Elves"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a nontoken creature dying in combat is exiled instead of going to the graveyard",
+    "players": [
+      { "battlefield": ["Magus of the Will", "Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Magus of the Will" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears", "Magus of the Will"], "graveyard": [] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  }
+]

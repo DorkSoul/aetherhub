@@ -1,0 +1,58 @@
+[
+  { "name": "Pako's fetch-counter exile: cast a noncreature card with any mana; creature is not playable",
+    "players": [ { "battlefield": ["Haldan, Avid Arcanist", "Pako, Arcane Retriever", "Swamp"], "library": ["Lightning Bolt"] }, { "library": ["Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Pako, Arcane Retriever", "at": "p1" } ] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "exile": ["Grizzly Bears"] } ] } },
+  { "name": "ETB: the targeted player may search their library for Pako and put it into hand",
+    "players": [ { "hand": ["Haldan, Avid Arcanist"], "battlefield": ["Island", "Island", "Island"], "library": ["Pako, Arcane Retriever"] }, {} ],
+    "steps": [ { "cast": "Haldan, Avid Arcanist" }, { "resolve": true, "targets": ["p0"], "answers": [true, "Pako, Arcane Retriever"] } ],
+    "expect": { "players": [ { "hand_count": 1 }, {} ] } },
+  { "name": "ETB: declining the may leaves Pako in the library",
+    "players": [ { "hand": ["Haldan, Avid Arcanist"], "battlefield": ["Island", "Island", "Island"], "library": ["Pako, Arcane Retriever"] }, {} ],
+    "steps": [ { "cast": "Haldan, Avid Arcanist" }, { "resolve": true, "targets": ["p0"], "answers": [false] } ],
+    "expect": { "players": [ { "hand_count": 0 }, {} ] } },
+  { "name": "ruling: the targeted opponent searches their own library for Pako",
+    "players": [ { "hand": ["Haldan, Avid Arcanist"], "battlefield": ["Island", "Island", "Island"] }, { "library": ["Pako, Arcane Retriever"] } ],
+    "steps": [ { "cast": "Haldan, Avid Arcanist" }, { "resolve": true, "targets": ["p1"], "answers": [true, "Pako, Arcane Retriever"] } ],
+    "expect": { "players": [ { "hand_count": 0 }, { "hand_count": 1 } ] } },
+  { "name": "ruling: an exiled sorcery can't be cast during combat but can be cast in the main phase",
+    "players": [ { "battlefield": ["Haldan, Avid Arcanist", "Pako, Arcane Retriever", "Swamp", "Swamp", "Swamp"] }, { "library": ["Divination"] } ],
+    "steps": [
+      { "attack": [ { "card": "Pako, Arcane Retriever", "at": "p1" } ] },
+      { "resolve": true },
+      { "cast": "Divination", "illegal": true },
+      { "advance_to": "Main2" },
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2 }, { "graveyard_has": ["Divination"] } ] } },
+  { "name": "ruling: an exiled land can be played with an unused land drop",
+    "players": [ { "battlefield": ["Haldan, Avid Arcanist", "Pako, Arcane Retriever"] }, { "library": ["Forest"] } ],
+    "steps": [
+      { "attack": [ { "card": "Pako, Arcane Retriever", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"] }, {} ] } },
+  { "name": "ruling: an exiled land can't be played once the land drop is used",
+    "players": [ { "hand": ["Mountain"], "battlefield": ["Haldan, Avid Arcanist", "Pako, Arcane Retriever"] }, { "library": ["Forest"] } ],
+    "steps": [
+      { "play_land": "Mountain" },
+      { "attack": [ { "card": "Pako, Arcane Retriever", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Forest"] }, { "exile": ["Forest"] } ] } },
+  { "name": "ruling: without Haldan on the battlefield, exiled lands cannot be played",
+    "players": [ { "battlefield": ["Pako, Arcane Retriever"] }, { "library": ["Forest"] } ],
+    "steps": [
+      { "attack": [ { "card": "Pako, Arcane Retriever", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Forest"] }, { "exile": ["Forest"] } ] } }
+]

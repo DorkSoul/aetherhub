@@ -1,0 +1,53 @@
+[
+  {
+    "name": "enters the battlefield tapped",
+    "players": [{ "hand": ["Cult Conscript"], "battlefield": ["Swamp"] }, {}],
+    "steps": [{ "cast": "Cult Conscript" }, { "resolve": true }],
+    "expect": { "players": [{ "battlefield_has": ["Cult Conscript"] }, {}], "tapped": { "Cult Conscript": true } }
+  },
+  {
+    "name": "returns from the graveyard after a non-Skeleton creature you control died this turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Swamp", "Swamp", "Grizzly Bears"], "graveyard": ["Cult Conscript"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Cult Conscript", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Cult Conscript"], "graveyard": ["Lightning Bolt", "Grizzly Bears"] }, {}],
+      "tapped": { "Cult Conscript": true }
+    }
+  },
+  {
+    "name": "cannot return when only a Skeleton died this turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Swamp", "Swamp", "Cult Conscript"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Cult Conscript"] },
+      { "resolve": true },
+      { "activate": "Cult Conscript", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [{ "graveyard": ["Lightning Bolt", "Cult Conscript"] }, {}] }
+  },
+  {
+    "name": "an opponent's creature dying this turn does not enable the return",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Swamp", "Swamp"], "graveyard": ["Cult Conscript"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Cult Conscript", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [{ "graveyard": ["Cult Conscript", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] }] }
+  },
+  {"name": "ruling: the Conscript need not have been in the graveyard when the creature died", "players": [{"hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp", "Grizzly Bears", "Cult Conscript"]}, {}], "steps": [{"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]}, {"resolve": true}, {"cast": "Lightning Bolt", "targets": ["Cult Conscript"]}, {"resolve": true}, {"activate": "Cult Conscript", "ability": 0}, {"resolve": true}], "expect": {"players": [{"battlefield_has": ["Cult Conscript"], "graveyard_has": ["Grizzly Bears"]}, {}]}},
+  {"name": "ruling: a creature token that died satisfies the return condition", "players": [{"hand": ["Forest", "Lightning Bolt"], "battlefield": ["Dancing from Dark to Dawn", "Mountain", "Swamp", "Swamp"], "graveyard": ["Cult Conscript"]}, {}], "steps": [{"play_land": "Forest"}, {"resolve": true}, {"cast": "Lightning Bolt", "targets": ["Bear"]}, {"resolve": true}, {"activate": "Cult Conscript", "ability": 0}, {"resolve": true}], "expect": {"players": [{"battlefield_has": ["Cult Conscript"], "graveyard_has": ["Lightning Bolt"]}, {}]}}
+]

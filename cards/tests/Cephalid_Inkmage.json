@@ -1,0 +1,188 @@
+[
+ {
+  "name": "is unblockable with threshold",
+  "players": [
+   {
+    "battlefield": [
+     "Cephalid Inkmage"
+    ],
+    "graveyard": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Cephalid Inkmage",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Cephalid Inkmage"
+     }
+    ],
+    "illegal": true
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Cephalid Inkmage"
+     ]
+    },
+    {
+     "life": 18,
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "can be blocked without threshold",
+  "players": [
+   {
+    "battlefield": [
+     "Cephalid Inkmage"
+    ],
+    "graveyard": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Cephalid Inkmage",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Cephalid Inkmage"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Cephalid Inkmage"
+     ]
+    },
+    {
+     "graveyard_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "enters and surveils 3: the chosen card goes to the graveyard and the rest stay on top in order",
+  "players": [
+   { "hand": ["Cephalid Inkmage"], "battlefield": ["Island", "Island", "Island"], "library": ["Island", "Forest", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Cephalid Inkmage" },
+   { "resolve": true, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Island"], "library_top": ["Forest", "Swamp"] }, {} ]
+  }
+ },
+ {
+  "name": "surveil 3 keeping all three on top leaves the library unchanged",
+  "players": [
+   { "hand": ["Cephalid Inkmage"], "battlefield": ["Island", "Island", "Island"], "library": ["Island", "Forest", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Cephalid Inkmage" },
+   { "resolve": true, "answers": [[]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": [], "library_top": ["Island", "Forest", "Swamp"] }, {} ]
+  }
+ },
+ { "name": "threshold (seven cards in graveyard): can't be blocked, so the declared block is dropped and Inkmage's damage gets through",
+   "players": [
+     { "battlefield": ["Cephalid Inkmage", "Hill Giant"], "graveyard": ["Lightning Bolt", "Grizzly Bears", "Abattoir Ghoul", "Savannah Lions", "Goblin Piker", "Sol Ring", "Divination"] },
+     { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+   ],
+   "steps": [
+     { "attack": [ { "card": "Cephalid Inkmage", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Cephalid Inkmage" } ] },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ {}, { "life": 15 } ] } },
+ { "name": "threshold not reached (six cards in graveyard): Inkmage can be blocked",
+   "players": [
+     { "battlefield": ["Cephalid Inkmage"], "graveyard": ["Lightning Bolt", "Grizzly Bears", "Hill Giant", "Savannah Lions", "Goblin Piker", "Sol Ring"] },
+     { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+   ],
+   "steps": [
+     { "attack": [ { "card": "Cephalid Inkmage", "at": "p1" } ] },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Cephalid Inkmage" } ] },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ {}, { "life": 20 } ] } },
+ {
+   "name": "ruling: reaching threshold after the block does not unblock Inkmage, so it deals no damage to the player",
+   "players": [
+     { "hand": ["Lightning Bolt"], "battlefield": ["Cephalid Inkmage", "Mountain"], "graveyard": ["Lightning Bolt", "Grizzly Bears", "Hill Giant", "Savannah Lions", "Goblin Piker", "Sol Ring"] },
+     { "battlefield": ["Grizzly Bears"] }
+   ],
+   "steps": [
+     { "attack": [ { "card": "Cephalid Inkmage", "at": "p1" } ] },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Cephalid Inkmage" } ] },
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Cephalid Inkmage"] }, { "life": 20 } ] }
+ }
+]

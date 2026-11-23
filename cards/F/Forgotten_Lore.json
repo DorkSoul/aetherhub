@@ -1,0 +1,110 @@
+{
+  "name": "Forgotten Lore",
+  "mana_cost": "{G}",
+  "types": [
+    "Sorcery"
+  ],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "Player",
+            "filter": "Opponent"
+          },
+          "min": 1,
+          "max": 1,
+          "label": "target opponent"
+        }
+      ],
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0 },
+        {
+          "type": "RepeatWhile",
+          "cond": {
+            "type": "SelIs",
+            "what": {
+              "type": "Stored",
+              "slot": 2
+            },
+            "filter": {}
+          },
+          "max": 255,
+          "effects": [
+            {
+              "type": "ClearRemembered"
+            },
+            {
+              "type": "StoreRemembered",
+              "slot": 2
+            },
+            {
+              "type": "Choose",
+              "who": {
+                "type": "Target",
+                "idx": 0
+              },
+              "from": {
+                "type": "You"
+              },
+              "zone": "Graveyard",
+              "filter": {
+                "not_among_stored": 0
+              },
+              "min": 1,
+              "max": 1,
+              "then": [
+                {
+                  "type": "StoreRemembered",
+                  "slot": 1
+                },
+                {
+                  "type": "StoreRemembered",
+                  "slot": 0,
+                  "append": true
+                },
+                {
+                  "type": "StoreRemembered",
+                  "slot": 2
+                },
+                {
+                  "type": "Unless",
+                  "payer": {
+                    "type": "You"
+                  },
+                  "cost": [
+                    {
+                      "type": "Mana",
+                      "cost": "{G}"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "ClearRemembered"
+                    },
+                    {
+                      "type": "StoreRemembered",
+                      "slot": 2
+                    }
+                  ],
+                  "if_paid": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Move",
+          "what": {
+            "type": "Stored",
+            "slot": 1
+          },
+          "to": "Hand"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Target opponent chooses a card in your graveyard. You may pay {G}. If you do, repeat this process except that opponent can't choose a card already chosen for Forgotten Lore. Then put the last chosen card into your hand."
+}

@@ -1,0 +1,304 @@
+[
+ {
+  "name": "my draw exiles the top card of my opponent's library instead, and I can cast it",
+  "players": [
+   {
+    "hand": [
+     "Shared Fate",
+     "Inspiration"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "library": [
+     "Merfolk of the Pearl Trident",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shared Fate"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Inspiration",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Merfolk of the Pearl Trident"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Shared Fate",
+      "Merfolk of the Pearl Trident"
+     ],
+     "hand_count": 0
+    },
+    {
+     "library_count": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "the opponent's draw exiles from my library and they can cast it at instant speed",
+  "players": [
+   {
+    "hand": [
+     "Shared Fate"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "hand": [
+     "Inspiration"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shared Fate"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Inspiration",
+    "player": 1,
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "graveyard": [
+      "Inspiration"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "I can't cast a card my opponent exiled",
+  "players": [
+   {
+    "hand": [
+     "Shared Fate"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "hand": [
+     "Inspiration"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shared Fate"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Inspiration",
+    "player": 1,
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 0,
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: an opponent's draw exiles my top card instead; their hand gets nothing",
+  "players": [
+   {
+    "battlefield": ["Shared Fate", "Island"],
+    "library": ["Grizzly Bears"]
+   },
+   {
+    "library": ["Merfolk of the Pearl Trident"]
+   }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Grizzly Bears"], "library_count": 0 },
+    { "hand_count": 0, "library_count": 1 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: my own draws never come from my library; the cards are exiled, not put in hand",
+  "players": [
+   {
+    "hand": ["Inspiration"],
+    "battlefield": ["Shared Fate", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Grizzly Bears"]
+   },
+   {
+    "library": ["Merfolk of the Pearl Trident", "Forest"]
+   }
+  ],
+  "steps": [
+   { "cast": "Inspiration", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "library_top": ["Grizzly Bears"] },
+    { "exile": ["Merfolk of the Pearl Trident", "Forest"], "library_count": 0 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with two Shared Fates each draw is replaced only once",
+  "players": [
+   {
+    "hand": ["Inspiration"],
+    "battlefield": ["Shared Fate", "Shared Fate", "Island", "Island", "Island", "Island", "Island"]
+   },
+   {
+    "library": ["Merfolk of the Pearl Trident", "Forest", "Island", "Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Inspiration", "targets": ["p0"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0 },
+    { "exile": ["Merfolk of the Pearl Trident", "Forest"], "library_count": 2 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a new Shared Fate does not let me play cards exiled by the old one",
+  "players": [
+   {
+    "hand": ["Inspiration", "Wispmare", "Shared Fate"],
+    "battlefield": ["Shared Fate", "Plains", "Plains", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"]
+   },
+   {
+    "library": ["Merfolk of the Pearl Trident", "Forest", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Inspiration", "targets": ["p0"] },
+   { "resolve": true },
+   { "cast": "Wispmare", "alt": 0 },
+   { "resolve": true },
+   { "cast": "Shared Fate" },
+   { "resolve": true },
+   { "cast": "Merfolk of the Pearl Trident", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Shared Fate"], "graveyard_has": ["Shared Fate", "Wispmare"] },
+    { "exile": ["Merfolk of the Pearl Trident", "Forest"], "library_count": 1 }
+   ]
+  }
+ }
+]

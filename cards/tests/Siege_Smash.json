@@ -1,0 +1,145 @@
+[
+  {
+    "name": "mode 1: destroy target artifact",
+    "players": [
+      {
+        "hand": [
+          "Siege Smash"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Sol Ring"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Siege Smash",
+        "targets": [
+          "Sol Ring"
+        ],
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "graveyard": [
+            "Sol Ring"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "mode 2: +3/+2 and trample",
+    "players": [
+      {
+        "hand": [
+          "Siege Smash"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Siege Smash",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "answers": [
+          1
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          5,
+          4
+        ]
+      },
+      "keywords": {
+        "Grizzly Bears": [
+          "Trample"
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a spell already on the stack is not affected by split second cast in response",
+    "players": [
+      { "hand": ["Healing Salve"], "battlefield": ["Plains"] },
+      { "hand": ["Siege Smash"], "battlefield": ["Mountain", "Mountain", "Elvish Visionary"] }
+    ],
+    "steps": [
+      { "cast": "Healing Salve", "targets": ["p0"], "answers": [0] },
+      { "pass": true },
+      { "cast": "Siege Smash", "player": 1, "targets": ["Elvish Visionary"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 23 }, {}],
+      "pt": { "Elvish Visionary": [4, 3] }
+    }
+  },
+  {
+    "name": "ruling: after split second resolves, players may cast again before the next object resolves; not while it is on the stack",
+    "players": [
+      { "hand": ["Healing Salve", "Healing Salve"], "battlefield": ["Plains", "Plains"] },
+      { "hand": ["Siege Smash"], "battlefield": ["Mountain", "Mountain", "Elvish Visionary"] }
+    ],
+    "steps": [
+      { "cast": "Healing Salve", "targets": ["p0"], "answers": [0] },
+      { "pass": true },
+      { "cast": "Siege Smash", "player": 1, "targets": ["Elvish Visionary"], "answers": [1] },
+      { "pass": true, "player": 1 },
+      { "cast": "Healing Salve", "targets": ["p0"], "answers": [0], "illegal": true },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Healing Salve", "targets": ["p0"], "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 26 }, {}],
+      "pt": { "Elvish Visionary": [4, 3] }
+    }
+  },
+  {
+    "name": "ruling: a triggered ability still triggers while a split second spell is on the stack",
+    "players": [
+      { "battlefield": ["Lurking Predators"], "library": ["Grizzly Bears", "Forest"] },
+      { "hand": ["Siege Smash"], "battlefield": ["Mountain", "Mountain", "Elvish Visionary"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Siege Smash", "player": 1, "targets": ["Elvish Visionary"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"] }, {}],
+      "pt": { "Elvish Visionary": [4, 3] }
+    }
+  }
+]

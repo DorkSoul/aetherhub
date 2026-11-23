@@ -1,0 +1,96 @@
+[
+ {
+  "name": "monstrous: combat damage to a player destroys an enchantment that player controls",
+  "players": [
+   { "battlefield": ["Polis Crusher", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Phyrexian Arena"] }
+  ],
+  "steps": [
+   { "activate": "Polis Crusher" },
+   { "resolve": true },
+   { "attack": [ { "card": "Polis Crusher", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Polis Crusher"] }, { "life": 13, "graveyard": ["Phyrexian Arena"] } ]
+  }
+ },
+ {
+  "name": "not monstrous: combat damage destroys nothing",
+  "players": [
+   { "battlefield": ["Polis Crusher"] },
+   { "battlefield": ["Phyrexian Arena"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Polis Crusher", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 16, "battlefield_has": ["Phyrexian Arena"] } ]
+  }
+ },
+ {
+  "name": "protection from enchantments: an enchantment's exile trigger cannot target it",
+  "players": [
+   { "hand": ["Journey to Nowhere"], "battlefield": ["Polis Crusher", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Journey to Nowhere" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Polis Crusher", "Journey to Nowhere"], "exile": [] }, {} ]
+  }
+ },
+ {
+  "name": "protection from enchantments: an enchantment's exile trigger still takes another creature",
+  "players": [
+   { "hand": ["Journey to Nowhere"], "battlefield": ["Polis Crusher", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Journey to Nowhere" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Polis Crusher"] }, { "exile": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: protection from enchantments: an Aura spell cannot target it even with another creature available",
+  "players": [
+   { "hand": ["Pacifism"], "battlefield": ["Polis Crusher", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Polis Crusher"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Pacifism"], "battlefield_has": ["Polis Crusher"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: monstrosity does nothing once the creature is already monstrous",
+  "players": [
+   { "battlefield": ["Polis Crusher", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Polis Crusher" },
+   { "resolve": true },
+   { "activate": "Polis Crusher" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Polis Crusher"] }, {} ],
+   "pt": { "Polis Crusher": [7, 7] }
+  }
+ }
+]

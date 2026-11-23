@@ -1,0 +1,22 @@
+[
+ { "name": "attack, pay X=4: return the MV 4 creature from your graveyard with a corpse counter",
+   "players": [ { "battlefield": ["Isareth the Awakener", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] }, {} ],
+   "steps": [ { "attack": [ { "card": "Isareth the Awakener", "at": "p1" } ] }, { "resolve": true, "answers": [4, true] } ],
+   "expect": { "players": [ { "battlefield_has": ["Hill Giant"], "graveyard": [] }, {} ], "counters": { "Hill Giant": { "corpse": 1 } }, "pt": { "Hill Giant": [3, 3] } } },
+ { "name": "pay X=2 returns only a creature with mana value 2, not the MV 3 one",
+   "players": [ { "battlefield": ["Isareth the Awakener", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant", "Grizzly Bears"] }, {} ],
+   "steps": [ { "attack": [ { "card": "Isareth the Awakener", "at": "p1" } ] }, { "resolve": true, "answers": [2, true] } ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Hill Giant"] }, {} ], "counters": { "Grizzly Bears": { "corpse": 1 } } } },
+ { "name": "declining to pay returns nothing",
+   "players": [ { "battlefield": ["Isareth the Awakener", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] }, {} ],
+   "steps": [ { "attack": [ { "card": "Isareth the Awakener", "at": "p1" } ] }, { "resolve": true, "answers": [4, false] } ],
+   "expect": { "players": [ { "battlefield_lacks": ["Hill Giant"], "graveyard": ["Hill Giant"] }, {} ] } },
+ { "name": "ruling: a creature returned by Isareth is exiled instead of dying",
+   "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Isareth the Awakener", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain"], "graveyard": ["Hill Giant"] }, {} ],
+   "steps": [ { "attack": [ { "card": "Isareth the Awakener", "at": "p1" } ] }, { "resolve": true, "answers": [4, true] }, { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard": ["Lightning Bolt"], "exile": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"] }, {} ] } },
+ { "name": "ruling: if Isareth leaves the battlefield, the returned creature is still exiled instead of dying",
+   "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Isareth the Awakener", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"], "graveyard": ["Hill Giant"] }, {} ],
+   "steps": [ { "attack": [ { "card": "Isareth the Awakener", "at": "p1" } ] }, { "resolve": true, "answers": [4, true] }, { "cast": "Lightning Bolt", "targets": ["Isareth the Awakener"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Lightning Bolt", "Isareth the Awakener"], "exile": ["Hill Giant"], "battlefield_lacks": ["Hill Giant", "Isareth the Awakener"] }, {} ] } }
+]

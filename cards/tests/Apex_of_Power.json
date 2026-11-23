@@ -1,0 +1,155 @@
+[
+  {
+    "name": "cast from hand: cast a nonland card exiled with it this turn; ten mana of one color",
+    "players": [
+      {
+        "hand": ["Apex of Power"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "resolve": true, "answers": ["R"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Apex of Power", "Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "a land exiled this way cannot be played",
+    "players": [
+      {
+        "hand": ["Apex of Power"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Forest", "Lightning Bolt", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "resolve": true, "answers": ["G"] },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Apex of Power"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cards not cast stay in exile after the turn ends",
+    "players": [
+      {
+        "hand": ["Apex of Power"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "resolve": true, "answers": ["R"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled sorcery-speed creature is castable in the main phase but not in combat",
+    "players": [
+      {
+        "hand": ["Apex of Power"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest"],
+        "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "resolve": true, "answers": ["R"] },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Apex of Power"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: an exiled sorcery-speed creature is castable in the main phase while the permission lasts",
+    "players": [
+      {
+        "hand": ["Apex of Power"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest"],
+        "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "resolve": true, "answers": ["R"] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a copy of Apex of Power is not cast, so only the cast original adds ten mana",
+    "players": [
+      {
+        "hand": ["Apex of Power", "Fork"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "cast": "Fork", "targets": [{ "stack": "Apex of Power" }] },
+      { "resolve": true, "answers": ["R"] }
+    ],
+    "expect": {
+      "players": [{ "pool": { "R": 10 } }, {}]
+    }
+  },
+  {
+    "name": "ruling: a card cast from exile leaves exile and cannot be cast again",
+    "players": [
+      {
+        "hand": ["Apex of Power"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Apex of Power" },
+      { "resolve": true, "answers": ["R"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"], "exile": ["Forest", "Grizzly Bears", "Island", "Shock", "Swamp", "Hill Giant"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

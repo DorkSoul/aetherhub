@@ -1,0 +1,144 @@
+[
+  {
+    "name": "a creature an opponent controls is exiled instead of dying",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Samurai of the Pale Curtain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "the Samurai itself is exiled when it would die",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Samurai of the Pale Curtain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Samurai of the Pale Curtain"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Samurai of the Pale Curtain"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "blocking: bushido gives +1/+1 and the blocked attacker is exiled",
+    "players": [
+      { "battlefield": ["Samurai of the Pale Curtain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Samurai of the Pale Curtain", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Samurai of the Pale Curtain"], "life": 20 },
+        { "exile": ["Grizzly Bears"], "life": 20 }
+      ],
+      "pt": { "Samurai of the Pale Curtain": [3, 3] }
+    }
+  },
+  {
+    "name": "becoming blocked: bushido gives +1/+1",
+    "players": [
+      { "battlefield": ["Samurai of the Pale Curtain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Samurai of the Pale Curtain", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Samurai of the Pale Curtain" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Samurai of the Pale Curtain"], "life": 20 },
+        { "exile": ["Grizzly Bears"] }
+      ],
+      "pt": { "Samurai of the Pale Curtain": [3, 3] }
+    }
+  },
+  {
+    "name": "unblocked attacker gets no bushido",
+    "players": [
+      { "battlefield": ["Samurai of the Pale Curtain"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Samurai of the Pale Curtain", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 18 } ],
+      "pt": { "Samurai of the Pale Curtain": [2, 2] }
+    }
+  }
+]

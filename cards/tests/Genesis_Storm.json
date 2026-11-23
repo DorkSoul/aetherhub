@@ -1,0 +1,91 @@
+[
+  {
+    "name": "reveals until a nonland permanent and puts it onto the battlefield",
+    "players": [
+      { "hand": ["Genesis Storm"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Lightning Bolt", "Forest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Genesis Storm" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Grizzly Bears"], "hand_count": 0 }, {}] }
+  },
+  {
+    "name": "declining to put the card onto the battlefield leaves it out",
+    "players": [
+      { "hand": ["Genesis Storm"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Genesis Storm" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": { "players": [{ "battlefield_lacks": ["Grizzly Bears"] }, {}] }
+  },
+  {
+    "name": "one copy for each commander cast from the command zone",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Test Commander"],
+        "hand": ["Genesis Storm"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Test Commander" },
+      { "resolve": true },
+      { "cast": "Genesis Storm" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Grizzly Bears", "Hill Giant", "Test Commander"] }, {}] }
+  },
+  {
+    "name": "ruling: a commander that was countered still counts toward the copies",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Test Commander"],
+        "hand": ["Genesis Storm"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Mountain", "Grizzly Bears", "Hill Giant"]
+      },
+      {
+        "hand": ["Scattering Stroke"],
+        "battlefield": ["Island", "Island", "Island", "Island"],
+        "library": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Test Commander" },
+      { "cast": "Scattering Stroke", "player": 1, "targets": [{ "stack": "Test Commander" }] },
+      { "resolve": true, "answers": [false, false] },
+      { "cast": "Genesis Storm" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "ruling: copies are not cast, so a 'whenever you cast' trigger sees only the original Storm",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Test Commander"],
+        "hand": ["Genesis Storm"],
+        "battlefield": ["Guttersnipe", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Test Commander" },
+      { "resolve": true },
+      { "cast": "Genesis Storm" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"] }, { "life": 18 } ] }
+  }
+]

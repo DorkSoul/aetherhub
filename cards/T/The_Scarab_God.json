@@ -1,0 +1,71 @@
+{
+  "name": "The Scarab God",
+  "mana_cost": "{3}{U}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["God"],
+  "power": 5,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        {
+          "type": "LoseLife",
+          "who": { "type": "EachOpponent" },
+          "n": {
+            "type": "Count",
+            "filter": { "types": ["Creature"], "subtypes": ["Zombie"], "controller": "You" },
+            "zone": "Battlefield"
+          }
+        },
+        {
+          "type": "Scry",
+          "who": { "type": "You" },
+          "n": {
+            "type": "Count",
+            "filter": { "types": ["Creature"], "subtypes": ["Zombie"], "controller": "You" },
+            "zone": "Battlefield"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{2}{U}{B}" }],
+      "targets": [
+        {
+          "what": { "type": "CardIn", "zone": "Graveyard", "filter": { "types": ["Creature"] }, "whose": "Any" },
+          "label": "target creature card in a graveyard"
+        }
+      ],
+      "effects": [
+        { "type": "Exile", "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "CopyPermanent",
+          "what": { "type": "Remembered" },
+          "except": [
+            { "type": "SetPT", "power": 4, "toughness": 4 },
+            { "type": "SetColors", "colors": ["B"] },
+            { "type": "SetSubtypes", "subtypes": ["Zombie"] }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [
+            { "type": "Move", "what": { "type": "This" }, "from": "Graveyard", "to": "Hand" }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of your upkeep, each opponent loses X life and you scry X, where X is the number of Zombies you control.\n{2}{U}{B}: Exile target creature card from a graveyard. Create a token that's a copy of it, except it's a 4/4 black Zombie.\nWhen The Scarab God dies, return it to its owner's hand at the beginning of the next end step."
+}

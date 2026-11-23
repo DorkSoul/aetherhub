@@ -1,0 +1,224 @@
+[
+  {
+    "name": "casting it destroys the chosen permanent and its controller gets a tapped Powerstone",
+    "players": [
+      {
+        "hand": [
+          "Cityscape Leveler"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cityscape Leveler",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Cityscape Leveler"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "battlefield_has": [
+            "Powerstone"
+          ]
+        }
+      ],
+      "tapped": {
+        "Powerstone": true
+      }
+    }
+  },
+  {
+    "name": "up to one: choosing no target destroys nothing and makes no Powerstone",
+    "players": [
+      {
+        "hand": [
+          "Cityscape Leveler"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Cityscape Leveler",
+        "targets": []
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Cityscape Leveler"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Powerstone"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "unearth returns it with haste and it is exiled at the end step",
+    "players": [
+      {
+        "graveyard": [
+          "Cityscape Leveler"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Cityscape Leveler",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Cityscape Leveler"
+          ],
+          "exile": [
+            "Cityscape Leveler"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "attack trigger: the target is destroyed and its controller gets a tapped Powerstone",
+    "players": [ { "battlefield": [ { "name": "Cityscape Leveler", "sick": false } ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Cityscape Leveler", "at": "p1" } ], "targets": [] },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 12, "graveyard": ["Grizzly Bears"], "battlefield_has": ["Powerstone"] } ],
+      "tapped": { "Powerstone": true }
+    }
+  },
+  {
+    "name": "up to one: an attack trigger with no target destroys nothing and makes no Powerstone",
+    "players": [ { "battlefield": [ { "name": "Cityscape Leveler", "sick": false } ] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [
+      { "attack": [ { "card": "Cityscape Leveler", "at": "p1" } ], "targets": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 12, "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Powerstone"] } ]
+    }
+  },
+  {
+    "name": "ruling: unearth is not a cast, so the 'when you cast this spell' trigger does not happen",
+    "players": [
+      { "graveyard": ["Cityscape Leveler"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "activate": "Cityscape Leveler", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Cityscape Leveler"], "battlefield_lacks": ["Powerstone"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: an unearthed Leveler whose own attack trigger destroys it is exiled instead",
+    "players": [ { "graveyard": ["Cityscape Leveler"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Cityscape Leveler", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Cityscape Leveler", "at": "p1" } ], "targets": [] },
+      { "resolve": true, "targets": ["Cityscape Leveler"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "exile": ["Cityscape Leveler"], "battlefield_lacks": ["Cityscape Leveler"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: an unearth ability whose card is exiled in response does nothing",
+    "players": [
+      { "graveyard": ["Cityscape Leveler"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Kozilek's Command"], "battlefield": ["Sol Ring", "Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Cityscape Leveler", "ability": 0 },
+      { "pass": true },
+      { "cast": "Kozilek's Command", "player": 1, "targets": ["p1", "Cityscape Leveler"], "answers": [[0, 3], 1] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Cityscape Leveler"], "battlefield_lacks": ["Cityscape Leveler"] }, { "battlefield_has": ["Eldrazi Spawn"], "graveyard": ["Kozilek's Command"] } ] }
+  }
+]

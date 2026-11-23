@@ -1,0 +1,52 @@
+[
+ { "name": "opponent picks a pile of the top four; you take that pile into hand and the rest go to the graveyard",
+   "players": [
+     { "hand": ["Sauron's Ransom"], "battlefield": ["Island", "Swamp", "Plains"],
+       "library": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest"] },
+     {} ],
+   "steps": [ { "cast": "Sauron's Ransom" },
+              { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant"], true] } ],
+   "expect": { "players": [ { "hand": ["Grizzly Bears", "Hill Giant"], "graveyard_has": ["Llanowar Elves", "Forest"] }, {} ] } },
+ { "name": "you may decline and take the other pile into hand",
+   "players": [
+     { "hand": ["Sauron's Ransom"], "battlefield": ["Island", "Swamp", "Plains"],
+       "library": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest"] },
+     {} ],
+   "steps": [ { "cast": "Sauron's Ransom" },
+              { "resolve": true, "answers": [["Llanowar Elves"], false] } ],
+   "expect": { "players": [ { "hand": ["Grizzly Bears", "Hill Giant", "Forest"], "graveyard_has": ["Llanowar Elves"] }, {} ] } },
+ { "name": "an empty pile goes to the graveyard and the full pile comes to hand",
+   "players": [
+     { "hand": ["Sauron's Ransom"], "battlefield": ["Island", "Swamp", "Plains"],
+       "library": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest"] },
+     {} ],
+   "steps": [ { "cast": "Sauron's Ransom" },
+              { "resolve": true, "answers": [[], true] } ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest"] }, {} ] } },
+ { "name": "ruling: only one Ring emblem: a second tempt raises it to level 2 instead of making another",
+   "players": [
+     { "hand": ["Sauron's Ransom", "Sauron's Ransom"], "battlefield": ["Island", "Island", "Swamp", "Swamp", "Plains", "Plains"],
+       "library": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest", "Island", "Plains", "Swamp", "Plains"] },
+     {} ],
+   "steps": [ { "cast": "Sauron's Ransom" }, { "resolve": true, "answers": [[], true] },
+              { "cast": "Sauron's Ransom" }, { "resolve": true, "answers": [[], true] } ],
+   "expect": { "players": [ { "command": ["The Ring 2"] }, {} ] } },
+ { "name": "ruling: the Ring tempts you even without a creature: the Ring emblem is still created",
+   "players": [
+     { "hand": ["Sauron's Ransom"], "battlefield": ["Island", "Swamp", "Plains"],
+       "library": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest"] },
+     {} ],
+   "steps": [ { "cast": "Sauron's Ransom" }, { "resolve": true, "answers": [[], true] } ],
+   "expect": { "players": [ { "command": ["The Ring 1"] }, {} ] } },
+ { "name": "ruling: the chosen Ring-bearer is legendary and cannot be blocked by creatures with greater power",
+   "players": [
+     { "hand": ["Sauron's Ransom"], "battlefield": ["Island", "Swamp", "Plains", "Grizzly Bears"],
+       "library": ["Grizzly Bears", "Hill Giant", "Llanowar Elves", "Forest"] },
+     { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Sauron's Ransom" }, { "resolve": true, "answers": [[], true] },
+              { "advance_to": "BeginCombat" },
+              { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+              { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "illegal": true },
+              { "advance_to": "End" } ],
+   "expect": { "players": [ {}, { "life": 18 } ] } }
+]

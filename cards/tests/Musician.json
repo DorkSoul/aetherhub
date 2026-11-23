@@ -1,0 +1,94 @@
+[
+ {
+  "name": "music counter and granted upkeep trigger: pay {1} to keep the creature",
+  "players": [
+   { "battlefield": ["Musician"] },
+   { "battlefield": ["Hill Giant", "Forest"] }
+  ],
+  "steps": [
+   { "activate": "Musician", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep", "answers": [true] }
+  ],
+  "expect": {
+   "counters": { "Hill Giant": { "Music": 1 } },
+   "players": [
+    { "battlefield_has": ["Musician"] },
+    { "battlefield_has": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "granted upkeep trigger: destroyed when the controller cannot pay",
+  "players": [
+   { "battlefield": ["Musician"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Musician", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Musician"] },
+    { "graveyard": ["Hill Giant"], "battlefield": [] }
+   ]
+  }
+ },
+ {
+  "name": "second music counter does not grant the ability again (one trigger, pay {2})",
+  "players": [
+   { "battlefield": ["Musician", "Musician"] },
+   { "battlefield": ["Hill Giant", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "activate": "Musician", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "activate": "Musician", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep", "answers": [true] }
+  ],
+  "expect": {
+   "counters": { "Hill Giant": { "Music": 2 } },
+   "players": [
+    { "battlefield_has": ["Musician"] },
+    { "battlefield_has": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "cumulative upkeep on Musician itself: pay {1} on the first upkeep",
+  "players": [
+   { "battlefield": ["Musician", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Musician"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: cumulative upkeep not paid on the first upkeep: Musician is sacrificed",
+  "players": [
+   { "battlefield": ["Musician"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Musician"], "battlefield": [] },
+    {}
+   ]
+  }
+ }
+]

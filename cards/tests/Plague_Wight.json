@@ -1,0 +1,106 @@
+[
+  {
+    "name": "blocked by one creature: that blocker gets -1/-1 until end of turn",
+    "players": [
+      { "battlefield": [ { "name": "Plague Wight", "sick": false } ] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Wight", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Plague Wight" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Plague Wight"] },
+        { "battlefield_has": ["Serra Angel"] }
+      ],
+      "pt": { "Serra Angel": [3, 3] }
+    }
+  },
+  {
+    "name": "two blockers each get -1/-1 once; a 2/1 blocker dies to it",
+    "players": [
+      { "battlefield": [ { "name": "Plague Wight", "sick": false } ] },
+      { "battlefield": ["Serra Angel", "Elvish Visionary"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Wight", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Serra Angel", "attacker": "Plague Wight" },
+          { "blocker": "Elvish Visionary", "attacker": "Plague Wight" }
+      ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Plague Wight"] },
+        { "graveyard": ["Elvish Visionary"], "battlefield_has": ["Serra Angel"] }
+      ],
+      "pt": { "Serra Angel": [3, 3] }
+    }
+  },
+  {
+    "name": "a creature that is not blocking it is not affected",
+    "players": [
+      { "battlefield": [ { "name": "Plague Wight", "sick": false } ] },
+      { "battlefield": ["Serra Angel", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Wight", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Plague Wight" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: if the only blocker dies, the attacker stays blocked and deals no combat damage",
+    "players": [
+      { "battlefield": [ { "name": "Plague Wight", "sick": false } ] },
+      { "battlefield": ["Elvish Visionary"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Wight", "at": "p1" } ] },
+      { "block": [ { "blocker": "Elvish Visionary", "attacker": "Plague Wight" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Plague Wight"], "life": 20 },
+        { "graveyard": ["Elvish Visionary"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the -1/-1 still hits the blockers when Plague Wight leaves while the trigger is on the stack",
+    "players": [
+      { "battlefield": [ { "name": "Plague Wight", "sick": false } ] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Serra Angel", "Mountain"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Plague Wight", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Plague Wight" } ] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Plague Wight"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Plague Wight"] },
+        { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Serra Angel"] }
+      ],
+      "pt": { "Serra Angel": [3, 3] }
+    }
+  }
+]

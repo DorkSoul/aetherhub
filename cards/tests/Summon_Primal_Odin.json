@@ -1,0 +1,151 @@
+[
+ {
+  "name": "chapter I destroys target creature an opponent controls",
+  "players": [
+   {
+    "hand": ["Summon: Primal Odin"],
+    "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+   },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Summon: Primal Odin" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Summon: Primal Odin"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "chapter I with no opposing creature is not targeted: own creature survives",
+  "players": [
+   {
+    "hand": ["Summon: Primal Odin"],
+    "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Summon: Primal Odin" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Summon: Primal Odin", "Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "chapter II gives it 'deals combat damage to a player: that player loses the game'",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Summon: Primal Odin", "counters": { "lore": 1 } }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "attack": [ { "card": "Summon: Primal Odin", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "winner": 0,
+   "counters": { "Summon: Primal Odin": { "Lore": 2 } }
+  }
+ },
+ {
+  "name": "chapter III: you draw two, each player loses 2 life, then the saga is sacrificed",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Summon: Primal Odin", "counters": { "lore": 2 } }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 3, "life": 18, "graveyard": ["Summon: Primal Odin"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a chapter I trigger still destroys its target after the Saga is bolted in response",
+  "players": [
+   { "hand": ["Summon: Primal Odin", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Summon: Primal Odin" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Summon: Primal Odin"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Summon: Primal Odin", "Lightning Bolt"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a chapter III counter does not re-trigger chapter I on an opposing creature",
+  "players": [
+   { "battlefield": [{ "name": "Summon: Primal Odin", "counters": { "lore": 2 } }] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 3, "life": 18, "graveyard": ["Summon: Primal Odin"] },
+    { "life": 18, "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the combat damage loss trigger still resolves after the Saga is bolted",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Summon: Primal Odin", "counters": { "lore": 1 } }, "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "attack": [{ "card": "Summon: Primal Odin", "at": "p1" }] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Lightning Bolt", "targets": ["Summon: Primal Odin"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "winner": 0,
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Summon: Primal Odin"] },
+    {}
+   ]
+  }
+ }
+]

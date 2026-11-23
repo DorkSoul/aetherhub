@@ -1,0 +1,180 @@
+[
+  {
+    "name": "gift not promised: exiled, then returned at the next end step with a +1/+1 counter",
+    "players": [
+      {
+        "hand": [
+          "Parting Gust"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Parting Gust",
+        "targets": [
+          "Hill Giant"
+        ],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ],
+      "counters": {
+        "Hill Giant": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Hill Giant": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "gift promised: opponent gets a tapped Fish and the creature stays exiled",
+    "players": [
+      {
+        "hand": [
+          "Parting Gust"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Parting Gust",
+        "targets": [
+          "Hill Giant"
+        ],
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "exile": [
+            "Hill Giant"
+          ],
+          "battlefield_has": [
+            "Fish"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: counters on the exiled creature cease; it returns as a new object",
+    "players": [
+      {"hand": ["Parting Gust"], "battlefield": ["Plains", "Plains"]},
+      {"battlefield": [{"name": "Hill Giant", "counters": {"p1p1": 2}}]}
+    ],
+    "steps": [
+      {"cast": "Parting Gust", "targets": ["Hill Giant"], "answers": [false]},
+      {"resolve": true},
+      {"advance_to": "End"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{}, {"battlefield_has": ["Hill Giant"]}],
+      "counters": {"Hill Giant": {"p1p1": 1}},
+      "pt": {"Hill Giant": [4, 4]}
+    }
+  },
+  {
+    "name": "ruling: an Aura on the exiled creature goes to its owner's graveyard",
+    "players": [
+      {"hand": ["Pacifism", "Parting Gust"], "battlefield": ["Plains", "Plains", "Plains", "Plains"]},
+      {"battlefield": ["Hill Giant"]}
+    ],
+    "steps": [
+      {"cast": "Pacifism", "targets": ["Hill Giant"]},
+      {"resolve": true},
+      {"cast": "Parting Gust", "targets": ["Hill Giant"], "answers": [false]},
+      {"resolve": true},
+      {"advance_to": "End"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"graveyard_has": ["Pacifism"]}, {"battlefield_has": ["Hill Giant"]}]
+    }
+  },
+  {
+    "name": "ruling: promised gift is not given when the spell is removed from the stack",
+    "players": [
+      {"hand": ["Parting Gust"], "battlefield": ["Plains", "Plains"]},
+      {"hand": ["Unsummon"], "battlefield": ["Island", "Hill Giant"]}
+    ],
+    "steps": [
+      {"cast": "Parting Gust", "targets": ["Hill Giant"], "answers": [true]},
+      {"cast": "Unsummon", "targets": ["Hill Giant"], "player": 1},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{}, {"hand": ["Hill Giant"], "battlefield_lacks": ["Fish"]}]
+    }
+  },
+  {
+    "name": "ruling: a copy of a spell with a promised gift also gives the gift",
+    "players": [
+      {"hand": ["Parting Gust", "Twincast"], "battlefield": ["Plains", "Plains", "Island", "Island"]},
+      {"battlefield": ["Hill Giant"]}
+    ],
+    "steps": [
+      {"cast": "Parting Gust", "targets": ["Hill Giant"], "answers": [true]},
+      {"cast": "Twincast", "targets": [{"stack": "Parting Gust"}]},
+      {"resolve": true},
+      {"resolve": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{}, {"battlefield_has": ["Fish"], "exile": ["Hill Giant"]}]
+    }
+  }
+]

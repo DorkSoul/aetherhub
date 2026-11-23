@@ -1,0 +1,108 @@
+[
+  {
+    "name": "flashed in on the opponent's turn, then blocks two attackers",
+    "players": [
+      { "battlefield": ["Llanowar Elves", "Savannah Lions"] },
+      { "hand": ["Foriysian Interceptor"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Foriysian Interceptor", "player": 1 },
+      { "resolve": true },
+      { "block": [
+          { "blocker": "Foriysian Interceptor", "attacker": "Llanowar Elves" },
+          { "blocker": "Foriysian Interceptor", "attacker": "Savannah Lions" }
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Foriysian Interceptor"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "cannot block three attackers",
+    "players": [
+      { "battlefield": ["Llanowar Elves", "Savannah Lions", "Grizzly Bears"] },
+      { "battlefield": ["Foriysian Interceptor"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Foriysian Interceptor", "attacker": "Llanowar Elves" },
+          { "blocker": "Foriysian Interceptor", "attacker": "Savannah Lions" },
+          { "blocker": "Foriysian Interceptor", "attacker": "Grizzly Bears" }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Foriysian Interceptor"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "has defender: cannot attack",
+    "players": [
+      { "battlefield": ["Foriysian Interceptor"] },
+      { }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Foriysian Interceptor", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Foriysian Interceptor"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "a third attacker is dropped: two blocks are legal, the third deals its damage",
+    "players": [
+      { "battlefield": ["Llanowar Elves", "Savannah Lions", "Grizzly Bears"] },
+      { "battlefield": ["Foriysian Interceptor"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Foriysian Interceptor", "attacker": "Llanowar Elves" },
+          { "blocker": "Foriysian Interceptor", "attacker": "Savannah Lions" },
+          { "blocker": "Foriysian Interceptor", "attacker": "Grizzly Bears" }
+        ]
+      },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Foriysian Interceptor"], "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a can't-block effect (Pacifism) leaves no block possible, so the attacker's damage goes through",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains", "Savannah Lions"] },
+      { "battlefield": ["Foriysian Interceptor"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Foriysian Interceptor"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Foriysian Interceptor", "attacker": "Savannah Lions" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Pacifism"] },
+        { "battlefield_has": ["Foriysian Interceptor"], "life": 18 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,130 @@
+[
+  {
+    "name": "combat damage to a player: puts a creature card from that player's graveyard onto the battlefield",
+    "players": [
+      { "battlefield": [{ "name": "Ink-Eyes, Servant of Oni", "sick": false }] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Ink-Eyes, Servant of Oni", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"] },
+        { "graveyard": [], "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "declining the may leaves the creature card in the damaged player's graveyard",
+    "players": [
+      { "battlefield": [{ "name": "Ink-Eyes, Servant of Oni", "sick": false }] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Ink-Eyes, Servant of Oni", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Hill Giant"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "a creature card in its controller's own graveyard is not a legal target",
+    "players": [
+      { "battlefield": [{ "name": "Ink-Eyes, Servant of Oni", "sick": false }], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Ink-Eyes, Servant of Oni", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Hill Giant"] },
+        { "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "{1}{B}: regenerate Ink-Eyes when it is dealt lethal combat damage (Serra Angel dies)",
+    "players": [
+      { "battlefield": [{ "name": "Ink-Eyes, Servant of Oni", "sick": false }, "Swamp", "Swamp"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ink-Eyes, Servant of Oni", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Ink-Eyes, Servant of Oni" } ] },
+      { "activate": "Ink-Eyes, Servant of Oni", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ink-Eyes, Servant of Oni"] },
+        { "graveyard_has": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "regenerate needs {1}{B}: no mana, no activation",
+    "players": [
+      { "battlefield": [{ "name": "Ink-Eyes, Servant of Oni", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ink-Eyes, Servant of Oni", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ink-Eyes, Servant of Oni"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ninjutsu from hand: returns the unblocked Grizzly Bears, Ink-Eyes enters attacking and deals 5",
+    "players": [
+      {
+        "hand": ["Ink-Eyes, Servant of Oni"],
+        "battlefield": [{"name": "Grizzly Bears", "sick": false}, "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+      {"block": []},
+      {"activate": "Ink-Eyes, Servant of Oni", "ability": 1},
+      {"resolve": true},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Ink-Eyes, Servant of Oni"], "hand": ["Grizzly Bears"]}, {"life": 15}]
+    }
+  },
+  {
+    "name": "ruling: a creature destroyed in the same combat damage step is a legal target for the trigger",
+    "players": [
+      { "battlefield": [{ "name": "Ink-Eyes, Servant of Oni", "sick": false }, { "name": "Hill Giant", "sick": false }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ink-Eyes, Servant of Oni", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Hill Giant"] },
+        { "graveyard": [], "life": 15 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "name": "colorless MV 7+ spell cast from hand cascades twice",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Zhulodok, Void Gorger", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Grizzly Bears", "Llanowar Elves"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"resolve": true, "answers": [true, true]}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Ulamog's Crusher", "Grizzly Bears", "Llanowar Elves"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without Zhulodok on the battlefield there is no cascade",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Grizzly Bears", "Llanowar Elves"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Ulamog's Crusher"], "battlefield_lacks": ["Grizzly Bears", "Llanowar Elves"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascade skips a card whose mana value equals the cast spell's (Ulamog's Crusher MV 8 is not less than 8)",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Zhulodok, Void Gorger", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Ulamog's Crusher", "Grizzly Bears"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"resolve": true, "answers": [true]}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Ulamog's Crusher", "Grizzly Bears"], "exile": []},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascade cast without paying mana cost cannot use evoke (Solitude stays on the battlefield)",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Zhulodok, Void Gorger", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Solitude"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"resolve": true, "answers": [true, []]}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Solitude", "Ulamog's Crusher"], "graveyard": []},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cascade cast may be declined; the exiled cards go to the bottom and nothing is cast",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Zhulodok, Void Gorger", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Grizzly Bears", "Llanowar Elves"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"resolve": true, "answers": [false, false]}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Ulamog's Crusher"], "battlefield_lacks": ["Grizzly Bears", "Llanowar Elves"], "exile": []},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascading into Walking Ballista casts it with X=0, so it enters with no counters and dies",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Zhulodok, Void Gorger", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Walking Ballista"]},
+      {}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"resolve": true, "answers": [true]}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Ulamog's Crusher"], "battlefield_lacks": ["Walking Ballista"], "graveyard": ["Walking Ballista"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the cascading spell does not stop its cascade triggers",
+    "players": [
+      {"hand": ["Ulamog's Crusher"], "battlefield": ["Zhulodok, Void Gorger", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes", "Wastes"], "library": ["Grizzly Bears"]},
+      {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}
+    ],
+    "steps": [
+      {"cast": "Ulamog's Crusher"},
+      {"pass": true},
+      {"cast": "Counterspell", "player": 1, "targets": [{"stack": "Ulamog's Crusher"}]},
+      {"resolve": true, "answers": [true]}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Ulamog's Crusher"], "battlefield_has": ["Grizzly Bears"]},
+        {"graveyard": ["Counterspell"]}
+      ]
+    }
+  }
+]

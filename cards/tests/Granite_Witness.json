@@ -1,0 +1,172 @@
+[
+  {
+    "name": "hard-cast 3/2 flier does not trigger on entering",
+    "players": [
+      {
+        "hand": [
+          "Granite Witness"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island",
+          "Plains",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Granite Witness"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Granite Witness"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "pt": {
+        "Granite Witness": [
+          3,
+          2
+        ]
+      },
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "not castable with only two lands (even face down costs 3)",
+    "players": [
+      {
+        "hand": [
+          "Granite Witness"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Granite Witness",
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "turned face up: may tap target creature (mode 0)",
+    "players": [
+      { "hand": ["Granite Witness"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Granite Witness", "alt": 254 },
+      { "resolve": true },
+      { "activate": "Granite Witness", "ability": 0 },
+      { "resolve": true, "answers": [[0], "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Granite Witness"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "pt": { "Granite Witness": [3, 2] },
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "turned face up: may untap target creature (mode 1)",
+    "players": [
+      { "hand": ["Granite Witness"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Island"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+    ],
+    "steps": [
+      { "cast": "Granite Witness", "alt": 254 },
+      { "resolve": true },
+      { "activate": "Granite Witness", "ability": 0 },
+      { "resolve": true, "answers": [[1], "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Granite Witness"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "turned face up: choosing no mode leaves the opposing creature alone",
+    "players": [
+      { "hand": ["Granite Witness"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Island"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] }
+    ],
+    "steps": [
+      { "cast": "Granite Witness", "alt": 254 },
+      { "resolve": true },
+      { "activate": "Granite Witness", "ability": 0 },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Granite Witness"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: a face-down creature is a colorless 2/2",
+    "players": [ { "hand": ["Granite Witness"], "battlefield": ["Plains", "Plains", "Island"] }, {} ],
+    "steps": [ { "cast": "Granite Witness", "alt": 254 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Granite Witness"] }, {} ], "pt": { "Granite Witness": [2, 2] }, "colors": { "Granite Witness": [] } }
+  },
+  {
+    "name": "ruling: a face-down spell can't be turned face up while it is on the stack",
+    "players": [ { "hand": ["Granite Witness"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Granite Witness", "alt": 254 }, { "activate": "Granite Witness", "illegal": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Granite Witness"] }, {} ], "pt": { "Granite Witness": [2, 2] } }
+  },
+  {
+    "name": "ruling: face-down creature has ward 2, so a Bolt is countered when the opponent cannot pay",
+    "players": [ { "battlefield": [ { "name": "Granite Witness", "face_down": true }, "Plains", "Plains" ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Granite Witness"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Granite Witness"], "life": 20 }, { "graveyard": ["Lightning Bolt"], "life": 20 } ] }
+  },
+  {
+    "name": "ruling: face-down ward 2 is paid by the opponent, and the Bolt then kills the 2/2",
+    "players": [ { "battlefield": [ { "name": "Granite Witness", "face_down": true } ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Granite Witness"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Granite Witness"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: turning a tapped face-down creature face up leaves it tapped",
+    "players": [ { "battlefield": [ { "name": "Granite Witness", "face_down": true, "tapped": true }, "Plains", "Plains" ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Granite Witness" }, { "resolve": true, "answers": [[]] } ],
+    "expect": { "players": [ { "battlefield_has": ["Granite Witness"] }, { "battlefield_has": ["Grizzly Bears"] } ], "pt": { "Granite Witness": [3, 2] }, "tapped": { "Granite Witness": true } }
+  },
+  {
+    "name": "ruling: an Aura on a face-down creature stays attached when it is turned face up",
+    "players": [ { "hand": ["Mardu Runemark"], "battlefield": ["Mountain", "Mountain", "Mountain", "Plains", "Plains", { "name": "Granite Witness", "face_down": true }] }, {} ],
+    "steps": [ { "cast": "Mardu Runemark", "targets": ["Granite Witness"] }, { "resolve": true }, { "activate": "Granite Witness" }, { "resolve": true, "answers": [[]] } ],
+    "expect": { "players": [ { "battlefield_has": ["Granite Witness", "Mardu Runemark"] }, {} ], "pt": { "Granite Witness": [5, 4] }, "attached": { "Mardu Runemark": "Granite Witness" } }
+  }
+]

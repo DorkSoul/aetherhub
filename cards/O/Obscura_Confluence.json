@@ -1,0 +1,54 @@
+{
+  "name": "Obscura Confluence",
+  "mana_cost": "{1}{W}{U}{B}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 3,
+      "choose_max": 3,
+      "allow_repeat": true,
+      "modes": [
+        {
+          "text": "Until end of turn, target creature loses all abilities and has base power and toughness 1/1.",
+          "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" } ],
+          "effects": [
+            { "type": "GrantStatic", "what": { "type": "Target", "idx": 0 }, "effect": { "type": "RemoveAbilities", "affects": {} }, "duration": "UntilEndOfTurn" },
+            { "type": "GrantStatic", "what": { "type": "Target", "idx": 0 }, "effect": { "type": "SetBasePT", "affects": {}, "power": 1, "toughness": 1 }, "duration": "UntilEndOfTurn" }
+          ]
+        },
+        {
+          "text": "Target creature connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on that creature.)",
+          "targets": [ { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" } ],
+          "effects": [
+            { "type": "Draw", "who": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } }, "n": { "type": "Fixed", "n": 1 } },
+            { "type": "Discard", "who": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } }, "n": { "type": "Fixed", "n": 1 } },
+            {
+              "type": "If",
+              "cond": { "type": "RememberedIs", "filter": { "not_types": ["Land"] } },
+              "then": [ { "type": "AddCounters", "what": { "type": "Target", "idx": 0 }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } } ],
+              "else": []
+            }
+          ]
+        },
+        {
+          "text": "Target player returns a creature card from their graveyard to their hand.",
+          "targets": [ { "what": { "type": "Player", "filter": "Any" }, "label": "target player" } ],
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "Target", "idx": 0 },
+              "from": { "type": "Target", "idx": 0 },
+              "zone": "Graveyard",
+              "filter": { "types": ["Creature"] },
+              "min": 1,
+              "max": 1,
+              "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• Until end of turn, target creature loses all abilities and has base power and toughness 1/1.\n• Target creature connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on that creature.)\n• Target player returns a creature card from their graveyard to their hand."
+}

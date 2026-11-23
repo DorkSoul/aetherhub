@@ -1,0 +1,188 @@
+[
+  {
+    "name": "+1 makes a land a 4/4 trample Elemental that is still a land",
+    "players": [
+      {
+        "battlefield": [
+          "Nissa, Worldwaker",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Nissa, Worldwaker",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Forest": [
+          4,
+          4
+        ]
+      },
+      "keywords": {
+        "Forest": [
+          "Trample"
+        ]
+      },
+      "counters": {
+        "Nissa, Worldwaker": {
+          "loyalty": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "+1 untaps a target Forest",
+    "players": [
+      {
+        "battlefield": [
+          "Nissa, Worldwaker",
+          {
+            "name": "Forest",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Nissa, Worldwaker",
+        "ability": 1,
+        "targets": [
+          "Forest"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "tapped": {
+        "Forest": false
+      },
+      "counters": {
+        "Nissa, Worldwaker": {
+          "loyalty": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "+1 untap ability may choose no Forests",
+    "players": [
+      {
+        "battlefield": [
+          "Nissa, Worldwaker",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Nissa, Worldwaker",
+        "ability": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": {
+        "Nissa, Worldwaker": {
+          "loyalty": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "-7 searches for basic lands that become 4/4 Elemental creatures; other cards stay in the library",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Nissa, Worldwaker",
+            "counters": {
+              "loyalty": 7
+            }
+          }
+        ],
+        "library": ["Forest", "Grizzly Bears", "Island", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Nissa, Worldwaker",
+        "ability": 2
+      },
+      {
+        "resolve": true,
+        "answers": [["Forest", "Island"]]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Forest", "Island"],
+          "battlefield_lacks": ["Grizzly Bears", "Plains"],
+          "graveyard": ["Nissa, Worldwaker"],
+          "library_count": 2
+        },
+        {}
+      ],
+      "pt": {
+        "Forest": [4, 4],
+        "Island": [4, 4]
+      }
+    }
+  },
+  {
+    "name": "ruling: a land made a creature by +1 stays a creature on later turns",
+    "players": [ { "battlefield": ["Nissa, Worldwaker", "Forest"] }, {} ],
+    "steps": [
+      { "activate": "Nissa, Worldwaker", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"] }, {} ], "pt": { "Forest": [4, 4] }, "keywords": { "Forest": ["Trample"] } }
+  },
+  {
+    "name": "ruling: a land that entered this turn and became a creature cannot tap for mana",
+    "players": [ { "hand": ["Forest"], "battlefield": ["Nissa, Worldwaker"] }, {} ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "activate": "Nissa, Worldwaker", "ability": 0 },
+      { "resolve": true },
+      { "tap_for_mana": "Forest", "color": "G", "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ], "tapped": { "Forest": false }, "pt": { "Forest": [4, 4] } }
+  }
+]

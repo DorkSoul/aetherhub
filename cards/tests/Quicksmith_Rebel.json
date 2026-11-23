@@ -1,0 +1,93 @@
+[
+ {
+  "name": "the chosen artifact gains a tap ability that deals 2 damage",
+  "players": [
+   { "hand": ["Quicksmith Rebel"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Sol Ring"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Quicksmith Rebel" },
+   { "resolve": true },
+   { "resolve": true },
+   { "activate": "Sol Ring", "ability": 32768, "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 18 } ]
+  }
+ },
+ {
+  "name": "no artifact to target: the ability is never granted",
+  "players": [
+   { "hand": ["Quicksmith Rebel"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { }
+  ],
+  "steps": [
+   { "cast": "Quicksmith Rebel" },
+   { "resolve": true },
+   { "resolve": true },
+   { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: Rebel leaves while its trigger is on the stack, the artifact never gains the ability",
+  "players": [
+   { "hand": ["Quicksmith Rebel"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Sol Ring"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Quicksmith Rebel" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Quicksmith Rebel"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true },
+   { "activate": "Sol Ring", "ability": 32768, "targets": ["p1"], "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Quicksmith Rebel"], "battlefield_has": ["Sol Ring"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: if another player gains control of Rebel, the artifact loses the ability",
+  "players": [
+   { "hand": ["Quicksmith Rebel"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Sol Ring"] },
+   { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Quicksmith Rebel" },
+   { "resolve": true },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Control Magic", "player": 1, "targets": ["Quicksmith Rebel"] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "activate": "Sol Ring", "ability": 32768, "targets": ["p1"], "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Sol Ring"] }, { "battlefield_has": ["Quicksmith Rebel"] } ] }
+ },
+ {
+  "name": "ruling: Rebel dies while the granted damage ability is on the stack, the ability still resolves",
+  "players": [
+   { "hand": ["Quicksmith Rebel"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Sol Ring"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Quicksmith Rebel" },
+   { "resolve": true },
+   { "resolve": true },
+   { "activate": "Sol Ring", "ability": 32768, "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Quicksmith Rebel"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Quicksmith Rebel"] }, { "life": 18 } ] }
+ }
+]

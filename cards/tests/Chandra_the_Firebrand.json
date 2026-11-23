@@ -1,0 +1,251 @@
+[
+ {
+  "name": "+1 deals 1 damage to any target",
+  "players": [
+   {
+    "battlefield": [
+     "Chandra, the Firebrand"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, the Firebrand",
+    "ability": 0,
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 19
+    }
+   ],
+   "counters": {
+    "Chandra, the Firebrand": {
+     "Loyalty": 4
+    }
+   }
+  }
+ },
+ {
+  "name": "-2 copies the next instant or sorcery cast this turn only (copy of Bolt, not Shock)",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Shock"
+    ],
+    "battlefield": [
+     "Chandra, the Firebrand",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, the Firebrand",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 12
+    }
+   ],
+   "counters": {
+    "Chandra, the Firebrand": {
+     "Loyalty": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "-6 needs six loyalty",
+  "players": [
+   {
+    "battlefield": [
+     "Chandra, the Firebrand"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, the Firebrand",
+    "ability": 2,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ],
+   "counters": {
+    "Chandra, the Firebrand": {
+     "Loyalty": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "-6 deals 6 damage to each chosen target",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Chandra, the Firebrand",
+      "counters": {
+       "Loyalty": 6
+      }
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Chandra, the Firebrand",
+    "ability": 2,
+    "targets": [
+     "p1",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Chandra, the Firebrand"
+     ]
+    },
+    {
+     "life": 14,
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the -2 copy may choose new targets; redirected to Grizzly Bears, the original still hits the player",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Chandra, the Firebrand", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Chandra, the Firebrand", "ability": 1 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true, "answers": ["Grizzly Bears"] }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 17, "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the -6 targets are checked on resolution; a creature bounced in response takes no damage and the player still takes 6",
+  "players": [
+   { "battlefield": [ { "name": "Chandra, the Firebrand", "counters": { "Loyalty": 6 } } ] },
+   { "hand": ["Unsummon"], "battlefield": ["Island", "Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Chandra, the Firebrand", "ability": 2, "targets": ["p1", "Hill Giant"] },
+   { "cast": "Unsummon", "player": 1, "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Chandra, the Firebrand"] },
+    { "life": 14, "hand": ["Hill Giant"], "graveyard_has": ["Unsummon"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a delayed copy takes the next instant or sorcery even with no targets (Divination is copied and draws twice)",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Chandra, the Firebrand", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Chandra, the Firebrand", "ability": 1 },
+   { "resolve": true },
+   { "cast": "Divination" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 4, "graveyard": ["Divination"] },
+    {}
+   ],
+   "counters": { "Chandra, the Firebrand": { "Loyalty": 1 } }
+  }
+ },
+ {
+  "name": "ruling: the copy of X spell has the same X (Consume Spirit with X=2 is copied: 4 damage and 4 life in total)",
+  "players": [
+   { "hand": ["Consume Spirit"], "battlefield": ["Chandra, the Firebrand", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Chandra, the Firebrand", "ability": 1 },
+   { "resolve": true },
+   { "cast": "Consume Spirit", "targets": ["p1"], "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 24, "graveyard": ["Consume Spirit"] },
+    { "life": 16 }
+   ]
+  }
+ }
+]

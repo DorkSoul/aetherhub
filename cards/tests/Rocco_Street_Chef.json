@@ -1,0 +1,139 @@
+[
+  { "name": "end step: each player exiles the top card of their library and may play it",
+    "players": [
+      { "battlefield": ["Rocco, Street Chef", "Mountain"], "library": ["Grizzly Bears"] },
+      { "library": ["Forest"] }
+    ],
+    "steps": [ { "advance_to": "End" } ],
+    "expect": {
+      "players": [ { "exile": ["Grizzly Bears"] }, { "exile": ["Forest"] } ]
+    }
+  },
+  { "name": "casting a spell from hand does not trigger Rocco (no counter, no Food)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Rocco, Street Chef", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17 } ],
+      "pt": { "Rocco, Street Chef": [2, 4] }
+    }
+  },
+  { "name": "casting Lightning Bolt from exile puts a +1/+1 counter on target creature and makes a Food",
+    "players": [
+      { "battlefield": ["Rocco, Street Chef", "Mountain", "Grizzly Bears"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "player": 1, "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p1", "Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "players": [ { "battlefield_has": ["Food"] }, { "life": 17 } ]
+    }
+  },
+  { "name": "playing a land from exile puts a +1/+1 counter on target creature and makes a Food",
+    "players": [
+      { "battlefield": ["Rocco, Street Chef", "Grizzly Bears"], "library": ["Rhystic Cave"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "player": 1, "pass": true },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "play_land": "Rhystic Cave" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "players": [ { "battlefield_has": ["Food", "Rhystic Cave"], "exile": [] }, {} ]
+    }
+  },
+  { "name": "ruling: a card not played stays exiled after the play window ends",
+    "players": [
+      { "battlefield": ["Rocco, Street Chef", "Forest"], "library": ["Grizzly Bears", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "End" }, { "advance_to": "End" } ],
+    "expect": {
+      "players": [ { "exile": ["Grizzly Bears", "Forest"], "hand": ["Forest"] }, {} ]
+    }
+  },
+  { "name": "ruling: after a land was played this turn, the exiled land can't be played",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Rocco, Street Chef", "Grizzly Bears"], "library": ["Rhystic Cave"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "player": 1, "pass": true },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "play_land": "Forest" },
+      { "play_land": "Rhystic Cave", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Forest"], "battlefield_lacks": ["Rhystic Cave"], "exile": ["Rhystic Cave"] }, {} ]
+    }
+  },
+  { "name": "ruling: the exiled creature can't be cast during the opponent's turn",
+    "players": [
+      { "battlefield": ["Rocco, Street Chef", "Forest", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "player": 1, "pass": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  { "name": "ruling: Rocco leaving the battlefield does not stop the exiled card being cast",
+    "players": [
+      { "hand": ["Doom Blade"], "battlefield": ["Rocco, Street Chef", "Swamp", "Swamp", "Forest", "Forest"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "player": 1, "pass": true },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "advance_to": "Main1" },
+      { "cast": "Doom Blade" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Rocco, Street Chef", "Doom Blade"] }, {} ]
+    }
+  }
+]

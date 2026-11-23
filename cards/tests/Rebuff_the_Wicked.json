@@ -1,0 +1,94 @@
+[
+ {
+  "name": "counters a spell that targets a permanent you control",
+  "players": [
+   {
+    "hand": ["Rebuff the Wicked"],
+    "battlefield": ["Plains", "Grizzly Bears"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Mountain"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "cast": "Rebuff the Wicked", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "cannot target a spell that targets only a player or an opponent's permanent",
+  "players": [
+   {
+    "hand": ["Rebuff the Wicked"],
+    "battlefield": ["Plains"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Mountain"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Rebuff the Wicked", "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "hand": ["Rebuff the Wicked"] },
+    { "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell with two targets is countered when one target is a permanent you control",
+  "players": [
+   { "hand": ["Rebuff the Wicked"], "battlefield": ["Plains", "Grizzly Bears"] },
+   { "hand": ["Searing Blaze"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Searing Blaze", "player": 1, "targets": ["p0", "Grizzly Bears"] },
+   { "cast": "Rebuff the Wicked", "targets": [{ "stack": "Searing Blaze" }] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Rebuff the Wicked"] },
+    { "graveyard_has": ["Searing Blaze"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: once the targeted permanent has left the battlefield, the spell is no longer a legal target for Rebuff",
+  "players": [
+   { "hand": ["Rebuff the Wicked", "Unsummon"], "battlefield": ["Plains", "Island", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "cast": "Unsummon", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Rebuff the Wicked", "illegal": true, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Rebuff the Wicked", "Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ }
+]

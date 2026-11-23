@@ -1,0 +1,125 @@
+[
+  {
+    "name": "casting an artifact spell scries 1",
+    "players": [
+      {
+        "hand": [
+          "Bloodforged Battle-Axe"
+        ],
+        "battlefield": [
+          "Artificer's Assistant",
+          "Island"
+        ],
+        "library": [
+          "Mountain",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bloodforged Battle-Axe"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            0
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Bloodforged Battle-Axe"
+          ],
+          "library_count": 22
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "casting a non-historic spell does not scry",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Artificer's Assistant",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a legendary artifact spell is historic once, so the trigger scries 1 only once",
+    "players": [
+      { "hand": ["Konda's Banner"], "battlefield": ["Artificer's Assistant", "Island", "Island"], "library": ["Lightning Bolt", "Grizzly Bears", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Konda's Banner" },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Konda's Banner"], "library_top": ["Grizzly Bears", "Forest"] }, {} ] }
+  },
+  {
+    "name": "ruling: the scry trigger resolves before a countered historic spell and still happens",
+    "players": [
+      { "hand": ["Konda's Banner"], "battlefield": ["Artificer's Assistant", "Island", "Island"], "library": ["Lightning Bolt", "Grizzly Bears", "Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Konda's Banner" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Konda's Banner" } ] },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": { "players": [ { "graveyard": ["Konda's Banner"], "library_top": ["Grizzly Bears", "Forest"] }, {} ] }
+  },
+  {
+    "name": "ruling: playing a legendary land does not trigger a historic-spell scry",
+    "players": [
+      { "hand": ["Boseiju, Who Shelters All"], "battlefield": ["Artificer's Assistant"], "library": ["Lightning Bolt", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "play_land": "Boseiju, Who Shelters All" } ],
+    "expect": { "players": [ { "battlefield_has": ["Boseiju, Who Shelters All"], "library_top": ["Lightning Bolt", "Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: a legendary creature put onto the battlefield by Reanimate was not cast, so no scry",
+    "players": [
+      { "hand": ["Reanimate"], "battlefield": ["Artificer's Assistant", "Swamp"], "graveyard": ["Isamaru, Hound of Konda"], "library": ["Lightning Bolt", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "cast": "Reanimate", "targets": ["Isamaru, Hound of Konda"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Artificer's Assistant", "Isamaru, Hound of Konda"], "library_top": ["Lightning Bolt", "Grizzly Bears"], "life": 19 }, {} ] }
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "name": "Satsuki, the Living Lore",
+  "mana_cost": "{G}{W}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Human", "Druid"],
+  "power": 1,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "timing": "Sorcery",
+      "effects": [
+        {
+          "type": "AddCounters",
+          "what": { "type": "All", "filter": { "subtypes": ["Saga"], "controller": "You" }, "zone": "Battlefield" },
+          "kind": "Lore",
+          "n": { "type": "Fixed", "n": 1 }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 0,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Return target Saga or enchantment creature you control to its owner's hand.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    {
+                      "what": {
+                        "type": "Permanent",
+                        "filter": {
+                          "any_of": [
+                            { "subtypes": ["Saga"], "controller": "You" },
+                            { "all_types": ["Enchantment", "Creature"], "controller": "You" }
+                          ]
+                        }
+                      },
+                      "label": "target Saga or enchantment creature you control"
+                    }
+                  ],
+                  "effects": [ { "type": "Bounce", "what": { "type": "Target", "idx": 0 } } ]
+                }
+              ]
+            },
+            {
+              "text": "Return target Saga card from your graveyard to your hand.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [
+                    { "what": { "type": "CardIn", "zone": "Graveyard", "filter": { "subtypes": ["Saga"] }, "whose": "You" }, "label": "target Saga card" }
+                  ],
+                  "effects": [ { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Hand" } ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{T}: Put a lore counter on each Saga you control. Activate only as a sorcery.\nWhen Satsuki dies, choose up to one —\n• Return target Saga or enchantment creature you control to its owner's hand.\n• Return target Saga card from your graveyard to your hand."
+}

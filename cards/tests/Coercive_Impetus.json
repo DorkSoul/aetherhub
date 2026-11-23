@@ -1,0 +1,226 @@
+[
+ {
+  "name": "aura gives +1/+1 to the enchanted creature",
+  "players": [
+   {
+    "hand": [
+     "Coercive Impetus"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Coercive Impetus",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   },
+   "attached": {
+    "Coercive Impetus": "Grizzly Bears"
+   }
+  }
+ },
+ {
+  "name": "goaded: must attack, and attack trigger draws a card and costs 1 life",
+  "players": [
+   {
+    "hand": [
+     "Coercive Impetus"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Coercive Impetus",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [],
+    "player": 1,
+    "illegal": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p0"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": [],
+    "player": 0
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 16,
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "still goaded on a later turn of the opponent (re-applied at each of my upkeeps)",
+  "players": [
+   {
+    "hand": [
+     "Coercive Impetus"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Coercive Impetus",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [],
+    "player": 1,
+    "illegal": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p0"
+     }
+    ],
+    "player": 1
+   }
+  ],
+  "expect": {
+   "turn": 4
+  }
+ },
+ {
+  "name": "ruling: goad still forces the attack after the goaded creature loses all abilities (Turn to Frog)",
+  "players": [
+   {"hand": ["Coercive Impetus", "Turn to Frog"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Island"]},
+   {"battlefield": [{"name": "Grizzly Bears", "sick": false}]}
+  ],
+  "steps": [
+   {"cast": "Coercive Impetus", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"advance_to": "Main1"},
+   {"pass": true, "player": 1},
+   {"cast": "Turn to Frog", "targets": ["Grizzly Bears"], "player": 0},
+   {"resolve": true},
+   {"attack": [], "player": 1, "illegal": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p0"}], "player": 1},
+   {"resolve": true},
+   {"block": [], "player": 0},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{"life": 17}, {}]}
+ },
+ {
+  "name": "ruling: goaded creature need not attack when the attack cost cannot be paid (Propaganda)",
+  "players": [
+   {"hand": ["Coercive Impetus"], "battlefield": ["Propaganda", "Swamp", "Swamp", "Swamp"]},
+   {"battlefield": [{"name": "Grizzly Bears", "sick": false}]}
+  ],
+  "steps": [
+   {"cast": "Coercive Impetus", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"advance_to": "Main1"},
+   {"attack": [], "player": 1},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{"life": 20}, {}], "tapped": {"Grizzly Bears": false}}
+ },
+ {
+  "name": "ruling: goaded creature must attack again in an additional combat if able (vigilance keeps it untapped)",
+  "players": [
+   {"hand": ["Coercive Impetus"], "battlefield": ["Swamp", "Swamp", "Swamp"]},
+   {"battlefield": ["Serra Angel", "Aggravated Assault", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]}
+  ],
+  "steps": [
+   {"cast": "Coercive Impetus", "targets": ["Serra Angel"]},
+   {"resolve": true},
+   {"advance_to": "Main1"},
+   {"activate": "Aggravated Assault", "player": 1},
+   {"resolve": true},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{"life": 8}, {}]}
+ }
+]

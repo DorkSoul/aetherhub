@@ -1,0 +1,86 @@
+[
+  {
+    "name": "taps two creatures and they stay tapped through their controller's next untap step",
+    "players": [
+      { "hand": ["Sudden Storm"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Storm", "targets": ["Grizzly Bears", "Llanowar Elves"] },
+      { "resolve": true },
+      { "advance_to": "Main1", "player": 1 }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Sudden Storm"] }, {} ],
+      "tapped": { "Grizzly Bears": true, "Llanowar Elves": true }
+    }
+  },
+  {
+    "name": "with no targets it still scries",
+    "players": [
+      { "hand": ["Sudden Storm"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Sudden Storm", "targets": [] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Sudden Storm"] }, {} ], "tapped": { "Grizzly Bears": false } }
+  },
+  {
+    "name": "ruling: no scry when all targets are illegal on resolution",
+    "players": [
+      { "hand": ["Sudden Storm"], "battlefield": ["Island", "Island", "Island", "Island"], "library": ["Grizzly Bears", "Lightning Bolt"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Storm", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Sudden Storm"], "library_top": ["Grizzly Bears", "Lightning Bolt"] },
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: one of two targets illegal; the legal one is tapped and skips its untap step, and scry still happens",
+    "players": [
+      { "hand": ["Sudden Storm"], "battlefield": ["Island", "Island", "Island", "Island"], "library": ["Grizzly Bears", "Lightning Bolt"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Llanowar Elves", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Storm", "targets": ["Grizzly Bears", "Llanowar Elves"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true, "answers": [[0]] },
+      { "advance_to": "Main1", "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Sudden Storm"], "library_top": ["Lightning Bolt"] },
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "battlefield_has": ["Llanowar Elves"] }
+      ],
+      "tapped": { "Llanowar Elves": true }
+    }
+  },
+  {
+    "name": "ruling: with zero targets the scry still happens",
+    "players": [
+      { "hand": ["Sudden Storm"], "battlefield": ["Island", "Island", "Island", "Island"], "library": ["Grizzly Bears", "Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Sudden Storm", "targets": [] },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Sudden Storm"], "library_top": ["Lightning Bolt"] }, {} ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  }
+]

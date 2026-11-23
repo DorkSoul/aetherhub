@@ -1,0 +1,125 @@
+[
+  {
+    "name": "adapt puts a +1/+1 counter on a creature with none",
+    "players": [
+      {
+        "battlefield": ["Expanding Ooze", "Swamp", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Expanding Ooze" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Expanding Ooze": [4, 4] }
+    }
+  },
+  {
+    "name": "adapt does nothing when it already has a +1/+1 counter",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Expanding Ooze", "counters": { "+1/+1": 1 } },
+          "Swamp",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Expanding Ooze" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Expanding Ooze": [4, 4] }
+    }
+  },
+  {
+    "name": "attack trigger targets a modified creature you control",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Expanding Ooze", "counters": { "+1/+1": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Expanding Ooze", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Expanding Ooze": [5, 5] }
+    }
+  },
+  {
+    "name": "attack trigger has no target when no creature is modified",
+    "players": [
+      {
+        "battlefield": ["Expanding Ooze", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Expanding Ooze", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Expanding Ooze": [3, 3] },
+      "players": [
+        { "life": 20 },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an equipped creature is modified whoever controls the Equipment, so the attack trigger can target it",
+    "players": [
+      {
+        "battlefield": ["Expanding Ooze", "Grizzly Bears", "Bonesplitter", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Expanding Ooze", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [5, 3] }
+    }
+  },
+  {
+    "name": "ruling: an Aura controlled by another player does not make my creature modified",
+    "players": [
+      {
+        "battlefield": ["Expanding Ooze", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Pacifism"],
+        "battlefield": ["Plains", "Plains"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Pacifism", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Expanding Ooze", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2], "Expanding Ooze": [3, 3] }
+    }
+  }
+]

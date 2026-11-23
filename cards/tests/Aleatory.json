@@ -1,0 +1,201 @@
+[
+  {
+    "name": "after blockers: a won flip gives +1/+1",
+    "players": [
+      {
+        "hand": [
+          "Aleatory"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "cast": "Aleatory",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "seed": 3,
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "a lost flip gives no bonus; the card still draws at the next upkeep",
+    "players": [
+      {
+        "hand": [
+          "Aleatory"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "cast": "Aleatory",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "seed": 1,
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast outside combat",
+    "players": [
+      {
+        "hand": [
+          "Aleatory"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Aleatory",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "seed": 3,
+    "expect": {}
+  },
+  {
+    "name": "ruling: the target is chosen on announcement, so exiling it in response fizzles the spell and its draw",
+    "players": [
+      { "hand": ["Aleatory"], "battlefield": ["Mountain", "Mountain", "Grizzly Bears"] },
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Aleatory", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "resolve": true },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Aleatory"], "exile": ["Grizzly Bears"] },
+        { "graveyard_has": ["Swords to Plowshares"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: in the additional combat from Aggravated Assault, Aleatory can be cast after blockers are declared",
+    "players": [
+      { "hand": ["Aleatory"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Aggravated Assault", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "activate": "Aggravated Assault" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Aleatory", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Aleatory"] }, {} ]
+    }
+  }
+]

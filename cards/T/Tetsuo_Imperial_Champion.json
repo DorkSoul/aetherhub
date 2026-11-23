@@ -1,0 +1,64 @@
+{
+  "name": "Tetsuo, Imperial Champion",
+  "mana_cost": "{U}{B}{R}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Samurai"],
+  "power": 3,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "condition": { "type": "Compare", "a": { "type": "Count", "filter": { "subtypes": ["Equipment"], "attached_to_source": true }, "zone": "Battlefield" }, "cmp": { "op": "Ge", "n": 1 } },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Tetsuo deals damage equal to the greatest mana value among Equipment attached to it to any target.",
+              "effects": [
+                {
+                  "type": "Reflexive",
+                  "targets": [ { "what": { "type": "AnyTarget" }, "label": "any target" } ],
+                  "effects": [
+                    {
+                      "type": "DealDamage",
+                      "amount": { "type": "HighestManaValue", "filter": { "subtypes": ["Equipment"], "attached_to_source": true } },
+                      "to": { "type": "Target", "idx": 0 }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "You may cast an instant or sorcery spell from your hand with mana value less than or equal to the greatest mana value among Equipment attached to Tetsuo without paying its mana cost.",
+              "effects": [
+                {
+                  "type": "May",
+                  "effects": [
+                    {
+                      "type": "Choose",
+                      "who": { "type": "You" },
+                      "zone": "Hand",
+                      "filter": {
+                        "types": ["Instant", "Sorcery"],
+                        "mana_value_vs": { "op": "Le", "amount": { "type": "HighestManaValue", "filter": { "subtypes": ["Equipment"], "attached_to_source": true } } }
+                      },
+                      "min": 1,
+                      "max": 1,
+                      "then": [ { "type": "CastFree", "what": { "type": "Remembered" }, "may": false } ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever Tetsuo, Imperial Champion attacks, if it's equipped, choose one —\n• Tetsuo deals damage equal to the greatest mana value among Equipment attached to it to any target.\n• You may cast an instant or sorcery spell from your hand with mana value less than or equal to the greatest mana value among Equipment attached to Tetsuo without paying its mana cost."
+}

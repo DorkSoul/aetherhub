@@ -1,0 +1,56 @@
+{
+  "name": "Fortune, Loyal Steed",
+  "mana_cost": "{2}{W}",
+  "types": ["Creature"],
+  "subtypes": ["Beast", "Mount"],
+  "supertypes": ["Legendary"],
+  "power": 2,
+  "toughness": 4,
+  "colors": ["W"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "Scry", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "condition": { "type": "Saddled" },
+      "effects": [
+        {
+          "type": "AddTrigger",
+          "trigger": { "type": "BeginningOfStep", "step": "EndCombat", "whose": "You" },
+          "once": true,
+          "effects": [
+            { "type": "ClearRemembered" },
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Battlefield",
+              "filter": { "types": ["Creature"], "crewed_source_this_turn": true },
+              "min": 0,
+              "max": 1,
+              "then": [{ "type": "StoreRemembered", "slot": 0 }]
+            },
+            { "type": "ClearRemembered" },
+            { "type": "Move", "what": { "type": "This" }, "to": "Exile", "from": "Battlefield", "remember": true },
+            { "type": "StoreRemembered", "slot": 1 },
+            { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "to": "Exile", "from": "Battlefield" },
+            { "type": "Move", "what": { "type": "Stored", "slot": 1 }, "to": "Battlefield", "from": "Exile" },
+            { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "to": "Battlefield", "from": "Exile" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Crew", "power": 1 }],
+      "timing": "Sorcery",
+      "effects": [{ "type": "Saddle" }]
+    }
+  ],
+  "oracle_text": "When Fortune, Loyal Steed enters, scry 2.\nWhenever Fortune attacks while saddled, at end of combat, exile it and up to one creature that saddled it this turn, then return those cards to the battlefield under their owner's control.\nSaddle 1 (Tap any number of other untapped creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+}

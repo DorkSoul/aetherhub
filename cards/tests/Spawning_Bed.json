@@ -1,0 +1,118 @@
+[
+  {
+    "name": "sacrifice with six other mana for three Eldrazi Scions",
+    "players": [
+      {
+        "battlefield": [
+          "Spawning Bed",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Spawning Bed",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Eldrazi Scion"
+          ],
+          "battlefield_lacks": [
+            "Spawning Bed"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "needs {6} from other sources",
+    "players": [
+      {
+        "battlefield": [
+          "Spawning Bed",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Spawning Bed",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Spawning Bed"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Eldrazi Scion tokens are 1/1 and have both the Eldrazi and Scion creature types",
+    "players": [
+      { "battlefield": ["Spawning Bed", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Spawning Bed", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Eldrazi Scion"] }, {} ],
+      "pt": { "Eldrazi Scion": [1, 1] },
+      "subtypes": { "Eldrazi Scion": ["Eldrazi", "Scion"] }
+    }
+  },
+  {
+    "name": "ruling: sacrificing a Scion for mana is a mana ability (no stack, nothing to respond to)",
+    "players": [ { "battlefield": ["Eldrazi Scion"] }, {} ],
+    "steps": [ { "tap_for_mana": "Eldrazi Scion" } ],
+    "expect": {
+      "players": [ { "pool": { "C": 1 }, "battlefield_lacks": ["Eldrazi Scion"] }, {} ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: a targeted scion-making instant whose target is gone makes no Scion (it does not resolve)",
+    "players": [
+      { "hand": ["Abstruse Interference"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt", "Counterspell"], "battlefield": ["Mountain", "Island", "Island"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Abstruse Interference", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Abstruse Interference"], "battlefield_lacks": ["Eldrazi Scion"] },
+        { "graveyard_has": ["Lightning Bolt", "Counterspell"], "battlefield_lacks": ["Eldrazi Scion"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,47 @@
+[
+  { "name": "{3}: switches its power and toughness (1/4 becomes 4/1)",
+    "players": [ { "battlefield": ["Myr Quadropod", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Myr Quadropod" }, { "resolve": true } ],
+    "expect": { "pt": { "Myr Quadropod": [4, 1] } } },
+  { "name": "activated twice it switches back to 1/4",
+    "players": [ { "battlefield": ["Myr Quadropod", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Myr Quadropod" }, { "resolve": true }, { "activate": "Myr Quadropod" }, { "resolve": true } ],
+    "expect": { "pt": { "Myr Quadropod": [1, 4] } } },
+  { "name": "not enough mana: no activation",
+    "players": [ { "battlefield": ["Myr Quadropod", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Myr Quadropod", "illegal": true } ],
+    "expect": { "pt": { "Myr Quadropod": [1, 4] } } },
+  { "name": "ruling: switching after nonlethal damage can make the Myr lethal (3 damage on a 4/1)",
+    "players": [
+      { "battlefield": ["Myr Quadropod", "Island", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Hill Giant", "at": "p0" }], "player": 1 },
+      { "block": [ { "blocker": "Myr Quadropod", "attacker": "Hill Giant" } ], "player": 0 },
+      { "advance_to": "Main2" },
+      { "pass": true, "player": 1 },
+      { "activate": "Myr Quadropod", "ability": 0, "player": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Myr Quadropod"] }, {} ] }
+  },
+  { "name": "ruling: without switching, 3 damage does not kill the 1/4 Myr",
+    "players": [
+      { "battlefield": ["Myr Quadropod", "Island", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Hill Giant", "at": "p0" }], "player": 1 },
+      { "block": [ { "blocker": "Myr Quadropod", "attacker": "Hill Giant" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Myr Quadropod"] }, {} ] }
+  }
+]

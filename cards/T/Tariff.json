@@ -1,0 +1,86 @@
+{
+  "name": "Tariff",
+  "mana_cost": "{1}{W}",
+  "types": [
+    "Sorcery"
+  ],
+  "colors": [
+    "W"
+  ],
+  "oracle_text": "Each player sacrifices the creature they control with the greatest mana value unless they pay that creature's mana cost. If two or more creatures a player controls are tied for greatest, that player chooses one.",
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": {
+            "type": "EachPlayer"
+          },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": {
+                "type": "EachObject"
+              },
+              "zone": "Battlefield",
+              "filter": {
+                "types": [
+                  "Creature"
+                ],
+                "controlled_by": {
+                  "type": "EachObject"
+                },
+                "mana_value_vs": {
+                  "op": "Ge",
+                  "amount": {
+                    "type": "HighestManaValue",
+                    "filter": {
+                      "types": [
+                        "Creature"
+                      ],
+                      "controlled_by": {
+                        "type": "EachObject"
+                      }
+                    }
+                  }
+                }
+              },
+              "min": 1,
+              "max": 1,
+              "then": [
+                {
+                  "type": "Unless",
+                  "payer": {
+                    "type": "EachObject"
+                  },
+                  "cost": [
+                    {
+                      "type": "ManaCostOf",
+                      "of": {
+                        "type": "Remembered"
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "Sacrifice",
+                      "who": {
+                        "type": "Remembered"
+                      },
+                      "filter": {},
+                      "n": {
+                        "type": "Fixed",
+                        "n": 1
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

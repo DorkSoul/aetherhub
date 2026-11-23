@@ -1,0 +1,99 @@
+[
+  {
+    "name": "enters untapped and creates a Food with three other Forests",
+    "players": [
+      { "hand": ["Gingerbread Cabin"], "battlefield": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "play_land": "Gingerbread Cabin" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Food", "Gingerbread Cabin"] }, {} ],
+      "tapped": { "Gingerbread Cabin": false }
+    }
+  },
+  {
+    "name": "enters tapped and makes no Food with only two other Forests",
+    "players": [
+      { "hand": ["Gingerbread Cabin"], "battlefield": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "play_land": "Gingerbread Cabin" } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gingerbread Cabin"], "battlefield_lacks": ["Food"] }, {} ],
+      "tapped": { "Gingerbread Cabin": true }
+    }
+  },
+  {
+    "name": "Islands do not count toward the Forest condition",
+    "players": [
+      { "hand": ["Gingerbread Cabin"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [ { "play_land": "Gingerbread Cabin" } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gingerbread Cabin"], "battlefield_lacks": ["Food"] }, {} ],
+      "tapped": { "Gingerbread Cabin": true }
+    }
+  },
+  {
+    "name": "untapped Cabin taps for green",
+    "players": [
+      { "hand": ["Gingerbread Cabin"], "battlefield": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Gingerbread Cabin" },
+      { "resolve": true },
+      { "tap_for_mana": "Gingerbread Cabin", "color": "G" }
+    ],
+    "expect": {
+      "players": [ { "pool": { "G": 1 } }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Cabin put onto the battlefield tapped by Scapeshift enters tapped even with three other Forests",
+    "players": [
+      { "hand": ["Scapeshift"], "battlefield": ["Forest", "Forest", "Forest", "Mountain", "Mountain", "Mountain"], "library": ["Gingerbread Cabin"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Scapeshift" },
+      { "resolve": true, "answers": [[3], ["Gingerbread Cabin"]] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gingerbread Cabin"], "battlefield_lacks": ["Food"] }, {} ],
+      "tapped": { "Gingerbread Cabin": true }
+    }
+  },
+  {
+    "name": "ruling: a Food is not a creature, so Hinterland Sanctifier does not trigger when a Cabin makes one",
+    "players": [
+      { "hand": ["Gingerbread Cabin"], "battlefield": ["Hinterland Sanctifier", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Gingerbread Cabin" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Food", "Gingerbread Cabin"], "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the Food sacrificed for its own ability can't also pay for Maraleaf Rider",
+    "players": [
+      { "hand": ["Gingerbread Cabin"], "battlefield": ["Forest", "Forest", "Forest", "Maraleaf Rider"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "play_land": "Gingerbread Cabin" },
+      { "resolve": true },
+      { "activate": "Food", "ability": 0 },
+      { "activate": "Maraleaf Rider", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 23, "battlefield_has": ["Maraleaf Rider", "Gingerbread Cabin"], "battlefield_lacks": ["Food"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  }
+]

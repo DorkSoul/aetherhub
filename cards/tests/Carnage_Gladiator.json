@@ -1,0 +1,56 @@
+[
+  { "name": "a creature blocking makes its controller lose 1 life",
+    "players": [ { "battlefield": ["Grizzly Bears"] }, { "battlefield": ["Carnage Gladiator", "Swamp", "Mountain", "Plains"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Carnage Gladiator", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 19 } ] } },
+  { "name": "each creature that blocks triggers it, and blocking a second time costs another life",
+    "players": [ { "battlefield": ["Hill Giant", "Abattoir Ghoul"] }, { "battlefield": ["Carnage Gladiator", "Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Abattoir Ghoul", "at": "p1" } ] },
+      { "block": [ { "blocker": "Carnage Gladiator", "attacker": "Hill Giant" }, { "blocker": "Grizzly Bears", "attacker": "Abattoir Ghoul" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "no block means no life loss",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Carnage Gladiator"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "regeneration costs {1}{B}{R} and is not available with only two lands",
+    "players": [ { }, { "battlefield": ["Carnage Gladiator", "Swamp", "Mountain"] } ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Carnage Gladiator", "ability": 0, "player": 1, "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "battlefield_has": ["Carnage Gladiator"] } ] } },
+  { "name": "regeneration shield saves it from Lightning Bolt (tapped, damage removed)",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }, { "battlefield": ["Carnage Gladiator", "Swamp", "Mountain", "Plains"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Carnage Gladiator"] },
+      { "activate": "Carnage Gladiator", "ability": 0, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "battlefield_has": ["Carnage Gladiator"] } ], "tapped": { "Carnage Gladiator": true } } },
+  { "name": "without regeneration Lightning Bolt destroys it",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }, { "battlefield": ["Carnage Gladiator", "Swamp", "Mountain", "Plains"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Carnage Gladiator"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "graveyard_has": ["Carnage Gladiator"] } ] } },
+ { "name": "ruling: the trigger is for any creature, so Gladiator controlled by the defender costs its controller 1 life when it blocks an opponent's attacker",
+   "players": [ { "battlefield": ["Carnage Gladiator"] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+     { "advance_to": "Main2" },
+     { "advance_to": "Main1" },
+     { "advance_to": "BeginCombat" },
+     { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+     { "block": [ { "blocker": "Carnage Gladiator", "attacker": "Grizzly Bears" } ], "player": 0 },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "life": 19 }, { "life": 20 } ] } }
+]

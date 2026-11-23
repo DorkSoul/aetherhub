@@ -1,0 +1,78 @@
+[
+  {
+    "name": "spells of the chosen type cost {1} less (sorcery chosen, Divination costs {1}{U})",
+    "players": [
+      { "hand": ["Cloud Key", "Divination"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cloud Key" },
+      { "resolve": true, "answers": ["Sorcery"] },
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Divination"], "battlefield_has": ["Cloud Key"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "spells of other types are not reduced (instant chosen, sorcery Divination costs full {2}{U})",
+    "players": [
+      { "hand": ["Cloud Key", "Divination"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cloud Key" },
+      { "resolve": true, "answers": ["Instant"] },
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Divination"], "battlefield_has": ["Cloud Key"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: only generic mana is reduced (Counterspell's {U}{U} is not reduced for a chosen instant)",
+    "players": [
+      { "hand": ["Cloud Key", "Counterspell"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Cloud Key" },
+      { "resolve": true, "answers": ["Instant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "cast": "Counterspell", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Counterspell"], "battlefield_has": ["Cloud Key"], "life": 20 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the reduction applies to the total flashback cost ({2}{U} becomes {1}{U} with a chosen instant)",
+    "players": [
+      { "hand": ["Cloud Key"], "graveyard": ["Think Twice"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "library": ["Forest", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cloud Key" },
+      { "resolve": true, "answers": ["Instant"] },
+      { "cast": "Think Twice", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "exile": ["Think Twice"], "battlefield_has": ["Cloud Key"] },
+        {}
+      ]
+    }
+  }
+]

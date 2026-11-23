@@ -1,0 +1,138 @@
+[
+  {
+    "name": "a creature of my opponent's that dies is exiled with a void counter instead of going to the graveyard",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Dauthi Voidwalker", "sick": false }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt"] },
+        { "exile": ["Grizzly Bears"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "a creature of my own that dies still goes to my graveyard (only opponents' cards are exiled)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Dauthi Voidwalker", "sick": false }, "Grizzly Bears"] },
+      { "battlefield": [] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sacrifice the Voidwalker: I may cast the opponent's exiled creature this turn without paying its mana cost",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Dauthi Voidwalker", "sick": false }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Dauthi Voidwalker", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dauthi Voidwalker", "Lightning Bolt"], "battlefield_has": ["Grizzly Bears"], "exile": [] },
+        { "exile": [], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the free cast from the sacrifice ability has X = 0 (Walking Ballista dies as a 0/0)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Dauthi Voidwalker", "sick": false }] },
+      { "battlefield": [{ "name": "Walking Ballista", "counters": { "p1p1": 1 }, "sick": false }] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Walking Ballista"] },
+      { "resolve": true },
+      { "activate": "Dauthi Voidwalker", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Walking Ballista" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dauthi Voidwalker", "Lightning Bolt"] },
+        { "graveyard": ["Walking Ballista"], "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature dying under the Voidwalker is exiled, so its own dies trigger does not happen",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Dauthi Voidwalker", "sick": false }] },
+      { "battlefield": ["Blood Artist"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Blood Artist"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "stack_empty": true,
+      "players": [
+        { "life": 20, "graveyard_has": ["Lightning Bolt"] },
+        { "life": 20, "exile": ["Blood Artist"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the free cast still follows timing (a creature cannot be cast during combat)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Dauthi Voidwalker", "sick": false }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "activate": "Dauthi Voidwalker", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dauthi Voidwalker", "Lightning Bolt"] },
+        { "exile": ["Grizzly Bears"], "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card the opponent discards is exiled with a void counter and can be cast via the sacrifice ability",
+    "players": [
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Dauthi Voidwalker", "sick": false }] },
+      { "hand": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Mind Rot", "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Dauthi Voidwalker", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Mind Rot", "Dauthi Voidwalker"], "battlefield_has": ["Grizzly Bears"], "exile": [] },
+        { "hand_count": 0, "exile": [], "graveyard": [] }
+      ]
+    }
+  }
+]

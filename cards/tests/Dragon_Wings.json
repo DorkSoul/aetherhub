@@ -1,0 +1,72 @@
+[
+  {
+    "name": "cycling draws a card",
+    "players": [ { "hand": ["Dragon Wings"], "battlefield": ["Island", "Island"], "library": ["Island"] }, {} ],
+    "steps": [ { "activate": "Dragon Wings" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "hand": ["Island"], "graveyard": ["Dragon Wings"] }, {} ]
+    }
+  },
+  {
+    "name": "enchanted creature has flying",
+    "players": [ { "hand": ["Dragon Wings"], "battlefield": ["Island", "Island", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Dragon Wings", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Dragon Wings", "Grizzly Bears"] }, {} ],
+      "keywords": { "Grizzly Bears": ["Flying"] },
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "a creature with mana value 6 entering returns Dragon Wings from the graveyard attached to it",
+    "players": [ { "hand": ["Dragon Broodmother"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest"], "graveyard": ["Dragon Wings"] }, {} ],
+    "steps": [ { "cast": "Dragon Broodmother" }, { "resolve": true, "answers": [true] } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Dragon Broodmother", "Dragon Wings"], "graveyard": [] }, {} ],
+      "attached": { "Dragon Wings": "Dragon Broodmother" }
+    }
+  },
+  {
+    "name": "declining the optional return leaves Dragon Wings in the graveyard",
+    "players": [ { "hand": ["Dragon Broodmother"], "battlefield": ["Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest"], "graveyard": ["Dragon Wings"] }, {} ],
+    "steps": [ { "cast": "Dragon Broodmother" }, { "resolve": true, "answers": [false] } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Dragon Broodmother"], "battlefield_lacks": ["Dragon Wings"], "graveyard": ["Dragon Wings"] }, {} ]
+    }
+  },
+  {
+    "name": "a creature with mana value 5 does not return Dragon Wings",
+    "players": [ { "hand": ["Serra Angel"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island"], "graveyard": ["Dragon Wings"] }, {} ],
+    "steps": [ { "cast": "Serra Angel" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Serra Angel"], "battlefield_lacks": ["Dragon Wings"], "graveyard": ["Dragon Wings"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Stifle counters the cycling ability, so no card is drawn",
+    "players": [ { "hand": ["Dragon Wings"], "battlefield": ["Island", "Island"], "library": ["Island"] }, { "hand": ["Stifle"], "battlefield": ["Island", "Island"] } ],
+    "steps": [
+      { "activate": "Dragon Wings" },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [ { "stack": "Dragon Wings" } ] },
+      { "pass": true },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "graveyard": ["Dragon Wings"] }, { "graveyard": ["Stifle"] } ]
+    }
+  },
+  {
+    "name": "ruling: Remove Soul cannot target the cycling ability, so cycling resolves and draws",
+    "players": [ { "hand": ["Dragon Wings"], "battlefield": ["Island", "Island"], "library": ["Island"] }, { "hand": ["Remove Soul"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "activate": "Dragon Wings" },
+      { "pass": true },
+      { "cast": "Remove Soul", "player": 1, "targets": [ { "stack": "Dragon Wings" } ], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Island"], "graveyard": ["Dragon Wings"] }, { "hand": ["Remove Soul"] } ]
+    }
+  }
+]

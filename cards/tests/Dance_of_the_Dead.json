@@ -1,0 +1,116 @@
+[
+  {
+    "name": "returns the creature tapped under your control with +1/+1",
+    "players": [ { "hand": ["Dance of the Dead"], "battlefield": ["Swamp", "Swamp"] }, { "graveyard": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Dance of the Dead", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dance of the Dead", "Hill Giant"] }, { "graveyard": [] } ], "pt": { "Hill Giant": [4, 4] }, "tapped": { "Hill Giant": true } }
+  },
+  {
+    "name": "upkeep of the enchanted creature's controller: paying {1}{B} untaps it",
+    "players": [ { "hand": ["Dance of the Dead"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, { "graveyard": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Dance of the Dead", "targets": ["Hill Giant"] }, { "resolve": true }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dance of the Dead", "Hill Giant"] }, {} ], "tapped": { "Hill Giant": false } }
+  },
+  {
+    "name": "upkeep: declining to pay leaves the creature tapped",
+    "players": [ { "hand": ["Dance of the Dead"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, { "graveyard": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Dance of the Dead", "targets": ["Hill Giant"] }, { "resolve": true }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [false] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dance of the Dead", "Hill Giant"] }, {} ], "tapped": { "Hill Giant": true } }
+  },
+  {
+    "name": "Aura leaves the battlefield: the enchanted creature goes to its owner's graveyard",
+    "players": [ { "hand": ["Dance of the Dead", "Disenchant"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains"] }, { "graveyard": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Dance of the Dead", "targets": ["Hill Giant"] }, { "resolve": true }, { "cast": "Disenchant", "targets": ["Dance of the Dead"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Hill Giant", "Dance of the Dead"], "graveyard": ["Dance of the Dead", "Disenchant"] }, { "graveyard": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: the returned creature is a new object, so the Aura is attached to it again",
+    "players": [
+      {
+        "hand": [
+          "Dance of the Dead"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "graveyard": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Dance of the Dead",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Dance of the Dead",
+            "Hill Giant"
+          ]
+        },
+        {
+          "graveyard": []
+        }
+      ],
+      "attached": {
+        "Dance of the Dead": "Hill Giant"
+      }
+    }
+  },
+  {
+    "name": "ruling: protection from black prevents the Aura attaching, so the creature is sacrificed",
+    "players": [
+      {
+        "hand": [
+          "Dance of the Dead"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "White Knight"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Dance of the Dead",
+        "targets": [
+          "White Knight"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Dance of the Dead",
+            "White Knight"
+          ],
+          "battlefield_lacks": [
+            "White Knight",
+            "Dance of the Dead"
+          ]
+        },
+        {}
+      ]
+    }
+  }
+]

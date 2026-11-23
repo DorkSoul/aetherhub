@@ -1,0 +1,55 @@
+{
+  "name": "Scouting Hawk",
+  "mana_cost": "{2}{W}",
+  "types": ["Creature"],
+  "subtypes": ["Bird"],
+  "power": 1,
+  "toughness": 1,
+  "keywords": ["Flying"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "EachOpponent" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": {
+                "type": "Compare",
+                "a": {
+                  "type": "Minus",
+                  "a": { "type": "Count", "filter": { "types": ["Land"] }, "zone": "Battlefield", "player": { "type": "EachObject" } },
+                  "b": { "type": "Count", "filter": { "types": ["Land"], "controller": "You" }, "zone": "Battlefield" }
+                },
+                "cmp": { "op": "Gt", "n": 0 }
+              },
+              "then": [
+                { "type": "AddCounters", "what": { "type": "This" }, "kind": "Hit", "n": { "type": "Fixed", "n": 1 } }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "If",
+          "cond": { "type": "SourceHasCounter", "kind": "Hit", "at_least": 1 },
+          "then": [
+            { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Hit", "n": { "type": "Fixed", "n": 99 } },
+            {
+              "type": "SearchLibrary",
+              "who": { "type": "You" },
+              "filter": { "subtypes": ["Plains"], "supertypes": ["Basic"] },
+              "n": { "type": "Fixed", "n": 1 },
+              "to": "Battlefield",
+              "tapped": true,
+              "shuffle": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying\nKeen Sight — When this creature enters, if an opponent controls more lands than you, search your library for a basic Plains card, put it onto the battlefield tapped, then shuffle."
+}

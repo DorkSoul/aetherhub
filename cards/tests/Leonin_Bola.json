@@ -1,0 +1,69 @@
+[
+  {
+    "name": "equipped creature taps and unattaches the Bola to tap a creature",
+    "players": [ { "hand": ["Leonin Bola"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "cast": "Leonin Bola" },
+      { "resolve": true },
+      { "activate": "Leonin Bola", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Leonin Bola", "Grizzly Bears"] }, { "battlefield_has": ["Serra Angel"] } ],
+      "tapped": { "Grizzly Bears": true, "Serra Angel": true }
+    }
+  },
+  {
+    "name": "the Bola stays on the battlefield unattached after the granted ability is used",
+    "players": [ { "hand": ["Leonin Bola"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "cast": "Leonin Bola" },
+      { "resolve": true },
+      { "activate": "Leonin Bola", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Leonin Bola"] }, {} ],
+      "attached": {}
+    }
+  },
+  {
+    "name": "an unequipped creature cannot use the granted tap ability",
+    "players": [ { "hand": ["Leonin Bola"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "cast": "Leonin Bola" },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Leonin Bola", "Grizzly Bears"] }, { "battlefield_has": ["Serra Angel"] } ],
+      "tapped": { "Serra Angel": false }
+    }
+  },
+  {
+    "name": "ruling: the granted tap ability can target a creature with protection from artifacts (the source is the creature, not the Bola)",
+    "players": [
+      { "hand": ["Leonin Bola"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+      { "hand": ["Apostle's Blessing"], "battlefield": ["Plains", "Plains", "Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Leonin Bola" },
+      { "resolve": true },
+      { "activate": "Leonin Bola", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Apostle's Blessing", "player": 1, "targets": ["Serra Angel"], "answers": [0] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Leonin Bola", "Grizzly Bears"] }, { "battlefield_has": ["Serra Angel"] } ],
+      "tapped": { "Grizzly Bears": true, "Serra Angel": true }
+    }
+  }
+]

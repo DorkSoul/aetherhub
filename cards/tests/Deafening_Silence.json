@@ -1,0 +1,87 @@
+[
+  {
+    "name": "one noncreature spell per turn: after Giant Growth, a second instant (Lightning Bolt) is illegal",
+    "players": [
+      { "hand": ["Giant Growth", "Lightning Bolt"], "battlefield": ["Deafening Silence", "Forest", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "illegal": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "opponent's cap: after the opponent's Lightning Bolt, their second noncreature spell (Shock) is illegal",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Deafening Silence", "Forest", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt", "Shock"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "cast": "Shock", "player": 1, "illegal": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17 }, {} ], "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "ruling: casting Deafening Silence uses the turn's noncreature spell, so a later Lightning Bolt is illegal",
+    "players": [
+      { "hand": ["Deafening Silence", "Lightning Bolt"], "battlefield": ["Plains", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Deafening Silence" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Deafening Silence"] }, { "life": 20 }] }
+  },
+  {
+    "name": "ruling: an earlier noncreature spell does not stop Deafening Silence being cast, and then Shock is illegal",
+    "players": [
+      { "hand": ["Lightning Bolt", "Deafening Silence", "Shock"], "battlefield": ["Plains", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Deafening Silence" },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Deafening Silence"] }, { "life": 17 }] }
+  },
+  {
+    "name": "ruling: one creature spell plus one noncreature spell are both allowed under Deafening Silence",
+    "players": [
+      { "hand": ["Grizzly Bears", "Lightning Bolt"], "battlefield": ["Deafening Silence", "Forest", "Forest", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "battlefield_has": ["Grizzly Bears"] }, { "life": 17 }] }
+  },
+  {
+    "name": "ruling: a countered noncreature spell still counts, so Giant Growth is illegal afterwards",
+    "players": [
+      { "hand": ["Lightning Bolt", "Giant Growth"], "battlefield": ["Deafening Silence", "Mountain", "Forest", "Grizzly Bears"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [{ "graveyard_has": ["Lightning Bolt"] }, { "life": 20 }] }
+  }
+]

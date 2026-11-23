@@ -1,0 +1,111 @@
+[
+  {
+    "name": "a permanent sacrificed this turn makes it cost {1} less",
+    "players": [
+      {
+        "hand": ["The Balrog, Durin's Bane"],
+        "battlefield": ["Arcbound Ravager", "Swamp", "Mountain", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      {"activate": "Arcbound Ravager"},
+      {"resolve": true},
+      {"cast": "The Balrog, Durin's Bane"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["The Balrog, Durin's Bane"], "battlefield_lacks": ["Arcbound Ravager"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "nothing sacrificed this turn: it costs the full {5}{B}{R} and six lands are not enough",
+    "players": [
+      {
+        "hand": ["The Balrog, Durin's Bane"],
+        "battlefield": ["Arcbound Ravager", "Swamp", "Mountain", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "The Balrog, Durin's Bane", "illegal": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand": ["The Balrog, Durin's Bane"], "battlefield_lacks": ["The Balrog, Durin's Bane"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "when it dies it destroys the target creature an opponent controls",
+    "players": [ { "hand": ["Murder"], "battlefield": ["The Balrog, Durin's Bane", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Murder", "targets": ["The Balrog, Durin's Bane"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["The Balrog, Durin's Bane"], "battlefield_lacks": ["The Balrog, Durin's Bane"] }, { "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "dies with no opponent creature or artifact to target: own creature survives",
+    "players": [ { "hand": ["Murder"], "battlefield": ["The Balrog, Durin's Bane", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Murder", "targets": ["The Balrog, Durin's Bane"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["The Balrog, Durin's Bane"] }, {} ] }
+  },
+  {
+    "name": "can't be blocked except by legendary creatures: a Grizzly Bears block is dropped and 7 damage goes through",
+    "players": [
+      { "battlefield": ["The Balrog, Durin's Bane"] },
+      { "life": 20, "battlefield": ["Grizzly Bears", "Isamaru, Hound of Konda"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "The Balrog, Durin's Bane", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "The Balrog, Durin's Bane" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Balrog, Durin's Bane"] },
+        { "life": 13, "battlefield_has": ["Grizzly Bears", "Isamaru, Hound of Konda"] }
+      ]
+    }
+  },
+  {
+    "name": "a legendary creature may block it: Isamaru blocks, no damage to the player",
+    "players": [
+      { "battlefield": ["The Balrog, Durin's Bane"] },
+      { "life": 20, "battlefield": ["Isamaru, Hound of Konda"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "The Balrog, Durin's Bane", "at": "p1" } ] },
+      { "block": [ { "blocker": "Isamaru, Hound of Konda", "attacker": "The Balrog, Durin's Bane" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Balrog, Durin's Bane"] },
+        { "life": 20, "graveyard": ["Isamaru, Hound of Konda"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sacrifice by the opponent this turn also reduces the cost",
+    "players": [
+      { "hand": ["The Balrog, Durin's Bane"], "battlefield": ["Swamp", "Mountain", "Forest", "Forest", "Forest", "Forest"] },
+      { "battlefield": ["Arcbound Ravager"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Arcbound Ravager", "player": 1 },
+      { "resolve": true },
+      { "cast": "The Balrog, Durin's Bane" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Balrog, Durin's Bane"] },
+        { "battlefield_lacks": ["Arcbound Ravager"] }
+      ]
+    }
+  }
+]

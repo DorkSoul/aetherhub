@@ -1,0 +1,145 @@
+[
+  {
+    "name": "enchanting an artifact makes it a 5/5 Construct creature",
+    "players": [
+      {
+        "hand": [
+          "Puppet Crafting"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Mind Stone"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Puppet Crafting",
+        "targets": [
+          "Mind Stone"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mind Stone",
+            "Puppet Crafting"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Mind Stone": [
+          5,
+          5
+        ]
+      },
+      "attached": {
+        "Puppet Crafting": "Mind Stone"
+      }
+    }
+  },
+  {
+    "name": "cannot enchant a creature",
+    "players": [
+      {
+        "hand": [
+          "Puppet Crafting"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Puppet Crafting",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Puppet Crafting"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "{4}{G} from the graveyard returns it to hand",
+    "players": [
+      {
+        "graveyard": ["Puppet Crafting"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Puppet Crafting", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Puppet Crafting"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "return from graveyard needs five mana",
+    "players": [
+      {
+        "graveyard": ["Puppet Crafting"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Puppet Crafting", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Puppet Crafting"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enchanted artifact is a Construct in addition to being an artifact, so it can attack for 5",
+    "players": [
+      {
+        "hand": ["Puppet Crafting"],
+        "battlefield": ["Forest", "Forest", "Mind Stone", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Puppet Crafting", "targets": ["Mind Stone"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Mind Stone", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mind Stone", "Puppet Crafting"] },
+        { "life": 13 }
+      ],
+      "subtypes": { "Mind Stone": ["Construct"] },
+      "pt": { "Mind Stone": [5, 5] }
+    }
+  }
+]

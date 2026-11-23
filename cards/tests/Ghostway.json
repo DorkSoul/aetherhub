@@ -1,0 +1,183 @@
+[
+  {
+    "name": "creatures are exiled then return at the end step; opponent's creature stays",
+    "players": [
+      {
+        "hand": [
+          "Ghostway"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears",
+          "Elite Vanguard"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ghostway"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Grizzly Bears",
+            "Elite Vanguard"
+          ],
+          "battlefield": [
+            "Plains",
+            "Plains",
+            "Plains"
+          ]
+        },
+        {
+          "battlefield": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "they return at the next end step",
+    "players": [
+      {
+        "hand": [
+          "Ghostway"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears",
+          "Elite Vanguard"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ghostway"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "battlefield": [
+            "Plains",
+            "Plains",
+            "Plains",
+            "Grizzly Bears",
+            "Elite Vanguard"
+          ]
+        },
+        {
+          "battlefield": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature token exiled by Ghostway ceases to exist and does not return",
+    "players": [
+      {
+        "hand": ["Raise the Alarm", "Ghostway"],
+        "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raise the Alarm" },
+      { "resolve": true },
+      { "cast": "Ghostway" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Soldier"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Aura on an exiled creature goes to its owner's graveyard and does not come back",
+    "players": [
+      {
+        "hand": ["Pacifism", "Ghostway"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Ghostway" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Pacifism"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: equipment stays on the battlefield unattached; counters on the exiled creature cease to exist",
+    "players": [
+      {
+        "hand": ["Bonesplitter", "Ghostway"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Mountain", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bonesplitter" },
+      { "resolve": true },
+      { "activate": "Bonesplitter", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Ghostway" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bonesplitter", "Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [2, 2] },
+      "counters": { "Grizzly Bears": { "p1p1": 0 } }
+    }
+  }
+]

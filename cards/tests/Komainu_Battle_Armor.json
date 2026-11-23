@@ -1,0 +1,151 @@
+[
+ {
+  "name": "reconfigure attaches to a creature: it gets +2/+2 and menace",
+  "players": [
+   { "battlefield": ["Komainu Battle Armor", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Komainu Battle Armor", "Grizzly Bears"] }, {} ],
+   "attached": { "Komainu Battle Armor": "Grizzly Bears" },
+   "pt": { "Grizzly Bears": [4, 4] },
+   "keywords": { "Grizzly Bears": ["Menace"] }
+  }
+ },
+ {
+  "name": "attached Komainu is not a creature and cannot attack",
+  "players": [
+   { "battlefield": ["Komainu Battle Armor", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Komainu Battle Armor", "at": "p1" } ], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Komainu Battle Armor"] }, {} ],
+   "attached": { "Komainu Battle Armor": "Grizzly Bears" }
+  }
+ },
+ {
+  "name": "unattaching costs {4} and Komainu is a creature again",
+  "players": [
+   { "battlefield": ["Komainu Battle Armor", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Komainu Battle Armor", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Komainu Battle Armor", "Grizzly Bears"] }, {} ],
+   "attached": {},
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "unattached Komainu cannot unattach (nothing attached)",
+  "players": [
+   { "battlefield": ["Komainu Battle Armor", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Komainu Battle Armor", "ability": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Komainu Battle Armor"] }, {} ]
+  }
+ },
+ {
+  "name": "unblocked combat damage from equipped creature to player: the attack deals damage",
+  "players": [
+   { "battlefield": ["Komainu Battle Armor", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "Komainu hits the player: the opponent's creature is goaded and must attack",
+  "players": [ { "battlefield": ["Komainu Battle Armor"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "attack": [ { "card": "Komainu Battle Armor", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [], "player": 1, "illegal": true }
+  ],
+  "expect": { "players": [ { "life": 20 }, { "life": 18 } ] }
+ },
+ {
+  "name": "no combat damage from Komainu: the opponent's creature is not goaded and may stay home",
+  "players": [ { "battlefield": ["Komainu Battle Armor"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [], "player": 1 }
+  ],
+  "expect": { "players": [ { "life": 20 }, { "life": 20 } ] }
+ },
+ {
+  "name": "attached Komainu is an Equipment, not a Dog (type-changing static while attached)",
+  "players": [ { "battlefield": ["Komainu Battle Armor", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "subtypes": { "Komainu Battle Armor": ["Equipment"] }, "not_subtypes": { "Komainu Battle Armor": ["Dog"] } }
+ },
+ {
+  "name": "unattached Komainu keeps its Dog subtype",
+  "players": [ { "battlefield": ["Komainu Battle Armor"] }, {} ],
+  "steps": [],
+  "expect": { "subtypes": { "Komainu Battle Armor": ["Dog"] } }
+ },
+ {
+  "name": "ruling: a tapped Equipment can still be reconfigured, and becoming attached does not untap it",
+  "players": [ { "battlefield": [ { "name": "Komainu Battle Armor", "tapped": true }, "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ],
+  "steps": [ { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "attached": { "Komainu Battle Armor": "Grizzly Bears" }, "tapped": { "Komainu Battle Armor": true }, "pt": { "Grizzly Bears": [4, 4] } }
+ },
+ {
+  "name": "ruling: an Equipment creature can never become attached to itself",
+  "players": [ { "battlefield": ["Komainu Battle Armor", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Komainu Battle Armor"], "illegal": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Komainu Battle Armor"] }, {} ], "subtypes": { "Komainu Battle Armor": ["Dog"] } }
+ },
+ {
+  "name": "ruling: an equipped creature attacking (tapping) does not tap the Equipment",
+  "players": [ { "battlefield": ["Komainu Battle Armor", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [
+   { "activate": "Komainu Battle Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 16 } ], "tapped": { "Grizzly Bears": true, "Komainu Battle Armor": false } }
+ },
+ {
+  "name": "ruling: an Equipment creature can be attached by another effect (Brass Squire)",
+  "players": [ { "battlefield": ["Brass Squire", "Komainu Battle Armor", "Grizzly Bears"] }, {} ],
+  "steps": [ { "activate": "Brass Squire", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "attached": { "Komainu Battle Armor": "Grizzly Bears" }, "pt": { "Grizzly Bears": [4, 4] } }
+ }
+]

@@ -1,0 +1,177 @@
+[
+  {
+    "name": "attack: sacrificing another creature destroys an opponent creature",
+    "players": [
+      {
+        "battlefield": [
+          "Terror Ballista",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Terror Ballista",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Terror Ballista"
+          ],
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "declining the sacrifice keeps both creatures",
+    "players": [
+      {
+        "battlefield": [
+          "Terror Ballista",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Terror Ballista",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Terror Ballista",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "unearth returns it with haste so it can attack the turn it returns",
+    "players": [
+      { "graveyard": ["Terror Ballista"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Terror Ballista", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Terror Ballista", "at": "p1" } ] },
+      { "advance_to": "Main2", "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Terror Ballista"] },
+        { "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an unearthed Terror Ballista killed by a spell is exiled instead",
+    "players": [
+      { "graveyard": ["Terror Ballista"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Terror Ballista", "ability": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Terror Ballista"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Terror Ballista"], "exile": ["Terror Ballista"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an unearthed Terror Ballista is exiled at the beginning of the next end step",
+    "players": [
+      { "graveyard": ["Terror Ballista"], "battlefield": ["Swamp", "Swamp", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Terror Ballista", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Terror Ballista"], "exile": ["Terror Ballista"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the destroy target is chosen when the second trigger goes on the stack",
+    "players": [
+      { "battlefield": ["Terror Ballista", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Gravedigger"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Terror Ballista", "at": "p1" } ] },
+      { "resolve": true, "answers": [true, "Gravedigger"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Terror Ballista"], "graveyard": ["Grizzly Bears"] },
+        { "battlefield_has": ["Hill Giant"], "graveyard": ["Gravedigger"] }
+      ]
+    }
+  }
+]

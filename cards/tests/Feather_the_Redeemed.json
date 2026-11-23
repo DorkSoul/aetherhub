@@ -1,0 +1,143 @@
+[
+  {
+    "name": "instant targeting my creature is exiled as it resolves and returns to hand at the next end step",
+    "players": [
+      {
+        "hand": ["Giant Growth"],
+        "battlefield": ["Feather, the Redeemed", "Grizzly Bears", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Giant Growth"],
+          "exile": [],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "countered instant that targeted my creature goes to the graveyard, not exile",
+    "players": [
+      {
+        "hand": ["Giant Growth"],
+        "battlefield": ["Feather, the Redeemed", "Grizzly Bears", "Forest"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Giant Growth" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Giant Growth"],
+          "exile": []
+        },
+        {
+          "graveyard": ["Counterspell"]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "instant that targets only an opponent's creature is not exiled",
+    "players": [
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Feather, the Redeemed", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Shock"],
+          "exile": []
+        },
+        {
+          "battlefield_lacks": ["Grizzly Bears"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Feather leaves after the spell is cast; the exile replacement and the end-step return still happen",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Feather, the Redeemed", "Grizzly Bears", "Forest"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "cast": "Murder", "player": 1, "targets": ["Feather, the Redeemed"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Giant Growth"], "exile": [], "graveyard": ["Feather, the Redeemed"], "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard": ["Murder"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell with another target besides my creature is still exiled and returned (Hunt the Weak fights the opponent's creature)",
+    "players": [
+      { "hand": ["Hunt the Weak"], "battlefield": ["Feather, the Redeemed", "Grizzly Bears", "Forest", "Forest", "Forest", "Forest"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Hunt the Weak", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Hunt the Weak"], "exile": [], "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell whose targets are all gone fizzles and is not exiled by Feather",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Feather, the Redeemed", "Grizzly Bears", "Forest"] },
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "cast": "Murder", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "exile": [], "graveyard": ["Giant Growth", "Grizzly Bears"], "battlefield_has": ["Feather, the Redeemed"] },
+        { "graveyard": ["Murder"] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

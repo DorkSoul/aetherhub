@@ -1,0 +1,64 @@
+[
+  { "name": "the damage mode deals 2 damage to target creature",
+    "players": [
+      { "battlefield": ["Three Bowls of Porridge", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Three Bowls of Porridge", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  { "name": "the tap mode taps target creature and leaves it on the battlefield",
+    "players": [
+      { "battlefield": ["Three Bowls of Porridge", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Three Bowls of Porridge", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": true }, "players": [ { "battlefield_has": ["Three Bowls of Porridge"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  { "name": "the sacrifice mode sacrifices it and gains 3 life",
+    "players": [
+      { "battlefield": ["Three Bowls of Porridge", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Three Bowls of Porridge", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 23, "battlefield_lacks": ["Three Bowls of Porridge"], "graveyard_has": ["Three Bowls of Porridge"] }, {} ] }
+  },
+  { "name": "each mode can be chosen only once: the damage mode is gone after it was used",
+    "players": [
+      { "battlefield": ["Three Bowls of Porridge", "Plains", "Plains", "Island", "Island"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "activate": "Three Bowls of Porridge", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "auto": true },
+      { "advance_to": "Main1", "auto": true },
+      { "advance_to": "End", "auto": true },
+      { "advance_to": "Upkeep", "auto": true },
+      { "advance_to": "Main1", "auto": true },
+      { "activate": "Three Bowls of Porridge", "ability": 0, "illegal": true },
+      { "activate": "Three Bowls of Porridge", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "turn": 3, "tapped": { "Serra Angel": true }, "players": [ {}, { "battlefield_has": ["Serra Angel"] } ] }
+  },
+  { "name": "the tap mode needs {2} as well as tapping the artifact",
+    "players": [
+      { "battlefield": ["Three Bowls of Porridge", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Three Bowls of Porridge", "ability": 1, "illegal": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": false }, "players": [ { "battlefield_has": ["Three Bowls of Porridge"] }, {} ] }
+  }
+]

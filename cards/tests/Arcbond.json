@@ -1,0 +1,105 @@
+[
+  {
+    "name": "ruling: two Arcbonds: damage bounces between the two creatures until one dies, and each trigger still deals its damage",
+    "players": [
+      { "hand": ["Arcbond", "Arcbond", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Serra Angel"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Arcbond", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "cast": "Arcbond", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 11, "battlefield_lacks": ["Serra Angel"], "graveyard_has": ["Serra Angel", "Arcbond", "Lightning Bolt"] },
+        { "life": 11, "battlefield_lacks": ["Hill Giant"], "graveyard_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature killed by the damage still makes its Arcbond deal that damage",
+    "players": [
+      { "hand": ["Arcbond", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Arcbond", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "graveyard_has": ["Hill Giant", "Arcbond", "Lightning Bolt"] },
+        { "life": 17, "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "damage to the chosen creature is dealt to each other creature and each player",
+    "players": [
+      { "hand": ["Arcbond", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      { "battlefield": ["Serra Angel", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Arcbond", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "graveyard": ["Arcbond", "Lightning Bolt", "Grizzly Bears"] },
+        { "life": 17, "battlefield": ["Serra Angel"], "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "damage to a creature other than the chosen one does nothing",
+    "players": [
+      { "hand": ["Arcbond", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Serra Angel"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Arcbond", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Serra Angel"] },
+        { "life": 20, "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "damage from combat triggers it too",
+    "players": [
+      { "hand": ["Arcbond"], "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Hill Giant", "Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Arcbond", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Main2" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "graveyard": ["Arcbond", "Grizzly Bears", "Savannah Lions"] },
+        { "life": 18, "battlefield": ["Hill Giant", "Serra Angel"] }
+      ]
+    }
+  }
+]

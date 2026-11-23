@@ -1,0 +1,71 @@
+[
+  { "name": "unpaid: the attacking creature is destroyed at end of combat",
+    "players": [ { "hand": ["Winter's Chill"], "battlefield": ["Snow-Covered Island", "Snow-Covered Island", "Snow-Covered Island", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Winter's Chill", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true, "answers": [false] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Winter's Chill"] }, { "life": 18 } ] } },
+  { "name": "paying only {1}: not destroyed and all combat damage to and by it is prevented",
+    "players": [ { "hand": ["Winter's Chill"], "battlefield": ["Snow-Covered Island", "Snow-Covered Island", "Snow-Covered Island", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Winter's Chill", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true, "answers": [true] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Winter's Chill"] }, { "battlefield_has": ["Hill Giant"], "life": 20 } ] } },
+  { "name": "paying {2}: nothing happens, combat damage is dealt normally",
+    "players": [ { "hand": ["Winter's Chill"], "battlefield": ["Snow-Covered Island", "Snow-Covered Island", "Snow-Covered Island", "Island", "Island", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Winter's Chill", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true, "answers": [true] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ] } },
+  { "name": "X=2 chooses two attackers and each controller decides separately",
+    "players": [ { "hand": ["Winter's Chill"], "battlefield": ["Snow-Covered Island", "Snow-Covered Island", "Snow-Covered Island", "Grizzly Bears", "Llanowar Elves"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Llanowar Elves", "at": "p1" } ] },
+      { "cast": "Winter's Chill", "targets": ["Grizzly Bears", "Llanowar Elves"], "answers": [2] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Llanowar Elves", "Winter's Chill"] }, { "life": 17 } ] } },
+  { "name": "can't be cast in the main phase",
+    "players": [ { "hand": ["Winter's Chill"], "battlefield": ["Snow-Covered Island", "Snow-Covered Island", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Winter's Chill", "illegal": true } ],
+    "expect": {} },
+  { "name": "cannot be cast after blockers are declared",
+    "players": [ { "hand": ["Winter's Chill"], "battlefield": ["Snow-Covered Island", "Snow-Covered Island", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "cast": "Winter's Chill", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {} },
+  { "name": "ruling: castable again in a second combat phase before blockers (after Relentless Assault); unpaid, so the creature is destroyed at that combat's end",
+    "players": [ { "hand": ["Relentless Assault", "Winter's Chill"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Snow-Covered Island", "Snow-Covered Island", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Relentless Assault" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Winter's Chill", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Winter's Chill", "Relentless Assault"] }, { "life": 16 } ] } }
+]

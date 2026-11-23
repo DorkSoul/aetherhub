@@ -1,0 +1,290 @@
+[
+  {
+    "name": "opponent instant and sorcery spells cost one more",
+    "players": [
+      {
+        "battlefield": [
+          "Dovin, Hand of Control",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "player": 1,
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "opponent can cast it with the extra mana",
+    "players": [
+      {
+        "battlefield": [
+          "Dovin, Hand of Control",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "player": 1,
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "your own spells are not taxed",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Dovin, Hand of Control",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "minus one: damage to the targeted opponent permanent is prevented",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Dovin, Hand of Control",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Dovin, Hand of Control",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "minus one: other opponent permanents still take damage",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Dovin, Hand of Control",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Dovin, Hand of Control",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the damage prevention keeps applying after Dovin leaves the battlefield",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Dovin, Hand of Control", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dovin, Hand of Control", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Dovin, Hand of Control"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Dovin, Hand of Control"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dovin, Hand of Control", "Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the loyalty ability may target any opponent permanent, even one that cannot be dealt damage",
+    "players": [
+      { "battlefield": ["Dovin, Hand of Control", "Mountain"] },
+      { "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "activate": "Dovin, Hand of Control", "ability": 0, "targets": ["Island"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dovin, Hand of Control"] },
+        { "battlefield_has": ["Island"] }
+      ]
+    }
+  }
+]

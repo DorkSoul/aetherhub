@@ -1,0 +1,147 @@
+[
+ {
+  "name": "raid end step: reveal the top card, put it in hand, lose life equal to its mana value",
+  "start": "Main1",
+  "players": [
+   {
+    "battlefield": [
+     "Ruin Raider",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Serra Angel"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears",
+      "Serra Angel"
+     ],
+     "life": 15
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "no raid trigger without an attack",
+  "start": "Main1",
+  "players": [
+   {
+    "battlefield": [
+     "Ruin Raider"
+    ],
+    "library": [
+     "Serra Angel"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a revealed land has mana value 0, so no life is lost",
+  "start": "Main1",
+  "players": [
+   { "battlefield": ["Ruin Raider", "Grizzly Bears"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Grizzly Bears", "Forest"], "life": 20 }, { "life": 18 } ]
+  }
+ },
+ {
+  "name": "ruling: raid trigger happens when Ruin Raider is cast after attacking",
+  "start": "Main1",
+  "players": [
+   { "hand": ["Ruin Raider"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Forest"], "library": ["Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "cast": "Ruin Raider" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Forest", "Grizzly Bears"], "life": 18 }, { "life": 18 } ]
+  }
+ },
+ {
+  "name": "ruling: raid still counts when the attacking creature died in combat",
+  "start": "Main1",
+  "players": [
+   { "battlefield": ["Ruin Raider", "Grizzly Bears"], "library": ["Forest", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Forest", "Grizzly Bears"], "graveyard": ["Grizzly Bears"], "life": 18 }, {} ]
+  }
+ }
+]

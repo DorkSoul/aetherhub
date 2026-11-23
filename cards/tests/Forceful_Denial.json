@@ -1,0 +1,125 @@
+[
+ {
+  "name": "counters target spell and cascades into a cheaper spell",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Forceful Denial"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Forceful Denial",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "life": 20
+    },
+    {
+     "graveyard_has": [
+      "Forceful Denial"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: can't be cast targeting itself to cascade when no other spell is on the stack",
+  "players": [
+   {},
+   { "hand": ["Forceful Denial"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "library": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Forceful Denial", "player": 1, "illegal": true }
+  ],
+  "expect": { "players": [ {}, { "hand": ["Forceful Denial"], "library_count": 1 } ] }
+ },
+ {
+  "name": "ruling: a countered cascade spell still cascades (cascade happened on cast)",
+  "players": [
+   { "hand": ["Lightning Bolt", "Forceful Denial"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island"], "library": ["Plains"] },
+   { "hand": ["Forceful Denial"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "library": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Forceful Denial", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "pass": true, "player": 1 },
+   { "cast": "Forceful Denial", "targets": [ { "stack": "Forceful Denial" } ], "answers": [true] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt", "Forceful Denial"], "life": 20 },
+    { "graveyard_has": ["Forceful Denial"], "battlefield_has": ["Grizzly Bears"], "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: declining the cascade cast still exiles the cards down to the hit, which go to the library bottom",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+   { "hand": ["Forceful Denial"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "library": ["Plains", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Forceful Denial", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"], "life": 20 },
+    { "graveyard_has": ["Forceful Denial"], "library_count": 2, "battlefield_lacks": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

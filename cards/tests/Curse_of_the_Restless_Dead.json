@@ -1,0 +1,80 @@
+[
+ {
+  "name": "land entering under the enchanted player's control makes a decayed zombie for the controller",
+  "players": [
+   { "hand": ["Curse of the Restless Dead", "Forest"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of the Restless Dead", "targets": ["p0"] },
+   { "resolve": true },
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Zombie 2-2 Decayed"] }, {} ],
+   "keywords": { "Zombie 2-2 Decayed": ["Decayed"] }
+  }
+ },
+ {
+  "name": "land entering under the opponent's control (enchanted) does not make a zombie for the controller",
+  "players": [
+   { "hand": ["Curse of the Restless Dead", "Forest"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Curse of the Restless Dead", "targets": ["p1"] },
+   { "resolve": true },
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Zombie 2-2 Decayed"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the Zombie goes to the Curse's controller when the enchanted opponent's land enters",
+  "players": [
+   { "hand": ["Curse of the Restless Dead"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   { "hand": ["Forest"] }
+  ],
+  "steps": [
+   { "cast": "Curse of the Restless Dead", "targets": ["p1"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "play_land": "Forest", "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Zombie 2-2 Decayed"] }, { "battlefield_lacks": ["Zombie 2-2 Decayed"] } ]
+  }
+ },
+ {
+  "name": "ruling: a decayed Zombie that attacks is sacrificed at end of combat",
+  "players": [
+   { "hand": ["Curse of the Restless Dead"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+   { "hand": ["Forest"] }
+  ],
+  "steps": [
+   { "cast": "Curse of the Restless Dead", "targets": ["p1"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "play_land": "Forest", "player": 1 },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Zombie 2-2 Decayed", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Zombie 2-2 Decayed"] }, { "life": 18 } ]
+  }
+ }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "name": "destroys an opponent's nonbasic land; each player then fetches a basic land",
+    "players": [
+      {
+        "battlefield": ["Field of Ruin", "Mountain", "Mountain"],
+        "library": ["Forest", "Island"]
+      },
+      {
+        "battlefield": ["Ghost Quarter"],
+        "library": ["Mountain", "Island"]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Field of Ruin",
+        "targets": ["Ghost Quarter"]
+      },
+      {
+        "resolve": true,
+        "answers": ["Forest", "Mountain"]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Field of Ruin"],
+          "battlefield": ["Mountain", "Mountain", "Forest"]
+        },
+        {
+          "graveyard": ["Ghost Quarter"],
+          "battlefield": ["Mountain"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a basic land an opponent controls is not a legal target",
+    "players": [
+      {
+        "battlefield": ["Field of Ruin", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Forest"]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Field of Ruin",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Field of Ruin", "Mountain", "Mountain"] },
+        { "battlefield": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "your own nonbasic land is not a legal target",
+    "players": [
+      {
+        "battlefield": ["Field of Ruin", "Mountain", "Mountain", "Ghost Quarter"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Field of Ruin",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Field of Ruin", "Mountain", "Mountain", "Ghost Quarter"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "taps for colorless mana",
+    "players": [
+      {
+        "battlefield": ["Field of Ruin"],
+        "hand": ["Sol Ring"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sol Ring" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Field of Ruin", "Sol Ring"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the target land is gone when the ability resolves, no player searches for a basic land",
+    "players": [
+      { "battlefield": ["Field of Ruin", "Plains", "Plains"], "library": ["Forest"] },
+      { "battlefield": ["Ghost Quarter"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "activate": "Field of Ruin", "targets": ["Ghost Quarter"] },
+      { "pass": true },
+      { "activate": "Ghost Quarter", "player": 1, "targets": ["Ghost Quarter"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Field of Ruin"], "battlefield_lacks": ["Forest"], "library_top": ["Forest"] },
+        { "graveyard": ["Ghost Quarter"], "battlefield_lacks": ["Forest"], "library_top": ["Forest"] }
+      ]
+    }
+  }
+]

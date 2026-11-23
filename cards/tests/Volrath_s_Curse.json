@@ -1,0 +1,136 @@
+[
+ {
+  "name": "enchanted creature can't attack",
+  "players": [
+   {
+    "hand": ["Volrath's Curse"],
+    "battlefield": ["Island", "Island", {"name": "Grizzly Bears", "sick": false}, {"name": "Hill Giant", "sick": false}]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Volrath's Curse", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"attack": [{"card": "Hill Giant", "at": "p1"}, {"card": "Grizzly Bears", "at": "p1"}], "auto": true},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [
+    {},
+    {"life": 17}
+   ],
+   "attached": {"Volrath's Curse": "Grizzly Bears"}
+  }
+ },
+ {
+  "name": "enchanted creature's activated abilities can't be activated",
+  "players": [
+   {
+    "hand": ["Volrath's Curse"],
+    "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain", "Mountain", {"name": "Bold Impaler", "sick": false}]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Volrath's Curse", "targets": ["Bold Impaler"]},
+   {"resolve": true},
+   {"activate": "Bold Impaler", "ability": 0, "illegal": true}
+  ],
+  "expect": {}
+ },
+ {
+  "name": "the enchanted creature's controller sacrifices a permanent to ignore the effect",
+  "players": [
+   {
+    "hand": ["Volrath's Curse"],
+    "battlefield": ["Island", "Island", "Forest", {"name": "Grizzly Bears", "sick": false}]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Volrath's Curse", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"activate": "Volrath's Curse", "ability": 0, "answers": ["Forest"]},
+   {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard_has": ["Forest"]},
+    {"life": 18}
+   ]
+  }
+ },
+ {
+  "name": "only the enchanted creature's controller may sacrifice, not the Aura's controller",
+  "players": [
+   {
+    "hand": ["Volrath's Curse"],
+    "battlefield": ["Island", "Island", "Forest"]
+   },
+   {
+    "battlefield": ["Swamp", "Hill Giant"]
+   }
+  ],
+  "steps": [
+   {"cast": "Volrath's Curse", "targets": ["Hill Giant"]},
+   {"resolve": true},
+   {"activate": "Volrath's Curse", "ability": 0, "illegal": true},
+   {"pass": true},
+   {"activate": "Volrath's Curse", "ability": 0, "player": 1, "answers": ["Swamp"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Forest"]},
+    {"graveyard_has": ["Swamp"]}
+   ]
+  }
+ },
+ {
+  "name": "return the Aura to its owner's hand",
+  "players": [
+   {
+    "hand": ["Volrath's Curse"],
+    "battlefield": ["Island", "Island", "Island", "Island", {"name": "Grizzly Bears", "sick": false}]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Volrath's Curse", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"activate": "Volrath's Curse", "ability": 1},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Volrath's Curse"]},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: sacrificing the enchanted creature puts the Aura in the graveyard, so it cannot be returned",
+  "players": [
+   {
+    "hand": ["Volrath's Curse"],
+    "battlefield": ["Island", "Island", "Forest", {"name": "Grizzly Bears", "sick": false}]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Volrath's Curse", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"activate": "Volrath's Curse", "ability": 0, "answers": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"activate": "Volrath's Curse", "ability": 1, "illegal": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Volrath's Curse", "Grizzly Bears"]},
+    {}
+   ]
+  }
+ }
+]

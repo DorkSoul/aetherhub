@@ -1,0 +1,132 @@
+[
+  {
+    "name": "enchanted creature gets +2/+2",
+    "players": [
+      {
+        "hand": ["Psychic Impetus"],
+        "battlefield": ["Island", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Psychic Impetus", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "enchanted creature is goaded: it must attack although its controller would rather not",
+    "players": [
+      {
+        "hand": ["Psychic Impetus"],
+        "battlefield": ["Island", "Plains", "Plains"]
+      },
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "cast": "Psychic Impetus", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "attack": [], "player": 1, "illegal": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "resolve": true },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 16 }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "goad ends when the Aura leaves: the creature may stay home",
+    "players": [
+      {
+        "hand": ["Psychic Impetus", "Disenchant"],
+        "battlefield": ["Island", "Plains", "Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "cast": "Psychic Impetus", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Disenchant", "targets": ["Psychic Impetus"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "attack": [], "player": 1 }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "goaded creature must attack on an empty declaration: Grizzly Bears still hits for 2",
+    "players": [
+      { "hand": ["Psychic Impetus"], "battlefield": ["Island", "Plains", "Plains"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+    ],
+    "steps": [
+      { "cast": "Psychic Impetus", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "attack": [], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 16 }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: the scry 2 is done by the Aura's controller when the opponent's enchanted creature attacks",
+    "players": [
+      { "hand": ["Psychic Impetus"], "battlefield": ["Island", "Plains", "Plains"], "library": ["Mountain", "Forest", "Island"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+    ],
+    "steps": [
+      { "cast": "Psychic Impetus", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "resolve": true, "answers": [[0, 1]] },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 16, "library_top": ["Island"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: attacking does not end the goad, so in an additional combat the goaded creature must attack again",
+    "players": [
+      { "hand": ["Psychic Impetus"], "battlefield": ["Island", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Aggravated Assault", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Psychic Impetus", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true, "answers": [[0, 1]] },
+      { "block": [], "player": 1 },
+      { "advance_to": "Main2" },
+      { "activate": "Aggravated Assault" },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 12 } ]
+    }
+  }
+]

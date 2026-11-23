@@ -1,0 +1,107 @@
+[
+  {
+    "name": "prowess: casting a noncreature spell gives it +1/+1",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mage-Ring Bully", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Bully"] }, { "battlefield_lacks": ["Grizzly Bears"] } ],
+      "pt": { "Mage-Ring Bully": [3, 3] }
+    }
+  },
+  {
+    "name": "casting a creature spell does not trigger prowess",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Mage-Ring Bully", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Bully", "Grizzly Bears"] }, {} ],
+      "pt": { "Mage-Ring Bully": [2, 2] }
+    }
+  },
+  {
+    "name": "attacks each combat if able",
+    "players": [
+      { "battlefield": ["Mage-Ring Bully"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Bully"] }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "ruling: a tapped Mage-Ring Bully doesn't attack",
+    "players": [
+      { "battlefield": [ { "name": "Mage-Ring Bully", "tapped": true } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: prowess still resolves when the noncreature spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mage-Ring Bully", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 20, "graveyard": ["Counterspell"] }
+      ],
+      "pt": { "Mage-Ring Bully": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: casting an artifact creature does not trigger prowess",
+    "players": [
+      { "hand": ["Puppet Conjurer"], "battlefield": ["Mage-Ring Bully", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Puppet Conjurer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Mage-Ring Bully", "Puppet Conjurer"] }, {} ],
+      "pt": { "Mage-Ring Bully": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: playing a land does not trigger prowess",
+    "players": [
+      { "hand": ["Mountain"], "battlefield": ["Mage-Ring Bully"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Mountain" }
+    ],
+    "expect": {
+      "pt": { "Mage-Ring Bully": [2, 2] }
+    }
+  }
+]

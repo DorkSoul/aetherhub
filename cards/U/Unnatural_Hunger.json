@@ -1,0 +1,53 @@
+{
+  "name": "Unnatural Hunger",
+  "mana_cost": "{3}{B}{B}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "abilities": [
+    {
+      "type": "Attach",
+      "to": { "types": ["Creature"] }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "Any" },
+      "condition": {
+        "type": "Control",
+        "who": { "type": "TriggerPlayer" },
+        "filter": { "attached_by_source": true },
+        "at_least": 1
+      },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "AttachedTo" },
+          "effects": [
+            {
+              "type": "Unless",
+              "payer": { "type": "TriggerPlayer" },
+              "cost": [
+                {
+                  "type": "Sacrifice",
+                  "filter": {
+                    "types": ["Creature"],
+                    "controlled_by": { "type": "TriggerPlayer" },
+                    "not_among_remembered": true
+                  },
+                  "n": 1
+                }
+              ],
+              "effects": [
+                {
+                  "type": "DealDamage",
+                  "amount": { "type": "PowerOf", "of": { "type": "AttachedTo" } },
+                  "to": { "type": "TriggerPlayer" }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant creature\nAt the beginning of the upkeep of enchanted creature's controller, this Aura deals damage equal to that creature's power to that player unless they sacrifice another creature of their choice."
+}

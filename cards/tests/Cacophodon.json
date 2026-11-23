@@ -1,0 +1,68 @@
+[
+  {
+    "name": "enrage: being dealt damage untaps the target permanent",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Cacophodon", { "name": "Forest", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Cacophodon"] },
+      { "resolve": true, "targets": ["Forest"] },
+      { "resolve": true },
+      { "tap_for_mana": "Forest", "color": "G" }
+    ],
+    "expect": {
+      "pt": { "Cacophodon": [2, 5] },
+      "players": [ { "pool": { "G": 1 } }, {} ]
+    }
+  },
+  {
+    "name": "damage to another creature does not trigger enrage",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Cacophodon", { "name": "Forest", "tapped": true }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "tap_for_mana": "Forest", "color": "G", "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: several blockers dealing damage at once trigger enrage only once",
+    "players": [
+      { "battlefield": ["Cacophodon", { "name": "Forest", "tapped": true }, { "name": "Island", "tapped": true }] },
+      { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Cacophodon", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Cacophodon" }, { "blocker": "Llanowar Elves", "attacker": "Cacophodon" } ], "player": 1 },
+      { "advance_to": "Main2", "targets": ["Forest"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Cacophodon"] }, { "battlefield_has": ["Llanowar Elves"], "graveyard_has": ["Grizzly Bears"] } ],
+      "tapped": { "Forest": false, "Island": true }
+    }
+  },
+  {
+    "name": "ruling: enrage still resolves after Cacophodon dies to lethal damage",
+    "players": [
+      { "battlefield": ["Cacophodon", { "name": "Forest", "tapped": true }] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Cacophodon", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Cacophodon" }, { "blocker": "Hill Giant", "attacker": "Cacophodon" } ], "player": 1 },
+      { "advance_to": "Main2", "targets": ["Forest"] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Cacophodon"] }, {} ],
+      "tapped": { "Forest": false }
+    }
+  }
+]

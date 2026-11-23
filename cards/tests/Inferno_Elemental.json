@@ -1,0 +1,158 @@
+[
+  {
+    "name": "becomes blocked by a creature: deals 3 damage to that creature",
+    "players": [
+      {
+        "battlefield": [
+          "Inferno Elemental"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Inferno Elemental",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Inferno Elemental"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "unblocked attacker: no trigger, damage to the player",
+    "players": [
+      {
+        "battlefield": [
+          "Inferno Elemental"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Inferno Elemental",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "blocks an attacking creature: deals 3 damage to it before damage (it dies, Elemental survives)",
+    "players": [
+      { "battlefield": ["Inferno Elemental"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Inferno Elemental", "attacker": "Hill Giant" } ], "player": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Inferno Elemental"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "not blocking: no damage trigger, the unblocked attacker hits the player",
+    "players": [
+      { "battlefield": ["Inferno Elemental"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "battlefield_has": ["Inferno Elemental"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: blocked by two creatures, 3 damage to each kills them before combat damage (Elemental survives 5 damage)",
+    "players": [
+      { "battlefield": ["Inferno Elemental"] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Inferno Elemental", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Inferno Elemental" }, { "blocker": "Grizzly Bears", "attacker": "Inferno Elemental" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Inferno Elemental"], "life": 20 },
+        { "graveyard_has": ["Hill Giant", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: blocker removed by the trigger, blocked Elemental deals no combat damage to the player",
+    "players": [
+      { "battlefield": ["Inferno Elemental"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Inferno Elemental", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Inferno Elemental" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Inferno Elemental"] },
+        { "graveyard": ["Hill Giant"], "life": 20 }
+      ]
+    }
+  }
+]

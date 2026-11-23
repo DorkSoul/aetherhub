@@ -1,0 +1,143 @@
+[
+ {
+  "name": "ruling: a {T} mana ability of the enchanted creature can't be used",
+  "players": [
+   {"hand": ["Serra Bestiary", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Birds of Paradise"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Serra Bestiary", "targets": ["Birds of Paradise"]},
+   {"resolve": true},
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "illegal": true}
+  ],
+  "expect": {
+   "attached": {"Serra Bestiary": "Birds of Paradise"},
+   "players": [{}, {"battlefield_has": ["Grizzly Bears"]}]
+  }
+ },
+ {
+  "name": "ruling: control: the same Birds of Paradise pays for Lightning Bolt when not enchanted",
+  "players": [
+   {"hand": ["Lightning Bolt"], "battlefield": ["Birds of Paradise"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"graveyard": ["Lightning Bolt"]}, {"graveyard": ["Grizzly Bears"]}]
+  }
+ },
+ {
+  "name": "enchanted creature can't use {T} abilities",
+  "players": [
+   {
+    "hand": [
+     "Serra Bestiary",
+     "Giant Growth"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Birds of Paradise"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Serra Bestiary",
+    "targets": [
+     "Birds of Paradise"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Birds of Paradise"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Serra Bestiary": "Birds of Paradise"
+   }
+  }
+ },
+ {
+  "name": "upkeep: paying WW keeps the Aura on the creature",
+  "players": [
+   {"hand": ["Serra Bestiary"], "battlefield": ["Plains", "Plains"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Serra Bestiary", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep", "answers": [true]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Serra Bestiary"]}, {"battlefield_has": ["Grizzly Bears"]}],
+   "attached": {"Serra Bestiary": "Grizzly Bears"}
+  }
+ },
+ {
+  "name": "upkeep: not paying WW sacrifices the Aura",
+  "players": [
+   {"hand": ["Serra Bestiary"], "battlefield": ["Plains", "Plains"]},
+   {"battlefield": ["Grizzly Bears"]}
+  ],
+  "steps": [
+   {"cast": "Serra Bestiary", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"advance_to": "Upkeep"},
+   {"advance_to": "Upkeep", "answers": [false]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"graveyard": ["Serra Bestiary"]}, {"battlefield_has": ["Grizzly Bears"]}]
+  }
+ },
+ {
+  "name": "enchanted creature can't attack: only the other attacker deals damage",
+  "players": [
+   {"hand": ["Serra Bestiary"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Hill Giant"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Serra Bestiary", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"advance_to": "BeginCombat"},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}, {"card": "Hill Giant", "at": "p1"}]},
+   {"block": []},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Grizzly Bears", "Hill Giant"]}, {"life": 17}]
+  }
+ },
+ {
+  "name": "enchanted creature can't block: the block on the attacker is dropped",
+  "players": [
+   {"hand": ["Serra Bestiary"], "battlefield": ["Plains", "Plains", "Hill Giant", "Llanowar Elves"]},
+   {"battlefield": ["Grizzly Bears", "Birds of Paradise"]}
+  ],
+  "steps": [
+   {"cast": "Serra Bestiary", "targets": ["Grizzly Bears"]},
+   {"resolve": true},
+   {"advance_to": "BeginCombat"},
+   {"attack": [{"card": "Hill Giant", "at": "p1"}, {"card": "Llanowar Elves", "at": "p1"}]},
+   {"block": [{"blocker": "Grizzly Bears", "attacker": "Hill Giant"}, {"blocker": "Birds of Paradise", "attacker": "Llanowar Elves"}]},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [{}, {"life": 17, "battlefield_has": ["Grizzly Bears"]}]
+  }
+ }
+]

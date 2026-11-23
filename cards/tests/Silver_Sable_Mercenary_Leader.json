@@ -1,0 +1,183 @@
+[
+  {
+    "name": "enters: put a +1/+1 counter on another target creature (opponent's creature is legal)",
+    "players": [
+      {
+        "hand": [
+          "Silver Sable, Mercenary Leader"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Silver Sable, Mercenary Leader"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "attacks: target modified creature you control gains lifelink until end of turn",
+    "players": [
+      {
+        "battlefield": [
+          "Silver Sable, Mercenary Leader",
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Savannah Lions"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Silver Sable, Mercenary Leader",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": [
+          "Lifelink"
+        ]
+      }
+    }
+  },
+  {
+    "name": "attacks with no modified creature you control: no trigger target, plain 2 damage",
+    "players": [
+      {
+        "battlefield": [
+          "Silver Sable, Mercenary Leader",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Silver Sable, Mercenary Leader",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an equipped creature is modified (Bonesplitter you control), so the attack trigger can target it",
+    "players": [
+      { "battlefield": ["Silver Sable, Mercenary Leader", "Grizzly Bears", "Bonesplitter", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Silver Sable, Mercenary Leader", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "keywords": { "Grizzly Bears": ["Lifelink"] } }
+  },
+  {
+    "name": "ruling: a creature with a counter of another kind is modified",
+    "players": [
+      { "battlefield": ["Silver Sable, Mercenary Leader", { "name": "Grizzly Bears", "counters": { "Charge": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silver Sable, Mercenary Leader", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "counters": { "Grizzly Bears": { "Charge": 1 } }, "keywords": { "Grizzly Bears": ["Lifelink"] } }
+  },
+  {
+    "name": "ruling: an Aura controlled by the opponent does not make my creature modified (Bears deals 3, no lifelink)",
+    "players": [
+      { "battlefield": ["Silver Sable, Mercenary Leader", "Grizzly Bears"] },
+      { "hand": ["Holy Strength"], "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "player": 1, "cast": "Holy Strength", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Silver Sable, Mercenary Leader", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 15 } ] }
+  }
+]

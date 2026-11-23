@@ -1,0 +1,52 @@
+{
+  "name": "Power Leak",
+  "mana_cost": "{1}{U}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "colors": ["U"],
+  "abilities": [
+    {
+      "type": "Attach",
+      "to": { "types": ["Enchantment"] }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "Any" },
+      "condition": {
+        "type": "Control",
+        "who": { "type": "TriggerPlayer" },
+        "filter": { "attached_by_source": true },
+        "at_least": 1
+      },
+      "effects": [
+        { "type": "ChooseNumber", "who": { "type": "TriggerPlayer" }, "min": 0, "max": 255 },
+        {
+          "type": "Unless",
+          "payer": { "type": "TriggerPlayer" },
+          "cost": [{ "type": "Mana", "cost": "{N}" }],
+          "effects": [
+            {
+              "type": "DealDamage",
+              "source": { "type": "This" },
+              "to": { "type": "TriggerPlayer" },
+              "amount": { "type": "Fixed", "n": 2 }
+            }
+          ],
+          "if_paid": [
+            {
+              "type": "DealDamage",
+              "source": { "type": "This" },
+              "to": { "type": "TriggerPlayer" },
+              "amount": {
+                "type": "Max",
+                "a": { "type": "Fixed", "n": 0 },
+                "b": { "type": "Minus", "a": { "type": "Fixed", "n": 2 }, "b": { "type": "ChosenNumber" } }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant enchantment\nAt the beginning of the upkeep of enchanted enchantment's controller, that player may pay any amount of mana. Power Leak deals 2 damage to that player. Prevent X of that damage, where X is the amount of mana that player paid this way."
+}

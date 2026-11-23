@@ -1,0 +1,98 @@
+[
+ {
+  "name": "enters: exiles an opposing creature until it leaves",
+  "players": [ { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [ { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Hill Giant"] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield": ["Assimilation Aegis", "Plains", "Island", "Island"] }, { "exile": ["Hill Giant"], "battlefield": [] } ] }
+ },
+ {
+  "name": "up to one: may exile nothing",
+  "players": [ { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [ { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": [] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield": ["Assimilation Aegis", "Plains", "Island", "Island"] }, { "battlefield": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "equipped creature becomes a copy of the exiled creature",
+  "players": [ { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island", "Forest", "Forest", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Hill Giant"] }, { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield": ["Assimilation Aegis", "Plains", "Island", "Island", "Forest", "Forest", "Hill Giant"] }, { "exile": ["Hill Giant"] } ], "pt": { "Hill Giant": [3, 3] } }
+ },
+ {
+  "name": "moving the equipment ends the copy",
+  "players": [ { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Goblin Piker"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Hill Giant"] }, { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Goblin Piker"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield": ["Assimilation Aegis", "Plains", "Island", "Island", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] }, { "exile": ["Hill Giant"] } ], "pt": { "Grizzly Bears": [2, 2], "Hill Giant": [3, 3] } }
+ },
+ {
+  "name": "ruling: the copy uses only the printed card, not the counters on the exiled creature",
+  "players": [
+   { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island", "Forest", "Forest", "Hill Giant"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Grizzly Bears"] }, { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Hill Giant"] }, { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Assimilation Aegis"] }, { "exile": ["Grizzly Bears"] } ], "pt": { "Grizzly Bears": [2, 2] } }
+ },
+ {
+  "name": "ruling: becoming a copy does not trigger the copied creature's enters ability",
+  "players": [
+   { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island", "Forest", "Forest", "Grizzly Bears"] },
+   { "battlefield": ["Mulldrifter"] }
+  ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Mulldrifter"] }, { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Assimilation Aegis"], "hand_count": 0 }, { "exile": ["Mulldrifter"] } ] }
+ },
+ {
+  "name": "ruling: leaving the battlefield before the enters ability resolves exiles nothing",
+  "players": [
+   { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island"] },
+   { "hand": ["Disenchant"], "battlefield": ["Plains", "Plains", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Hill Giant"] },
+   { "pass": true },
+   { "cast": "Disenchant", "player": 1, "targets": ["Assimilation Aegis"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Assimilation Aegis"], "battlefield_lacks": ["Assimilation Aegis"] }, { "battlefield_has": ["Hill Giant"], "exile": [] } ] }
+ },
+ {
+  "name": "ruling: non-copy effects and counters on the equipped creature still apply after it becomes a copy",
+  "players": [
+   { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island", "Forest", "Forest", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": ["Hill Giant"] }, { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Assimilation Aegis"] }, { "exile": ["Hill Giant"] } ], "pt": { "Hill Giant": [4, 4] }, "counters": { "Hill Giant": { "p1p1": 1 } } }
+ },
+ {
+  "name": "ruling: with no creature exiled, the equipped creature does not become a copy",
+  "players": [
+   { "hand": ["Assimilation Aegis"], "battlefield": ["Plains", "Island", "Island", "Forest", "Forest", "Grizzly Bears"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Assimilation Aegis" }, { "resolve": true, "targets": [] }, { "resolve": true },
+   { "activate": "Assimilation Aegis", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ], "pt": { "Grizzly Bears": [2, 2] } }
+ }
+]

@@ -1,0 +1,45 @@
+{
+  "name": "Grave Researcher // Reanimate",
+  "mana_cost": "{2}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Troll", "Warlock"],
+  "power": 3,
+  "toughness": 3,
+  "layout": "Prepare",
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        { "type": "Surveil", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "types": ["Creature"] }, "zone": "Graveyard", "player": { "type": "You" } },
+            "cmp": { "op": "Ge", "n": 3 }
+          },
+          "then": [ { "type": "BecomePrepared", "what": { "type": "This" } } ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of your upkeep, surveil 1. Then if there are three or more creature cards in your graveyard, this creature becomes prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
+  "back": {
+    "name": "Reanimate",
+    "mana_cost": "{B}",
+    "types": ["Sorcery"],
+    "abilities": [
+      {
+        "type": "Spell",
+        "targets": [ { "what": { "type": "CardIn", "zone": "Graveyard", "filter": { "types": ["Creature"] }, "whose": "Any" }, "label": "target creature card from a graveyard" } ],
+        "effects": [
+          { "type": "LoseLife", "who": { "type": "You" }, "n": { "type": "ManaValueOf", "of": { "type": "Target", "idx": 0 } } },
+          { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Battlefield", "under_your_control": true }
+        ]
+      }
+    ],
+    "oracle_text": "Put target creature card from a graveyard onto the battlefield under your control. You lose life equal to that card's mana value."
+  }
+}

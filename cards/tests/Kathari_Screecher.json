@@ -1,0 +1,79 @@
+[
+  {
+    "name": "unearth returns it with haste and it is exiled at the end step",
+    "players": [
+      { "graveyard": ["Kathari Screecher"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kathari Screecher", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Kathari Screecher"] }, {}]
+    }
+  },
+  {
+    "name": "unearth is sorcery speed: illegal on the opponent's turn",
+    "players": [
+      { "graveyard": ["Kathari Screecher"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End", "player": 0 },
+      { "activate": "Kathari Screecher", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Kathari Screecher"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: unearth does nothing if its card is exiled from the graveyard in response",
+    "players": [
+      { "graveyard": ["Kathari Screecher"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Tormod's Crypt"] }
+    ],
+    "steps": [
+      { "activate": "Kathari Screecher", "ability": 0 },
+      { "pass": true },
+      { "activate": "Tormod's Crypt", "ability": 0, "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Kathari Screecher"] }, { "graveyard": ["Tormod's Crypt"] }]
+    }
+  },
+  {
+    "name": "ruling: the unearthed creature has haste and can attack the turn it returns",
+    "players": [
+      { "graveyard": ["Kathari Screecher"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kathari Screecher", "ability": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Kathari Screecher", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 18 }] }
+  },
+  {
+    "name": "ruling: an unearthed creature that would die is exiled instead",
+    "players": [
+      { "graveyard": ["Kathari Screecher"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Kathari Screecher", "ability": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Kathari Screecher"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Kathari Screecher"] }, { "graveyard": ["Lightning Bolt"] }]
+    }
+  }
+]

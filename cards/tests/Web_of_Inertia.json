@@ -1,0 +1,57 @@
+[
+ {"name": "ruling: a creature that can't attack you can still attack a planeswalker you control", "players": [{"battlefield": ["Web of Inertia", "Jace Beleren"]}, {"battlefield": [{"name": "Grizzly Bears", "sick": false}]}], "steps": [{"advance_to": "Main1", "player": 1}, {"advance_to": "BeginCombat", "player": 1}, {"attack": [{"card": "Grizzly Bears", "at": "Jace Beleren"}], "player": 1}, {"advance_to": "Main2", "player": 1}], "expect": {"players": [{"life": 20}, {}], "counters": {"Jace Beleren": {"loyalty": 1}}}},
+ {
+  "name": "no card in graveyard: creatures can't attack you",
+  "players": [
+   { "battlefield": ["Web of Inertia"] },
+   { "battlefield": [{ "name": "Grizzly Bears", "sick": false }] }
+  ],
+  "steps": [
+   { "advance_to": "Main1", "player": 1 },
+   { "advance_to": "BeginCombat", "player": 1 },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1, "illegal": true }
+  ],
+  "expect": { "players": [{ "life": 20 }, {}] }
+ },
+ {
+  "name": "opponent exiles a card from their graveyard and can attack",
+  "players": [
+   { "battlefield": ["Web of Inertia"] },
+   { "graveyard": ["Shock"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }] }
+  ],
+  "steps": [
+   { "advance_to": "Main1", "player": 1 },
+   { "advance_to": "BeginCombat", "player": 1, "answers": [true] },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1 },
+   { "advance_to": "Main2", "player": 1 }
+  ],
+  "expect": { "players": [{ "life": 18 }, { "exile": ["Shock"] }] }
+ },
+ {
+  "name": "opponent declines to exile and can't attack",
+  "players": [
+   { "battlefield": ["Web of Inertia"] },
+   { "graveyard": ["Shock"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }] }
+  ],
+  "steps": [
+   { "advance_to": "Main1", "player": 1 },
+   { "advance_to": "BeginCombat", "player": 1, "answers": [false] },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1, "illegal": true }
+  ],
+  "expect": { "players": [{ "life": 20 }, { "graveyard": ["Shock"] }] }
+ },
+ {
+  "name": "controller's own turn: Web does nothing to their creatures",
+  "players": [
+   { "battlefield": ["Web of Inertia", { "name": "Grizzly Bears", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [{}, { "life": 18 }] }
+ },
+  {"name": "a creature that becomes a creature after the trigger resolves can't attack you either", "players": [{"battlefield": ["Web of Inertia"]}, {"battlefield": ["Mishra's Factory", "Island"]}], "steps": [{"advance_to": "Main1", "player": 1}, {"advance_to": "BeginCombat", "player": 1}, {"tap_for_mana": "Island", "player": 1}, {"activate": "Mishra's Factory", "player": 1}, {"resolve": true}, {"attack": [{"card": "Mishra's Factory", "at": "p0"}], "player": 1, "illegal": true}, {"advance_to": "End", "player": 1}], "expect": {"players": [{"life": 20}, {}], "turn": 2}}
+]

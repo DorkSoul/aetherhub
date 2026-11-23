@@ -1,0 +1,90 @@
+[
+  { "name": "read ahead: choosing chapter I draws two cards each (you and the target opponent)",
+    "players": [
+      { "hand": ["Love Song of Night and Day"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Plains", "Forest"] },
+      { "library": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Love Song of Night and Day" },
+      { "resolve": true, "answers": [[0]] },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Plains", "Forest"], "battlefield_has": ["Love Song of Night and Day"] },
+        { "hand": ["Island", "Island"] }
+      ],
+      "counters": { "Love Song of Night and Day": { "lore": 1 } }
+    }
+  },
+  { "name": "read ahead: choosing chapter II starts with two lore counters and skips chapter I (no draws)",
+    "players": [
+      { "hand": ["Love Song of Night and Day"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Plains", "Forest"] },
+      { "library": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Love Song of Night and Day" },
+      { "resolve": true, "answers": [[1]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "battlefield_has": ["Love Song of Night and Day", "Bird 1-1 White Flying"] },
+        { "hand": [] }
+      ],
+      "counters": { "Love Song of Night and Day": { "lore": 2 } }
+    }
+  },
+  { "name": "read ahead: a later chapter triggers on the following turn (chapter I chosen, chapter II on turn 3)",
+    "players": [
+      { "hand": ["Love Song of Night and Day"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Plains", "Forest", "Plains"] },
+      { "library": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Love Song of Night and Day" },
+      { "resolve": true, "answers": [[0]] },
+      { "resolve": true, "answers": [] },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Love Song of Night and Day": { "lore": 2 } },
+      "players": [
+        { "battlefield_has": ["Love Song of Night and Day", "Bird 1-1 White Flying"] },
+        {}
+      ]
+    }
+  },
+  { "name": "read ahead chapter III: +1/+1 counters on the two chosen creatures, then the saga is sacrificed",
+    "players": [ { "hand": ["Love Song of Night and Day"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Love Song of Night and Day" }, { "resolve": true, "answers": [[2]], "targets": ["Grizzly Bears", "Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Love Song of Night and Day"] }, { "battlefield_has": ["Hill Giant"] } ], "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4] } }
+  },
+  { "name": "read ahead chapter III: choosing only one of the up-to-two targets puts a counter on just that creature",
+    "players": [ { "hand": ["Love Song of Night and Day"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Love Song of Night and Day" }, { "resolve": true, "answers": [[2]], "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Love Song of Night and Day"] }, {} ], "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [3, 3] } }
+  },
+  { "name": "ruling: if chapter I's target (the opponent) becomes illegal while the trigger is on the stack, no one draws",
+    "players": [
+      { "hand": ["Love Song of Night and Day"], "battlefield": ["Plains", "Plains", "Plains"], "library": ["Plains", "Forest"] },
+      { "hand": ["Dawn's Truce"], "battlefield": ["Plains", "Island"], "library": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Love Song of Night and Day" },
+      { "pass": true },
+      { "cast": "Dawn's Truce", "player": 1, "answers": [false] },
+      { "pass": true },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "library_count": 2, "battlefield_has": ["Love Song of Night and Day"] },
+        { "hand": [], "library_count": 2, "graveyard": ["Dawn's Truce"] }
+      ]
+    }
+  }
+]

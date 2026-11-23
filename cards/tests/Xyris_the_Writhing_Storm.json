@@ -1,0 +1,68 @@
+[
+ {
+  "name": "opponent draws outside their draw step: create a 1/1 Snake",
+  "players": [
+   { "battlefield": ["Xyris, the Writhing Storm"] },
+   { "hand": ["Opt"], "battlefield": ["Island"], "library": ["Mountain", "Forest", "Swamp"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Opt", "player": 1 },
+   { "resolve": true, "answers": [["Mountain"]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Xyris, the Writhing Storm", "Snake"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the controller drawing does not trigger it",
+  "players": [
+   { "hand": ["Opt"], "battlefield": ["Island", "Xyris, the Writhing Storm"], "library": ["Mountain", "Forest", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Opt" },
+   { "resolve": true, "answers": [["Mountain"]] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Island", "Xyris, the Writhing Storm"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "combat damage to a player: you and that player each draw that many cards",
+  "players": [
+   { "battlefield": ["Xyris, the Writhing Storm"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [{ "card": "Xyris, the Writhing Storm", "at": "p1" }] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 3 },
+    { "life": 17, "hand_count": 3 }
+   ]
+  }
+ },
+ {"name": "ruling: a card put into hand by a search is not drawn, so no Snake",
+  "players": [{"battlefield": ["Xyris, the Writhing Storm"]}, {"hand": ["Demonic Tutor"], "battlefield": ["Swamp", "Swamp"], "library": ["Forest", "Lightning Bolt"]}],
+  "steps": [{"advance_to": "Main2"}, {"advance_to": "Main1"}, {"cast": "Demonic Tutor", "player": 1}, {"resolve": true, "answers": ["Lightning Bolt"]}],
+  "expect": {"players": [{"battlefield": ["Xyris, the Writhing Storm"]}, {"hand_count": 2}]}},
+ {"name": "ruling: a player the damage kills before the draw does not draw; you win",
+  "players": [{"battlefield": [{"name": "Xyris, the Writhing Storm", "counters": {"p1p1": 20}}]}, {}],
+  "steps": [{"attack": [{"card": "Xyris, the Writhing Storm", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}],
+  "expect": {"winner": 0}},
+ {"name": "ruling: you and the damaged player both lose when the draws exceed both libraries; the third player wins",
+  "players": [{"battlefield": [{"name": "Xyris, the Writhing Storm", "counters": {"p1p1": 20}}]}, {"life": 50}, {}],
+  "steps": [{"attack": [{"card": "Xyris, the Writhing Storm", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}],
+  "expect": {"winner": 2}}
+]

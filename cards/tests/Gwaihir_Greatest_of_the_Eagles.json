@@ -1,0 +1,128 @@
+[
+  {
+    "name": "gaining 3 life gives a flying Bird at the end step",
+    "players": [
+      {
+        "hand": [
+          "Revitalize"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Gwaihir, Greatest of the Eagles"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Revitalize"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Bird 3-3 White Flying Attacks"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no life gained, no Bird",
+    "players": [
+      {
+        "battlefield": [
+          "Gwaihir, Greatest of the Eagles"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Bird 3-3 White Flying Attacks"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "attack trigger gives the chosen attacking creature flying",
+    "players": [ { "battlefield": ["Gwaihir, Greatest of the Eagles", "Grizzly Bears"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Gwaihir, Greatest of the Eagles", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] }, { "resolve": true, "targets": ["Grizzly Bears"] }, { "advance_to": "Main2" } ],
+    "expect": { "keywords": { "Grizzly Bears": ["Flying"] }, "players": [ {}, { "life": 13 } ] }
+  },
+  {
+    "name": "attack trigger with a lone attacker targets only itself; a creature that did not attack gains nothing",
+    "players": [ { "battlefield": ["Gwaihir, Greatest of the Eagles", "Grizzly Bears"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Gwaihir, Greatest of the Eagles", "at": "p1" } ] }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "keywords": { "Grizzly Bears": [] }, "players": [ {}, { "life": 15 } ] }
+  },
+  {
+    "name": "ruling: life gained before Gwaihir entered still gives the end step Bird",
+    "players": [
+      {
+        "hand": ["Revitalize", "Gwaihir, Greatest of the Eagles"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Revitalize" },
+      { "resolve": true },
+      { "cast": "Gwaihir, Greatest of the Eagles" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bird 3-3 White Flying Attacks", "Gwaihir, Greatest of the Eagles"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: losing more life than gained does not stop the end step Bird",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt", "Revitalize"],
+        "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Gwaihir, Greatest of the Eagles"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Revitalize" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 17, "battlefield_has": ["Bird 3-3 White Flying Attacks"] },
+        {}
+      ]
+    }
+  }
+]

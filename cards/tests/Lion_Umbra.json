@@ -1,0 +1,165 @@
+[
+  {
+    "name": "enchants a modified creature: +3/+3, reach and vigilance",
+    "players": [
+      {
+        "hand": ["Lion Umbra"],
+        "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Lion Umbra"] }, {} ],
+      "pt": { "Grizzly Bears": [6, 6] },
+      "keywords": { "Grizzly Bears": ["Reach", "Vigilance"] },
+      "attached": { "Lion Umbra": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "illegal to cast onto an unmodified creature",
+    "players": [
+      {
+        "hand": ["Lion Umbra"],
+        "battlefield": ["Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "umbra armor: destroy effect removes the Aura instead and the creature survives",
+    "players": [
+      {
+        "hand": ["Lion Umbra", "Murder"],
+        "battlefield": ["Forest", "Forest", "Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "cast": "Murder" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lion Umbra", "Murder"], "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: a creature that is sacrificed (not destroyed) is not saved by umbra armor",
+    "players": [
+      { "hand": ["Lion Umbra", "Diabolic Edict"], "battlefield": ["Forest", "Forest", "Forest", "Swamp", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "cast": "Diabolic Edict", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Lion Umbra", "Diabolic Edict"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a -1/-1 counter also makes a creature modified",
+    "players": [
+      { "hand": ["Lion Umbra"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "counters": { "m1m1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Lion Umbra"] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] },
+      "attached": { "Lion Umbra": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: lethal damage to an umbra-armored creature destroys only the Aura",
+    "players": [
+      { "hand": ["Lion Umbra", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Mountain", "Mountain", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lion Umbra", "Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: destroying an umbra-armored creature also removes its damage",
+    "players": [
+      { "hand": ["Lion Umbra", "Lightning Bolt", "Murder"], "battlefield": ["Forest", "Forest", "Mountain", "Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lion Umbra", "Murder", "Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: umbra armor is not regeneration, so the creature stays in combat and still deals damage",
+    "players": [
+      { "hand": ["Lion Umbra", "Murder"], "battlefield": ["Forest", "Forest", "Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "player": 1, "block": [] },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "ruling: with two umbra-armored Auras on a creature, the controller picks one to be destroyed",
+    "players": [
+      { "hand": ["Lion Umbra", "Lion Umbra", "Murder"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "cast": "Lion Umbra" },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Lion Umbra"], "graveyard_has": ["Lion Umbra", "Murder"] }, {} ]
+    }
+  }
+]

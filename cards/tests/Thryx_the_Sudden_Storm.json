@@ -1,0 +1,285 @@
+[
+ {
+  "name": "mana value 5+ spells cost 1 less",
+  "players": [
+   {
+    "battlefield": [
+     "Thryx, the Sudden Storm",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "hand": [
+     "Tidings"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Tidings"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 4,
+     "graveyard": [
+      "Tidings"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "mana value 4 spells are not reduced",
+  "players": [
+   {
+    "battlefield": [
+     "Thryx, the Sudden Storm",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "hand": [
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Hill Giant",
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "spells with mana value 5+ can't be countered",
+  "players": [
+   {
+    "battlefield": [
+     "Thryx, the Sudden Storm",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "hand": [
+     "Tidings"
+    ]
+   },
+   {
+    "battlefield": [
+     "Island",
+     "Island"
+    ],
+    "hand": [
+     "Counterspell"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Tidings"
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Tidings"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 4,
+     "graveyard": [
+      "Tidings"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "smaller spells can still be countered",
+  "players": [
+   {
+    "battlefield": [
+     "Thryx, the Sudden Storm",
+     "Forest",
+     "Forest"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Island",
+     "Island"
+    ],
+    "hand": [
+     "Counterspell"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "has flash",
+  "players": [
+   {
+    "hand": [
+     "Thryx, the Sudden Storm"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "cast": "Thryx, the Sudden Storm"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Thryx, the Sudden Storm"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Counterspell can target a 5+ mana value spell, which is not countered while Thryx is out",
+  "players": [
+   { "hand": ["Fireball"], "battlefield": ["Thryx, the Sudden Storm", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Fireball", "targets": ["p1"], "answers": [4] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Fireball" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Fireball"] },
+    { "life": 16, "graveyard": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: removing Thryx in response lets a counterspell work on the 5+ mana value spell",
+  "players": [
+   { "hand": ["Fireball"], "battlefield": ["Thryx, the Sudden Storm", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Murder", "Counterspell"], "battlefield": ["Swamp", "Swamp", "Island", "Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Fireball", "targets": ["p1"], "answers": [4] },
+   { "pass": true },
+   { "cast": "Murder", "player": 1, "targets": ["Thryx, the Sudden Storm"] },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Fireball" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Fireball", "Thryx, the Sudden Storm"] },
+    { "life": 20, "graveyard": ["Murder", "Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a 5+ mana value spell on the stack when Thryx enters can not be countered",
+  "players": [
+   { "hand": ["Fireball", "Thryx, the Sudden Storm"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island", "Island", "Island", "Island"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Fireball", "targets": ["p1"], "answers": [4] },
+   { "cast": "Thryx, the Sudden Storm" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Fireball" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Fireball"], "battlefield_has": ["Thryx, the Sudden Storm"] },
+    { "life": 16, "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

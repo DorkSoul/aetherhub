@@ -1,0 +1,72 @@
+[
+ {
+  "name": "exiles all same-name cards from owner's graveyard and library, then shuffles",
+  "players": [
+   { "hand": ["Extirpate"], "battlefield": ["Swamp"] },
+   {
+    "graveyard": ["Grizzly Bears"],
+    "library": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Extirpate", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Extirpate"] },
+    { "graveyard": [], "exile": ["Grizzly Bears", "Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "cannot target a basic land card in a graveyard",
+  "players": [
+   { "hand": ["Extirpate"], "battlefield": ["Swamp"] },
+   { "graveyard": ["Forest"] }
+  ],
+  "steps": [
+   { "cast": "Extirpate", "targets": ["Forest"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Extirpate"] }, { "graveyard": ["Forest"] } ]
+  }
+ },
+ {
+  "name": "ruling: once split second resolves, players can cast spells again",
+  "players": [
+   { "hand": ["Extirpate"], "battlefield": ["Swamp"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Extirpate", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 17, "graveyard": ["Extirpate"] }, { "graveyard": ["Lightning Bolt"], "exile": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: a spell already on the stack is not affected by split second",
+  "players": [
+   { "hand": ["Extirpate"], "battlefield": ["Swamp"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"], "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "pass": true, "player": 1 },
+   { "cast": "Extirpate", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 17, "graveyard": ["Extirpate"] }, { "graveyard": ["Lightning Bolt"], "exile": ["Grizzly Bears"] } ]
+  }
+ }
+]

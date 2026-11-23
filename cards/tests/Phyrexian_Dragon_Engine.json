@@ -1,0 +1,185 @@
+[
+  {
+    "name": "has double strike",
+    "players": [
+      {
+        "battlefield": [
+          "Phyrexian Dragon Engine"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "keywords": {
+        "Phyrexian Dragon Engine": [
+          "DoubleStrike"
+        ]
+      },
+      "pt": {
+        "Phyrexian Dragon Engine": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "unearth returns it; entering from graveyard discards hand and draws three",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Grizzly Bears",
+          "Forest"
+        ],
+        "graveyard": [
+          "Phyrexian Dragon Engine"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Phyrexian Dragon Engine"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Phyrexian Dragon Engine"
+          ],
+          "graveyard_has": [
+            "Lightning Bolt",
+            "Grizzly Bears",
+            "Forest"
+          ],
+          "hand_count": 3
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the discard keeps the hand",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Grizzly Bears",
+          "Forest"
+        ],
+        "graveyard": [
+          "Phyrexian Dragon Engine"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Phyrexian Dragon Engine"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Phyrexian Dragon Engine"
+          ],
+          "hand": [
+            "Lightning Bolt",
+            "Grizzly Bears",
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: unearth grants haste, so the returned Dragon attacks this turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Grizzly Bears", "Forest"], "graveyard": ["Phyrexian Dragon Engine"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Phyrexian Dragon Engine" },
+      { "resolve": true, "answers": [false] },
+      { "attack": [ { "card": "Phyrexian Dragon Engine", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Phyrexian Dragon Engine"] },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an unearthed permanent is exiled at the beginning of the next end step",
+    "players": [
+      { "hand": ["Lightning Bolt", "Grizzly Bears", "Forest"], "graveyard": ["Phyrexian Dragon Engine"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Phyrexian Dragon Engine" },
+      { "resolve": true, "answers": [false] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Phyrexian Dragon Engine"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an unearthed Dragon that would die is exiled instead",
+    "players": [
+      { "hand": ["Lightning Bolt", "Grizzly Bears", "Forest"], "graveyard": ["Phyrexian Dragon Engine"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Phyrexian Dragon Engine" },
+      { "resolve": true, "answers": [false] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Phyrexian Dragon Engine"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Phyrexian Dragon Engine"], "graveyard": [] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

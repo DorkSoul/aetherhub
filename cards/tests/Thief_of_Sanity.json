@@ -1,0 +1,163 @@
+[
+  {
+    "name": "combat damage: a nonland card is exiled and can be cast with mana of any type",
+    "players": [
+      {
+        "battlefield": ["Island", "Island", "Thief of Sanity"]
+      },
+      {
+        "library": ["Island", "Grizzly Bears", "Plains", "Forest"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard_has": ["Plains", "Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "combat damage: a land is exiled but cannot be played from exile",
+    "players": [
+      {
+        "battlefield": ["Island", "Island", "Thief of Sanity"]
+      },
+      {
+        "library": ["Grizzly Bears", "Island", "Plains", "Forest"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] },
+      { "play_land": "Island", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard_has": ["Plains", "Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: casting the exiled card makes it leave exile (it is no longer there to cast again)",
+    "players": [
+      { "battlefield": ["Island", "Island", "Thief of Sanity"] },
+      { "library": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": [] },
+        { "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled card can still be cast after Thief of Sanity leaves the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Island", "Island", "Mountain", "Thief of Sanity"] },
+      { "library": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] },
+      { "cast": "Lightning Bolt", "targets": ["Thief of Sanity"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Thief of Sanity", "Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: casting uses the cast rules, so an exiled land cannot be cast",
+    "players": [
+      { "battlefield": ["Island", "Island", "Thief of Sanity"] },
+      { "library": ["Island", "Island", "Island", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] },
+      { "cast": "Island", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled sorcery cannot be cast outside a main phase (not in the end of combat step)",
+    "players": [
+      { "battlefield": ["Island", "Island", "Thief of Sanity"] },
+      { "library": ["Birthday Escape", "Birthday Escape", "Birthday Escape", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "EndCombat", "answers": [0] },
+      { "cast": "Birthday Escape", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled sorcery can be cast in your main phase once the stack is empty",
+    "players": [
+      { "battlefield": ["Island", "Island", "Thief of Sanity"] },
+      { "library": ["Birthday Escape", "Birthday Escape", "Birthday Escape", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Thief of Sanity", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] },
+      { "cast": "Birthday Escape" },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard_has": ["Birthday Escape"] }
+      ]
+    }
+  }
+]

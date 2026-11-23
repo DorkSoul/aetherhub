@@ -1,0 +1,130 @@
+[
+ {
+  "name": "casting a noncreature spell triggers proliferate (no counters: nothing happens)",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Flux Channeler",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "proliferate adds a +1/+1 counter to a permanent with one",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Flux Channeler",
+     "Mountain",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "PlusOnePlusOne": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "PlusOnePlusOne": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: the proliferate trigger resolves even if the spell that caused it is countered",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Flux Channeler", "Mountain", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2 } },
+   "players": [ {}, { "life": 20, "graveyard_has": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: proliferate adds one of each kind of counter the permanent already has",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Flux Channeler", "Mountain", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1, "other": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2, "other": 2 } } }
+ },
+ {
+  "name": "ruling: proliferate may choose no permanents at all",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Flux Channeler", "Mountain", { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }, { "name": "Hill Giant", "counters": { "PlusOnePlusOne": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true, "answers": [[]] }
+  ],
+  "expect": { "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 }, "Hill Giant": { "PlusOnePlusOne": 1 } } }
+ },
+ {
+  "name": "ruling: proliferate can choose an opponent's permanent and an opponent player",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Flux Channeler", "Mountain"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } } ], "poison": 1 }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true, "answers": [[0, 1]] }
+  ],
+  "expect": { "counters": { "Grizzly Bears": { "PlusOnePlusOne": 2 } }, "players": [ {}, { "life": 17, "poison": 2 } ] }
+ }
+]

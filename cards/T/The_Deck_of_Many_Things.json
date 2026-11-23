@@ -1,0 +1,109 @@
+{
+  "name": "The Deck of Many Things",
+  "mana_cost": "{5}",
+  "types": ["Artifact"],
+  "supertypes": ["Legendary"],
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{2}" }, { "type": "Tap" } ],
+      "effects": [
+        {
+          "type": "RollDie",
+          "sides": 20,
+          "outcomes": [
+            {
+              "min": 1,
+              "max": 20,
+              "effects": [
+                {
+                  "type": "If",
+                  "cond": {
+                    "type": "Compare",
+                    "a": {
+                      "type": "Minus",
+                      "a": { "type": "DieRoll" },
+                      "b": { "type": "HandSize", "who": { "type": "You" } }
+                    },
+                    "cmp": { "op": "Le", "n": 0 }
+                  },
+                  "then": [
+                    { "type": "Discard", "who": { "type": "You" }, "n": { "type": "HandSize", "who": { "type": "You" } } }
+                  ],
+                  "else": [
+                    {
+                      "type": "If",
+                      "cond": {
+                        "type": "Compare",
+                        "a": {
+                          "type": "Minus",
+                          "a": { "type": "DieRoll" },
+                          "b": { "type": "HandSize", "who": { "type": "You" } }
+                        },
+                        "cmp": { "op": "Le", "n": 9 }
+                      },
+                      "then": [
+                        {
+                          "type": "Choose",
+                          "who": { "type": "You" },
+                          "zone": "Graveyard",
+                          "filter": {},
+                          "min": 1,
+                          "max": 1,
+                          "random": true,
+                          "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ]
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "If",
+                          "cond": {
+                            "type": "Compare",
+                            "a": {
+                              "type": "Minus",
+                              "a": { "type": "DieRoll" },
+                              "b": { "type": "HandSize", "who": { "type": "You" } }
+                            },
+                            "cmp": { "op": "Le", "n": 19 }
+                          },
+                          "then": [
+                            { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } }
+                          ],
+                          "else": [
+                            {
+                              "type": "Choose",
+                              "who": { "type": "You" },
+                              "zone": "Graveyard",
+                              "from": { "type": "EachPlayer" },
+                              "filter": { "types": ["Creature"] },
+                              "min": 1,
+                              "max": 1,
+                              "then": [
+                                { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "under_your_control": true, "remember": true },
+                                {
+                                  "type": "AddTrigger",
+                                  "bind": { "type": "Remembered" },
+                                  "trigger": { "type": "Dies", "filter": {} },
+                                  "once": true,
+                                  "until": "Forever",
+                                  "effects": [
+                                    { "type": "LoseGame", "who": { "type": "OwnerOf", "of": { "type": "TriggerObject" } } }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{2}, {T}: Roll a d20 and subtract the number of cards in your hand. If the result is 0 or less, discard your hand.\n1—9 | Return a card at random from your graveyard to your hand.\n10—19 | Draw two cards.\n20 | Put a creature card from any graveyard onto the battlefield under your control. When that creature dies, its owner loses the game."
+}

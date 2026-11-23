@@ -1,0 +1,85 @@
+[
+ {
+  "name": "two attacking Spiders put a +1/+1 counter on it",
+  "players": [
+   { "battlefield": [ { "name": "Spinneret and Spiderling", "sick": false }, { "name": "Sporecap Spider", "sick": false } ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Spinneret and Spiderling", "at": "p1" }, { "card": "Sporecap Spider", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "counters": { "Spinneret and Spiderling": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "attacking alone (one Spider) does not trigger the counter",
+  "players": [
+   { "battlefield": [ { "name": "Spinneret and Spiderling", "sick": false } ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Spinneret and Spiderling", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "pt": { "Spinneret and Spiderling": [1, 2] }
+  }
+ },
+ {
+  "name": "dealing 4 damage exiles the top card, playable from exile",
+  "players": [
+   { "battlefield": [ { "name": "Spinneret and Spiderling", "sick": false, "counters": { "p1p1": 3 } } ], "library": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Spinneret and Spiderling", "at": "p1" } ] },
+   { "block": [] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Grizzly Bears"] }, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ruling: the exiled card keeps normal timing (a creature cannot be cast during combat, only in Main 2)",
+  "players": [
+   { "battlefield": [ { "name": "Spinneret and Spiderling", "sick": false, "counters": { "p1p1": 3 } }, "Forest", "Forest" ], "library": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Spinneret and Spiderling", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "EndCombat" },
+   { "cast": "Grizzly Bears", "illegal": true },
+   { "advance_to": "Main2" },
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": [] }, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ruling: two other attacking Spiders trigger it even though Spinneret stays home",
+  "players": [
+   { "battlefield": [ "Spinneret and Spiderling", { "name": "Sporecap Spider", "sick": false }, { "name": "Sporecap Spider", "sick": false } ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Sporecap Spider", "at": "p1" }, { "card": "Sporecap Spider", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "counters": { "Spinneret and Spiderling": { "p1p1": 1 } }
+  }
+ }
+]

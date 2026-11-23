@@ -1,0 +1,246 @@
+[
+  {
+    "name": "exiles a creature card from a graveyard and makes a 4/4 black Zombie copy of it",
+    "players": [
+      {
+        "battlefield": [
+          "The Scarab God",
+          "Island",
+          "Island",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "The Scarab God",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "graveyard": []
+        }
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "no creature card in any graveyard: the ability cannot be activated",
+    "players": [
+      {
+        "battlefield": [
+          "The Scarab God",
+          "Island",
+          "Island",
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "graveyard": [
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "The Scarab God",
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "dies: returned to its owner's hand at the beginning of the next end step",
+    "players": [
+      {
+        "battlefield": [
+          "The Scarab God"
+        ]
+      },
+      {
+        "hand": [
+          "Murder"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Murder",
+        "player": 1,
+        "targets": [
+          "The Scarab God"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End",
+        "auto": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "The Scarab God"
+          ],
+          "battlefield": []
+        },
+        {
+          "graveyard": [
+            "Murder"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "upkeep: opponent loses life and you scry equal to Zombies you control (2 Zombies -> 2 life)",
+    "players": [
+      {
+        "battlefield": [
+          "The Scarab God",
+          "Gravecrawler",
+          "Gravedigger"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "End",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "upkeep: no Zombies besides The Scarab God means no life loss",
+    "players": [
+      {
+        "battlefield": [
+          "The Scarab God"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "advance_to": "End",
+        "auto": true
+      },
+      {
+        "advance_to": "Upkeep",
+        "auto": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: dies, then leaves the graveyard before the end step: it stays in exile and is not returned",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["The Scarab God", "Tormod's Crypt", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["The Scarab God"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["The Scarab God"] },
+      { "resolve": true },
+      { "activate": "Tormod's Crypt", "ability": 0, "targets": ["p0"] },
+      { "resolve": true },
+      { "advance_to": "End", "auto": true }
+    ],
+    "expect": { "players": [ { "hand": [], "exile": ["Lightning Bolt", "Lightning Bolt", "The Scarab God", "Tormod's Crypt"] }, {} ] }
+  },
+  {
+    "name": "ruling: dies in the main phase: it returns at the end step of that same turn, not the next one",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["The Scarab God", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["The Scarab God"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["The Scarab God"] },
+      { "resolve": true },
+      { "advance_to": "End", "auto": true }
+    ],
+    "expect": { "players": [ { "hand": ["The Scarab God"], "battlefield": ["Mountain", "Mountain"], "graveyard": ["Lightning Bolt", "Lightning Bolt"] }, {} ] }
+  }
+]

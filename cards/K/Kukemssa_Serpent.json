@@ -1,0 +1,58 @@
+{
+  "name": "Kukemssa Serpent",
+  "mana_cost": "{3}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Serpent"],
+  "power": 4,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CantAttackPlayer",
+        "affects": { "this": true },
+        "defender_controls": { "types": ["Land"], "subtypes": ["Island"] }
+      }
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Mana", "cost": "{U}" },
+        { "type": "Sacrifice", "filter": { "types": ["Land"], "subtypes": ["Island"], "controller": "You" }, "n": 1 }
+      ],
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Land"], "controller": "Opponent" } },
+          "min": 1,
+          "max": 1,
+          "label": "target land an opponent controls"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Animate",
+          "what": { "type": "Target", "idx": 0 },
+          "set_subtypes": ["Island"],
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "State",
+        "condition": {
+          "type": "Compare",
+          "a": {
+            "type": "Count",
+            "filter": { "subtypes": ["Island"], "types": ["Land"], "controller": "You" },
+            "zone": "Battlefield"
+          },
+          "cmp": { "op": "Eq", "n": 0 }
+        }
+      },
+      "effects": [{ "type": "Sacrifice", "who": { "type": "This" } }]
+    }
+  ],
+  "oracle_text": "This creature can't attack unless defending player controls an Island.\n{U}, Sacrifice an Island: Target land an opponent controls becomes an Island until end of turn.\nWhen you control no Islands, sacrifice this creature."
+}

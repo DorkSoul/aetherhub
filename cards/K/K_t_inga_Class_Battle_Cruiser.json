@@ -1,0 +1,84 @@
+{
+  "name": "K't'inga-Class Battle Cruiser",
+  "mana_cost": "{3}",
+  "types": ["Artifact"],
+  "subtypes": ["Spacecraft"],
+  "power": 5,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Either",
+        "a": { "type": "EntersBattlefield", "filter": { "this": true } },
+        "b": { "type": "Attacks", "filter": { "this": true } }
+      },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "any_of": [
+                { "subtypes": ["Klingon"], "controller": "You" },
+                { "subtypes": ["Warrior"], "controller": "You" }
+              ]
+            }
+          },
+          "min": 1,
+          "max": 2
+        }
+      ],
+      "effects": [
+        {
+          "type": "GrantKeyword",
+          "duration": "UntilEndOfTurn",
+          "keyword": "Flying",
+          "what": { "type": "Targets" }
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "timing": "Sorcery",
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "controller": "You", "other": true, "tapped": false },
+          "min": 1,
+          "max": 1,
+          "then": [
+            { "type": "Tap", "what": { "type": "Remembered" } },
+            {
+              "type": "AddCounters",
+              "what": { "type": "This" },
+              "kind": "Charge",
+              "n": { "type": "StationValue", "of": { "type": "Remembered" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Charge", "of": { "type": "This" } },
+        "cmp": { "op": "Ge", "n": 4 }
+      },
+      "effect": { "type": "AddType", "affects": { "this": true }, "types": ["Creature"], "subtypes": [] }
+    },
+    {
+      "type": "Static",
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Charge", "of": { "type": "This" } },
+        "cmp": { "op": "Ge", "n": 4 }
+      },
+      "effect": { "type": "GrantKeyword", "affects": { "this": true }, "keyword": "Flying" }
+    }
+  ],
+  "oracle_text": "Whenever this Spacecraft enters or attacks, one or two target Klingons and/or Warriors you control gain flying until end of turn.\nStation (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 4+.)\n4+ | Flying"
+}

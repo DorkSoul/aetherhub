@@ -1,0 +1,147 @@
+[
+ {
+  "name": "sacrificing another creature exiles cards equal to its mana value; you may cast them with any mana",
+  "players": [
+   {
+    "battlefield": [
+     "Rakdos, the Muscle",
+     "Grizzly Bears",
+     "Mountain"
+    ]
+   },
+   {
+    "library": [
+     "Lightning Bolt",
+     "Lightning Bolt",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Rakdos, the Muscle",
+    "ability": 0,
+    "answers": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true
+   },
+   {
+    "resolve": true,
+    "auto": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Rakdos, the Muscle"
+     ]
+    },
+    {
+     "life": 17,
+     "graveyard_has": [
+      "Lightning Bolt"
+     ],
+     "library_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "activate only once each turn",
+  "players": [
+   {
+    "battlefield": [
+     "Rakdos, the Muscle",
+     "Grizzly Bears",
+     "Llanowar Elves"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Rakdos, the Muscle",
+    "ability": 0,
+    "answers": [
+     "Grizzly Bears",
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true
+   },
+   {
+    "resolve": true,
+    "auto": true
+   },
+   {
+    "illegal": true,
+    "activate": "Rakdos, the Muscle",
+    "ability": 0
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Rakdos, the Muscle",
+      "Llanowar Elves"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the sacrificed creature's mana value is taken as it last existed: Grizzly Bears exiles two cards",
+  "players": [{"battlefield": ["Rakdos, the Muscle", "Grizzly Bears", "Mountain"], "library": ["Forest", "Island", "Plains"]}, {}],
+  "steps": [
+   {"activate": "Rakdos, the Muscle", "ability": 0, "answers": ["p0"]},
+   {"resolve": true, "auto": true},
+   {"resolve": true, "auto": true}
+  ],
+  "expect": {"players": [{"exile": ["Forest", "Island"], "library_count": 1, "library_top": ["Plains"]}, {}]}
+ },
+ {
+  "name": "ruling: X is 0 for the mana value of a sacrificed Walking Ballista: nothing is exiled",
+  "players": [{"battlefield": ["Rakdos, the Muscle", {"name": "Walking Ballista", "counters": {"p1p1": 2}}, "Forest"], "library": ["Forest", "Island"]}, {}],
+  "steps": [
+   {"activate": "Rakdos, the Muscle", "ability": 0, "answers": ["p0"]},
+   {"resolve": true, "auto": true},
+   {"resolve": true, "auto": true}
+  ],
+  "expect": {"players": [{"exile": [], "library_count": 2, "graveyard_has": ["Walking Ballista"]}, {}]}
+ },
+ {
+  "name": "ruling: an exiled land is played in your main phase with an empty stack; not while a spell is on the stack",
+  "players": [{"hand": ["Lightning Bolt"], "battlefield": ["Rakdos, the Muscle", "Grizzly Bears", "Mountain"], "library": ["Forest", "Island", "Plains"]}, {}],
+  "steps": [
+   {"activate": "Rakdos, the Muscle", "ability": 0, "answers": ["p0"]},
+   {"resolve": true, "auto": true},
+   {"resolve": true, "auto": true},
+   {"cast": "Lightning Bolt", "targets": ["p1"]},
+   {"play_land": "Forest", "illegal": true},
+   {"resolve": true},
+   {"play_land": "Forest"}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Forest"], "exile": ["Island"]}, {"life": 17}]}
+ }
+]

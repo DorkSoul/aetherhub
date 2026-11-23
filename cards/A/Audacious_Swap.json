@@ -1,0 +1,62 @@
+{
+  "name": "Audacious Swap",
+  "mana_cost": "{3}{R}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Kicker",
+      "multi": false,
+      "cost": [
+        {
+          "type": "Sacrifice",
+          "n": 1,
+          "filter": { "types": ["Creature"], "controller": "You", "power": { "op": "Ge", "n": 2 } }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "from": "Stack",
+      "trigger": { "type": "SpellCast", "filter": { "this": true }, "by": "You" },
+      "condition": { "type": "Kicked" },
+      "effects": [
+        { "type": "CopySpell", "what": { "type": "TriggerSource" }, "new_targets": true }
+      ]
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "not_types": ["Enchantment"] } }, "label": "target nonenchantment permanent" }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Library" },
+        { "type": "Shuffle", "who": { "type": "OwnerOf", "of": { "type": "Target", "idx": 0 } } },
+        {
+          "type": "LookAtTop",
+          "who": { "type": "OwnerOf", "of": { "type": "Target", "idx": 0 } },
+          "n": { "type": "Fixed", "n": 1 },
+          "filter": {},
+          "must": true,
+          "take": 1,
+          "to": "Exile",
+          "rest": "Library"
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "types": ["Land"], "among_remembered": true }, "zone": "Exile" },
+            "cmp": { "op": "Ge", "n": 1 }
+          },
+          "then": [
+            { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" }
+          ],
+          "else": [
+            { "type": "CastFree", "what": { "type": "Remembered" }, "may": true, "by": { "type": "OwnerOf", "of": { "type": "Target", "idx": 0 } } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Casualty 2 (As you cast this spell, you may sacrifice a creature with power 2 or greater. When you do, copy this spell and you may choose a new target for the copy.)\nThe owner of target nonenchantment permanent shuffles it into their library, then exiles the top card of their library. If it's a land card, they put it onto the battlefield. Otherwise, they may cast it without paying its mana cost."
+}

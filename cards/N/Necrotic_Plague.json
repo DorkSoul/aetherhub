@@ -1,0 +1,46 @@
+{
+  "name": "Necrotic Plague",
+  "mana_cost": "{2}{B}{B}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Creature"] } },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "attached_by_source": true },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+          "effects": [
+            { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "this": true }, "n": { "type": "Fixed", "n": 1 } }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Triggered",
+      "from": "Graveyard",
+      "trigger": { "type": "Dies", "filter": { "types": ["Creature"], "attached_by_source": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": {
+              "types": ["Creature"],
+              "not_controlled_by": { "type": "ControllerOf", "of": { "type": "TriggerObject" } }
+            }
+          },
+          "label": "target creature one of its controller's opponents controls",
+          "chooser": { "type": "ControllerOf", "of": { "type": "TriggerObject" } }
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "This" }, "to": "Battlefield", "from": "Graveyard" },
+        { "type": "Attach", "what": { "type": "This" }, "to": { "type": "Target", "idx": 0 } }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant creature\nEnchanted creature has \"At the beginning of your upkeep, sacrifice this creature.\"\nWhen enchanted creature dies, its controller chooses target creature one of their opponents controls. Return this card from its owner's graveyard to the battlefield attached to that creature."
+}

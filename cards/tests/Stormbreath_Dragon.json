@@ -1,0 +1,86 @@
+[
+  { "name": "monstrosity 3 makes it 7/7 and it deals damage to the opponent equal to their hand size",
+    "players": [
+      { "battlefield": ["Stormbreath Dragon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Island", "Island", "Island"] }
+    ],
+    "steps": [ { "activate": "Stormbreath Dragon", "ability": 0 }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 17 } ],
+      "pt": { "Stormbreath Dragon": [7, 7] }
+    }
+  },
+  { "name": "monstrosity with an empty opponent hand deals no damage",
+    "players": [
+      { "battlefield": ["Stormbreath Dragon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [ { "activate": "Stormbreath Dragon", "ability": 0 }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 20 } ],
+      "pt": { "Stormbreath Dragon": [7, 7] }
+    }
+  },
+  { "name": "monstrosity needs seven mana: six lands cannot activate it",
+    "players": [
+      { "battlefield": ["Stormbreath Dragon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Island"] }
+    ],
+    "steps": [ { "activate": "Stormbreath Dragon", "ability": 0, "illegal": true } ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 20 } ],
+      "pt": { "Stormbreath Dragon": [4, 4] }
+    }
+  },
+  { "name": "protection from white: a white Serra Angel blocked by Stormbreath deals it no damage (Serra dies, Dragon lives)",
+    "players": [
+      { "battlefield": [ { "name": "Stormbreath Dragon", "sick": false } ] },
+      { "battlefield": [ { "name": "Serra Angel", "sick": false } ] }
+    ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "End" }, { "advance_to": "Main1" },
+               { "attack": [ { "card": "Serra Angel", "at": "p0" } ], "player": 1 },
+               { "block": [ { "blocker": "Stormbreath Dragon", "attacker": "Serra Angel" } ], "player": 0 },
+               { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Stormbreath Dragon"], "life": 20 }, { "graveyard_has": ["Serra Angel"] } ], "pt": { "Stormbreath Dragon": [4, 4] } } },
+  { "name": "protection from white: a white Serra Angel cannot block Stormbreath, so 4 gets through",
+    "players": [
+      { "battlefield": [ { "name": "Stormbreath Dragon", "sick": false }, { "name": "Hill Giant", "sick": false } ] },
+      { "battlefield": [ { "name": "Serra Angel", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] }
+    ],
+    "steps": [ { "attack": [ { "card": "Stormbreath Dragon", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+               { "block": [ { "blocker": "Serra Angel", "attacker": "Stormbreath Dragon" }, { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+               { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 20 }, { "life": 16 } ] } },
+  { "name": "ruling: a second monstrosity activation does nothing (already monstrous): no second counters or damage",
+    "players": [
+      { "battlefield": ["Stormbreath Dragon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Island", "Island", "Island"] }
+    ],
+    "steps": [ { "activate": "Stormbreath Dragon", "ability": 0 }, { "resolve": true }, { "resolve": true }, { "activate": "Stormbreath Dragon", "ability": 0 }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 17 } ],
+      "pt": { "Stormbreath Dragon": [7, 7] }
+    }
+  },
+  { "name": "ruling: the damage counts the opponent's hand when the trigger resolves (they cast Bolt in response)",
+    "players": [
+      { "battlefield": ["Stormbreath Dragon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt", "Island", "Island"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [ { "activate": "Stormbreath Dragon", "ability": 0 }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "life": 17 }, { "life": 18 } ],
+      "pt": { "Stormbreath Dragon": [7, 7] }
+    }
+  },
+  { "name": "ruling: the dragon dies in response, so monstrosity does nothing and no damage trigger happens",
+    "players": [
+      { "battlefield": ["Stormbreath Dragon", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [ { "activate": "Stormbreath Dragon", "ability": 0 }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Stormbreath Dragon"] }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Stormbreath Dragon"] }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "graveyard": ["Stormbreath Dragon"], "life": 20 }, { "life": 20 } ]
+    }
+  }
+]

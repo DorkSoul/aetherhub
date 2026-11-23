@@ -1,0 +1,196 @@
+[
+  {
+    "name": "combat damage exiles X cards; a cheap spell can be cast free, the expensive one stays exiled",
+    "players": [
+      {
+        "battlefield": [
+          "Kotis, the Fangkeeper"
+        ]
+      },
+      {
+        "life": 20,
+        "library": [
+          "Serra Angel",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Kotis, the Fangkeeper",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Kotis, the Fangkeeper",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18,
+          "exile": [
+            "Serra Angel"
+          ],
+          "library_count": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "declining the free cast leaves the card exiled",
+    "players": [
+      {
+        "battlefield": [
+          "Kotis, the Fangkeeper"
+        ]
+      },
+      {
+        "life": 20,
+        "library": [
+          "Grizzly Bears",
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Kotis, the Fangkeeper",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18,
+          "exile": [
+            "Grizzly Bears",
+            "Serra Angel"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "only spells with MV above X: nothing is cast",
+    "players": [
+      {
+        "battlefield": [
+          "Kotis, the Fangkeeper"
+        ]
+      },
+      {
+        "life": 20,
+        "library": [
+          "Serra Angel",
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Kotis, the Fangkeeper",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Serra Angel"
+          ]
+        },
+        {
+          "life": 18,
+          "exile": [
+            "Serra Angel",
+            "Serra Angel"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery exiled by Kotis can be cast in the combat damage step, timing ignored",
+    "players": [
+      { "battlefield": ["Kotis, the Fangkeeper"] },
+      { "life": 20, "library": ["Boltwave", "Plains"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kotis, the Fangkeeper", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": { "players": [ {}, { "life": 15, "graveyard": ["Boltwave"], "exile": ["Plains"] } ] }
+  },
+  {
+    "name": "ruling: a declined exiled sorcery cannot be cast later in the turn",
+    "players": [
+      { "battlefield": ["Kotis, the Fangkeeper"] },
+      { "life": 20, "library": ["Boltwave", "Plains"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kotis, the Fangkeeper", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [false] },
+      { "cast": "Boltwave", "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18, "exile": ["Boltwave", "Plains"] } ] }
+  },
+  {
+    "name": "ruling: an exiled {X} spell is cast with X = 0 (it enters with no counters and dies)",
+    "players": [
+      { "battlefield": ["Kotis, the Fangkeeper"] },
+      { "life": 20, "library": ["Walking Ballista", "Plains"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kotis, the Fangkeeper", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true, 0] }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Walking Ballista"] }, { "life": 18, "graveyard": ["Walking Ballista"], "exile": ["Plains"] } ] }
+  }
+]

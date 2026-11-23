@@ -1,0 +1,103 @@
+[
+  {
+    "name": "B, T: becomes an Aura attached to target creature",
+    "players": [
+      { "battlefield": ["Leeching Licid", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Leeching Licid", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Leeching Licid"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "attached": { "Leeching Licid": "Grizzly Bears" },
+      "tapped": { "Leeching Licid": true }
+    }
+  },
+  {
+    "name": "enchanted creature's controller takes 1 damage in their upkeep",
+    "players": [
+      { "battlefield": ["Leeching Licid", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Leeching Licid", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 19, "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "paying B ends the effect: no upkeep damage afterwards",
+    "players": [
+      { "battlefield": ["Leeching Licid", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Leeching Licid", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Leeching Licid", "ability": 1 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Leeching Licid"] },
+        { "life": 20, "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "attached": {}
+    }
+  },
+  {
+    "name": "can't activate without a black mana",
+    "players": [
+      { "battlefield": ["Leeching Licid", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Leeching Licid", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Leeching Licid", "Island", "Island"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Clear cast on the Licid after it became an Aura; controller pays B to end the effect, so Clear has no legal target",
+    "players": [
+      { "battlefield": ["Leeching Licid", "Swamp", "Swamp"] },
+      { "hand": ["Clear"], "battlefield": ["Grizzly Bears", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "activate": "Leeching Licid", "ability": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Clear", "player": 1, "targets": ["Leeching Licid"] },
+      { "activate": "Leeching Licid", "ability": 1 },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Leeching Licid"], "life": 20 },
+        { "graveyard": ["Clear"], "battlefield_has": ["Grizzly Bears"], "life": 20 }
+      ],
+      "attached": {}
+    }
+  }
+]

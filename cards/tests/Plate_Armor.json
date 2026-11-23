@@ -1,0 +1,91 @@
+[
+  {
+    "name": "equipped creature gets +3/+3 and has ward",
+    "players": [ { "battlefield": ["Plate Armor", "Plains", "Plains", "Plains", { "name": "Grizzly Bears" }] }, {} ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Plate Armor", "Grizzly Bears"] }, {} ], "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "equip costs {3} with no other Equipment: two lands is not enough",
+    "players": [ { "battlefield": ["Plate Armor", "Plains", "Plains", { "name": "Grizzly Bears" }] }, {} ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ]
+  },
+  {
+    "name": "equip costs {1} less for each other Equipment you control",
+    "players": [ { "battlefield": ["Plate Armor", "Lavaspur Boots", "Plains", "Plains", { "name": "Grizzly Bears" }] }, {} ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Plate Armor", "Lavaspur Boots", "Grizzly Bears"] }, {} ], "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "two other Equipment: equip costs {1} and one land is enough",
+    "players": [ { "battlefield": ["Plate Armor", "Lavaspur Boots", "Leather Armor", "Plains", { "name": "Grizzly Bears" }] }, {} ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Plate Armor", "Grizzly Bears"] }, {} ], "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "Lavaspur Boots equip is not reduced by Plate Armor",
+    "players": [ { "battlefield": ["Plate Armor", "Lavaspur Boots", "Plains", { "name": "Grizzly Bears" }] }, {} ],
+    "steps": [
+      { "activate": "Lavaspur Boots", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [3, 2] } }
+  },
+  {
+    "name": "equipped creature has ward {1}: opponent who cannot pay has the spell countered",
+    "players": [ { "battlefield": ["Plate Armor", "Plains", "Plains", "Plains", { "name": "Grizzly Bears" }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Plate Armor", "Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ward {1}: opponent with no spare mana cannot pay, Swords is countered and the 5/5 Bears stays",
+    "players": [ { "battlefield": ["Plate Armor", "Plains", "Plains", "Plains", { "name": "Grizzly Bears" }] }, { "hand": ["Swords to Plowshares"], "battlefield": ["Plains"] } ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Plate Armor", "Grizzly Bears"] }, { "graveyard": ["Swords to Plowshares"] } ] }
+  },
+  {
+    "name": "ward {1}: opponent pays 1 with a spare Plains, Swords exiles the equipped Bears",
+    "players": [ { "battlefield": ["Plate Armor", "Plains", "Plains", "Plains", { "name": "Grizzly Bears" }] }, { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Plains"] } ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"] }, { "graveyard": ["Swords to Plowshares"] } ] }
+  },
+  { "name": "ruling: equipped creature already has ward: both ward triggers; opponent must pay {2} and {1} (2 spare mana is not enough)",
+    "players": [ { "battlefield": ["Plate Armor", "Plains", "Plains", "Plains", "Bronze Guardian"] }, { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", "Plains", "Plains"] } ],
+    "steps": [
+      { "activate": "Plate Armor", "ability": 0, "targets": ["Bronze Guardian"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "player": 1, "targets": ["Bronze Guardian"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Plate Armor", "Bronze Guardian"] }, { "graveyard": ["Swords to Plowshares"] } ] } }
+]

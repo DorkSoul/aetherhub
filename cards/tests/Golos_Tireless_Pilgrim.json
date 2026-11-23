@@ -1,0 +1,135 @@
+[
+  {
+    "name": "ETB may search for a land onto the battlefield tapped",
+    "players": [
+      {
+        "hand": ["Golos, Tireless Pilgrim"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Golos, Tireless Pilgrim" },
+      { "resolve": true, "answers": [true, "Island"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Golos, Tireless Pilgrim", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the ETB search leaves the library alone",
+    "players": [
+      {
+        "hand": ["Golos, Tireless Pilgrim"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Golos, Tireless Pilgrim" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Golos, Tireless Pilgrim"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "exiled cards can be played for free this turn",
+    "players": [
+      {
+        "battlefield": [
+          "Golos, Tireless Pilgrim", "Plains", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest"
+        ],
+        "library": ["Lightning Bolt", "Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Golos, Tireless Pilgrim", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Island" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "the permission ends with the turn",
+    "players": [
+      {
+        "battlefield": [
+          "Golos, Tireless Pilgrim", "Plains", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest"
+        ],
+        "library": ["Lightning Bolt", "Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Golos, Tireless Pilgrim", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "play_land": "Island", "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: exiled cards that are not played stay in exile after the turn ends",
+    "players": [
+      {
+        "battlefield": [
+          "Golos, Tireless Pilgrim", "Plains", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest"
+        ],
+        "library": ["Lightning Bolt", "Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Golos, Tireless Pilgrim", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt", "Island", "Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can only be played if a land play is still available",
+    "players": [
+      {
+        "hand": ["Plains"],
+        "battlefield": ["Golos, Tireless Pilgrim", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest"],
+        "library": ["Island", "Forest", "Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Plains" },
+      { "activate": "Golos, Tireless Pilgrim", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Island", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Plains"], "exile": ["Island", "Forest", "Lightning Bolt"] },
+        {}
+      ]
+    }
+  }
+]

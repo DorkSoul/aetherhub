@@ -1,0 +1,122 @@
+[
+ {
+  "name": "attack and sacrifice a Clue: instant in graveyard gains flashback {2}{R}{G} this turn",
+  "players": [
+   {
+    "battlefield": ["The Fugitive Doctor", "Clue", "Mountain", "Mountain", "Forest", "Forest", "Forest"],
+    "graveyard": ["Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "The Fugitive Doctor", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "alt": 100, "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["The Fugitive Doctor"], "exile": ["Lightning Bolt"], "graveyard": [] },
+    { "life": 13 }
+   ]
+  }
+ },
+ {
+  "name": "declining to sacrifice a Clue gives no flashback",
+  "players": [
+   {
+    "battlefield": ["The Fugitive Doctor", "Clue"],
+    "graveyard": ["Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "The Fugitive Doctor", "at": "p1" } ] },
+   { "resolve": true, "answers": [false] },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Clue"] },
+    { "life": 16 }
+   ]
+  }
+ },
+ {
+  "name": "the flashback grant ends at the end of the turn",
+  "players": [
+   {
+    "battlefield": ["The Fugitive Doctor", "Clue"],
+    "graveyard": ["Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "The Fugitive Doctor", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "advance_to": "Upkeep" },
+   { "pass": true, "player": 1 },
+   { "cast": "Lightning Bolt", "alt": 100, "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "enters the battlefield and investigates, creating a Clue",
+  "players": [
+   { "hand": ["The Fugitive Doctor"], "battlefield": ["Mountain", "Forest", "Plains", "Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "The Fugitive Doctor" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "battlefield_has": ["The Fugitive Doctor", "Clue"], "hand_count": 0 }, {}]
+  }
+ },
+ {
+  "name": "ruling: a sorcery granted flashback cannot be cast during combat",
+  "players": [
+   { "battlefield": ["The Fugitive Doctor", "Clue", "Mountain", "Forest", "Forest", "Forest"], "graveyard": ["Secrets of the Golden City"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "The Fugitive Doctor", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "cast": "Secrets of the Golden City", "alt": 100, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["The Fugitive Doctor"], "graveyard": ["Secrets of the Golden City"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery granted flashback can be cast in the second main phase, and is then exiled",
+  "players": [
+   { "battlefield": ["The Fugitive Doctor", "Clue", "Mountain", "Forest", "Forest", "Forest"], "graveyard": ["Secrets of the Golden City"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "The Fugitive Doctor", "at": "p1" } ] },
+   { "resolve": true, "answers": [true] },
+   { "advance_to": "Main2" },
+   { "cast": "Secrets of the Golden City", "alt": 100 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Secrets of the Golden City"], "graveyard": [], "hand_count": 2 },
+    {}
+   ]
+  }
+ }
+]

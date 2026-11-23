@@ -1,0 +1,242 @@
+[
+  {
+    "name": "+1: return a land card from my graveyard to hand; Wrenn goes to 4",
+    "players": [
+      {
+        "battlefield": [
+          "Wrenn and Six"
+        ],
+        "graveyard": [
+          "Forest",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Wrenn and Six",
+        "ability": 0,
+        "targets": [
+          "Forest"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Forest"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Wrenn and Six": {
+          "loyalty": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "boundary: +1 with no land in graveyard returns nothing; Wrenn still goes to 4",
+    "players": [
+      {
+        "battlefield": [
+          "Wrenn and Six"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Wrenn and Six",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Wrenn and Six": {
+          "loyalty": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "-1: deals 1 damage to any target (opponent) and goes to 2",
+    "players": [
+      {
+        "battlefield": [
+          "Wrenn and Six"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Wrenn and Six",
+        "ability": 1,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 19
+        }
+      ],
+      "counters": {
+        "Wrenn and Six": {
+          "loyalty": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "negative: without the emblem, a graveyard instant cannot be cast",
+    "players": [
+      {
+        "hand": [
+          "Mountain"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Mountain"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "negative: retrace needs a land card to discard",
+    "players": [
+      {
+        "command": [
+          "Wrenn and Six Emblem"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+ {
+  "name": "-7: you get the Wrenn and Six emblem and Wrenn dies at 0 loyalty",
+  "players": [
+   { "battlefield": [{ "name": "Wrenn and Six", "counters": { "Loyalty": 7 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Wrenn and Six", "ability": 2 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "command": ["Wrenn and Six Emblem"], "graveyard": ["Wrenn and Six"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "boundary: -7 needs seven loyalty, at six it is illegal and no emblem is made",
+  "players": [
+   { "battlefield": [{ "name": "Wrenn and Six", "counters": { "Loyalty": 6 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Wrenn and Six", "ability": 2, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Wrenn and Six"], "command": [] },
+    {}
+   ]
+  }
+ },
+ { "name": "ruling: a retraced spell returns to the graveyard after resolving, so it can be retraced again",
+   "players": [
+    { "hand": ["Mountain", "Mountain"], "battlefield": ["Mountain", "Mountain"], "graveyard": ["Lightning Bolt"], "command": ["Wrenn and Six Emblem"] },
+    {}],
+   "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"], "answers": [0] }, { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }],
+   "expect": { "players": [ { "hand_count": 0, "graveyard_has": ["Lightning Bolt", "Mountain"] }, { "life": 14 } ] } }
+]

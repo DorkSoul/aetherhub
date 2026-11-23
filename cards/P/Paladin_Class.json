@@ -1,0 +1,85 @@
+{
+  "name": "Paladin Class",
+  "mana_cost": "{W}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    {
+      "type": "Static",
+      "condition": { "type": "YourTurn" },
+      "effect": {
+        "type": "CostChange",
+        "filter": {},
+        "whose": "Opponent",
+        "generic": 1
+      }
+    },
+    {
+      "type": "Activated",
+      "timing": "Sorcery",
+      "cost": [{ "type": "Mana", "cost": "{2}{W}" }],
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 0 } },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Level", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Static",
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Ge", "n": 1 } },
+      "effect": {
+        "type": "Modify",
+        "affects": { "types": ["Creature"], "controller": "You" },
+        "power": { "type": "Fixed", "n": 1 },
+        "toughness": { "type": "Fixed", "n": 1 }
+      }
+    },
+    {
+      "type": "Activated",
+      "timing": "Sorcery",
+      "cost": [{ "type": "Mana", "cost": "{4}{W}" }],
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 1 } },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Level", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Attacks",
+        "batched": true, "one_per_declaration": true,
+        "filter": { "types": ["Creature"], "controller": "You", "attacking": true }
+      },
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Ge", "n": 2 } },
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature"], "attacking": true } },
+          "label": "target attacking creature"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Pump",
+          "what": { "type": "Target", "idx": 0 },
+          "power": {
+            "type": "Minus",
+            "a": { "type": "Count", "filter": { "types": ["Creature"], "attacking": true } },
+            "b": { "type": "Fixed", "n": 1 }
+          },
+          "toughness": {
+            "type": "Minus",
+            "a": { "type": "Count", "filter": { "types": ["Creature"], "attacking": true } },
+            "b": { "type": "Fixed", "n": 1 }
+          },
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "GrantStatic",
+          "what": { "type": "Target", "idx": 0 },
+          "effect": { "type": "GrantKeyword", "affects": {}, "keyword": "DoubleStrike" },
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nSpells your opponents cast during your turn cost {1} more to cast.\n{2}{W}: Level 2\nCreatures you control get +1/+1.\n{4}{W}: Level 3\nWhenever you attack, until end of turn, target attacking creature gets +1/+1 for each other attacking creature and gains double strike."
+}

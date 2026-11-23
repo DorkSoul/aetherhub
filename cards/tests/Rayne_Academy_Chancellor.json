@@ -1,0 +1,260 @@
+[
+ {
+  "name": "opponent's Lightning Bolt targets me: I may draw a card",
+  "players": [
+   {
+    "battlefield": [
+     "Rayne, Academy Chancellor"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "my own spell targeting me does not trigger Rayne",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Rayne, Academy Chancellor",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "enchanted Rayne: the opponent's Bolt lets me draw an additional card",
+  "players": [
+   {
+    "hand": ["Pacifism"],
+    "battlefield": ["Rayne, Academy Chancellor", "Plains", "Plains"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Rayne, Academy Chancellor"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true, "answers": [true, true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "hand_count": 2 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent's spell targeting my creature: I may draw a card",
+  "players": [
+   {
+    "battlefield": ["Rayne, Academy Chancellor", "Grizzly Bears", "Mountain"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears"], "hand_count": 1 },
+    { "graveyard": ["Lightning Bolt"], "hand_count": 0 }
+   ]
+  }
+ },
+ {
+  "name": "opponent's spell targeting my creature: declining the draw",
+  "players": [
+   {
+    "battlefield": ["Rayne, Academy Chancellor", "Grizzly Bears", "Mountain"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [false] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears"], "hand_count": 0 },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "my own spell targeting my creature does not draw",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Rayne, Academy Chancellor", "Grizzly Bears", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears", "Lightning Bolt"], "hand_count": 0 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: opponent's spell targeting me and my creature triggers once per target (draw twice)",
+  "players": [
+   {
+    "battlefield": ["Rayne, Academy Chancellor", "Grizzly Bears"]
+   },
+   {
+    "hand": ["Deal Gone Bad"],
+    "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Deal Gone Bad", "player": 1, "targets": ["Grizzly Bears", "p0"] },
+   { "resolve": true, "answers": [true, true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Grizzly Bears"], "hand_count": 2, "battlefield_has": ["Rayne, Academy Chancellor"] },
+    { "graveyard": ["Deal Gone Bad"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Rayne checks enchanted status on resolution (aura removed in response: draw only one)",
+  "players": [
+   {
+    "hand": ["Pacifism", "Disenchant"],
+    "battlefield": ["Rayne, Academy Chancellor", "Plains", "Plains", "Plains", "Plains"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Rayne, Academy Chancellor"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Disenchant", "targets": ["Pacifism"] },
+   { "pass": true },
+   { "pass": true },
+   { "resolve": true, "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "hand_count": 1, "battlefield_has": ["Rayne, Academy Chancellor"], "graveyard_has": ["Pacifism", "Disenchant"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: opponent's Aura on Rayne: the trigger resolves before the Aura enters (draw only one)",
+  "players": [
+   {
+    "battlefield": ["Rayne, Academy Chancellor", "Plains"]
+   },
+   {
+    "hand": ["Pacifism"],
+    "battlefield": ["Plains", "Plains"]
+   }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Pacifism", "player": 1, "targets": ["Rayne, Academy Chancellor"] },
+   { "resolve": true, "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "battlefield_has": ["Rayne, Academy Chancellor"] },
+    { "battlefield_has": ["Pacifism"] }
+   ],
+   "attached": { "Pacifism": "Rayne, Academy Chancellor" }
+  }
+ }
+]

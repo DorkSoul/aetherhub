@@ -1,0 +1,125 @@
+[
+  {
+    "name": "target player discards a card",
+    "players": [
+      {
+        "hand": [
+          "Skull Fracture"
+        ],
+        "battlefield": [
+          "Swamp"
+        ]
+      },
+      {
+        "hand": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Skull Fracture",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Skull Fracture"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Island"
+          ],
+          "hand_count": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing, so it can't be cast on the opponent's turn",
+    "players": [
+      { "graveyard": ["Skull Fracture"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Skull Fracture", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Skull Fracture"] }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: a flashback spell that is countered is still exiled",
+    "players": [
+      { "graveyard": ["Skull Fracture"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Negate", "Island"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Skull Fracture", "alt": 0, "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Negate", "player": 1, "targets": [{ "stack": "Skull Fracture" }] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Skull Fracture"] }, { "graveyard_has": ["Negate"], "hand": ["Island"] } ]
+    }
+  },
+  {
+    "name": "flashback for {3}{B} from the graveyard, then exiled",
+    "players": [
+      {
+        "graveyard": [
+          "Skull Fracture"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "hand": [
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Skull Fracture",
+        "alt": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Skull Fracture"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Island"
+          ]
+        }
+      ]
+    }
+  }
+]

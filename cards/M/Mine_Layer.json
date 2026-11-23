@@ -1,0 +1,49 @@
+{
+  "name": "Mine Layer",
+  "mana_cost": "{3}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Dwarf"],
+  "power": 1,
+  "toughness": 1,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Mana", "cost": "{1}{R}" },
+        { "type": "Tap" }
+      ],
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Land"] } }, "label": "target land" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "Mine", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BecomesTapped", "filter": { "types": ["Land"], "has_counter": "Mine" } },
+      "effects": [
+        { "type": "Destroy", "what": { "type": "TriggerObject" } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "LeavesBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "All", "filter": { "types": ["Land"], "has_counter": "Mine" }, "zone": "Battlefield" },
+          "effects": [
+            {
+              "type": "RemoveCounters",
+              "kind": "Mine",
+              "n": { "type": "CountersOn", "kind": "Mine", "of": { "type": "EachObject" } },
+              "what": { "type": "EachObject" }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{1}{R}, {T}: Put a mine counter on target land.\nWhenever a land with a mine counter on it becomes tapped, destroy it.\nWhen this creature leaves the battlefield, remove all mine counters from all lands."
+}

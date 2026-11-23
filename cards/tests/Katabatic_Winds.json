@@ -1,0 +1,86 @@
+[
+ {
+  "name": "flyers can't attack",
+  "players": [
+   {
+    "hand": [
+     "Katabatic Winds",
+     "Giant Growth"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     {
+      "name": "Serra Angel",
+      "sick": false
+     },
+     "Birds of Paradise"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Katabatic Winds"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Serra Angel"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "flying creature can't attack: Serra Angel stays home, Grizzly Bears still deals 2",
+  "players": [ { "battlefield": ["Katabatic Winds", "Serra Angel", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Serra Angel", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 18 } ],
+   "tapped": { "Serra Angel": false }
+  }
+ },
+ {
+  "name": "flying creature can't block: Wall of Stone blocks Hill Giant, Serra Angel cannot",
+  "players": [ { "battlefield": ["Katabatic Winds", "Hill Giant"] }, { "battlefield": ["Serra Angel", "Wall of Stone"] } ],
+  "steps": [
+   { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+   { "block": [ { "blocker": "Serra Angel", "attacker": "Hill Giant" }, { "blocker": "Wall of Stone", "attacker": "Hill Giant" } ], "player": 1 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Hill Giant"] }, { "battlefield_has": ["Serra Angel", "Wall of Stone"] } ]
+  }
+ },
+ {
+  "name": "ruling: a flyer's {T} mana ability (Birds of Paradise, an activated ability with a colon) is shut off",
+  "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Katabatic Winds", "Forest", "Birds of Paradise"] }, {} ],
+  "steps": [ { "cast": "Grizzly Bears", "illegal": true } ],
+  "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Katabatic Winds"] }, {} ] }
+ },
+ {
+  "name": "ruling control: without Katabatic Winds, Birds of Paradise taps for mana and Grizzly Bears is castable",
+  "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Birds of Paradise"] }, {} ],
+  "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "hand_count": 0 }, {} ] }
+ },
+ {
+  "name": "ruling: a flyer's non-{T} activated ability (sacrifice, colon in its text) still works under Katabatic Winds",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Katabatic Winds", "Spiketail Drake"] }, {} ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "activate": "Spiketail Drake", "ability": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Spiketail Drake", "Lightning Bolt"] }, { "life": 20 } ] }
+ }
+]

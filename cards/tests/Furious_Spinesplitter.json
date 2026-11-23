@@ -1,0 +1,74 @@
+[
+  {
+    "name": "end step: one +1/+1 counter when the opponent was dealt damage this turn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Furious Spinesplitter"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Furious Spinesplitter": { "+1/+1": 1 } },
+      "pt": { "Furious Spinesplitter": [4, 4] }
+    }
+  },
+  {
+    "name": "end step: no counter when no opponent was dealt damage this turn",
+    "players": [ { "battlefield": ["Furious Spinesplitter"] }, {} ],
+    "steps": [
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Furious Spinesplitter": [3, 3] }
+    }
+  },
+  {
+    "name": "damage to a creature does not count for the end step counter",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Furious Spinesplitter"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Furious Spinesplitter": [3, 3] }
+    }
+  },
+  {
+    "name": "dealt damage earlier this turn: counter at end step even though it entered afterwards",
+    "players": [ { "hand": ["Lightning Bolt", "Furious Spinesplitter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Furious Spinesplitter" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Furious Spinesplitter": { "+1/+1": 1 } },
+      "pt": { "Furious Spinesplitter": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: opponent dealt combat damage before it entered still counts at the end step",
+    "players": [ { "hand": ["Furious Spinesplitter"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Furious Spinesplitter" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ],
+      "counters": { "Furious Spinesplitter": { "+1/+1": 1 } },
+      "pt": { "Furious Spinesplitter": [4, 4] }
+    }
+  }
+]

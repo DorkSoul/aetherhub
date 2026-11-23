@@ -1,0 +1,138 @@
+[
+  {
+    "name": "unkicked: a 4/4 with no token",
+    "players": [
+      { "hand": ["Rust-Shield Rampager"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rust-Shield Rampager" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rust-Shield Rampager"] },
+        {}
+      ],
+      "pt": { "Rust-Shield Rampager": [4, 4] }
+    }
+  },
+  {
+    "name": "kicked with offspring: a 1/1 token copy enters too",
+    "players": [
+      { "hand": ["Rust-Shield Rampager"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rust-Shield Rampager", "answers": [true] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rust-Shield Rampager", "Rust-Shield Rampager"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "can't be blocked by power 2 or less: a power 2 blocker is not a legal blocker",
+    "players": [
+      { "battlefield": ["Rust-Shield Rampager"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Rust-Shield Rampager", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Rust-Shield Rampager" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rust-Shield Rampager"] },
+        { "life": 16, "battlefield_has": ["Grizzly Bears", "Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "can't be blocked by power 2 or less: a power 3 blocker can still block (and dies)",
+    "players": [
+      { "battlefield": ["Rust-Shield Rampager"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Rust-Shield Rampager", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Grizzly Bears", "attacker": "Rust-Shield Rampager" },
+          { "blocker": "Hill Giant", "attacker": "Rust-Shield Rampager" }
+      ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rust-Shield Rampager"] },
+        { "life": 20, "battlefield_has": ["Grizzly Bears"], "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the creature leaves before the offspring trigger resolves, and the token copy is still created",
+    "players": [
+      { "hand": ["Rust-Shield Rampager"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Rust-Shield Rampager", "answers": [true] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Rust-Shield Rampager"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Rust-Shield Rampager"], "battlefield_has": ["Rust-Shield Rampager"] },
+        { "graveyard": ["Unsummon"] }
+      ],
+      "pt": { "Rust-Shield Rampager": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: a countered kicked spell creates no offspring token",
+    "players": [
+      { "hand": ["Rust-Shield Rampager"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Rust-Shield Rampager", "answers": [true] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Rust-Shield Rampager" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Rust-Shield Rampager"], "battlefield_lacks": ["Rust-Shield Rampager"] },
+        { "graveyard": ["Counterspell"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: a creature-spell cast trigger sees only the cast, not the offspring token",
+    "players": [
+      { "hand": ["Rust-Shield Rampager"], "battlefield": ["Beast Whisperer", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rust-Shield Rampager", "answers": [true] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "battlefield_has": ["Beast Whisperer", "Rust-Shield Rampager", "Rust-Shield Rampager"] },
+        {}
+      ]
+    }
+  }
+]

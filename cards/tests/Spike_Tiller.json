@@ -1,0 +1,64 @@
+[
+  {
+    "name": "enters with three +1/+1 counters",
+    "players": [
+      { "hand": ["Spike Tiller"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Spike Tiller" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Spike Tiller": { "p1p1": 3 } },
+      "pt": { "Spike Tiller": [3, 3] }
+    }
+  },
+  {
+    "name": "{2}, remove a counter: target land becomes a 2/2 creature with a +1/+1 counter",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", { "name": "Spike Tiller", "counters": { "p1p1": 3 } }, "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Spike Tiller", "ability": 1, "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Spike Tiller": { "p1p1": 2 }, "Forest": { "p1p1": 1 } },
+      "pt": { "Forest": [3, 3] }
+    }
+  },
+  {
+    "name": "{2}, remove a counter: put a +1/+1 counter on target creature",
+    "players": [ { "battlefield": ["Swamp", "Swamp", { "name": "Spike Tiller", "counters": { "p1p1": 3 } }, "Grizzly Bears"] }, {} ],
+    "steps": [ { "activate": "Spike Tiller", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "counters": { "Spike Tiller": { "p1p1": 2 }, "Grizzly Bears": { "p1p1": 1 } }, "pt": { "Grizzly Bears": [3, 3] } }
+  },
+  {
+    "name": "put-counter ability needs {2} (one Swamp: illegal)",
+    "players": [ { "battlefield": ["Swamp", { "name": "Spike Tiller", "counters": { "p1p1": 3 } }, "Grizzly Bears"] }, {} ],
+    "steps": [ { "activate": "Spike Tiller", "ability": 0, "illegal": true } ],
+    "expect": { "counters": { "Spike Tiller": { "p1p1": 3 } } }
+  },
+  {
+    "name": "ruling: a land animated by Spike Tiller can attack, as it was controlled since the turn began",
+    "players": [
+      { "battlefield": [{ "name": "Spike Tiller", "counters": { "p1p1": 3 } }, "Plains", "Mountain", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Plains" },
+      { "tap_for_mana": "Mountain" },
+      { "activate": "Spike Tiller", "ability": 1, "targets": ["Forest"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Forest", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 17 }],
+      "counters": { "Spike Tiller": { "p1p1": 2 }, "Forest": { "p1p1": 1 } }
+    }
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "discards the hand and draws that many",
+    "players": [
+      { "hand": ["Shattered Perception", "Grizzly Bears", "Forest", "Island"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shattered Perception" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 3, "graveyard_has": ["Grizzly Bears", "Forest", "Island", "Shattered Perception"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback: discard one card, draw one, then exile it",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Shattered Perception"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shattered Perception", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Grizzly Bears"], "exile": ["Shattered Perception"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing, so it cannot be cast on the opponent's turn",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Shattered Perception"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Shattered Perception", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Shattered Perception"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a flashback spell that is countered is still exiled",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Shattered Perception"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Shattered Perception", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Shattered Perception" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Shattered Perception"], "hand_count": 1, "graveyard": [] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

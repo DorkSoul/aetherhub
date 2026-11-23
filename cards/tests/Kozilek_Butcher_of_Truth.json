@@ -1,0 +1,322 @@
+[
+ {
+  "name": "casting it draws four cards (when cast, even before it resolves)",
+  "players": [
+   {
+    "hand": [
+     "Kozilek, Butcher of Truth"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Kozilek, Butcher of Truth"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 4,
+     "battlefield_has": [
+      "Kozilek, Butcher of Truth"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "annihilator 4: defender sacrifices four permanents",
+  "players": [
+   {
+    "battlefield": [
+     "Kozilek, Butcher of Truth"
+    ]
+   },
+   {
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Plains"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Kozilek, Butcher of Truth",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Mountain"
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "battlefield": [
+      "Mountain",
+      "Plains"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "dying shuffles the graveyard into the library",
+  "players": [
+   {
+    "hand": [
+     "Wrath of God"
+    ],
+    "battlefield": [
+     "Kozilek, Butcher of Truth",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ],
+    "graveyard": [
+     "Shock",
+     "Giant Growth"
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wrath of God"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [],
+     "library_count": 25,
+     "hand": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "discarded from hand: graveyard shuffled into the library",
+  "players": [
+   {
+    "hand": [
+     "Mind Rot"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "hand": [
+     "Kozilek, Butcher of Truth",
+     "Grizzly Bears"
+    ],
+    "graveyard": [
+     "Shock"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Mind Rot",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [],
+     "hand": [],
+     "library_count": 23
+    }
+   ]
+  }
+ },
+ {
+  "name": "countered on the stack: graveyard shuffled into the library",
+  "players": [
+   {
+    "hand": [
+     "Kozilek, Butcher of Truth"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Shock"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ],
+    "graveyard": [
+     "Shock"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Kozilek, Butcher of Truth"
+   },
+   {
+    "pass": true
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Kozilek, Butcher of Truth"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 4,
+     "graveyard": [],
+     "library_count": 18
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "milled from the library: its owner shuffles the graveyard into the library",
+  "players": [
+   { "hand": ["Stitcher's Supplier"], "battlefield": ["Swamp"], "library": ["Kozilek, Butcher of Truth", "Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Stitcher's Supplier" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": [], "battlefield_has": ["Stitcher's Supplier"] }, {} ]
+  }
+ },
+ {
+  "name": "milling other cards does not shuffle the graveyard",
+  "players": [
+   { "hand": ["Stitcher's Supplier"], "battlefield": ["Swamp"], "library": ["Forest", "Island", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Stitcher's Supplier" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Forest", "Island", "Mountain"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: annihilator on a planeswalker attack, the sacrificed planeswalker does not remove the attacker, which can be blocked",
+  "players": [
+   { "battlefield": ["Kozilek, Butcher of Truth"] },
+   { "battlefield": ["Gideon Blackblade", "Grizzly Bears", "Mountain", "Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "attack": [{ "card": "Kozilek, Butcher of Truth", "at": "Gideon Blackblade" }] },
+   { "resolve": true, "answers": [["Gideon Blackblade", "Mountain", "Mountain", "Mountain"]] },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Kozilek, Butcher of Truth" }] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Kozilek, Butcher of Truth"] },
+    { "graveyard_has": ["Gideon Blackblade", "Grizzly Bears"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: creatures sacrificed to annihilator are gone before blockers, so unblocked damage is 12",
+  "players": [
+   { "battlefield": ["Kozilek, Butcher of Truth"] },
+   { "battlefield": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "attack": [{ "card": "Kozilek, Butcher of Truth", "at": "p1" }] },
+   { "resolve": true, "answers": [["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"]] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 8, "battlefield": ["Hill Giant"] }
+   ]
+  }
+ }
+]

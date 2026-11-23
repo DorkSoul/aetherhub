@@ -1,0 +1,216 @@
+[
+  {
+    "name": "casting a historic spell draws a card",
+    "players": [
+      {
+        "hand": [
+          "Basalt Monolith"
+        ],
+        "battlefield": [
+          "Basim Ibn Ishaq",
+          "Island",
+          "Swamp",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Basalt Monolith"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Basalt Monolith"
+          ],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-historic spell does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Basim Ibn Ishaq",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "only once each turn: second historic spell draws nothing",
+    "players": [
+      {
+        "hand": [
+          "Basalt Monolith",
+          "Bone Saw"
+        ],
+        "battlefield": [
+          "Basim Ibn Ishaq",
+          "Island",
+          "Swamp",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Basalt Monolith"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Bone Saw"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "combat damage to a player puts a +1/+1 counter on it",
+    "players": [
+      {
+        "battlefield": [
+          "Basim Ibn Ishaq"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Basim Ibn Ishaq",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ],
+      "counters": {
+        "Basim Ibn Ishaq": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Basim Ibn Ishaq": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: a legendary artifact (Ramos) is historic but draws only one card",
+    "players": [
+      { "hand": ["Ramos, Dragon Engine"], "battlefield": ["Basim Ibn Ishaq", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [ { "cast": "Ramos, Dragon Engine" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Ramos, Dragon Engine"] }, {} ] }
+  },
+  {
+    "name": "ruling: a legendary creature (Isamaru) is historic",
+    "players": [ { "hand": ["Isamaru, Hound of Konda"], "battlefield": ["Basim Ibn Ishaq", "Plains"] }, {} ],
+    "steps": [ { "cast": "Isamaru, Hound of Konda" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Isamaru, Hound of Konda"] }, {} ] }
+  },
+  {
+    "name": "ruling: a legendary land played does not trigger (lands are never cast)",
+    "players": [ { "hand": ["Urborg, Tomb of Yawgmoth"], "battlefield": ["Basim Ibn Ishaq"] }, {} ],
+    "steps": [ { "play_land": "Urborg, Tomb of Yawgmoth" } ],
+    "expect": { "stack_empty": true, "players": [ { "hand_count": 0, "battlefield_has": ["Urborg, Tomb of Yawgmoth"] }, {} ] }
+  },
+  {
+    "name": "ruling: a historic creature put onto the battlefield without being cast (Animate Dead on Isamaru) draws nothing",
+    "players": [ { "hand": ["Animate Dead"], "battlefield": ["Basim Ibn Ishaq", "Swamp", "Swamp"], "graveyard": ["Isamaru, Hound of Konda"] }, {} ],
+    "steps": [ { "cast": "Animate Dead", "targets": ["Isamaru, Hound of Konda"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 0, "battlefield_has": ["Isamaru, Hound of Konda"] }, {} ] }
+  },
+  {
+    "name": "ruling: a historic spell that is countered still draws (the trigger resolves)",
+    "players": [
+      { "hand": ["Basalt Monolith"], "battlefield": ["Basim Ibn Ishaq", "Island", "Swamp", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Basalt Monolith" },
+      { "cast": "Counterspell", "targets": [{ "stack": "Basalt Monolith" }], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard": ["Basalt Monolith"] }, {} ] }
+  }
+]

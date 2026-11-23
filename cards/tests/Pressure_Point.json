@@ -1,0 +1,60 @@
+[
+  {
+    "name": "taps the target creature and draws a card",
+    "players": [
+      { "hand": ["Pressure Point"], "battlefield": ["Plains", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Pressure Point", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1 }, {}],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "still draws when the creature is already tapped",
+    "players": [
+      { "hand": ["Pressure Point"], "battlefield": ["Plains", "Island"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+    ],
+    "steps": [
+      { "cast": "Pressure Point", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1 }, {}]
+    }
+  },
+  {
+    "name": "needs a creature to target",
+    "players": [
+      { "hand": ["Pressure Point"], "battlefield": ["Plains", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pressure Point", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Pressure Point"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: target gone in response: Pressure Point fizzles and no card is drawn",
+    "players": [
+      { "hand": ["Pressure Point"], "battlefield": ["Plains", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Pressure Point", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 0, "graveyard_has": ["Pressure Point"] }, { "graveyard_has": ["Lightning Bolt", "Grizzly Bears"] }]
+    }
+  }
+]

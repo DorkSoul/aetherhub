@@ -1,0 +1,250 @@
+[
+  {
+    "name": "equipped creature gets +0/+2 and vigilance",
+    "players": [
+      {
+        "battlefield": [
+          "Shield of the Righteous",
+          "Grizzly Bears",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Shield of the Righteous",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          4
+        ]
+      },
+      "keywords": {
+        "Grizzly Bears": [
+          "Vigilance"
+        ]
+      },
+      "attached": {
+        "Shield of the Righteous": "Grizzly Bears"
+      }
+    }
+  },
+  {
+    "name": "equip only targets a creature you control",
+    "players": [
+      {
+        "battlefield": [
+          "Shield of the Righteous",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Wall of Frost"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Shield of the Righteous",
+        "targets": [
+          "Wall of Frost"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Wall of Frost": [
+          0,
+          7
+        ]
+      }
+    }
+  },
+  {
+    "name": "equipped creature has vigilance (attacks without tapping)",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          "Shield of the Righteous",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Shield of the Righteous",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": false
+      },
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "creature blocked by the equipped creature does not untap during its controller's next untap step",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "sick": false },
+          "Shield of the Righteous",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Shifting Ceratops", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "activate": "Shield of the Righteous", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Shifting Ceratops", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Shifting Ceratops" } ], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "tapped": {
+        "Shifting Ceratops": true
+      }
+    }
+  },
+  {
+    "name": "creature blocked by an unequipped creature untaps normally",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "sick": false },
+          "Shield of the Righteous",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Shifting Ceratops", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Shifting Ceratops", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Shifting Ceratops" } ], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "tapped": {
+        "Shifting Ceratops": false
+      }
+    }
+  },
+  {
+    "name": "ruling: blocked creature that changes control is skipped in its new controller's untap step",
+    "players": [
+      { "hand": ["Control Magic"], "battlefield": [ "Wall of Frost", "Shield of the Righteous", "Plains", "Plains", "Island", "Island" ] },
+      { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+    ],
+    "steps": [
+      { "activate": "Shield of the Righteous", "targets": ["Wall of Frost"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Wall of Frost", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: blocking a vigilance creature does not tap it",
+    "players": [
+      { "battlefield": [ "Giant Spider", "Shield of the Righteous", "Plains", "Plains" ] },
+      { "battlefield": [ { "name": "Serra Angel", "sick": false } ] }
+    ],
+    "steps": [
+      { "activate": "Shield of the Righteous", "targets": ["Giant Spider"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Serra Angel", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Giant Spider", "attacker": "Serra Angel" } ], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "tapped": { "Serra Angel": false },
+      "players": [ {}, {} ]
+    }
+  }
+]

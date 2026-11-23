@@ -1,0 +1,169 @@
+[
+  {
+    "name": "enchanted creature's controller loses 1 life at their upkeep",
+    "players": [
+      {
+        "hand": [
+          "One Thousand Lashes"
+        ],
+        "battlefield": [
+          "Plains",
+          "Swamp",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "One Thousand Lashes",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "only the enchanted creature's controller loses life; the Aura's controller does not",
+    "players": [
+      {
+        "hand": [
+          "One Thousand Lashes"
+        ],
+        "battlefield": [
+          "Plains",
+          "Swamp",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "One Thousand Lashes",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature can't attack; the other attacker still deals its damage",
+    "players": [
+      { "hand": ["One Thousand Lashes"], "battlefield": ["Plains", "Swamp", "Plains", "Swamp", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "One Thousand Lashes", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 17 }],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "enchanted creature can't block; the opponent's attacker is blocked only by the free creature",
+    "players": [
+      { "hand": ["One Thousand Lashes"], "battlefield": ["Plains", "Swamp", "Plains", "Swamp", "Grizzly Bears", "Llanowar Elves"] },
+      { "battlefield": ["Hill Giant", "Prodigal Sorcerer"] }
+    ],
+    "steps": [
+      { "cast": "One Thousand Lashes", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "player": 1, "pass": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Hill Giant", "at": "p0" }, { "card": "Prodigal Sorcerer", "at": "p0" }], "player": 1 },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Llanowar Elves", "attacker": "Prodigal Sorcerer" }], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 17, "battlefield_has": ["Grizzly Bears"] }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "enchanted creature's activated abilities can't be activated",
+    "players": [
+      { "hand": ["One Thousand Lashes"], "battlefield": ["Plains", "Swamp", "Plains", "Swamp", "Mountain", "Prodigal Sorcerer"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "One Thousand Lashes", "targets": ["Prodigal Sorcerer"] },
+      { "resolve": true },
+      { "activate": "Prodigal Sorcerer", "ability": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Prodigal Sorcerer"] }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "enchanted creature's mana abilities can't be activated",
+    "players": [
+      { "hand": ["One Thousand Lashes", "Birds of Paradise"], "battlefield": ["Plains", "Swamp", "Plains", "Swamp", "Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "One Thousand Lashes", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "cast": "Birds of Paradise", "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Birds of Paradise"] }, {}]
+    }
+  }
+]

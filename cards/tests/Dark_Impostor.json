@@ -1,0 +1,136 @@
+[
+  {
+    "name": "exile ability exiles target creature and puts a +1/+1 counter on Dark Impostor",
+    "players": [
+      {
+        "battlefield": ["Dark Impostor", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Shivan Dragon"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dark Impostor", "ability": 0, "targets": ["Shivan Dragon"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Impostor"] },
+        { "exile": ["Shivan Dragon"], "battlefield": [] }
+      ],
+      "pt": { "Dark Impostor": [3, 3] }
+    }
+  },
+  {
+    "name": "Dark Impostor has the activated abilities of the creature exiled with it",
+    "players": [
+      {
+        "battlefield": ["Dark Impostor", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Shivan Dragon"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dark Impostor", "ability": 0, "targets": ["Shivan Dragon"] },
+      { "resolve": true },
+      { "activate": "Dark Impostor", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Dark Impostor": [4, 3] }
+    }
+  },
+  {
+    "name": "without an exiled creature Dark Impostor has no granted abilities",
+    "players": [
+      {
+        "battlefield": ["Dark Impostor", "Mountain"]
+      },
+      {
+        "battlefield": ["Shivan Dragon"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dark Impostor", "ability": 32768, "illegal": true }
+    ],
+    "expect": {
+      "pt": { "Dark Impostor": [2, 2] }
+    }
+  },
+  {
+    "name": "a creature in a graveyard is not exiled with Dark Impostor so its ability is not granted",
+    "players": [
+      {
+        "battlefield": ["Dark Impostor", "Mountain"]
+      },
+      {
+        "graveyard": ["Shivan Dragon"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dark Impostor", "ability": 32768, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "graveyard": ["Shivan Dragon"] }],
+      "pt": { "Dark Impostor": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: a Dark Impostor that returns is a new object with no exiled-creature abilities",
+    "players": [
+      {
+        "hand": ["Rise from the Grave"],
+        "battlefield": ["Dark Impostor", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Shivan Dragon", "Mountain"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dark Impostor", "ability": 0, "targets": ["Shivan Dragon"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Dark Impostor"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Rise from the Grave", "targets": ["Dark Impostor"] },
+      { "resolve": true },
+      { "activate": "Dark Impostor", "ability": 32768, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Impostor"], "graveyard": ["Rise from the Grave"] },
+        { "graveyard": ["Lightning Bolt"], "exile": ["Shivan Dragon"] }
+      ],
+      "pt": { "Dark Impostor": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: Dark Impostor gains only activated abilities, not the flying of the exiled creature",
+    "players": [
+      {
+        "battlefield": ["Dark Impostor", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Serra Angel", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Dark Impostor", "ability": 0, "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Dark Impostor", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Dark Impostor" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Impostor"] },
+        { "exile": ["Serra Angel"], "graveyard": ["Grizzly Bears"] }
+      ],
+      "pt": { "Dark Impostor": [3, 3] }
+    }
+  }
+]

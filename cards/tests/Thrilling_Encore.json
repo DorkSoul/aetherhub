@@ -1,0 +1,107 @@
+[
+ {
+  "name": "returns a creature that died from the battlefield this turn under your control",
+  "players": [
+   {
+    "hand": ["Lightning Bolt", "Thrilling Encore"],
+    "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Thrilling Encore"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": ["Lightning Bolt", "Thrilling Encore"],
+     "battlefield_has": ["Grizzly Bears"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "does not return a creature card that was not put into the graveyard from the battlefield this turn",
+  "players": [
+   {
+    "hand": ["Thrilling Encore"],
+    "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+   },
+   {
+    "graveyard": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Thrilling Encore"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": ["Thrilling Encore"]
+    },
+    {
+     "graveyard_has": ["Grizzly Bears"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a noncreature permanent put into the graveyard this turn is not returned",
+  "players": [
+   { "hand": ["Shatter", "Thrilling Encore"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Sol Ring"] }
+  ],
+  "steps": [
+   { "cast": "Shatter", "targets": ["Sol Ring"] },
+   { "resolve": true },
+   { "cast": "Thrilling Encore" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Shatter", "Thrilling Encore"], "battlefield_lacks": ["Sol Ring"] },
+    { "graveyard_has": ["Sol Ring"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature spell countered on the stack never entered the battlefield, so Encore does not return it",
+  "players": [
+   { "hand": ["Grizzly Bears", "Thrilling Encore"], "battlefield": ["Forest", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+   { "resolve": true },
+   { "cast": "Thrilling Encore" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Grizzly Bears", "Thrilling Encore"], "battlefield_lacks": ["Grizzly Bears"] },
+    { "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ }
+]

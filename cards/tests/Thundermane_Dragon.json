@@ -1,0 +1,157 @@
+[
+  {
+    "name": "cast a power 4 creature from the top of your library, it gains haste and attacks",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Thundermane Dragon"
+        ],
+        "library": [
+          "Gore Swine"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gore Swine"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Gore Swine",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Gore Swine"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ],
+      "keywords": {
+        "Gore Swine": [
+          "Haste"
+        ]
+      }
+    }
+  },
+  {
+    "name": "a creature cast from hand does not gain haste",
+    "players": [
+      {
+        "hand": [
+          "Gore Swine"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Thundermane Dragon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gore Swine"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Gore Swine",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "power 3 creature cannot be cast from the top of library",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Thundermane Dragon"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the top card can only be cast with an empty stack (not while a spell is on the stack)",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Thundermane Dragon"], "library": ["Gore Swine"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Gore Swine", "illegal": true },
+      { "resolve": true },
+      { "cast": "Gore Swine" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Gore Swine", "Thundermane Dragon"], "graveyard_has": ["Lightning Bolt"] }, { "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: the top card cannot be cast during an opponent's turn (only in your main phase)",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Thundermane Dragon"], "library": ["Gore Swine"] }, {} ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Gore Swine", "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Gore Swine"] }, {} ] }
+  }
+]

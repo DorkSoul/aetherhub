@@ -1,0 +1,62 @@
+[
+  {
+    "name": "gain 6 life",
+    "players": [
+      { "hand": ["Rejuvenate"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rejuvenate" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 26, "graveyard": ["Rejuvenate"] }, {}]
+    }
+  },
+  {
+    "name": "cycling {2}: discard it to draw a card",
+    "players": [
+      { "hand": ["Rejuvenate"], "battlefield": ["Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Rejuvenate", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "graveyard": ["Rejuvenate"], "hand_count": 1 }, {}]
+    }
+  },
+  {
+    "name": "ruling: Stifle can counter the cycling ability, so no card is drawn",
+    "players": [
+      { "hand": ["Rejuvenate"], "battlefield": ["Forest", "Forest"] },
+      { "hand": ["Stifle"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "activate": "Rejuvenate", "ability": 0 },
+      { "pass": true },
+      { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Rejuvenate" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "graveyard": ["Rejuvenate"], "hand_count": 0 }, { "graveyard": ["Stifle"] }]
+    }
+  },
+  {
+    "name": "ruling: Remove Soul cannot counter cycling (it is an ability, not a spell), so the card is still drawn",
+    "players": [
+      { "hand": ["Rejuvenate"], "battlefield": ["Forest", "Forest"] },
+      { "hand": ["Remove Soul"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "activate": "Rejuvenate", "ability": 0 },
+      { "pass": true },
+      { "cast": "Remove Soul", "player": 1, "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20, "graveyard": ["Rejuvenate"], "hand_count": 1 }, { "hand": ["Remove Soul"] }]
+    }
+  }
+]

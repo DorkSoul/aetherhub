@@ -1,0 +1,196 @@
+[
+  {
+    "name": "sacrificing another creature for -2/-1 makes the dying creature's controller pay 2 life to draw",
+    "players": [
+      {
+        "battlefield": ["Erebos, Bleak-Hearted", "Swamp", "Swamp", "Llanowar Elves"],
+        "library": ["Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Erebos, Bleak-Hearted", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Mountain"], "life": 18, "graveyard": ["Llanowar Elves"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [0, 1] }
+    }
+  },
+  {
+    "name": "declining the 2 life payment draws nothing",
+    "players": [
+      {
+        "battlefield": ["Erebos, Bleak-Hearted", "Swamp", "Swamp", "Llanowar Elves"],
+        "library": ["Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Erebos, Bleak-Hearted", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "life": 20, "graveyard": ["Llanowar Elves"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the sacrifice ability needs {1}{B}: one Swamp is not enough",
+    "players": [
+      {
+        "battlefield": ["Erebos, Bleak-Hearted", "Swamp", "Hill Giant"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Erebos, Bleak-Hearted", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Erebos, Bleak-Hearted", "Swamp", "Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "at devotion below five Erebos is not a creature: Unsummon cannot target it",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Erebos, Bleak-Hearted", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unsummon", "targets": ["Erebos, Bleak-Hearted"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Erebos, Bleak-Hearted"], "hand": ["Unsummon"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "at devotion five Erebos is a creature again: Unsummon can bounce it",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Erebos, Bleak-Hearted", "Vampire Nighthawk", "Sengir Vampire", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unsummon", "targets": ["Erebos, Bleak-Hearted"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Erebos, Bleak-Hearted"], "battlefield_has": ["Vampire Nighthawk", "Sengir Vampire"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Erebos may target the creature it sacrifices; the ability fizzles but the death still draws",
+    "players": [
+      { "battlefield": ["Erebos, Bleak-Hearted", "Swamp", "Swamp", "Grizzly Bears"], "library": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Erebos, Bleak-Hearted", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Mountain"], "life": 18, "graveyard": ["Grizzly Bears"], "battlefield_has": ["Erebos, Bleak-Hearted"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: counters stay on Erebos while it is not a creature (devotion 1)",
+    "players": [ { "battlefield": [ { "name": "Erebos, Bleak-Hearted", "counters": { "p1p1": 1 } } ] }, {} ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": {
+      "counters": { "Erebos, Bleak-Hearted": { "p1p1": 1 } },
+      "not_subtypes": { "Erebos, Bleak-Hearted": ["God"] }
+    }
+  },
+  {
+    "name": "ruling: two creatures dying at once each trigger Erebos (pay 2 life and draw for each)",
+    "players": [
+      { "hand": ["Pyroclasm"], "battlefield": ["Mountain", "Mountain", "Erebos, Bleak-Hearted", "Grizzly Bears", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pyroclasm" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": {
+      "players": [ { "life": 16, "hand_count": 2, "battlefield_has": ["Erebos, Bleak-Hearted"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: devotion counts only colored symbols; Juggernaut's generic cost does not make Erebos a creature (devotion 4)",
+    "players": [ { "battlefield": ["Erebos, Bleak-Hearted", "Vampire Nighthawk", "Gravedigger", "Juggernaut"] }, {} ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": { "not_subtypes": { "Erebos, Bleak-Hearted": ["God"] } }
+  },
+  {
+    "name": "ruling: an Aura you control on an opponent's creature counts toward your devotion (devotion 5: Erebos is a creature)",
+    "players": [
+      { "hand": ["Dead Weight"], "battlefield": ["Swamp", "Erebos, Bleak-Hearted", "Vampire Nighthawk", "Gravedigger"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Dead Weight", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Erebos, Bleak-Hearted": ["God"] },
+      "pt": { "Erebos, Bleak-Hearted": [5, 6] },
+      "players": [ { "battlefield_has": ["Dead Weight"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Erebos's own {B} counts toward devotion as it enters (4 other black pips + its own = creature)",
+    "players": [
+      { "hand": ["Erebos, Bleak-Hearted"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Vampire Nighthawk", "Gravedigger", "Dark Confidant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Erebos, Bleak-Hearted" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Erebos, Bleak-Hearted": ["God"] },
+      "pt": { "Erebos, Bleak-Hearted": [5, 6] }
+    }
+  },
+  {
+    "name": "ruling: Erebos is a creature spell on the stack, so a creature-spell counter can hit it",
+    "players": [
+      { "hand": ["Erebos, Bleak-Hearted"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Essence Scatter"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Erebos, Bleak-Hearted" },
+      { "pass": true },
+      { "cast": "Essence Scatter", "player": 1, "targets": [{ "stack": "Erebos, Bleak-Hearted" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Erebos, Bleak-Hearted"] }, { "graveyard": ["Essence Scatter"] } ]
+    }
+  }
+]

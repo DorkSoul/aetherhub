@@ -1,0 +1,309 @@
+[
+ {
+  "name": "cast as a creature it is a 3/3",
+  "players": [
+   {
+    "hand": [
+     "Thassa's Emissary"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Thassa's Emissary"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Thassa's Emissary": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "bestowed on Grizzly Bears the Bears get +3/+3 and the Emissary is not a creature",
+  "players": [
+   {
+    "hand": [
+     "Thassa's Emissary"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Thassa's Emissary",
+    "alt": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     5,
+     5
+    ]
+   },
+   "attached": {
+    "Thassa's Emissary": "Grizzly Bears"
+   }
+  }
+ },
+ {
+  "name": "enchanted creature dealing combat damage to a player draws a card",
+  "players": [
+   {
+    "hand": [
+     "Thassa's Emissary",
+     "Swamp"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Thassa's Emissary",
+    "alt": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest",
+      "Swamp"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "the unattached-by-combat Emissary itself dealing combat damage draws a card",
+  "players": [
+   {
+    "battlefield": [
+     "Thassa's Emissary"
+    ],
+    "hand": [
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Thassa's Emissary",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Swamp",
+      "Forest"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "a bestowed creature that is blocked deals no combat damage to a player, so no draw",
+  "players": [
+   {
+    "hand": [
+     "Thassa's Emissary",
+     "Swamp"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Thassa's Emissary",
+    "alt": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Swamp"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: bestow spell whose target is gone when it resolves enters as an enchantment creature",
+  "players": [
+   {
+    "hand": ["Thassa's Emissary"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Grizzly Bears"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Thassa's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Thassa's Emissary"], "graveyard_has": ["Grizzly Bears"] },
+    { "graveyard_has": ["Lightning Bolt"] }
+   ],
+   "pt": { "Thassa's Emissary": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: bestowed creature dies, the Emissary stays on the battlefield as a 3/3 creature",
+  "players": [
+   {
+    "hand": ["Thassa's Emissary", "Lightning Bolt", "Lightning Bolt"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Mountain", "Mountain", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Thassa's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Thassa's Emissary"], "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "hand_count": 0 },
+    {}
+   ],
+   "pt": { "Thassa's Emissary": [3, 3] }
+  }
+ }
+]

@@ -1,0 +1,70 @@
+{
+  "name": "Filigree Racer",
+  "mana_cost": "{3}{R}",
+  "types": ["Artifact"],
+  "subtypes": ["Vehicle"],
+  "power": 5,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "GainEnergy", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 4 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "MayPay",
+          "payer": { "type": "You" },
+          "cost": [ { "type": "PayEnergy", "n": 2 } ],
+          "effects": [
+            {
+              "type": "Reflexive",
+              "targets": [
+                {
+                  "what": {
+                    "type": "CardIn",
+                    "zone": "Graveyard",
+                    "filter": { "types": ["Instant", "Sorcery"] },
+                    "whose": "You"
+                  },
+                  "label": "target instant or sorcery card in your graveyard"
+                }
+              ],
+              "effects": [
+                { "type": "Remember", "what": { "type": "Target", "idx": 0 } },
+                { "type": "StoreRemembered", "slot": 0 },
+                {
+                  "type": "GrantStatic",
+                  "what": { "type": "You" },
+                  "effect": {
+                    "type": "AlternativeManaCost",
+                    "filter": { "among_stored": 0 },
+                    "whose": "You",
+                    "cost": "own",
+                    "from": "Graveyard",
+                    "exile_after": true,
+                    "extra": [ { "type": "Discard", "filter": {}, "n": 1 } ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Crew", "power": 1 } ],
+      "effects": [
+        { "type": "Animate", "what": { "type": "This" }, "add_types": ["Creature"], "duration": "UntilEndOfTurn" }
+      ]
+    }
+  ],
+  "oracle_text": "When this Vehicle enters, you get {E}{E}{E}{E} (four energy counters).\nWhenever this Vehicle attacks, you may pay {E}{E}. When you do, target instant or sorcery card in your graveyard gains jump-start until end of turn. (You may cast that card from your graveyard by discarding a card in addition to paying its other costs. Then exile it.)\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+}

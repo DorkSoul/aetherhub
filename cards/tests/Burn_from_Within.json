@@ -1,0 +1,55 @@
+[
+ {
+  "name": "X damage kills a creature: it is exiled instead",
+  "players": [ { "hand": ["Burn from Within"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "cast": "Burn from Within", "targets": ["Grizzly Bears"], "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Burn from Within"] }, { "exile": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "loses indestructible: dies to damage and is exiled",
+  "players": [ { "hand": ["Burn from Within"], "battlefield": ["Mountain", "Mountain"] }, { "battlefield": ["Predator Ooze"] } ],
+  "steps": [
+   { "cast": "Burn from Within", "targets": ["Predator Ooze"], "answers": [1] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Burn from Within"] }, { "exile": ["Predator Ooze"] } ] }
+ },
+ {
+  "name": "X=0 deals no damage: creature survives",
+  "players": [ { "hand": ["Burn from Within"], "battlefield": ["Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+   { "cast": "Burn from Within", "targets": ["Grizzly Bears"], "answers": [0] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: X=0 deals no damage, so the indestructible creature keeps indestructible",
+  "players": [ { "hand": ["Burn from Within", "Swamp"], "battlefield": ["Mountain", { "name": "Iron-Shield Elf" }] }, {} ],
+  "steps": [
+   { "activate": "Iron-Shield Elf", "ability": 0, "answers": ["Swamp"] },
+   { "resolve": true },
+   { "cast": "Burn from Within", "targets": ["Iron-Shield Elf"], "answers": [0] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Swamp", "Burn from Within"], "battlefield_has": ["Iron-Shield Elf"] }, {} ],
+   "keywords": { "Iron-Shield Elf": ["Indestructible"] }
+  }
+ },
+ {
+  "name": "ruling: a creature damaged by Burn is exiled if it dies to another source later that turn",
+  "players": [ { "hand": ["Burn from Within"], "battlefield": ["Mountain", "Mountain"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] } ],
+  "steps": [
+   { "cast": "Burn from Within", "targets": ["Grizzly Bears"], "answers": [1] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Burn from Within"] }, { "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] } ] }
+ }
+]

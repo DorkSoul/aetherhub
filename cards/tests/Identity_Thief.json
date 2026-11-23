@@ -1,0 +1,292 @@
+[
+ {
+  "name": "exiles a creature, becomes a copy until end of turn, creature returns at end step",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Identity Thief",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Identity Thief",
+      "at": "p1"
+     }
+    ],
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Hill Giant": [
+     3,
+     3
+    ]
+   },
+   "players": [
+    {
+     "battlefield": [
+      "Hill Giant"
+     ]
+    },
+    {
+     "battlefield": [],
+     "exile": [
+      "Hill Giant"
+     ],
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "the exiled creature returns at the next end step and Thief reverts",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Identity Thief",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Identity Thief",
+      "at": "p1"
+     }
+    ],
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main1"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Identity Thief"
+     ]
+    },
+    {
+     "battlefield": [
+      "Hill Giant"
+     ],
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining the may leaves everything alone",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Identity Thief",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Identity Thief",
+      "at": "p1"
+     }
+    ],
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Identity Thief": [
+     0,
+     3
+    ]
+   },
+   "players": [
+    {
+     "battlefield": [
+      "Identity Thief"
+     ]
+    },
+    {
+     "battlefield": [
+      "Hill Giant"
+     ],
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a +1/+0 pump on Identity Thief persists after it becomes a copy of Hill Giant",
+  "players": [
+   { "battlefield": ["Identity Thief", "Painter's Studio // Defaced Gallery", "Mountain", "Mountain"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "unlock": "Painter's Studio // Defaced Gallery", "door": 2 },
+   { "attack": [{ "card": "Identity Thief", "at": "p1" }], "targets": ["Hill Giant"] },
+   { "resolve": true, "answers": [true] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "pt": { "Hill Giant": [4, 3] },
+   "players": [ {}, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ruling: Identity Thief copies only the printed values of the target, not its +1/+0 pump",
+  "players": [
+   { "battlefield": ["Identity Thief", "Grizzly Bears", "Painter's Studio // Defaced Gallery", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "unlock": "Painter's Studio // Defaced Gallery", "door": 2 },
+   { "attack": [{ "card": "Identity Thief", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }], "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [3, 2] },
+   "players": [ {}, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: an Aura on the exiled creature goes to its owner's graveyard",
+  "players": [
+   { "hand": ["Holy Strength"], "battlefield": ["Identity Thief", "Plains"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Holy Strength", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "attack": [{ "card": "Identity Thief", "at": "p1" }], "targets": ["Hill Giant"] },
+   { "resolve": true, "answers": [true] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Holy Strength"] },
+    { "exile": ["Hill Giant"], "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: counters on the exiled creature cease to exist (Hill Giant returns as a 3/3)",
+  "players": [
+   { "battlefield": ["Identity Thief"] },
+   { "battlefield": [{ "name": "Hill Giant", "counters": { "+1/+1": 1 } }] }
+  ],
+  "steps": [
+   { "attack": [{ "card": "Identity Thief", "at": "p1" }], "targets": ["Hill Giant"] },
+   { "resolve": true, "answers": [true] },
+   { "block": [] },
+   { "advance_to": "End" },
+   { "resolve": true },
+   { "advance_to": "Main1" }
+  ],
+  "expect": {
+   "pt": { "Hill Giant": [3, 3] },
+   "players": [
+    { "battlefield": ["Identity Thief"] },
+    { "battlefield": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy of a defender is still attacking and deals damage (Wall of Frost copy with a +1/+0 pump)",
+  "players": [
+   { "battlefield": ["Identity Thief", "Painter's Studio // Defaced Gallery", "Mountain", "Mountain"] },
+   { "battlefield": ["Wall of Frost"] }
+  ],
+  "steps": [
+   { "unlock": "Painter's Studio // Defaced Gallery", "door": 2 },
+   { "attack": [{ "card": "Identity Thief", "at": "p1" }], "targets": ["Wall of Frost"] },
+   { "resolve": true, "answers": [true] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "pt": { "Wall of Frost": [1, 7] },
+   "players": [ {}, { "life": 19 } ]
+  }
+ }
+]

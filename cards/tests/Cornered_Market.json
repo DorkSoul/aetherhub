@@ -1,0 +1,90 @@
+[
+  {
+    "name": "a spell with the name of a nontoken permanent can't be cast",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Cornered Market", "Grizzly Bears", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "applies to the opponent's permanents and spells too; a differently named spell is fine",
+    "players": [
+      { "hand": ["Elite Vanguard"], "battlefield": ["Cornered Market", "Plains"] },
+      { "hand": ["Grizzly Bears"], "battlefield": ["Grizzly Bears", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "cast": "Elite Vanguard" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Grizzly Bears", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Cornered Market", "Elite Vanguard", "Plains"] },
+        { "hand": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "a nonbasic land with the name of a nontoken permanent can't be played, a basic one can",
+    "players": [
+      { "hand": ["Evolving Wilds", "Island"], "battlefield": ["Cornered Market", "Evolving Wilds", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Evolving Wilds", "illegal": true },
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Evolving Wilds"], "battlefield": ["Cornered Market", "Evolving Wilds", "Island", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a spell is castable again once the same-named permanent is gone",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Cornered Market", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Cornered Market", "Forest", "Forest", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the check looks only at permanents, so a second same-named spell can be cast while the first is on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Cornered Market", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "battlefield_has": ["Cornered Market"] },
+        { "life": 14 }
+      ]
+    }
+  }
+]

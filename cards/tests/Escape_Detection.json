@@ -1,0 +1,197 @@
+[
+  {
+    "name": "freerunning: an Assassin dealt combat damage, return a blue creature, bounce and draw",
+    "players": [
+      {
+        "hand": [
+          "Escape Detection"
+        ],
+        "battlefield": [
+          "Assassin Initiate",
+          "Man-o'-War"
+        ],
+        "library": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Assassin Initiate",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "Escape Detection",
+        "alt": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Escape Detection"
+          ],
+          "battlefield_has": [
+            "Assassin Initiate"
+          ],
+          "hand": [
+            "Island",
+            "Island",
+            "Man-o'-War"
+          ],
+          "library_count": 1
+        },
+        {
+          "life": 19,
+          "battlefield": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "freerunning is not allowed when only a non-Assassin creature dealt combat damage",
+    "players": [
+      {
+        "hand": [
+          "Escape Detection"
+        ],
+        "battlefield": [
+          "Grizzly Bears",
+          "Man-o'-War",
+          "Island",
+          "Island"
+        ],
+        "library": [
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "Escape Detection",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Escape Detection",
+            "Island"
+          ],
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Man-o'-War"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the target is gone as Escape Detection resolves, so nothing happens and no card is drawn",
+    "players": [
+      {
+        "hand": ["Escape Detection"],
+        "battlefield": ["Island", "Island", "Island"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Escape Detection" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Escape Detection"] },
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after an Assassin dealt combat damage, freerunning stays available even once it has died",
+    "players": [
+      {
+        "hand": ["Escape Detection", "Lightning Bolt"],
+        "battlefield": ["Assassin Initiate", "Man-o'-War", "Mountain"],
+        "library": ["Island", "Island", "Island"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Assassin Initiate", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["Assassin Initiate"] },
+      { "resolve": true },
+      { "cast": "Escape Detection", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Assassin Initiate", "Escape Detection"], "battlefield_lacks": ["Man-o'-War"] },
+        { "life": 19, "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,163 @@
+[
+  {
+    "name": "cast normally it is a 3/3 creature",
+    "players": [
+      { "hand": ["Erebos's Emissary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [{ "cast": "Erebos's Emissary" }, { "resolve": true }],
+    "expect": { "pt": { "Erebos's Emissary": [3, 3] } }
+  },
+  {
+    "name": "bestowed on Grizzly Bears: Bears get +3/+3 and the Emissary is an Aura",
+    "players": [
+      {
+        "hand": ["Erebos's Emissary"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [5, 5] },
+      "attached": { "Erebos's Emissary": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "discard a creature card: the creature gets +2/+2 until end of turn",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Erebos's Emissary"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Erebos's Emissary", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Erebos's Emissary": [5, 5] },
+      "players": [{ "graveyard": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "bestowed: discarding a creature card gives the enchanted creature +2/+2 instead",
+    "players": [
+      {
+        "hand": ["Erebos's Emissary", "Grizzly Bears"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Erebos's Emissary", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Hill Giant": [8, 8] },
+      "attached": { "Erebos's Emissary": "Hill Giant" }
+    }
+  },
+  {
+    "name": "when the bestowed host dies the Emissary is a 3/3 creature again",
+    "players": [
+      {
+        "hand": ["Erebos's Emissary", "Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Erebos's Emissary": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: an attacking host does not tap the bestowed Aura",
+    "players": [
+      { "hand": ["Erebos's Emissary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15 } ],
+      "tapped": { "Erebos's Emissary": false }
+    }
+  },
+  {
+    "name": "ruling: when the bestowed creature leaves, the Emissary stays as a 3/3 enchantment creature",
+    "players": [
+      { "hand": ["Erebos's Emissary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "battlefield_has": ["Erebos's Emissary"], "graveyard": [] },
+        { "graveyard": ["Unsummon"] }
+      ],
+      "pt": { "Erebos's Emissary": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: a bestow spell whose target becomes illegal resolves as an enchantment creature, not countered",
+    "players": [
+      { "hand": ["Erebos's Emissary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "battlefield_has": ["Erebos's Emissary"], "graveyard": [] },
+        { "graveyard": ["Unsummon"] }
+      ],
+      "pt": { "Erebos's Emissary": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: only the controller may activate a bestowed Emissary attached to an opponent's creature",
+    "players": [
+      { "hand": ["Erebos's Emissary", "Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Grizzly Bears"], "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Erebos's Emissary", "alt": 0, "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Erebos's Emissary", "ability": 0, "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"] }, { "hand": ["Grizzly Bears"] } ],
+      "pt": { "Hill Giant": [6, 6] }
+    }
+  }
+]

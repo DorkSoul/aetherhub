@@ -1,0 +1,194 @@
+[
+  {
+    "name": "noncreature spells cost 1 less with three Lessons in graveyard",
+    "players": [
+      {
+        "hand": [
+          "Blink of an Eye"
+        ],
+        "battlefield": [
+          "Gran-Gran",
+          "Island"
+        ],
+        "graveyard": [
+          "Basic Conjuration",
+          "Basic Conjuration",
+          "Basic Conjuration"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Blink of an Eye",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no reduction with only two Lessons in graveyard",
+    "players": [
+      {
+        "hand": [
+          "Blink of an Eye"
+        ],
+        "battlefield": [
+          "Gran-Gran",
+          "Island"
+        ],
+        "graveyard": [
+          "Basic Conjuration",
+          "Basic Conjuration"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Blink of an Eye",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Blink of an Eye"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "creature spells are not reduced",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Gran-Gran",
+          "Forest"
+        ],
+        "graveyard": [
+          "Basic Conjuration",
+          "Basic Conjuration",
+          "Basic Conjuration"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "becomes tapped (attacks): draw a card, then discard a card",
+    "players": [ { "battlefield": ["Gran-Gran"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Gran-Gran", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "graveyard": ["Forest"] }, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "becomes tapped: the discard is a real choice from the hand",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Gran-Gran"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Gran-Gran", "at": "p1" } ] },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Forest"], "graveyard": ["Grizzly Bears"] }, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "ruling: Thalia's extra {1} and Gran-Gran's {1} less net out (Divination costs 3)",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Gran-Gran", "Island", "Island", "Island"],
+        "graveyard": ["Basic Conjuration", "Basic Conjuration", "Basic Conjuration"]
+      },
+      {
+        "battlefield": ["Thalia, Guardian of Thraben"]
+      }
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 2, "graveyard": ["Basic Conjuration", "Basic Conjuration", "Basic Conjuration", "Divination"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: with two Islands Divination stays too expensive under Thalia's tax",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Gran-Gran", "Island", "Island"],
+        "graveyard": ["Basic Conjuration", "Basic Conjuration", "Basic Conjuration"]
+      },
+      {
+        "battlefield": ["Thalia, Guardian of Thraben"]
+      }
+    ],
+    "steps": [
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Divination"] }, {} ]
+    }
+  }
+]

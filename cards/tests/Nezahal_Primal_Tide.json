@@ -1,0 +1,307 @@
+[
+ {
+  "name": "opponent noncreature spell: draw",
+  "players": [
+   {
+    "battlefield": [
+     "Nezahal, Primal Tide"
+    ]
+   },
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Shock",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1,
+     "life": 18
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent creature spell: no draw",
+  "players": [
+   {
+    "battlefield": [
+     "Nezahal, Primal Tide"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Grizzly Bears",
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "can't be countered",
+  "players": [
+   {
+    "hand": [
+     "Nezahal, Primal Tide"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Counterspell"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Nezahal, Primal Tide"
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Counterspell",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Nezahal, Primal Tide"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Nezahal, Primal Tide"
+     ]
+    },
+    {
+     "graveyard": [
+      "Counterspell"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "discard three: exile, returns tapped at end step",
+  "players": [
+   {
+    "hand": [
+     "Shock",
+     "Shock",
+     "Shock"
+    ],
+    "battlefield": [
+     "Nezahal, Primal Tide"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Nezahal, Primal Tide",
+    "auto": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Nezahal, Primal Tide"
+     ],
+     "graveyard": [
+      "Shock",
+      "Shock",
+      "Shock"
+     ]
+    }
+   ],
+   "tapped": {
+    "Nezahal, Primal Tide": true
+   }
+  }
+ },
+ {
+  "name": "no maximum hand size: eight cards in hand at cleanup, none discarded",
+  "players": [
+   {
+    "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+    "battlefield": ["Nezahal, Primal Tide"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep",
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 8
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "control: without Nezahal the hand is cut to seven at cleanup",
+  "players": [
+   {
+    "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep",
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 7
+    },
+    {}
+   ]
+  }
+ },
+  {
+    "name": "ruling: the draw trigger resolves before the opponent's spell does",
+    "players": [
+      { "battlefield": ["Nezahal, Primal Tide"], "library": ["Grizzly Bears"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "pass": true }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "players": [ { "hand_count": 1, "life": 20 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the card drawn from Nezahal can counter the spell that triggered it",
+    "players": [
+      { "battlefield": ["Nezahal, Primal Tide", "Island", "Island"], "library": ["Counterspell"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Shock" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard_has": ["Counterspell"] },
+        { "graveyard": ["Shock"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: discard three activated in your turn returns before cleanup, so no hand size limit applies",
+    "players": [
+      { "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "battlefield": ["Nezahal, Primal Tide"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Nezahal, Primal Tide", "auto": true },
+      { "resolve": true },
+      { "advance_to": "Upkeep", "auto": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 8, "battlefield_has": ["Nezahal, Primal Tide"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: returned Nezahal is a new object with no counters",
+    "players": [
+      { "hand": ["Shock", "Shock", "Shock"], "battlefield": [{ "name": "Nezahal, Primal Tide", "counters": { "p1p1": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Nezahal, Primal Tide", "auto": true },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Nezahal, Primal Tide"] }, {} ],
+      "pt": { "Nezahal, Primal Tide": [7, 7] },
+      "counters": { "Nezahal, Primal Tide": { "p1p1": 0 } }
+    }
+  }
+]

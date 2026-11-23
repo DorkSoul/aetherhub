@@ -1,0 +1,71 @@
+[
+  {
+    "name": "your crime during your turn: gains indestructible until end of turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", { "name": "Overzealous Muscle", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Overzealous Muscle": ["Indestructible"] },
+      "players": [{}, { "life": 17 }]
+    }
+  },
+  {
+    "name": "no crime when you target only your own creature: no indestructible",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", { "name": "Overzealous Muscle", "sick": false }, "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt", "Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: the crime is committed on cast even if the targeted creature dies and the spell fizzles",
+    "players": [
+      {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", {"name": "Overzealous Muscle", "sick": false}]},
+      {"hand": ["Shock"], "battlefield": ["Mountain", "Grizzly Bears"]}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+      {"pass": true},
+      {"cast": "Shock", "player": 1, "targets": ["Grizzly Bears"]},
+      {"pass": true, "player": 1},
+      {"pass": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "keywords": {"Overzealous Muscle": ["Indestructible"]},
+      "players": [{"graveyard_has": ["Lightning Bolt"]}, {"graveyard_has": ["Grizzly Bears", "Shock"]}]
+    }
+  },
+  {
+    "name": "ruling: an activated ability targeting an opponent's creature is a crime",
+    "players": [
+      {"battlefield": [{"name": "Traveling Minister", "sick": false}, {"name": "Overzealous Muscle", "sick": false}]},
+      {"battlefield": ["Grizzly Bears"]}
+    ],
+    "steps": [
+      {"activate": "Traveling Minister", "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "keywords": {"Overzealous Muscle": ["Indestructible"]},
+      "players": [{"life": 21}, {}]
+    }
+  }
+]

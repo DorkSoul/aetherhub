@@ -1,0 +1,59 @@
+[
+ { "name": "suspend for 2BB exiles it with three time counters",
+   "players": [ { "hand": ["Living End"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "activate": "Living End" }, { "resolve": true } ],
+   "expect": { "players": [ { "hand": [], "exile": ["Living End"] }, {} ] } },
+ { "name": "without suspend it cannot be cast from hand (no mana cost)",
+   "players": [ { "hand": ["Living End"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [ { "cast": "Living End", "illegal": true } ],
+   "expect": { "players": [ { "hand": ["Living End"] }, {} ] } },
+ { "name": "last time counter: each player exiles creature cards from graveyard, sacrifices creatures, returns exiled cards",
+   "players": [
+     { "hand": ["Living End"], "graveyard": ["Hill Giant"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+     { "graveyard": ["Serra Angel"], "battlefield": ["Llanowar Elves"] } ],
+   "steps": [
+     { "activate": "Living End" }, { "resolve": true },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep", "answers": [true] },
+     { "resolve": true } ],
+   "expect": { "players": [
+     { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Grizzly Bears", "Living End"] },
+     { "battlefield_has": ["Serra Angel"], "graveyard_has": ["Llanowar Elves"] } ] } },
+ { "name": "non-creature cards in graveyards stay there",
+   "players": [
+     { "hand": ["Living End"], "graveyard": ["Shock"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+   "steps": [
+     { "activate": "Living End" }, { "resolve": true },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep", "answers": [true] },
+     { "resolve": true } ],
+   "expect": { "players": [ { "graveyard_has": ["Shock", "Living End"], "battlefield_has": [] }, {} ] } },
+ { "name": "ruling: suspend is done at the card's timing, so it is illegal while a spell is on the stack",
+   "players": [ { "hand": ["Living End", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Mountain"] }, {} ],
+   "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "activate": "Living End", "illegal": true }, { "resolve": true } ],
+   "expect": { "players": [ { "hand": ["Living End"], "exile": [] }, { "life": 17 } ] } },
+ { "name": "ruling: declining to cast the suspended card leaves it exiled, not suspended, and nothing is sacrificed",
+   "players": [ { "hand": ["Living End"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, {} ],
+   "steps": [
+     { "activate": "Living End" }, { "resolve": true },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep", "answers": [false] },
+     { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": ["Living End"] }, {} ] } },
+ { "name": "ruling: a creature exiled by Leyline of the Void instead of dying is not returned by Living End",
+   "players": [
+     { "hand": ["Living End"], "graveyard": ["Hill Giant"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+     { "battlefield": ["Leyline of the Void"] } ],
+   "steps": [
+     { "activate": "Living End" }, { "resolve": true },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" },
+     { "advance_to": "Upkeep", "answers": [true] },
+     { "resolve": true } ],
+   "expect": { "players": [
+     { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears", "Living End"] },
+     { "battlefield_has": ["Leyline of the Void"] } ] } }
+]

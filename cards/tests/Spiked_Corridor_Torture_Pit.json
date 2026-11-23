@@ -1,0 +1,78 @@
+[
+ {
+  "name": "unlocking the front door creates three 1/1 red Devils",
+  "players": [
+   { "hand": ["Spiked Corridor // Torture Pit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Spiked Corridor // Torture Pit" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Devil", "Devil", "Devil"] }, {} ],
+   "pt": { "Devil": [1, 1] }
+  }
+ },
+ {
+  "name": "casting Torture Pit: noncombat damage to an opponent from your source is increased by 2",
+  "players": [
+   { "hand": ["Spiked Corridor // Torture Pit", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Spiked Corridor // Torture Pit", "alt": 0 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 15 } ]
+  }
+ },
+ {
+  "name": "Torture Pit: noncombat damage from an opponent's source to you is not increased",
+  "players": [
+   { "hand": ["Spiked Corridor // Torture Pit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Spiked Corridor // Torture Pit", "alt": 0 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 17 }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: unlocking door 1 is a special action that pays its mana cost; the Devils come from the unlock trigger",
+  "players": [ { "battlefield": ["Spiked Corridor // Torture Pit", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "unlock": "Spiked Corridor // Torture Pit", "door": 1 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Devil", "Devil", "Devil"] }, {} ] }
+ },
+ {
+  "name": "ruling: a locked door cannot be unlocked without paying its mana cost",
+  "players": [ { "battlefield": ["Spiked Corridor // Torture Pit", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "unlock": "Spiked Corridor // Torture Pit", "door": 1, "illegal": true } ],
+  "expect": { "players": [ { "battlefield_lacks": ["Devil"] }, {} ] }
+ },
+ {
+  "name": "ruling: an unlocked door cannot be unlocked again",
+  "players": [ { "battlefield": ["Spiked Corridor // Torture Pit", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [
+   { "unlock": "Spiked Corridor // Torture Pit", "door": 1 },
+   { "resolve": true },
+   { "unlock": "Spiked Corridor // Torture Pit", "door": 1, "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Devil", "Devil", "Devil"] }, {} ] }
+ },
+ {
+  "name": "ruling: unlocking is not possible during combat",
+  "players": [ { "battlefield": ["Spiked Corridor // Torture Pit", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "advance_to": "BeginCombat" }, { "unlock": "Spiked Corridor // Torture Pit", "door": 1, "illegal": true } ],
+  "expect": { "players": [ { "battlefield_lacks": ["Devil"] }, {} ] }
+ }
+]

@@ -1,0 +1,135 @@
+[
+  {
+    "name": "counters a spell and gets counters equal to its mana value",
+    "players": [
+      {
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ],
+        "hand": [
+          "Draining Whelk"
+        ]
+      },
+      {
+        "battlefield": [
+          "Mountain"
+        ],
+        "hand": [
+          "Lightning Bolt"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "cast": "Draining Whelk"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ],
+      "pt": {
+        "Draining Whelk": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "alone it is a 1/1",
+    "players": [
+      {
+        "battlefield": [
+          "Draining Whelk"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": {
+        "Draining Whelk": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: an X spell's counters use the X chosen (Fireball X=3 has mana value 4, so Whelk is 5/5)",
+    "players": [
+      { "hand": ["Fireball"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Draining Whelk"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Fireball", "targets": ["p1"], "answers": [3] },
+      { "pass": true },
+      { "cast": "Draining Whelk", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "graveyard": ["Fireball"] }, { "life": 20, "battlefield_has": ["Draining Whelk"] } ],
+      "pt": { "Draining Whelk": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: the spell is still countered when Whelk leaves before its ability resolves (no counters, Bolt of the opponent countered)",
+    "players": [
+      { "hand": ["Draining Whelk", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Draining Whelk" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Draining Whelk"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_lacks": ["Draining Whelk"], "graveyard": ["Draining Whelk", "Lightning Bolt"] },
+        { "life": 20, "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

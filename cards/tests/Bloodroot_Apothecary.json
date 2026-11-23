@@ -1,0 +1,47 @@
+[
+  {
+    "name": "ETB: you and the opponent each create a Treasure",
+    "players": [ { "hand": ["Bloodroot Apothecary"], "battlefield": ["Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Bloodroot Apothecary" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Treasure", "Bloodroot Apothecary"] }, { "battlefield_has": ["Treasure"] } ] }
+  },
+  {
+    "name": "toxic 2: combat damage to a player gives two poison counters",
+    "players": [ { "battlefield": [ { "name": "Bloodroot Apothecary", "sick": false } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Bloodroot Apothecary", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17, "poison": 2 } ] }
+  },
+  {
+    "name": "opponent sacrifices a Treasure token: that player gets two poison counters",
+    "players": [ { "hand": ["Bloodroot Apothecary"], "battlefield": ["Forest", "Forest", "Forest"] }, { "hand": ["Lightning Bolt"] } ],
+    "steps": [ { "cast": "Bloodroot Apothecary" }, { "resolve": true }, { "resolve": true }, { "advance_to": "End" }, { "advance_to": "Main1" }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Bloodroot Apothecary"], "life": 17 }, { "poison": 2, "battlefield_lacks": ["Treasure"] } ] }
+  },
+  {
+    "name": "ruling: Gratuitous Violence doubles the damage but not the poison counters",
+    "players": [ { "battlefield": [ { "name": "Bloodroot Apothecary", "sick": false }, "Gratuitous Violence" ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Bloodroot Apothecary", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 14, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: toxic has no effect when its combat damage goes to a creature (blocked by Hill Giant)",
+    "players": [ { "battlefield": [ { "name": "Bloodroot Apothecary", "sick": false } ] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Bloodroot Apothecary", "at": "p1" } ] }, { "block": [ { "blocker": "Hill Giant", "attacker": "Bloodroot Apothecary" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 20, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: Vorinclex doubles the poison counters placed by toxic",
+    "players": [ { "battlefield": [ { "name": "Bloodroot Apothecary", "sick": false }, "Vorinclex, Monstrous Raider" ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Bloodroot Apothecary", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 17, "poison": 4 } ] }
+  },
+  {
+    "name": "ruling: ten or more poison counters from toxic lose the game",
+    "players": [ { "battlefield": [ { "name": "Bloodroot Apothecary", "sick": false } ] }, { "poison": 8 } ],
+    "steps": [ { "attack": [ { "card": "Bloodroot Apothecary", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "winner": 0 }
+  }
+]

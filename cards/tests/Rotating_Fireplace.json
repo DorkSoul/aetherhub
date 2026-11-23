@@ -1,0 +1,132 @@
+[
+  {
+    "name": "enters tapped with a time counter",
+    "players": [
+      { "hand": ["Rotating Fireplace"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rotating Fireplace" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rotating Fireplace"] },
+        {}
+      ],
+      "counters": { "Rotating Fireplace": { "Time": 1 } },
+      "tapped": { "Rotating Fireplace": true }
+    }
+  },
+  {
+    "name": "taps for C equal to the number of time counters on it",
+    "players": [
+      { "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Rotating Fireplace" }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "C": 2 } },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "time travel: removing the fireplace's own time counter",
+    "players": [
+      { "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 1 }, "sick": false }, "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Rotating Fireplace" },
+      { "resolve": true, "answers": [1] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Rotating Fireplace"] },
+        {}
+      ],
+      "counters": { "Rotating Fireplace": { "Time": 0 } }
+    }
+  },
+  {
+    "name": "time travel: choosing to do nothing keeps the time counter",
+    "players": [
+      { "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 1 }, "sick": false }, "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Rotating Fireplace" },
+      { "resolve": true, "answers": [2] }
+    ],
+    "expect": {
+      "counters": { "Rotating Fireplace": { "Time": 1 } }
+    }
+  },
+  {
+    "name": "time travel is sorcery speed only",
+    "players": [
+      { "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 1 }, "sick": false }, "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "activate": "Rotating Fireplace", "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Rotating Fireplace": { "Time": 1 } }
+    }
+  },
+  {
+    "name": "time travel: adding a time counter to the fireplace itself",
+    "players": [
+      { "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 1 }, "sick": false }, "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Rotating Fireplace" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": {
+      "counters": { "Rotating Fireplace": { "Time": 2 } }
+    }
+  },
+  {
+    "name": "ruling: time travel does not change a Saga's lore counters",
+    "players": [
+      {
+        "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 1 }, "sick": false }, { "name": "Elspeth's Nightmare", "counters": { "Lore": 1 } }, "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Rotating Fireplace" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": {
+      "counters": { "Rotating Fireplace": { "Time": 2 }, "Elspeth's Nightmare": { "Lore": 1 } }
+    }
+  },
+  {
+    "name": "ruling: time travel asks about each suspended card with a time counter too, one question per card",
+    "players": [
+      {
+        "battlefield": [{ "name": "Rotating Fireplace", "counters": { "Time": 1 }, "sick": false }, "Island", "Island", "Island", "Island"],
+        "exile": [{ "name": "Ancestral Vision", "counters": { "Time": 2 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Rotating Fireplace" },
+      { "resolve": true, "answers": [1, 2] }
+    ],
+    "expect": {
+      "counters": { "Rotating Fireplace": { "Time": 0 } }
+    }
+  }
+]

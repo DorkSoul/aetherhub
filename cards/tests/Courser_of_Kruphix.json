@@ -1,0 +1,125 @@
+[
+ {
+  "name": "plays a land from the top of the library and gains 1 life",
+  "players": [
+   { "battlefield": ["Courser of Kruphix"], "library": ["Forest", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"], "life": 21 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a land that is not on top can't be played from the library",
+  "players": [
+   { "battlefield": ["Courser of Kruphix"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Forest"], "life": 20 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a land played from hand still gains 1 life (landfall)",
+  "players": [
+   { "hand": ["Forest"], "battlefield": ["Courser of Kruphix"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"], "life": 21 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "nonland cards on top of the library can't be cast from there (only lands)",
+  "players": [
+   { "battlefield": ["Courser of Kruphix", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Grizzly Bears"], "life": 20 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land from the top can't be played while a spell is on the stack",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Courser of Kruphix", "Mountain"], "library": ["Forest", "Grizzly Bears"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "play_land": "Forest", "illegal": true },
+   { "resolve": true },
+   { "play_land": "Forest" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"], "life": 21 },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: playing a land from the top uses the land drop; the next top land can't be played",
+  "players": [
+   { "battlefield": ["Courser of Kruphix"], "library": ["Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "play_land": "Forest" },
+   { "resolve": true },
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Forest"], "life": 21, "library_top": ["Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the card revealed after a draw is playable from the top",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Courser of Kruphix", "Island", "Island", "Island"], "library": ["Grizzly Bears", "Forest", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "resolve": true },
+   { "play_land": "Plains" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Plains"], "life": 21 },
+    {}
+   ]
+  }
+ }
+]

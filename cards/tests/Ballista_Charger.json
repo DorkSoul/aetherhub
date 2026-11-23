@@ -1,0 +1,111 @@
+[
+  {
+    "name": "crew 3 makes it a creature until end of turn",
+    "players": [
+      { "battlefield": ["Ballista Charger", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ballista Charger", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Hill Giant": true, "Ballista Charger": false }
+    }
+  },
+  {
+    "name": "attack trigger deals 1 damage to the chosen target",
+    "players": [
+      { "battlefield": ["Ballista Charger", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ballista Charger", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ballista Charger", "at": "p1" } ] },
+      { "resolve": true, "targets": ["p1"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 13 } ]
+    }
+  },
+  {
+    "name": "ruling: attack trigger kills a 1/1 blocker before blockers are declared",
+    "players": [
+      { "battlefield": ["Ballista Charger", "Hill Giant"] },
+      { "battlefield": ["Scythe Leopard"] }
+    ],
+    "steps": [
+      { "activate": "Ballista Charger", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ballista Charger", "at": "p1" } ] },
+      { "resolve": true, "targets": ["Scythe Leopard"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 14, "graveyard": ["Scythe Leopard"] } ]
+    }
+  },
+  {
+    "name": "ruling: an uncrewed Vehicle is not a creature, so Lightning Bolt can't target it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Ballista Charger"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Ballista Charger"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Ballista Charger"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: once crewed it is a creature and Lightning Bolt can target it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Ballista Charger", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ballista Charger", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Ballista Charger"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Ballista Charger"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: crewed at the beginning of combat, it can still attack",
+    "players": [
+      { "battlefield": ["Ballista Charger", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Ballista Charger", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ballista Charger", "at": "p1" } ] },
+      { "resolve": true, "targets": ["p1"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 13 } ]
+    }
+  },
+  {
+    "name": "ruling: a summoning-sick creature can crew",
+    "players": [
+      { "battlefield": ["Ballista Charger", { "name": "Hill Giant", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ballista Charger", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Hill Giant": true }
+    }
+  }
+]

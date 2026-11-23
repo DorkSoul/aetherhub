@@ -1,0 +1,70 @@
+[
+  {
+    "name": "attacking goads the target creature, which then can't block this turn",
+    "players": [
+      { "battlefield": ["Puppet Master, String Puller"] },
+      { "battlefield": ["Grizzly Bears"], "life": 20 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Puppet Master, String Puller", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Puppet Master, String Puller" } ], "illegal": true },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "unblocked attack without a goaded creature deals no Treasure",
+    "players": [
+      { "battlefield": ["Puppet Master, String Puller"] },
+      { "battlefield": ["Grizzly Bears"], "life": 20 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Puppet Master, String Puller", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Puppet Master, String Puller"] }, { "life": 18 } ] }
+  },
+  {
+    "name": "goaded creature hits your opponent in a 3-player game: Treasure",
+    "players": [
+      { "battlefield": ["Puppet Master, String Puller", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Savannah Lions"], "life": 20 },
+      { "life": 20 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Savannah Lions", "at": "p2" } ], "player": 1 },
+      { "block": [], "player": 2 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Treasure", "Puppet Master, String Puller", "Grizzly Bears"] }, { "life": 18 }, { "life": 18 } ] }
+  },
+  {
+    "name": "goaded creature that hits you (the only opponent) makes no Treasure",
+    "players": [
+      { "battlefield": ["Puppet Master, String Puller", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Savannah Lions"], "life": 20 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Savannah Lions", "at": "p0" } ], "player": 1 },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield_lacks": ["Treasure"] }, { "life": 18 } ] }
+  }
+]

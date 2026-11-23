@@ -1,0 +1,82 @@
+[
+ {
+  "name": "milled creatures enter the battlefield with haste",
+  "seed": 1,
+  "players": [
+    { "hand": ["Random Encounter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+      "library": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Random Encounter" },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+    "keywords": { "Grizzly Bears": ["Haste"] }
+  }
+ },
+ {
+  "name": "milled creatures return to hand at the next end step",
+  "seed": 1,
+  "players": [
+    { "hand": ["Random Encounter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+      "library": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Random Encounter" },
+    { "resolve": true },
+    { "advance_to": "End" }
+  ],
+  "expect": {
+    "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, {} ]
+  }
+ },
+ {
+  "name": "no creature milled: nothing enters and flashback exiles the card",
+  "players": [
+    { "graveyard": ["Random Encounter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Random Encounter", "alt": 0 },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      { "exile": ["Random Encounter"], "battlefield_lacks": ["Grizzly Bears"] },
+      {}
+    ]
+  }
+ },
+ {
+  "name": "flashback needs eight mana",
+  "players": [
+    { "graveyard": ["Random Encounter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Random Encounter", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+    "players": [ { "graveyard": ["Random Encounter"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: flashback sorcery cannot be cast on the opponent's turn",
+  "players": [
+    { "graveyard": ["Random Encounter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+    {}
+  ],
+  "steps": [
+    { "advance_to": "Main2" },
+    { "advance_to": "Main1" },
+    { "pass": true, "player": 1 },
+    { "cast": "Random Encounter", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+    "players": [ { "graveyard": ["Random Encounter"] }, {} ]
+  }
+ }
+]

@@ -1,0 +1,194 @@
+[
+ {
+  "name": "4/4 trample creature when cast",
+  "players": [
+   {
+    "hand": [
+     "Reckless Wurm"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Reckless Wurm"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Reckless Wurm"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Reckless Wurm": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "madness: discarded to Wild Guess, cast for 2R",
+  "players": [
+   {
+    "hand": [
+     "Wild Guess",
+     "Reckless Wurm"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wild Guess"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Reckless Wurm"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "madness declined: Wurm goes to the graveyard",
+  "players": [
+   {
+    "hand": [
+     "Wild Guess",
+     "Reckless Wurm"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wild Guess"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Reckless Wurm"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a declined madness card cannot be cast from the graveyard later",
+  "players": [
+   { "hand": ["Wild Guess", "Reckless Wurm"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Wild Guess" },
+   { "resolve": true, "answers": [false] },
+   { "cast": "Reckless Wurm", "illegal": true }
+  ],
+  "expect": {
+   "stack_empty": true,
+   "players": [ { "graveyard_has": ["Reckless Wurm"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the madness trigger resolves before the spell it was discarded to pay for",
+  "players": [
+   { "hand": ["Wild Guess", "Reckless Wurm"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Wild Guess" },
+   { "pass": true },
+   { "pass": true, "answers": [true] }
+  ],
+  "expect": {
+   "stack_empty": false,
+   "players": [ { "hand_count": 0 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a madness spell can be countered and goes to the graveyard",
+  "players": [
+   { "hand": ["Wild Guess", "Reckless Wurm"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Wild Guess" },
+   { "pass": true },
+   { "pass": true, "answers": [true] },
+   { "cast": "Counterspell", "targets": [{ "stack": "Reckless Wurm" }], "player": 1 },
+   { "pass": true },
+   { "pass": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Reckless Wurm"] }, { "graveyard_has": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: madness works on the opponent's turn when the Wurm is discarded to their combat damage trigger",
+  "players": [
+   { "hand": ["Reckless Wurm"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": [ { "name": "Dimir Cutpurse", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Dimir Cutpurse", "at": "p0" } ], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2", "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Reckless Wurm"], "life": 18 }, {} ]
+  }
+ }
+]

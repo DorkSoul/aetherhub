@@ -1,0 +1,61 @@
+{
+  "name": "Sungold Sentinel",
+  "mana_cost": "{1}{W}",
+  "types": ["Creature"],
+  "subtypes": ["Human", "Soldier"],
+  "power": 3, "toughness": 2,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Either",
+        "a": { "type": "EntersBattlefield", "filter": { "this": true } },
+        "b": { "type": "Attacks", "filter": { "this": true } }
+      },
+      "targets": [
+        {
+          "what": { "type": "CardIn", "zone": "Graveyard", "filter": {}, "whose": "Any" },
+          "min": 0,
+          "max": 1,
+          "label": "up to one target card from a graveyard"
+        }
+      ],
+      "effects": [
+        { "type": "Exile", "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{1}{W}" }],
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "DistinctPowers", "filter": { "types": ["Creature"], "controller": "You" }, "zone": null },
+        "cmp": { "op": "Ge", "n": 3 }
+      },
+      "effects": [
+        { "type": "ChooseColor", "who": { "type": "You" } },
+        {
+          "type": "GrantStatic",
+          "what": { "type": "This" },
+          "effect": {
+            "type": "GrantAbility",
+            "affects": { "this": true },
+            "ability": { "type": "HexproofFrom", "from": [{ "type": "ChosenColor" }] }
+          },
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "GrantStatic",
+          "what": { "type": "This" },
+          "effect": {
+            "type": "CantBeBlockedBy",
+            "affects": { "this": true },
+            "by": { "chosen_color": true }
+          },
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever this creature enters or attacks, exile up to one target card from a graveyard.\nCoven — {1}{W}: Choose a color. This creature gains hexproof from that color until end of turn and can't be blocked by creatures of that color this turn. Activate only if you control three or more creatures with different powers."
+}

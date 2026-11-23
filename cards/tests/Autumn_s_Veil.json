@@ -1,0 +1,204 @@
+[
+  {
+    "name": "blue spell can't counter my spell this turn",
+    "players": [
+      { "hand": ["Autumn's Veil", "Grizzly Bears"], "battlefield": ["Forest", "Savannah", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Watery Grave"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Grizzly Bears" }], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Forest", "Savannah", "Mountain", "Grizzly Bears"], "graveyard": ["Autumn's Veil"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "without Veil the counterspell works",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Watery Grave"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Grizzly Bears" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "my creatures can't be targeted by blue spells",
+    "players": [
+      { "hand": ["Autumn's Veil"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Forest", "Grizzly Bears"] },
+        { "hand": ["Unsummon"] }
+      ]
+    }
+  },
+  {
+    "name": "red spells can still target my creatures",
+    "players": [
+      { "hand": ["Autumn's Veil"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Autumn's Veil", "Grizzly Bears"] },
+        { "graveyard": ["Shock"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blue spell already targeting my creature fizzles when Veil resolves first",
+    "players": [
+      { "hand": ["Autumn's Veil"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Disfigure"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Disfigure", "targets": ["Grizzly Bears"], "player": 1 },
+      { "cast": "Autumn's Veil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard_has": ["Disfigure"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a black Aura spell can't target my creature (the Aura spell targets what it enchants)",
+    "players": [
+      { "hand": ["Autumn's Veil"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Dead Weight"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Dead Weight", "targets": ["Grizzly Bears"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "hand": ["Dead Weight"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Autumn's Veil can be countered by a blue spell, its effect only starts after it resolves",
+    "players": [
+      { "hand": ["Autumn's Veil", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest"] },
+      { "hand": ["Counterspell", "Counterspell"], "battlefield": ["Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Autumn's Veil" }], "player": 1 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Grizzly Bears" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Autumn's Veil", "Grizzly Bears"] },
+        { "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that enters after Veil resolves can't be targeted by a black spell that turn",
+    "players": [
+      { "hand": ["Autumn's Veil", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest"] },
+      { "hand": ["Disfigure"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Disfigure", "targets": ["Grizzly Bears"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "hand": ["Disfigure"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after Veil resolves no new black spell may target my creature",
+    "players": [
+      { "hand": ["Autumn's Veil"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "hand": ["Disfigure"], "battlefield": ["Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Disfigure", "targets": ["Grizzly Bears"], "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "hand": ["Disfigure"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blue counterspell can still target my spell after Veil, but its counter does nothing",
+    "players": [
+      { "hand": ["Autumn's Veil", "Lightning Bolt"], "battlefield": ["Forest", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Autumn's Veil" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Autumn's Veil", "Lightning Bolt"] },
+        { "life": 17, "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,48 @@
+[
+  {
+    "name": "beginning of combat: pay {1} to create a Sorcerer Role on a chosen creature",
+    "players": [
+      { "battlefield": ["Plains", "Spellbook Vendor", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [true, "Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spellbook Vendor", "Sorcerer Role", "Grizzly Bears"] },
+        {}
+      ],
+      "attached": { "Sorcerer Role": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "declining to pay creates no Sorcerer Role",
+    "players": [
+      { "battlefield": ["Plains", "Spellbook Vendor", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Spellbook Vendor", "Grizzly Bears"], "battlefield_lacks": ["Sorcerer Role"] },
+        {}
+      ]
+    }
+  }
+,
+  {"name": "ruling: reflexive target killed in response: no Sorcerer Role is created",
+   "players": [{"battlefield": ["Plains", "Spellbook Vendor", "Grizzly Bears"]}, {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}],
+   "steps": [{"advance_to": "BeginCombat", "answers": [true, "Grizzly Bears"]}, {"pass": true}, {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]}, {"resolve": true}],
+   "expect": {"players": [{"battlefield_has": ["Spellbook Vendor"], "battlefield_lacks": ["Sorcerer Role"], "graveyard_has": ["Grizzly Bears"]}, {"graveyard_has": ["Lightning Bolt"]}]}},
+  {"name": "ruling: a second Sorcerer Role on the same creature puts the older one into the graveyard",
+   "players": [{"battlefield": ["Plains", "Spellbook Vendor", "Grizzly Bears"]}, {}],
+   "steps": [{"advance_to": "BeginCombat", "answers": [true, "Grizzly Bears"]}, {"advance_to": "BeginCombat"}, {"advance_to": "BeginCombat", "answers": [true, "Grizzly Bears"]}],
+   "expect": {"players": [{"battlefield_has": ["Spellbook Vendor", "Sorcerer Role", "Grizzly Bears"]}, {}], "attached": {"Sorcerer Role": "Grizzly Bears"}, "pt": {"Grizzly Bears": [3, 3]}}},
+  {"name": "ruling: Roles are colorless Aura Role enchantment tokens",
+   "players": [{"battlefield": ["Plains", "Spellbook Vendor", "Grizzly Bears"]}, {}],
+   "steps": [{"advance_to": "BeginCombat", "answers": [true, "Grizzly Bears"]}],
+   "expect": {"players": [{"battlefield_has": ["Sorcerer Role"]}, {}], "colors": {"Sorcerer Role": []}, "subtypes": {"Sorcerer Role": ["Aura", "Role"]}}}
+]

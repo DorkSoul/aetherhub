@@ -1,0 +1,259 @@
+[
+ {
+  "name": "addendum: main phase cast puts a shield counter on a creature you control",
+  "players": [
+   {
+    "hand": [
+     "Contractual Safeguard"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Contractual Safeguard"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "shield": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "not cast in a main phase: no shield counter",
+  "players": [
+   {
+    "hand": [
+     "Contractual Safeguard"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "start": "Upkeep",
+  "steps": [
+   {
+    "cast": "Contractual Safeguard"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {}
+   }
+  }
+ },
+ {
+  "name": "puts a counter of the chosen kind on each other creature",
+  "players": [
+   {
+    "hand": [
+     "Contractual Safeguard"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 2
+      }
+     },
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   },
+   {
+    "battlefield": [
+     "Runeclaw Bear"
+    ]
+   }
+  ],
+  "start": "Upkeep",
+  "steps": [
+   {
+    "cast": "Contractual Safeguard"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 2
+    },
+    "Hill Giant": {
+     "p1p1": 1
+    },
+    "Savannah Lions": {
+     "p1p1": 1
+    },
+    "Runeclaw Bear": {}
+   }
+  }
+ },
+ {
+  "name": "with several creatures holding counters you choose the creature and then the kind",
+  "players": [
+   {
+    "hand": [
+     "Contractual Safeguard"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "p1p1": 1,
+       "stun": 1
+      }
+     },
+     {
+      "name": "Hill Giant",
+      "counters": {
+       "lore": 1
+      }
+     },
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "start": "Upkeep",
+  "steps": [
+   {
+    "cast": "Contractual Safeguard"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears",
+     1
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1,
+     "stun": 1
+    },
+    "Hill Giant": {
+     "lore": 1,
+     "stun": 1
+    },
+    "Savannah Lions": {
+     "stun": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "the addendum counter is placed first and can be spread",
+  "players": [
+   {
+    "hand": [
+     "Contractual Safeguard"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Contractual Safeguard"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "shield": 1
+    },
+    "Hill Giant": {
+     "shield": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: cast in a main phase, the spread counter kind can be shield",
+  "players": [
+   {"hand": ["Contractual Safeguard"], "battlefield": ["Plains", "Plains", "Plains", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}, "Hill Giant"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Contractual Safeguard"},
+   {"resolve": true, "answers": ["Grizzly Bears", 1]}
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {"p1p1": 1, "shield": 1},
+    "Hill Giant": {"shield": 1}
+   }
+  }
+ },
+ {
+  "name": "ruling: with two shield counters, damage is prevented and only one counter is removed",
+  "players": [
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", {"name": "Grizzly Bears", "counters": {"shield": 2}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Grizzly Bears"]}, {}],
+   "counters": {"Grizzly Bears": {"shield": 1}}
+  }
+ },
+ {
+  "name": "ruling: a shield counter does not stop the creature being sacrificed",
+  "players": [
+   {"hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp", {"name": "Grizzly Bears", "counters": {"shield": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Diabolic Edict", "targets": ["p0"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Diabolic Edict", "Grizzly Bears"]}, {}]
+  }
+ }
+]

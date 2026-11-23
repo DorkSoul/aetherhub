@@ -1,0 +1,107 @@
+[
+  { "name": "counters pay for a noncreature spell",
+    "players": [
+      { "hand": ["Divination"], "battlefield": [{ "name": "Nardole, Resourceful Cyborg", "counters": { "p1p1": 1 } }, "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Divination"] }
+      ],
+      "tapped": { "Nardole, Resourceful Cyborg": true }
+    }
+  },
+  { "name": "its mana cannot pay for a creature spell",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": [{ "name": "Nardole, Resourceful Cyborg", "counters": { "p1p1": 2 } }, "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 }
+      ]
+    }
+  },
+  { "name": "no counters means no mana",
+    "players": [
+      { "hand": ["Divination"], "battlefield": ["Nardole, Resourceful Cyborg", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 }
+      ]
+    }
+  },
+  { "name": "ruling: Command Beacon lets you choose which commander goes to hand, when it resolves",
+    "commander": true,
+    "players": [
+      { "command": ["Nardole, Resourceful Cyborg", "Savannah Lions"], "battlefield": ["Command Beacon"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Command Beacon", "ability": 0 },
+      { "resolve": true, "answers": [["Nardole, Resourceful Cyborg"]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Nardole, Resourceful Cyborg"], "command": ["Savannah Lions"], "graveyard": ["Command Beacon"] },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: the second commander's first cast pays no commander tax after the first commander was cast",
+    "commander": true,
+    "players": [
+      { "command": ["Nardole, Resourceful Cyborg", "Savannah Lions"], "battlefield": ["Island", "Island", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Nardole, Resourceful Cyborg" },
+      { "resolve": true },
+      { "cast": "Savannah Lions" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Nardole, Resourceful Cyborg", "Savannah Lions"], "command": [] },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: controlling both commanders satisfies Akroma's Will's commander alternative cost",
+    "commander": true,
+    "players": [
+      { "command": ["Nardole, Resourceful Cyborg", "Savannah Lions"], "hand": ["Akroma's Will"], "battlefield": ["Island", "Island", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Nardole, Resourceful Cyborg" },
+      { "resolve": true },
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Akroma's Will", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": {
+        "Grizzly Bears": ["Flying", "Vigilance", "DoubleStrike", "Lifelink", "Indestructible"]
+      },
+      "players": [
+        { "battlefield_has": ["Nardole, Resourceful Cyborg", "Savannah Lions", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

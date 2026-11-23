@@ -1,0 +1,83 @@
+{
+  "name": "Nashi, Searcher in the Dark",
+  "mana_cost": "{U}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Rat", "Ninja", "Wizard"],
+  "colors": ["U", "B"],
+  "power": 2,
+  "toughness": 2,
+  "keywords": ["Menace"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "DealsCombatDamage",
+        "filter": { "this": true },
+        "to": "Player"
+      },
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        {
+          "type": "Repeat",
+          "n": { "type": "EventAmount" },
+          "effects": [
+            {
+              "type": "Mill",
+              "who": { "type": "You" },
+              "n": { "type": "Fixed", "n": 1 }
+            },
+            {
+              "type": "Remember",
+              "what": {
+                "type": "TopOfGraveyard",
+                "who": { "type": "You" },
+                "n": 1
+              }
+            },
+            { "type": "StoreRemembered", "slot": 0, "append": true }
+          ]
+        },
+        { "type": "ClearRemembered" },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Graveyard",
+          "filter": {
+            "any_of": [
+              { "supertypes": ["Legendary"] },
+              { "types": ["Enchantment"] }
+            ],
+            "among_stored": 0
+          },
+          "min": 0,
+          "max": 99,
+          "then": []
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "RememberedCount" },
+            "cmp": { "op": "Eq", "n": 0 }
+          },
+          "then": [
+            {
+              "type": "AddCounters",
+              "what": { "type": "This" },
+              "kind": "PlusOnePlusOne",
+              "n": { "type": "Fixed", "n": 1 }
+            }
+          ]
+        },
+        {
+          "type": "Move",
+          "what": { "type": "Remembered" },
+          "to": "Hand"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Menace\nWhenever Nashi, Searcher in the Dark deals combat damage to a player, you mill that many cards. You may put any number of legendary and/or enchantment cards from among them into your hand. If you put no cards into your hand this way, put a +1/+1 counter on Nashi."
+}

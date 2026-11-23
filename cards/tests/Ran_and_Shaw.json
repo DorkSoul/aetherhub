@@ -1,0 +1,69 @@
+[
+  { "name": "{3}{R}: Dragons you control get +2/+0 until end of turn",
+    "players": [ { "battlefield": ["Ran and Shaw", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Ran and Shaw", "targets": [] }, { "resolve": true } ],
+    "expect": { "pt": { "Ran and Shaw": [6, 4] } }
+  },
+  { "name": "the pump does not affect non-Dragon creatures",
+    "players": [ { "battlefield": ["Ran and Shaw", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Ran and Shaw", "targets": [] }, { "resolve": true } ],
+    "expect": { "pt": { "Ran and Shaw": [6, 4], "Grizzly Bears": [2, 2] } }
+  },
+  { "name": "cast with three Lesson cards in graveyard: creates a non-legendary token copy",
+    "players": [ { "hand": ["Ran and Shaw"], "graveyard": ["Abandon Attachments", "Abandon Attachments", "Abandon Attachments"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Ran and Shaw" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Ran and Shaw", "Ran and Shaw"] }, {} ] }
+  },
+  { "name": "with only two Dragon/Lesson cards in graveyard there is no token",
+    "players": [ { "hand": ["Ran and Shaw"], "graveyard": ["Abandon Attachments", "Abandon Attachments"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Ran and Shaw" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Ran and Shaw"] }, {} ] }
+  },
+  {
+    "name": "attacking adds RR that stays in the pool until end of combat",
+    "players": [ { "battlefield": [ {"name": "Ran and Shaw", "sick": false} ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Ran and Shaw", "at": "p1" } ] }, { "resolve": true } ],
+    "expect": { "players": [ { "pool": { "R": 2 } }, {} ] }
+  },
+  {
+    "name": "the attack mana is gone after combat ends",
+    "players": [ { "battlefield": [ {"name": "Ran and Shaw", "sick": false} ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Ran and Shaw", "at": "p1" } ] }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "pool": {} }, {} ] }
+  },
+  {
+    "name": "an attacking Grizzly Bears (not a Dragon attacker) adds no mana",
+    "players": [ { "battlefield": [ {"name": "Ran and Shaw", "sick": false}, {"name": "Grizzly Bears", "sick": false} ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "pool": {} }, {} ] }
+  },
+  {
+    "name": "ruling: firebending mana stays usable after combat damage, until the end of combat step",
+    "players": [ { "battlefield": [ {"name": "Ran and Shaw", "sick": false}, "Mountain", "Mountain" ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Ran and Shaw", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "EndCombat" },
+      { "activate": "Ran and Shaw", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Ran and Shaw": [6, 4] }, "players": [ { "pool": {} }, { "life": 16 } ] }
+  },
+  {
+    "name": "ruling: other mana added in combat is lost when the step ends; only the firebending RR remains",
+    "players": [ { "battlefield": [ {"name": "Ran and Shaw", "sick": false}, "Mountain" ] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "tap_for_mana": "Mountain" },
+      { "attack": [ { "card": "Ran and Shaw", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "pool": { "R": 2 } }, {} ] }
+  },
+  {
+    "name": "ruling: the firebending ability uses the stack, so its mana is not in the pool until it resolves",
+    "players": [ { "battlefield": [ {"name": "Ran and Shaw", "sick": false} ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Ran and Shaw", "at": "p1" } ] } ],
+    "expect": { "stack_empty": false, "players": [ { "pool": {} }, {} ] }
+  }
+]

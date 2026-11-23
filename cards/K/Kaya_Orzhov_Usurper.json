@@ -1,0 +1,75 @@
+{
+  "name": "Kaya, Orzhov Usurper",
+  "mana_cost": "{1}{W}{B}",
+  "types": ["Planeswalker"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Kaya"],
+  "loyalty": 3,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": 1,
+      "targets": [
+        {
+          "what": { "type": "CardIn", "zone": "Graveyard", "filter": {}, "whose": "Any" },
+          "min": 0,
+          "max": 2,
+          "same_graveyard": true,
+          "label": "up to two target cards from a single graveyard"
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Targets" }, "to": "Exile", "remember": true },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "types": ["Creature"], "among_remembered": true }, "zone": "Exile" },
+            "cmp": { "op": "Ge", "n": 1 }
+          },
+          "then": [ { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } } ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -1,
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "not_types": ["Land"], "mana_value_vs": { "op": "Le", "amount": { "type": "Fixed", "n": 1 } } }
+          },
+          "label": "target nonland permanent with mana value 1 or less"
+        }
+      ],
+      "effects": [
+        { "type": "Exile", "what": { "type": "Target", "idx": 0 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [],
+      "loyalty": -5,
+      "targets": [
+        { "what": { "type": "Player", "filter": "Any" }, "label": "target player" }
+      ],
+      "effects": [
+        {
+          "type": "DealDamage",
+          "source": { "type": "This" },
+          "to": { "type": "Target", "idx": 0 },
+          "amount": { "type": "Count", "filter": {}, "zone": "Exile", "player": { "type": "Target", "idx": 0 } }
+        },
+        {
+          "type": "GainLife",
+          "who": { "type": "You" },
+          "n": { "type": "Count", "filter": {}, "zone": "Exile", "player": { "type": "Target", "idx": 0 } }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "+1: Exile up to two target cards from a single graveyard. You gain 2 life if at least one creature card was exiled this way.\n−1: Exile target nonland permanent with mana value 1 or less.\n−5: Kaya, Orzhov Usurper deals damage to target player equal to the number of cards that player owns in exile and you gain that much life."
+}

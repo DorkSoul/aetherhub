@@ -1,0 +1,127 @@
+[
+  {
+    "name": "attack trigger copies another attacking creature as a tapped attacker, exiled at end of combat",
+    "players": [
+      { "battlefield": ["Flamerush Rider", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Flamerush Rider", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Flamerush Rider", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "the token exists during combat",
+    "players": [
+      { "battlefield": ["Flamerush Rider", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Flamerush Rider", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamerush Rider", "Grizzly Bears", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "attacking alone: no other attacking creature to copy, the trigger does nothing",
+    "players": [
+      { "battlefield": ["Flamerush Rider"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Flamerush Rider", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamerush Rider"] }, {} ]
+    }
+  },
+  {
+    "name": "dash: haste, can attack the turn it is cast",
+    "players": [
+      { "hand": ["Flamerush Rider"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flamerush Rider", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Flamerush Rider", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamerush Rider"] }, {} ]
+    }
+  },
+  {
+    "name": "dash: returned to hand at the next end step",
+    "players": [
+      { "hand": ["Flamerush Rider"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flamerush Rider", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Flamerush Rider"], "battlefield_lacks": ["Flamerush Rider"] }, {} ]
+    }
+  },
+  {
+    "name": "normal cast does not dash: stays on the battlefield",
+    "players": [
+      { "hand": ["Flamerush Rider"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flamerush Rider" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Flamerush Rider"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a dashed creature that dies before the end step stays in the graveyard (not returned to hand)",
+    "players": [
+      { "hand": ["Flamerush Rider"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Flamerush Rider", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Flamerush Rider", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Flamerush Rider" } ] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Flamerush Rider"], "hand": [] }, { "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "ruling: the token copy of Mulldrifter gets Mulldrifter's enters trigger (draws two)",
+    "players": [
+      { "battlefield": ["Flamerush Rider", "Mulldrifter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Flamerush Rider", "at": "p1" }, { "card": "Mulldrifter", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 2, "battlefield_has": ["Flamerush Rider", "Mulldrifter", "Mulldrifter"] }, {} ]
+    }
+  }
+]

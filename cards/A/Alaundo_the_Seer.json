@@ -1,0 +1,52 @@
+{
+  "name": "Alaundo the Seer",
+  "mana_cost": "{2}{G}{U}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Human", "Shaman"],
+  "colors": ["G", "U"],
+  "power": 3,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Hand",
+          "filter": {},
+          "min": 1,
+          "max": 1,
+          "then": [
+            { "type": "Move", "what": { "type": "Remembered" }, "to": "Exile", "remember": true },
+            { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "Time", "n": { "type": "ManaValueOf", "of": { "type": "Remembered" } } },
+            {
+              "type": "AddTrigger",
+              "trigger": { "type": "CounterRemoved", "filter": {}, "kind": "Time", "last": true },
+              "bind": { "type": "Remembered" },
+              "once": true,
+              "until": "Forever",
+              "effects": [
+                { "type": "MarkCastHaste", "what": { "type": "TriggerObject" } },
+                { "type": "CastFree", "what": { "type": "TriggerObject" }, "may": true }
+              ]
+            },
+            { "type": "StoreRemembered", "slot": 0, "append": false }
+          ]
+        },
+        {
+          "type": "RemoveCounters",
+          "what": { "type": "AllOfPlayer", "player": { "type": "You" }, "zone": "Exile", "filter": { "not_among_stored": 0 } },
+          "kind": "Time",
+          "n": { "type": "Fixed", "n": 1 }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{T}: Draw a card, then exile a card from your hand and put a number of time counters on it equal to its mana value. It gains \"When the last time counter is removed from this card, if it's exiled, you may cast it without paying its mana cost. If you cast a creature spell this way, it gains haste until end of turn.\" Then remove a time counter from each other card you own in exile."
+}

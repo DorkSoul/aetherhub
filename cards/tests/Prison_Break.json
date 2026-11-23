@@ -1,0 +1,69 @@
+[
+  {
+    "name": "mayhem: returns creature with +1/+1 counter the turn it was discarded",
+    "players": [
+      {
+        "hand": ["Faithless Looting", "Prison Break"],
+        "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"],
+        "library": ["Island", "Swamp", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Prison Break", "Island"]] },
+      { "cast": "Prison Break", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "not discarded: mayhem cast from graveyard is illegal",
+    "players": [
+      {
+        "graveyard": ["Prison Break", "Grizzly Bears"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prison Break", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Prison Break", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: mayhem is an alternative cost that must still be paid ({3}{B}): three lands left is not enough",
+    "players": [
+      {
+        "hand": ["Faithless Looting", "Prison Break"],
+        "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"],
+        "library": ["Island", "Swamp", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Prison Break", "Island"]] },
+      { "cast": "Prison Break", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Prison Break", "Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

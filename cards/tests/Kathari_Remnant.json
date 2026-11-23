@@ -1,0 +1,261 @@
+[
+  {
+    "name": "cascade casts the first cheaper nonland card",
+    "players": [
+      {
+        "hand": [
+          "Kathari Remnant"
+        ],
+        "battlefield": [
+          "Island",
+          "Swamp",
+          "Island",
+          "Swamp"
+        ],
+        "library": [
+          "Forest",
+          "Savannah Lions"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Kathari Remnant"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Kathari Remnant",
+            "Savannah Lions"
+          ],
+          "hand": []
+        },
+        {}
+      ],
+      "keywords": {
+        "Kathari Remnant": [
+          "Flying"
+        ]
+      },
+      "pt": {
+        "Kathari Remnant": [
+          0,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "cascade finds no cheaper card and casts nothing",
+    "players": [
+      {
+        "hand": [
+          "Kathari Remnant"
+        ],
+        "battlefield": [
+          "Island",
+          "Swamp",
+          "Island",
+          "Swamp"
+        ],
+        "library": [
+          "Forest",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Kathari Remnant"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Kathari Remnant"
+          ],
+          "battlefield_lacks": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "{B}: regenerate saves it from lethal damage",
+    "players": [
+      {
+        "battlefield": [
+          "Kathari Remnant",
+          "Swamp"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Kathari Remnant",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Kathari Remnant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Kathari Remnant": true
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Kathari Remnant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the free cast still exiles the card to the bottom",
+    "players": [
+      {
+        "hand": ["Kathari Remnant"],
+        "battlefield": ["Island", "Swamp", "Island", "Swamp"],
+        "library": ["Forest", "Savannah Lions", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kathari Remnant" },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Kathari Remnant"],
+          "battlefield_lacks": ["Savannah Lions"],
+          "library_top": ["Grizzly Bears"],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a cascaded {X} spell is cast with X = 0 (Walking Ballista dies)",
+    "players": [
+      {
+        "hand": ["Kathari Remnant"],
+        "battlefield": ["Island", "Swamp", "Island", "Swamp"],
+        "library": ["Walking Ballista", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kathari Remnant" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Walking Ballista"], "battlefield_has": ["Kathari Remnant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a split card's mana value is combined, so Fire // Ice (MV 4) is not cast by cascade from MV 4",
+    "players": [
+      {
+        "hand": ["Kathari Remnant"],
+        "battlefield": ["Island", "Swamp", "Island", "Swamp"],
+        "library": ["Fire // Ice", "Savannah Lions", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kathari Remnant" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Kathari Remnant", "Savannah Lions"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering the cascade spell does not stop the cascade trigger",
+    "players": [
+      {
+        "hand": ["Kathari Remnant"],
+        "battlefield": ["Island", "Swamp", "Island", "Swamp"],
+        "library": ["Savannah Lions", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Kathari Remnant" },
+      { "pass": true },
+      { "player": 1, "cast": "Counterspell" },
+      { "pass": true },
+      { "player": 1, "pass": true },
+      { "pass": true, "answers": [true] },
+      { "player": 1, "pass": true },
+      { "pass": true },
+      { "player": 1, "pass": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Kathari Remnant"], "battlefield_has": ["Savannah Lions"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

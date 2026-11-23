@@ -1,0 +1,62 @@
+[
+  {
+    "name": "draws a card",
+    "players": [ { "hand": ["Unending Whisper"], "library": ["Forest"], "battlefield": ["Island"] }, {} ],
+    "steps": [ { "cast": "Unending Whisper" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Forest"], "graveyard": ["Unending Whisper"] } ] }
+  },
+  {
+    "name": "harmonize: tapping a 2-power creature reduces {5}{U} to {3}{U}",
+    "players": [ { "graveyard": ["Unending Whisper"], "library": ["Forest"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Unending Whisper", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Forest"], "exile": ["Unending Whisper"], "graveyard": [] } ] }
+  },
+  {
+    "name": "harmonize needs the full {5}{U} without a creature to tap",
+    "players": [ { "graveyard": ["Unending Whisper"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Unending Whisper", "alt": 0, "illegal": true } ]
+  },
+  {
+    "name": "harmonize: a 4-power creature reduces the generic part by its full power (only {1}{U} left)",
+    "players": [ { "graveyard": ["Unending Whisper"], "library": ["Forest"], "battlefield": ["Island", "Island", "Serra Angel"] }, {} ],
+    "steps": [ { "cast": "Unending Whisper", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Forest"], "exile": ["Unending Whisper"], "graveyard": [] }, {} ] }
+  },
+  {
+    "name": "harmonize: tapping a creature does not reduce the {U} part, so two Swamps cannot pay",
+    "players": [ { "graveyard": ["Unending Whisper"], "battlefield": ["Swamp", "Swamp", "Serra Angel"] }, {} ],
+    "steps": [ { "cast": "Unending Whisper", "alt": 0, "illegal": true } ]
+  },
+  {
+    "name": "ruling: a harmonized spell that is countered is still exiled, not put in the graveyard",
+    "players": [
+      { "graveyard": ["Unending Whisper"], "library": ["Forest"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Unending Whisper", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Unending Whisper" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Unending Whisper"], "graveyard": [], "hand_count": 0 }, { "graveyard": ["Counterspell"] } ]
+    }
+  },
+  {
+    "name": "ruling: harmonize follows sorcery timing: not castable on the opponent's turn",
+    "players": [
+      { "graveyard": ["Unending Whisper"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Unending Whisper", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Unending Whisper"], "exile": [] }, {} ]
+    }
+  }
+]

@@ -1,0 +1,143 @@
+[
+ {
+  "name": "an attacking creature may fight Grothama and is destroyed",
+  "players": [
+   { "battlefield": [ "Grothama, All-Devouring", "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes" ] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": [ "Grothama, All-Devouring" ], "graveyard": [ "Grizzly Bears" ] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining the fight leaves the attacker alive and it connects",
+  "players": [
+   { "battlefield": [ "Grothama, All-Devouring", "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "no" ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": [ "Grothama, All-Devouring", "Grizzly Bears" ] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "the opponent's creature also fights Grothama when it attacks (granted to other creatures of any controller)",
+  "players": [
+   { "battlefield": [ "Grizzly Bears" ] },
+   { "battlefield": [ "Grothama, All-Devouring" ] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes" ] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": [ "Grizzly Bears" ] },
+    { "battlefield_has": [ "Grothama, All-Devouring" ] }
+   ]
+  }
+ },
+ {
+  "name": "when Grothama leaves, each player draws the damage their sources dealt to it this turn",
+  "players": [
+   {
+    "battlefield": [ "Grothama, All-Devouring", "Grizzly Bears", "Swamp", "Swamp" ],
+    "hand": [ "Doom Blade" ],
+    "library": [ "Island", "Island", "Island", "Island", "Island" ]
+   },
+   {
+    "battlefield": [ "Mountain" ],
+    "hand": [ "Lightning Bolt" ],
+    "library": [ "Forest", "Forest", "Forest", "Forest", "Forest" ]
+   }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes" ] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": [ "Grothama, All-Devouring" ], "player": 1 },
+   { "resolve": true },
+   { "cast": "Doom Blade", "targets": [ "Grothama, All-Devouring" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 2, "graveyard_has": [ "Grizzly Bears", "Grothama, All-Devouring" ] },
+    { "hand_count": 3 }
+   ]
+  }
+ },
+ {
+  "name": "no damage dealt means nobody draws",
+  "players": [
+   { "battlefield": [ "Grothama, All-Devouring", "Swamp", "Swamp" ], "hand": [ "Doom Blade" ], "library": [ "Island", "Island" ] },
+   { "library": [ "Forest", "Forest" ] }
+  ],
+  "steps": [
+   { "cast": "Doom Blade", "targets": [ "Grothama, All-Devouring" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "graveyard_has": [ "Grothama, All-Devouring" ] },
+    { "hand_count": 0 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the leave trigger fires even without a fight (opponent's Bolt damage is drawn)",
+  "players": [
+   { "battlefield": [ "Grothama, All-Devouring", "Swamp", "Swamp" ], "hand": [ "Doom Blade" ], "library": [ "Island", "Island", "Island", "Island", "Island" ] },
+   { "battlefield": [ "Mountain" ], "hand": [ "Lightning Bolt" ], "library": [ "Forest", "Forest", "Forest", "Forest", "Forest" ] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": [ "Grothama, All-Devouring" ], "player": 1 },
+   { "resolve": true },
+   { "cast": "Doom Blade", "targets": [ "Grothama, All-Devouring" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "graveyard_has": [ "Grothama, All-Devouring" ] },
+    { "hand_count": 3 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: each attacker fights Grothama individually (both fights happen, both attackers die)",
+  "players": [
+   { "battlefield": [ "Grothama, All-Devouring", "Grizzly Bears", "Hill Giant" ] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes", "yes" ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": [ "Grothama, All-Devouring" ], "graveyard": [ "Grizzly Bears", "Hill Giant" ] },
+    { "life": 20 }
+   ]
+  }
+ }
+]

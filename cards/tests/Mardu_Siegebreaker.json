@@ -1,0 +1,229 @@
+[
+  {
+    "name": "attack creates a tapped attacking copy of the exiled creature, sacrificed at the next end step",
+    "players": [
+      {
+        "hand": [
+          "Mardu Siegebreaker"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains",
+          "Swamp",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mardu Siegebreaker"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Mardu Siegebreaker",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mardu Siegebreaker"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "exile": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 14
+        }
+      ]
+    }
+  },
+  {
+    "name": "with no other creature to exile, the attack copies nothing",
+    "players": [
+      {
+        "hand": [
+          "Mardu Siegebreaker"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Plains",
+          "Swamp",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mardu Siegebreaker"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Mardu Siegebreaker",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Mardu Siegebreaker"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the token's enters abilities trigger (a Mulldrifter copy draws two)",
+    "players": [
+      {
+        "hand": ["Mardu Siegebreaker"],
+        "battlefield": ["Mountain", "Plains", "Swamp", "Forest", "Mulldrifter"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Mardu Siegebreaker"},
+      {"resolve": true, "targets": ["Mulldrifter"]},
+      {"resolve": true},
+      {"advance_to": "BeginCombat"},
+      {"attack": [{"card": "Mardu Siegebreaker", "at": "p1"}]},
+      {"resolve": true},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 2, "exile": ["Mulldrifter"], "battlefield_has": ["Mulldrifter", "Mardu Siegebreaker"]},
+        {"life": 14}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled creature's Aura goes to the graveyard and it returns as a new object without counters",
+    "players": [
+      {
+        "hand": ["Pacifism", "Mardu Siegebreaker"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Swamp", "Forest", "Forest", {"name": "Mulldrifter", "counters": {"+1/+1": 1}}]
+      },
+      {
+        "hand": ["Murder"],
+        "battlefield": ["Swamp", "Swamp", "Island"]
+      }
+    ],
+    "steps": [
+      {"cast": "Pacifism", "targets": ["Mulldrifter"]},
+      {"resolve": true},
+      {"cast": "Mardu Siegebreaker"},
+      {"resolve": true, "targets": ["Mulldrifter"]},
+      {"resolve": true},
+      {"pass": true},
+      {"player": 1, "cast": "Murder", "targets": ["Mardu Siegebreaker"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 2, "graveyard_has": ["Pacifism", "Mardu Siegebreaker"], "battlefield_has": ["Mulldrifter"]},
+        {"graveyard_has": ["Murder"]}
+      ],
+      "pt": {"Mulldrifter": [2, 2]},
+      "counters": {"Mulldrifter": {"+1/+1": 0}}
+    }
+  },
+  {
+    "name": "ruling: a creature entering attacking was never declared, so Hellrider's attack trigger does not fire for it",
+    "players": [
+      {
+        "hand": ["Mardu Siegebreaker"],
+        "battlefield": ["Mountain", "Plains", "Swamp", "Forest", "Hellrider", "Mulldrifter"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Mardu Siegebreaker"},
+      {"resolve": true, "targets": ["Mulldrifter"]},
+      {"resolve": true},
+      {"advance_to": "BeginCombat"},
+      {"attack": [{"card": "Mardu Siegebreaker", "at": "p1"}]},
+      {"resolve": true},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [{}, {"life": 13}]
+    }
+  },
+  {
+    "name": "ruling: the token copies the printed Mulldrifter, not the counters the exiled card had",
+    "players": [
+      {
+        "hand": ["Mardu Siegebreaker"],
+        "battlefield": ["Mountain", "Plains", "Swamp", "Forest", {"name": "Mulldrifter", "counters": {"+1/+1": 1}}]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Mardu Siegebreaker"},
+      {"resolve": true, "targets": ["Mulldrifter"]},
+      {"resolve": true},
+      {"advance_to": "BeginCombat"},
+      {"attack": [{"card": "Mardu Siegebreaker", "at": "p1"}]},
+      {"resolve": true},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "pt": {"Mulldrifter": [2, 2]},
+      "counters": {"Mulldrifter": {"+1/+1": 0}},
+      "tapped": {"Mulldrifter": true}
+    }
+  }
+]

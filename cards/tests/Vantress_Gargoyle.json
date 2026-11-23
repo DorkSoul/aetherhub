@@ -1,0 +1,75 @@
+[
+  {
+    "name": "mill ability: each player mills a card",
+    "players": [
+      { "battlefield": ["Vantress Gargoyle"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Vantress Gargoyle" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 19 },
+        { "library_count": 19 }
+      ],
+      "tapped": { "Vantress Gargoyle": true }
+    }
+  },
+  {
+    "name": "can attack once the defending player has seven cards in graveyard",
+    "players": [
+      { "battlefield": ["Vantress Gargoyle"] },
+      { "graveyard": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Vantress Gargoyle", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "life": 15 } ]
+    }
+  },
+  {
+    "name": "defending player with six cards in graveyard: Gargoyle cannot attack (Bears still does)",
+    "players": [ { "battlefield": ["Vantress Gargoyle", "Grizzly Bears"] }, { "graveyard": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] } ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "attack": [ { "card": "Vantress Gargoyle", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 20 }, { "life": 18 } ] }
+  },
+  {
+    "name": "fewer than four cards in hand: Gargoyle cannot block",
+    "players": [ { "battlefield": ["Vantress Gargoyle", "Hill Giant"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [ { "advance_to": "Main1" }, { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 }, { "block": [ { "blocker": "Vantress Gargoyle", "attacker": "Grizzly Bears" } ], "player": 0 }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 18, "battlefield_has": ["Vantress Gargoyle"] }, {} ] }
+  },
+  {
+    "name": "ruling: attacking a planeswalker checks the planeswalker's controller's graveyard (seven cards allows the attack)",
+    "players": [ { "battlefield": ["Vantress Gargoyle"] }, { "battlefield": ["Jace Beleren"], "graveyard": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Vantress Gargoyle", "at": "Jace Beleren" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "graveyard_has": ["Jace Beleren"] } ] }
+  },
+  {
+    "name": "ruling: a blocking Gargoyle stays in combat when its controller's hand drops below four",
+    "players": [ { "hand": ["Lightning Bolt", "Island", "Island", "Island"], "battlefield": ["Vantress Gargoyle", "Mountain"] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Vantress Gargoyle", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20, "hand_count": 3, "battlefield_has": ["Vantress Gargoyle"] }, { "life": 17, "graveyard_has": ["Grizzly Bears"] } ] }
+  }
+]

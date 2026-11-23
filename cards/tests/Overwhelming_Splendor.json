@@ -1,0 +1,47 @@
+[
+ { "name": "enchanted player's creatures become 1/1 and lose abilities; others are untouched",
+   "players": [ { "hand": ["Overwhelming Splendor"], "battlefield": ["Plains","Plains","Plains","Plains","Plains","Plains","Plains","Plains", "Hill Giant"] }, { "battlefield": ["Shivan Dragon", "Hill Giant"] } ],
+   "steps": [ { "cast": "Overwhelming Splendor", "targets": ["p1"] }, { "resolve": true } ],
+   "expect": { "pt": { "Shivan Dragon": [1, 1] } } },
+ { "name": "enchanted player's creature has lost its pump ability",
+   "players": [ { "hand": ["Overwhelming Splendor"], "battlefield": ["Plains","Plains","Plains","Plains","Plains","Plains","Plains","Plains"] }, { "battlefield": [{ "name": "Shivan Dragon", "sick": false }, "Mountain"] } ],
+   "steps": [ { "cast": "Overwhelming Splendor", "targets": ["p1"] }, { "resolve": true }, { "pass": true }, { "player": 1, "activate": "Shivan Dragon", "illegal": true } ],
+   "expect": { "pt": { "Shivan Dragon": [1, 1] } } },
+ { "name": "enchanted player can't activate a non-mana ability but can still use a loyalty ability",
+   "players": [ { "hand": ["Overwhelming Splendor"], "battlefield": ["Plains","Plains","Plains","Plains","Plains","Plains","Plains","Plains"] }, { "battlefield": ["Mind Stone", "Plains", "Jace Beleren"] } ],
+   "steps": [ { "cast": "Overwhelming Splendor", "targets": ["p1"] }, { "resolve": true }, { "advance_to": "End" }, { "advance_to": "Main1" },
+     { "player": 1, "activate": "Mind Stone", "ability": 0, "illegal": true },
+     { "player": 1, "activate": "Jace Beleren", "ability": 0 }, { "resolve": true } ],
+   "expect": { "players": [ { "hand_count": 1 }, { "hand_count": 2 } ], "counters": { "Jace Beleren": { "loyalty": 5 } } } },
+ {
+  "name": "enchanted player's flier loses flying: a ground creature can block it",
+  "players": [
+   { "hand": ["Overwhelming Splendor"], "battlefield": ["Plains","Plains","Plains","Plains","Plains","Plains","Plains","Plains","Grizzly Bears","Hill Giant"] },
+   { "battlefield": ["Shivan Dragon", "Llanowar Elves"] }
+  ],
+  "steps": [
+   { "cast": "Overwhelming Splendor", "targets": ["p1"] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Shivan Dragon", "at": "p0" }, { "card": "Llanowar Elves", "at": "p0" } ], "player": 1 },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Shivan Dragon" }, { "blocker": "Hill Giant", "attacker": "Llanowar Elves" } ], "player": 0 },
+   { "advance_to": "Main2", "player": 0 }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20 },
+    { "life": 20, "graveyard": ["Shivan Dragon", "Llanowar Elves"] }
+   ]
+  }
+ },
+ { "name": "ruling: the enchanted player's lands still produce mana to cast spells",
+   "players": [ { "hand": ["Overwhelming Splendor"], "battlefield": ["Plains","Plains","Plains","Plains","Plains","Plains","Plains","Plains"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+   "steps": [ { "cast": "Overwhelming Splendor", "targets": ["p1"] }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+   "expect": { "players": [ { "life": 17 }, { "graveyard": ["Lightning Bolt"] } ] } },
+ { "name": "ruling: a pump effect still applies to a creature whose base P/T Overwhelming Splendor set to 1/1",
+   "players": [ { "hand": ["Overwhelming Splendor", "Giant Growth"], "battlefield": ["Plains","Plains","Plains","Plains","Plains","Plains","Plains","Plains","Forest"] }, { "battlefield": ["Shivan Dragon"] } ],
+   "steps": [ { "cast": "Overwhelming Splendor", "targets": ["p1"] }, { "resolve": true }, { "cast": "Giant Growth", "targets": ["p1:Shivan Dragon"] }, { "resolve": true } ],
+   "expect": { "pt": { "Shivan Dragon": [4, 4] } } }
+]

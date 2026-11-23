@@ -1,0 +1,265 @@
+[
+ {
+  "name": "chapter I exiles a tapped creature an opponent controls",
+  "players": [
+   {
+    "hand": ["Summon: Yojimbo"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains"]
+   },
+   { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }, "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Summon: Yojimbo" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Summon: Yojimbo"] },
+    { "exile": ["Grizzly Bears"], "battlefield_has": ["Serra Angel"] }
+   ]
+  }
+ },
+ {
+  "name": "chapter I has no target when the opponent's only creature is untapped; own tapped creature is not targeted",
+  "players": [
+   {
+    "hand": ["Summon: Yojimbo"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "tapped": true }]
+   },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Summon: Yojimbo" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Summon: Yojimbo", "Grizzly Bears"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "chapter II: until your next turn, an opponent's creature can't attack you without paying {2}",
+  "players": [
+   {
+    "battlefield": [ { "name": "Summon: Yojimbo", "counters": { "lore": 1 } } ]
+   },
+   { "battlefield": ["Grizzly Bears", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20 }, { "battlefield_has": ["Grizzly Bears"] } ],
+   "counters": { "Summon: Yojimbo": { "Lore": 2 } }
+  }
+ },
+ {
+  "name": "chapter II: the attacker can attack by paying {2}",
+  "players": [
+   {
+    "battlefield": [ { "name": "Summon: Yojimbo", "counters": { "lore": 1 } } ]
+   },
+   { "battlefield": ["Grizzly Bears", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "advance_to": "Main2", "player": 1 }
+  ],
+  "expect": {
+   "players": [ { "life": 18 }, {} ]
+  }
+ },
+ {
+  "name": "chapter IV: no Treasure when no opponent controls a creature with power 4 or greater",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Summon: Yojimbo", "counters": { "lore": 3 } },
+     "Serra Angel"
+    ]
+   },
+   { "battlefield": ["Grizzly Bears"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Serra Angel"], "battlefield_lacks": ["Treasure"], "graveyard": ["Summon: Yojimbo"] },
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "chapter IV: one Treasure for one opponent with a power-4 creature (own power-4 creature does not count)",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Summon: Yojimbo", "counters": { "lore": 3 } },
+     "Serra Angel"
+    ]
+   },
+   { "battlefield": ["Serra Angel"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Serra Angel", "Treasure"], "graveyard": ["Summon: Yojimbo"] },
+    { "battlefield_has": ["Serra Angel"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "chapter IV: two Treasures when two opponents each control a power-4 creature",
+  "players": [
+   {
+    "battlefield": [
+     { "name": "Summon: Yojimbo", "counters": { "lore": 3 } }
+    ]
+   },
+   { "battlefield": ["Serra Angel"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Treasure", "Treasure"], "graveyard": ["Summon: Yojimbo"] },
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "chapter III: opponent's creature cannot attack you without paying {2}; paying it allows the attack",
+  "players": [
+   {
+    "battlefield": [ { "name": "Summon: Yojimbo", "counters": { "lore": 2 } } ]
+   },
+   { "battlefield": ["Grizzly Bears", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20 }, { "battlefield_has": ["Grizzly Bears"] } ],
+   "counters": { "Summon: Yojimbo": { "Lore": 3 } }
+  }
+ },
+ {
+  "name": "chapter III: the attacker pays {2} and the attack goes through",
+  "players": [
+   {
+    "battlefield": [ { "name": "Summon: Yojimbo", "counters": { "lore": 2 } } ]
+   },
+   { "battlefield": ["Grizzly Bears", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Main1", "player": 1 },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "advance_to": "Main2", "player": 1 }
+  ],
+  "expect": {
+   "players": [ { "life": 18 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a Saga enters with one lore counter (chapter I then triggers)",
+  "players": [
+   {
+    "hand": ["Summon: Yojimbo"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains"]
+   },
+   { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }] }
+  ],
+  "steps": [
+   { "cast": "Summon: Yojimbo" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Summon: Yojimbo"] }, { "exile": ["Grizzly Bears"] } ],
+   "counters": { "Summon: Yojimbo": { "Lore": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a chapter I trigger on the stack is unaffected when the Saga leaves the battlefield in response",
+  "players": [
+   {
+    "hand": ["Summon: Yojimbo"],
+    "battlefield": ["Plains", "Plains", "Plains", "Plains"]
+   },
+   {
+    "battlefield": [{ "name": "Grizzly Bears", "tapped": true }, "Island"],
+    "hand": ["Unsummon"]
+   }
+  ],
+  "steps": [
+   { "cast": "Summon: Yojimbo" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Unsummon", "player": 1, "targets": ["Summon: Yojimbo"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Summon: Yojimbo"], "battlefield_lacks": ["Summon: Yojimbo"] },
+    { "exile": ["Grizzly Bears"], "graveyard": ["Unsummon"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the third lore counter triggers only chapter III; chapter I does not trigger again on an opponent's tapped creature",
+  "players": [
+   {
+    "battlefield": [ { "name": "Summon: Yojimbo", "counters": { "lore": 2 } } ]
+   },
+   { "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, "Forest" ] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20, "battlefield_has": ["Summon: Yojimbo"] }, { "battlefield_has": ["Grizzly Bears", "Forest"] } ],
+   "counters": { "Summon: Yojimbo": { "Lore": 3 } }
+  }
+ }
+]

@@ -1,0 +1,58 @@
+{
+  "name": "Nyla, Shirshu Sleuth",
+  "mana_cost": "{4}{B}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Mole", "Beast"],
+  "power": 4,
+  "toughness": 5,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Graveyard",
+            "filter": { "types": ["Creature"] },
+            "whose": "You"
+          },
+          "min": 0,
+          "max": 1,
+          "label": "up to one target creature card from your graveyard"
+        }
+      ],
+      "effects": [
+        { "type": "Exile", "what": { "type": "Target", "idx": 0 } },
+        { "type": "LoseLife", "who": { "type": "You" }, "n": { "type": "ManaValueOf", "of": { "type": "Remembered" } } },
+        { "type": "CreateToken", "token": "Clue", "n": { "type": "ManaValueOf", "of": { "type": "Remembered" } } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "condition": {
+        "type": "Not",
+        "c": { "type": "Control", "who": { "type": "You" }, "filter": { "subtypes": ["Clue"] }, "at_least": 1 }
+      },
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Exile",
+            "filter": { "exiled_with_this": true },
+            "whose": "Any"
+          },
+          "min": 1,
+          "max": 1,
+          "label": "target card exiled with Nyla"
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Hand" }
+      ]
+    }
+  ],
+  "oracle_text": "When Nyla, Shirshu Sleuth enters, exile up to one target creature card from your graveyard. If you do, you lose X life and create X Clue tokens, where X is that card's mana value. (A Clue token is an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nAt the beginning of your end step, if you control no Clues, return target card exiled with Nyla to its owner's hand."
+}

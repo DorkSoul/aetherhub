@@ -1,0 +1,196 @@
+[
+  {
+    "name": "five Deserts at beginning of combat: five Sand Warriors",
+    "players": [
+      {
+        "battlefield": [
+          "Desert Warfare",
+          "Desert",
+          "Desert",
+          "Desert",
+          "Desert",
+          "Desert"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Sand Warrior 1-1 Red Green White Haste",
+            "Sand Warrior 1-1 Red Green White Haste",
+            "Sand Warrior 1-1 Red Green White Haste",
+            "Sand Warrior 1-1 Red Green White Haste",
+            "Sand Warrior 1-1 Red Green White Haste"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "four Deserts: no Sand Warriors",
+    "players": [
+      {
+        "battlefield": [
+          "Desert Warfare",
+          "Desert",
+          "Desert",
+          "Desert",
+          "Desert"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Sand Warrior 1-1 Red Green White Haste"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sacrifice a Desert (Ramunap Ruins): it returns at the next end step",
+    "players": [
+      { "battlefield": ["Desert Warfare", "Ramunap Ruins", "Mountain", "Mountain", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ramunap Ruins", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Desert Warfare", "Ramunap Ruins"], "graveyard": [] }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "sacrifice a non-Desert (Witching Well): nothing returns",
+    "players": [
+      { "battlefield": ["Desert Warfare", "Witching Well", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Witching Well", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Witching Well"], "battlefield_lacks": ["Witching Well"] }, {} ]
+    }
+  },
+  {
+    "name": "cycling a Desert card from hand: it enters at the next end step",
+    "players": [
+      { "hand": ["Desert of the Fervent"], "battlefield": ["Desert Warfare", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Desert of the Fervent" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Desert Warfare", "Desert of the Fervent"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "cycling a non-Desert card from hand: nothing enters",
+    "players": [
+      { "hand": ["Desert Cerodon"], "battlefield": ["Desert Warfare", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Desert Cerodon" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Desert Cerodon"], "battlefield_lacks": ["Desert Cerodon"] }, {} ]
+    }
+  },
+  {
+    "name": "surveilled Desert goes to the graveyard from the library: it enters at the next end step",
+    "players": [
+      { "hand": ["A.I.M. Synthoids"], "battlefield": ["Desert Warfare", "Forest", "Forest"], "library": ["Desert of the Fervent", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "A.I.M. Synthoids" },
+      { "resolve": true, "answers": [[0]] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["A.I.M. Synthoids", "Desert of the Fervent"], "library_top": ["Island"] }, {} ]
+    }
+  },
+  {
+    "name": "surveil keeps the Desert on top: nothing enters",
+    "players": [
+      { "hand": ["A.I.M. Synthoids"], "battlefield": ["Desert Warfare", "Forest", "Forest"], "library": ["Desert of the Fervent", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "A.I.M. Synthoids" },
+      { "resolve": true, "answers": [[]] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Desert of the Fervent"], "library_top": ["Desert of the Fervent", "Island"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Desert already in the graveyard before Desert Warfare entered does not return",
+    "players": [
+      { "hand": ["Desert Warfare"], "battlefield": ["Forest", "Forest", "Island", "Island"], "graveyard": ["Ramunap Ruins"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Desert Warfare" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Ramunap Ruins"], "battlefield_lacks": ["Ramunap Ruins"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Desert exiled from the graveyard before the delayed trigger resolves does not return",
+    "players": [
+      { "battlefield": ["Desert Warfare", "Ramunap Ruins", "Tormod's Crypt", "Mountain", "Mountain", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ramunap Ruins", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Tormod's Crypt", "targets": ["p0"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Ramunap Ruins", "Tormod's Crypt"], "battlefield_lacks": ["Ramunap Ruins"] }, { "life": 18 } ]
+    }
+  }
+]

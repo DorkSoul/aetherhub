@@ -1,0 +1,46 @@
+{
+  "name": "Long River Lurker",
+  "mana_cost": "{2}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Frog", "Scout"],
+  "power": 2,
+  "toughness": 3,
+  "abilities": [
+    { "type": "Ward", "cost": [{ "type": "Mana", "cost": "{1}" }] },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "subtypes": ["Frog"], "controller": "You", "other": true },
+        "ability": { "type": "Ward", "cost": [{ "type": "Mana", "cost": "{1}" }] }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "target creature you control" }
+      ],
+      "effects": [
+        { "type": "GrantKeyword", "what": { "type": "Target", "idx": 0 }, "keyword": "Unblockable", "duration": "UntilEndOfTurn" },
+        {
+          "type": "AddTrigger",
+          "bind": { "type": "Target", "idx": 0 },
+          "trigger": { "type": "DealsCombatDamage", "filter": {} },
+          "once": true,
+          "until": "EndOfTurn",
+          "effects": [
+            {
+              "type": "May",
+              "effects": [
+                { "type": "Exile", "what": { "type": "TriggerSource" } },
+                { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Ward {1}\nOther Frogs you control have ward {1}.\nWhen this creature enters, target creature you control can't be blocked this turn. Whenever that creature deals combat damage this turn, you may exile it. If you do, return it to the battlefield under its owner's control."
+}

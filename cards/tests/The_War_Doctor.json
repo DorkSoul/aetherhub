@@ -1,0 +1,55 @@
+[
+  { "name": "attacks: deals damage to the chosen player equal to its time counters",
+    "players": [ { "battlefield": [ { "name": "The War Doctor", "counters": { "time": 2 } } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "The War Doctor", "at": "p1" } ] },
+      { "advance_to": "Main2", "targets": ["p1"] }
+    ],
+    "expect": { "players": [ {}, { "life": 15 } ] } },
+  { "name": "with no time counters the attack trigger deals no damage",
+    "players": [ { "battlefield": ["The War Doctor"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "The War Doctor", "at": "p1" } ] },
+      { "advance_to": "Main2", "targets": ["p1"] }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] } },
+  { "name": "creature dealt damage by the attack trigger that dies is exiled instead",
+    "players": [ { "battlefield": [ { "name": "The War Doctor", "counters": { "time": 2 } } ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "The War Doctor", "at": "p1" } ] },
+      { "advance_to": "Main2", "targets": ["Grizzly Bears"] }
+    ],
+    "expect": { "players": [ {}, { "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"], "graveyard": [] } ] } },
+  { "name": "creature killed in combat by The War Doctor (not by the trigger) goes to the graveyard",
+    "players": [ { "battlefield": ["The War Doctor"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "The War Doctor", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "The War Doctor" } ], "targets": ["p1"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "graveyard": ["Grizzly Bears"], "exile": [] } ] } },
+  { "name": "a permanent phasing out gives a time counter",
+    "players": [ { "hand": ["Clever Concealment"], "battlefield": ["Plains", "Plains", "Island", "Island", "Grizzly Bears", "The War Doctor"] }, {} ],
+    "steps": [
+      { "cast": "Clever Concealment", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, {} ], "counters": { "The War Doctor": { "time": 1 } } } },
+  { "name": "a card put into exile from anywhere gives a time counter",
+    "players": [ { "hand": ["Path to Exile"], "battlefield": ["Plains", "The War Doctor"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Path to Exile", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "exile": ["Grizzly Bears"] } ], "counters": { "The War Doctor": { "time": 1 } } } },
+  { "name": "ruling: if The War Doctor leaves before its attack trigger resolves, its last known time counters are used",
+    "players": [ { "battlefield": [ { "name": "The War Doctor", "counters": { "time": 2 } } ] }, { "hand": ["Path to Exile"], "battlefield": ["Plains"] } ],
+    "steps": [
+      { "attack": [ { "card": "The War Doctor", "at": "p1" } ] },
+      { "pass": true, "targets": ["p1"] },
+      { "cast": "Path to Exile", "player": 1, "targets": ["The War Doctor"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["The War Doctor"] }, { "life": 18 } ] } }
+]

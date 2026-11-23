@@ -1,0 +1,145 @@
+[
+  {
+    "name": "deal damage equal to the exiled card mana value",
+    "players": [
+      {
+        "hand": [
+          "Spark of Creativity"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "library": [
+          "Serra Angel"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Spark of Creativity",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          0
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "choose to play the exiled card instead",
+    "players": [
+      {
+        "hand": [
+          "Spark of Creativity"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "library": [
+          "Serra Angel"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Spark of Creativity",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          1
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played with an unused land drop",
+    "players": [ { "hand": ["Spark of Creativity"], "battlefield": ["Mountain"], "library": ["Forest"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Spark of Creativity", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [1] },
+      { "play_land": "Forest" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Forest"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: if the target is gone when Spark resolves, nothing is exiled",
+    "players": [ { "hand": ["Spark of Creativity"], "battlefield": ["Mountain"], "library": ["Serra Angel"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] } ],
+    "steps": [
+      { "cast": "Spark of Creativity", "targets": ["Hill Giant"] },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "library_top": ["Serra Angel"], "graveyard": ["Spark of Creativity"] }, { "graveyard": ["Hill Giant", "Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: the exiled creature can be cast in the main phase like any other spell",
+    "players": [ { "hand": ["Spark of Creativity"], "battlefield": ["Mountain", "Forest", "Forest"], "library": ["Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Spark of Creativity", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [1] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: the exiled creature keeps sorcery timing: it cannot be cast during combat",
+    "players": [ { "hand": ["Spark of Creativity"], "battlefield": ["Mountain", "Forest", "Forest"], "library": ["Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Spark of Creativity", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [1] },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: an exiled card with X in its cost has X = 0 (Walking Ballista dies as 0/0)",
+    "players": [ { "hand": ["Spark of Creativity"], "battlefield": ["Mountain"], "library": ["Walking Ballista"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Spark of Creativity", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [1] },
+      { "cast": "Walking Ballista", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Walking Ballista"] }, {} ] }
+  }
+]

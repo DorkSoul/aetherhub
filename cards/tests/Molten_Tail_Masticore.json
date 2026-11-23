@@ -1,0 +1,157 @@
+[
+  {
+    "name": "upkeep: discarding a card keeps it",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Molten-Tail Masticore"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Molten-Tail Masticore"
+          ],
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "upkeep: with no card to discard it is sacrificed",
+    "players": [
+      {
+        "battlefield": [
+          "Molten-Tail Masticore"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Molten-Tail Masticore"
+          ],
+          "graveyard_has": [
+            "Molten-Tail Masticore"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "{4}, exile a creature card from your graveyard: 4 damage to a chosen target",
+    "players": [
+      {
+        "battlefield": ["Molten-Tail Masticore", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Molten-Tail Masticore", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "graveyard": [], "battlefield_has": ["Molten-Tail Masticore"] },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "exile ability needs a creature card in your graveyard",
+    "players": [
+      {
+        "battlefield": ["Molten-Tail Masticore", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Molten-Tail Masticore", "ability": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "{2}: regenerate shield saves it from lethal damage from its own ability",
+    "players": [
+      {
+        "battlefield": ["Molten-Tail Masticore", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Molten-Tail Masticore", "ability": 1 },
+      { "resolve": true },
+      { "activate": "Molten-Tail Masticore", "ability": 0, "targets": ["Molten-Tail Masticore"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Molten-Tail Masticore"] },
+        {}
+      ],
+      "tapped": { "Molten-Tail Masticore": true }
+    }
+  },
+  {
+    "name": "without regeneration the damaged Masticore dies",
+    "players": [
+      {
+        "battlefield": ["Molten-Tail Masticore", "Mountain", "Mountain", "Mountain", "Mountain"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Molten-Tail Masticore", "ability": 0, "targets": ["Molten-Tail Masticore"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Molten-Tail Masticore"], "exile": ["Grizzly Bears"], "battlefield_lacks": ["Molten-Tail Masticore"] },
+        {}
+      ]
+    }
+  }
+]

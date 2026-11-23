@@ -1,0 +1,94 @@
+[
+  { "name": "controller can cast only one spell per turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Rule of Law", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, { "life": 17 } ]
+    }
+  },
+  { "name": "opponent who cast a spell this turn can not cast another",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Rule of Law", "Mountain"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, { "life": 20 } ]
+    }
+  },
+  { "name": "without Rule of Law each player may cast several spells",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 14 } ]
+    }
+  },
+  { "name": "ruling: after casting Rule of Law, you can not cast another spell this turn",
+    "players": [
+      { "hand": ["Lightning Bolt", "Rule of Law"], "battlefield": ["Mountain", "Mountain", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rule of Law" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Lightning Bolt"], "battlefield_has": ["Rule of Law"] }, { "life": 20 } ]
+    }
+  },
+  { "name": "ruling: a spell cast before Rule of Law entered counts toward the limit once it is on the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Rule of Law"], "battlefield": ["Mountain", "Mountain", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Rule of Law" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Lightning Bolt"], "battlefield_has": ["Rule of Law"] }, { "life": 17 } ]
+    }
+  },
+  { "name": "ruling: a countered spell still counts toward the one-spell limit",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Rule of Law", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 20, "graveyard": ["Counterspell"] } ]
+    }
+  }
+]

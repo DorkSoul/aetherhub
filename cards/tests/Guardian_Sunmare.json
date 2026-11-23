@@ -1,0 +1,271 @@
+[
+  {
+    "name": "attacking while saddled puts a nonland permanent with mana value 3 or less onto the battlefield",
+    "players": [
+      {
+        "battlefield": [
+          "Guardian Sunmare",
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Hill Giant",
+          "Elvish Mystic"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Guardian Sunmare",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Guardian Sunmare",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Elvish Mystic"
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Elvish Mystic"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a permanent with mana value above 3 is not found",
+    "players": [
+      {
+        "battlefield": [
+          "Guardian Sunmare",
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Guardian Sunmare",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Guardian Sunmare",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "lands and instants are not nonland permanents",
+    "players": [
+      {
+        "battlefield": [
+          "Guardian Sunmare",
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Plains",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Guardian Sunmare",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Guardian Sunmare",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Plains",
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "saddle 4 needs total power 4 from other creatures",
+    "players": [
+      {
+        "battlefield": [
+          "Guardian Sunmare",
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Elvish Mystic"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Guardian Sunmare",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Elvish Mystic"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ward {2}: an opponent who cannot pay the ward cost has the spell countered",
+    "players": [
+      { "battlefield": [ "Guardian Sunmare" ] },
+      { "hand": [ "Go for the Throat" ], "battlefield": [ "Swamp", "Swamp" ] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Go for the Throat", "targets": [ "Guardian Sunmare" ] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": [ "Guardian Sunmare" ] }, { "graveyard": [ "Go for the Throat" ] } ]
+    }
+  },
+  {
+    "name": "ward {2}: an opponent who pays the ward cost still destroys the creature",
+    "players": [
+      { "battlefield": [ "Guardian Sunmare" ] },
+      { "hand": [ "Go for the Throat" ], "battlefield": [ "Swamp", "Swamp", "Swamp", "Swamp" ] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Go for the Throat", "targets": [ "Guardian Sunmare" ] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": [ "Guardian Sunmare" ] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: saddled stays saddled into combat, so the attack trigger still fires",
+    "players": [
+      { "battlefield": ["Guardian Sunmare", "Grizzly Bears", "Grizzly Bears"], "library": ["Hill Giant", "Elvish Mystic"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Guardian Sunmare", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Guardian Sunmare", "at": "p1" } ] },
+      { "resolve": true, "answers": ["Elvish Mystic"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Elvish Mystic"] }, {} ] }
+  },
+  {
+    "name": "ruling: saddle can be activated again while already saddled",
+    "players": [
+      { "battlefield": ["Guardian Sunmare", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Guardian Sunmare", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Guardian Sunmare", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "ruling: saddle counts only other creatures, so Sunmare alone cannot saddle itself",
+    "players": [ { "battlefield": ["Guardian Sunmare"] }, {} ],
+    "steps": [ { "activate": "Guardian Sunmare", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Guardian Sunmare"] }, {} ] }
+  },
+  {
+    "name": "ruling: saddle uses only untapped creatures; tapped power does not count",
+    "players": [
+      { "battlefield": ["Guardian Sunmare", { "name": "Grizzly Bears", "tapped": true }, { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [ { "activate": "Guardian Sunmare", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Guardian Sunmare"] }, {} ] }
+  },
+  {
+    "name": "ruling: an unsaddled Sunmare attacks normally and its attack trigger does not fire",
+    "players": [ { "battlefield": ["Guardian Sunmare"], "library": ["Elvish Mystic"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Guardian Sunmare", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Elvish Mystic"] }, { "life": 15 } ] }
+  }
+]

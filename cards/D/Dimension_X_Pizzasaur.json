@@ -1,0 +1,59 @@
+{
+  "name": "Dimension X Pizzasaur",
+  "mana_cost": "{3}{B}",
+  "types": ["Artifact", "Creature"],
+  "subtypes": ["Food", "Alien", "Mutant"],
+  "power": 2,
+  "toughness": 1,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 2 }, "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "Reflexive",
+          "targets": [
+            {
+              "what": {
+                "type": "Permanent",
+                "filter": {
+                  "types": ["Creature"],
+                  "mana_value_vs": {
+                    "op": "Le",
+                    "amount": {
+                      "type": "AllCountersOn",
+                      "of": { "type": "All", "filter": { "controller": "You" }, "zone": "Battlefield" }
+                    }
+                  }
+                }
+              },
+              "label": "up to one target creature with mana value less than or equal to the number of counters among permanents you control",
+              "min": 0,
+              "max": 1
+            }
+          ],
+          "effects": [
+            { "type": "Destroy", "what": { "type": "Targets" } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Mana", "cost": "{2}" },
+        { "type": "Tap" },
+        { "type": "SacrificeSelf" }
+      ],
+      "effects": [
+        { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 3 } },
+        { "type": "LoseLife", "who": { "type": "EachOpponent" }, "n": { "type": "Fixed", "n": 3 } }
+      ]
+    }
+  ],
+  "oracle_text": "When this creature enters, put two +1/+1 counters on target creature. When you do, destroy up to one target creature with mana value less than or equal to the number of counters among permanents you control.\n{2}, {T}, Sacrifice this creature: You gain 3 life and each opponent loses 3 life."
+}

@@ -1,0 +1,60 @@
+[
+ { "name": "targeted creature returns with a -1/-1 counter when it dies this turn",
+   "players": [
+     { "hand": ["Cauldron Haze"], "battlefield": ["Plains", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+     { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+     { "cast": "Cauldron Haze", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+     { "resolve": true },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ], "pt": { "Grizzly Bears": [1, 1] } } },
+ { "name": "untargeted creature does not gain persist",
+   "players": [
+     { "hand": ["Cauldron Haze"], "battlefield": ["Plains", "Swamp", "Grizzly Bears"] },
+     { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+     { "cast": "Cauldron Haze", "targets": [] },
+     { "resolve": true },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, {} ] } },
+ { "name": "ruling: a creature that already has a -1/-1 counter does not return when it dies",
+   "players": [
+     { "hand": ["Cauldron Haze"], "battlefield": ["Plains", "Swamp", { "name": "Grizzly Bears", "sick": false, "counters": { "MinusOneMinusOne": 1 } }] },
+     { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+     { "cast": "Cauldron Haze", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+     { "resolve": true },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, {} ] } },
+ { "name": "ruling: a creature returned by persist is a new object without persist, so its second death is permanent",
+   "players": [
+     { "hand": ["Cauldron Haze"], "battlefield": ["Plains", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+     { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+   ],
+   "steps": [
+     { "cast": "Cauldron Haze", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+     { "resolve": true },
+     { "resolve": true },
+     { "pass": true },
+     { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }, { "hand_count": 0 } ] } }
+]

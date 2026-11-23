@@ -1,0 +1,98 @@
+[
+  {
+    "name": "the targeted creature stays, every other creature is airbent, and Avatar's Wrath is exiled",
+    "players": [
+      { "hand": ["Avatar's Wrath"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Avatar's Wrath", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": ["Avatar's Wrath"], "graveyard": [] },
+        { "battlefield": [], "exile": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "with no target every creature is airbent",
+    "players": [
+      { "hand": ["Avatar's Wrath"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Avatar's Wrath" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Plains", "Plains", "Plains", "Plains"], "exile": ["Avatar's Wrath", "Grizzly Bears"] },
+        { "battlefield": [], "exile": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "until your next turn opponents can't cast the airbent creature from exile",
+    "players": [
+      { "hand": ["Avatar's Wrath"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hill Giant", "Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Avatar's Wrath" },
+      { "resolve": true },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Hill Giant", "player": 1, "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "exile": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "opponents can still cast spells from their hand",
+    "players": [
+      { "hand": ["Avatar's Wrath"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Avatar's Wrath" },
+      { "resolve": true },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17 }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "the restriction ends at the start of your next turn",
+    "players": [
+      { "hand": ["Avatar's Wrath"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Avatar's Wrath" },
+      { "resolve": true },
+      { "advance_to": "Main1", "player": 1 },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17 }, {} ] }
+  },
+  {
+    "name": "ruling: airbent tokens cease to exist and are not left in exile",
+    "players": [
+      { "hand": ["Raise the Alarm", "Avatar's Wrath"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raise the Alarm" },
+      { "resolve": true },
+      { "cast": "Avatar's Wrath" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Soldier"], "exile": ["Avatar's Wrath"] }, {} ]
+    }
+  }
+]

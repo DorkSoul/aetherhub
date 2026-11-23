@@ -1,0 +1,44 @@
+[
+  { "name": "end step: goads the chosen creature, gets a counter and phases out",
+    "players": [ { "battlefield": ["Renegade Silent"], "library": ["Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"], "library": ["Plains", "Plains", "Plains"] } ],
+    "steps": [ { "advance_to": "End", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield": [] }, { "battlefield": ["Grizzly Bears"] } ], "keywords": {}, "pt": {} } },
+  { "name": "phases back in at its controller's next untap with its counter",
+    "players": [ { "battlefield": ["Renegade Silent"], "library": ["Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"], "library": ["Plains", "Plains", "Plains"] } ],
+    "steps": [ { "advance_to": "End", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" } ],
+    "expect": { "players": [ { "battlefield": ["Renegade Silent"] }, { "battlefield": ["Grizzly Bears"] } ], "counters": { "Renegade Silent": { "+1/+1": 1 } }, "pt": { "Renegade Silent": [4, 4] } } },
+  { "name": "ruling: a phased-out Renegade Silent can't block",
+    "players": [ { "battlefield": ["Renegade Silent"], "library": ["Plains", "Plains", "Plains"] }, { "battlefield": ["Hill Giant"], "library": ["Plains", "Plains", "Plains"] } ],
+    "steps": [
+      { "advance_to": "End", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Renegade Silent", "attacker": "Hill Giant" } ], "player": 0, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 17 }, { "battlefield": ["Hill Giant"] } ] } },
+  { "name": "ruling: an Aura on the phasing creature phases out with it and is still attached when it phases in",
+    "players": [ { "hand": ["Arrest"], "battlefield": ["Renegade Silent", "Plains", "Plains", "Plains"], "library": ["Plains", "Plains", "Plains"] }, { "library": ["Plains", "Plains", "Plains"] } ],
+    "steps": [
+      { "cast": "Arrest", "targets": ["Renegade Silent"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Renegade Silent", "Arrest"] }, {} ], "attached": { "Arrest": "Renegade Silent" } } },
+  { "name": "ruling: a creature that phases in during the untap step can attack that turn",
+    "players": [ { "battlefield": ["Renegade Silent"], "library": ["Plains", "Plains", "Plains"] }, { "library": ["Plains", "Plains", "Plains"] } ],
+    "steps": [
+      { "advance_to": "End" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Renegade Silent", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Renegade Silent"] }, { "life": 16 } ], "pt": { "Renegade Silent": [4, 4] } } }
+]

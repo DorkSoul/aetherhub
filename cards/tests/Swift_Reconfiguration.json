@@ -1,0 +1,50 @@
+[
+ {
+  "name": "enchants a creature",
+  "players": [ { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "cast": "Swift Reconfiguration", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Swift Reconfiguration"] }, {} ], "attached": { "Swift Reconfiguration": "Grizzly Bears" } }
+ },
+ {
+  "name": "cannot enchant when there is no creature or Vehicle",
+  "players": [ { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains"] }, { "battlefield": ["Plains"] } ],
+  "steps": [ { "cast": "Swift Reconfiguration", "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Swift Reconfiguration"] }, {} ] }
+ },
+ {
+  "name": "enchanted creature becomes a Vehicle artifact",
+  "players": [ { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+  "steps": [ { "cast": "Swift Reconfiguration", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "subtypes": { "Grizzly Bears": ["Vehicle"] }, "not_subtypes": { "Hill Giant": ["Vehicle"] } }
+ },
+ {
+  "name": "crew 5 paid by tapping two Hill Giants (power 3 each) gives the enchanted creature its ability",
+  "players": [ { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }, { "name": "Hill Giant", "sick": false }] }, {} ],
+  "steps": [ { "cast": "Swift Reconfiguration", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "activate": "Grizzly Bears", "ability": 32768 }, { "resolve": true } ],
+  "expect": { "tapped": { "Hill Giant": true } }
+ },
+ {
+  "name": "crew 5 cannot be paid with Hill Giant (3) and Llanowar Elves (1), total power 4",
+  "players": [ { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }, { "name": "Llanowar Elves", "sick": false }] }, {} ],
+  "steps": [ { "cast": "Swift Reconfiguration", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "activate": "Grizzly Bears", "ability": 32768, "illegal": true } ],
+  "expect": { "tapped": { "Hill Giant": false, "Llanowar Elves": false } }
+ },
+ {
+  "name": "ruling: enchanting an attacking creature removes it from combat, so no combat damage",
+  "players": [ { "battlefield": ["Grizzly Bears"] }, { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains"] } ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "pass": true },
+   { "cast": "Swift Reconfiguration", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "life": 20 } ], "attached": { "Swift Reconfiguration": "Grizzly Bears" } }
+ },
+ {
+  "name": "ruling: enchanting an Equipment creature makes it a Vehicle and it loses the Equipment subtype",
+  "players": [ { "hand": ["Swift Reconfiguration"], "battlefield": ["Plains", "Bronzeplate Boar"] }, {} ],
+  "steps": [ { "cast": "Swift Reconfiguration", "targets": ["Bronzeplate Boar"] }, { "resolve": true } ],
+  "expect": { "subtypes": { "Bronzeplate Boar": ["Vehicle"] }, "not_subtypes": { "Bronzeplate Boar": ["Equipment"] } }
+ }
+]

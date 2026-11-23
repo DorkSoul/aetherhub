@@ -1,0 +1,154 @@
+[
+  {
+    "name": "bounces a nonland permanent you don't control",
+    "players": [
+      {
+        "hand": [
+          "Ugin's Binding"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ugin's Binding",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Ugin's Binding"
+          ]
+        },
+        {
+          "battlefield": [],
+          "hand_count": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot target a land you don't control",
+    "players": [
+      {
+        "hand": [
+          "Ugin's Binding"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ugin's Binding",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield": [
+            "Forest"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "casting a colorless spell with mana value 7+ from the graveyard: exile Binding, bounce each opposing nonland permanent",
+    "players": [
+      {
+        "hand": ["Myr Battlesphere"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"],
+        "graveyard": ["Ugin's Binding"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Myr Battlesphere" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Ugin's Binding"], "battlefield_has": ["Myr Battlesphere"] },
+        { "battlefield": [], "hand_count": 2 }
+      ]
+    }
+  },
+  {
+    "name": "declining the optional trigger leaves Ugin's Binding in the graveyard and opposing permanents alone",
+    "players": [
+      {
+        "hand": ["Myr Battlesphere"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"],
+        "graveyard": ["Ugin's Binding"]
+      },
+      {
+        "battlefield": ["Grizzly Bears", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Myr Battlesphere" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Ugin's Binding"] },
+        { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the trigger still resolves when the colorless spell is countered in response",
+    "players": [
+      {
+        "hand": ["Myr Battlesphere"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"],
+        "graveyard": ["Ugin's Binding"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Myr Battlesphere" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Myr Battlesphere" }] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Ugin's Binding"], "graveyard_has": ["Myr Battlesphere"] },
+        { "battlefield_lacks": ["Grizzly Bears"], "hand_count": 1 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,133 @@
+[
+  { "name": "target opponent chooses a creature card from their graveyard, which enters under your control",
+    "players": [
+      { "hand": ["Visions of Dread"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Visions of Dread"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  { "name": "the opponent's graveyard has no creature card: nothing happens (your own creature cards are not eligible)",
+    "players": [
+      { "hand": ["Visions of Dread"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Visions of Dread", "Hill Giant"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  { "name": "flashback for {8}{B}{B} from the graveyard, then exiled",
+    "players": [
+      { "graveyard": ["Visions of Dread"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": ["Visions of Dread"] },
+        {}
+      ]
+    }
+  },
+  { "name": "flashback costs {X} less where X is the greatest mana value of your commander in the command zone",
+    "commander": true,
+    "players": [
+      { "graveyard": ["Visions of Dread"], "command": ["Hill Giant"], "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Forest", "Forest"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": ["Visions of Dread"] },
+        {}
+      ]
+    }
+  },
+  { "name": "flashback cannot be paid with one mana less than the reduced cost",
+    "commander": true,
+    "players": [
+      { "graveyard": ["Visions of Dread"], "command": ["Hill Giant"], "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Forest"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Visions of Dread"] },
+        {}
+      ]
+    }
+  },
+  { "name": "from hand it costs {2}{B} and is not reduced by commanders",
+    "commander": true,
+    "players": [
+      { "hand": ["Visions of Dread"], "command": ["Hill Giant"], "battlefield": ["Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Visions of Dread"] },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: flashback follows sorcery timing, so it is not castable during the opponent's turn",
+    "players": [
+      { "graveyard": ["Visions of Dread"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Visions of Dread", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Visions of Dread"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  { "name": "ruling: the flashback reduction applies only to generic mana, so six Forests cannot pay the BB",
+    "commander": true,
+    "players": [
+      { "graveyard": ["Visions of Dread"], "command": ["Hill Giant"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Visions of Dread", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Visions of Dread"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

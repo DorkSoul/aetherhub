@@ -1,0 +1,46 @@
+[
+  { "name": "targeted by a spell: sacrificed, and the spell fizzles",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Departed Deckhand"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Departed Deckhand"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Departed Deckhand"], "battlefield": ["Mountain"] }, {} ] } },
+  { "name": "can't be blocked by a non-Spirit creature",
+    "players": [ { "battlefield": ["Departed Deckhand"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Departed Deckhand", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Departed Deckhand" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "activated ability lets another creature be blocked only by Spirits this turn",
+    "players": [ { "battlefield": ["Island", "Island", "Island", "Island", "Departed Deckhand", "Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "activate": "Departed Deckhand", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "can't be blocked by a non-Spirit: the declared Grizzly Bears is dropped, the undeclared Spirit does not block",
+    "players": [ { "battlefield": ["Departed Deckhand"] }, { "battlefield": ["Grizzly Bears", "Zephyr Spirit"] } ],
+    "steps": [
+      { "attack": [ { "card": "Departed Deckhand", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Departed Deckhand" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] } },
+  { "name": "ruling: sacrificed when targeted even if the targeting spell is countered",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Departed Deckhand"] }, { "hand": ["Forceful Denial"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "library": ["Plains"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Departed Deckhand"] }, { "cast": "Forceful Denial", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Departed Deckhand", "Lightning Bolt"], "battlefield": ["Mountain"] }, { "graveyard_has": ["Forceful Denial"] } ] } },
+  { "name": "ruling: activating the ability after a block does not unblock the creature",
+    "players": [ { "battlefield": ["Island", "Island", "Island", "Island", "Departed Deckhand", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "activate": "Departed Deckhand", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "life": 20 } ] } }
+]

@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Gift of the Fae gives +2/+1 and flying until end of turn, then the creature is castable from exile",
+    "players": [
+      { "hand": ["Faerie Guidemother // Gift of the Fae"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Faerie Guidemother // Gift of the Fae", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Faerie Guidemother // Gift of the Fae" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Faerie Guidemother // Gift of the Fae"], "exile": [] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "keywords": { "Grizzly Bears": ["Flying"] }
+    }
+  },
+  {
+    "name": "Gift of the Fae goes to exile after resolving (not the graveyard)",
+    "players": [
+      { "hand": ["Faerie Guidemother // Gift of the Fae"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Faerie Guidemother // Gift of the Fae", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Faerie Guidemother // Gift of the Fae"], "graveyard": [] },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  { "name": "ruling: the Adventure is cast for its own cost {1}{W}, so one Plains is not enough",
+    "players": [ { "hand": ["Faerie Guidemother // Gift of the Fae"], "battlefield": ["Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Faerie Guidemother // Gift of the Fae", "face": true, "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Faerie Guidemother // Gift of the Fae"] }, {} ] }
+  },
+  { "name": "ruling: the creature cast from exile follows sorcery timing, so not on the opponent's turn",
+    "players": [ { "hand": ["Faerie Guidemother // Gift of the Fae"], "battlefield": ["Plains", "Plains", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Faerie Guidemother // Gift of the Fae", "face": true, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Faerie Guidemother // Gift of the Fae", "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Faerie Guidemother // Gift of the Fae"] }, {} ] }
+  },
+  { "name": "ruling: an Adventure spell that fizzles is not exiled, so the creature cannot be cast later",
+    "players": [ { "hand": ["Faerie Guidemother // Gift of the Fae"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "cast": "Faerie Guidemother // Gift of the Fae", "face": true, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0:Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Faerie Guidemother // Gift of the Fae"], "exile": [] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  { "name": "ruling: an Adventure card in the graveyard is a creature card, so Miraculous Recovery can return it",
+    "players": [ { "hand": ["Miraculous Recovery"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"], "graveyard": ["Faerie Guidemother // Gift of the Fae"] }, {} ],
+    "steps": [
+      { "cast": "Miraculous Recovery", "targets": ["Faerie Guidemother // Gift of the Fae"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Faerie Guidemother // Gift of the Fae"] }, {} ], "pt": { "Faerie Guidemother // Gift of the Fae": [2, 2] } }
+  }
+]

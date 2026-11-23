@@ -1,0 +1,43 @@
+{
+  "name": "Errant Minion",
+  "mana_cost": "{2}{U}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Creature"] } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "Any" },
+      "condition": {
+        "type": "Control",
+        "who": { "type": "TriggerPlayer" },
+        "at_least": 1,
+        "filter": { "attached_by_source": true }
+      },
+      "effects": [
+        { "type": "ChooseNumber", "who": { "type": "TriggerPlayer" }, "min": 0, "max": 20 },
+        {
+          "type": "Unless",
+          "payer": { "type": "TriggerPlayer" },
+          "cost": [{ "type": "Mana", "cost": "{N}" }],
+          "effects": [
+            { "type": "DealDamage", "source": { "type": "This" }, "to": { "type": "TriggerPlayer" }, "amount": { "type": "Fixed", "n": 2 } }
+          ],
+          "if_paid": [
+            {
+              "type": "DealDamage",
+              "source": { "type": "This" },
+              "to": { "type": "TriggerPlayer" },
+              "amount": {
+                "type": "Max",
+                "a": { "type": "Minus", "a": { "type": "Fixed", "n": 2 }, "b": { "type": "ChosenNumber" } },
+                "b": { "type": "Fixed", "n": 0 }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant creature\nAt the beginning of the upkeep of enchanted creature's controller, that player may pay any amount of mana. Errant Minion deals 2 damage to that player. Prevent X of that damage, where X is the amount of mana that player paid this way."
+}

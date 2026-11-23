@@ -1,0 +1,194 @@
+[
+  {
+    "name": "becomes a copy of target creature until your next turn",
+    "players": [
+      {
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Shapesharer"
+        ]
+      },
+      {
+        "battlefield": [
+          "Adept Watershaper"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Shapesharer",
+        "targets": [
+          "Adept Watershaper"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Adept Watershaper": [
+          3,
+          4
+        ]
+      },
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Shapesharer"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot activate with only two mana",
+    "players": [
+      {
+        "battlefield": [
+          "Island",
+          "Island",
+          "Shapesharer",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Shapesharer",
+        "targets": [
+          "Shapesharer",
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Shapesharer": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: copying itself makes it lose changeling (no longer a Shapeshifter)",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "Shapesharer"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Shapesharer", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Shapesharer"] }, {} ],
+      "pt": { "Hill Giant": [3, 3] },
+      "not_subtypes": { "Hill Giant": ["Shapeshifter"] }
+    }
+  },
+  {
+    "name": "ruling: copying itself keeps its changeling and stays 1/1",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "Shapesharer"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Shapesharer", "targets": ["Shapesharer"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Shapesharer"] }, {} ],
+      "pt": { "Shapesharer": [1, 1] },
+      "subtypes": { "Shapesharer": ["Shapeshifter"] }
+    }
+  },
+  {
+    "name": "ruling: the copy ends just before your next untap step",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "Shapesharer"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Shapesharer", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Shapesharer"], "battlefield_lacks": ["Hill Giant"] }, {} ],
+      "pt": { "Shapesharer": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: the copy still applies during the opponent's turn",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "Shapesharer"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Shapesharer", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Shapesharer"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the copy does not copy counters on the target",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "Shapesharer"] },
+      { "battlefield": [ { "name": "Hill Giant", "counters": { "PlusOnePlusOne": 1 } } ] }
+    ],
+    "steps": [
+      { "activate": "Shapesharer", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"] }, {} ],
+      "pt": { "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: a +3/+3 applied before the copy continues to apply",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Forest", "Island", "Island", "Island", "Shapesharer"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Shapesharer"] },
+      { "resolve": true },
+      { "activate": "Shapesharer", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"] }, {} ],
+      "pt": { "Hill Giant": [6, 6] }
+    }
+  },
+  {
+    "name": "ruling: if the copied creature becomes illegal the ability does nothing",
+    "players": [
+      { "battlefield": ["Island", "Island", "Island", "Shapesharer"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Shapesharer", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Shapesharer"] }, { "graveyard_has": ["Hill Giant"] } ],
+      "pt": { "Shapesharer": [1, 1] }
+    }
+  }
+]

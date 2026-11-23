@@ -1,0 +1,126 @@
+[
+  {
+    "name": "combat damage to a player destroys an artifact or enchantment that player controls",
+    "players": [
+      { "battlefield": ["Sunder Shaman"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sunder Shaman"], "life": 20 },
+        { "graveyard": ["Sol Ring"], "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "no artifact or enchantment to destroy: nothing happens to the defender's other permanents",
+    "players": [
+      { "battlefield": ["Sunder Shaman", "Sol Ring"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sunder Shaman", "Sol Ring"] },
+        { "battlefield_has": ["Grizzly Bears"], "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "blocked: no combat damage to the player, no destroy trigger",
+    "players": [
+      { "battlefield": ["Sunder Shaman"] },
+      { "battlefield": ["Grizzly Bears", "Sol Ring"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Sunder Shaman" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sunder Shaman"] },
+        { "battlefield_has": ["Sol Ring"], "graveyard": ["Grizzly Bears"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "can't be blocked by more than one creature",
+    "players": [
+      { "battlefield": ["Sunder Shaman"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Sunder Shaman" }, { "blocker": "Hill Giant", "attacker": "Sunder Shaman" }], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "two blockers declared: only one is kept, so Sunder Shaman survives the 5 damage",
+    "players": [
+      { "battlefield": ["Sunder Shaman"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Sunder Shaman" }, { "blocker": "Hill Giant", "attacker": "Sunder Shaman" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sunder Shaman"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with menace granted in combat, Sunder Shaman can't be blocked at all (a single blocker is illegal)",
+    "players": [
+      { "battlefield": ["Sunder Shaman"] },
+      { "hand": ["Demoralize"], "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears", "Sol Ring"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "pass": true },
+      { "player": 1, "cast": "Demoralize" },
+      { "resolve": true },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Sunder Shaman" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sunder Shaman"], "life": 20 },
+        { "graveyard": ["Demoralize", "Sol Ring"], "battlefield_has": ["Grizzly Bears"], "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with menace granted in combat, two blockers are also illegal and the 5 damage goes through",
+    "players": [
+      { "battlefield": ["Sunder Shaman"] },
+      { "hand": ["Demoralize"], "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears", "Hill Giant", "Sol Ring"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Sunder Shaman", "at": "p1" }] },
+      { "pass": true },
+      { "player": 1, "cast": "Demoralize" },
+      { "resolve": true },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Sunder Shaman" }, { "blocker": "Hill Giant", "attacker": "Sunder Shaman" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sunder Shaman"], "life": 20 },
+        { "graveyard": ["Demoralize", "Sol Ring"], "battlefield_has": ["Grizzly Bears", "Hill Giant"], "life": 15 }
+      ]
+    }
+  }
+]

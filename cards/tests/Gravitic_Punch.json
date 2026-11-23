@@ -1,0 +1,220 @@
+[
+  {
+    "name": "your creature deals damage equal to its power to target player",
+    "players": [
+      {
+        "hand": [
+          "Gravitic Punch"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravitic Punch",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Gravitic Punch"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "jump-start from the graveyard discards a card and exiles the spell afterwards",
+    "players": [
+      {
+        "graveyard": [
+          "Gravitic Punch"
+        ],
+        "hand": [
+          "Mountain"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravitic Punch",
+        "alt": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Gravitic Punch"
+          ],
+          "graveyard": [
+            "Mountain"
+          ],
+          "hand_count": 0
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot jump-start from hand",
+    "players": [
+      {
+        "hand": [
+          "Gravitic Punch",
+          "Mountain"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravitic Punch",
+        "alt": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: jump-start right after a hard cast works in the same main phase",
+    "players": [
+      {
+        "hand": ["Gravitic Punch", "Mountain"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Gravitic Punch", "targets": ["p1"]},
+      {"resolve": true},
+      {"cast": "Gravitic Punch", "alt": 0, "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"exile": ["Gravitic Punch"], "graveyard": ["Mountain"], "hand_count": 0},
+        {"life": 16}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an illegal creature target means the creature deals no damage",
+    "players": [
+      {
+        "hand": ["Gravitic Punch"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      {"cast": "Gravitic Punch", "targets": ["p1"]},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard_has": ["Gravitic Punch", "Grizzly Bears"]},
+        {"life": 20}
+      ]
+    }
+  },
+  {
+    "name": "ruling: jump-start follows sorcery timing: not castable while another spell is on the stack",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Mountain"],
+        "graveyard": ["Gravitic Punch"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"cast": "Gravitic Punch", "alt": 0, "targets": ["p1"], "illegal": true},
+      {"resolve": true},
+      {"cast": "Gravitic Punch", "alt": 0, "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"exile": ["Gravitic Punch"], "hand_count": 0},
+        {"life": 15}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a jump-started spell is exiled even when it does not resolve",
+    "players": [
+      {
+        "graveyard": ["Gravitic Punch"],
+        "hand": ["Mountain"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      {"cast": "Gravitic Punch", "alt": 0, "targets": ["p1"]},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"exile": ["Gravitic Punch"], "graveyard_has": ["Mountain"]},
+        {"life": 20}
+      ]
+    }
+  }
+]

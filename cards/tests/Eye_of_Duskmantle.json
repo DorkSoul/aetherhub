@@ -1,0 +1,204 @@
+[
+  {
+    "name": "a surveilled creature card can be cast from the graveyard for life equal to its mana value",
+    "players": [
+      {
+        "hand": [
+          "Barrier of Bones"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Eye of Duskmantle"
+        ],
+        "library": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Barrier of Bones"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Grizzly Bears"
+          ]
+        ]
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 18,
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Barrier of Bones"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a surveilled land card can be played from the graveyard",
+    "players": [
+      {
+        "hand": [
+          "Barrier of Bones"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Eye of Duskmantle"
+        ],
+        "library": [
+          "Mountain",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Barrier of Bones"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Mountain"
+          ]
+        ]
+      },
+      {
+        "play_land": "Mountain"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "battlefield_has": [
+            "Mountain",
+            "Barrier of Bones"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a card that was not surveilled can't be cast from the graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp",
+          "Eye of Duskmantle"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "life": 20
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: casting from the graveyard pays life, not the mana cost (the untapped Forest stays untapped)",
+    "players": [
+      {
+        "hand": ["Barrier of Bones"],
+        "battlefield": ["Swamp", "Forest", "Eye of Duskmantle"],
+        "library": ["Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Barrier of Bones" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "battlefield_has": ["Grizzly Bears", "Barrier of Bones"], "graveyard": [] },
+        {}
+      ],
+      "tapped": { "Forest": false }
+    }
+  },
+  {
+    "name": "ruling: an X spell cast this way has only X=0 (Fireball deals no damage; one life paid for its mana value of 1)",
+    "players": [
+      {
+        "hand": ["Barrier of Bones"],
+        "battlefield": ["Swamp", "Eye of Duskmantle"],
+        "library": ["Fireball", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Barrier of Bones" },
+      { "resolve": true, "answers": [["Fireball"]] },
+      { "cast": "Fireball", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 19, "graveyard": ["Fireball"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card kept on top by surveil and later milled was not surveilled, so it cannot be cast from the graveyard",
+    "players": [
+      {
+        "hand": ["Barrier of Bones", "Thought Scour"],
+        "battlefield": ["Swamp", "Island", "Forest", "Forest", "Eye of Duskmantle"],
+        "library": ["Grizzly Bears", "Hill Giant", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Barrier of Bones" },
+      { "resolve": true, "answers": [[]] },
+      { "cast": "Thought Scour", "targets": ["p0"] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Grizzly Bears"], "life": 20 },
+        {}
+      ]
+    }
+  }
+]

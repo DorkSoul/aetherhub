@@ -1,0 +1,53 @@
+{
+  "name": "Harvest Wurm",
+  "mana_cost": "{1}{G}",
+  "types": ["Creature"],
+  "subtypes": ["Wurm"],
+  "power": 3,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "Return a basic land card from your graveyard to your hand",
+              "effects": [
+                {
+                  "type": "If",
+                  "cond": {
+                    "type": "Compare",
+                    "a": { "type": "Count", "filter": { "types": ["Land"], "supertypes": ["Basic"] }, "zone": "Graveyard", "player": { "type": "You" } },
+                    "cmp": { "op": "Ge", "n": 1 }
+                  },
+                  "then": [
+                    {
+                      "type": "Choose",
+                      "who": { "type": "You" },
+                      "zone": "Graveyard",
+                      "filter": { "types": ["Land"], "supertypes": ["Basic"] },
+                      "min": 1,
+                      "max": 1,
+                      "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ]
+                    }
+                  ],
+                  "else": [ { "type": "Sacrifice", "who": { "type": "This" } } ]
+                }
+              ]
+            },
+            {
+              "text": "Sacrifice this creature",
+              "effects": [ { "type": "Sacrifice", "who": { "type": "This" } } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "When this creature enters, sacrifice it unless you return a basic land card from your graveyard to your hand."
+}

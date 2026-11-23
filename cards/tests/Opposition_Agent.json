@@ -1,0 +1,203 @@
+[
+ {
+  "name": "an opponent's search exiles the found card instead of putting it in hand",
+  "players": [
+   {
+    "hand": [
+     "Demonic Tutor"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "battlefield": [
+     "Opposition Agent"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Demonic Tutor"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Lightning Bolt"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0,
+     "exile": [
+      "Lightning Bolt"
+     ],
+     "graveyard": [
+      "Demonic Tutor"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "its controller may cast the exiled card spending any color of mana",
+  "players": [
+   {
+    "hand": [
+     "Demonic Tutor"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "battlefield": [
+     "Opposition Agent",
+     "Swamp"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Demonic Tutor"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "hand_count": 0,
+     "graveyard_has": [
+      "Demonic Tutor",
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the controller's own searches are unaffected",
+  "players": [
+   {
+    "hand": [
+     "Demonic Tutor"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Opposition Agent"
+    ],
+    "library": [
+     "Forest",
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Demonic Tutor"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Lightning Bolt"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Lightning Bolt"
+     ],
+     "graveyard": [
+      "Demonic Tutor"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a basic land an opponent finds with Rampant Growth is exiled, not put onto the battlefield",
+  "players": [
+   { "battlefield": ["Opposition Agent"] },
+   { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest"], "library": ["Lightning Bolt", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Rampant Growth", "player": 1 },
+   { "resolve": true, "answers": ["Forest"] }
+  ],
+  "expect": { "players": [ {}, { "battlefield": ["Forest", "Forest"], "exile": ["Forest"] } ] }
+ },
+ {
+  "name": "ruling: an exiled land can be played only on your own turn, not on the opponent's turn",
+  "players": [
+   { "battlefield": ["Opposition Agent"], "library": ["Lightning Bolt"] },
+   { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest"], "library": ["Lightning Bolt", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "cast": "Rampant Growth", "player": 1 },
+   { "resolve": true, "answers": ["Forest"] },
+   { "pass": true, "player": 1 },
+   { "play_land": "Forest", "illegal": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "play_land": "Forest" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"] }, { "exile": [] } ] }
+ },
+ {
+  "name": "ruling: the spell is still cast with its kicker cost paid, using any colour of mana",
+  "players": [
+   { "hand": ["Demonic Tutor"], "battlefield": ["Swamp", "Swamp"], "library": ["Burst Lightning", "Forest"] },
+   { "battlefield": ["Opposition Agent", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Demonic Tutor" },
+   { "resolve": true, "answers": ["Burst Lightning"] },
+   { "pass": true },
+   { "cast": "Burst Lightning", "player": 1, "targets": ["p0"], "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 16, "graveyard_has": ["Demonic Tutor", "Burst Lightning"] }, {} ] }
+ }
+]

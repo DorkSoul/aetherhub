@@ -1,0 +1,203 @@
+[
+ {
+  "name": "draws one card for each creature that died under your control this turn",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Body Count"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Body Count"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Body Count",
+      "Grizzly Bears"
+     ],
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent's creature dying does not count",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Body Count"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Body Count"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "spectacle {B}: cast for B after an opponent lost life",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Body Count"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Body Count",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Body Count"
+     ],
+     "hand_count": 0
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "spectacle is not available without opponent life loss",
+  "players": [
+   {
+    "hand": [
+     "Body Count"
+    ],
+    "battlefield": [
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Body Count",
+    "alt": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+  {
+    "name": "spectacle stays available after the opponent gains back the life it lost this turn",
+    "players": [ { "hand": ["Lightning Bolt", "Body Count"], "battlefield": ["Mountain", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "player": 1, "set_life": 19 }, { "cast": "Body Count", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Body Count"], "hand_count": 0 }, { "life": 19 } ] }
+  },
+  {
+    "name": "ruling: combat damage dealt to the opponent is life loss, enabling spectacle in the second main phase",
+    "players": [ { "hand": ["Body Count"], "battlefield": ["Swamp", "Grizzly Bears"] }, {} ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "cast": "Body Count", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Body Count"], "battlefield_has": ["Grizzly Bears"], "hand_count": 0 }, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: spectacle costs {B} however much life was lost (6 life lost, still one Swamp)",
+    "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt", "Body Count"], "battlefield": ["Mountain", "Mountain", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "cast": "Body Count", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Lightning Bolt", "Body Count"], "hand_count": 0 }, { "life": 14 } ] }
+  },
+  {
+    "name": "ruling: spectacle stays available when the opponent's life ends above its starting total (20 to 17 to 22)",
+    "players": [ { "hand": ["Lightning Bolt", "Body Count"], "battlefield": ["Mountain", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true }, { "player": 1, "set_life": 22 }, { "cast": "Body Count", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Body Count"], "hand_count": 0 }, { "life": 22 } ] }
+  }
+]

@@ -1,0 +1,49 @@
+[
+  {
+    "name": "aura gives +1/+1 to the enchanted creature",
+    "players": [ { "hand": ["Mortal Obstinacy"], "battlefield": ["Plains", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Mortal Obstinacy", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [3, 3] }, "attached": { "Mortal Obstinacy": "Grizzly Bears" } }
+  },
+  {
+    "name": "combat damage to a player: may sacrifice it to destroy an enchantment (declined)",
+    "players": [ { "hand": ["Mortal Obstinacy"], "battlefield": ["Plains", "Grizzly Bears"] }, { "battlefield": ["Mortiphobia"] } ],
+    "steps": [ { "cast": "Mortal Obstinacy", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2", "answers": [false] } ],
+    "expect": { "players": [ { "battlefield_has": ["Mortal Obstinacy"] }, { "life": 17, "battlefield_has": ["Mortiphobia"] } ] }
+  },
+  {
+    "name": "combat damage to a player: sacrifice it and destroy the enchantment",
+    "players": [ { "hand": ["Mortal Obstinacy"], "battlefield": ["Plains", "Grizzly Bears"] }, { "battlefield": ["Mortiphobia"] } ],
+    "steps": [ { "cast": "Mortal Obstinacy", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2", "answers": [true] } ],
+    "expect": { "players": [ { "graveyard_has": ["Mortal Obstinacy"] }, { "life": 17, "graveyard_has": ["Mortiphobia"] } ] }
+  },
+  {
+    "name": "ruling: sacrifice is decided on resolution; aura already gone means no destroy",
+    "players": [
+      { "hand": ["Mortal Obstinacy"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mortiphobia", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Mortal Obstinacy", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Mortal Obstinacy", "Grizzly Bears"] },
+        { "life": 17, "battlefield_has": ["Mortiphobia"], "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

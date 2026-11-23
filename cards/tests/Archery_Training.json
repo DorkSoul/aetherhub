@@ -1,0 +1,77 @@
+[
+  {
+    "name": "enchanted creature deals damage equal to arrow counters to a blocker",
+    "players": [
+      { "hand": ["Archery Training"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Archery Training", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Hill Giant" } ] },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Archery Training": { "arrow": 1 } },
+      "players": [ {}, { "graveyard_has": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "with no arrow counters the ability deals no damage",
+    "players": [
+      { "hand": ["Archery Training"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Archery Training", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Hill Giant" } ] },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "only attacking or blocking creatures can be targeted",
+    "players": [
+      { "hand": ["Archery Training"], "battlefield": ["Plains", "Grizzly Bears"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Archery Training", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Llanowar Elves"], "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: declining the optional upkeep counter leaves no counter, so the granted ability deals no damage",
+    "players": [
+      { "hand": ["Archery Training"], "battlefield": ["Plains", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Archery Training", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Hill Giant" } ] },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Llanowar Elves"] } ]
+    }
+  }
+]

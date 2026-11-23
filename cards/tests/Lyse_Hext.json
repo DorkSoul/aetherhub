@@ -1,0 +1,99 @@
+[
+  {
+    "name": "noncreature spells cost {1} less: Terror costs only {B} with a single Swamp",
+    "players": [
+      { "hand": ["Terror"], "battlefield": ["Lyse Hext", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Terror", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "pt": { "Lyse Hext": [3, 3] }
+    }
+  },
+  {
+    "name": "without Lyse Hext Terror needs two mana",
+    "players": [
+      { "hand": ["Terror"], "battlefield": ["Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Terror", "targets": ["p1:Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "double strike after two noncreature spells this turn",
+    "players": [
+      { "hand": ["Terror", "Lightning Bolt"], "battlefield": ["Lyse Hext", "Swamp", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Terror", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Lyse Hext": [4, 4] },
+      "keywords": { "Lyse Hext": ["DoubleStrike"] }
+    }
+  },
+  {
+    "name": "ruling: noncreature spells cast before Lyse Hext entered count toward her double strike",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lyse Hext"], "battlefield": ["Mountain", "Mountain", "Plains", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lyse Hext" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 14 } ],
+      "keywords": { "Lyse Hext": ["DoubleStrike"] }
+    }
+  },
+  {
+    "name": "ruling: the reduction applies to a flashback cost (Think Twice flashback costs two with Lyse Hext)",
+    "players": [
+      { "graveyard": ["Think Twice"], "battlefield": ["Lyse Hext", "Island", "Island"], "library": ["Forest", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Think Twice", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Forest"], "exile": ["Think Twice"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the reduction only pays generic mana, so Lightning Bolt still needs red mana",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Lyse Hext", "Plains", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Lightning Bolt"] }, { "life": 20 } ]
+    }
+  }
+]

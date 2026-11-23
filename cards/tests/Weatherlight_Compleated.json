@@ -1,0 +1,128 @@
+[
+  {
+    "name": "a creature I control dying puts a phyresis counter (scry 1 with fewer than seven)",
+    "players": [
+      {
+        "hand": [
+          "Shock"
+        ],
+        "battlefield": [
+          "Weatherlight Compleated",
+          "Grizzly Bears",
+          "Mountain"
+        ],
+        "library": [
+          "Island",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Shock",
+        "targets": [
+          "p0:Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Shock",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Weatherlight Compleated": {
+          "phyresis": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "opponent's creature dying does not trigger",
+    "players": [
+      {
+        "hand": [
+          "Shock"
+        ],
+        "battlefield": [
+          "Weatherlight Compleated",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Shock",
+        "targets": [
+          "p1:Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "four phyresis counters: it is also a Phyrexian creature",
+    "players": [ { "battlefield": [ { "name": "Weatherlight Compleated", "counters": { "phyresis": 4 } } ] }, {} ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": { "subtypes": { "Weatherlight Compleated": ["Phyrexian"] } }
+  },
+  {
+    "name": "three phyresis counters: not a Phyrexian",
+    "players": [ { "battlefield": [ { "name": "Weatherlight Compleated", "counters": { "phyresis": 3 } } ] }, {} ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": { "not_subtypes": { "Weatherlight Compleated": ["Phyrexian"] } }
+  },
+  {
+    "name": "ruling: a creature dies with six counters, the seventh counter means a card is drawn",
+    "players": [ { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Weatherlight Compleated", "counters": { "phyresis": 6 } }, "Grizzly Bears"], "library": ["Island", "Forest"] }, {} ],
+    "steps": [ { "cast": "Shock", "targets": ["p0:Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard_has": ["Shock", "Grizzly Bears"] }, {} ], "counters": { "Weatherlight Compleated": { "phyresis": 7 } } }
+  },
+  {
+    "name": "ruling: with five counters the sixth counter means scry 1 and no draw",
+    "players": [ { "hand": ["Shock"], "battlefield": ["Mountain", { "name": "Weatherlight Compleated", "counters": { "phyresis": 5 } }, "Grizzly Bears"], "library": ["Hill Giant", "Island"] }, {} ],
+    "steps": [ { "cast": "Shock", "targets": ["p0:Grizzly Bears"] }, { "resolve": true, "answers": [["Hill Giant"]] } ],
+    "expect": { "players": [ { "hand_count": 0, "library_top": ["Island"] }, {} ], "counters": { "Weatherlight Compleated": { "phyresis": 6 } } }
+  },
+  {
+    "name": "ruling: two of my creatures die in one combat damage step, each trigger resolves once (two draws from six counters)",
+    "players": [ { "battlefield": [ { "name": "Weatherlight Compleated", "counters": { "phyresis": 6 } }, "Grizzly Bears", "Hill Giant" ] }, { "battlefield": ["Grizzly Bears", "Hill Giant"] } ],
+    "steps": [ { "advance_to": "BeginCombat" }, { "attack": [ { "card": "p0:Grizzly Bears", "at": "p1" }, { "card": "p0:Hill Giant", "at": "p1" } ] }, { "block": [ { "blocker": "p1:Grizzly Bears", "attacker": "p0:Grizzly Bears" }, { "blocker": "p1:Hill Giant", "attacker": "p0:Hill Giant" } ], "player": 1 }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "hand_count": 2, "graveyard": ["Grizzly Bears", "Hill Giant"] }, { "graveyard": ["Grizzly Bears", "Hill Giant"] } ], "counters": { "Weatherlight Compleated": { "phyresis": 8 } } }
+  },
+  {
+    "name": "ruling: Weatherlight itself dies at six counters: its trigger still resolves (scry, no draw, since its counters were its count before it left)",
+    "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", { "name": "Weatherlight Compleated", "counters": { "phyresis": 6 } }], "library": ["Hill Giant", "Island"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Weatherlight Compleated"] }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Weatherlight Compleated"] }, { "resolve": true, "answers": [["Hill Giant"]] } ],
+    "expect": { "players": [ { "hand_count": 0, "graveyard_has": ["Weatherlight Compleated"], "library_top": ["Island"] }, {} ] }
+  }
+]

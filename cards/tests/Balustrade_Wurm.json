@@ -1,0 +1,192 @@
+[
+ {
+  "name": "delirium: from the graveyard with four card types it returns with a finality counter",
+  "players": [
+   {
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Balustrade Wurm",
+     "Pacifism",
+     "Plains",
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Balustrade Wurm"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Balustrade Wurm"
+     ]
+    }
+   ],
+   "counters": {
+    "Balustrade Wurm": {
+     "finality": 1
+    }
+   },
+   "pt": {
+    "Balustrade Wurm": [
+     5,
+     5
+    ]
+   }
+  }
+ },
+ {
+  "name": "only three card types in the graveyard: the ability is not activatable",
+  "players": [
+   {
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Balustrade Wurm",
+     "Plains",
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Balustrade Wurm",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Balustrade Wurm",
+      "Plains",
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "with a finality counter it is exiled instead of going to the graveyard",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     {
+      "name": "Balustrade Wurm",
+      "counters": {
+       "finality": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Balustrade Wurm"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Balustrade Wurm"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Balustrade Wurm"
+     ],
+     "graveyard": [
+      "Lightning Bolt",
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "can't be countered: Cancel cannot stop it and it stays on the battlefield",
+  "players": [
+   {"hand": ["Balustrade Wurm"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]},
+   {"hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Balustrade Wurm"},
+   {"pass": true},
+   {"cast": "Cancel", "player": 1, "targets": [{"stack": "Balustrade Wurm"}]},
+   {"resolve": true},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Balustrade Wurm"]}, {"graveyard_has": ["Cancel"]}]
+  }
+ },
+ {
+  "name": "ruling: a permanent with a finality counter is exiled instead of going to the graveyard",
+  "players": [
+   {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", {"name": "Grizzly Bears", "counters": {"finality": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"]},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a finality counter does not stop a bounce, so the creature returns to its owner's hand",
+  "players": [
+   {"hand": ["Unsummon"], "battlefield": ["Island", {"name": "Grizzly Bears", "counters": {"finality": 1}}]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Unsummon", "targets": ["Grizzly Bears"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Grizzly Bears"], "graveyard": ["Unsummon"]},
+    {}
+   ]
+  }
+ }
+]

@@ -1,0 +1,116 @@
+[
+  {
+    "name": "destroys an opponent's artifact",
+    "players": [
+      { "hand": ["Dismantling Wave"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Dismantling Wave", "targets": ["Sol Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dismantling Wave"] },
+        { "battlefield": [], "graveyard": ["Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "up to one: choosing no target destroys nothing",
+    "players": [
+      { "hand": ["Dismantling Wave"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Dismantling Wave", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dismantling Wave"] },
+        { "battlefield": ["Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "each opponent gets its own target slot (one artifact per opponent)",
+    "players": [
+      { "hand": ["Dismantling Wave"], "battlefield": ["Plains", "Plains", "Plains"] },
+      { "battlefield": ["Sol Ring"] },
+      { "battlefield": ["Glorious Anthem"] }
+    ],
+    "steps": [
+      { "cast": "Dismantling Wave", "targets": ["Sol Ring", "Glorious Anthem"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield": [], "graveyard": ["Sol Ring"] },
+        { "battlefield": [], "graveyard": ["Glorious Anthem"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot target your own artifact (no opponent artifact: nothing destroyed)",
+    "players": [
+      { "hand": ["Dismantling Wave"], "battlefield": ["Plains", "Plains", "Plains", "Sol Ring"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dismantling Wave", "targets": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Plains", "Plains", "Plains", "Sol Ring"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cycling draws a card and destroys all artifacts and enchantments",
+    "players": [
+      {
+        "hand": ["Dismantling Wave"],
+        "library": ["Forest"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Glorious Anthem"]
+      },
+      { "battlefield": ["Sol Ring", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Dismantling Wave", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Dismantling Wave", "Glorious Anthem"] },
+        { "battlefield": ["Grizzly Bears"], "graveyard": ["Sol Ring"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a counterspell cannot target the cycling trigger, which is not a spell; the wave still resolves",
+    "players": [
+      {
+        "hand": ["Dismantling Wave"],
+        "library": ["Forest"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Glorious Anthem"]
+      },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island", "Sol Ring"] }
+    ],
+    "steps": [
+      { "activate": "Dismantling Wave", "ability": 0 },
+      { "pass": true },
+      { "cast": "Cancel", "targets": [{ "stack": "Dismantling Wave" }], "player": 1, "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Dismantling Wave", "Glorious Anthem"] },
+        { "hand_count": 1, "graveyard": ["Sol Ring"] }
+      ]
+    }
+  }
+]

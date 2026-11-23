@@ -1,0 +1,46 @@
+{
+  "name": "Venom Connoisseur",
+  "mana_cost": "{1}{G}",
+  "types": ["Creature"],
+  "subtypes": ["Human", "Druid"],
+  "power": 2,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "types": ["Creature"], "controller": "You", "other": true } },
+      "effects": [
+        { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Deathtouch", "duration": "UntilEndOfTurn" },
+        {
+          "type": "If",
+          "cond": { "type": "Control", "who": { "type": "You" }, "filter": { "this": true, "not_has_counter": "Glyph" }, "at_least": 1 },
+          "then": [
+            { "type": "AddCounters", "what": { "type": "This" }, "kind": "Glyph", "n": { "type": "Fixed", "n": 1 } },
+            {
+              "type": "AddTrigger",
+              "trigger": { "type": "EntersBattlefield", "filter": { "types": ["Creature"], "controller": "You", "other": true } },
+              "effects": [
+                {
+                  "type": "GrantKeyword",
+                  "what": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" }, "zone": "Battlefield" },
+                  "keyword": "Deathtouch",
+                  "duration": "UntilEndOfTurn"
+                }
+              ],
+              "once": true,
+              "until": "EndOfTurn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End" },
+      "effects": [
+        { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Glyph", "n": { "type": "CountersOn", "kind": "Glyph", "of": { "type": "This" } } }
+      ]
+    }
+  ],
+  "oracle_text": "Alliance — Whenever another creature you control enters, this creature gains deathtouch until end of turn. If this is the second time this ability has resolved this turn, all creatures you control gain deathtouch until end of turn."
+}

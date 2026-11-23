@@ -1,0 +1,85 @@
+[
+  {
+    "name": "exiles a creature card from your graveyard and deals its power to target creature",
+    "players": [
+      { "hand": ["Corpse Lunge"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Serra Angel"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Corpse Lunge" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swamp"], "exile": ["Serra Angel"], "graveyard": ["Corpse Lunge"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "damage uses the exiled card's power (2), not a larger number: a 3/3 survives",
+    "players": [
+      { "hand": ["Corpse Lunge"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Corpse Lunge" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "graveyard": ["Corpse Lunge"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast without a creature card in your graveyard",
+    "players": [
+      { "hand": ["Corpse Lunge"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Lightning Bolt"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Corpse Lunge", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Corpse Lunge"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "a creature card in an opponent's graveyard does not pay the cost",
+    "players": [
+      { "hand": ["Corpse Lunge"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Serra Angel"], "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Corpse Lunge", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Corpse Lunge"] },
+        { "graveyard": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exactly one creature card is exiled; the other creature card stays in the graveyard",
+    "players": [
+      { "hand": ["Corpse Lunge"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Serra Angel", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Corpse Lunge", "answers": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Serra Angel"], "graveyard": ["Corpse Lunge", "Grizzly Bears"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  }
+]

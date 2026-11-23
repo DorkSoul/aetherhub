@@ -1,0 +1,171 @@
+[
+  {
+    "name": "an effect-caused discard may be put on top of my library instead",
+    "players": [
+      { "hand": ["Faithless Looting", "Grizzly Bears", "Hill Giant"], "battlefield": ["Library of Leng", "Mountain"], "library": ["Island", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant"], true, true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Faithless Looting"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining puts the discarded cards into the graveyard",
+    "players": [
+      { "hand": ["Faithless Looting", "Grizzly Bears", "Hill Giant"], "battlefield": ["Library of Leng", "Mountain"], "library": ["Island", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant"], false, false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Faithless Looting", "Grizzly Bears", "Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "each discarded card is decided separately",
+    "players": [
+      { "hand": ["Faithless Looting", "Grizzly Bears", "Hill Giant"], "battlefield": ["Library of Leng", "Mountain"], "library": ["Island", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant"], true, false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Faithless Looting", "Hill Giant"], "library_top": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a discard paid as a cost goes to the graveyard",
+    "players": [
+      { "hand": ["Tormenting Voice", "Grizzly Bears"], "battlefield": ["Library of Leng", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tormenting Voice" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Tormenting Voice", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no maximum hand size: 8 cards in hand at cleanup are all kept",
+    "players": [
+      { "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "battlefield": ["Library of Leng"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "auto": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 8 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a random discard caused by an opponent's Hymn can be put on top",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Library of Leng"] },
+      { "hand": ["Hymn to Tourach"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Hymn to Tourach", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "library_top": ["Grizzly Bears"], "hand_count": 0 }, { "graveyard": ["Hymn to Tourach"] } ]
+    }
+  },
+  {
+    "name": "ruling: a discard from an opponent's Mind Rot can be put on top (the spell's controller does not matter)",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Library of Leng"] },
+      { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Mind Rot", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "library_top": ["Grizzly Bears"] }, { "graveyard": ["Mind Rot"] } ]
+    }
+  },
+  {
+    "name": "ruling: discard triggers still fire (Megrim) when the card goes to the library",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Library of Leng"] },
+      { "hand": ["Mind Rot"], "battlefield": ["Megrim", "Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Mind Rot", "player": 1, "targets": ["p0"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "life": 18, "library_top": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: milling is not a discard, so milled cards go to the graveyard without a choice",
+    "players": [
+      { "hand": ["Glimpse the Unthinkable"], "battlefield": ["Library of Leng", "Island", "Swamp"], "library": ["Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimpse the Unthinkable", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Hill Giant"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Library of Leng entering after Null Profusion: no maximum hand size",
+    "players": [
+      { "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "battlefield": ["Null Profusion", "Library of Leng"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Cleanup", "auto": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 8 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Null Profusion entering after Library of Leng: maximum hand size two",
+    "players": [
+      { "hand": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "battlefield": ["Library of Leng", "Null Profusion"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Cleanup", "auto": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 2 }, {} ]
+    }
+  }
+]

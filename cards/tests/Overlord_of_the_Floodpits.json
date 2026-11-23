@@ -1,0 +1,264 @@
+[
+ {
+  "name": "impending: draw two then discard one",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Floodpits"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Plains",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Floodpits",
+    "alt": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Overlord of the Floodpits": {
+     "time": 4
+    }
+   },
+   "players": [
+    {
+     "hand": [
+      "Plains"
+     ],
+     "graveyard": [
+      "Forest"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "hard cast: 5/3 flier",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Floodpits"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Floodpits"
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Overlord of the Floodpits": [
+     5,
+     3
+    ]
+   },
+   "keywords": {
+    "Overlord of the Floodpits": [
+     "Flying"
+    ]
+   },
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "impending: end step removes one time counter",
+  "players": [
+   {
+    "hand": [
+     "Overlord of the Floodpits"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Plains",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Overlord of the Floodpits",
+    "alt": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Overlord of the Floodpits": {
+     "time": 3
+    }
+   },
+   "players": [
+    {
+     "hand": [
+      "Plains"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "attack: draw two then discard one",
+  "players": [
+   {
+    "battlefield": [
+     "Overlord of the Floodpits"
+    ],
+    "library": [
+     "Plains",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Overlord of the Floodpits",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2,
+     "graveyard": [
+      "Forest"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "impending (time counters): not a creature, so Doom Blade has no creature to target",
+  "players": [
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", { "name": "Overlord of the Floodpits", "counters": { "time": 4 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Doom Blade", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Doom Blade"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: impending cast is sorcery-speed: illegal during combat",
+  "players": [
+   { "hand": ["Overlord of the Floodpits"], "battlefield": ["Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Overlord of the Floodpits", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Overlord of the Floodpits"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: impending spell is still a spell on the stack and can be countered",
+  "players": [
+   { "hand": ["Overlord of the Floodpits"], "battlefield": ["Island", "Island", "Island"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Overlord of the Floodpits", "alt": 0 },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Overlord of the Floodpits" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Overlord of the Floodpits"] }, { "graveyard": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: removing the last time counter makes it a 5/3 flying creature",
+  "players": [
+   { "battlefield": [{ "name": "Overlord of the Floodpits", "counters": { "time": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Overlord of the Floodpits": [5, 3] },
+   "keywords": { "Overlord of the Floodpits": ["Flying"] }
+  }
+ }
+]

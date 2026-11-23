@@ -1,0 +1,55 @@
+[
+  {
+    "name": "taps all target player's creatures, no energy so no stun",
+    "players": [
+      { "hand": ["Suppression Ray"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears", "Elvish Mystic"] }
+    ],
+    "steps": [ { "cast": "Suppression Ray", "targets": ["p1"] }, { "resolve": true, "answers": [] } ],
+    "expect": {
+      "players": [ { "graveyard": ["Suppression Ray"] }, {} ],
+      "tapped": { "Grizzly Bears": true, "Elvish Mystic": true, "Hill Giant": false },
+      "counters": { "Grizzly Bears": { "stun": 0 } }
+    }
+  },
+  {
+    "name": "pays 1 of 2 energy: one chosen tapped creature gets a stun counter",
+    "players": [
+      { "hand": ["Servant of the Conduit", "Suppression Ray"], "battlefield": ["Forest", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Servant of the Conduit" }, { "resolve": true },
+      { "cast": "Suppression Ray", "targets": ["p1"] },
+      { "resolve": true, "answers": [true, ["Grizzly Bears"], false] }
+    ],
+    "expect": {
+      "players": [ { "energy": 1 }, {} ],
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true },
+      "counters": { "Grizzly Bears": { "stun": 1 }, "Hill Giant": { "stun": 0 } }
+    }
+  },
+  {
+    "name": "already tapped creatures are not chosen: only untapped ones can get stun counters",
+    "players": [
+      { "hand": ["Servant of the Conduit", "Suppression Ray"], "battlefield": ["Forest", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, "Hill Giant" ] }
+    ],
+    "steps": [
+      { "cast": "Servant of the Conduit" }, { "resolve": true },
+      { "cast": "Suppression Ray", "targets": ["p1"] },
+      { "resolve": true, "answers": [true, ["Hill Giant"], true] }
+    ],
+    "expect": {
+      "players": [ { "energy": 0 }, {} ],
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true },
+      "counters": { "Grizzly Bears": { "stun": 0 }, "Hill Giant": { "stun": 1 } }
+    }
+  },
+  {
+    "name": "Orderly Plaza enters tapped",
+    "players": [ { "hand": ["Suppression Ray"] }, {} ],
+    "steps": [ { "play_land": "Suppression Ray", "face": true } ],
+    "expect": { "players": [ { "battlefield": ["Orderly Plaza"] }, {} ], "tapped": { "Orderly Plaza": true } }
+  }
+]

@@ -1,0 +1,154 @@
+[
+  {
+    "name": "protection from snow: blocks a snow attacker, takes no damage, attacker dies",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Ronom Hulk", "sick": false }
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Phyrexian Snowcrusher", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Phyrexian Snowcrusher", "at": "p0" } ] },
+      { "block": [ { "blocker": "Ronom Hulk", "attacker": "Phyrexian Snowcrusher" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": [ "Ronom Hulk" ], "life": 20 },
+        { "graveyard_has": [ "Phyrexian Snowcrusher" ] }
+      ]
+    }
+  },
+  {
+    "name": "no protection from a nonsnow attacker: blocked, Hill Giant dies",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Ronom Hulk", "sick": false }
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Hill Giant", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ] },
+      { "block": [ { "blocker": "Ronom Hulk", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": [ "Ronom Hulk" ] },
+        { "graveyard_has": [ "Hill Giant" ] }
+      ]
+    }
+  },
+  {
+    "name": "cumulative upkeep: the age counter goes up and {1} per age counter is paid",
+    "players": [ { "battlefield": [{ "name": "Ronom Hulk", "counters": { "age": 0 } }, "Forest"] }, {} ],
+    "steps": [ { "pass": true }, { "player": 1, "pass": true }, { "resolve": true, "answers": [true] } ],
+    "expect": {
+      "counters": { "Ronom Hulk": { "age": 1 } },
+      "players": [ { "battlefield_has": ["Ronom Hulk", "Forest"] }, {} ]
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "cumulative upkeep: with one land and two age counters to pay, Ronom Hulk is sacrificed",
+    "players": [ { "battlefield": [{ "name": "Ronom Hulk", "counters": { "age": 1 } }, "Forest"] }, {} ],
+    "steps": [ { "pass": true }, { "player": 1, "pass": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "graveyard": ["Ronom Hulk"], "battlefield_lacks": ["Ronom Hulk"] }, {} ]
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "ruling: a snow creature cannot block Ronom Hulk (protection from snow): unblocked, 5 damage goes through",
+    "players": [
+      { "battlefield": [ { "name": "Ronom Hulk", "sick": false } ] },
+      { "battlefield": [ { "name": "Phyrexian Snowcrusher", "sick": false } ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ronom Hulk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Phyrexian Snowcrusher", "attacker": "Ronom Hulk" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": [ "Ronom Hulk" ] }, { "life": 15, "battlefield_has": [ "Phyrexian Snowcrusher" ] } ]
+    }
+  },
+  {
+    "name": "control: a non-snow Hill Giant can block Ronom Hulk, so no damage reaches the defender",
+    "players": [
+      { "battlefield": [ { "name": "Ronom Hulk", "sick": false } ] },
+      { "battlefield": [ { "name": "Hill Giant", "sick": false } ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ronom Hulk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Ronom Hulk" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": [ "Ronom Hulk" ] }, { "life": 20, "graveyard_has": [ "Hill Giant" ] } ]
+    }
+  },
+  {
+    "name": "ruling: a snow sorcery cannot target Ronom Hulk (protection from snow), so Blizzard Brawl is illegal with it",
+    "players": [
+      { "hand": ["Blizzard Brawl"], "battlefield": ["Forest", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Ronom Hulk"] }
+    ],
+    "steps": [
+      { "cast": "Blizzard Brawl", "targets": ["Grizzly Bears", "Ronom Hulk"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Blizzard Brawl"], "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Ronom Hulk"] } ]
+    }
+  },
+  {
+    "name": "control: the same Blizzard Brawl is legal against a non-snow creature (Grizzly Bears fights Hill Giant and dies)",
+    "players": [
+      { "hand": ["Blizzard Brawl"], "battlefield": ["Forest", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Ronom Hulk", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Blizzard Brawl", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Blizzard Brawl"] }, { "battlefield_has": ["Ronom Hulk", "Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "ruling: paying cumulative upkeep is optional; declining with enough mana sacrifices Ronom Hulk",
+    "players": [ { "battlefield": [{ "name": "Ronom Hulk", "counters": { "age": 2 } }, "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "pass": true }, { "player": 1, "pass": true }, { "resolve": true, "answers": [false] } ],
+    "expect": {
+      "players": [ { "graveyard": ["Ronom Hulk"], "battlefield_lacks": ["Ronom Hulk"] }, {} ]
+    },
+    "start": "Untap"
+  },
+  {
+    "name": "ruling: no partial payment: owing {3} with only two lands, Ronom Hulk is sacrificed",
+    "players": [ { "battlefield": [{ "name": "Ronom Hulk", "counters": { "age": 2 } }, "Forest", "Forest"] }, {} ],
+    "steps": [ { "pass": true }, { "player": 1, "pass": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "graveyard": ["Ronom Hulk"], "battlefield_lacks": ["Ronom Hulk"] }, {} ]
+    },
+    "start": "Untap"
+  }
+]

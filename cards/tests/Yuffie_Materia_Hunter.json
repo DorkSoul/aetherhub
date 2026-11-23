@@ -1,0 +1,98 @@
+[
+  {
+    "name": "ETB gains control of a noncreature artifact and attaches your Equipment",
+    "players": [
+      { "hand": ["Yuffie, Materia Hunter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Bonesplitter"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Yuffie, Materia Hunter" },
+      { "resolve": true, "targets": ["Sol Ring"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sol Ring", "Bonesplitter", "Yuffie, Materia Hunter"] },
+        { "battlefield_lacks": ["Sol Ring"] }
+      ],
+      "attached": { "Bonesplitter": "Yuffie, Materia Hunter" },
+      "pt": { "Yuffie, Materia Hunter": [5, 3] }
+    }
+  },
+  {
+    "name": "declining the attach leaves the Equipment unattached and Yuffie unchanged",
+    "players": [
+      { "hand": ["Yuffie, Materia Hunter"], "battlefield": ["Mountain", "Mountain", "Mountain", "Bonesplitter"] },
+      { "battlefield": ["Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Yuffie, Materia Hunter" },
+      { "resolve": true, "targets": ["Sol Ring"], "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sol Ring", "Yuffie, Materia Hunter"] },
+        {}
+      ],
+      "pt": { "Yuffie, Materia Hunter": [3, 3] }
+    }
+  },
+  {
+    "name": "ninjutsu from hand: the unblocked Grizzly Bears returns and Yuffie deals 3 combat damage",
+    "players": [
+      { "hand": ["Yuffie, Materia Hunter"], "battlefield": ["Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "activate": "Yuffie, Materia Hunter", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Yuffie, Materia Hunter"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ninjutsu cannot return a blocked attacker",
+    "players": [
+      { "hand": ["Yuffie, Materia Hunter"], "battlefield": ["Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "activate": "Yuffie, Materia Hunter", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Yuffie, Materia Hunter"], "battlefield_lacks": ["Yuffie, Materia Hunter"] }, {} ] }
+  },
+  {
+    "name": "ruling: ninjutsu cannot be activated before blockers are declared",
+    "players": [
+      { "hand": ["Yuffie, Materia Hunter"], "battlefield": ["Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "activate": "Yuffie, Materia Hunter", "ability": 0, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "hand": ["Yuffie, Materia Hunter"], "battlefield_has": ["Grizzly Bears"] }, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: ninjutsu in the end of combat step still returns the unblocked attacker; Yuffie deals no damage",
+    "players": [
+      { "hand": ["Yuffie, Materia Hunter"], "battlefield": ["Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "EndCombat" },
+      { "activate": "Yuffie, Materia Hunter", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Yuffie, Materia Hunter"] }, { "life": 18 } ] }
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "gives +1/+1 and reach until end of turn",
+    "players": [
+      { "hand": ["Silk Net"], "battlefield": ["Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Silk Net", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "keywords": { "Grizzly Bears": ["Reach"] },
+      "players": [ { "graveyard": ["Silk Net"] }, {} ]
+    }
+  },
+  {
+    "name": "needs a creature to target",
+    "players": [
+      { "hand": ["Silk Net"], "battlefield": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Silk Net", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Silk Net"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the +1/+1 and reach both end at cleanup (2/2 without reach on the opponent's turn)",
+    "players": [
+      { "hand": ["Silk Net"], "battlefield": ["Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Silk Net", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] },
+      "keywords": { "Grizzly Bears": [] }
+    }
+  },
+  {
+    "name": "ruling: reach from Silk Net lets Grizzly Bears block a flyer on the opponent's turn",
+    "players": [
+      { "hand": ["Silk Net"], "battlefield": ["Forest", "Grizzly Bears"] },
+      { "battlefield": [{ "name": "Serra Angel", "sick": false }] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Serra Angel", "at": "p0" } ], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Silk Net", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Serra Angel" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ]
+    }
+  }
+]

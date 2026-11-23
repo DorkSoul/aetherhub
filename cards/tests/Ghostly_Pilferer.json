@@ -1,0 +1,228 @@
+[
+  {
+    "name": "opponent casts a spell from graveyard: you draw",
+    "players": [
+      {
+        "battlefield": [
+          "Ghostly Pilferer",
+          "Sol Ring"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ],
+        "graveyard": [
+          "Ancient Grudge"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Ancient Grudge",
+        "alt": 0,
+        "player": 1,
+        "targets": [
+          "Sol Ring"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "battlefield_has": [
+            "Ghostly Pilferer"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent casts a spell from hand: no draw",
+    "players": [
+      {
+        "battlefield": [
+          "Ghostly Pilferer"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Ghostly Pilferer"
+        ],
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "graveyard_has": [
+            "Ghostly Pilferer"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "your own spell from graveyard does not draw",
+    "players": [
+      {
+        "graveyard": [
+          "Gravecrawler"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Lord of the Undead",
+          "Ghostly Pilferer"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Gravecrawler",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "untapping: paying {2} draws a card",
+    "players": [
+      { "library": ["Grizzly Bears"], "battlefield": [{ "name": "Ghostly Pilferer", "tapped": true }, "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "untapping: declining the payment draws nothing",
+    "players": [
+      { "library": ["Grizzly Bears"], "battlefield": [{ "name": "Ghostly Pilferer", "tapped": true }, "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "battlefield_has": ["Ghostly Pilferer"] }, {} ]
+    }
+  },
+  {
+    "name": "discarding a card makes it unblockable this turn: the blocker is not allowed to block",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Ghostly Pilferer"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Ghostly Pilferer", "ability": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Ghostly Pilferer", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Ghostly Pilferer" }], "player": 1, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "battlefield_has": ["Ghostly Pilferer"] }, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "without discarding, the same attacker can be blocked by the Bears (control for the unblockable case)",
+    "players": [
+      { "battlefield": ["Ghostly Pilferer"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Ghostly Pilferer", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Ghostly Pilferer" }], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Ghostly Pilferer"] }, { "life": 20, "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: once blocked, discarding for unblockable does not unblock the attacker: no damage to the player",
+    "players": [
+      { "hand": ["Island"], "battlefield": ["Ghostly Pilferer"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Ghostly Pilferer", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Ghostly Pilferer" }], "player": 1 },
+      { "activate": "Ghostly Pilferer", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: the draw for an opponent's cast from graveyard still happens when that spell is countered",
+    "players": [
+      { "hand": ["Counterspell"], "battlefield": ["Ghostly Pilferer", "Sol Ring", "Island", "Island"], "library": ["Grizzly Bears"] },
+      { "battlefield": ["Forest"], "graveyard": ["Ancient Grudge"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Ancient Grudge", "alt": 0, "player": 1, "targets": ["Sol Ring"] },
+      { "cast": "Counterspell", "targets": [{ "stack": "Ancient Grudge" }] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Ghostly Pilferer"] }, {} ]
+    }
+  }
+]

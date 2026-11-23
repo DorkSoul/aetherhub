@@ -1,0 +1,254 @@
+[
+  {
+    "name": "dies as a creature and returns as a non-creature enchantment",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Enduring Vitality"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Enduring Vitality"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "battlefield": [
+            "Enduring Vitality"
+          ],
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "exiled Enduring Vitality does not return",
+    "players": [
+      {
+        "hand": [
+          "Path to Exile"
+        ],
+        "battlefield": [
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Enduring Vitality"
+        ],
+        "library": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Path to Exile",
+        "targets": [
+          "Enduring Vitality"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Forest"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Path to Exile"
+          ]
+        },
+        {
+          "battlefield": [
+            "Forest"
+          ],
+          "exile": [
+            "Enduring Vitality"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "returned Enduring Vitality is not a creature (Murder has no legal target)",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Murder"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Enduring Vitality"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Enduring Vitality"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Murder",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Murder"]
+        },
+        {
+          "battlefield": ["Enduring Vitality"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "creatures you control tap for one mana of any color (Bolt paid by Grizzly Bears)",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Enduring Vitality", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "control: without Enduring Vitality a creature cannot tap for the Bolt's mana",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Lightning Bolt"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: returned Enduring Vitality loses the Elk and Glimmer creature types",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      },
+      {
+        "battlefield": ["Enduring Vitality"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Enduring Vitality"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield_has": ["Enduring Vitality"] }
+      ],
+      "not_subtypes": { "Enduring Vitality": ["Elk", "Glimmer"] }
+    }
+  },
+  {
+    "name": "ruling: a token copy of Enduring Vitality does not return when it dies",
+    "players": [
+      {
+        "hand": ["Rite of Replication", "Lightning Bolt"],
+        "battlefield": ["Island", "Island", "Swamp", "Swamp", "Mountain"]
+      },
+      {
+        "battlefield": ["Enduring Vitality"]
+      }
+    ],
+    "steps": [
+      { "cast": "Rite of Replication", "targets": ["Enduring Vitality"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p0:Enduring Vitality"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Enduring Vitality"], "graveyard_has": ["Lightning Bolt"] },
+        { "battlefield_has": ["Enduring Vitality"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a nontoken Clone copy of Enduring Vitality returns to the battlefield (as the Clone card) when it dies as a creature",
+    "players": [
+      {
+        "hand": ["Clone", "Lightning Bolt"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Mountain"]
+      },
+      {
+        "battlefield": ["Enduring Vitality"]
+      }
+    ],
+    "steps": [
+      { "cast": "Clone" },
+      { "resolve": true, "answers": [0] },
+      { "cast": "Lightning Bolt", "targets": ["p0:Enduring Vitality"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Clone"], "graveyard_has": ["Lightning Bolt"] },
+        { "battlefield_has": ["Enduring Vitality"] }
+      ]
+    }
+  }
+]

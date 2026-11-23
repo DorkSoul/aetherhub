@@ -1,0 +1,22 @@
+[
+  { "name": "gets a corpse counter for each creature that died this turn at the end step",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Scavenging Ghoul"] }, { "battlefield": ["Grizzly Bears", "Grizzly Bears"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "End" } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Scavenging Ghoul": { "corpse": 1 } } } },
+  { "name": "no creature died this turn: no corpse counter at the end step",
+    "players": [ { "battlefield": ["Mountain", "Scavenging Ghoul"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "advance_to": "End" } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Scavenging Ghoul": { "corpse": 0 } } } },
+  { "name": "remove a corpse counter to regenerate it from lethal damage",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Scavenging Ghoul", "counters": { "corpse": 1 } }] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Scavenging Ghoul"] }, { "activate": "Scavenging Ghoul", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield": ["Mountain", "Scavenging Ghoul"], "graveyard": ["Lightning Bolt"] }, {} ], "counters": { "Scavenging Ghoul": { "corpse": 0 } }, "tapped": { "Scavenging Ghoul": true } } },
+  { "name": "no corpse counter: cannot activate the regenerate ability",
+    "players": [ { "battlefield": ["Mountain", "Scavenging Ghoul"] }, {} ],
+    "steps": [ { "activate": "Scavenging Ghoul", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield": ["Mountain", "Scavenging Ghoul"] }, {} ] } },
+  { "name": "ruling: a Ghoul that entered after the creature died still gets the corpse counter",
+    "players": [ { "hand": ["Lightning Bolt", "Scavenging Ghoul"], "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "cast": "Scavenging Ghoul" }, { "resolve": true }, { "advance_to": "End" } ],
+    "expect": { "players": [ {}, {} ], "counters": { "Scavenging Ghoul": { "corpse": 1 } } } }
+]

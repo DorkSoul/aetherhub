@@ -1,0 +1,155 @@
+[
+ {
+  "name": "{1},{T}: deals 1 damage to each opponent",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Blisterspit Gremlin",
+      "sick": false
+     },
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Blisterspit Gremlin",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 19
+    }
+   ]
+  }
+ },
+ {
+  "name": "casting a noncreature spell untaps it",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     {
+      "name": "Blisterspit Gremlin",
+      "sick": false,
+      "tapped": true
+     },
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Blisterspit Gremlin"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "casting a creature spell does not untap it",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     {
+      "name": "Blisterspit Gremlin",
+      "sick": false,
+      "tapped": true
+     },
+     "Forest",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Blisterspit Gremlin": true
+   }
+  }
+ },
+ {
+  "name": "ruling: the untap trigger resolves before the spell and still happens when the spell is countered",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Blisterspit Gremlin", "sick": false, "tapped": true }, "Mountain" ] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 20, "graveyard": ["Counterspell"] } ],
+   "tapped": { "Blisterspit Gremlin": false }
+  }
+ },
+ {
+  "name": "ruling: after the untap trigger resolves, the Gremlin can ping again in response to the spell",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Blisterspit Gremlin", "sick": false, "tapped": true }, "Mountain", "Mountain" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "activate": "Blisterspit Gremlin", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 16 } ],
+   "tapped": { "Blisterspit Gremlin": true }
+  }
+ }
+]

@@ -1,0 +1,171 @@
+[
+  {
+    "name": "the exiled card that was not chosen cannot be played",
+    "players": [
+      {
+        "hand": [
+          "Island"
+        ],
+        "library": [
+          "Mountain",
+          "Lightning Bolt",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Party Thrasher",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Main1",
+        "answers": [
+          true,
+          "Island",
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "declining the discard exiles nothing",
+    "players": [
+      {
+        "hand": [
+          "Island"
+        ],
+        "library": [
+          "Mountain",
+          "Lightning Bolt",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Party Thrasher",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Main1",
+        "answers": [
+          false
+        ]
+      },
+      {
+        "cast": "Lightning Bolt",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Island",
+            "Mountain"
+          ],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "noncreature spell from hand does not get convoke",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Party Thrasher"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Hill Giant"
+        ],
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "convoke from exile: Party Thrasher pays the {R} of a Lightning Bolt cast from exile, with no lands",
+    "players": [
+      { "hand": ["Island"], "library": ["Mountain", "Lightning Bolt", "Grizzly Bears"], "battlefield": ["Party Thrasher"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1", "answers": [true, "Island", "Lightning Bolt"] },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"], "answers": [["Party Thrasher"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Party Thrasher"], "hand": ["Mountain"], "exile": ["Grizzly Bears"] },
+        { "graveyard": ["Hill Giant"] }
+      ],
+      "tapped": { "Party Thrasher": true }
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played only while the stack is empty",
+    "players": [
+      { "hand": ["Island", "Lightning Bolt"], "library": ["Mountain", "Forest", "Grizzly Bears"], "battlefield": ["Party Thrasher", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1", "answers": [true, "Island", "Forest"] },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "play_land": "Forest", "illegal": true },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Party Thrasher", "Forest"], "exile": ["Grizzly Bears"], "hand": ["Mountain"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  }
+]

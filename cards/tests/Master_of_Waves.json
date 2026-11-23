@@ -1,0 +1,279 @@
+[
+ {
+  "name": "ETB creates one 1/0 Elemental per point of blue devotion (Master itself counts)",
+  "players": [
+   {
+    "hand": [
+     "Master of Waves"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Air Elemental"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Master of Waves"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Air Elemental",
+      "Master of Waves",
+      "Elemental 1-0 Blue",
+      "Elemental 1-0 Blue",
+      "Elemental 1-0 Blue"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "devotion of one (only Master's own {U}) makes exactly one token",
+  "players": [
+   {
+    "hand": [
+     "Master of Waves"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Master of Waves"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Master of Waves",
+      "Elemental 1-0 Blue"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "non-blue mana symbols do not add devotion (Grizzly Bears adds none)",
+  "players": [
+   {
+    "hand": [
+     "Master of Waves"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Master of Waves"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Island",
+      "Island",
+      "Island",
+      "Island",
+      "Grizzly Bears",
+      "Master of Waves",
+      "Elemental 1-0 Blue"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Elemental creatures you control get +1/+1 (Master itself is not an Elemental)",
+  "players": [
+   {
+    "battlefield": [
+     "Master of Waves",
+     "Air Elemental",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Master of Waves": [
+     2,
+     1
+    ],
+    "Air Elemental": [
+     5,
+     5
+    ],
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "protection from red: a red creature-only removal spell has no legal target",
+  "players": [
+   {
+    "battlefield": [
+     "Master of Waves"
+    ]
+   },
+   {
+    "hand": [
+     "Flame Slash"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Flame Slash",
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Master of Waves"
+     ]
+    },
+    {
+     "hand": [
+      "Flame Slash"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "protection from red: a red creature can't block Master of Waves",
+  "players": [
+   { "battlefield": ["Master of Waves", "Grizzly Bears"] },
+   { "battlefield": ["Goblin Piker"] }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Master of Waves", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Goblin Piker", "attacker": "Master of Waves" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 16, "battlefield_has": ["Goblin Piker"] } ]
+  }
+ },
+ {
+  "name": "ruling: Elemental tokens enter as 2/1 under Master of Waves",
+  "players": [
+   { "hand": ["Master of Waves"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Master of Waves" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Elemental 1-0 Blue"] }, {} ],
+   "pt": { "Elemental 1-0 Blue": [2, 1] }
+  }
+ },
+ {
+  "name": "ruling: Elemental tokens die when Master of Waves leaves (toughness 0 without its +1/+1)",
+  "players": [
+   { "battlefield": ["Master of Waves", "Elemental 1-0 Blue", "Elemental 1-0 Blue"] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Master of Waves"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Master of Waves"], "battlefield_lacks": ["Elemental 1-0 Blue"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: devotion is counted as the trigger resolves (Master removed in response: no tokens)",
+  "players": [
+   { "hand": ["Master of Waves"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Master of Waves" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Doom Blade", "player": 1, "targets": ["Master of Waves"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Master of Waves"], "battlefield_lacks": ["Elemental 1-0 Blue"] },
+    {}
+   ]
+  }
+ }
+]

@@ -1,0 +1,282 @@
+[
+ {
+  "name": "enchanted artifact taps for two mana of one color for the target player",
+  "players": [
+   {
+    "hand": [
+     "Bigger on the Inside"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Forest",
+     "Forest",
+     "Short Sword"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Bigger on the Inside",
+    "targets": [
+     "Short Sword"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Short Sword",
+    "ability": 32768,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "R"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "R": 2
+     }
+    },
+    {}
+   ],
+   "attached": {
+    "Bigger on the Inside": "Short Sword"
+   }
+  }
+ },
+ {
+  "name": "the next spell they cast has cascade",
+  "players": [
+   {
+    "hand": [
+     "Bigger on the Inside",
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Forest",
+     "Forest",
+     "Mountain",
+     "Short Sword"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Bigger on the Inside",
+    "targets": [
+     "Short Sword"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Short Sword",
+    "ability": 32768,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "R"
+    ]
+   },
+   {
+    "cast": "Hill Giant"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a spell cast without the ability does not cascade",
+  "players": [
+   {
+    "hand": [
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Hill Giant"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "can enchant a land",
+  "players": [
+   {
+    "hand": [
+     "Bigger on the Inside"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Forest",
+     "Forest",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Bigger on the Inside",
+    "targets": [
+     "Plains"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Bigger on the Inside": "Plains"
+   }
+  }
+ },
+ {
+  "name": "ruling: cascade passes over a land and a costlier card and casts the first cheaper nonland",
+  "players": [
+   {
+    "hand": ["Bigger on the Inside", "Hill Giant"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Short Sword"],
+    "library": ["Forest", "Serra Angel", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bigger on the Inside", "targets": ["Short Sword"] },
+   { "resolve": true },
+   { "activate": "Short Sword", "ability": 32768, "targets": ["p0"] },
+   { "resolve": true, "answers": ["R"] },
+   { "cast": "Hill Giant" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant", "Grizzly Bears"], "battlefield_lacks": ["Serra Angel"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: declining the optional cast of the cascaded card leaves it out of play",
+  "players": [
+   {
+    "hand": ["Bigger on the Inside", "Hill Giant"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Short Sword"],
+    "library": ["Grizzly Bears", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bigger on the Inside", "targets": ["Short Sword"] },
+   { "resolve": true },
+   { "activate": "Short Sword", "ability": 32768, "targets": ["p0"] },
+   { "resolve": true, "answers": ["R"] },
+   { "cast": "Hill Giant" },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the cascade effect applies to the next spell only; a second spell the same turn does not cascade",
+  "players": [
+   {
+    "hand": ["Bigger on the Inside", "Hill Giant", "Hill Giant"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Short Sword"],
+    "library": ["Forest", "Grizzly Bears", "Serra Angel"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bigger on the Inside", "targets": ["Short Sword"] },
+   { "resolve": true },
+   { "activate": "Short Sword", "ability": 32768, "targets": ["p0"] },
+   { "resolve": true, "answers": ["R"] },
+   { "cast": "Hill Giant" },
+   { "resolve": true, "answers": [true] },
+   { "cast": "Hill Giant" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant", "Grizzly Bears"], "library_top": ["Serra Angel"] },
+    {}
+   ]
+  }
+ }
+]

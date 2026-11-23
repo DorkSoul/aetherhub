@@ -1,0 +1,254 @@
+[
+  {
+    "name": "creature entering: Mulldrifter's enters draw does not happen",
+    "players": [
+      {
+        "hand": [
+          "Mulldrifter"
+        ],
+        "battlefield": [
+          "Hushbringer",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Mulldrifter"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "battlefield_has": [
+            "Mulldrifter"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "creature dying: the Wurmcoil Engine's death tokens do not happen (any controller)",
+    "players": [
+      {
+        "hand": [
+          "Murder"
+        ],
+        "battlefield": [
+          "Hushbringer",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Wurmcoil Engine"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Murder",
+        "targets": [
+          "Wurmcoil Engine"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Hushbringer",
+            "Swamp",
+            "Swamp",
+            "Swamp"
+          ]
+        },
+        {
+          "battlefield": [],
+          "graveyard": [
+            "Wurmcoil Engine"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "control: without Hushbringer the Wurmcoil Engine leaves two Wurms",
+    "players": [
+      {
+        "hand": [
+          "Murder"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Wurmcoil Engine"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Murder",
+        "targets": [
+          "Wurmcoil Engine"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield": [
+            "Phyrexian Wurm 3-3 Deathtouch",
+            "Phyrexian Wurm 3-3 Lifelink"
+          ],
+          "graveyard": [
+            "Wurmcoil Engine"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: replacement effects still apply: Leyline of the Void exiles a creature that would die",
+    "players": [
+      { "battlefield": ["Hushbringer", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Leyline of the Void"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hushbringer"], "exile": ["Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Leyline of the Void"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature entering does not trigger another creature's enters ability (Soul Warden)",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Hushbringer", "Soul Warden", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Hushbringer itself entering does not trigger Soul Warden",
+    "players": [
+      { "hand": ["Hushbringer"], "battlefield": ["Soul Warden", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hushbringer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "battlefield_has": ["Hushbringer", "Soul Warden"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sacrifice still triggers Mayhem Devil while Hushbringer is out",
+    "players": [
+      { "battlefield": ["Hushbringer", "Mayhem Devil", "Viscera Seer", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Viscera Seer", "answers": [["Grizzly Bears"]], "targets": ["p1"] },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Mayhem Devil", "Viscera Seer"] },
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that dies does not trigger its leaves-the-battlefield ability while Hushbringer is out (Skyclave Apparition)",
+    "players": [
+      { "hand": ["Skyclave Apparition", "Hushbringer"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Skyclave Apparition" },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "cast": "Hushbringer" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Skyclave Apparition"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hushbringer"], "graveyard": ["Skyclave Apparition"] },
+        { "battlefield": ["Mountain"], "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land that became a creature dies as a creature, so Hushbringer stops Blood Artist's trigger",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Hushbringer", "Blood Artist", "Mutavault", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Mutavault" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Mutavault"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "graveyard": ["Lightning Bolt", "Mutavault"], "battlefield_has": ["Blood Artist", "Hushbringer"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

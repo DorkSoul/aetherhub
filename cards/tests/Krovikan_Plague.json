@@ -1,0 +1,54 @@
+[
+  {
+    "name": "tapping the enchanted creature deals 1 damage and puts a -0/-1 counter on it",
+    "players": [ { "hand": ["Krovikan Plague"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "cast": "Krovikan Plague", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Krovikan Plague", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Krovikan Plague", "Grizzly Bears"] }, { "life": 19, "battlefield_has": ["Serra Angel"] } ],
+      "pt": { "Grizzly Bears": [2, 1] },
+      "counters": { "Grizzly Bears": { "m0m1": 1 } },
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "cannot activate again while the enchanted creature is tapped",
+    "players": [ { "hand": ["Krovikan Plague"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "cast": "Krovikan Plague", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Krovikan Plague", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Krovikan Plague", "ability": 0, "targets": ["Serra Angel"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Krovikan Plague", "Grizzly Bears"] }, { "battlefield_has": ["Serra Angel"] } ],
+      "pt": { "Grizzly Bears": [2, 1] }
+    }
+  },
+  {
+    "name": "cannot enchant a creature you do not control",
+    "players": [ { "hand": ["Krovikan Plague"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Krovikan Plague", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Krovikan Plague"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: if the opponent gains control of the enchanted creature, the Aura goes to the graveyard",
+    "players": [ { "hand": ["Krovikan Plague"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island"] } ],
+    "steps": [
+      { "cast": "Krovikan Plague", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true, "player": 1 }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Krovikan Plague"] }, { "battlefield_has": ["Grizzly Bears", "Control Magic"] } ] }
+  }
+]

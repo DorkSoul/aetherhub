@@ -1,0 +1,196 @@
+[
+  {
+    "name": "deals 1 damage to a player",
+    "players": [
+      {
+        "hand": [
+          "Flame Jab"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Flame Jab",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Flame Jab"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "retrace: cast from graveyard by discarding a land",
+    "players": [
+      {
+        "graveyard": [
+          "Flame Jab"
+        ],
+        "hand": [
+          "Mountain"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Flame Jab",
+        "alt": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "graveyard_has": [
+            "Flame Jab",
+            "Mountain"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "retrace needs a land card to discard",
+    "players": [
+      {
+        "graveyard": [
+          "Flame Jab"
+        ],
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Flame Jab",
+        "alt": 0,
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Flame Jab"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: retrace is a normal cast from the graveyard; 1 damage to a creature leaves it alive",
+    "players": [
+      { "graveyard": ["Flame Jab"], "hand": ["Mountain"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Flame Jab", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Flame Jab", "Mountain"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after a retrace spell resolves, its controller can cast it again right away from the graveyard",
+    "players": [
+      { "graveyard": ["Flame Jab"], "hand": ["Mountain", "Mountain"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flame Jab", "alt": 0, "targets": ["p1"], "answers": [["Mountain"]] },
+      { "resolve": true },
+      { "cast": "Flame Jab", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Flame Jab", "Mountain", "Mountain"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a retrace spell whose only target is gone fizzles and goes back to the graveyard",
+    "players": [
+      { "graveyard": ["Flame Jab"], "hand": ["Mountain", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Flame Jab", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Flame Jab", "Lightning Bolt", "Mountain"] },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: retrace follows sorcery timing: not castable while another spell is on the stack",
+    "players": [
+      { "graveyard": ["Flame Jab"], "hand": ["Lightning Bolt", "Mountain"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Flame Jab", "alt": 0, "targets": ["p1"], "illegal": true },
+      { "resolve": true },
+      { "cast": "Flame Jab", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Flame Jab", "Lightning Bolt", "Mountain"] },
+        { "life": 16 }
+      ]
+    }
+  }
+]

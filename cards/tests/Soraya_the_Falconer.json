@@ -1,0 +1,99 @@
+[
+ {
+  "name": "Bird creatures get +1/+1 and other creatures do not",
+  "players": [
+   {
+    "battlefield": ["Soraya the Falconer", "Birds of Paradise", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "pt": {
+    "Birds of Paradise": [1, 2],
+    "Grizzly Bears": [2, 2],
+    "Soraya the Falconer": [2, 2]
+   }
+  }
+ },
+ {
+  "name": "{1}{W}: target Bird gains banding until end of turn",
+  "players": [
+   {
+    "battlefield": ["Soraya the Falconer", "Birds of Paradise", "Plains", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Soraya the Falconer", "ability": 0, "targets": ["Birds of Paradise"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "keywords": {
+    "Birds of Paradise": ["Banding"]
+   }
+  }
+ },
+ {
+  "name": "a non-Bird creature cannot be the target of the banding ability",
+  "players": [
+   {
+    "battlefield": ["Soraya the Falconer", "Grizzly Bears", "Plains", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Soraya the Falconer", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "keywords": {
+    "Grizzly Bears": []
+   }
+  }
+ },
+ {
+  "name": "ruling: two nonbanding creatures cannot join a band with a banding Bird (no band: Serra blocks only the Bird, 5 damage gets through)",
+  "players": [
+   { "battlefield": ["Soraya the Falconer", "Birds of Paradise", "Grizzly Bears", "Hill Giant", "Plains", "Island"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "activate": "Soraya the Falconer", "ability": 0, "targets": ["Birds of Paradise"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Birds of Paradise", "at": "p1", "band": 1 }, { "card": "Grizzly Bears", "at": "p1", "band": 1 }, { "card": "Hill Giant", "at": "p1", "band": 1 } ] },
+   { "block": [ { "blocker": "Serra Angel", "attacker": "Birds of Paradise" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 15 } ] }
+ },
+ {
+  "name": "ruling: a banding Bird with one nonbanding creature is a band; blocking the nonbanding creature blocks the whole band",
+  "players": [
+   { "battlefield": ["Soraya the Falconer", "Birds of Paradise", "Grizzly Bears", "Plains", "Island"] },
+   { "battlefield": ["Serra Angel"] }
+  ],
+  "steps": [
+   { "activate": "Soraya the Falconer", "ability": 0, "targets": ["Birds of Paradise"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Birds of Paradise", "at": "p1", "band": 1 }, { "card": "Grizzly Bears", "at": "p1", "band": 1 } ] },
+   { "block": [ { "blocker": "Serra Angel", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: band members must attack the same player or planeswalker (Bears at Chandra is not in the Bird's band; Chandra takes 2)",
+  "players": [
+   { "battlefield": ["Soraya the Falconer", "Birds of Paradise", "Grizzly Bears", "Plains", "Island"] },
+   { "battlefield": ["Chandra, Torch of Defiance", "Serra Angel"] }
+  ],
+  "steps": [
+   { "activate": "Soraya the Falconer", "ability": 0, "targets": ["Birds of Paradise"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Birds of Paradise", "at": "p1", "band": 1 }, { "card": "Grizzly Bears", "at": "Chandra, Torch of Defiance", "band": 1 } ] },
+   { "block": [ { "blocker": "Serra Angel", "attacker": "Birds of Paradise" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "counters": { "Chandra, Torch of Defiance": { "Loyalty": 2 } } }
+ }
+]

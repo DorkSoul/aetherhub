@@ -1,0 +1,260 @@
+[
+ {
+  "name": "a permanent you control that would die is exiled and returns at the next end step",
+  "players": [
+   {
+    "hand": [
+     "Cosmic Intervention",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Grizzly Bears",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Cosmic Intervention"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Cosmic Intervention",
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the exiled permanent comes back at the beginning of the end step",
+  "players": [
+   {
+    "hand": [
+     "Cosmic Intervention",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Grizzly Bears",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Cosmic Intervention"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "exile": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "an opponent's permanent is not exiled instead and goes to its owner's graveyard",
+  "players": [
+   {
+    "hand": [
+     "Cosmic Intervention",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Cosmic Intervention"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": []
+    },
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "foretell from hand costs {2} and exiles the card face down",
+  "players": [ { "hand": ["Cosmic Intervention"], "battlefield": ["Plains", "Plains"] }, {} ],
+  "steps": [ { "activate": "Cosmic Intervention", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "exile": ["Cosmic Intervention"], "hand_count": 0 }, {} ] }
+ },
+ {
+  "name": "foretelling needs {2}: one land is not enough",
+  "players": [ { "hand": ["Cosmic Intervention"], "battlefield": ["Plains"] }, {} ],
+  "steps": [ { "activate": "Cosmic Intervention", "ability": 0, "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Cosmic Intervention"] }, {} ] }
+ },
+ {
+  "name": "foretold card is cast for {1}{W} on a later turn",
+  "players": [ { "hand": ["Cosmic Intervention"], "battlefield": ["Plains", "Plains"] }, {} ],
+  "steps": [ { "activate": "Cosmic Intervention", "ability": 0 }, { "resolve": true }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Main1" },
+             { "cast": "Cosmic Intervention", "alt": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Cosmic Intervention"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: Blood Artist's dies trigger does not fire for a creature exiled instead of dying",
+  "players": [
+   { "hand": ["Cosmic Intervention", "Lightning Bolt"], "battlefield": ["Blood Artist", "Grizzly Bears", "Plains", "Plains", "Plains", "Plains", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Cosmic Intervention" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 20, "exile": ["Grizzly Bears"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: a token that would go to the graveyard is exiled and does not return",
+  "players": [
+   { "hand": ["Cosmic Intervention", "Raise the Alarm", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Cosmic Intervention" },
+   { "resolve": true },
+   { "cast": "Raise the Alarm" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Soldier"] },
+   { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Soldier"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: a foretold instant can be cast during the next player's turn",
+  "players": [ { "hand": ["Cosmic Intervention"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] }, {} ],
+  "steps": [
+   { "activate": "Cosmic Intervention", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "End", "auto": true },
+   { "advance_to": "Upkeep", "auto": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Cosmic Intervention", "alt": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Cosmic Intervention"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: each exiled permanent returns on its own at the end step",
+  "players": [
+   { "hand": ["Cosmic Intervention", "Lightning Bolt", "Shock"], "battlefield": ["Grizzly Bears", "Hill Giant", "Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Cosmic Intervention" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "cast": "Shock", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: foretell is a special action taken in response to a spell on your turn",
+  "players": [
+   { "hand": ["Cosmic Intervention", "Lightning Bolt"], "battlefield": ["Mountain", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "tap_for_mana": "Plains", "color": "W" },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "activate": "Cosmic Intervention", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "exile": ["Cosmic Intervention"], "graveyard": ["Lightning Bolt"] }, { "battlefield_lacks": ["Grizzly Bears"] } ] }
+ }
+]

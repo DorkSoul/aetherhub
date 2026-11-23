@@ -1,0 +1,42 @@
+[
+  {
+    "name": "unkicked: destroys a tapped creature",
+    "players": [ { "hand": ["Runic Shot"], "battlefield": ["Plains"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "cast": "Runic Shot", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Runic Shot"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "cannot target an untapped creature",
+    "players": [ { "hand": ["Runic Shot"], "battlefield": ["Plains", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Runic Shot", "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Runic Shot"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "kicked: destroys the tapped creature (scry 2 is asked after it resolves)",
+    "players": [ { "hand": ["Runic Shot"], "battlefield": ["Plains", "Island"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "cast": "Runic Shot", "targets": ["Grizzly Bears"], "answers": [true] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Runic Shot"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a kicked Runic Shot is kicked, so its scry 2 happens (bottom both)",
+    "players": [ { "hand": ["Runic Shot"], "battlefield": ["Plains", "Island"], "library": ["Mountain", "Island", "Swamp"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "cast": "Runic Shot", "targets": ["Grizzly Bears"], "answers": [true] }, { "resolve": true, "answers": [[0, 1]] } ],
+    "expect": { "players": [ { "graveyard": ["Runic Shot"], "library_top": ["Swamp"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: an unkicked Runic Shot does not scry",
+    "players": [ { "hand": ["Runic Shot"], "battlefield": ["Plains"], "library": ["Mountain", "Island", "Swamp"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "cast": "Runic Shot", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Runic Shot"], "library_top": ["Mountain", "Island", "Swamp"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a Twincast copy of a kicked Runic Shot is also kicked and scries 2",
+    "players": [ { "hand": ["Runic Shot", "Twincast"], "battlefield": ["Plains", "Island", "Island", "Island", "Island"], "library": ["Mountain", "Island", "Swamp"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [
+      { "cast": "Runic Shot", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "cast": "Twincast", "targets": [ { "stack": "Runic Shot" } ] },
+      { "resolve": true, "answers": [[0, 1]] }
+    ],
+    "expect": { "players": [ { "graveyard": ["Runic Shot", "Twincast"], "library_top": ["Swamp"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "name": "toxic: combat damage to a player gives poison 2 plus 1 from its own trigger",
+    "players": [
+      { "battlefield": ["Necrogen Rotpriest"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Necrogen Rotpriest", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Necrogen Rotpriest"] },
+        { "poison": 3, "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "activated ability: target creature with toxic gains deathtouch until end of turn",
+    "players": [
+      { "battlefield": ["Swamp", "Forest", "Island", "Necrogen Rotpriest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Necrogen Rotpriest", "targets": ["Necrogen Rotpriest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Necrogen Rotpriest": ["Deathtouch", "Toxic2"] }
+    }
+  },
+  {
+    "name": "a creature without toxic gets no poison from the trigger",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "poison": 0, "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: toxic gives no poison when its combat damage is dealt to a blocker",
+    "players": [
+      { "battlefield": ["Necrogen Rotpriest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Necrogen Rotpriest", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Necrogen Rotpriest" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Necrogen Rotpriest"] },
+        { "battlefield_has": ["Grizzly Bears"], "poison": 0, "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: ten or more poison counters loses the game (toxic 2 takes 9 to 11, game over)",
+    "players": [
+      { "battlefield": ["Necrogen Rotpriest"] },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Necrogen Rotpriest", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 0,
+      "players": [ {}, { "poison": 11 } ]
+    }
+  }
+]

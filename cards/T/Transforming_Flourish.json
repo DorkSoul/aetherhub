@@ -1,0 +1,65 @@
+{
+  "name": "Transforming Flourish",
+  "mana_cost": "{2}{R}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "filter": { "this": true }, "by": "You" },
+      "effects": [
+        {
+          "type": "May",
+          "who": { "type": "You" },
+          "effects": [
+            { "type": "CopySpell", "what": { "type": "TriggerObject" }, "new_targets": true },
+            { "type": "ChoosePlayer", "who": { "type": "You" }, "opponent": true },
+            {
+              "type": "May",
+              "who": { "type": "ChosenPlayer" },
+              "effects": [
+                { "type": "CopySpell", "what": { "type": "TriggerObject" }, "new_targets": true, "by": { "type": "ChosenPlayer" } }
+              ]
+            }
+          ]
+        }
+      ],
+      "from": "Stack"
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "any_of": [ { "types": ["Artifact"], "controller": "Opponent" }, { "types": ["Creature"], "controller": "Opponent" } ] }
+          },
+          "label": "target artifact or creature you don't control"
+        }
+      ],
+      "effects": [
+        { "type": "Destroy", "what": { "type": "Target", "idx": 0 }, "remember": true },
+        {
+          "type": "If",
+          "cond": { "type": "RememberedIs", "filter": {} },
+          "then": [
+            {
+              "type": "RevealUntil",
+              "who": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } },
+              "filter": { "not_types": ["Land"] },
+              "count": { "type": "Fixed", "n": 1 },
+              "to": "Exile",
+              "rest": "Exile"
+            },
+            {
+              "type": "CastFree",
+              "what": { "type": "Remembered" },
+              "may": true,
+              "by": { "type": "ControllerOf", "of": { "type": "Target", "idx": 0 } }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Demonstrate (When you cast this spell, you may copy it. If you do, choose an opponent to also copy it. Players may choose new targets for their copies.)\nDestroy target artifact or creature you don't control. If that permanent is destroyed this way, its controller exiles cards from the top of their library until they exile a nonland card, then they may cast that card without paying its mana cost."
+}

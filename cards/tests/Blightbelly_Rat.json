@@ -1,0 +1,68 @@
+[
+  {"name": "when it dies, proliferate adds counters to a player with poison and a permanent with counters",
+   "players": [
+     {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Blightbelly Rat", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}]},
+     {"poison": 2}
+   ],
+   "steps": [
+     {"cast": "Lightning Bolt", "targets": ["Blightbelly Rat"]},
+     {"resolve": true, "answers": [["Grizzly Bears", "p1"]]}
+   ],
+   "expect": {
+     "counters": {"Grizzly Bears": {"p1p1": 2}},
+     "pt": {"Grizzly Bears": [4, 4]},
+     "players": [{"graveyard": ["Lightning Bolt", "Blightbelly Rat"]}, {"poison": 3}]
+   }
+  },
+  {"name": "proliferate may choose nothing",
+   "players": [
+     {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Blightbelly Rat", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}]},
+     {"poison": 2}
+   ],
+   "steps": [
+     {"cast": "Lightning Bolt", "targets": ["Blightbelly Rat"]},
+     {"resolve": true, "answers": [[]]}
+   ],
+   "expect": {
+     "counters": {"Grizzly Bears": {"p1p1": 1}},
+     "pt": {"Grizzly Bears": [3, 3]},
+     "players": [{}, {"poison": 2}]
+   }
+  },
+  {"name": "ruling: ten poison counters lose the game (state-based, immediate)",
+   "players": [ {"battlefield": ["Blightbelly Rat"]}, {"poison": 9} ],
+   "steps": [ {"advance_to": "Main1"}, {"advance_to": "Main1"}, {"attack": [{"card": "Blightbelly Rat", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"} ],
+   "expect": {"winner": 0}},
+  {"name": "ruling: toxic has no effect when the creature's combat damage goes to a creature (blocked by Grizzly Bears)",
+   "players": [ {"battlefield": ["Blightbelly Rat"]}, {"battlefield": ["Grizzly Bears"]} ],
+   "steps": [ {"advance_to": "Main1"}, {"advance_to": "Main1"}, {"attack": [{"card": "Blightbelly Rat", "at": "p1"}]}, {"block": [{"blocker": "Grizzly Bears", "attacker": "Blightbelly Rat"}]}, {"advance_to": "Main2"} ],
+   "expect": {"players": [ {}, {"life": 20, "poison": 0} ]}},
+  {"name": "ruling: a replacement on the counters (Vorinclex) doubles the poison from toxic",
+   "players": [ {"battlefield": ["Blightbelly Rat", "Vorinclex, Monstrous Raider"]}, {} ],
+   "steps": [ {"advance_to": "Main1"}, {"advance_to": "Main1"}, {"attack": [{"card": "Blightbelly Rat", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"} ],
+   "expect": {"players": [ {}, {"life": 18, "poison": 2} ]}},
+  {"name": "ruling: toxic does not change the damage (2 power deals 2, one poison counter)",
+   "players": [ {"battlefield": ["Blightbelly Rat"]}, {} ],
+   "steps": [ {"advance_to": "Main1"}, {"advance_to": "Main1"}, {"attack": [{"card": "Blightbelly Rat", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"} ],
+   "expect": {"players": [ {}, {"life": 18, "poison": 1} ]}},
+  {"name": "ruling: +1/+1 and -1/-1 counters on it are removed in pairs as a state-based action",
+   "players": [ {"battlefield": [{"name": "Blightbelly Rat", "counters": {"p1p1": 1, "m1m1": 1}}]}, {} ],
+   "steps": [],
+   "expect": {"counters": {"Blightbelly Rat": {"p1p1": 0, "m1m1": 0}}, "pt": {"Blightbelly Rat": [2, 2]}, "players": [ {"battlefield_has": ["Blightbelly Rat"]}, {} ]}},
+  {"name": "ruling: a replacement that modifies the damage (Gratuitous Violence) does not change the counters",
+   "players": [ {"battlefield": ["Blightbelly Rat", "Gratuitous Violence"]}, {} ],
+   "steps": [ {"advance_to": "Main1"}, {"advance_to": "Main1"}, {"attack": [{"card": "Blightbelly Rat", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"} ],
+   "expect": {"players": [ {}, {"life": 16, "poison": 1} ]}},
+  {"name": "ruling: proliferate may choose an opponent's permanent and an opponent's player",
+   "players": [ {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Blightbelly Rat"]}, {"poison": 2, "battlefield": [{"name": "Grizzly Bears", "counters": {"p1p1": 1}}]} ],
+   "steps": [ {"cast": "Lightning Bolt", "targets": ["Blightbelly Rat"]}, {"resolve": true, "answers": [["Grizzly Bears", "p1"]]} ],
+   "expect": {"counters": {"Grizzly Bears": {"p1p1": 2}}, "pt": {"Grizzly Bears": [4, 4]}, "players": [ {"graveyard": ["Lightning Bolt", "Blightbelly Rat"]}, {"poison": 3} ]}},
+  {"name": "ruling: a player with two kinds of counters gets one of each when proliferated",
+   "players": [ {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Blightbelly Rat"]}, {"poison": 2, "energy": 1} ],
+   "steps": [ {"cast": "Lightning Bolt", "targets": ["Blightbelly Rat"]}, {"resolve": true, "answers": [["p1"]]} ],
+   "expect": {"players": [ {"graveyard": ["Lightning Bolt", "Blightbelly Rat"]}, {"poison": 3, "energy": 2} ]}},
+  {"name": "ruling: a 'whenever you proliferate' trigger fires even when no permanent or player is chosen",
+   "players": [ {"hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Blightbelly Rat", "Scheming Aspirant", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}]}, {} ],
+   "steps": [ {"cast": "Lightning Bolt", "targets": ["Blightbelly Rat"]}, {"resolve": true, "answers": [[]]} ],
+   "expect": {"counters": {"Grizzly Bears": {"p1p1": 1}}, "players": [ {"life": 22, "graveyard": ["Lightning Bolt", "Blightbelly Rat"]}, {"life": 18} ]}}
+]

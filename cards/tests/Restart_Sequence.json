@@ -1,0 +1,104 @@
+[
+  {
+    "name": "normal cost returns a creature card from your graveyard",
+    "players": [
+      {
+        "hand": ["Restart Sequence"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Restart Sequence" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears"],
+          "graveyard": ["Restart Sequence"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "freerunning after an Assassin dealt combat damage to a player",
+    "players": [
+      {
+        "hand": ["Restart Sequence"],
+        "battlefield": ["Blood Operative", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Blood Operative", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Restart Sequence", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "freerunning is not available without combat damage this turn",
+    "players": [
+      {
+        "hand": ["Restart Sequence"],
+        "battlefield": ["Blood Operative", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Restart Sequence", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Restart Sequence"], "battlefield_has": ["Blood Operative"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a dead Assassin still enables freerunning for the rest of the turn",
+    "players": [
+      {
+        "hand": ["Restart Sequence"],
+        "battlefield": ["Blood Operative", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Blood Operative", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Blood Operative"] },
+      { "resolve": true },
+      { "cast": "Restart Sequence", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Blood Operative", "Restart Sequence"] },
+        { "life": 17 }
+      ]
+    }
+  }
+]

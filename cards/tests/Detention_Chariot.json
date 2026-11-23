@@ -1,0 +1,90 @@
+[
+ {
+  "name": "enters and exiles an opposing creature until it leaves",
+  "players": [
+   { "hand": ["Detention Chariot"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Detention Chariot" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Detention Chariot"] },
+    { "exile": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "cycling for W draws a card",
+  "players": [
+   { "hand": ["Detention Chariot"], "battlefield": ["Plains"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Detention Chariot", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Detention Chariot"], "hand_count": 1 },
+    {}
+   ]
+  }
+ },
+  {
+    "name": "crew 3 with Grizzly Bears and Llanowar Elves, then attack for 6",
+    "players": [
+      { "battlefield": ["Detention Chariot", "Grizzly Bears", "Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Detention Chariot", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Detention Chariot", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Detention Chariot", "Grizzly Bears", "Llanowar Elves"] }, { "life": 14 } ],
+      "tapped": { "Grizzly Bears": true, "Llanowar Elves": true }
+    }
+  },
+  {
+    "name": "crew needs total power 3: Grizzly Bears alone cannot crew",
+    "players": [
+      { "battlefield": ["Detention Chariot", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Detention Chariot", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Detention Chariot"] }, {} ],
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: if the Vehicle leaves before its enters trigger resolves, the creature is never exiled",
+    "players": [
+      { "hand": ["Detention Chariot"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Fracturing Gust"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Detention Chariot" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Fracturing Gust", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Detention Chariot"] },
+        { "life": 22, "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

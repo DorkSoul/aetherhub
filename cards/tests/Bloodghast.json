@@ -1,0 +1,261 @@
+[
+  {
+    "name": "landfall returns it from the graveyard",
+    "players": [
+      {
+        "hand": [
+          "Forest"
+        ],
+        "graveyard": [
+          "Bloodghast"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Forest",
+            "Bloodghast"
+          ],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the return is optional",
+    "players": [
+      {
+        "hand": [
+          "Forest"
+        ],
+        "graveyard": [
+          "Bloodghast"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Forest"
+          ],
+          "graveyard": [
+            "Bloodghast"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "does not trigger from the battlefield or for opponent lands",
+    "players": [
+      {
+        "graveyard": [
+          "Bloodghast"
+        ]
+      },
+      {
+        "hand": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "play_land": "Forest",
+        "player": 1
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Bloodghast"
+          ],
+          "battlefield": []
+        },
+        {
+          "battlefield": [
+            "Forest"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "haste while an opponent has 10 or less life",
+    "players": [
+      {
+        "hand": [
+          "Bloodghast"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "life": 10
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Bloodghast"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Bloodghast",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "turn": 1,
+      "players": [
+        {},
+        {
+          "life": 8
+        }
+      ],
+      "keywords": {
+        "Bloodghast": [
+          "Haste"
+        ]
+      }
+    }
+  },
+  {
+    "name": "no haste while every opponent has more than 10 life (first attack comes on turn 3)",
+    "players": [
+      {
+        "hand": [
+          "Bloodghast"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "life": 11
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Bloodghast"
+      },
+      {
+        "resolve": true
+      },
+      { "advance_to": "Main1", "player": 1 }, { "advance_to": "Main1" }, {
+        "attack": [
+          {
+            "card": "Bloodghast",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "turn": 3,
+      "players": [
+        {},
+        {
+          "life": 9
+        }
+      ]
+    }
+  },
+  {
+    "name": "can't block: the Bloodghast's block is dropped and Grizzly Bears is unblocked",
+    "players": [
+      {"battlefield": [{"name": "Grizzly Bears", "sick": false}]},
+      {"battlefield": ["Bloodghast", "Hill Giant"]}
+    ],
+    "steps": [
+      {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+      {"block": [{"blocker": "Bloodghast", "attacker": "Grizzly Bears"}]},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {"players": [{}, {"life": 18}]}
+  },
+  {
+    "name": "ruling: landfall triggers for a land put onto the battlefield by a spell",
+    "players": [
+      { "hand": ["Rampant Growth"], "battlefield": ["Forest", "Forest"], "graveyard": ["Bloodghast"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rampant Growth" },
+      { "resolve": true, "answers": ["Forest", true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bloodghast", "Forest"], "graveyard": ["Rampant Growth"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: each landfall ability triggers (Lotus Cobra and Bloodghast)",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Lotus Cobra"], "graveyard": ["Bloodghast"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true, "answers": [true, "G"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest", "Bloodghast", "Lotus Cobra"], "graveyard": [] },
+        {}
+      ]
+    }
+  }
+]

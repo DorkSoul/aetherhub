@@ -1,0 +1,22 @@
+[
+  { "name": "target attacking creature gets +2/+0",
+    "players": [ { "battlefield": ["Runesword", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "activate": "Runesword", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [4, 2] } } },
+  { "name": "unblocked, the creature survives and Runesword stays",
+    "players": [ { "battlefield": ["Runesword", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "activate": "Runesword", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "block": [], "player": 1 }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Runesword", "Grizzly Bears"] }, { "life": 16 } ] } },
+  { "name": "the creature dies in combat: Runesword is sacrificed and the creature it killed is exiled instead of dying",
+    "players": [ { "battlefield": ["Runesword", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "activate": "Runesword", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 }, { "advance_to": "Main2" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears", "Runesword"] }, { "exile": ["Hill Giant"] } ] } },
+  { "name": "a creature dealt damage by the pumped creature can't regenerate and is exiled",
+    "players": [ { "battlefield": ["Runesword", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Drudge Skeletons", "Swamp"] } ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "activate": "Runesword", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "block": [ { "blocker": "Drudge Skeletons", "attacker": "Grizzly Bears" } ], "player": 1 }, { "pass": true }, { "activate": "Drudge Skeletons", "player": 1, "ability": 0 }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Runesword", "Grizzly Bears"] }, { "exile": ["Drudge Skeletons"] } ] } },
+  { "name": "it must target an attacking creature",
+    "players": [ { "battlefield": ["Runesword", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [ { "activate": "Runesword", "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] } } }
+]

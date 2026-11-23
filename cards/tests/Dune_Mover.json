@@ -1,0 +1,173 @@
+[
+ {
+  "name": "ETB: search for a basic land and put it on top of the library",
+  "players": [
+   {
+    "hand": [
+     "Dune Mover",
+     "Opt"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Mountain",
+     "Island",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dune Mover"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true,
+     [
+      "Island"
+     ]
+    ]
+   },
+   {
+    "cast": "Opt"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Island"
+     ],
+     "battlefield_has": [
+      "Dune Mover"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining the search leaves the hand empty",
+  "players": [
+   {
+    "hand": [
+     "Dune Mover"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dune Mover"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0,
+     "battlefield_has": [
+      "Dune Mover"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+  {
+    "name": "toxic: combat damage dealt to a blocking creature gives no poison counter",
+    "players": [ { "battlefield": ["Dune Mover"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Dune Mover" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Dune Mover"] }, { "life": 20, "poison": 0, "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "toxic: unblocked, the damage is still 2 and the player also gets one poison counter",
+    "players": [ { "battlefield": ["Dune Mover"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 1 } ] }
+  },
+  {
+    "name": "toxic: a tenth poison counter loses the game",
+    "players": [ { "battlefield": ["Dune Mover"] }, { "poison": 9 } ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "poison": 10 } ], "winner": 0 }
+  },
+  {
+    "name": "ruling: Vorinclex under your control doubles the poison counters toxic puts on the opponent",
+    "players": [ { "battlefield": ["Dune Mover", "Vorinclex, Monstrous Raider"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: Vorinclex under the opponent's control halves the toxic counters (one becomes zero)",
+    "players": [ { "battlefield": ["Dune Mover"] }, { "battlefield": ["Vorinclex, Monstrous Raider"] } ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: lifelink still applies alongside toxic (gain 2, opponent gets a poison counter)",
+    "players": [ { "battlefield": ["Dune Mover", "Basilisk Collar", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "activate": "Basilisk Collar", "targets": ["Dune Mover"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 22 }, { "life": 18, "poison": 1 } ] }
+  },
+  {
+    "name": "ruling: Gratuitous Violence doubles the damage but toxic still gives one poison counter",
+    "players": [ { "battlefield": ["Dune Mover", "Gratuitous Violence"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Dune Mover", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16, "poison": 1 } ] }
+  }
+]

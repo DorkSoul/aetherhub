@@ -1,0 +1,284 @@
+[
+ {
+  "name": "a creature dealing combat damage to an opponent: its controller may pay 1 life to draw",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     },
+     "Gix, Yawgmoth Praetor"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 19,
+     "hand_count": 1
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining the payment draws nothing",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Grizzly Bears",
+      "sick": false
+     },
+     "Gix, Yawgmoth Praetor"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "hand_count": 0
+    },
+    {
+     "life": 18
+    }
+   ]
+  }
+ },
+ {
+  "name": "a creature of the opponent dealing combat damage to Gix's controller gives no draw",
+  "players": [
+   {
+    "battlefield": [
+     "Gix, Yawgmoth Praetor"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "player": 1,
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p0"
+     }
+    ]
+   },
+   {
+    "player": 0,
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 18,
+     "hand_count": 0
+    },
+    {
+     "hand_count": 1,
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "discard 2: exile the top two cards of the opponent's library, play the land and cast the creature free",
+  "players": [
+   {
+    "hand": [
+     "Forest",
+     "Island"
+    ],
+    "battlefield": [
+     "Gix, Yawgmoth Praetor",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "library": [
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Gix, Yawgmoth Praetor",
+    "ability": 0,
+    "targets": [
+     "p1"
+    ],
+    "answers": [
+     2
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true,
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Mountain",
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Forest",
+      "Island"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining leaves the exiled cards in exile",
+  "players": [
+   {
+    "hand": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Gix, Yawgmoth Praetor",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "library": [
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Gix, Yawgmoth Praetor",
+    "ability": 0,
+    "targets": [
+     "p1"
+    ],
+    "answers": [
+     1
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Mountain",
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Forest"
+     ]
+    },
+    {
+     "exile": [
+      "Mountain"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a free-cast X spell exiled by Gix is cast with X=0",
+  "players": [
+   { "hand": ["Mountain"], "battlefield": ["Gix, Yawgmoth Praetor", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "library": ["Fireball", "Forest"] }
+  ],
+  "steps": [
+   { "activate": "Gix, Yawgmoth Praetor", "ability": 0, "targets": ["p1"], "answers": [1] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": { "players": [ { "graveyard": ["Mountain"] }, { "life": 20, "graveyard": ["Fireball"] } ] }
+ },
+ {
+  "name": "ruling: only one exiled land can be played in a turn, the other stays exiled",
+  "players": [
+   { "hand": ["Island", "Island"], "battlefield": ["Gix, Yawgmoth Praetor", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "library": ["Forest", "Forest"] }
+  ],
+  "steps": [
+   { "activate": "Gix, Yawgmoth Praetor", "ability": 0, "targets": ["p1"], "answers": [2] },
+   { "resolve": true, "answers": [true, false] }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"], "graveyard": ["Island", "Island"] }, { "exile": ["Forest"] } ] }
+ }
+]

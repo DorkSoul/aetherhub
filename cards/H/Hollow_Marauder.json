@@ -1,0 +1,45 @@
+{
+  "name": "Hollow Marauder",
+  "mana_cost": "{6}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Specter", "Rogue"],
+  "power": 4,
+  "toughness": 2,
+  "keywords": ["Flying"],
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CostChange", "filter": { "this": true }, "whose": "You", "generic": -1,
+        "per": { "type": "Count", "filter": { "types": ["Creature"] }, "zone": "Graveyard", "player": { "type": "You" } }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "min": 0, "max": 255, "label": "any number of target opponents" }
+      ],
+      "effects": [
+        { "type": "ForEach", "objects": { "type": "Targets" },
+          "effects": [
+            { "type": "If",
+              "cond": { "type": "Compare", "a": { "type": "HandSize", "who": { "type": "EachObject" } }, "cmp": { "op": "Ge", "n": 1 } },
+              "then": [
+                { "type": "Choose", "who": { "type": "EachObject" }, "zone": "Hand", "min": 1, "max": 1,
+                  "then": [
+                    { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard", "discard": true },
+                    { "type": "If",
+                      "cond": { "type": "Not", "c": { "type": "RememberedIs", "filter": { "mana_value": { "op": "Ge", "n": 4 } } } },
+                      "then": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ] }
+                  ] }
+              ],
+              "else": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "This spell costs {1} less to cast for each creature card in your graveyard.\nFlying\nWhen Hollow Marauder enters, any number of target opponents each discard a card. For each of those opponents who didn't discard a card with mana value 4 or greater, draw a card."
+}

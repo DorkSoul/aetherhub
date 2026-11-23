@@ -1,0 +1,60 @@
+[
+  {
+    "name": "gains control of a mana value 2 creature until end of turn",
+    "players": [
+      { "hand": ["Claim the Firstborn"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Claim the Firstborn", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_lacks": ["Grizzly Bears"] } ],
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  },
+  {
+    "name": "cannot target a creature with mana value above 3",
+    "players": [
+      { "hand": ["Claim the Firstborn"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Claim the Firstborn", "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Serra Angel"] } ]
+    }
+  },
+  {
+    "name": "ruling: a tapped creature I already control can be targeted; it untaps and gains haste",
+    "players": [
+      { "hand": ["Claim the Firstborn"], "battlefield": ["Mountain", { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Claim the Firstborn", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "tapped": { "Grizzly Bears": false },
+      "keywords": { "Grizzly Bears": ["Haste"] }
+    }
+  },
+  {
+    "name": "ruling: a creature with {X} in its cost has mana value 0 and can be targeted",
+    "players": [
+      { "hand": ["Claim the Firstborn"], "battlefield": ["Mountain"] },
+      { "battlefield": [{ "name": "Walking Ballista", "counters": { "p1p1": 2 } }] }
+    ],
+    "steps": [
+      { "cast": "Claim the Firstborn", "targets": ["Walking Ballista"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Walking Ballista"] }, { "battlefield_lacks": ["Walking Ballista"] } ]
+    }
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "name": "Kamahl's Will",
+  "mana_cost": "{3}{G}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 1,
+      "choose_max": 1,
+      "max_if": [
+        { "type": "Control", "who": { "type": "You" }, "filter": { "commander": true, "controller": "You" }, "at_least": 1 },
+        2
+      ],
+      "modes": [
+        {
+          "text": "Until end of turn, any number of target lands you control become 1/1 Elemental creatures with vigilance, indestructible, and haste. They're still lands.",
+          "targets": [
+            { "what": { "type": "Permanent", "filter": { "types": ["Land"], "controller": "You" } }, "min": 0, "max": 255, "label": "any number of lands you control" }
+          ],
+          "effects": [
+            {
+              "type": "ForEach",
+              "objects": { "type": "Targets" },
+              "effects": [
+                { "type": "Animate", "what": { "type": "Remembered" }, "power": 1, "toughness": 1, "add_types": ["Creature"], "add_subtypes": ["Elemental"], "duration": "UntilEndOfTurn" },
+                { "type": "GrantKeyword", "what": { "type": "Remembered" }, "keyword": "Vigilance", "duration": "UntilEndOfTurn" },
+                { "type": "GrantKeyword", "what": { "type": "Remembered" }, "keyword": "Indestructible", "duration": "UntilEndOfTurn" },
+                { "type": "GrantKeyword", "what": { "type": "Remembered" }, "keyword": "Haste", "duration": "UntilEndOfTurn" }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Choose target creature you don't control. Each creature you control deals damage equal to its power to that creature.",
+          "targets": [
+            { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "Opponent" } }, "label": "creature you don't control" }
+          ],
+          "effects": [
+            {
+              "type": "ForEach",
+              "objects": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" }, "zone": "Battlefield" },
+              "effects": [
+                { "type": "DealDamage", "source": { "type": "Remembered" }, "amount": { "type": "PowerOf", "of": { "type": "Remembered" } }, "to": { "type": "Target", "idx": 0 } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n• Until end of turn, any number of target lands you control become 1/1 Elemental creatures with vigilance, indestructible, and haste. They're still lands.\n• Choose target creature you don't control. Each creature you control deals damage equal to its power to that creature."
+}

@@ -1,0 +1,88 @@
+[
+ {
+  "name": "a found artifact with lesser or equal mana value enters the battlefield",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island", "Mind Stone"], "library": ["Sol Ring"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Sol Ring"], "battlefield_lacks": ["Mind Stone"], "graveyard": ["Mind Stone", "Transmute Artifact"] }, {} ] }
+ },
+ {
+  "name": "a costlier artifact enters when you pay the difference",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island", "Island", "Sol Ring"], "library": ["Mind Stone"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "resolve": true, "answers": [0, true] }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Mind Stone"], "graveyard": ["Sol Ring", "Transmute Artifact"] }, {} ] }
+ },
+ {
+  "name": "a costlier artifact goes to the graveyard when you don't pay",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island", "Island", "Sol Ring"], "library": ["Mind Stone"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "resolve": true, "answers": [0, false] }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Mind Stone"], "graveyard": ["Mind Stone", "Sol Ring", "Transmute Artifact"] }, {} ] }
+ },
+ {
+  "name": "without an artifact to sacrifice nothing is searched",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island"], "library": ["Sol Ring"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Sol Ring"], "graveyard": ["Transmute Artifact"] }, {} ] }
+ },
+ {
+  "name": "ruling: you don't have to find the card (declined search)",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island", "Mind Stone"], "library": ["Sol Ring"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Sol Ring"], "graveyard_has": ["Mind Stone", "Transmute Artifact"], "library_count": 1 }, {} ] }
+ },
+ {
+  "name": "ruling: only one artifact is sacrificed (the other stays on the battlefield)",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island", "Mind Stone", "Sol Ring"], "library": ["Mind Stone"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "resolve": true, "answers": ["Mind Stone", "Mind Stone"] }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Sol Ring", "Mind Stone"], "graveyard_has": ["Mind Stone", "Transmute Artifact"] }, {} ] }
+ },
+ {
+  "name": "ruling: countered Transmute Artifact sacrifices nothing and searches nothing",
+  "players": [
+   { "hand": ["Transmute Artifact"], "battlefield": ["Island", "Island", "Mind Stone"], "library": ["Sol Ring"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Transmute Artifact" },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Transmute Artifact" } ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Mind Stone"], "graveyard_has": ["Transmute Artifact"], "library_count": 1 }, { "graveyard_has": ["Counterspell"] } ] }
+ }
+]

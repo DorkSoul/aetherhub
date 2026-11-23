@@ -1,0 +1,55 @@
+[
+  {
+    "name": "when it dies, put a +1/+1 counter on a creature you control",
+    "players": [
+      { "hand": [], "battlefield": ["Steadfast Sentry", "Grizzly Bears", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Steadfast Sentry"], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [ { "graveyard": ["Steadfast Sentry"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "dies with no other creature you control: no counter",
+    "players": [
+      { "battlefield": ["Steadfast Sentry"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Steadfast Sentry"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Steadfast Sentry"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a creature dealt lethal damage at the same time can't be saved by the death trigger",
+    "players": [
+      { "battlefield": ["Steadfast Sentry", "Savannah Lions", "Goblin Test Pilot"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Steadfast Sentry", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Steadfast Sentry" }, { "blocker": "Hill Giant", "attacker": "Savannah Lions" } ] },
+      { "advance_to": "Main2", "targets": ["Goblin Test Pilot"] }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Steadfast Sentry", "Savannah Lions"], "battlefield_has": ["Goblin Test Pilot"] }, { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] } ],
+      "counters": { "Goblin Test Pilot": { "p1p1": 1 } }
+    }
+  }
+]

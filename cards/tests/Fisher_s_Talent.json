@@ -1,0 +1,74 @@
+[
+  {"name": "upkeep: revealing a land creates a Fish and draws a card",
+   "start": "Untap",
+   "players": [{"library": ["Forest", "Grizzly Bears"], "battlefield": [{"name": "Fisher's Talent", "counters": {"level": 1}}]}, {}],
+   "steps": [{"advance_to": "Upkeep", "answers": [true]}],
+   "expect": {"players": [{"hand_count": 1, "battlefield": ["Fisher's Talent", "Fish"]}, {}]}},
+  {"name": "upkeep: declining the reveal creates nothing but still draws",
+   "start": "Untap",
+   "players": [{"library": ["Forest", "Grizzly Bears"], "battlefield": [{"name": "Fisher's Talent", "counters": {"level": 1}}]}, {}],
+   "steps": [{"advance_to": "Upkeep", "answers": [false]}],
+   "expect": {"players": [{"hand_count": 1, "battlefield": ["Fisher's Talent"]}, {}]}},
+  {"name": "upkeep: a nonland top card creates no Fish and is drawn",
+   "start": "Untap",
+   "players": [{"library": ["Grizzly Bears", "Forest"], "battlefield": [{"name": "Fisher's Talent", "counters": {"level": 1}}]}, {}],
+   "steps": [{"advance_to": "Upkeep"}],
+   "expect": {"players": [{"hand_count": 1, "hand": ["Grizzly Bears"], "battlefield": ["Fisher's Talent"]}, {}]}},
+  {"name": "level 2: a Fish is created as a 3/3 Shark instead",
+   "start": "Untap",
+   "players": [{"library": ["Forest", "Grizzly Bears"], "battlefield": [{"name": "Fisher's Talent", "counters": {"level": 2}}]}, {}],
+   "steps": [{"advance_to": "Upkeep", "answers": [true]}],
+   "expect": {"players": [{"battlefield": ["Fisher's Talent", "Shark 3-3"]}, {}], "pt": {"Shark 3-3": [3, 3]}}},
+  {"name": "level 1: a Fish is not replaced",
+   "start": "Untap",
+   "players": [{"library": ["Forest", "Grizzly Bears"], "battlefield": [{"name": "Fisher's Talent", "counters": {"level": 1}}]}, {}],
+   "steps": [{"advance_to": "Upkeep", "answers": [true]}],
+   "expect": {"players": [{"battlefield": ["Fisher's Talent", "Fish"]}, {}], "pt": {"Fish": [1, 1]}}},
+  {"name": "level 1 cannot activate the level 3 ability",
+   "players": [{"battlefield": [{"name": "Fisher's Talent", "counters": {"level": 1}}, "Island", "Forest", "Forest", "Forest"]}, {}],
+   "steps": [{"activate": "Fisher's Talent", "ability": 1, "illegal": true}],
+   "expect": {"players": [{}, {}]}},
+  {
+    "name": "{G}{U}: level 2 (sorcery speed) adds a level counter",
+    "players": [ { "battlefield": ["Fisher's Talent", "Island", "Forest"] }, {} ],
+    "steps": [
+      { "activate": "Fisher's Talent", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "counters": { "Fisher's Talent": { "level": 2 } }, "players": [ { "battlefield_has": ["Fisher's Talent"] }, {} ] }
+  },
+  {
+    "name": "level 2 cannot activate the level 2 ability again",
+    "players": [ { "battlefield": [ { "name": "Fisher's Talent", "counters": { "level": 2 } }, "Island", "Forest" ] }, {} ],
+    "steps": [
+      { "activate": "Fisher's Talent", "ability": 0, "illegal": true }
+    ],
+    "expect": { "counters": { "Fisher's Talent": { "level": 2 } }, "players": [ {}, {} ] }
+  },
+  {
+    "name": "{2}{G}{U}: level 3 adds a level counter",
+    "players": [ { "battlefield": [ { "name": "Fisher's Talent", "counters": { "level": 2 } }, "Island", "Forest", "Forest", "Forest" ] }, {} ],
+    "steps": [
+      { "activate": "Fisher's Talent", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "counters": { "Fisher's Talent": { "level": 3 } }, "players": [ {}, {} ] }
+  },
+  {
+    "name": "level 3 costs four mana: with only three lands it is illegal",
+    "players": [ { "battlefield": [ { "name": "Fisher's Talent", "counters": { "level": 2 } }, "Island", "Forest", "Forest" ] }, {} ],
+    "steps": [
+      { "activate": "Fisher's Talent", "ability": 1, "illegal": true }
+    ],
+    "expect": { "counters": { "Fisher's Talent": { "level": 2 } }, "players": [ {}, {} ] }
+  },
+  {"name": "level 3: a Fish is replaced by a Shark, which is replaced by an 8/8 Octopus",
+   "start": "Untap",
+   "players": [{"library": ["Forest", "Grizzly Bears"], "battlefield": [{"name": "Fisher's Talent", "counters": {"level": 3}}]}, {}],
+   "steps": [{"advance_to": "Upkeep", "answers": [true]}],
+   "expect": {"players": [{"battlefield_has": ["Fisher's Talent", "Octopus 8-8"], "battlefield_lacks": ["Shark 3-3", "Fish"]}, {}], "pt": {"Octopus 8-8": [8, 8]}}},
+  {"name": "ruling: gaining a level uses the stack; the level is not gained until it resolves",
+   "players": [{"battlefield": ["Fisher's Talent", "Island", "Forest"]}, {}],
+   "steps": [{"activate": "Fisher's Talent", "ability": 0}],
+   "expect": {"stack_empty": false, "players": [{"battlefield_has": ["Fisher's Talent"]}, {}]}}
+]

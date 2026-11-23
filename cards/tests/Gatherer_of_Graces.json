@@ -1,0 +1,72 @@
+[
+  {
+    "name": "no Auras attached: 1/2",
+    "players": [{"battlefield": ["Gatherer of Graces"]}, {}],
+    "steps": [],
+    "expect": {"pt": {"Gatherer of Graces": [1, 2]}}
+  },
+  {
+    "name": "+1/+1 for each Aura attached (Holy Strength itself gives +1/+2)",
+    "players": [{"hand": ["Holy Strength"], "battlefield": ["Plains", "Gatherer of Graces"]}, {}],
+    "steps": [
+      {"cast": "Holy Strength", "targets": ["Gatherer of Graces"]},
+      {"resolve": true}
+    ],
+    "expect": {"pt": {"Gatherer of Graces": [3, 5]}}
+  },
+  {
+    "name": "an Aura on another creature does not count",
+    "players": [{"hand": ["Holy Strength"], "battlefield": ["Plains", "Gatherer of Graces", "Grizzly Bears"]}, {}],
+    "steps": [
+      {"cast": "Holy Strength", "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {"pt": {"Gatherer of Graces": [1, 2], "Grizzly Bears": [3, 4]}}
+  },
+  {
+    "name": "sacrifice an Aura to regenerate it",
+    "players": [{"hand": ["Holy Strength"], "battlefield": ["Plains", "Gatherer of Graces"]}, {}],
+    "steps": [
+      {"cast": "Holy Strength", "targets": ["Gatherer of Graces"]},
+      {"resolve": true},
+      {"activate": "Gatherer of Graces", "ability": 0},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"graveyard": ["Holy Strength"]}, {}],
+      "pt": {"Gatherer of Graces": [1, 2]}
+    }
+  },
+  {
+    "name": "ruling: the sacrificed Aura need not be attached to Gatherer (Holy Strength on Grizzly Bears); regeneration still saves it",
+    "players": [{"hand": ["Holy Strength"], "battlefield": ["Plains", "Gatherer of Graces", "Grizzly Bears"]}, {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}],
+    "steps": [
+      {"cast": "Holy Strength", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"pass": true},
+      {"player": 1, "cast": "Lightning Bolt", "targets": ["Gatherer of Graces"]},
+      {"pass": true, "player": 1},
+      {"activate": "Gatherer of Graces", "ability": 0},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"battlefield_has": ["Gatherer of Graces"], "graveyard": ["Holy Strength"]}, {"graveyard": ["Lightning Bolt"]}]
+    }
+  },
+  {
+    "name": "ruling: sacrificing the Aura on Gatherer shrinks it below its damage before the regeneration resolves",
+    "players": [{"hand": ["Holy Strength"], "battlefield": ["Plains", "Gatherer of Graces"]}, {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}],
+    "steps": [
+      {"cast": "Holy Strength", "targets": ["Gatherer of Graces"]},
+      {"resolve": true},
+      {"pass": true},
+      {"player": 1, "cast": "Lightning Bolt", "targets": ["Gatherer of Graces"]},
+      {"resolve": true},
+      {"activate": "Gatherer of Graces", "ability": 0},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"graveyard": ["Holy Strength", "Gatherer of Graces"]}, {"graveyard": ["Lightning Bolt"]}]
+    }
+  }
+]

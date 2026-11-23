@@ -1,0 +1,56 @@
+[
+  {
+    "name": "naming Forest: a Forest gets the granted {T}: Add {C} ability",
+    "players": [
+      { "hand": ["Petrified Hamlet"], "battlefield": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Petrified Hamlet" },
+      { "resolve": true, "answers": ["Forest"] },
+      { "tap_for_mana": "Forest", "color": "C" }
+    ],
+    "expect": { "players": [ { "pool": { "C": 1 } }, {} ], "tapped": { "Forest": true } }
+  },
+  {
+    "name": "a land with another name does not get the granted ability: Island has no {C} ability",
+    "players": [
+      { "hand": ["Petrified Hamlet"], "battlefield": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Petrified Hamlet" },
+      { "resolve": true, "answers": ["Forest"] },
+      { "tap_for_mana": "Island", "ability": 32768, "illegal": true }
+    ],
+    "expect": { "players": [ { "pool": {} }, {} ] }
+  },
+  {
+    "name": "naming Strip Mine: its non-mana ability can't be activated, but its mana ability still works",
+    "players": [
+      { "hand": ["Petrified Hamlet"], "battlefield": ["Strip Mine"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Petrified Hamlet" },
+      { "resolve": true, "answers": ["Strip Mine"] },
+      { "activate": "Strip Mine", "ability": 0, "illegal": true },
+      { "tap_for_mana": "Strip Mine" }
+    ],
+    "expect": { "players": [ { "pool": { "C": 1 }, "battlefield_has": ["Strip Mine"] }, {} ] }
+  },
+  {
+    "name": "ruling: named land with a mana ability and another activated ability: the mana ability works, the other one can't be activated",
+    "players": [
+      { "hand": ["Petrified Hamlet"], "battlefield": ["Strip Mine"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Petrified Hamlet" },
+      { "resolve": true, "answers": ["Strip Mine"] },
+      { "activate": "Strip Mine", "ability": 0, "illegal": true },
+      { "tap_for_mana": "Strip Mine", "color": "C" }
+    ],
+    "expect": { "players": [ { "pool": { "C": 1 }, "battlefield_has": ["Strip Mine", "Petrified Hamlet"] }, {} ], "tapped": { "Strip Mine": true } }
+  }
+]

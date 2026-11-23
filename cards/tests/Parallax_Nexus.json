@@ -1,0 +1,189 @@
+[
+  {
+    "name": "removing a fade counter makes the opponent exile a card from hand until it leaves",
+    "players": [
+      {
+        "hand": [
+          "Parallax Nexus"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "hand": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Parallax Nexus"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Parallax Nexus",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "hand_count": 0,
+          "exile": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "counters": {
+        "Parallax Nexus": {
+          "fade": 4
+        }
+      }
+    }
+  },
+  {
+    "name": "sorcery speed: illegal to activate during combat",
+    "players": [
+      {
+        "hand": [
+          "Parallax Nexus"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "hand": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Parallax Nexus"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "activate": "Parallax Nexus",
+        "ability": 0,
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "fading: at your upkeep a fade counter is removed",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Parallax Nexus", "counters": { "Fade": 2 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Parallax Nexus"] },
+        {}
+      ],
+      "counters": {
+        "Parallax Nexus": { "fade": 1 }
+      }
+    }
+  },
+  {
+    "name": "fading: opponent's upkeep does not remove a fade counter",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Parallax Nexus", "counters": { "Fade": 2 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Parallax Nexus"] },
+        {}
+      ],
+      "counters": {
+        "Parallax Nexus": { "fade": 2 }
+      }
+    }
+  },
+  {
+    "name": "fading: with no fade counters left at your upkeep it is sacrificed",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Parallax Nexus", "counters": { "Fade": 0 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Parallax Nexus"], "battlefield_lacks": ["Parallax Nexus"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the targeted opponent chooses which card from hand is exiled",
+    "players": [
+      {
+        "hand": ["Parallax Nexus"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "hand": ["Grizzly Bears", "Lightning Bolt"]
+      }
+    ],
+    "steps": [
+      {"cast": "Parallax Nexus"},
+      {"resolve": true},
+      {"activate": "Parallax Nexus", "ability": 0},
+      {"resolve": true, "answers": ["Lightning Bolt"]}
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "hand": ["Grizzly Bears"],
+          "exile": ["Lightning Bolt"]
+        }
+      ],
+      "counters": {
+        "Parallax Nexus": {"fade": 4}
+      }
+    }
+  }
+]

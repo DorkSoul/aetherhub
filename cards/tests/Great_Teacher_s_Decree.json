@@ -1,0 +1,95 @@
+[
+ {
+  "name": "creatures you control get +2/+1 and rebound recasts it at upkeep",
+  "players": [
+   { "hand": ["Great Teacher's Decree"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Grizzly Bears"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Great Teacher's Decree" },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard": ["Great Teacher's Decree"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent's creatures are not affected",
+  "players": [
+   { "hand": ["Great Teacher's Decree"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Great Teacher's Decree" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: spell countered on the stack does not rebound",
+  "players": [
+   { "hand": ["Great Teacher's Decree"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Great Teacher's Decree" },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Great Teacher's Decree" }] },
+   { "pass": true, "player": 1 },
+   { "pass": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "graveyard_has": ["Great Teacher's Decree"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: declining the rebound cast leaves the card exiled",
+  "players": [
+   { "hand": ["Great Teacher's Decree"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Great Teacher's Decree" },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Upkeep", "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Great Teacher's Decree"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: creature entering later is not pumped by the resolved spell",
+  "players": [
+   { "hand": ["Great Teacher's Decree", "Grizzly Bears"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Forest", { "name": "Serra Angel", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Great Teacher's Decree" },
+   { "resolve": true },
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "pt": { "Serra Angel": [6, 5], "Grizzly Bears": [2, 2] }
+  }
+ }
+]

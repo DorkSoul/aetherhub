@@ -1,0 +1,196 @@
+[
+  {
+    "name": "equip attaches the Torch to your creature",
+    "players": [
+      {
+        "hand": [
+          "Blazing Torch"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Blazing Torch"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Blazing Torch",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Blazing Torch",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "attached": {
+        "Blazing Torch": "Grizzly Bears"
+      }
+    }
+  },
+  {
+    "name": "cannot equip a creature you do not control",
+    "players": [
+      {
+        "hand": [
+          "Blazing Torch"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Blazing Torch"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Blazing Torch",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Blazing Torch"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "the equipped creature taps and sacrifices the Torch (not itself) to deal 2 damage",
+    "players": [
+      {
+        "hand": [
+          "Blazing Torch"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Blazing Torch"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Blazing Torch",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Grizzly Bears",
+        "ability": 32768,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Blazing Torch"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "a Zombie cannot block the equipped creature; the other attacker is blocked by a legal blocker",
+    "players": [
+      { "hand": ["Blazing Torch"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Savannah Lions"] },
+      { "battlefield": ["Gravedigger", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Blazing Torch" },
+      { "resolve": true },
+      { "activate": "Blazing Torch", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Gravedigger", "attacker": "Grizzly Bears" }, { "blocker": "Llanowar Elves", "attacker": "Savannah Lions" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: the granted ability is targeted through the equipped creature's colour: a red creature's Torch cannot target a protection-from-red creature",
+    "players": [
+      { "hand": ["Blazing Torch"], "battlefield": ["Mountain", "Mountain", "Storm Caller"] },
+      { "battlefield": ["Silver Knight"] }
+    ],
+    "steps": [
+      { "cast": "Blazing Torch" },
+      { "resolve": true },
+      { "activate": "Blazing Torch", "ability": 0, "targets": ["Storm Caller"] },
+      { "resolve": true },
+      { "activate": "Storm Caller", "ability": 32768, "targets": ["Silver Knight"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Blazing Torch", "Storm Caller"] },
+        { "battlefield_has": ["Silver Knight"], "life": 20 }
+      ]
+    }
+  }
+]

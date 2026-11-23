@@ -1,0 +1,285 @@
+[
+ {
+  "name": "opponent noncreature spell takes 1",
+  "players": [
+   {
+    "battlefield": [
+     "Cindervines"
+    ]
+   },
+   {
+    "hand": [
+     "Giant Growth",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Giant Growth",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 19
+    }
+   ]
+  }
+ },
+ {
+  "name": "opponent creature spell does not trigger",
+  "players": [
+   {
+    "battlefield": [
+     "Cindervines"
+    ]
+   },
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "player": 1,
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "your own noncreature spell does not trigger",
+  "players": [
+   {
+    "hand": [
+     "Giant Growth"
+    ],
+    "battlefield": [
+     "Cindervines",
+     "Forest",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Giant Growth",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "sacrifice: destroy artifact, 2 damage to its controller",
+  "players": [
+   {
+    "battlefield": [
+     "Cindervines",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Cindervines",
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Forest"
+     ],
+     "graveyard_has": [
+      "Cindervines"
+     ]
+    },
+    {
+     "life": 18,
+     "graveyard": [
+      "Sol Ring"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "destroys an enchantment, 2 damage to its controller (the opponent)",
+  "players": [
+   {
+    "battlefield": [
+     "Cindervines",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Glorious Anthem"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Cindervines",
+    "targets": [
+     "Glorious Anthem"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Cindervines"
+     ]
+    },
+    {
+     "life": 18,
+     "graveyard": [
+      "Glorious Anthem"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: it can target itself; the ability does nothing but the sacrifice still happens",
+  "players": [
+   {"battlefield": ["Cindervines", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"activate": "Cindervines", "targets": ["Cindervines"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"life": 20, "graveyard_has": ["Cindervines"], "battlefield": ["Forest"]},
+    {"life": 20}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an indestructible target survives, but its controller is still dealt 2",
+  "players": [
+   {"battlefield": ["Cindervines", "Forest"]},
+   {"battlefield": ["Darksteel Citadel"]}
+  ],
+  "steps": [
+   {"activate": "Cindervines", "targets": ["Darksteel Citadel"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard_has": ["Cindervines"]},
+    {"life": 18, "battlefield_has": ["Darksteel Citadel"]}
+   ]
+  }
+ },
+ {
+  "name": "ruling: if the target is gone when the ability resolves, no damage is dealt",
+  "players": [
+   {"hand": ["Disenchant"], "battlefield": ["Cindervines", "Forest", "Plains", "Plains"]},
+   {"battlefield": ["Glorious Anthem"]}
+  ],
+  "steps": [
+   {"activate": "Cindervines", "targets": ["Glorious Anthem"]},
+   {"cast": "Disenchant", "targets": ["Glorious Anthem"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard_has": ["Cindervines", "Disenchant"]},
+    {"life": 20, "graveyard": ["Glorious Anthem"]}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the opponent's spell-cast trigger still deals damage when that spell is countered",
+  "players": [
+   {"hand": ["Counterspell"], "battlefield": ["Cindervines", "Island", "Island"]},
+   {"hand": ["Giant Growth"], "battlefield": ["Forest", "Grizzly Bears"]}
+  ],
+  "steps": [
+   {"pass": true},
+   {"cast": "Giant Growth", "player": 1, "targets": ["Grizzly Bears"]},
+   {"pass": true, "player": 1},
+   {"cast": "Counterspell", "targets": [{"stack": "Giant Growth"}]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard_has": ["Counterspell"]},
+    {"life": 19, "graveyard": ["Giant Growth"]}
+   ]
+  }
+ }
+]

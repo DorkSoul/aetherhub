@@ -1,0 +1,69 @@
+{
+  "name": "Party Dude",
+  "mana_cost": "{G}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [ { "type": "CreateToken", "token": "Food", "controller": { "type": "EachPlayer" }, "n": { "type": "Fixed", "n": 1 } } ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{1}{G}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "ChangesZone",
+        "filter": { "types": ["Artifact"], "controller": "Opponent" },
+        "from": "Battlefield",
+        "to": "Graveyard"
+      },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+      "effects": [ { "type": "Draw", "who": { "type": "You" } } ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{4}{G}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "types": ["Creature"], "not_attacking_you": true }, "batched": true, "one_per_declaration": true },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "attacking": true } }, "min": 0, "max": 1, "label": "up to one target attacking creature" }
+      ],
+      "effects": [
+        {
+          "type": "Pump",
+          "what": { "type": "Target", "idx": 0 },
+          "power": { "type": "HandSize", "who": { "type": "You" } },
+          "toughness": { "type": "HandSize", "who": { "type": "You" } },
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nWhen this Class enters, each player creates a Food token.\n{1}{G}: Level 2\nWhenever an artifact an opponent controls is put into a graveyard from the battlefield, draw a card.\n{4}{G}: Level 3\nWhenever one or more of your opponents are attacked, up to one target attacking creature gets +X/+X until end of turn, where X is the number of cards in your hand."
+}

@@ -1,0 +1,109 @@
+[
+  { "name": "is a 7/7 flyer",
+    "players": [ { "battlefield": ["Iona, Shield of Emeria"] }, {} ],
+    "steps": [],
+    "expect": {
+      "pt": { "Iona, Shield of Emeria": [7, 7] },
+      "keywords": { "Iona, Shield of Emeria": ["Flying"] }
+    } },
+  { "name": "chosen blue: opponents can't cast blue spells",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Opt"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "resolve": true, "answers": ["U"] },
+      { "pass": true },
+      { "cast": "Opt", "player": 1, "illegal": true }
+    ],
+    "expect": {} },
+  { "name": "chosen red: opponents can still cast blue spells",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Opt"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "resolve": true, "answers": ["R"] },
+      { "pass": true },
+      { "cast": "Opt", "player": 1 }
+    ],
+    "expect": {} },
+  { "name": "chosen red: opponents can't cast red spells",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "resolve": true, "answers": ["R"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, { "hand": ["Lightning Bolt"], "life": 20 } ]
+    } },
+  { "name": "chosen red: the controller can still cast red spells",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "resolve": true, "answers": ["R"] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": [] }, { "life": 17 } ]
+    } },
+  { "name": "ruling: the chosen color also stops permanent spells (Leovold is black)",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Leovold, Emissary of Trest"], "battlefield": ["Swamp", "Forest", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "resolve": true, "answers": ["B"] },
+      { "advance_to": "Main1" },
+      { "cast": "Leovold, Emissary of Trest", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "hand_count": 2 } ]
+    } },
+  { "name": "ruling: a chosen color the permanent spell does not have does not stop it",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Leovold, Emissary of Trest"], "battlefield": ["Swamp", "Forest", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "resolve": true, "answers": ["R"] },
+      { "advance_to": "Main1" },
+      { "cast": "Leovold, Emissary of Trest", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Leovold, Emissary of Trest"] } ]
+    } },
+  { "name": "ruling: Iona is not on the battlefield yet, so an opponent can respond with a black spell",
+    "players": [
+      { "hand": ["Iona, Shield of Emeria"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Iona, Shield of Emeria" },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true, "answers": ["B"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Iona, Shield of Emeria"], "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    } }
+]

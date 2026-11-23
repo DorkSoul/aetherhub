@@ -1,0 +1,77 @@
+{
+  "name": "Guardian Scalelord",
+  "mana_cost": "{4}{W}",
+  "types": ["Creature"],
+  "subtypes": ["Dragon"],
+  "power": 3,
+  "toughness": 4,
+  "keywords": ["Flying"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"] } }, "label": "target creature" }
+      ],
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "Target", "idx": 0 }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "TargetIs", "idx": 0, "filter": { "this": true } } },
+          "then": [
+            { "type": "GrantStatic", "what": { "type": "Target", "idx": 0 }, "effect": { "type": "GrantKeyword", "affects": {}, "keyword": "Flying" }, "duration": "UntilEndOfTurn" },
+            {
+              "type": "GrantStatic",
+              "what": { "type": "Target", "idx": 0 },
+              "effect": {
+                "type": "GrantAbility",
+                "affects": {},
+                "ability": {
+                  "type": "Triggered",
+                  "trigger": { "type": "Attacks", "filter": { "this": true } },
+                  "targets": [
+                    {
+                      "what": {
+                        "type": "CardIn",
+                        "zone": "Graveyard",
+                        "whose": "You",
+                        "filter": {
+                          "not_types": ["Land", "Instant", "Sorcery"],
+                          "mana_value_vs": { "op": "Le", "amount": { "type": "PowerOf", "of": { "type": "This" } } }
+                        }
+                      },
+                      "label": "target nonland permanent card with mana value X or less"
+                    }
+                  ],
+                  "effects": [ { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Battlefield" } ]
+                }
+              },
+              "duration": "UntilEndOfTurn"
+            }
+          ],
+          "else": []
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Graveyard",
+            "whose": "You",
+            "filter": {
+              "not_types": ["Land", "Instant", "Sorcery"],
+              "mana_value_vs": { "op": "Le", "amount": { "type": "PowerOf", "of": { "type": "This" } } }
+            }
+          },
+          "label": "target nonland permanent card with mana value X or less"
+        }
+      ],
+      "effects": [ { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Battlefield" } ]
+    }
+  ],
+  "oracle_text": "Backup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following abilities until end of turn.)\nFlying\nWhenever this creature attacks, return target nonland permanent card with mana value X or less from your graveyard to the battlefield, where X is this creature's power."
+}

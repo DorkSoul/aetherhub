@@ -1,0 +1,167 @@
+[
+ {
+  "name": "during your turn Yuna has trample and lifelink",
+  "players": [
+   {
+    "battlefield": [
+     "Yuna, Hope of Spira"
+    ]
+   },
+   {}
+  ],
+  "steps": [],
+  "expect": {
+   "keywords": {
+    "Yuna, Hope of Spira": [
+     "Trample",
+     "Lifelink"
+    ]
+   }
+  }
+ },
+ {
+  "name": "lifelink on your turn: attacking gains life",
+  "players": [
+   {
+    "battlefield": [
+     "Yuna, Hope of Spira"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Yuna, Hope of Spira",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 23
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "at your end step, returns an enchantment from your graveyard with a finality counter",
+  "players": [
+   {
+    "battlefield": [
+     "Yuna, Hope of Spira"
+    ],
+    "graveyard": [
+     "Blanket of Night"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End",
+    "targets": [
+     "Blanket of Night"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Blanket of Night"
+     ],
+     "graveyard": []
+    },
+    {}
+   ],
+   "counters": {
+    "Blanket of Night": {
+     "finality": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "up to one: choosing no target returns nothing",
+  "players": [
+   {
+    "battlefield": [
+     "Yuna, Hope of Spira"
+    ],
+    "graveyard": [
+     "Blanket of Night"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Blanket of Night"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "on your turn Yuna has ward {2}: 3 lands can't pay Terminate's cost plus ward",
+  "players": [
+   { "battlefield": ["Yuna, Hope of Spira"] },
+   { "hand": ["Terminate"], "battlefield": ["Swamp", "Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Terminate", "player": 1, "targets": ["Yuna, Hope of Spira"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Yuna, Hope of Spira"] }, { "graveyard_has": ["Terminate"] } ] }
+ },
+ {
+  "name": "on your turn Yuna's ward {2} is paid with 4 lands, so Terminate resolves",
+  "players": [
+   { "battlefield": ["Yuna, Hope of Spira"] },
+   { "hand": ["Terminate"], "battlefield": ["Swamp", "Mountain", "Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Terminate", "player": 1, "targets": ["Yuna, Hope of Spira"] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Yuna, Hope of Spira"] }, { "graveyard_has": ["Terminate"] } ] }
+ },
+ {
+  "name": "ruling: a finality counter exiles a creature that would die",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "finality": 1 } } ] } ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "exile": ["Grizzly Bears"], "graveyard": [] } ] }
+ },
+ {
+  "name": "ruling: a finality counter does not stop a bounce to hand",
+  "players": [ { "hand": ["Unsummon"], "battlefield": ["Island"] }, { "battlefield": [ { "name": "Grizzly Bears", "counters": { "finality": 1 } } ] } ],
+  "steps": [ { "cast": "Unsummon", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "players": [ {}, { "hand": ["Grizzly Bears"] } ] }
+ }
+]

@@ -1,0 +1,130 @@
+[
+  {
+    "name": "destroys target creature; no other creature died, so no card is drawn",
+    "players": [
+      { "hand": ["Chain Assassination"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Chain Assassination", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Chain Assassination"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "another creature died earlier this turn: draws a card",
+    "players": [
+      { "hand": ["Chain Assassination", "Chain Assassination"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Island"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Chain Assassination", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Chain Assassination", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Island"], "graveyard": ["Chain Assassination", "Chain Assassination"] },
+        { "graveyard": ["Grizzly Bears", "Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "freerunning {1}{B} after an Assassin dealt combat damage to a player",
+    "players": [
+      { "hand": ["Chain Assassination"], "battlefield": ["King's Assassin", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [{ "card": "King's Assassin", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Chain Assassination", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Chain Assassination"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "no combat damage this turn: freerunning cost is not available",
+    "players": [
+      { "hand": ["Chain Assassination"], "battlefield": ["King's Assassin", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "cast": "Chain Assassination", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Chain Assassination", "Forest"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: freerunning stays available after the Assassin that dealt damage has left",
+    "players": [
+      { "hand": ["Chain Assassination", "Lightning Bolt"], "battlefield": ["King's Assassin", "Mountain", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "attack": [{ "card": "King's Assassin", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["King's Assassin"] },
+      { "resolve": true },
+      { "cast": "Chain Assassination", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Chain Assassination", "Lightning Bolt", "King's Assassin"] }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: indestructible target is still a legal target; another creature died, so the card is drawn",
+    "players": [
+      { "hand": ["Chain Assassination", "Chain Assassination"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Island"] },
+      { "battlefield": ["Grizzly Bears", "Darksteel Colossus"] }
+    ],
+    "steps": [
+      { "cast": "Chain Assassination", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Chain Assassination", "targets": ["Darksteel Colossus"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Island"] }, { "battlefield_has": ["Darksteel Colossus"], "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: target gone in response: Chain Assassination fizzles and draws nothing",
+    "players": [
+      { "hand": ["Chain Assassination", "Lightning Bolt"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Chain Assassination", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "library_top": ["Island"], "graveyard_has": ["Chain Assassination"] }, { "graveyard_has": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] } ]
+    }
+  }
+]

@@ -1,0 +1,82 @@
+[
+ {
+  "name": "ETB gives another creature you control persist until end of turn",
+  "players": [
+   { "hand": ["Rhys, the Evermore"], "battlefield": ["Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Rhys, the Evermore" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Rhys, the Evermore": [2, 2] },
+   "keywords": { "Grizzly Bears": ["Persist"] }
+  }
+ },
+ {
+  "name": "{W}, {T}: removes all counters (any kinds) from target creature you control",
+  "players": [
+   { "battlefield": ["Plains", { "name": "Rhys, the Evermore", "sick": false }, { "name": "Grizzly Bears", "counters": { "p1p1": 3 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Rhys, the Evermore", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [0, 0, 0] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 0 } }
+  }
+ },
+ {
+  "name": "stopping early keeps the remaining counters",
+  "players": [
+   { "battlefield": ["Plains", { "name": "Rhys, the Evermore", "sick": false }, { "name": "Grizzly Bears", "counters": { "p1p1": 3 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Rhys, the Evermore", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [0, 1] }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 2 } }
+  }
+ },
+ {
+  "name": "a tapped Rhys can't use its ability",
+  "players": [
+   { "battlefield": ["Plains", { "name": "Rhys, the Evermore", "tapped": true }, { "name": "Grizzly Bears", "counters": { "p1p1": 3 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Rhys, the Evermore", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 3 } }
+  }
+ },
+ {
+  "name": "ruling: a +1/+1 and a -1/-1 counter annihilate, so persist returns the creature with the -1/-1 counter",
+  "players": [
+   {
+    "hand": ["Rhys, the Evermore", "Lightning Bolt"],
+    "battlefield": ["Plains", "Plains", "Mountain", { "name": "Grizzly Bears", "sick": false, "counters": { "p1p1": 1, "m1m1": 1 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Rhys, the Evermore" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Rhys, the Evermore"], "hand_count": 0 },
+    {}
+   ],
+   "counters": { "Grizzly Bears": { "m1m1": 1, "p1p1": 0 } },
+   "pt": { "Grizzly Bears": [1, 1] }
+  }
+ }
+]

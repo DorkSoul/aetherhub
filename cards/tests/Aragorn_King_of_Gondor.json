@@ -1,0 +1,207 @@
+[
+ {
+  "name": "enters and makes you the monarch, so you draw at your end step",
+  "players": [
+   {
+    "hand": [
+     "Aragorn, King of Gondor"
+    ],
+    "battlefield": [
+     "Island",
+     "Mountain",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Aragorn, King of Gondor"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Aragorn, King of Gondor"
+     ],
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "attack trigger: the chosen creature can't block this turn",
+  "players": [
+   {
+    "battlefield": [
+     "Aragorn, King of Gondor"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Aragorn, King of Gondor",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "keywords": {
+    "Grizzly Bears": [
+     "CantBlock"
+    ]
+   },
+   "players": [
+    {
+     "life": 24
+    },
+    {
+     "life": 16
+    }
+   ]
+  }
+ },
+ {
+  "name": "choosing no target leaves creatures able to block",
+  "players": [
+   {
+    "battlefield": [
+     "Aragorn, King of Gondor"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Aragorn, King of Gondor",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Aragorn, King of Gondor"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: combat damage to the monarch makes the attacker's controller the monarch, who then draws at their end step (only the new monarch draws)",
+  "players": [
+   {
+    "hand": ["Aragorn, King of Gondor"],
+    "battlefield": ["Island", "Mountain", "Plains", "Plains"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Aragorn, King of Gondor" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [{ "card": "Grizzly Bears", "at": "p0" }], "player": 1 },
+   { "block": [], "player": 0 },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "life": 18 },
+    { "hand_count": 2, "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: while you are the monarch creatures can't block, even when the attack trigger chooses no target",
+  "players": [
+   {
+    "hand": ["Aragorn, King of Gondor"],
+    "battlefield": ["Island", "Mountain", "Plains", "Plains"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Aragorn, King of Gondor" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [{ "card": "Aragorn, King of Gondor", "at": "p1" }] },
+   { "resolve": true },
+   { "block": [{ "blocker": "Grizzly Bears", "attacker": "Aragorn, King of Gondor" }], "illegal": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 24 },
+    { "life": 16, "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+  {"name": "monarch: a creature that enters after the attack trigger resolves can't block either", "players": [{"hand": ["Aragorn, King of Gondor"], "battlefield": ["Island", "Mountain", "Plains", "Plains"]}, {"hand": ["Ambush Viper"], "battlefield": ["Forest", "Forest"]}], "steps": [{"cast": "Aragorn, King of Gondor"}, {"resolve": true}, {"advance_to": "Main1", "player": 1}, {"advance_to": "Main1"}, {"attack": [{"card": "Aragorn, King of Gondor", "at": "p1"}]}, {"resolve": true}, {"pass": true}, {"cast": "Ambush Viper", "player": 1}, {"resolve": true}, {"block": [{"blocker": "Ambush Viper", "attacker": "Aragorn, King of Gondor"}], "illegal": true}, {"block": []}, {"advance_to": "Main2"}], "expect": {"players": [{}, {"life": 16, "battlefield_has": ["Ambush Viper"]}], "turn": 3}}
+]

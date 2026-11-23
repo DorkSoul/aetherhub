@@ -1,0 +1,252 @@
+[
+ {
+  "name": "MV 6 spell gains cascade: casts a cheaper nonland card free before it resolves",
+  "players": [
+   {
+    "hand": [
+     "Grave Titan"
+    ],
+    "battlefield": [
+     "Imoti, Celebrant of Bounty",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Forest",
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grave Titan"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grave Titan",
+      "Hill Giant",
+      "Imoti, Celebrant of Bounty"
+     ],
+     "library_count": 22
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "MV 5 spell does not gain cascade",
+  "players": [
+   {
+    "hand": [
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Imoti, Celebrant of Bounty",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ],
+    "library": [
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Serra Angel"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Serra Angel"
+     ],
+     "library_count": 22
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Imoti's own cascade: cast from hand finds a cheaper spell",
+  "players": [
+   {
+    "hand": [
+     "Imoti, Celebrant of Bounty"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Forest",
+     "Hill Giant",
+     "Savannah Lions"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Imoti, Celebrant of Bounty"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Imoti, Celebrant of Bounty",
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Imoti leaving the battlefield after the MV 6 spell is cast does not stop its cascade",
+  "players": [
+   { "hand": ["Grave Titan"], "battlefield": ["Imoti, Celebrant of Bounty", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Hill Giant", "Savannah Lions"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Grave Titan" },
+   { "pass": true },
+   { "player": 1, "cast": "Lightning Bolt", "targets": ["Imoti, Celebrant of Bounty"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grave Titan", "Hill Giant"], "graveyard_has": ["Imoti, Celebrant of Bounty"] },
+    { "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: declining the cascade cast leaves the exiled card in exile and the rest on the bottom",
+  "players": [
+   { "hand": ["Grave Titan"], "battlefield": ["Imoti, Celebrant of Bounty", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Forest", "Hill Giant", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grave Titan" },
+   { "resolve": true, "answers": [false] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grave Titan", "Imoti, Celebrant of Bounty"], "battlefield_lacks": ["Hill Giant"], "exile": ["Hill Giant"], "library_count": 22 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a cascaded spell goes on the stack above the cascade spell (cascaded Counterspell counters it)",
+  "players": [
+   { "hand": ["Grave Titan"], "battlefield": ["Imoti, Celebrant of Bounty", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Counterspell", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grave Titan" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Grave Titan"], "graveyard_has": ["Grave Titan", "Counterspell"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a cascade spell that is countered still lets its cascade resolve",
+  "players": [
+   { "hand": ["Grave Titan"], "battlefield": ["Imoti, Celebrant of Bounty", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Hill Giant", "Savannah Lions"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Grave Titan" },
+   { "pass": true },
+   { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Grave Titan" }] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Hill Giant", "Imoti, Celebrant of Bounty"], "battlefield_lacks": ["Grave Titan"], "graveyard_has": ["Grave Titan"] },
+    { "graveyard_has": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a cascaded spell with {X} is cast with X = 0 (Fireball deals no damage)",
+  "players": [
+   { "hand": ["Grave Titan"], "battlefield": ["Imoti, Celebrant of Bounty", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Fireball", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grave Titan" },
+   { "resolve": true, "answers": [true], "targets": ["p1"] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Fireball"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a cascaded spell with a mandatory sacrifice cost still sacrifices a creature",
+  "players": [
+   { "hand": ["Grave Titan"], "battlefield": ["Imoti, Celebrant of Bounty", "Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "library": ["Momentous Fall", "Savannah Lions"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grave Titan" },
+   { "resolve": true, "answers": [true, "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grave Titan", "Imoti, Celebrant of Bounty"], "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Momentous Fall"], "life": 22 },
+    {}
+   ]
+  }
+ }
+]

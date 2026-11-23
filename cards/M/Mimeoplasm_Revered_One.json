@@ -1,0 +1,60 @@
+{
+  "name": "Mimeoplasm, Revered One",
+  "mana_cost": "{X}{B}{G}{U}",
+  "types": ["Creature"],
+  "supertypes": ["Legendary"],
+  "subtypes": ["Ooze"],
+  "power": 0,
+  "toughness": 0,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "as_enters": true,
+      "effects": [
+        { "type": "ClearRemembered" },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Graveyard",
+          "filter": { "types": ["Creature"], "owner": "You" },
+          "min": 0,
+          "max": 99,
+          "max_amount": { "type": "X" },
+          "then": [
+            { "type": "Move", "what": { "type": "Remembered" }, "to": "Exile" },
+            {
+              "type": "AddCounters",
+              "what": { "type": "This" },
+              "kind": "PlusOnePlusOne",
+              "n": { "type": "Times", "a": { "type": "Fixed", "n": 3 }, "b": { "type": "RememberedCount" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{2}" }],
+      "targets": [
+        {
+          "what": { "type": "CardIn", "zone": "Exile", "filter": { "types": ["Creature"], "exiled_with_this": true }, "whose": "Any" },
+          "label": "target creature card exiled with Mimeoplasm"
+        }
+      ],
+      "effects": [
+        {
+          "type": "BecomeCopy",
+          "what": { "type": "This" },
+          "of": { "type": "Target", "idx": 0 },
+          "duration": "Forever",
+          "except": [
+            { "type": "SetPT", "power": 0, "toughness": 0 },
+            { "type": "GrantOwnAbility", "index": 1 }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.\n{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability."
+}

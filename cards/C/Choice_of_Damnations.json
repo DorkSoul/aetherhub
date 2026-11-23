@@ -1,0 +1,50 @@
+{
+  "name": "Choice of Damnations",
+  "mana_cost": "{5}{B}",
+  "types": ["Sorcery"],
+  "subtypes": ["Arcane"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" }
+      ],
+      "effects": [
+        { "type": "ChooseNumber", "min": 0, "max": 1000, "who": { "type": "Target", "idx": 0 } },
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "That player loses that much life.",
+              "effects": [
+                { "type": "LoseLife", "who": { "type": "Target", "idx": 0 }, "n": { "type": "ChosenNumber" } }
+              ]
+            },
+            {
+              "text": "That player sacrifices all but that many permanents of their choice.",
+              "effects": [
+                {
+                  "type": "Sacrifice",
+                  "who": { "type": "Target", "idx": 0 },
+                  "filter": {},
+                  "n": {
+                    "type": "Max",
+                    "a": {
+                      "type": "Minus",
+                      "a": { "type": "Count", "filter": {}, "zone": "Battlefield", "player": { "type": "Target", "idx": 0 } },
+                      "b": { "type": "ChosenNumber" }
+                    },
+                    "b": { "type": "Fixed", "n": 0 }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Target opponent chooses a number. You may have that player lose that much life. If you don't, that player sacrifices all but that many permanents of their choice."
+}

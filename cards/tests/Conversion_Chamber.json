@@ -1,0 +1,38 @@
+[
+ {
+  "name": "exiles target artifact card from a graveyard and gets a charge counter",
+  "players": [ { "battlefield": ["Conversion Chamber", "Mountain", "Mountain"] }, { "graveyard": ["Boros Signet"] } ],
+  "steps": [ { "activate": "Conversion Chamber", "ability": 0, "targets": ["Boros Signet"] }, { "resolve": true } ],
+  "expect": { "players": [ {}, { "exile": ["Boros Signet"] } ], "counters": { "Conversion Chamber": { "charge": 1 } } }
+ },
+ {
+  "name": "no artifact card in any graveyard: the first ability is illegal",
+  "players": [ { "battlefield": ["Conversion Chamber", "Mountain", "Mountain"] }, { "graveyard": ["Grizzly Bears"] } ],
+  "steps": [ { "activate": "Conversion Chamber", "ability": 0, "illegal": true } ],
+  "expect": { "players": [ {}, {} ] }
+ },
+ {
+  "name": "{2},T, remove a charge counter: create a 3/3 Golem token",
+  "players": [ { "battlefield": [ { "name": "Conversion Chamber", "counters": { "charge": 1 } }, "Plains", "Plains" ] }, {} ],
+  "steps": [ { "activate": "Conversion Chamber", "ability": 1 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Golem 3-3"] }, {} ], "counters": { "Conversion Chamber": { "charge": 0 } }, "pt": { "Golem 3-3": [3, 3] } }
+ },
+ {
+  "name": "no charge counter: the Golem ability is illegal",
+  "players": [ { "battlefield": ["Conversion Chamber", "Plains", "Plains"] }, {} ],
+  "steps": [ { "activate": "Conversion Chamber", "ability": 1, "illegal": true } ],
+  "expect": { "players": [ { "battlefield_lacks": ["Golem 3-3"] }, {} ] }
+ },
+ {"name": "ruling: the target leaves the graveyard in response, so the first ability does nothing and puts no charge counter on its Chamber",
+  "players": [ { "battlefield": ["Conversion Chamber", "Conversion Chamber", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "graveyard": ["Boros Signet"] } ],
+  "steps": [
+   { "activate": "Conversion Chamber", "ability": 0, "targets": ["Boros Signet"] },
+   { "activate": "Conversion Chamber", "ability": 0, "targets": ["Boros Signet"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": { "players": [ {}, { "exile": ["Boros Signet"] } ], "counters": { "Conversion Chamber": { "charge": 0 } } }
+ }
+]

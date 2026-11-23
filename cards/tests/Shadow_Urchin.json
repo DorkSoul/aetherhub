@@ -1,0 +1,261 @@
+[
+ {
+  "name": "attacking puts a -1/-1 counter on a creature I choose (blight 1)",
+  "players": [
+   {
+    "battlefield": [
+     "Shadow Urchin",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Shadow Urchin",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Shadow Urchin",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "m1m1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "blight with only Shadow Urchin to choose from puts the counter on it",
+  "players": [
+   {
+    "battlefield": [
+     "Shadow Urchin"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Shadow Urchin",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Shadow Urchin"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Shadow Urchin": {
+     "m1m1": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "creature with counters dies: exile that many cards from the top, the top card is playable this turn",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Shadow Urchin",
+     "Mountain",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "charge": 3
+      }
+     }
+    ],
+    "library": [
+     "Plains",
+     "Island",
+     "Forest",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "play_land": "Plains"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Island",
+      "Forest"
+     ],
+     "battlefield_has": [
+      "Plains"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the rest of the exiled cards stay exiled and the library keeps the remaining card",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Shadow Urchin",
+     "Mountain",
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "charge": 3
+      }
+     }
+    ],
+    "library": [
+     "Plains",
+     "Island",
+     "Forest",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Plains",
+      "Island",
+      "Forest"
+     ],
+     "library_count": 21
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature without counters dying exiles nothing",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Shadow Urchin",
+     "Mountain",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Plains",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [],
+     "library_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: blight can put the counter on a creature whose toughness drops to 0, which then dies and triggers the exile",
+  "players": [
+   { "battlefield": ["Shadow Urchin", "Llanowar Elves"], "library": ["Plains", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Shadow Urchin", "at": "p1" } ] },
+   { "resolve": true, "answers": ["Llanowar Elves"] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Llanowar Elves"], "exile": ["Plains"], "library_count": 21 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a +1/+1 and a -1/-1 counter from blight cancel out as a state-based action",
+  "players": [
+   { "battlefield": ["Shadow Urchin", { "name": "Grizzly Bears", "counters": { "p1p1": 3 } }] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Shadow Urchin", "at": "p1" } ] },
+   { "resolve": true, "answers": ["Grizzly Bears"] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Shadow Urchin", "Grizzly Bears"] }, {} ],
+   "counters": { "Grizzly Bears": { "p1p1": 2, "m1m1": 0 } },
+   "pt": { "Grizzly Bears": [4, 4] }
+  }
+ }
+]

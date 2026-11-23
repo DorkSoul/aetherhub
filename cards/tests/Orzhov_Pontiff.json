@@ -1,0 +1,176 @@
+[
+ {
+  "name": "ETB mode 1: creatures you control get +1/+1 until end of turn",
+  "players": [
+   {
+    "battlefield": ["Plains", "Swamp", "Island"],
+    "hand": ["Orzhov Pontiff"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Orzhov Pontiff"
+   },
+   {
+    "resolve": true,
+    "answers": [[0]]
+   }
+  ],
+  "expect": {
+   "pt": { "Orzhov Pontiff": [2, 2] }
+  }
+ },
+ {
+  "name": "ETB mode 2: creatures you don't control get -1/-1 until end of turn",
+  "players": [
+   {
+    "battlefield": ["Plains", "Swamp", "Island"],
+    "hand": ["Orzhov Pontiff"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Orzhov Pontiff"
+   },
+   {
+    "resolve": true,
+    "answers": [[1]]
+   }
+  ],
+  "expect": {
+   "pt": { "Orzhov Pontiff": [1, 1], "Grizzly Bears": [1, 1] }
+  }
+ },
+ {
+  "name": "dying Pontiff haunts the creature it targets",
+  "players": [
+   { "battlefield": ["Mountain", "Orzhov Pontiff"], "hand": ["Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Pontiff"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Pontiff"], "graveyard": ["Lightning Bolt"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "dying Pontiff with no other creature goes to the graveyard instead of haunting",
+  "players": [
+   { "battlefield": ["Mountain", "Orzhov Pontiff"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Pontiff"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Orzhov Pontiff"], "exile": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "haunted creature dies: mode 1 gives your creatures +1/+1",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Orzhov Pontiff", "Serra Angel"], "hand": ["Lightning Bolt", "Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Pontiff"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Pontiff"], "battlefield_has": ["Serra Angel"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ],
+   "pt": { "Serra Angel": [5, 5] }
+  }
+ },
+ {
+  "name": "haunted creature dies: mode 2 gives opponent creatures -1/-1",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Orzhov Pontiff"], "hand": ["Lightning Bolt", "Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Pontiff"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [[1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Pontiff"] },
+    { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Serra Angel"] }
+   ],
+   "pt": { "Serra Angel": [3, 3] }
+  }
+ },
+ {
+  "name": "haunted creature dies: mode 1 does not shrink opponent creatures",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Orzhov Pontiff"], "hand": ["Lightning Bolt", "Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Pontiff"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Pontiff"] },
+    { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Serra Angel"] }
+   ],
+   "pt": { "Serra Angel": [4, 4] }
+  }
+ },
+ {
+  "name": "ruling: ETB mode may differ from the mode chosen when the haunted creature dies (ETB mode 1, death mode 2)",
+  "players": [
+   { "battlefield": ["Plains", "Swamp", "Island", "Mountain", "Mountain"], "hand": ["Orzhov Pontiff", "Lightning Bolt", "Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Orzhov Pontiff" },
+   { "resolve": true, "answers": [[0]] },
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Pontiff"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [[1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Pontiff"] },
+    { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Serra Angel"] }
+   ],
+   "pt": { "Serra Angel": [3, 3] }
+  }
+ }
+]

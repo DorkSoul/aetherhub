@@ -1,0 +1,299 @@
+[
+ {
+  "name": "corrupted: dies, exiled, returns one card (one poisoned opponent)",
+  "players": [
+   {
+    "graveyard": [
+     "Grizzly Bears",
+     "Forest"
+    ],
+    "battlefield": [
+     {
+      "name": "Glissa's Retriever",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "poison": 3,
+    "hand": [
+     "Murder"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Murder",
+    "player": 1,
+    "targets": [
+     "Glissa's Retriever"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Forest"
+     ],
+     "exile": [
+      "Glissa's Retriever"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no corrupted opponent: it is still exiled (ability word only), but nothing is returned",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Glissa's Retriever",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "poison": 2,
+    "hand": [
+     "Murder"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Murder",
+    "player": 1,
+    "targets": [
+     "Glissa's Retriever"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Glissa's Retriever"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "can't be blocked by power 2 or less",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Glissa's Retriever",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Glissa's Retriever",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "DeclareBlockers"
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Glissa's Retriever"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cannot be blocked by a power 2 creature: unblocked, 6 damage and 3 poison",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Glissa's Retriever",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Glissa's Retriever",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Glissa's Retriever"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 14,
+     "poison": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "a power 3 creature can block it",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Glissa's Retriever",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Glissa's Retriever",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Glissa's Retriever"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: toxic does not change combat damage (6 damage) and gives 3 poison",
+  "players": [ { "battlefield": [ { "name": "Glissa's Retriever", "sick": false } ] }, {} ],
+  "steps": [ { "attack": [ { "card": "Glissa's Retriever", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+  "expect": { "players": [ {}, { "life": 14, "poison": 3 } ] }
+ },
+ {
+  "name": "ruling: toxic damage dealt to a creature gives no poison",
+  "players": [ { "battlefield": [ { "name": "Glissa's Retriever", "sick": false } ] }, { "battlefield": [ "Hill Giant" ] } ],
+  "steps": [ { "attack": [ { "card": "Glissa's Retriever", "at": "p1" } ] }, { "block": [ { "blocker": "Hill Giant", "attacker": "Glissa's Retriever" } ] }, { "advance_to": "Main2" } ],
+  "expect": { "players": [ {}, { "life": 20, "poison": 0, "graveyard": ["Hill Giant"] } ] }
+ },
+ {
+  "name": "ruling: ten poison counters loses the game (state-based, immediately)",
+  "players": [ { "battlefield": [ { "name": "Glissa's Retriever", "sick": false } ] }, { "poison": 7 } ],
+  "steps": [ { "attack": [ { "card": "Glissa's Retriever", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+  "expect": { "winner": 0 }
+ },
+ {
+  "name": "ruling: nine poison counters does not lose the game",
+  "players": [ { "battlefield": [ { "name": "Glissa's Retriever", "sick": false } ] }, { "poison": 6 } ],
+  "steps": [ { "attack": [ { "card": "Glissa's Retriever", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+  "expect": { "winner": -1, "players": [ {}, { "poison": 9 } ] }
+ },
+ {
+  "name": "ruling: reflexive trigger chooses its target as it goes on the stack (Corrupted return)",
+  "players": [ { "hand": ["Lightning Bolt", "Fire Prophecy"], "graveyard": ["Grizzly Bears"], "battlefield": [ { "name": "Glissa's Retriever", "sick": false }, "Mountain", "Mountain", "Island" ] }, { "poison": 3 } ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Glissa's Retriever"] },
+   { "resolve": true },
+   { "cast": "Fire Prophecy", "targets": ["Glissa's Retriever"] },
+   { "resolve": true, "answers": [false, [0]] }
+  ],
+  "expect": { "players": [ { "hand": ["Grizzly Bears"], "graveyard": ["Fire Prophecy", "Lightning Bolt"], "exile": ["Glissa's Retriever"] }, { "poison": 3 } ] }
+ }
+]

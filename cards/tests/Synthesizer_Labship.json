@@ -1,0 +1,106 @@
+[
+  {
+    "name": "station taps another creature and puts charge counters equal to its power",
+    "players": [
+      { "battlefield": ["Synthesizer Labship", "Grizzly Bears", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Synthesizer Labship" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Synthesizer Labship": false },
+      "counters": { "Synthesizer Labship": { "charge": 2 } }
+    }
+  },
+  {
+    "name": "at 2+ charge the beginning of combat animates another artifact into a 2/2 flier",
+    "players": [
+      { "battlefield": ["Synthesizer Labship", "Grizzly Bears", "Plains", "Mind Stone"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Synthesizer Labship" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat", "targets": ["Mind Stone"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mind Stone": [2, 2] },
+      "keywords": { "Mind Stone": ["Flying"] }
+    }
+  },
+  {
+    "name": "with only one charge counter the beginning of combat trigger does nothing",
+    "players": [
+      { "battlefield": ["Synthesizer Labship", "Plains", "Mind Stone"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Synthesizer Labship", "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Synthesizer Labship": { "charge": 0 } }
+    }
+  },
+  {
+    "name": "at 9+ charge the Labship is a 4/4 flying vigilance artifact creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Synthesizer Labship", "counters": { "charge": 9 } },
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "counters": { "Synthesizer Labship": { "charge": 9 } },
+      "pt": { "Synthesizer Labship": [4, 4] },
+      "keywords": { "Synthesizer Labship": ["Flying", "Vigilance"] }
+    }
+  },
+  {
+    "name": "at 9 charge the Labship is an artifact creature that Swords to Plowshares can target",
+    "players": [ { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", { "name": "Synthesizer Labship", "counters": { "charge": 9 } }] }, {} ],
+    "steps": [ { "cast": "Swords to Plowshares", "targets": ["Synthesizer Labship"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Swords to Plowshares"], "exile": ["Synthesizer Labship"] }, {} ] }
+  },
+  {
+    "name": "at 8 charge the Labship is not a creature and Swords to Plowshares has no legal target",
+    "players": [ { "hand": ["Swords to Plowshares"], "battlefield": ["Plains", { "name": "Synthesizer Labship", "counters": { "charge": 8 } }] }, {} ],
+    "steps": [ { "cast": "Swords to Plowshares", "targets": ["Synthesizer Labship"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Swords to Plowshares"], "battlefield_has": ["Synthesizer Labship"] }, {} ] }
+  },
+  {
+    "name": "ruling: an artifact animated at combat that has been under control since the turn began can attack",
+    "players": [ { "battlefield": [ { "name": "Synthesizer Labship", "counters": { "charge": 2 } }, "Mind Stone" ] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat", "targets": ["Mind Stone"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Mind Stone", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: animating a creature sets its base 2/2 and its +1/+1 counters still apply",
+    "players": [ { "battlefield": [ { "name": "Synthesizer Labship", "counters": { "charge": 2 } }, { "name": "Ornithopter", "counters": { "+1/+1": 1 } } ] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat", "targets": ["Ornithopter"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Ornithopter": [3, 3] } } }
+]

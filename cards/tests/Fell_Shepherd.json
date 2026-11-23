@@ -1,0 +1,52 @@
+[
+  { "name": "combat damage to a player returns creatures put into your graveyard this turn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Fell Shepherd", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Fell Shepherd", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] }, { "life": 12 } ] } },
+  { "name": "declining the trigger returns nothing",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Fell Shepherd", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Fell Shepherd", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": { "players": [ { "hand": [], "graveyard_has": ["Lightning Bolt", "Grizzly Bears"] }, { "life": 12 } ] } },
+  { "name": "creature that died in an earlier turn is not returned",
+    "players": [ { "battlefield": [{ "name": "Fell Shepherd", "sick": false }], "graveyard": ["Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Fell Shepherd", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": { "players": [ { "hand": [], "graveyard_has": ["Grizzly Bears"] }, { "life": 12 } ] } },
+  { "name": "B and sacrifice another creature: target creature gets -2/-2",
+    "players": [ { "battlefield": ["Swamp", { "name": "Fell Shepherd", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Llanowar Elves", "Hill Giant"] } ],
+    "steps": [
+      { "activate": "Fell Shepherd", "targets": ["Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Fell Shepherd"], "battlefield_lacks": ["Grizzly Bears"] }, { "graveyard_has": ["Llanowar Elves"], "battlefield_has": ["Hill Giant"] } ] } },
+  { "name": "ruling: can target a creature and sacrifice that same creature as the cost",
+    "players": [ { "battlefield": ["Swamp", { "name": "Fell Shepherd", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "activate": "Fell Shepherd", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Fell Shepherd"], "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] }, {} ] } },
+  { "name": "ruling: creature dealt lethal damage in the same combat damage step is returned with the others",
+    "players": [ { "battlefield": [{ "name": "Fell Shepherd", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Fell Shepherd", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"] }, { "life": 12, "battlefield_has": ["Hill Giant"] } ] } }
+]

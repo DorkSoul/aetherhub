@@ -1,0 +1,77 @@
+[
+ {"name": "steal a creature, untap it, give haste, then discard to draw",
+  "players": [
+   {"hand": ["Vengeful Possession", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"]},
+   {"battlefield": ["Hill Giant"]}
+  ],
+  "steps": [
+   {"cast": "Vengeful Possession"},
+   {"resolve": true, "answers": [true]}
+  ],
+  "expect": {
+   "keywords": {"Hill Giant": ["Haste"]},
+   "players": [{"battlefield_has": ["Hill Giant"], "graveyard_has": ["Lightning Bolt", "Vengeful Possession"], "hand_count": 1}, {}]
+  }
+ },
+ {"name": "declining the optional discard: no card is drawn",
+  "players": [
+   {"hand": ["Vengeful Possession", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"]},
+   {"battlefield": ["Hill Giant"]}
+  ],
+  "steps": [
+   {"cast": "Vengeful Possession"},
+   {"resolve": true, "answers": [false]}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Hill Giant"], "hand": ["Lightning Bolt"]}, {}]
+  }
+ },
+ {"name": "ruling: if the target is gone on resolution, nothing happens (no discard, no draw)",
+  "players": [
+   {"hand": ["Vengeful Possession", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"]},
+   {"hand": ["Terror"], "battlefield": ["Hill Giant", "Swamp", "Swamp"]}
+  ],
+  "steps": [
+   {"cast": "Vengeful Possession"},
+   {"pass": true},
+   {"cast": "Terror", "player": 1, "targets": ["Hill Giant"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"hand": ["Lightning Bolt"], "graveyard_has": ["Vengeful Possession"]}, {"graveyard_has": ["Hill Giant", "Terror"]}]
+  }
+ },
+ {"name": "ruling: a creature you already control can be targeted; it untaps and stays yours",
+  "players": [
+   {"hand": ["Vengeful Possession", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "tapped": true}]},
+   {"battlefield": ["Hill Giant"]}
+  ],
+  "steps": [
+   {"cast": "Vengeful Possession", "targets": ["Grizzly Bears"]},
+   {"resolve": true, "answers": [false]}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Grizzly Bears"]}, {"battlefield_has": ["Hill Giant"]}],
+   "tapped": {"Grizzly Bears": false}
+  }
+ },
+ {"name": "ruling: gaining control does not take an Equipment attached to the creature",
+  "players": [
+   {"battlefield": ["Hill Giant", "Bonesplitter", "Plains"]},
+   {"hand": ["Vengeful Possession", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"]}
+  ],
+  "steps": [
+   {"activate": "Bonesplitter", "ability": 0},
+   {"resolve": true},
+   {"advance_to": "Main2"},
+   {"advance_to": "Main1"},
+   {"cast": "Vengeful Possession", "player": 1},
+   {"resolve": true, "answers": [false]}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Bonesplitter"]}, {"battlefield_has": ["Hill Giant"]}],
+   "attached": {"Bonesplitter": "Hill Giant"},
+   "pt": {"Hill Giant": [5, 3]}
+  }
+ }
+]

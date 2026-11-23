@@ -1,0 +1,133 @@
+[
+  {
+    "name": "+1 untaps up to one target creature and up to one target land",
+    "players": [
+      { "battlefield": ["Kiora, Master of the Depths", { "name": "Grizzly Bears", "tapped": true }, { "name": "Forest", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 0, "targets": ["Grizzly Bears", "Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kiora, Master of the Depths", "Grizzly Bears", "Forest"] }, {} ],
+      "tapped": { "Grizzly Bears": false, "Forest": false },
+      "counters": { "Kiora, Master of the Depths": { "Loyalty": 5 } }
+    }
+  },
+  {
+    "name": "+1 with only a creature target leaves the land tapped",
+    "players": [
+      { "battlefield": ["Kiora, Master of the Depths", { "name": "Grizzly Bears", "tapped": true }, { "name": "Forest", "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kiora, Master of the Depths", "Grizzly Bears", "Forest"] }, {} ],
+      "tapped": { "Grizzly Bears": false, "Forest": true }
+    }
+  },
+  {
+    "name": "-2 puts a chosen creature and land from the top four into hand and the rest into the graveyard",
+    "players": [
+      { "battlefield": ["Kiora, Master of the Depths"], "library": ["Grizzly Bears", "Llanowar Elves", "Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 1 },
+      { "resolve": true, "answers": [["Grizzly Bears"], ["Forest"]] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears", "Forest"], "graveyard_has": ["Llanowar Elves", "Island"], "library_count": 0 }, {} ],
+      "counters": { "Kiora, Master of the Depths": { "Loyalty": 2 } }
+    }
+  },
+  {
+    "name": "-2 choosing nothing puts all four revealed cards into the graveyard",
+    "players": [
+      { "battlefield": ["Kiora, Master of the Depths"], "library": ["Grizzly Bears", "Llanowar Elves", "Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 1 },
+      { "resolve": true, "answers": [[], []] }
+    ],
+    "expect": {
+      "players": [ { "hand": [], "graveyard_has": ["Grizzly Bears", "Llanowar Elves", "Forest", "Island"], "library_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "-8 creates three 8/8 blue Octopus tokens and gives an emblem",
+    "players": [
+      { "battlefield": [ { "name": "Kiora, Master of the Depths", "counters": { "loyalty": 8 } } ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 2 },
+      { "resolve": true, "answers": [["Octopus 8-8"], ["Octopus 8-8"], ["Octopus 8-8"], false, false, false] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Octopus 8-8"], "battlefield_lacks": ["Kiora, Master of the Depths"] }, {} ]
+    }
+  },
+  {
+    "name": "emblem: a creature entering under your control may fight target creature",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"], "command": ["Kiora Master of the Depths Emblem"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [["Llanowar Elves"], true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_lacks": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "ruling: +1 with no targets still puts a loyalty counter on her",
+    "players": [
+      { "battlefield": ["Kiora, Master of the Depths"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kiora, Master of the Depths"] }, {} ],
+      "counters": { "Kiora, Master of the Depths": { "Loyalty": 5 } }
+    }
+  },
+  {
+    "name": "ruling: -2 can put only a creature card into hand; the rest go to the graveyard",
+    "players": [
+      { "battlefield": ["Kiora, Master of the Depths"], "library": ["Grizzly Bears", "Llanowar Elves", "Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 1 },
+      { "resolve": true, "answers": [["Grizzly Bears"], []] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Grizzly Bears"], "graveyard_has": ["Llanowar Elves", "Forest", "Island"], "library_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the emblem is in place when the Octopus tokens enter, so their fight triggers work",
+    "players": [
+      { "battlefield": [ { "name": "Kiora, Master of the Depths", "counters": { "loyalty": 8 } } ] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "activate": "Kiora, Master of the Depths", "ability": 2 },
+      { "resolve": true, "answers": [["Llanowar Elves"], ["Llanowar Elves"], ["Llanowar Elves"], true] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Octopus 8-8"] }, { "battlefield_lacks": ["Llanowar Elves"] } ]
+    }
+  }
+]

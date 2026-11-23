@@ -1,0 +1,231 @@
+[
+  {
+    "name": "first spell cast this turn cascades into a cheaper nonland card",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Maelstrom Nexus",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Forest",
+          "Savannah Lions",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Maelstrom Nexus",
+            "Grizzly Bears",
+            "Savannah Lions"
+          ],
+          "library_count": 22
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a later spell in the same turn does not cascade",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Maelstrom Nexus",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Savannah Lions",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Maelstrom Nexus",
+            "Grizzly Bears",
+            "Savannah Lions"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no cascade when the Nexus is not on the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Savannah Lions"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Savannah Lions"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: spells cast before the Nexus entered count, so a later first-of-turn cast does not cascade",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Maelstrom Nexus", "Grizzly Bears"],
+        "battlefield": ["Mountain", "Mountain", "Plains", "Island", "Swamp", "Forest", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Maelstrom Nexus" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Maelstrom Nexus", "Grizzly Bears"], "battlefield_lacks": ["Savannah Lions"], "library_count": 21 },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the cascade cast puts the exiled cards back on the bottom of the library",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Maelstrom Nexus", "Forest", "Forest"],
+        "library": ["Forest", "Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Maelstrom Nexus", "Grizzly Bears"], "battlefield_lacks": ["Savannah Lions"], "library_count": 22, "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a cascaded X spell is cast with X=0",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Maelstrom Nexus", "Forest", "Forest"],
+        "library": ["Fireball"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true, "answers": [true, "Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered cascade spell still lets its cascade cast a card",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Maelstrom Nexus", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Maelstrom Nexus", "Savannah Lions"], "graveyard": ["Grizzly Bears"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

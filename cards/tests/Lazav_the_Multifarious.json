@@ -1,0 +1,95 @@
+[
+ {
+  "name": "X = mana value: becomes a copy of creature card in graveyard, keeps its name",
+  "players": [
+   { "battlefield": ["Lazav, the Multifarious", "Forest", "Forest"], "graveyard": ["Grizzly Bears"] },
+   { "battlefield": [] }
+  ],
+  "steps": [
+   { "activate": "Lazav, the Multifarious", "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Lazav, the Multifarious", "Forest", "Forest"], "graveyard": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no legal target in the graveyard of an opponent (illegal)",
+  "players": [
+   { "battlefield": ["Lazav, the Multifarious", "Forest", "Forest"] },
+   { "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Lazav, the Multifarious", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Lazav, the Multifarious", "Forest", "Forest"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ETB surveil 1: the top card may go to the graveyard",
+  "players": [
+   { "hand": ["Lazav, the Multifarious"], "battlefield": ["Island", "Swamp"], "library": ["Lightning Bolt", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lazav, the Multifarious" },
+   { "resolve": true, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lazav, the Multifarious"], "graveyard_has": ["Lightning Bolt"], "library_top": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ETB surveil 1: keeping the top card leaves the library alone",
+  "players": [
+   { "hand": ["Lazav, the Multifarious"], "battlefield": ["Island", "Swamp"], "library": ["Lightning Bolt", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lazav, the Multifarious" },
+   { "resolve": true, "answers": [[]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lazav, the Multifarious"], "library_top": ["Lightning Bolt", "Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the copy has only the printed P/T of the copied card and keeps its name",
+  "players": [ { "battlefield": ["Lazav, the Multifarious", "Forest", "Forest"], "graveyard": ["Grizzly Bears"] }, {} ],
+  "steps": [ { "activate": "Lazav, the Multifarious", "answers": [2] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Lazav, the Multifarious"] }, {} ], "pt": { "Lazav, the Multifarious": [2, 2] } }
+ },
+ {
+  "name": "ruling: becoming a copy does not enter the battlefield, so the copied card's ETB draw does not happen",
+  "players": [ { "battlefield": ["Lazav, the Multifarious", "Island", "Island", "Island", "Island", "Island"], "graveyard": ["Mulldrifter"] }, {} ],
+  "steps": [ { "activate": "Lazav, the Multifarious", "answers": [5] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Lazav, the Multifarious"], "hand_count": 0, "library_count": 20 }, {} ], "pt": { "Lazav, the Multifarious": [2, 2] } }
+ },
+ {
+  "name": "ruling: counters on Lazav stay when it becomes a copy (1/1 base copy of Bears plus a counter)",
+  "players": [ { "battlefield": [ { "name": "Lazav, the Multifarious", "counters": { "p1p1": 1 } }, "Forest", "Forest" ], "graveyard": ["Grizzly Bears"] }, {} ],
+  "steps": [ { "activate": "Lazav, the Multifarious", "answers": [2] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Lazav, the Multifarious"] }, {} ], "pt": { "Lazav, the Multifarious": [3, 3] }, "counters": { "Lazav, the Multifarious": { "p1p1": 1 } } }
+ },
+ {
+  "name": "ruling: a card with {X} in its mana cost has mana value 0 in the graveyard (X = 0)",
+  "players": [ { "battlefield": [ { "name": "Lazav, the Multifarious", "counters": { "p1p1": 1 } } ], "graveyard": ["Stonecoil Serpent"] }, {} ],
+  "steps": [ { "activate": "Lazav, the Multifarious", "answers": [0] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Lazav, the Multifarious"] }, {} ], "pt": { "Lazav, the Multifarious": [1, 1] } }
+ }
+]

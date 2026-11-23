@@ -1,0 +1,60 @@
+[
+  {
+    "name": "creatures you control assign combat damage equal to their toughness",
+    "players": [ { "battlefield": ["High Alert", "Juggernaut"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Juggernaut", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "a defender creature can attack and deals combat damage equal to its toughness",
+    "players": [ { "battlefield": ["High Alert", "Angelic Wall"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Angelic Wall", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ] }
+  },
+  {
+    "name": "without High Alert a defender creature cannot attack",
+    "players": [ { "battlefield": ["Angelic Wall"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Angelic Wall", "at": "p1" } ], "illegal": true } ],
+    "expect": {}
+  },
+  {
+    "name": "power is unchanged: Juggernaut still has power 5 (only damage uses toughness)",
+    "players": [ { "battlefield": ["High Alert", "Juggernaut"] }, {} ],
+    "steps": [],
+    "expect": { "pt": { "Juggernaut": [5, 3] } }
+  },
+  {
+    "name": "2WU: untap target creature",
+    "players": [ { "battlefield": ["High Alert", { "name": "Grizzly Bears", "tapped": true }, "Plains", "Island", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "High Alert", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": false } }
+  },
+  {
+    "name": "untap ability needs four mana",
+    "players": [ { "battlefield": ["High Alert", { "name": "Grizzly Bears", "tapped": true }, "Plains", "Island", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "High Alert", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "tapped": { "Grizzly Bears": true } }
+  },
+  {
+    "name": "ruling: fight damage uses power, not toughness (Juggernaut's 5 power kills Serra Angel)",
+    "players": [ { "hand": ["Prey Upon"], "battlefield": ["High Alert", "Juggernaut", "Forest"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "cast": "Prey Upon", "targets": ["Juggernaut", "Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Prey Upon", "Juggernaut"] }, { "graveyard": ["Serra Angel"] } ] }
+  }
+]

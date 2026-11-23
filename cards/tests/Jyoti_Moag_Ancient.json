@@ -1,0 +1,146 @@
+[
+  {
+    "name": "one Forest Dryad land creature for each commander cast; land creatures get +X/+X at the beginning of combat",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Jyoti, Moag Ancient"],
+        "battlefield": ["Plains", "Plains", "Forest", "Island", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Jyoti, Moag Ancient" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Savannah Lions", "Jyoti, Moag Ancient", "Forest Dryad"] },
+        {}
+      ],
+      "pt": {
+        "Jyoti, Moag Ancient": [2, 4],
+        "Forest Dryad": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "no commander cast this game means no Forest Dryad tokens",
+    "players": [
+      {
+        "hand": ["Jyoti, Moag Ancient"],
+        "battlefield": ["Plains", "Forest", "Island", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Jyoti, Moag Ancient" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Jyoti, Moag Ancient"], "battlefield_lacks": ["Forest Dryad"] },
+        {}
+      ],
+      "pt": { "Jyoti, Moag Ancient": [2, 4] }
+    }
+  },
+  {
+    "name": "ruling: a commander cast that was countered still counts for the Forest Dryads",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Jyoti, Moag Ancient"],
+        "battlefield": ["Plains", "Plains", "Forest", "Island", "Swamp"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Savannah Lions" }] },
+      { "resolve": true },
+      { "cast": "Jyoti, Moag Ancient" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Jyoti, Moag Ancient", "Forest Dryad", "Plains", "Plains", "Forest", "Island", "Swamp"]
+        },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Jyoti's X is fixed as its combat trigger resolves; a later pump on Jyoti does not grow the land creatures",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Jyoti, Moag Ancient", "Giant Growth"],
+        "battlefield": ["Plains", "Plains", "Forest", "Forest", "Forest", "Forest", "Island", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Jyoti, Moag Ancient" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Jyoti, Moag Ancient"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Jyoti, Moag Ancient", "Forest Dryad"] },
+        {}
+      ],
+      "pt": {
+        "Jyoti, Moag Ancient": [5, 7],
+        "Forest Dryad": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "ruling: every cast of either commander counts (one cast each of two commanders makes two Forest Dryads)",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions", "Grizzly Bears"],
+        "hand": ["Jyoti, Moag Ancient"],
+        "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Island", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Jyoti, Moag Ancient" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Savannah Lions", "Grizzly Bears", "Jyoti, Moag Ancient", "Forest Dryad", "Forest Dryad",
+            "Plains", "Plains", "Plains", "Forest", "Forest", "Forest", "Island", "Swamp"
+          ]
+        },
+        {}
+      ]
+    }
+  }
+]

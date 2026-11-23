@@ -1,0 +1,122 @@
+[
+  {
+    "name": "ward: opponent who cannot discard at random has the spell countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Alpharael, Stonechosen"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Alpharael, Stonechosen"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "battlefield_has": ["Alpharael, Stonechosen"] }
+      ]
+    }
+  },
+  {
+    "name": "ward: paying by discarding the only other card lets the spell resolve",
+    "players": [
+      { "hand": ["Lightning Bolt", "Island"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Alpharael, Stonechosen"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Alpharael, Stonechosen"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Island", "Lightning Bolt"], "hand_count": 0 },
+        { "graveyard": ["Alpharael, Stonechosen"] }
+      ]
+    }
+  },
+  {
+    "name": "void: defending player loses half their life rounded up when attacking after a nonland permanent left",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Alpharael, Stonechosen", "sick": false }, "Mountain" ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Alpharael, Stonechosen", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 7 } ]
+    }
+  },
+  {
+    "name": "no void: attacking deals only combat damage when no nonland permanent left the battlefield",
+    "players": [
+      { "battlefield": [ { "name": "Alpharael, Stonechosen", "sick": false } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Alpharael, Stonechosen", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "void: half of an odd life total rounds up",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Alpharael, Stonechosen", "sick": false }, "Mountain" ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "set_life": 15, "player": 1 },
+      { "attack": [ { "card": "Alpharael, Stonechosen", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 4 } ]
+    }
+  },
+  {
+    "name": "ruling: a warp spell that is countered still counts as warped for void",
+    "players": [
+      { "hand": ["Drix Fatemaker"], "battlefield": [ { "name": "Alpharael, Stonechosen", "sick": false }, "Forest", "Forest" ] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Drix Fatemaker", "alt": 0 },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Drix Fatemaker" } ] },
+      { "resolve": true },
+      { "attack": [ { "card": "Alpharael, Stonechosen", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Drix Fatemaker"] }, { "life": 7 } ]
+    }
+  },
+  {
+    "name": "ruling: a land leaving the battlefield does not enable void",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [ "Mana Breach", { "name": "Alpharael, Stonechosen", "sick": false }, "Mountain", "Mountain" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true, "answers": ["Mountain"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Alpharael, Stonechosen", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Mountain"], "battlefield_has": ["Mana Breach", "Alpharael, Stonechosen"] }, { "life": 14 } ]
+    }
+  }
+]

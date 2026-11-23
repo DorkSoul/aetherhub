@@ -1,0 +1,52 @@
+[
+  { "name": "attacking a player puts one charge counter, however many creatures attack",
+    "players": [ { "battlefield": ["Long-Range Sensor", "Grizzly Bears", "Hill Giant"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, {} ], "counters": { "Long-Range Sensor": { "charge": 1 } } } },
+  { "name": "two charge counters are needed: one counter cannot be spent",
+    "players": [ { "battlefield": [ { "name": "Long-Range Sensor", "counters": { "charge": 1 } }, "Mountain" ] }, {} ],
+    "steps": [
+      { "activate": "Long-Range Sensor", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ] } },
+  { "name": "discover 4: a nonland card with mana value 4 or less is cast for free",
+    "players": [ { "battlefield": [ { "name": "Long-Range Sensor", "counters": { "charge": 2 } }, "Mountain" ], "library": ["Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Long-Range Sensor", "ability": 0 },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "hand_count": 0 }, {} ] } },
+  { "name": "discover 4: declining the cast puts the card into hand",
+    "players": [ { "battlefield": [ { "name": "Long-Range Sensor", "counters": { "charge": 2 } }, "Mountain" ], "library": ["Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Long-Range Sensor", "ability": 0 },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": { "players": [ { "hand_count": 1 }, {} ] } },
+  { "name": "ruling: a discovered card that cannot be cast (Pacifism, no creature anywhere) goes to hand",
+    "players": [ { "battlefield": [ { "name": "Long-Range Sensor", "counters": { "charge": 2 } }, "Mountain" ], "library": ["Forest", "Pacifism"] }, {} ],
+    "steps": [
+      { "activate": "Long-Range Sensor", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": ["Pacifism"], "battlefield_has": [] }, {} ] } },
+  { "name": "ruling: discovered X spell is cast with X = 0, so Fireball deals no damage",
+    "players": [ { "battlefield": [ { "name": "Long-Range Sensor", "counters": { "charge": 2 } }, "Mountain" ], "library": ["Forest", "Fireball"] }, {} ],
+    "steps": [
+      { "activate": "Long-Range Sensor", "ability": 0 },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Fireball"] }, { "life": 20 } ] } },
+  { "name": "ruling: discover 4 can cast Fire (combined mana value of Fire // Ice is 4) for free",
+    "players": [ { "battlefield": [ { "name": "Long-Range Sensor", "counters": { "charge": 2 } }, "Mountain" ], "library": ["Forest", "Fire // Ice"] }, {} ],
+    "steps": [
+      { "activate": "Long-Range Sensor", "ability": 0 },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Fire"] }, { "life": 18 } ] } }
+]

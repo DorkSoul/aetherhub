@@ -1,0 +1,88 @@
+[
+  {
+    "name": "opponent who discards takes 5; opponent who declines does not",
+    "players": [
+      { "hand": ["Snort", "Island"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Snort" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": { "players": [{ "hand_count": 5, "graveyard": ["Snort", "Island"] }, { "life": 15, "hand_count": 5 }] }
+  },
+  {
+    "name": "declining opponent takes no damage",
+    "players": [
+      { "hand": ["Snort"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Snort" },
+      { "resolve": true, "answers": [false, false] }
+    ],
+    "expect": { "players": [{ "hand_count": 0 }, { "life": 20, "hand_count": 1 }] }
+  },
+  {
+    "name": "flashback from the graveyard for {5}{R}, then exiled",
+    "players": [
+      { "graveyard": ["Snort"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Snort", "alt": 0 },
+      { "resolve": true, "answers": [false, false] }
+    ],
+    "expect": { "players": [{ "exile": ["Snort"] }, { "hand_count": 1 }] }
+  },
+  {
+    "name": "flashback is illegal with only five mana",
+    "players": [
+      { "graveyard": ["Snort"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [{ "cast": "Snort", "alt": 0, "illegal": true }],
+    "expect": { "players": [{ "graveyard": ["Snort"] }, {}] }
+  },
+  {
+    "name": "ruling: flashback is sorcery-speed: illegal while a spell is on the stack, legal once it resolves",
+    "players": [
+      { "hand": ["Lightning Bolt"], "graveyard": ["Snort"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Snort", "alt": 0, "illegal": true },
+      { "resolve": true },
+      { "cast": "Snort", "alt": 0 },
+      { "resolve": true, "answers": [false, false] }
+    ],
+    "expect": { "players": [ { "exile": ["Snort"], "graveyard": ["Lightning Bolt"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: a flashback spell that is countered is still exiled",
+    "players": [
+      { "graveyard": ["Snort"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Snort", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Snort" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Snort"], "graveyard": [] }, { "graveyard": ["Counterspell"] } ] }
+  },
+  {
+    "name": "ruling: an opponent with an empty hand may still discard it and takes 5",
+    "players": [
+      { "hand": ["Snort"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Snort" },
+      { "resolve": true, "answers": [true, true] }
+    ],
+    "expect": { "players": [{ "hand_count": 5, "graveyard": ["Snort"] }, { "life": 15, "hand_count": 5 }] }
+  }
+]

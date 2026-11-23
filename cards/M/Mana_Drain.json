@@ -1,0 +1,81 @@
+{
+  "name": "Mana Drain",
+  "mana_cost": "{U}{U}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Spell", "filter": {} },
+          "label": "target spell"
+        }
+      ],
+      "effects": [
+        { "type": "CounterSpell", "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "All",
+            "cs": [
+              { "type": "YourTurn" },
+              {
+                "type": "AnyOf",
+                "cs": [
+                  { "type": "InStep", "step": "Main1" },
+                  { "type": "InStep", "step": "BeginCombat" },
+                  { "type": "InStep", "step": "DeclareAttackers" },
+                  { "type": "InStep", "step": "DeclareBlockers" },
+                  { "type": "InStep", "step": "FirstStrikeDamage" },
+                  { "type": "InStep", "step": "CombatDamage" },
+                  { "type": "InStep", "step": "EndCombat" }
+                ]
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "AddTrigger",
+              "trigger": { "type": "BeginningOfStep", "step": "Main2", "whose": "You" },
+              "once": true,
+              "until": "EndOfTurn",
+              "effects": [
+                {
+                  "type": "AddMana",
+                  "mana": [
+                    {
+                      "t": "Scaled",
+                      "m": "C",
+                      "amount": { "type": "ManaValueOf", "of": { "type": "Target", "idx": 0 } }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "AddTrigger",
+              "trigger": { "type": "BeginningOfStep", "step": "Main1", "whose": "You" },
+              "once": true,
+              "until": "Forever",
+              "effects": [
+                {
+                  "type": "AddMana",
+                  "mana": [
+                    {
+                      "t": "Scaled",
+                      "m": "C",
+                      "amount": { "type": "ManaValueOf", "of": { "type": "Target", "idx": 0 } }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Counter target spell. At the beginning of your next main phase, add an amount of {C} equal to that spell's mana value."
+}

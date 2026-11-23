@@ -1,0 +1,169 @@
+[
+ {
+  "name": "draws X cards and copies a creature with mana value X or less",
+  "players": [
+   {
+    "hand": [
+     "Here Comes a New Hero!"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Here Comes a New Hero!",
+    "answers": [
+     2
+    ],
+    "targets": [
+     "p0",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2,
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "up to one target: with no creature chosen it still draws but makes no copy",
+  "players": [
+   {
+    "hand": [
+     "Here Comes a New Hero!"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Here Comes a New Hero!",
+    "answers": [
+     1
+    ],
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1,
+     "battlefield_lacks": [
+      "Here Comes a New Hero!"
+     ]
+    },
+    {
+     "battlefield": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the token's copied enters trigger (backup) still happens",
+  "players": [
+   { "hand": ["Here Comes a New Hero!"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Grizzly Bears"] },
+   { "battlefield": ["Bright-Palm, Soul Awakener"] }
+  ],
+  "steps": [
+   { "cast": "Here Comes a New Hero!", "answers": [4], "targets": ["p0", "Bright-Palm, Soul Awakener"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 4, "battlefield_has": ["Grizzly Bears", "Bright-Palm, Soul Awakener"] }, { "battlefield_has": ["Bright-Palm, Soul Awakener"] } ],
+   "counters": { "Grizzly Bears": { "+1/+1": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: the copy is untapped and has no counters (only printed characteristics)",
+  "players": [
+   { "hand": ["Here Comes a New Hero!", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Mountain"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "tapped": true, "counters": { "p1p1": 1 } } ] }
+  ],
+  "steps": [
+   { "cast": "Here Comes a New Hero!", "answers": [2], "targets": ["p0", "p1:Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Grizzly Bears"] } ],
+   "pt": { "Grizzly Bears": [2, 2] },
+   "tapped": { "Grizzly Bears": false },
+   "counters": { "Grizzly Bears": { "p1p1": 0 } }
+  }
+ },
+ {
+  "name": "ruling: a copy of a copy enters as what the copied creature copied",
+  "players": [
+   { "hand": ["Clone", "Here Comes a New Hero!"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Clone" },
+   { "resolve": true, "answers": [0] },
+   { "cast": "Here Comes a New Hero!", "answers": [2], "targets": ["p0", "p0:Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Clone"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: an {X} creature has mana value 0, so X=0 can target it",
+  "players": [
+   { "hand": ["Here Comes a New Hero!"], "battlefield": ["Island", "Island", "Island"] },
+   { "battlefield": [ { "name": "Walking Ballista", "counters": { "p1p1": 2 } } ] }
+  ],
+  "steps": [
+   { "cast": "Here Comes a New Hero!", "answers": [0], "targets": ["p0", "Walking Ballista"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0, "graveyard_has": ["Here Comes a New Hero!"], "battlefield_lacks": ["Walking Ballista"] }, { "battlefield_has": ["Walking Ballista"] } ]
+  }
+ }
+]

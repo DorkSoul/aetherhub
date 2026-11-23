@@ -1,0 +1,130 @@
+[
+  {
+    "name": "destroys target creature and deals 3 to target player",
+    "players": [
+      {
+        "hand": [
+          "Angrath's Fury"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Angrath's Fury",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false,
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Angrath's Fury"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "needs both a creature and a player or planeswalker to target",
+    "players": [
+      {
+        "hand": [
+          "Angrath's Fury"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Angrath's Fury",
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Angrath's Fury"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if one target becomes illegal the other still resolves and you still search",
+    "players": [
+      { "hand": ["Angrath's Fury"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain", "Mountain"], "library": ["Angrath, Minotaur Pirate"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Angrath's Fury", "targets": ["p1", "p1:Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true, "answers": [true, "Angrath, Minotaur Pirate", false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Angrath, Minotaur Pirate"], "graveyard": ["Angrath's Fury"] },
+        { "life": 17, "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cannot cast with only a creature target (a player or planeswalker target is also required)",
+    "players": [
+      { "hand": ["Angrath's Fury"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Angrath's Fury", "targets": ["p1:Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Angrath's Fury"] },
+        { "life": 20, "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

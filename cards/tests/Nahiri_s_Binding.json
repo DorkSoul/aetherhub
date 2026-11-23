@@ -1,0 +1,51 @@
+[
+  {"name": "enchanted creature's mana ability can't be activated",
+   "players": [{"hand": ["Nahiri's Binding"], "battlefield": ["Plains", "Plains", "Plains"]}, {"battlefield": ["Llanowar Elves"]}],
+   "steps": [{"cast": "Nahiri's Binding", "targets": ["Llanowar Elves"]}, {"resolve": true}, {"activate": "Llanowar Elves", "illegal": true}],
+   "expect": {"attached": {"Nahiri's Binding": "Llanowar Elves"}}},
+  {"name": "can enchant a planeswalker's loyalty abilities blocked too",
+   "players": [{"hand": ["Nahiri's Binding"], "battlefield": ["Plains", "Plains", "Plains"]}, {"battlefield": ["Llanowar Elves"]}],
+   "steps": [{"cast": "Nahiri's Binding", "targets": ["Llanowar Elves"]}, {"resolve": true}],
+   "expect": {"attached": {"Nahiri's Binding": "Llanowar Elves"}}},
+  {"name": "enchanted creature can't attack: its attack is dropped, the other attacker connects",
+   "players": [{"hand": ["Nahiri's Binding"], "battlefield": ["Plains", "Plains", "Plains", {"name": "Grizzly Bears", "sick": false}, {"name": "Goblin Piker", "sick": false}]}, {}],
+   "steps": [
+     {"cast": "Nahiri's Binding", "targets": ["Grizzly Bears"]},
+     {"resolve": true},
+     {"attack": [{"card": "Grizzly Bears", "at": "p1"}, {"card": "Goblin Piker", "at": "p1"}]},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{"battlefield_has": ["Grizzly Bears", "Goblin Piker"]}, {"life": 18}]}},
+  {"name": "enchanted creature can't block: its block is dropped, so the attacker it would block connects",
+   "players": [{"hand": ["Nahiri's Binding"], "battlefield": ["Plains", "Plains", "Plains", {"name": "Grizzly Bears", "sick": false}, {"name": "Goblin Piker", "sick": false}]}, {"battlefield": ["Hill Giant", "Llanowar Elves"]}],
+   "steps": [
+     {"cast": "Nahiri's Binding", "targets": ["Grizzly Bears"]},
+     {"resolve": true},
+     {"advance_to": "Main2"},
+     {"advance_to": "End"},
+     {"advance_to": "Main1"},
+     {"attack": [{"card": "Hill Giant", "at": "p0"}, {"card": "Llanowar Elves", "at": "p0"}], "player": 1},
+     {"block": [{"blocker": "Grizzly Bears", "attacker": "Hill Giant"}, {"blocker": "Goblin Piker", "attacker": "Llanowar Elves"}], "player": 0},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{"life": 17, "battlefield_has": ["Grizzly Bears"]}, {"battlefield_has": ["Hill Giant"]}]}},
+  {"name": "enchanted creature's mana ability can't be used: a G spell cannot be paid with it",
+   "players": [{"hand": ["Nahiri's Binding", "Giant Growth"], "battlefield": ["Plains", "Plains", "Plains", {"name": "Llanowar Elves", "sick": false}]}, {}],
+   "steps": [
+     {"cast": "Nahiri's Binding", "targets": ["Llanowar Elves"]},
+     {"resolve": true},
+     {"cast": "Giant Growth", "targets": ["Llanowar Elves"], "illegal": true}
+   ],
+   "expect": {"players": [{"hand": ["Giant Growth"]}, {}], "attached": {"Nahiri's Binding": "Llanowar Elves"}}},
+  {"name": "control: without the aura the Elves pay for Giant Growth",
+   "players": [{"hand": ["Giant Growth"], "battlefield": ["Plains", {"name": "Llanowar Elves", "sick": false}]}, {}],
+   "steps": [
+     {"cast": "Giant Growth", "targets": ["Llanowar Elves"]},
+     {"resolve": true}
+   ],
+   "expect": {"pt": {"Llanowar Elves": [4, 4]}}},
+  {"name": "ruling: no activated ability of the enchanted creature can be activated, including non-mana ones",
+   "players": [{"hand": ["Nahiri's Binding", "Island"], "battlefield": ["Plains", "Plains", "Plains", "Swamp", "Island", {"name": "Divining Witch", "sick": false}]}, {}],
+   "steps": [{"cast": "Nahiri's Binding", "targets": ["Divining Witch"]}, {"resolve": true}, {"activate": "Divining Witch", "ability": 0, "illegal": true}],
+   "expect": {"players": [{"hand": ["Island"], "battlefield_has": ["Divining Witch"]}, {}], "attached": {"Nahiri's Binding": "Divining Witch"}}}
+]

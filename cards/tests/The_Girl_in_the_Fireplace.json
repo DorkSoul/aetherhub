@@ -1,0 +1,113 @@
+[
+  {
+    "name": "chapter I creates a Human Noble with three time counters",
+    "players": [
+      { "hand": ["The Girl in the Fireplace"], "battlefield": ["Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Girl in the Fireplace" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Girl in the Fireplace", "Human Noble 1-1 White Vanishing"] },
+        {}
+      ],
+      "counters": { "The Girl in the Fireplace": { "lore": 1 }, "Human Noble 1-1 White Vanishing": { "Time": 3 } }
+    }
+  },
+  {
+    "name": "Human Noble prevents all damage that would be dealt to it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Human Noble 1-1 White Vanishing"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Human Noble 1-1 White Vanishing"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Human Noble 1-1 White Vanishing"], "graveyard": ["Lightning Bolt"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "chapter II creates a 2/2 Horse after the next draw step",
+    "players": [
+      { "battlefield": [{ "name": "The Girl in the Fireplace", "counters": { "lore": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Girl in the Fireplace", "Horse 2-2 White"] },
+        {}
+      ],
+      "counters": { "The Girl in the Fireplace": { "lore": 2 } }
+    }
+  },
+  {
+    "name": "chapter III: a creature dealing combat damage to a player this turn makes its controller time travel",
+    "players": [
+      { "battlefield": [{ "name": "The Girl in the Fireplace", "counters": { "lore": 2 } }, { "name": "Grizzly Bears", "sick": false }, { "name": "Rotating Fireplace", "counters": { "Time": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [0] }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18 }
+      ],
+      "counters": { "Rotating Fireplace": { "Time": 2 } }
+    }
+  },
+  {
+    "name": "vanishing: the last time counter is removed at upkeep and the Human Noble is sacrificed",
+    "players": [
+      { "battlefield": [{ "name": "Human Noble 1-1 White Vanishing", "counters": { "Time": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Human Noble 1-1 White Vanishing"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: time travel decides each permanent with a time counter separately (remove from one, add to the other)",
+    "players": [
+      { "battlefield": [ { "name": "The Girl in the Fireplace", "counters": { "lore": 2 } }, { "name": "Grizzly Bears", "sick": false }, { "name": "Rotating Fireplace", "counters": { "Time": 2 } }, { "name": "Human Noble 1-1 White Vanishing", "counters": { "Time": 3 } } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [1, 0] }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ],
+      "counters": { "Rotating Fireplace": { "Time": 1 }, "Human Noble 1-1 White Vanishing": { "Time": 3 } }
+    }
+  }
+]

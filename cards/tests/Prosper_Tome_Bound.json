@@ -1,0 +1,225 @@
+[
+ {
+  "name": "end step exiles the top card and it can be played later",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Prosper, Tome-Bound"
+    ],
+    "library": [
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Island"
+     ],
+     "library_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "playing a land from exile creates a Treasure",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Prosper, Tome-Bound"
+    ],
+    "library": [
+     "Island",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "play_land": "Island"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Island",
+      "Treasure"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "playing a land from hand does not create a Treasure",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Prosper, Tome-Bound"
+    ],
+    "hand": [
+     "Forest"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest"
+     ],
+     "battlefield_lacks": [
+      "Treasure"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "casting a spell from exile creates a Treasure",
+  "players": [
+   {
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Prosper, Tome-Bound"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Treasure"
+     ],
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Pact Boon triggers for any card played from exile, including one exiled by Act on Impulse",
+  "players": [
+   {"battlefield": ["Prosper, Tome-Bound", "Mountain", "Mountain", "Mountain", "Mountain"], "hand": ["Act on Impulse"], "library": ["Lightning Bolt", "Island", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Act on Impulse"},
+   {"resolve": true},
+   {"cast": "Lightning Bolt", "targets": ["p1"]},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Treasure"], "graveyard_has": ["Act on Impulse", "Lightning Bolt"]}, {"life": 17}]}
+ },
+ {
+  "name": "ruling: a Mystic Arcanum sorcery keeps sorcery timing: not castable on the opponent's turn",
+  "players": [
+   {"battlefield": ["Prosper, Tome-Bound", "Island", "Mountain", "Mountain"], "library": ["Divination", "Grizzly Bears", "Island"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"advance_to": "Main1"},
+   {"pass": true, "player": 1},
+   {"cast": "Divination", "illegal": true},
+   {"advance_to": "Main1"},
+   {"cast": "Divination"},
+   {"resolve": true}
+  ],
+  "expect": {"players": [{"graveyard_has": ["Divination"]}, {}]}
+ },
+ {
+  "name": "ruling: a Mystic Arcanum sorcery must still be paid for: no blue source, cannot cast",
+  "players": [
+   {"battlefield": ["Prosper, Tome-Bound", "Mountain", "Mountain", "Mountain"], "library": ["Divination", "Grizzly Bears"]},
+   {}
+  ],
+  "steps": [
+   {"advance_to": "End"},
+   {"advance_to": "Main1"},
+   {"advance_to": "Main1"},
+   {"cast": "Divination", "illegal": true}
+  ],
+  "expect": {"players": [{"exile": ["Divination"]}, {}]}
+ }
+]

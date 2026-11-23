@@ -1,0 +1,70 @@
+[
+  {
+    "name": "pays {2} and tapped, then becomes a copy of target land (it takes the copied name)",
+    "players": [
+      { "battlefield": ["Thespian's Stage", "Island", "Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Thespian's Stage", "ability": 0, "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Forest", "Island"], "battlefield_lacks": ["Thespian's Stage"] }, {} ]
+    }
+  },
+  {
+    "name": "needs {2} from other permanents: with only one other land the ability is not legal",
+    "players": [
+      { "battlefield": ["Thespian's Stage", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Thespian's Stage", "ability": 0, "targets": ["Island"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Thespian's Stage"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the copy has no duration and still applies in later turns",
+    "players": [ { "battlefield": ["Thespian's Stage", "Swamp", "Swamp", "Island"] }, {} ],
+    "steps": [
+      { "activate": "Thespian's Stage", "ability": 0, "targets": ["Island"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }, { "advance_to": "Main1" },
+      { "advance_to": "Main2" }, { "advance_to": "Main1" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Island"], "battlefield_lacks": ["Thespian's Stage"] }, {} ] }
+  },
+  {
+    "name": "ruling: the copy loses the printed {T}: Add {C} ability and taps for the copied land's mana",
+    "players": [ { "battlefield": ["Thespian's Stage", "Swamp", "Swamp"] }, { "battlefield": ["Island"] } ],
+    "steps": [
+      { "activate": "Thespian's Stage", "ability": 0, "targets": ["p1:Island"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }, { "advance_to": "Main1" },
+      { "advance_to": "Main2" }, { "advance_to": "Main1" },
+      { "tap_for_mana": "p0:Island" }
+    ],
+    "expect": { "players": [ { "pool": { "U": 1 } }, {} ] }
+  },
+  {
+    "name": "ruling: becoming a copy does not untap Thespian's Stage",
+    "players": [ { "battlefield": ["Thespian's Stage", "Swamp", "Swamp"] }, { "battlefield": ["Island"] } ],
+    "steps": [
+      { "activate": "Thespian's Stage", "ability": 0, "targets": ["p1:Island"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, {} ], "tapped": { "Island": true } }
+  },
+  {
+    "name": "ruling: copying a land with an enters trigger does not trigger it",
+    "players": [ { "battlefield": ["Thespian's Stage", "Selesnya Sanctuary", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Thespian's Stage", "ability": 0, "targets": ["Selesnya Sanctuary"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": [], "battlefield_has": ["Selesnya Sanctuary"], "battlefield_lacks": ["Thespian's Stage"] }, {} ] }
+  }
+]

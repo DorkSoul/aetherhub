@@ -1,0 +1,44 @@
+[
+  {
+    "name": "threshold: 3/3",
+    "players": [ { "battlefield": ["Vigilant Sentry"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "advance_to": "Main2" } ],
+    "expect": { "pt": { "Vigilant Sentry": [3, 3] } }
+  },
+  {
+    "name": "below threshold: 2/2 with no tap ability",
+    "players": [ { "battlefield": ["Vigilant Sentry"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "activate": "Vigilant Sentry", "illegal": true } ],
+    "expect": { "pt": { "Vigilant Sentry": [2, 2] } }
+  },
+  {
+    "name": "threshold: taps to give my attacking creature +3/+3 (5 unblocked damage)",
+    "players": [ { "battlefield": ["Vigilant Sentry", "Grizzly Bears"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "activate": "Vigilant Sentry", "ability": 32768, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 15 } ], "tapped": { "Vigilant Sentry": true } }
+  },
+  {
+    "name": "ruling: the granted tap ability still resolves when a flashback drops the graveyard below seven in response",
+    "players": [
+      { "graveyard": ["Spirit Flare", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "battlefield": ["Vigilant Sentry", "Grizzly Bears", "Serra Angel", "Plains", "Plains"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "activate": "Vigilant Sentry", "ability": 32768, "targets": ["Grizzly Bears"] },
+      { "cast": "Spirit Flare", "alt": 0, "targets": ["Serra Angel", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 17, "exile": ["Spirit Flare"] }, { "graveyard_has": ["Hill Giant"] } ],
+      "pt": { "Grizzly Bears": [5, 5], "Vigilant Sentry": [2, 2] },
+      "tapped": { "Vigilant Sentry": true, "Serra Angel": true }
+    }
+  }
+]

@@ -1,0 +1,168 @@
+[
+  {
+    "name": "kicked returns a creature card from graveyard",
+    "players": [
+      {
+        "hand": [
+          "Nullpriest of Oblivion"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Nullpriest of Oblivion",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Nullpriest of Oblivion",
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "unkicked does nothing",
+    "players": [
+      {
+        "hand": [
+          "Nullpriest of Oblivion"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Nullpriest of Oblivion",
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Nullpriest of Oblivion"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a copy of a kicked creature is not kicked, so its enters trigger does nothing",
+    "players": [
+      {
+        "hand": ["Nullpriest of Oblivion", "Clone"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Island", "Island", "Island", "Island"],
+        "graveyard": ["Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Nullpriest of Oblivion", "answers": [true] },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "cast": "Clone" },
+      { "resolve": true, "answers": [0] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Nullpriest of Oblivion", "Grizzly Bears"], "graveyard": ["Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: kicker does not change mana value (Reanimate gains the card's MV 2 life cost)",
+    "players": [
+      {
+        "hand": ["Nullpriest of Oblivion", "Heartless Act", "Reanimate"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Nullpriest of Oblivion", "answers": [true] },
+      { "resolve": true },
+      { "cast": "Heartless Act", "answers": [0], "targets": ["Nullpriest of Oblivion"] },
+      { "resolve": true },
+      { "cast": "Reanimate" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "battlefield_has": ["Nullpriest of Oblivion", "Grizzly Bears"], "graveyard": ["Heartless Act", "Reanimate"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: put onto the battlefield by Reanimate is not kicked, so no enters trigger",
+    "players": [
+      {
+        "hand": ["Reanimate"],
+        "battlefield": ["Swamp"],
+        "graveyard": ["Nullpriest of Oblivion", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reanimate", "targets": ["Nullpriest of Oblivion"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18, "battlefield_has": ["Nullpriest of Oblivion"], "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears", "Reanimate"] },
+        {}
+      ]
+    }
+  }
+]

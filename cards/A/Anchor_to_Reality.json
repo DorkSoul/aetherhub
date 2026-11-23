@@ -1,0 +1,51 @@
+{
+  "name": "Anchor to Reality",
+  "mana_cost": "{2}{U}{U}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "AdditionalCost",
+      "cost": [{ "type": "Sacrifice", "filter": { "types": ["Artifact", "Creature"] }, "n": 1 }]
+    },
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "Remembered" },
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Library",
+              "filter": { "any_of": [{ "subtypes": ["Equipment"] }, { "subtypes": ["Vehicle"] }] },
+              "min": 0,
+              "max": 1,
+              "then": [
+                { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "from": "Library" }
+              ]
+            },
+            { "type": "Shuffle", "who": { "type": "You" } },
+            {
+              "type": "If",
+              "cond": {
+                "type": "All",
+                "cs": [
+                  { "type": "RememberedIs", "filter": { "any_of": [{ "subtypes": ["Equipment"] }, { "subtypes": ["Vehicle"] }] } },
+                  {
+                    "type": "CompareAmounts",
+                    "a": { "type": "ManaValueOf", "of": { "type": "Remembered" } },
+                    "b": { "type": "ManaValueOf", "of": { "type": "EachObject" } },
+                    "op": "Lt"
+                  }
+                ]
+              },
+              "then": [ { "type": "Scry", "n": { "type": "Fixed", "n": 2 }, "who": { "type": "You" } } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nSearch your library for an Equipment or Vehicle card, put that card onto the battlefield, then shuffle. If it has mana value less than the sacrificed permanent's mana value, scry 2."
+}

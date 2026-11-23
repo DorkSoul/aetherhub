@@ -1,0 +1,71 @@
+{
+  "name": "Alchemist's Talent",
+  "mana_cost": "{3}{R}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "colors": ["R"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "CreateToken", "token": "Treasure", "n": { "type": "Fixed", "n": 2 }, "tapped": true }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{1}{R}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Static",
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "subtypes": ["Treasure"], "controller": "You" },
+        "ability": {
+          "type": "Activated",
+          "cost": [ { "type": "Tap" }, { "type": "SacrificeSelf" } ],
+          "effects": [ { "type": "AddMana", "mana": [ { "t": "AnyOneColor", "n": 2 } ] } ]
+        }
+      }
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{4}{R}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": {} },
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+          { "type": "ManaFromTreasure", "of": { "type": "TriggerObject" } }
+        ]
+      },
+      "effects": [
+        { "type": "DealDamage", "source": { "type": "This" }, "to": { "type": "EachOpponent" }, "amount": { "type": "ManaValueOf", "of": { "type": "TriggerObject" } } }
+      ]
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nWhen this Class enters, create two tapped Treasure tokens.\n{1}{R}: Level 2\nTreasures you control have \"{T}, Sacrifice this artifact: Add two mana of any one color.\"\n{4}{R}: Level 3\nWhenever you cast a spell, if mana from a Treasure was spent to cast it, this Class deals damage equal to that spell's mana value to each opponent."
+}

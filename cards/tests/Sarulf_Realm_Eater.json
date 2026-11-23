@@ -1,0 +1,387 @@
+[
+ {
+  "name": "opponent's creature dying gives a counter",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Sarulf, Realm Eater",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Sarulf, Realm Eater": {
+     "PlusOnePlusOne": 1
+    }
+   },
+   "pt": {
+    "Sarulf, Realm Eater": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "my own permanent dying gives no counter",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Sarulf, Realm Eater",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Sarulf, Realm Eater": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "damage to an opponent does nothing: no permanent was put into a graveyard",
+  "players": [
+   {
+    "hand": [
+     "Shock"
+    ],
+    "battlefield": [
+     "Sarulf, Realm Eater",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Shock",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Sarulf, Realm Eater": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "upkeep: remove 2 counters, exile other nonland permanents of mana value 2 or less (not lands, not bigger ones)",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Sarulf, Realm Eater",
+      "counters": {
+       "PlusOnePlusOne": 2
+      }
+     },
+     "Grizzly Bears",
+     "Forest",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": [
+     "Mind Stone",
+     "Serra Angel",
+     "Island",
+     "Sol Ring"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Sarulf, Realm Eater",
+      "Hill Giant",
+      "Forest"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield": [
+      "Serra Angel",
+      "Island"
+     ],
+     "exile": [
+      "Mind Stone",
+      "Sol Ring"
+     ]
+    }
+   ],
+   "pt": {
+    "Sarulf, Realm Eater": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "upkeep: declining keeps counters and permanents",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Sarulf, Realm Eater",
+      "counters": {
+       "PlusOnePlusOne": 2
+      }
+     },
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     false
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Sarulf, Realm Eater",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Sarulf, Realm Eater": {
+     "PlusOnePlusOne": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: with no +1/+1 counters at your upkeep the ability does not trigger at all",
+  "players": [
+   {
+    "battlefield": [
+     "Sarulf, Realm Eater",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   }
+  ],
+  "expect": {
+   "stack_empty": true,
+   "players": [
+    {
+     "battlefield_has": [
+      "Sarulf, Realm Eater"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Sarulf leaves in response to its upkeep trigger: no counters removed, nothing exiled",
+  "players": [
+   {
+    "hand": [
+     "Murder"
+    ],
+    "battlefield": [
+     {
+      "name": "Sarulf, Realm Eater",
+      "counters": {
+       "PlusOnePlusOne": 2
+      }
+     },
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Murder",
+    "targets": [
+     "Sarulf, Realm Eater"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Sarulf, Realm Eater"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: removing the +1/+1 counters leaves other kinds of counters on Sarulf",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Sarulf, Realm Eater",
+      "counters": {
+       "PlusOnePlusOne": 2,
+       "Hit": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Sarulf, Realm Eater"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Sarulf, Realm Eater": [
+     3,
+     3
+    ]
+   },
+   "counters": {
+    "Sarulf, Realm Eater": {
+     "Hit": 1
+    }
+   }
+  }
+ }
+]

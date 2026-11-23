@@ -1,0 +1,135 @@
+[
+ {
+  "name": "searches for a basic land onto the battlefield tapped",
+  "players": [
+   {
+    "hand": [
+     "Deep Reconnaissance"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Deep Reconnaissance"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Island"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Island"
+     ],
+     "graveyard": [
+      "Deep Reconnaissance"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Island": true
+   }
+  }
+ },
+ {
+  "name": "flashback casts it from the graveyard and exiles it",
+  "players": [
+   {
+    "graveyard": [
+     "Deep Reconnaissance"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Deep Reconnaissance",
+    "alt": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Deep Reconnaissance"
+     ],
+     "battlefield_has": [
+      "Forest"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a flashback spell that is countered is still exiled",
+  "players": [
+   { "graveyard": ["Deep Reconnaissance"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Deep Reconnaissance", "alt": 0 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Deep Reconnaissance" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Deep Reconnaissance"] }, { "graveyard": ["Counterspell"] } ]
+  }
+ },
+ {
+  "name": "ruling: the flashback total cost is five mana, so four lands cannot cast it",
+  "players": [
+   { "graveyard": ["Deep Reconnaissance"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Deep Reconnaissance", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Deep Reconnaissance"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery flashback cannot be cast while another spell is on the stack",
+  "players": [
+   { "hand": ["Lightning Bolt"], "graveyard": ["Deep Reconnaissance"], "battlefield": ["Mountain", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "cast": "Deep Reconnaissance", "alt": 0, "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Deep Reconnaissance", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ]
+  }
+ }
+]

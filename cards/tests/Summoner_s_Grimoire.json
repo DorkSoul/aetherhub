@@ -1,0 +1,177 @@
+[
+  {
+    "name": "job select: ETB creates a 1/1 Hero token",
+    "players": [
+      { "hand": ["Summoner's Grimoire"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summoner's Grimoire" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Hero": [1, 1] },
+      "attached": { "Summoner's Grimoire": "Hero" },
+      "players": [
+        { "battlefield_has": ["Summoner's Grimoire", "Hero"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "equip {3}: equipped creature attacks, a creature card from hand enters tapped and attacking if it is an enchantment",
+    "players": [
+      { "hand": ["Alseid of Life's Bounty"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Summoner's Grimoire"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Summoner's Grimoire", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true, "answers": [true, "Alseid of Life's Bounty"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Summoner's Grimoire", "Grizzly Bears", "Alseid of Life's Bounty"], "hand_count": 0 },
+        {}
+      ],
+      "attached": { "Summoner's Grimoire": "Grizzly Bears" },
+      "tapped": { "Alseid of Life's Bounty": true }
+    }
+  },
+  {
+    "name": "a non-enchantment creature card enters untapped and not attacking",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Summoner's Grimoire"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Summoner's Grimoire", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true, "answers": [true, "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Summoner's Grimoire", "Grizzly Bears"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the 'you may' leaves the creature card in hand",
+    "players": [
+      { "hand": ["Alseid of Life's Bounty"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Summoner's Grimoire"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Summoner's Grimoire", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Alseid of Life's Bounty"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "an unequipped creature attacking gives no trigger",
+    "players": [
+      { "hand": ["Alseid of Life's Bounty"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Summoner's Grimoire"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Alseid of Life's Bounty"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the Hero token the Grimoire is attached to is a Shaman in addition to its other types",
+    "players": [
+      { "hand": ["Summoner's Grimoire"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summoner's Grimoire" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Hero": ["Shaman"] },
+      "attached": { "Summoner's Grimoire": "Hero" }
+    }
+  },
+  {
+    "name": "a creature the Grimoire is not attached to is not a Shaman",
+    "players": [
+      { "hand": ["Summoner's Grimoire"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summoner's Grimoire" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "not_subtypes": { "Grizzly Bears": ["Shaman"] }
+    }
+  },
+  {
+    "name": "ruling: equip (paid again) moves the Grimoire from the Hero to Grizzly Bears; the Hero stays",
+    "players": [
+      { "hand": ["Summoner's Grimoire"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summoner's Grimoire" },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Summoner's Grimoire", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Summoner's Grimoire", "Hero", "Grizzly Bears"] },
+        {}
+      ],
+      "attached": { "Summoner's Grimoire": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: destroying the Hero leaves the Equipment on the battlefield (it can still be equipped)",
+    "players": [
+      { "hand": ["Summoner's Grimoire"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Summoner's Grimoire" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hero"] },
+      { "resolve": true },
+      { "activate": "Summoner's Grimoire", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Summoner's Grimoire", "Grizzly Bears"], "battlefield_lacks": ["Hero"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "attached": { "Summoner's Grimoire": "Grizzly Bears" }
+    }
+  }
+]

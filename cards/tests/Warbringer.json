@@ -1,0 +1,212 @@
+[
+ {
+  "name": "dash costs {2} less: Warbringer dashes for {R}",
+  "players": [
+   {
+    "hand": [
+     "Warbringer"
+    ],
+    "battlefield": [
+     "Mountain",
+     {
+      "name": "Warbringer",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Warbringer",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Mountain",
+      "Warbringer",
+      "Warbringer"
+     ],
+     "hand": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "another creature's dash cost is reduced too",
+  "players": [
+   {
+    "hand": [
+     "Mardu Scout"
+    ],
+    "battlefield": [
+     "Mountain",
+     {
+      "name": "Warbringer",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Mardu Scout",
+    "alt": 0
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Mardu Scout"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "only dash costs are reduced: a normal creature spell costs the same",
+  "players": [
+   {
+    "hand": [
+     "Hill Giant"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     {
+      "name": "Warbringer",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Hill Giant",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "an opponent's Warbringer does not reduce my dash cost",
+  "players": [
+   {
+    "hand": [
+     "Mardu Scout"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Warbringer"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Mardu Scout",
+    "alt": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Mardu Scout"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Warbringer does not reduce its own dash cost while in hand",
+  "players": [
+   { "hand": ["Warbringer"], "battlefield": ["Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Warbringer", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Warbringer"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a dashed creature that dies before the end step is not returned to hand",
+  "players": [
+   { "hand": ["Warbringer", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Warbringer", "alt": 0 },
+   { "resolve": true },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Warbringer"] },
+   { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Warbringer"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a dash cast is still a spell and can be countered",
+  "players": [
+   { "hand": ["Warbringer"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Essence Scatter"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Warbringer", "alt": 0 },
+   { "pass": true },
+   { "cast": "Essence Scatter", "player": 1, "targets": [{ "stack": "Warbringer" }] },
+   { "pass": true, "player": 1 },
+   { "pass": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Warbringer"] },
+    { "graveyard_has": ["Essence Scatter"] }
+   ]
+  }
+ }
+]

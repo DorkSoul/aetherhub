@@ -1,0 +1,248 @@
+[
+ {
+  "name": "ETB: target player gets four rad counters; defending player with rad counters cannot block it",
+  "players": [
+   {
+    "hand": [
+     "Nightkin Ambusher"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Nightkin Ambusher"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Nightkin Ambusher",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Nightkin Ambusher"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Nightkin Ambusher"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no rad counters on the defending player: it can block as normal",
+  "players": [
+   {
+    "battlefield": [
+     "Nightkin Ambusher"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Nightkin Ambusher",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Nightkin Ambusher"
+     }
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ward {2}: an opponent's spell targeting it is countered unless they pay",
+  "players": [
+   {
+    "battlefield": [
+     "Nightkin Ambusher"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Nightkin Ambusher"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Nightkin Ambusher"
+     ]
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "defending player with rad counters: Grizzly Bears cannot block Nightkin, Hill Giant still blocks the other attacker",
+  "players": [
+   {
+    "hand": ["Nightkin Ambusher"],
+    "battlefield": ["Island", "Island", "Swamp", "Swamp", "Savannah Lions"]
+   },
+   {
+    "battlefield": ["Grizzly Bears", "Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "cast": "Nightkin Ambusher" },
+   { "resolve": true, "targets": ["p1"] },
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Nightkin Ambusher", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Nightkin Ambusher" }, { "blocker": "Hill Giant", "attacker": "Savannah Lions" } ] },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 16
+    }
+   ]
+  }
+ },
+ {
+  "name": "ward {2}: an opponent's Disfigure with no mana to pay the ward is countered (Nightkin stays 4/4)",
+  "players": [
+   {
+    "battlefield": ["Nightkin Ambusher"]
+   },
+   {
+    "hand": ["Disfigure"],
+    "battlefield": ["Swamp"]
+   }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Disfigure", "player": 1, "targets": ["Nightkin Ambusher"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Nightkin Ambusher": [4, 4] },
+   "players": [
+    { "battlefield_has": ["Nightkin Ambusher"] },
+    { "graveyard_has": ["Disfigure"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: rad counters make the target player mill at their precombat main; each nonland milled costs 1 life and a counter",
+  "players": [
+   { "hand": ["Nightkin Ambusher"], "battlefield": ["Island", "Island", "Swamp", "Swamp"] },
+   { "library": ["Forest", "Grizzly Bears", "Lightning Bolt", "Hill Giant", "Wild Guess"] }
+  ],
+  "steps": [
+   { "cast": "Nightkin Ambusher" },
+   { "resolve": true, "targets": ["p1"] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 16, "rad": 0, "graveyard_has": ["Grizzly Bears", "Lightning Bolt", "Hill Giant", "Wild Guess"] } ]
+  }
+ },
+ {
+  "name": "ruling: rad counters stay when turns end (milling only lands removes none)",
+  "players": [
+   { "hand": ["Nightkin Ambusher"], "battlefield": ["Island", "Island", "Swamp", "Swamp"] },
+   { "library": ["Forest", "Forest", "Forest", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "cast": "Nightkin Ambusher" },
+   { "resolve": true, "targets": ["p1"] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 20, "rad": 4 } ]
+  }
+ }
+]

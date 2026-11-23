@@ -1,0 +1,333 @@
+[
+ {
+  "name": "cast a spell from outside the game this turn",
+  "players": [
+   {
+    "hand": [
+     "Wish"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "sideboard": [
+     "Lightning Bolt",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wish"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Wish",
+      "Lightning Bolt"
+     ],
+     "sideboard": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "play a land from outside the game this turn",
+  "players": [
+   {
+    "hand": [
+     "Wish"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "sideboard": [
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wish"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "play_land": "Swamp"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Swamp"
+     ],
+     "sideboard": [],
+     "graveyard": [
+      "Wish"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a creature cast from outside the game resolves onto the battlefield",
+  "players": [
+   {
+    "hand": [
+     "Wish"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "sideboard": [
+     "Goblin Piker"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wish"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Goblin Piker"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Goblin Piker"
+     ],
+     "sideboard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "without Wish a sideboard card cannot be cast",
+  "players": [
+   {
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "sideboard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "the permission ends at end of turn",
+  "players": [
+   {
+    "hand": [
+     "Wish"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "sideboard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wish"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "sideboard": [
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "only cards you own are playable: the opponent's sideboard is not",
+  "players": [
+   {
+    "hand": [
+     "Wish"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "sideboard": [
+     "Shock"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Wish"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Shock",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "an empty sideboard does nothing",
+  "players": [
+   {
+    "hand": [
+     "Wish"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Wish"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Wish"
+     ],
+     "sideboard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the card is chosen when it is played, not when Wish resolves",
+  "players": [
+   { "hand": ["Wish"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "sideboard": ["Lightning Bolt", "Goblin Piker"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Wish" },
+   { "resolve": true },
+   { "cast": "Goblin Piker" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Goblin Piker"], "graveyard": ["Wish"], "sideboard": ["Lightning Bolt"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the costs of the chosen card must still be paid (one Mountain short)",
+  "players": [
+   { "hand": ["Wish"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "sideboard": ["Goblin Piker"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Wish" },
+   { "resolve": true },
+   { "cast": "Goblin Piker", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Wish"], "sideboard": ["Goblin Piker"] },
+    {}
+   ]
+  }
+ }
+]

@@ -1,0 +1,66 @@
+[
+ {
+  "name": "Ardenvale Fealty creates a 2/2 vigilance Knight and is exiled",
+  "players": [ { "hand": ["Virtue of Loyalty // Ardenvale Fealty"], "battlefield": ["Plains", "Plains"] }, {} ],
+  "steps": [ { "cast": "Virtue of Loyalty // Ardenvale Fealty", "face": true }, { "resolve": true } ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Knight 2-2 Vigilance"], "exile": ["Virtue of Loyalty // Ardenvale Fealty"] }, {} ],
+   "keywords": { "Knight 2-2 Vigilance": ["Vigilance"] }
+  }
+ },
+ {
+  "name": "end step: +1/+1 counter on each creature you control and untap them; opponent's creatures unaffected",
+  "players": [
+   { "battlefield": ["Virtue of Loyalty // Ardenvale Fealty", "Grizzly Bears", { "name": "Hill Giant", "tapped": true }] },
+   { "battlefield": ["Llanowar Elves"] }
+  ],
+  "steps": [ { "advance_to": "End" }, { "resolve": true } ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears", "Hill Giant"] }, {} ],
+   "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 }, "Hill Giant": { "PlusOnePlusOne": 1 } },
+   "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4], "Llanowar Elves": [1, 1] },
+   "tapped": { "Hill Giant": false }
+  }
+ },
+ {
+  "name": "no creatures: nothing happens at end step",
+  "players": [ { "battlefield": ["Virtue of Loyalty // Ardenvale Fealty"] }, {} ],
+  "steps": [ { "advance_to": "End" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield": ["Virtue of Loyalty // Ardenvale Fealty"] }, {} ] }
+ },
+ {
+  "name": "ruling: after the Adventure resolves, the permanent spell can be cast from exile",
+  "players": [ { "hand": ["Virtue of Loyalty // Ardenvale Fealty"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] }, {} ],
+  "steps": [
+   { "cast": "Virtue of Loyalty // Ardenvale Fealty", "face": true },
+   { "resolve": true },
+   { "cast": "Virtue of Loyalty // Ardenvale Fealty" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Virtue of Loyalty // Ardenvale Fealty", "Knight 2-2 Vigilance"], "exile": [] }, {} ] }
+ },
+ {
+  "name": "ruling: a countered Adventure is not exiled, so the permanent spell can't be cast later",
+  "players": [
+   { "hand": ["Virtue of Loyalty // Ardenvale Fealty"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Virtue of Loyalty // Ardenvale Fealty", "face": true },
+   { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Ardenvale Fealty" }] },
+   { "resolve": true },
+   { "cast": "Virtue of Loyalty // Ardenvale Fealty", "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Virtue of Loyalty // Ardenvale Fealty"], "exile": [] }, { "graveyard_has": ["Counterspell"] } ] }
+ },
+ {
+  "name": "ruling: Kaervek counts the Adventure's mana value (Ardenvale Fealty is 2), not the card's 5",
+  "players": [ { "battlefield": ["Kaervek the Merciless"] }, { "hand": ["Virtue of Loyalty // Ardenvale Fealty"], "battlefield": ["Plains", "Plains"] } ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Virtue of Loyalty // Ardenvale Fealty", "player": 1, "face": true, "answers": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 20 }, { "life": 18 } ] }
+ }
+]

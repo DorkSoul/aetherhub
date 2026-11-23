@@ -1,0 +1,318 @@
+[
+ {
+  "name": "casting a blue spell exiles the top card of the targeted player's library",
+  "players": [
+   {
+    "hand": [
+     "Opt"
+    ],
+    "battlefield": [
+     "Circu, Dimir Lobotomist",
+     "Island"
+    ],
+    "library": [
+     "Mountain"
+    ]
+   },
+   {
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Opt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Mountain"
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Circu, Dimir Lobotomist",
+      "Island"
+     ],
+     "graveyard": [
+      "Opt"
+     ]
+    },
+    {
+     "exile": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "casting a black spell exiles the top card of the targeted player's library",
+  "players": [
+   {
+    "hand": [
+     "Disfigure"
+    ],
+    "battlefield": [
+     "Circu, Dimir Lobotomist",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Serra Angel",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Disfigure",
+    "targets": [
+     "Grizzly Bears",
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Disfigure"
+     ]
+    },
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Serra Angel"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "a spell of another color does not exile anything",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Circu, Dimir Lobotomist",
+     "Mountain"
+    ]
+   },
+   {
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponents can't cast spells named like a card exiled with Circu",
+  "players": [
+   {
+    "hand": [
+     "Opt"
+    ],
+    "battlefield": [
+     "Circu, Dimir Lobotomist",
+     "Island"
+    ],
+    "library": [
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Opt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Mountain"
+     ]
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "hand": [
+      "Lightning Bolt"
+     ],
+     "exile": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "a card in hand with a different name than the exiled card can still be cast",
+  "players": [
+   {
+    "hand": [
+     "Opt"
+    ],
+    "battlefield": [
+     "Circu, Dimir Lobotomist",
+     "Island"
+    ],
+    "library": [
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ],
+    "library": [
+     "Grizzly Bears",
+     "Forest"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Opt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      "Mountain"
+     ]
+    ]
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "hand": [],
+     "graveyard": [
+      "Lightning Bolt"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: opponents can't cast a card exiled from the controller's own library",
+  "players": [
+   {
+    "hand": ["Disfigure"],
+    "battlefield": ["Circu, Dimir Lobotomist", "Swamp"],
+    "library": ["Lightning Bolt", "Forest"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Grizzly Bears", "Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Disfigure", "targets": ["Grizzly Bears", "p0"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"], "graveyard": ["Disfigure"] },
+    { "hand": ["Lightning Bolt"], "battlefield_lacks": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,95 @@
+[
+  {
+    "name": "chosen creature type returns creature cards from your graveyard, not other types",
+    "players": [
+      {
+        "hand": ["Creeping Renaissance"],
+        "graveyard": ["Grizzly Bears", "Lightning Bolt"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Creeping Renaissance" },
+      { "resolve": true, "answers": ["Creature"] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Grizzly Bears"],
+          "graveyard": ["Creeping Renaissance", "Lightning Bolt"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "choosing land returns only lands from your graveyard",
+    "players": [
+      {
+        "hand": ["Creeping Renaissance"],
+        "graveyard": ["Forest", "Grizzly Bears"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Creeping Renaissance" },
+      { "resolve": true, "answers": ["Land"] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Forest"],
+          "graveyard": ["Creeping Renaissance", "Grizzly Bears"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback for 5GG returns the chosen cards and then exiles the spell",
+    "players": [
+      {
+        "graveyard": ["Creeping Renaissance", "Grizzly Bears"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Creeping Renaissance", "alt": 0 },
+      { "resolve": true, "answers": ["Creature"] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Grizzly Bears"],
+          "graveyard": [],
+          "exile": ["Creeping Renaissance"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback is sorcery speed; not castable while another spell is on the stack",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "graveyard": ["Creeping Renaissance", "Grizzly Bears"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Creeping Renaissance", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Creeping Renaissance", "Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

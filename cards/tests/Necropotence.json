@@ -1,0 +1,93 @@
+[
+ {
+  "name": "skip your draw step: no card drawn in the draw step",
+  "players": [
+   { "battlefield": ["Necropotence"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Upkeep", "auto": true },
+   { "advance_to": "Upkeep", "auto": true },
+   { "advance_to": "Main1", "auto": true }
+  ],
+  "expect": {
+   "turn": 3,
+   "players": [ { "hand_count": 0 }, {} ]
+  }
+ },
+ {
+  "name": "pay 1 life: top card goes to hand at your next end step",
+  "players": [
+   { "battlefield": ["Necropotence"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Necropotence", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 19, "hand_count": 1 }, {} ]
+  }
+ },
+ {
+  "name": "discarded cards are exiled from your graveyard",
+  "players": [
+   { "hand": ["Grizzly Bears", "Hill Giant"], "battlefield": ["Necropotence"] },
+   { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "advance_to": "End", "auto": true },
+   { "advance_to": "Upkeep", "auto": true },
+   { "advance_to": "Main1", "auto": true },
+   { "cast": "Mind Rot", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": [], "exile": ["Grizzly Bears", "Hill Giant"] },
+    { "graveyard": ["Mind Rot"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the delayed trigger still returns the card if Necropotence leaves before the end step",
+  "players": [
+   { "battlefield": ["Necropotence"], "library": ["Lightning Bolt"] },
+   { "battlefield": ["Forest", "Forest"], "hand": ["Naturalize"] }
+  ],
+  "steps": [
+   { "activate": "Necropotence", "ability": 0 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Naturalize", "player": 1, "targets": ["Necropotence"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 19, "hand": ["Lightning Bolt"], "graveyard": ["Necropotence"] }, { "graveyard": ["Naturalize"] } ]
+  }
+ },
+ {
+  "name": "ruling: a discarded Obstinate Baloth goes to the battlefield, so it is not exiled",
+  "players": [
+   { "hand": ["Obstinate Baloth", "Grizzly Bears"], "battlefield": ["Necropotence"] },
+   { "hand": ["Mind Rot"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "advance_to": "End", "auto": true },
+   { "advance_to": "Upkeep", "auto": true },
+   { "advance_to": "Main1", "auto": true },
+   { "cast": "Mind Rot", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Necropotence", "Obstinate Baloth"], "exile": ["Grizzly Bears"], "graveyard": [] },
+    { "graveyard": ["Mind Rot"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,101 @@
+[
+  {
+    "name": "equipped creature explores when it attacks (land goes to hand)",
+    "players": [
+      {
+        "battlefield": ["Glowcap Lantern", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glowcap Lantern", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Forest"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "an unequipped creature does not explore when it attacks",
+    "players": [
+      {
+        "battlefield": [ { "name": "Grizzly Bears", "sick": false } ],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: explore reveals a nonland card: +1/+1 counter, and it can be left on top",
+    "players": [
+      {
+        "battlefield": ["Glowcap Lantern", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glowcap Lantern", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "library_top": ["Lightning Bolt"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: explore reveals a nonland card: +1/+1 counter, and it can go to the graveyard",
+    "players": [
+      {
+        "battlefield": ["Glowcap Lantern", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest"],
+        "library": ["Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glowcap Lantern", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: an exploring creature that left the battlefield still explores (nonland to graveyard, no counter)",
+    "players": [
+      {
+        "battlefield": ["Glowcap Lantern", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest"],
+        "library": ["Shock"]
+      },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Glowcap Lantern", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Shock"] }, { "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  }
+]

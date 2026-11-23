@@ -1,0 +1,49 @@
+[
+  {
+    "name": "{T}: return target noncreature artifact card with mana value 1 or less from your graveyard to the battlefield",
+    "players": [{ "battlefield": ["Salvaging Station"], "graveyard": ["Sol Ring"] }, {}],
+    "steps": [{ "activate": "Salvaging Station" }, { "resolve": true }],
+    "expect": {
+      "players": [{ "battlefield_has": ["Salvaging Station", "Sol Ring"] }, {}],
+      "tapped": { "Salvaging Station": true }
+    }
+  },
+  {
+    "name": "an artifact creature card is not a legal target",
+    "players": [{ "battlefield": ["Salvaging Station"], "graveyard": ["Ornithopter"] }, {}],
+    "steps": [{ "activate": "Salvaging Station", "illegal": true }],
+    "expect": { "players": [{ "graveyard_has": ["Ornithopter"] }, {}] }
+  },
+  {
+    "name": "a creature dying lets you untap it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Salvaging Station", "tapped": true }, "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Salvaging Station"] }, {} ],
+      "tapped": { "Salvaging Station": false }
+    }
+  },
+  {
+    "name": "declining the untap leaves Salvaging Station tapped",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Salvaging Station", "tapped": true }, "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears"] }, {} ],
+      "tapped": { "Salvaging Station": true }
+    }
+  }
+]

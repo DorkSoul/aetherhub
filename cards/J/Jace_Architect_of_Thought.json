@@ -1,0 +1,71 @@
+{
+  "name": "Jace, Architect of Thought",
+  "mana_cost": "{2}{U}{U}",
+  "supertypes": ["Legendary"],
+  "types": ["Planeswalker"],
+  "subtypes": ["Jace"],
+  "loyalty": 4,
+  "abilities": [
+    {
+      "type": "Activated", "cost": [], "loyalty": 1,
+      "effects": [
+        {
+          "type": "AddTrigger",
+          "trigger": { "type": "Attacks", "filter": { "types": ["Creature"], "controller": "Opponent" } },
+          "effects": [
+            { "type": "Pump", "what": { "type": "TriggerObject" }, "power": { "type": "Fixed", "n": -1 }, "toughness": { "type": "Fixed", "n": 0 }, "duration": "UntilEndOfTurn" }
+          ],
+          "until": "YourNextTurn"
+        }
+      ]
+    },
+    {
+      "type": "Activated", "cost": [], "loyalty": -2,
+      "effects": [
+        { "type": "Remember", "what": { "type": "TopOfLibrary", "who": { "type": "You" }, "n": 3 } },
+        { "type": "StoreRemembered", "slot": 1, "append": false },
+        {
+          "type": "Choose", "who": { "type": "EachOpponent" }, "from": { "type": "You" }, "zone": "Library",
+          "filter": { "among_stored": 1 }, "min": 0, "max": 3, "then": []
+        },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        {
+          "type": "ChooseModes", "choose_min": 1, "choose_max": 1,
+          "modes": [
+            {
+              "text": "Put the first pile into your hand and the second pile on the bottom of your library in any order.",
+              "effects": [
+                { "type": "Move", "what": { "type": "All", "filter": { "among_stored": 0 }, "zone": "Library" }, "to": "Hand", "from": "Library" },
+                { "type": "Move", "what": { "type": "All", "filter": { "among_stored": 1, "not_among_stored": 0 }, "zone": "Library" }, "to": "Library", "from": "Library", "ordered": true }
+              ]
+            },
+            {
+              "text": "Put the second pile into your hand and the first pile on the bottom of your library in any order.",
+              "effects": [
+                { "type": "Move", "what": { "type": "All", "filter": { "among_stored": 1, "not_among_stored": 0 }, "zone": "Library" }, "to": "Hand", "from": "Library" },
+                { "type": "Move", "what": { "type": "All", "filter": { "among_stored": 0 }, "zone": "Library" }, "to": "Library", "from": "Library", "ordered": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated", "cost": [], "loyalty": -8,
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0, "append": false },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachPlayer" },
+          "effects": [
+            { "type": "SearchLibrary", "who": { "type": "EachObject" }, "filter": { "not_types": ["Land"] }, "to": "Exile" },
+            { "type": "StoreRemembered", "slot": 0, "append": true }
+          ]
+        },
+        { "type": "CastFreeAny", "what": { "type": "Stored", "slot": 0 } }
+      ]
+    }
+  ],
+  "oracle_text": "+1: Until your next turn, whenever a creature an opponent controls attacks, it gets -1/-0 until end of turn.\n-2: Reveal the top three cards of your library. An opponent separates those cards into two piles. Put one pile into your hand and the other on the bottom of your library in any order.\n-8: For each player, search that player's library for a nonland card and exile it, then that player shuffles. You may cast those cards without paying their mana costs."
+}

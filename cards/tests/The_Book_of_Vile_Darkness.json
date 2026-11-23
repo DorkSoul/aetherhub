@@ -1,0 +1,79 @@
+[
+  {
+    "name": "end step: lost 2 or more life this turn makes a 2/2 Zombie",
+    "players": [
+      { "hand": ["Eye of Vecna"], "battlefield": ["The Book of Vile Darkness", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eye of Vecna" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield_has": ["Zombie 2-2 Black"] }, {} ] }
+  },
+  {
+    "name": "end step: no life lost, no Zombie",
+    "players": [
+      { "battlefield": ["The Book of Vile Darkness"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "End" } ],
+    "expect": { "players": [ { "battlefield": ["The Book of Vile Darkness"] }, {} ] }
+  },
+  {
+    "name": "exile the Book, Eye and Hand: Vecna, an 8/8 indestructible Zombie God that draws and loses 2 life as it enters",
+    "players": [
+      { "battlefield": ["The Book of Vile Darkness", "Eye of Vecna", "Hand of Vecna"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Book of Vile Darkness", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Vecna"], "exile": ["Eye of Vecna", "Hand of Vecna", "The Book of Vile Darkness"], "life": 18, "hand_count": 1 }, {} ],
+      "pt": { "Vecna": [8, 8] },
+      "keywords": { "Vecna": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "Vecna's Hand ability pumps it by the cards in hand at the beginning of combat",
+    "players": [
+      { "battlefield": ["Vecna"], "hand": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "BeginCombat" } ],
+    "expect": { "pt": { "Vecna": [11, 11] } }
+  },
+  {
+    "name": "cannot be activated without the Hand of Vecna",
+    "players": [
+      { "battlefield": ["The Book of Vile Darkness", "Eye of Vecna"] },
+      {}
+    ],
+    "steps": [ { "activate": "The Book of Vile Darkness", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield": ["The Book of Vile Darkness", "Eye of Vecna"] }, {} ] }
+  },
+  {
+    "name": "ruling: Vecna keeps Eye of Vecna's upkeep trigger: pay 2 at its controller's upkeep to draw and lose 2",
+    "players": [
+      { "battlefield": ["The Book of Vile Darkness", "Eye of Vecna", "Hand of Vecna", "Island", "Island"], "library": ["Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Book of Vile Darkness", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Vecna"], "life": 16, "hand_count": 2 },
+        {}
+      ]
+    }
+  }
+]

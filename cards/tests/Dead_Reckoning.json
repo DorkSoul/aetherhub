@@ -1,0 +1,94 @@
+[
+  {
+    "name": "yes: the creature card goes on top of the library and deals damage equal to its power",
+    "players": [
+      { "hand": ["Dead Reckoning"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"], "library": ["Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dead Reckoning", "targets": ["Hill Giant", "Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dead Reckoning"], "library_count": 2 },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "no: nothing happens when the card is not put on top",
+    "players": [
+      { "hand": ["Dead Reckoning"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"], "library": ["Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dead Reckoning", "targets": ["Hill Giant", "Grizzly Bears"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Hill Giant", "Dead Reckoning"], "library_count": 1 },
+        { "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "damage is the power of the card (2), not the toughness of the target (4 toughness survives)",
+    "players": [
+      { "hand": ["Dead Reckoning"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"], "library": ["Forest"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Dead Reckoning", "targets": ["Grizzly Bears", "Serra Angel"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dead Reckoning"] },
+        { "battlefield": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the targeted creature is gone on resolution, the card can still go on top with no damage",
+    "players": [
+      { "hand": ["Dead Reckoning"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"], "library": ["Forest"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grizzly Bears", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Dead Reckoning", "targets": ["Hill Giant", "Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dead Reckoning"], "library_top": ["Hill Giant"] },
+        { "graveyard": ["Lightning Bolt", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two targets are required, so with no creature on the battlefield it cannot be cast",
+    "players": [
+      { "hand": ["Dead Reckoning"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dead Reckoning", "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: with no creature card in your graveyard it cannot be cast",
+    "players": [
+      { "hand": ["Dead Reckoning"], "battlefield": ["Swamp", "Swamp", "Swamp"], "library": ["Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dead Reckoning", "illegal": true }
+    ]
+  }
+]

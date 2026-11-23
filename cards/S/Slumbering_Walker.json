@@ -1,0 +1,54 @@
+{
+  "name": "Slumbering Walker",
+  "mana_cost": "{3}{W}{W}",
+  "types": ["Creature"],
+  "subtypes": ["Giant", "Warrior"],
+  "power": 4,
+  "toughness": 7,
+  "abilities": [
+    {
+      "type": "EntersWithCounters",
+      "kind": "MinusOneMinusOne",
+      "n": { "type": "Fixed", "n": 2 }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "optional": true,
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "MinusOneMinusOne", "of": { "type": "This" } },
+            "cmp": { "n": 1, "op": "Ge" }
+          },
+          "then": [
+            { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "MinusOneMinusOne", "n": { "type": "Fixed", "n": 1 } },
+            {
+              "type": "Reflexive",
+              "targets": [
+                {
+                  "what": {
+                    "type": "CardIn",
+                    "zone": "Graveyard",
+                    "filter": { "types": ["Creature"], "power": { "op": "Le", "n": 2 } },
+                    "whose": "You"
+                  },
+                  "min": 1,
+                  "max": 1,
+                  "label": "target creature card with power 2 or less"
+                }
+              ],
+              "effects": [
+                { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Battlefield" }
+              ]
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "This creature enters with two -1/-1 counters on it.\nAt the beginning of your end step, you may remove a counter from this creature. When you do, return target creature card with power 2 or less from your graveyard to the battlefield."
+}

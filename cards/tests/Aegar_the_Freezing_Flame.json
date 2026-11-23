@@ -1,0 +1,58 @@
+[
+  {
+    "name": "your spell deals excess damage to an opponent's creature: draw a card",
+    "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Aegar, the Freezing Flame", "Mountain"] }, { "battlefield": ["Grizzly Bears"] }],
+    "steps": [{ "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true }],
+    "expect": { "players": [{ "hand_count": 1, "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "no excess damage: no card",
+    "players": [{ "hand": ["Shock"], "battlefield": ["Aegar, the Freezing Flame", "Mountain"] }, { "battlefield": ["Grizzly Bears"] }],
+    "steps": [{ "cast": "Shock", "targets": ["Grizzly Bears"] }, { "resolve": true }],
+    "expect": { "players": [{ "hand_count": 0 }, { "graveyard": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "excess damage from a Giant in combat: draw a card",
+    "players": [{ "battlefield": ["Aegar, the Freezing Flame", "Hill Giant"] }, { "battlefield": ["Grizzly Bears"] }],
+    "steps": [
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Hill Giant" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{ "hand_count": 1 }, { "graveyard": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "excess damage from a creature that is not a Giant or Wizard: no card",
+    "players": [{ "battlefield": ["Aegar, the Freezing Flame", "Craw Wurm"] }, { "battlefield": ["Grizzly Bears"] }],
+    "steps": [
+      { "attack": [{ "card": "Craw Wurm", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Craw Wurm" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{ "hand_count": 0 }, { "graveyard": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "excess damage to your own creature does not trigger it",
+    "players": [{ "hand": ["Lightning Bolt"], "battlefield": ["Aegar, the Freezing Flame", "Grizzly Bears", "Mountain"] }, {}],
+    "steps": [{ "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true }],
+    "expect": { "players": [{ "hand_count": 0, "graveyard": ["Lightning Bolt", "Grizzly Bears"] }, {}] }
+  },
+  {
+    "name": "ruling: excess damage counts a spell's earlier damage even when an opponent's spell deals the excess",
+    "players": [ { "hand": ["Shock"], "battlefield": ["Aegar, the Freezing Flame", "Mountain"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Craw Wurm", "Mountain"] } ],
+    "steps": [ { "cast": "Shock", "targets": ["Craw Wurm"] }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Craw Wurm"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard_has": ["Shock"] }, { "graveyard_has": ["Craw Wurm", "Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: damage already dealt this turn counts toward lethal, so an exactly lethal total is not excess",
+    "players": [ { "hand": ["Shock"], "battlefield": ["Aegar, the Freezing Flame", "Mountain"] }, { "hand": ["Shock"], "battlefield": ["Craw Wurm", "Mountain"] } ],
+    "steps": [ { "cast": "Shock", "targets": ["Craw Wurm"] }, { "resolve": true }, { "pass": true }, { "cast": "Shock", "player": 1, "targets": ["Craw Wurm"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 0, "graveyard_has": ["Shock"] }, { "hand_count": 0, "graveyard_has": ["Craw Wurm", "Shock"] } ] }
+  },
+  {
+    "name": "ruling: a battle dealt damage does not trigger Aegar",
+    "players": [ { "hand": ["Shock"], "battlefield": ["Aegar, the Freezing Flame", "Mountain"] }, { "battlefield": [ { "name": "Invasion of Ergamon // Truga Cliffcharger", "counters": { "Defense": 5 } } ] } ],
+    "steps": [ { "cast": "Shock", "targets": ["Invasion of Ergamon // Truga Cliffcharger"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 0 }, {} ], "counters": { "Invasion of Ergamon // Truga Cliffcharger": { "Defense": 3 } } }
+  }
+]

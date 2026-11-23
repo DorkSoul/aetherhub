@@ -1,0 +1,214 @@
+[
+ {
+  "name": "More Than Meets the Eye: cast converted for {W}{U}, enters as the Vehicle back face",
+  "players": [
+   {
+    "hand": [
+     "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"
+    ],
+    "battlefield": [
+     "Plains",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout",
+    "face": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Plains",
+      "Island",
+      "Goldbug, Scrappy Scout"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Front face cast normally for {1}{W}{U} enters as Goldbug, Humanity's Ally (not converted)",
+  "players": [
+   {
+    "hand": [
+     "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"
+    ],
+    "battlefield": [
+     "Plains",
+     "Island",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Plains",
+      "Island",
+      "Swamp",
+      "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "second spell each turn converts Goldbug to its back face",
+  "players": [
+   {
+    "hand": ["Grizzly Bears", "Lightning Bolt"],
+    "battlefield": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout", "Forest", "Island", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Goldbug, Scrappy Scout", "Grizzly Bears"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "only the first spell of the turn does not convert Goldbug",
+  "players": [
+   {
+    "hand": ["Grizzly Bears"],
+    "battlefield": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout", "Forest", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout", "Grizzly Bears"], "battlefield_lacks": ["Goldbug, Scrappy Scout"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Goldbug and a Human attack: draw a card and convert Goldbug",
+  "players": [
+   {
+    "battlefield": ["Goldbug, Scrappy Scout", "Abbot of Keral Keep"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Goldbug, Scrappy Scout", "at": "p1" }, { "card": "Abbot of Keral Keep", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 2, "battlefield_has": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"] },
+    { "life": 15 }
+   ]
+  }
+ },
+ {
+  "name": "Goldbug attacks without a Human: no draw, no conversion",
+  "players": [
+   {
+    "battlefield": ["Goldbug, Scrappy Scout"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Goldbug, Scrappy Scout", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 1, "battlefield_has": ["Goldbug, Scrappy Scout"] },
+    { "life": 19 }
+   ]
+  }
+ },
+ { "name": "front face: prevent combat damage to an attacking Human (1/1 Human survives a 2/2 blocker)",
+   "players": [ { "battlefield": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout", "Abbot of Keral Keep"] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "attack": [ { "card": "Abbot of Keral Keep", "at": "p1" } ] }, { "block": [ { "blocker": "Grizzly Bears", "attacker": "Abbot of Keral Keep" } ] }, { "advance_to": "Main2" } ],
+   "expect": { "players": [ { "battlefield_has": ["Abbot of Keral Keep"] }, {} ] } },
+ { "name": "Scrappy Scout: Human spells you control can't be countered",
+   "players": [ { "hand": ["Abbot of Keral Keep"], "battlefield": ["Goldbug, Scrappy Scout", "Mountain", "Mountain"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+   "steps": [ { "cast": "Abbot of Keral Keep" }, { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Abbot of Keral Keep" } ] }, { "resolve": true }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Abbot of Keral Keep"] }, { "graveyard": ["Counterspell"] } ] } },
+ {
+  "name": "ruling: Goldbug dies before combat damage; the attacking Human's damage is not prevented",
+  "players": [
+   { "battlefield": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout", "Abbot of Keral Keep"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Abbot of Keral Keep", "at": "p1" } ] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Abbot of Keral Keep"], "graveyard_has": ["Goldbug, Humanity's Ally // Goldbug, Scrappy Scout"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: living metal: Scrappy Scout is a 1/3 artifact creature on your turn (printed P/T)",
+  "players": [ { "battlefield": ["Goldbug, Scrappy Scout"] }, {} ],
+  "steps": [ { "pass": true } ],
+  "expect": { "pt": { "Goldbug, Scrappy Scout": [1, 3] } }
+ },
+ {
+  "name": "ruling: converting keeps the +1/+1 counters on Goldbug",
+  "players": [
+   { "hand": ["Grizzly Bears", "Lightning Bolt"], "battlefield": [ { "name": "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout", "counters": { "+1/+1": 2 } }, "Forest", "Island", "Mountain" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Goldbug, Scrappy Scout": { "+1/+1": 2 } },
+   "players": [ { "battlefield_has": ["Goldbug, Scrappy Scout"] }, { "life": 17 } ]
+  }
+ }
+]

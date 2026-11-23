@@ -1,0 +1,71 @@
+[
+ {
+  "name": "casting an artifact spell lets you draw then discard",
+  "players": [
+   { "hand": ["Sol Ring", "Forest"], "battlefield": ["Riddlesmith", "Plains"], "library": ["Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "resolve": true, "answers": [true, "Forest"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Island"], "battlefield_has": ["Sol Ring"], "graveyard": ["Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining the optional draw leaves the hand alone",
+  "players": [
+   { "hand": ["Sol Ring", "Forest"], "battlefield": ["Riddlesmith", "Plains"], "library": ["Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "resolve": true, "answers": [false] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Forest"], "battlefield_has": ["Sol Ring"], "library_count": 1 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "a non-artifact spell does not trigger it",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Riddlesmith", "Island", "Island", "Island"], "library": ["Forest", "Plains"] },
+   {}
+  ],
+  "steps": [ { "cast": "Divination" }, { "resolve": true } ],
+  "expect": {
+   "players": [
+    { "hand": ["Forest", "Plains"], "graveyard": ["Divination"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the draw and discard resolve before a countered artifact spell is countered",
+  "players": [
+   { "hand": ["Sol Ring", "Forest"], "battlefield": ["Riddlesmith", "Plains"], "library": ["Island"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Sol Ring" } ] },
+   { "resolve": true, "answers": [true, "Forest"] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Island"], "graveyard": ["Forest", "Sol Ring"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,79 @@
+[
+  {
+    "name": "opponent cast two spells: alt cost {1}{U} counters the Bolt",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Ertai's Scorn"],
+        "battlefield": ["Mountain", "Island", "Island"]
+      },
+      {
+        "hand": ["Shock", "Shock"],
+        "battlefield": ["Mountain", "Mountain"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "cast": "Ertai's Scorn", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 16, "graveyard_has": ["Lightning Bolt", "Ertai's Scorn"] },
+        { "life": 20, "graveyard_has": ["Shock"] }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "only one opponent spell: the alt cost is not allowed",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Ertai's Scorn"],
+        "battlefield": ["Mountain", "Island", "Island"]
+      },
+      {
+        "hand": ["Shock"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Shock", "player": 1, "targets": ["p0"] },
+      { "cast": "Ertai's Scorn", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 18 },
+        { "life": 17 }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "your own spells do not count: the alt cost is not allowed",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Shock", "Ertai's Scorn"],
+        "battlefield": ["Mountain", "Mountain", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Shock", "targets": ["p1"] },
+      { "cast": "Ertai's Scorn", "alt": 0, "targets": [{ "stack": "Shock" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 15 }
+      ],
+      "stack_empty": true
+    }
+  }
+]

@@ -1,0 +1,157 @@
+[
+  {
+    "name": "chapter I taps target creature an opponent controls",
+    "players": [
+      {
+        "hand": [
+          "Time of Ice"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Time of Ice"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": true,
+        "Hill Giant": false
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Time of Ice"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the tapped creature doesn't untap during its controller's untap step while you control the Saga",
+    "players": [
+      {
+        "hand": [
+          "Time of Ice"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Time of Ice"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": true
+      }
+    }
+  },
+  {
+    "name": "chapter II taps a target creature and it stays tapped through its controller's next untap step",
+    "players": [
+      { "battlefield": [ { "name": "Time of Ice", "counters": { "lore": 1 } } ] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "tapped": { "Hill Giant": true, "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "chapter III returns all tapped creatures to their owners' hands",
+    "players": [
+      { "battlefield": [ { "name": "Time of Ice", "counters": { "lore": 1 } } ] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Time of Ice"] },
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a lore counter as it enters: Time of Ice starts with one and chapter I triggers",
+    "players": [ { "hand": ["Time of Ice"], "battlefield": ["Island", "Island", "Island", "Island"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Time of Ice" }, { "resolve": true } ],
+    "expect": { "counters": { "Time of Ice": { "lore": 1 } }, "tapped": { "Hill Giant": true }, "players": [ { "battlefield_has": ["Time of Ice"] }, {} ] }
+  },
+  {
+    "name": "ruling: a third lore counter triggers only chapter III, so a lone opponent creature is neither tapped nor bounced",
+    "players": [ { "battlefield": [ { "name": "Time of Ice", "counters": { "lore": 2 } } ] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Time of Ice"] }, { "battlefield_has": ["Hill Giant"] } ], "tapped": { "Hill Giant": false } }
+  },
+  {
+    "name": "ruling: Time of Ice is sacrificed once chapter III leaves the stack, even with nothing to return",
+    "players": [ { "battlefield": [ { "name": "Time of Ice", "counters": { "lore": 2 } } ] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Time of Ice"] }, {} ] }
+  },
+  {
+    "name": "ruling: chapter III returns a creature the opponent attacked with, though Time of Ice never tapped it",
+    "players": [ { "battlefield": [ { "name": "Time of Ice", "counters": { "lore": 2 } } ] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main1" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Time of Ice"] }, { "hand_count": 2, "battlefield_lacks": ["Grizzly Bears"] } ] }
+  }
+]

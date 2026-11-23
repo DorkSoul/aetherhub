@@ -1,0 +1,105 @@
+[
+  {
+    "name": "artifact mana abilities cannot be activated",
+    "players": [
+      {
+        "hand": [
+          "Collector Ouphe"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Sol Ring"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Collector Ouphe"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Sol Ring",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Sol Ring": false
+      }
+    }
+  },
+  {
+    "name": "creature mana abilities are not affected",
+    "players": [
+      {
+        "battlefield": [
+          "Forest",
+          "Forest",
+          {
+            "name": "Collector Ouphe",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Llanowar Elves",
+        "color": "G"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "G": 1
+          }
+        },
+        {}
+      ],
+      "tapped": {
+        "Llanowar Elves": true
+      }
+    }
+  },
+  {
+    "name": "Ouphe stops Sol Ring's mana ability, so a 2-mana spell is uncastable",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Collector Ouphe", "Sol Ring", "Forest"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "without Collector Ouphe Sol Ring pays the same spell",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Sol Ring", "Forest"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: cycling from hand is still activatable with Collector Ouphe out",
+    "players": [ { "hand": ["Barren Moor"], "battlefield": ["Collector Ouphe", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Barren Moor", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard": ["Barren Moor"] }, {} ] }
+  },
+  {
+    "name": "ruling: equip (an activated ability with a colon) cannot be activated with Collector Ouphe out",
+    "players": [ { "battlefield": ["Collector Ouphe", "Bonesplitter", "Grizzly Bears", "Forest"] }, {} ],
+    "steps": [ { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "ruling: without Collector Ouphe the same equip activation works",
+    "players": [ { "battlefield": ["Bonesplitter", "Grizzly Bears", "Forest"] }, {} ],
+    "steps": [ { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [4, 2] } }
+  }
+]

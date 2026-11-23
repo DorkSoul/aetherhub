@@ -1,0 +1,62 @@
+[
+  {
+    "name": "inspired: reveals the top card into hand and loses life equal to its mana value",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Pain Seer",
+            "tapped": true
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Pain Seer"
+          ],
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land revealed for inspired has mana value 0, so no life is lost",
+    "players": [ { "battlefield": [ { "name": "Pain Seer", "tapped": true } ], "library": ["Forest"] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Forest"], "hand_count": 1, "life": 20 }, {} ] }
+  },
+  {
+    "name": "ruling: X in the revealed card's cost counts as 0 (Fireball is mana value 1)",
+    "players": [ { "battlefield": [ { "name": "Pain Seer", "tapped": true } ], "library": ["Fireball"] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Fireball"], "hand_count": 1, "life": 19 }, {} ] }
+  },
+  {
+    "name": "ruling: an inspired ability does not trigger when the creature enters the battlefield",
+    "players": [ { "hand": ["Pain Seer"], "battlefield": ["Swamp", "Island"], "library": ["Forest"] }, {} ],
+    "steps": [ { "cast": "Pain Seer" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Pain Seer"], "library_top": ["Forest"], "life": 20, "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "ruling: an untap by another source (Sparring Regimen untapping the attacker) triggers inspired",
+    "players": [ { "battlefield": ["Sparring Regimen", "Pain Seer"], "library": ["Forest"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Pain Seer", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "hand": ["Forest"], "hand_count": 1, "life": 20 }, { "life": 17 } ], "pt": { "Pain Seer": [3, 3] } }
+  }
+]

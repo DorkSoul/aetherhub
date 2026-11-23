@@ -1,0 +1,134 @@
+[
+ {
+  "name": "copies another creature, gains hexproof and untaps",
+  "players": [
+   {
+    "hand": [
+     "Fleeting Reflection"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Fleeting Reflection",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Hill Giant": false
+   },
+   "keywords": {
+    "Hill Giant": [
+     "Hexproof"
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "the second target is optional: only hexproof and untap",
+  "players": [
+   {
+    "hand": [
+     "Fleeting Reflection"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     {
+      "name": "Grizzly Bears",
+      "tapped": true
+     }
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Fleeting Reflection"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Grizzly Bears": false
+   },
+   "keywords": {
+    "Grizzly Bears": [
+     "Hexproof"
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ { "name": "ruling: a creature that becomes a copy does not enter the battlefield, so its ETB does not trigger",
+   "players": [ { "hand": ["Fleeting Reflection"], "battlefield": ["Island", "Island", "Wood Elves"], "library": ["Forest"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Fleeting Reflection", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "pt": { "Hill Giant": [3, 3] }, "players": [ { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Wood Elves", "Forest"] }, {} ] } },
+ { "name": "ruling: copying a creature that is itself a copy copies the original characteristics",
+   "players": [ { "hand": ["Fleeting Reflection", "Fleeting Reflection"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears", "Llanowar Elves"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Fleeting Reflection", "targets": ["Grizzly Bears", "p1:Hill Giant"] }, { "resolve": true }, { "cast": "Fleeting Reflection", "targets": ["Llanowar Elves", "p0:Hill Giant"] }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Hill Giant", "Hill Giant"], "battlefield_lacks": ["Grizzly Bears", "Llanowar Elves"] }, { "battlefield_has": ["Hill Giant"] } ], "pt": { "Hill Giant": [3, 3] } } },
+ { "name": "ruling: the second target leaving before resolution: first target still gets hexproof and untaps",
+   "players": [ { "hand": ["Fleeting Reflection"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "tapped": true }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] } ],
+   "steps": [ { "cast": "Fleeting Reflection", "targets": ["Hill Giant"] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "tapped": { "Grizzly Bears": false }, "keywords": { "Grizzly Bears": ["Hexproof"] }, "pt": { "Grizzly Bears": [2, 2] }, "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard_has": ["Hill Giant", "Lightning Bolt"] } ] } },
+ { "name": "ruling: the copy takes only the printed characteristics of the copied creature, not its counters",
+   "players": [ { "hand": ["Fleeting Reflection"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "counters": { "+1/+1": 1 } }] }, { "battlefield": [ { "name": "Hill Giant", "counters": { "+1/+1": 2 }, "tapped": true } ] } ],
+   "steps": [ { "cast": "Fleeting Reflection", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "pt": { "Hill Giant": [4, 4] }, "counters": { "Hill Giant": { "p1p1": 1 } }, "players": [ { "battlefield_has": ["Hill Giant"] }, { "battlefield_has": ["Hill Giant"] } ] } },
+ { "name": "ruling: an untapped target still gains hexproof and becomes the copy",
+   "players": [ { "hand": ["Fleeting Reflection"], "battlefield": ["Island", "Island", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Fleeting Reflection", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "tapped": { "Hill Giant": false }, "keywords": { "Hill Giant": ["Hexproof"] }, "pt": { "Hill Giant": [3, 3] }, "players": [ { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ] } },
+ { "name": "ruling: counters on the target stay after it becomes a copy",
+   "players": [ { "hand": ["Fleeting Reflection"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "counters": { "+1/+1": 2 } }] }, { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Fleeting Reflection", "targets": ["Hill Giant"] }, { "resolve": true } ],
+   "expect": { "counters": { "Hill Giant": { "p1p1": 2 } }, "pt": { "Hill Giant": [5, 5] } } }
+]

@@ -1,0 +1,206 @@
+[
+  {
+    "name": "equip gives +2/+2 and protection from white and blue",
+    "players": [
+      {
+        "battlefield": [
+          "Sword of Truth and Justice",
+          "Grizzly Bears",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Sword of Truth and Justice",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      },
+      "attached": {
+        "Sword of Truth and Justice": "Grizzly Bears"
+      }
+    }
+  },
+  {
+    "name": "combat damage to a player puts a +1/+1 counter on a creature you control",
+    "players": [
+      {
+        "battlefield": [
+          "Sword of Truth and Justice",
+          "Grizzly Bears",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Sword of Truth and Justice",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          []
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 16
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "PlusOnePlusOne": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          5,
+          5
+        ]
+      }
+    }
+  },
+  {
+    "name": "an unequipped creature dealing combat damage does not trigger it",
+    "players": [
+      {
+        "battlefield": [
+          "Sword of Truth and Justice",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {}
+      }
+    }
+  },
+  {
+    "name": "protection from white: Swords to Plowshares cannot target the equipped creature",
+    "players": [
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Sword of Truth and Justice", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sword of Truth and Justice", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Swords to Plowshares", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Swords to Plowshares"] }, {} ] }
+  },
+  {
+    "name": "ruling: protection from blue: a blue creature cannot block the equipped creature",
+    "players": [ { "battlefield": ["Sword of Truth and Justice", "Grizzly Bears", "Forest", "Forest"] }, { "battlefield": ["Wind Drake"] } ],
+    "steps": [
+      { "activate": "Sword of Truth and Justice", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Wind Drake", "attacker": "Grizzly Bears" } ], "illegal": true },
+      { "advance_to": "Main2", "answers": [ [] ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ] }
+  },
+  {
+    "name": "ruling: proliferate adds one of each counter kind, so +1/+1 and -1/-1 cancel as a pair",
+    "players": [ { "battlefield": ["Sword of Truth and Justice", "Grizzly Bears", "Forest", "Forest", { "name": "Hill Giant", "counters": { "m1m1": 1 } }] }, {} ],
+    "steps": [
+      { "activate": "Sword of Truth and Justice", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Hill Giant"], "answers": [ ["Hill Giant"] ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ], "pt": { "Hill Giant": [3, 3] }, "counters": { "Hill Giant": {} } }
+  },
+  {
+    "name": "ruling: proliferate can add a counter to an opponent's permanent",
+    "players": [ { "battlefield": ["Sword of Truth and Justice", "Grizzly Bears", "Forest", "Forest"] }, { "battlefield": [ { "name": "Hill Giant", "counters": { "+1/+1": 1 } } ] } ],
+    "steps": [
+      { "activate": "Sword of Truth and Justice", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Grizzly Bears"], "answers": [ ["Grizzly Bears", "Hill Giant"] ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ], "pt": { "Hill Giant": [5, 5] }, "counters": { "Hill Giant": { "PlusOnePlusOne": 2 } } }
+  },
+  {
+    "name": "ruling: choosing no permanents to proliferate leaves the opponent's counters alone",
+    "players": [ { "battlefield": ["Sword of Truth and Justice", "Grizzly Bears", "Forest", "Forest"] }, { "battlefield": [ { "name": "Hill Giant", "counters": { "+1/+1": 1 } } ] } ],
+    "steps": [
+      { "activate": "Sword of Truth and Justice", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Grizzly Bears"], "answers": [ [] ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ], "pt": { "Hill Giant": [4, 4] }, "counters": { "Hill Giant": { "PlusOnePlusOne": 1 } } }
+  }
+]

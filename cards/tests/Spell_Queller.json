@@ -1,0 +1,138 @@
+[
+ {
+  "name": "exiles a spell with mana value 4 or less",
+  "players": [
+   { "hand": ["Spell Queller"], "battlefield": ["Plains", "Island", "Swamp"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Spell Queller" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "battlefield": ["Spell Queller", "Island", "Plains", "Swamp"] },
+    { "life": 20, "exile": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "owner may cast the exiled spell for free when Queller leaves",
+  "players": [
+   { "hand": ["Spell Queller", "Lightning Bolt"], "battlefield": ["Plains", "Island", "Swamp", "Mountain"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Spell Queller" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Spell Queller"] },
+   { "resolve": true, "answers": [true, "p0"] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "graveyard": ["Lightning Bolt", "Spell Queller"], "battlefield": ["Island", "Plains", "Swamp", "Mountain"] },
+    { "life": 20, "graveyard": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+   ]
+  }
+ },
+ {
+  "name": "exiled spell stays exiled if its owner declines",
+  "players": [
+   { "hand": ["Spell Queller", "Lightning Bolt"], "battlefield": ["Plains", "Island", "Swamp", "Mountain"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Spell Queller" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Spell Queller"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Lightning Bolt", "Spell Queller"] },
+    { "life": 20, "exile": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an X spell is judged by its chosen X (X=3 is mana value 4, so it is exiled)",
+  "players": [
+   { "hand": ["Blaze"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Spell Queller"], "battlefield": ["Plains", "Island", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Blaze", "targets": ["p1"], "answers": [3] },
+   { "cast": "Spell Queller", "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Blaze"] },
+    { "life": 20, "battlefield_has": ["Spell Queller"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an X spell with X=4 is mana value 5 and cannot be exiled",
+  "players": [
+   { "hand": ["Blaze"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Spell Queller"], "battlefield": ["Plains", "Island", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Blaze", "targets": ["p1"], "answers": [4] },
+   { "cast": "Spell Queller", "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20 },
+    { "life": 16, "battlefield_has": ["Spell Queller"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: Queller leaving before its ETB resolves still exiles the spell forever",
+  "players": [
+   { "hand": ["Spell Queller"], "battlefield": ["Plains", "Island", "Swamp"] },
+   { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Spell Queller" },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Spell Queller"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Spell Queller"], "battlefield_lacks": ["Spell Queller"] },
+    { "life": 20, "exile": ["Lightning Bolt"], "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ }
+]

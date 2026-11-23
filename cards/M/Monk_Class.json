@@ -1,0 +1,61 @@
+{
+  "name": "Monk Class",
+  "mana_cost": "{W}{U}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Static",
+      "effect": { "type": "CostChange", "filter": {}, "whose": "You", "generic": -1 },
+      "condition": { "type": "Compare", "a": { "type": "SpellsCastThisTurn", "who": { "type": "You" } }, "cmp": { "op": "Eq", "n": 1 } }
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{W}{U}" } ],
+      "timing": "Sorcery",
+      "condition": { "type": "All", "cs": [
+        { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+        { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+      ] },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "filter": { "this": true }, "kind": "Level" },
+      "condition": { "type": "All", "cs": [
+        { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+        { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+      ] },
+      "targets": [ { "what": { "type": "Permanent", "filter": { "not_types": ["Land"] } }, "min": 0, "max": 1, "label": "up to one target nonland permanent" } ],
+      "effects": [ { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Hand" } ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{1}{W}{U}" } ],
+      "timing": "Sorcery",
+      "condition": { "type": "All", "cs": [
+        { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+        { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+      ] },
+      "effects": [ { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+      "effects": [
+        { "type": "LookAtTop", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 }, "take": 1, "must": true, "to": "Exile", "filter": {}, "rest": "Library" }
+      ]
+    },
+    {
+      "type": "Static",
+      "condition": { "type": "All", "cs": [
+        { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 },
+        { "type": "Compare", "a": { "type": "SpellsCastThisTurn", "who": { "type": "You" } }, "cmp": { "op": "Ge", "n": 1 } }
+      ] },
+      "effect": { "type": "MayPlayFrom", "zone": "Exile", "filter": { "exiled_with_this": true, "not_types": ["Land"] } }
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nThe second spell you cast each turn costs {1} less to cast.\n{W}{U}: Level 2\nWhen this Class becomes level 2, return up to one target nonland permanent to its owner's hand.\n{1}{W}{U}: Level 3\nAt the beginning of your upkeep, exile the top card of your library. For as long as it remains exiled, it has \"You may cast this card from exile as long as you've cast another spell this turn.\""
+}

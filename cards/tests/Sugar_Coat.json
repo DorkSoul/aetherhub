@@ -1,0 +1,161 @@
+[
+  {
+    "name": "enchanted creature becomes a Food that its controller can sacrifice to gain 3 life",
+    "players": [
+      {
+        "hand": [
+          "Sugar Coat"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sugar Coat",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "activate": "Grizzly Bears",
+        "ability": 32768,
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Sugar Coat"
+          ]
+        },
+        {
+          "life": 23,
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast without a creature or Food to enchant",
+    "players": [
+      {
+        "hand": [
+          "Sugar Coat"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sugar Coat",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature becomes colorless",
+    "players": [
+      { "hand": ["Sugar Coat"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Plains", "Plains", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Sugar Coat", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "colors": { "Grizzly Bears": [] }
+    }
+  },
+  {
+    "name": "enchanted creature loses its printed activated ability (Prodigal Sorcerer cannot tap to ping)",
+    "players": [
+      { "hand": ["Sugar Coat"], "battlefield": ["Island", "Island", "Island", "Prodigal Sorcerer"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Sugar Coat", "targets": ["Prodigal Sorcerer"] },
+      { "resolve": true },
+      { "activate": "Prodigal Sorcerer", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Sugar Coat", "Prodigal Sorcerer"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: enchanted creature stops being a creature (no Angel subtype) and keeps its name",
+    "players": [
+      { "hand": ["Sugar Coat"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Sugar Coat", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Serra Angel"] } ],
+      "not_subtypes": { "Serra Angel": ["Angel"] }
+    }
+  },
+  {
+    "name": "ruling: an Aura that can only enchant creatures goes to its owner's graveyard when Sugar Coat makes the host a Food",
+    "players": [
+      { "hand": ["Dead Weight", "Sugar Coat"], "battlefield": ["Swamp", "Island", "Island", "Island"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Dead Weight", "targets": ["Serra Angel"] },
+      { "resolve": true },
+      { "cast": "Sugar Coat", "targets": ["Serra Angel"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Dead Weight"], "battlefield_has": ["Sugar Coat"] },
+        { "battlefield_has": ["Serra Angel"] }
+      ]
+    }
+  }
+]

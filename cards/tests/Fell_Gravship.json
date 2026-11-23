@@ -1,0 +1,155 @@
+[
+  {
+    "name": "ETB mills three then returns the only creature or Spacecraft card from your graveyard to hand",
+    "players": [
+      {
+        "hand": ["Fell Gravship"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"],
+        "graveyard": ["Grizzly Bears"],
+        "library": ["Forest", "Forest", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fell Gravship" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard": ["Forest", "Forest", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB with no creature or Spacecraft card in graveyard returns nothing",
+    "players": [
+      {
+        "hand": ["Fell Gravship"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"],
+        "library": ["Forest", "Forest", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fell Gravship" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Forest", "Forest", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a milled Spacecraft card can be the card returned",
+    "players": [
+      {
+        "hand": ["Fell Gravship"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"],
+        "library": ["Galvanizing Sawship", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fell Gravship" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Galvanizing Sawship"], "graveyard": ["Forest", "Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "station with 8 charge counters makes the Gravship a 3/2 flying lifelink creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Fell Gravship", "counters": { "Charge": 6 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Fell Gravship" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": {
+        "Fell Gravship": { "Charge": 8 }
+      },
+      "pt": {
+        "Fell Gravship": [3, 2]
+      }
+    }
+  },
+  {
+    "name": "at 7 charge counters the Gravship is still not a creature",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Fell Gravship", "counters": { "Charge": 5 } },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Fell Gravship" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, {}],
+      "counters": {
+        "Fell Gravship": { "Charge": 7 }
+      }
+    }
+  },
+  {
+    "name": "8+ charge counters: the Gravship attacks as a creature and its lifelink gains 3",
+    "players": [
+      { "battlefield": [ { "name": "Fell Gravship", "counters": { "Charge": 8 } } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Fell Gravship", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23 },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "8+ charge counters: the flying Gravship cannot be blocked by Grizzly Bears (Serra Angel is not declared)",
+    "players": [
+      { "battlefield": [ { "name": "Fell Gravship", "counters": { "Charge": 8 } } ] },
+      { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Fell Gravship", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Fell Gravship" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17 }
+      ]
+    }
+  }
+]

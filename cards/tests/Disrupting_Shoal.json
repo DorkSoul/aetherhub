@@ -1,0 +1,80 @@
+[
+ {
+  "name": "counters a spell whose mana value equals X",
+  "players": [
+   { "hand": ["Disrupting Shoal"], "battlefield": ["Island", "Island", "Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "cast": "Disrupting Shoal", "targets": [{ "stack": "Lightning Bolt" }], "answers": [1] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20, "graveyard": ["Disrupting Shoal"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "does nothing when the spell's mana value is not X",
+  "players": [
+   { "hand": ["Disrupting Shoal"], "battlefield": ["Island", "Island", "Island", "Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "cast": "Disrupting Shoal", "targets": [{ "stack": "Lightning Bolt" }], "answers": [2] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 17, "graveyard": ["Disrupting Shoal"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "alternative cost: exile a blue card with mana value X (Opt, X=1) instead of paying mana",
+  "players": [ { "hand": ["Disrupting Shoal", "Opt"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 }, { "cast": "Disrupting Shoal", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }], "answers": [1] }, { "resolve": true } ],
+  "expect": { "players": [ { "life": 20, "hand_count": 0, "exile": ["Opt"], "graveyard": ["Disrupting Shoal"] }, { "graveyard": ["Lightning Bolt"] } ] }
+ },
+ {
+  "name": "ruling: a spell with a different mana value is not countered (Shoal can target any spell)",
+  "players": [
+   { "hand": ["Disrupting Shoal"], "battlefield": ["Island", "Island", "Island"] },
+   { "hand": ["Lightning Strike"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Strike", "player": 1, "targets": ["p0"] },
+   { "cast": "Disrupting Shoal", "targets": [{ "stack": "Lightning Strike" }], "answers": [1] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 17, "graveyard": ["Disrupting Shoal"] }, { "graveyard": ["Lightning Strike"] } ]
+  }
+ },
+ {
+  "name": "ruling: X counts toward the countered spell's MV even when cast for the alternative cost",
+  "players": [
+   { "hand": ["Disrupting Shoal", "Essence Scatter"] },
+   { "hand": ["Lightning Strike"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Strike", "player": 1, "targets": ["p0"] },
+   { "cast": "Disrupting Shoal", "alt": 0, "targets": [{ "stack": "Lightning Strike" }], "answers": [2] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20, "exile": ["Essence Scatter"], "graveyard": ["Disrupting Shoal"] }, { "graveyard": ["Lightning Strike"] } ]
+  }
+ }
+]

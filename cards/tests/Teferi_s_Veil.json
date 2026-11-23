@@ -1,0 +1,51 @@
+[
+  {
+    "name": "attacking creature phases out at end of combat",
+    "players": [ { "battlefield": ["Teferi's Veil", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"] }, { "life": 18 } ] }
+  },
+  {
+    "name": "a creature that is not attacking does not phase out",
+    "players": [ { "battlefield": ["Teferi's Veil", "Grizzly Bears", "Hill Giant"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "an attacker dealt lethal damage in combat is not saved",
+    "players": [ { "battlefield": ["Teferi's Veil", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "the phased out attacker phases back in at its controller's next untap step",
+    "players": [ { "battlefield": ["Teferi's Veil", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: a creature that survives combat damage still phases out at end of combat",
+    "players": [ { "battlefield": ["Teferi's Veil", "Grizzly Bears"] }, { "battlefield": ["Llanowar Elves"] } ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard": [] }, { "graveyard_has": ["Llanowar Elves"] } ] }
+  }
+]

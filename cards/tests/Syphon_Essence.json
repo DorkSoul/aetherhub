@@ -1,0 +1,40 @@
+[
+  { "name": "counters a creature spell and creates a Blood token",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest"] }, { "hand": ["Syphon Essence"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Syphon Essence", "player": 1, "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [
+      { "graveyard": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] },
+      { "graveyard": ["Syphon Essence"], "battlefield_has": ["Blood"] }
+    ] } },
+  { "name": "cannot target a noncreature, nonplaneswalker spell",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }, { "hand": ["Syphon Essence"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Syphon Essence", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ], "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ] } },
+  { "name": "ruling: cannot be cast without a creature spell to target",
+    "players": [ {}, { "hand": ["Syphon Essence"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Syphon Essence", "player": 1, "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "hand": ["Syphon Essence"] } ] } },
+  { "name": "ruling: if its only target becomes illegal, it does not resolve and makes no Blood",
+    "players": [ { "hand": ["Grizzly Bears", "Counterspell"], "battlefield": ["Forest", "Forest", "Island", "Island"] }, { "hand": ["Syphon Essence"], "battlefield": ["Island", "Island", "Island"] } ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "cast": "Syphon Essence", "player": 1, "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "cast": "Counterspell", "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [
+      { "graveyard": ["Grizzly Bears", "Counterspell"], "battlefield_lacks": ["Blood"] },
+      { "graveyard": ["Syphon Essence"], "battlefield_lacks": ["Blood"] }
+    ] } }
+]

@@ -1,0 +1,112 @@
+[
+ {
+  "name": "you take one, the opponent buries one, alternating until the last card comes to hand",
+  "players": [
+   {
+    "hand": ["Memories Returning"],
+    "battlefield": ["Island", "Island", "Island", "Island"],
+    "library": ["Mountain", "Plains", "Swamp", "Forest", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Memories Returning" },
+   { "resolve": true, "answers": [["Mountain"], ["Plains"], ["Swamp"], ["Forest"]] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Mountain", "Swamp", "Island"], "library_count": 22, "exile": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "flashback for seven plus UU exiles the card afterwards and gives the same picks",
+  "players": [
+   {
+    "graveyard": ["Memories Returning"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Mountain", "Plains", "Swamp", "Forest", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Memories Returning", "alt": 0 },
+   { "resolve": true, "answers": [["Mountain"], ["Plains"], ["Swamp"], ["Forest"]] }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Mountain", "Swamp", "Island"], "graveyard": [], "exile": ["Memories Returning"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "flashback is not castable with only eight lands",
+  "players": [
+   {
+    "graveyard": ["Memories Returning"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Mountain", "Plains", "Swamp", "Forest", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Memories Returning", "alt": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Memories Returning"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: flashback follows sorcery timing, so it is illegal while another spell is on the stack",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "graveyard": ["Memories Returning"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Memories Returning", "alt": 0, "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Memories Returning", "Lightning Bolt"], "exile": [] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a flashback spell that is countered is still exiled",
+  "players": [
+   {
+    "graveyard": ["Memories Returning"],
+    "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Mountain", "Plains", "Swamp", "Forest", "Island"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Memories Returning", "alt": 0 },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Memories Returning" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Memories Returning"], "graveyard": [], "hand_count": 0, "library_count": 25 },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

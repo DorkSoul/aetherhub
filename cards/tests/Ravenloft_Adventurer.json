@@ -1,0 +1,186 @@
+[
+ {
+  "name": "a creature an opponent controls is exiled with a hit counter instead of dying",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Ravenloft Adventurer",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Ravenloft Adventurer"
+     ]
+    },
+    {
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "graveyard": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "a creature you control still goes to the graveyard normally",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Ravenloft Adventurer",
+     "Grizzly Bears",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Grizzly Bears"
+     ],
+     "exile": []
+    },
+    {
+     "exile": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "attacking does not make the defending player lose life without a completed dungeon",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Ravenloft Adventurer",
+      "sick": false
+     }
+    ]
+   },
+   {
+    "life": 20,
+    "exile": [
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "hit": 1
+      }
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ravenloft Adventurer",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {"name": "entering takes the initiative and ventures into Undercity",
+  "players": [ { "hand": ["Ravenloft Adventurer"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+  "steps": [ { "cast": "Ravenloft Adventurer" }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Ravenloft Adventurer"], "command": ["The Initiative", "Undercity"] }, {} ] } },
+ {"name": "after completing a dungeon, attacking makes the defender lose 1 per hit-counter card in exile",
+  "players": [
+    { "hand": ["Kick in the Door", "Kick in the Door", "Kick in the Door", "Kick in the Door"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears", {"name": "Ravenloft Adventurer", "sick": false}], "library": ["Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+    { "life": 20, "exile": [ {"name": "Grizzly Bears", "counters": {"hit": 1}} ] }
+  ],
+  "steps": [
+    { "cast": "Kick in the Door", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [0] },
+    { "cast": "Kick in the Door", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [0] },
+    { "cast": "Kick in the Door", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": [0, 0] },
+    { "cast": "Kick in the Door", "targets": ["Grizzly Bears"] }, { "resolve": true },
+    { "attack": [ { "card": "Ravenloft Adventurer", "at": "p1" } ] }, { "resolve": true }, { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 16 } ] } },
+  {
+    "name": "ruling: taking the initiative again does not create a second initiative designation",
+    "players": [
+      { "hand": ["Ravenloft Adventurer", "Ravenloft Adventurer"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ravenloft Adventurer" }, { "resolve": true }, { "resolve": true },
+      { "cast": "Ravenloft Adventurer" }, { "resolve": true, "answers": [0, 0] }, { "resolve": true }
+    ],
+    "expect": { "players": [ { "command": ["The Initiative", "Undercity"] }, {} ] }
+  },
+  {
+    "name": "ruling: a creature dealing combat damage to the initiative holder takes the initiative from them",
+    "players": [
+      { "hand": ["Ravenloft Adventurer"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Ravenloft Adventurer" }, { "resolve": true }, { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "command": ["Undercity"], "life": 18 },
+        { "command": ["The Initiative", "Undercity"] }
+      ]
+    }
+  }
+]

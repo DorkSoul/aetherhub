@@ -1,0 +1,289 @@
+[
+ {
+  "name": "blight 1 and tap: surveil 1 (card goes to the graveyard)",
+  "players": [
+   {
+    "battlefield": [
+     "Dawnhand Dissident"
+    ],
+    "library": [
+     "Lightning Bolt",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Dawnhand Dissident",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     [
+      0
+     ]
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Dawnhand Dissident": {
+     "m1m1": 1
+    }
+   },
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "blight 2 and tap: exile a card from a graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Dawnhand Dissident",
+     "Hill Giant"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Dawnhand Dissident",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "answers": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Hill Giant": {
+     "m1m1": 2
+    }
+   },
+   "players": [
+    {
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "cast the exiled creature by removing three counters from my creatures",
+  "players": [
+   {
+    "battlefield": [
+     "Dawnhand Dissident",
+     {
+      "name": "Hill Giant",
+      "counters": {
+       "charge": 3
+      }
+     },
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Dawnhand Dissident",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "answers": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Hill Giant": {
+     "charge": 1,
+     "m1m1": 1
+    }
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "without three counters the exiled creature can't be cast",
+  "players": [
+   {
+    "battlefield": [
+     "Dawnhand Dissident",
+     "Hill Giant",
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Dawnhand Dissident",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ],
+    "answers": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Dissident destroyed in response to the cast: the creature spell still resolves",
+  "players": [
+   {
+    "battlefield": ["Dawnhand Dissident", { "name": "Hill Giant", "counters": { "charge": 3 } }, "Forest", "Forest"],
+    "graveyard": ["Grizzly Bears"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "activate": "Dawnhand Dissident", "ability": 1, "targets": ["Grizzly Bears"], "answers": ["Hill Giant"] },
+   { "resolve": true },
+   { "cast": "Grizzly Bears" },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Dawnhand Dissident"], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Dawnhand Dissident"] },
+    { "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the exiled creature cannot be cast while the stack is not empty",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Dawnhand Dissident", { "name": "Hill Giant", "counters": { "charge": 3 } }, "Forest", "Forest", "Mountain"],
+    "graveyard": ["Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Dawnhand Dissident", "ability": 1, "targets": ["Grizzly Bears"], "answers": ["Hill Giant"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Grizzly Bears", "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Grizzly Bears"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: 3 +1/+1 and 2 -1/-1 counters annihilate, leaving one +1/+1 counter",
+  "players": [
+   {
+    "battlefield": ["Dawnhand Dissident", { "name": "Hill Giant", "counters": { "p1p1": 3 } }],
+    "graveyard": ["Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Dawnhand Dissident", "ability": 1, "targets": ["Grizzly Bears"], "answers": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Hill Giant": { "p1p1": 1, "m1m1": 0 } },
+   "players": [
+    { "exile": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: -1/-1 counters can be put on a creature with too little toughness; it dies",
+  "players": [
+   {
+    "battlefield": ["Dawnhand Dissident", "Llanowar Elves"],
+    "graveyard": ["Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Dawnhand Dissident", "ability": 1, "targets": ["Grizzly Bears"], "answers": ["Llanowar Elves"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Llanowar Elves"], "exile": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ }
+]

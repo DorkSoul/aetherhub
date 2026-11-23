@@ -1,0 +1,54 @@
+{
+  "name": "Graywater's Fixer",
+  "mana_cost": "{2}{B}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Lizard", "Mercenary"],
+  "colors": ["B", "R"],
+  "power": 4,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": {
+          "types": ["Creature"],
+          "owner": "You",
+          "any_of": [
+            { "subtypes": ["Assassin"] },
+            { "subtypes": ["Mercenary"] },
+            { "subtypes": ["Pirate"] },
+            { "subtypes": ["Rogue"] },
+            { "subtypes": ["Warlock"] }
+          ]
+        },
+        "ability": {
+          "type": "Activated",
+          "cost": [
+            { "type": "Mana", "cost": "{MV}" },
+            { "type": "ExileSelf" }
+          ],
+          "targets": [],
+          "effects": [
+            {
+              "type": "ForEach",
+              "objects": { "type": "EachOpponent" },
+              "effects": [
+                { "type": "CopyPermanent", "what": { "type": "This" }, "n": { "type": "Fixed", "n": 1 }, "except": [ { "type": "AddKeyword", "keyword": "Haste" } ] },
+                { "type": "GrantStatic", "what": { "type": "Remembered" }, "effect": { "type": "MustAttack", "affects": {} }, "duration": "Forever" },
+                {
+                  "type": "Delayed",
+                  "at": "NextEndStep",
+                  "effects": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard", "from": "Battlefield" } ]
+                }
+              ]
+            }
+          ],
+          "timing": "Sorcery",
+          "from": "Graveyard"
+        }
+      }
+    }
+  ],
+  "oracle_text": "Each outlaw creature card in your graveyard has encore {X}, where X is its mana value. (Exile it and pay its encore cost: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)"
+}

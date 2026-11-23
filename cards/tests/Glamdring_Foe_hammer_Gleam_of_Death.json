@@ -1,0 +1,124 @@
+[
+  {
+    "name": "Gleam of Death mills six and takes the instants and sorceries among them",
+    "players": [
+      {
+        "hand": ["Glamdring, Foe-hammer // Gleam of Death"],
+        "battlefield": ["Island", "Island", "Island", "Island"],
+        "library": ["Divination", "Forest", "Lightning Bolt", "Grizzly Bears", "Counterspell", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glamdring, Foe-hammer // Gleam of Death", "face": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Divination", "Lightning Bolt", "Counterspell"],
+          "graveyard_has": ["Forest", "Grizzly Bears", "Island"],
+          "library_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "equipped creature's power reduces the cost of an instant or sorcery",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Island", "Island", "Island", "Glamdring, Foe-hammer // Gleam of Death", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glamdring, Foe-hammer // Gleam of Death", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "battlefield_has": ["Glamdring, Foe-hammer // Gleam of Death"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "without an equipped creature the instant or sorcery costs its full mana cost",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Island", "Island", "Glamdring, Foe-hammer // Gleam of Death", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Divination"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: equipped power reduces only generic mana, the {U} is still required",
+    "players": [
+      {
+        "hand": ["Divination"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Glamdring, Foe-hammer // Gleam of Death", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glamdring, Foe-hammer // Gleam of Death", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Divination", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Divination"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the adventure is cast for its own {3}{U}, not for Glamdring's {2}",
+    "players": [
+      { "hand": ["Glamdring, Foe-hammer // Gleam of Death"], "battlefield": ["Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glamdring, Foe-hammer // Gleam of Death", "face": true, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Glamdring, Foe-hammer // Gleam of Death"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an adventure countered on the stack goes to the graveyard, not exile",
+    "players": [
+      { "hand": ["Glamdring, Foe-hammer // Gleam of Death"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Glamdring, Foe-hammer // Gleam of Death", "face": true },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Gleam of Death" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Glamdring, Foe-hammer // Gleam of Death"], "exile": [] },
+        { "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,463 @@
+[
+  {
+    "name": "enters and mills two cards",
+    "players": [
+      {
+        "hand": [
+          "Devoted Grafkeeper // Departed Soulkeeper"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island"
+        ],
+        "library": [
+          "Forest",
+          "Mountain",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Devoted Grafkeeper // Departed Soulkeeper"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Forest",
+            "Mountain"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Devoted Grafkeeper // Departed Soulkeeper": [
+          2,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "casting a spell from the graveyard taps a creature you don't control",
+    "players": [
+      {
+        "graveyard": [
+          "Devoted Grafkeeper // Departed Soulkeeper"
+        ],
+        "battlefield": [
+          "Devoted Grafkeeper // Departed Soulkeeper",
+          "Plains",
+          "Island",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Devoted Grafkeeper // Departed Soulkeeper",
+        "face": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Hill Giant": true
+      },
+      "keywords": {
+        "Departed Soulkeeper": [
+          "Flying"
+        ]
+      },
+      "pt": {
+        "Departed Soulkeeper": [
+          3,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "casting from hand does not tap",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Devoted Grafkeeper // Departed Soulkeeper",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Hill Giant": false
+      }
+    }
+  },
+  {
+    "name": "Departed Soulkeeper cannot block a non-flier",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Departed Soulkeeper"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Departed Soulkeeper",
+            "attacker": "Grizzly Bears"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "Departed Soulkeeper can block a flier",
+    "players": [
+      {
+        "battlefield": [
+          "Wind Drake"
+        ]
+      },
+      {
+        "battlefield": [
+          "Departed Soulkeeper"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Wind Drake",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Departed Soulkeeper",
+            "attacker": "Wind Drake"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Wind Drake"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Departed Soulkeeper can block only fliers: a ground Grizzly Bears is not blocked by it (Hill Giant could block but is not declared)",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Departed Soulkeeper",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Departed Soulkeeper",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "a Departed Soulkeeper that dies is exiled instead of going to the graveyard",
+    "players": [
+      {
+        "battlefield": [
+          "Wind Drake"
+        ]
+      },
+      {
+        "battlefield": [
+          "Departed Soulkeeper"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Wind Drake",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Departed Soulkeeper",
+            "attacker": "Wind Drake"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Wind Drake"
+          ]
+        },
+        {
+          "exile": [
+            "Devoted Grafkeeper // Departed Soulkeeper"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast with disturb that is countered is exiled instead of going to the graveyard",
+    "players": [
+      {
+        "graveyard": [
+          "Devoted Grafkeeper // Departed Soulkeeper"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island",
+          "Forest"
+        ]
+      },
+      {
+        "hand": [
+          "Counterspell"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Devoted Grafkeeper // Departed Soulkeeper",
+        "face": true
+      },
+      {
+        "cast": "Counterspell",
+        "player": 1,
+        "targets": [
+          {
+            "stack": "Departed Soulkeeper"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Devoted Grafkeeper // Departed Soulkeeper"
+          ],
+          "graveyard": []
+        },
+        {
+          "graveyard": [
+            "Counterspell"
+          ]
+        }
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: a permanent cast with disturb enters with its back face up, so the front face's enters-the-battlefield mill does not happen",
+    "players": [
+      {
+        "graveyard": [
+          "Devoted Grafkeeper // Departed Soulkeeper"
+        ],
+        "battlefield": [
+          "Plains",
+          "Island",
+          "Forest"
+        ],
+        "library": [
+          "Mountain",
+          "Swamp",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Devoted Grafkeeper // Departed Soulkeeper",
+        "face": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [],
+          "battlefield_has": [
+            "Departed Soulkeeper"
+          ],
+          "library_top": [
+            "Mountain",
+            "Swamp"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Departed Soulkeeper": [
+          3,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "audit2: Departed Soulkeeper can block only fliers, so it cannot block a ground attacker",
+    "players": [
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Departed Soulkeeper"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Departed Soulkeeper",
+            "attacker": "Grizzly Bears"
+          }
+        ],
+        "illegal": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18,
+          "battlefield_has": [
+            "Departed Soulkeeper"
+          ]
+        }
+      ]
+    }
+  }
+]

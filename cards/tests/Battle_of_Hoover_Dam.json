@@ -1,0 +1,277 @@
+[
+  {
+    "name": "NCR: at your end step a creature card with mana value 3 or less returns from your graveyard with a finality counter",
+    "players": [
+      {
+        "hand": [
+          "Battle of Hoover Dam"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Battle of Hoover Dam"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            0
+          ]
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "finality": 1
+        }
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "NCR: without a creature card of mana value 3 or less in your graveyard, nothing returns",
+    "players": [
+      {
+        "hand": [
+          "Battle of Hoover Dam"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Battle of Hoover Dam"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            0
+          ]
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Hill Giant"
+          ],
+          "graveyard": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Legion: when a creature you control dies, target creature you control gets two +1/+1 counters",
+    "players": [
+      {
+        "hand": [
+          "Battle of Hoover Dam",
+          "Murder"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          {
+            "name": "Hill Giant",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Battle of Hoover Dam"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            1
+          ]
+        ]
+      },
+      {
+        "cast": "Murder",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Hill Giant": [
+          5,
+          5
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears",
+            "Murder"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Legion: a creature an opponent controls dying does not trigger it",
+    "players": [
+      {
+        "hand": [
+          "Battle of Hoover Dam",
+          "Murder"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Battle of Hoover Dam"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            1
+          ]
+        ]
+      },
+      {
+        "cast": "Murder",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      },
+      "players": [
+        {},
+        {
+          "graveyard": [
+            "Hill Giant"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: multiple finality counters are redundant; Murder exiles the creature",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "finality": 2 } } ] }
+    ],
+    "steps": [ { "cast": "Murder", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Murder"] }, { "exile": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a non-creature permanent with a finality counter is exiled instead of going to the graveyard",
+    "players": [
+      { "battlefield": [ { "name": "Wickersmith's Tools", "counters": { "finality": 1 } }, "Plains", "Plains", "Plains", "Plains", "Plains" ] },
+      {}
+    ],
+    "steps": [ { "activate": "Wickersmith's Tools" }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Wickersmith's Tools"], "battlefield_lacks": ["Wickersmith's Tools"] }, {} ] }
+  },
+  {
+    "name": "ruling: a finality counter does not stop a bounce to hand",
+    "players": [
+      { "hand": ["Unsummon"], "battlefield": ["Island", { "name": "Grizzly Bears", "counters": { "finality": 1 } }] },
+      {}
+    ],
+    "steps": [ { "cast": "Unsummon", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"], "exile": [] }, {} ] }
+  }
+]

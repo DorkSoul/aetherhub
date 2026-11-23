@@ -1,0 +1,233 @@
+[
+  {
+    "name": "X=2: the opponent exiles two cards and both creatures (MV 2 or less) are cast free",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island", "Forest"]
+      },
+      {
+        "library": ["Grizzly Bears", "Llanowar Elves", "Serra Angel", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [["Grizzly Bears", "Llanowar Elves"]] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"],
+          "battlefield_has": ["Grizzly Bears", "Llanowar Elves"]
+        },
+        {
+          "library_count": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "X=1: a spell with mana value above X can't be chosen and stays exiled",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island"]
+      },
+      {
+        "library": ["Serra Angel", "Grizzly Bears", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"]
+        },
+        {
+          "library_count": 3,
+          "exile": ["Serra Angel"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "X=2: declining the choice casts nothing; the exiled cards stay exiled",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island", "Forest"]
+      },
+      {
+        "library": ["Grizzly Bears", "Llanowar Elves", "Serra Angel", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"],
+          "battlefield_lacks": ["Grizzly Bears", "Llanowar Elves"]
+        },
+        {
+          "library_count": 2,
+          "exile": ["Grizzly Bears", "Llanowar Elves"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery cast free during resolution ignores sorcery timing",
+    "players": [
+      {
+        "hand": ["Villainous Wealth", "Shock"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island", "Forest"]
+      },
+      {
+        "library": ["Winds of Change", "Island", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [["Winds of Change"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"],
+          "hand_count": 1
+        },
+        {
+          "graveyard": ["Winds of Change"],
+          "library_count": 1,
+          "exile": ["Island"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card you don't choose stays in exile even if its mana value is at most X",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island", "Forest"]
+      },
+      {
+        "library": ["Grizzly Bears", "Llanowar Elves", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"],
+          "battlefield_has": ["Grizzly Bears"],
+          "battlefield_lacks": ["Llanowar Elves"]
+        },
+        {
+          "library_count": 2,
+          "exile": ["Llanowar Elves"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled card cannot be cast later once Villainous Wealth has resolved",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island", "Forest"]
+      },
+      {
+        "library": ["Grizzly Bears", "Island", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [[]] },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"],
+          "battlefield_lacks": ["Grizzly Bears"]
+        },
+        {
+          "exile": ["Grizzly Bears", "Island"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a free cast keeps X at 0, so Primordial Hydra enters with no counters and dies",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Forest", "Island", "Island", "Forest"]
+      },
+      {
+        "library": ["Primordial Hydra", "Island", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [["Primordial Hydra"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"],
+          "battlefield_lacks": ["Primordial Hydra"]
+        },
+        {
+          "library_count": 2,
+          "graveyard_has": ["Primordial Hydra"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a kicker cost can be paid when casting for free",
+    "players": [
+      {
+        "hand": ["Villainous Wealth"],
+        "battlefield": ["Swamp", "Swamp", "Forest", "Island", "Island", "Forest", "Mountain", "Mountain"]
+      },
+      {
+        "library": ["Bloodchief's Thirst", "Island", "Island", "Island"],
+        "battlefield": ["Serra Angel"]
+      }
+    ],
+    "steps": [
+      { "cast": "Villainous Wealth", "targets": ["p1"], "answers": [2] },
+      { "resolve": true, "answers": [["Bloodchief's Thirst"], true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Villainous Wealth"]
+        },
+        {
+          "graveyard_has": ["Bloodchief's Thirst", "Serra Angel"],
+          "battlefield_lacks": ["Serra Angel"]
+        }
+      ]
+    }
+  }
+]

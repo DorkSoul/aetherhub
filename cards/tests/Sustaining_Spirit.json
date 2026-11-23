@@ -1,0 +1,49 @@
+[
+  { "name": "damage that would take you below 1 reduces it to 1 instead",
+    "players": [ { "battlefield": ["Sustaining Spirit"], "life": 3 },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 1, "battlefield_has": ["Sustaining Spirit"] }, {} ] } },
+  { "name": "damage that leaves you at exactly 1 is unchanged by the replacement",
+    "players": [ { "battlefield": ["Sustaining Spirit"], "life": 4 },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 1 }, {} ] } },
+  { "name": "damage that leaves you at 2 is not reduced",
+    "players": [ { "battlefield": ["Sustaining Spirit"], "life": 5 },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 2 }, {} ] } },
+  { "name": "at 1 life: damage that would take you lower still leaves you at 1",
+    "players": [ { "battlefield": ["Sustaining Spirit"], "life": 1 },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 1, "battlefield_has": ["Sustaining Spirit"] }, {} ] } },
+  { "name": "upkeep: pays {1}{W} for the first age counter and keeps it",
+    "players": [
+      { "battlefield": ["Sustaining Spirit", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "counters": { "Sustaining Spirit": { "age": 1 } },
+      "players": [ { "battlefield_has": ["Sustaining Spirit"] }, {} ]
+    } },
+  { "name": "upkeep: cannot pay the cumulative upkeep, so it is sacrificed",
+    "players": [
+      { "battlefield": ["Sustaining Spirit"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Sustaining Spirit"] }, {} ] } },
+  { "name": "ruling: paying cumulative upkeep is optional, declining with two Plains available sacrifices it",
+    "players": [ { "battlefield": ["Sustaining Spirit", "Plains", "Plains"] }, {} ],
+    "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [false] } ],
+    "expect": { "players": [ { "graveyard_has": ["Sustaining Spirit"] }, {} ] } }
+]

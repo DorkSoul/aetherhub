@@ -1,0 +1,144 @@
+[
+ {
+  "name": "one kor soldier per creature you control",
+  "players": [
+   {
+    "hand": [
+     "Nomads' Assembly"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Nomads' Assembly"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Kor Soldier",
+      "Kor Soldier"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "rebound exiles it and recasts next upkeep",
+  "players": [
+   {
+    "hand": [
+     "Nomads' Assembly"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Nomads' Assembly"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Nomads' Assembly"
+     ],
+     "battlefield_has": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: rebound recast at the next upkeep resolves and goes to the graveyard, not back to exile",
+  "players": [
+   { "hand": ["Nomads' Assembly"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nomads' Assembly" },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main2" },
+   { "advance_to": "Upkeep", "answers": [true] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Nomads' Assembly"], "exile": [], "battlefield_has": ["Kor Soldier", "Kor Soldier", "Kor Soldier"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: declining the rebound recast leaves the card exiled",
+  "players": [
+   { "hand": ["Nomads' Assembly"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Nomads' Assembly" },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main2" },
+   { "advance_to": "Upkeep", "answers": [false] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Nomads' Assembly"], "graveyard": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a rebound spell that is countered goes to the graveyard and is never recast",
+  "players": [
+   { "hand": ["Nomads' Assembly"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Nomads' Assembly" },
+   { "pass": true },
+   { "cast": "Cancel", "player": 1, "targets": [{ "stack": "Nomads' Assembly" }] },
+   { "resolve": true },
+   { "advance_to": "Upkeep" },
+   { "advance_to": "Main2" },
+   { "advance_to": "Upkeep" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Nomads' Assembly"], "exile": [], "battlefield_lacks": ["Kor Soldier"] },
+    { "graveyard": ["Cancel"] }
+   ]
+  }
+ }
+]

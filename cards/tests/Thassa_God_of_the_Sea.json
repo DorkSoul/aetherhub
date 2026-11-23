@@ -1,0 +1,59 @@
+[
+ { "name": "devotion to blue below five: not a creature, so a creature-only spell has no target",
+   "players": [
+     { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] },
+     { "battlefield": ["Thassa, God of the Sea"] } ],
+   "steps": [ { "cast": "Doom Blade", "illegal": true } ],
+   "expect": { "players": [ { "hand": ["Doom Blade"] }, { "battlefield_has": ["Thassa, God of the Sea"] } ] } },
+ { "name": "devotion of five: a creature again and can be targeted (indestructible, survives)",
+   "players": [
+     { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] },
+     { "battlefield": ["Thassa, God of the Sea", "Air Elemental", "Air Elemental"] } ],
+   "steps": [ { "cast": "Doom Blade", "targets": ["Thassa, God of the Sea"] }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard": ["Doom Blade"] }, { "battlefield_has": ["Thassa, God of the Sea", "Air Elemental", "Air Elemental"] } ] } },
+ { "name": "{1}{U}: target creature you control can't be blocked this turn",
+   "players": [
+     { "battlefield": ["Thassa, God of the Sea", "Island", "Island", "Grizzly Bears"] },
+     {} ],
+   "steps": [ { "activate": "Thassa, God of the Sea", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+   "expect": { "players": [ {}, {} ], "keywords": { "Grizzly Bears": ["Unblockable"] } } },
+ { "name": "the ability cannot target an opponent's creature",
+   "players": [
+     { "battlefield": ["Thassa, God of the Sea", "Island", "Island"] },
+     { "battlefield": ["Hill Giant"] } ],
+   "steps": [ { "activate": "Thassa, God of the Sea", "illegal": true } ],
+   "expect": { "players": [ {}, {} ] } },
+ { "name": "upkeep scry 1: bottom the top card",
+   "players": [ { "battlefield": ["Thassa, God of the Sea"], "library": ["Forest", "Island"] }, {} ],
+   "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [[0]] }, { "resolve": true } ],
+   "expect": { "players": [ { "library_top": ["Island"] }, {} ] } },
+ { "name": "upkeep scry 1: keep the top card on top",
+   "players": [ { "battlefield": ["Thassa, God of the Sea"], "library": ["Forest", "Island"] }, {} ],
+   "steps": [ { "advance_to": "Upkeep" }, { "advance_to": "Upkeep", "answers": [[]] }, { "resolve": true } ],
+   "expect": { "players": [ { "library_top": ["Forest", "Island"] }, {} ] } },
+ { "name": "ruling: mana symbols in text boxes do not count toward devotion (Skull's generic and text {U}, Thassa's own text): devotion 4, not a creature",
+   "players": [
+     { "hand": ["Doom Blade"], "battlefield": ["Thassa, God of the Sea", "Crystal Skull, Isu Spyglass", "Mystic Remora", "Swamp", "Swamp"] },
+     {} ],
+   "steps": [ { "cast": "Doom Blade", "illegal": true } ],
+   "expect": { "players": [ { "hand": ["Doom Blade"], "battlefield_has": ["Thassa, God of the Sea"] }, {} ], "not_subtypes": { "Thassa, God of the Sea": ["God"] } } },
+ { "name": "ruling: hybrid and Phyrexian mana symbols count toward devotion: Thassa is a creature at devotion 5",
+   "players": [
+     { "hand": ["Doom Blade"], "battlefield": ["Thassa, God of the Sea", "Sygg, River Cutthroat", "Spined Thopter", "Oona's Gatewarden", "Swamp", "Swamp"] },
+     {} ],
+   "steps": [ { "cast": "Doom Blade", "targets": ["Thassa, God of the Sea"] }, { "resolve": true } ],
+   "expect": { "players": [ { "graveyard": ["Doom Blade"], "battlefield_has": ["Thassa, God of the Sea"] }, {} ], "subtypes": { "Thassa, God of the Sea": ["God"] } } },
+ { "name": "ruling: an activation after blockers are declared does not undo the block (Thassa's can't-be-blocked)",
+   "players": [
+     { "battlefield": ["Thassa, God of the Sea", "Island", "Island", "Grizzly Bears"] },
+     { "battlefield": ["Hill Giant"] } ],
+   "steps": [
+     { "advance_to": "BeginCombat" },
+     { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+     { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+     { "activate": "Thassa, God of the Sea", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "advance_to": "Main2" }
+   ],
+   "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, { "life": 20, "battlefield_has": ["Hill Giant"] } ] } }
+]

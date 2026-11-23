@@ -1,0 +1,148 @@
+[
+  {
+    "name": "another legendary creature dying leaves a 2/2 black Zombie copy",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Ratadrabik of Urborg",
+            "sick": false
+          },
+          {
+            "name": "Brigid, Clachan's Heart",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Brigid, Clachan's Heart"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ratadrabik of Urborg",
+            "Brigid, Clachan's Heart"
+          ],
+          "graveyard": [
+            "Brigid, Clachan's Heart",
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Brigid, Clachan's Heart": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "a non-legendary creature dying creates no copy",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Ratadrabik of Urborg",
+            "sick": false
+          },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Ratadrabik of Urborg"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Grizzly Bears",
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "other Zombies have vigilance: an attacking Zombie stays untapped",
+    "players": [ { "battlefield": [ { "name": "Ratadrabik of Urborg", "sick": false }, { "name": "Walking Corpse", "sick": false } ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Walking Corpse", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "tapped": { "Walking Corpse": false }, "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "a non-Zombie attacker is tapped as usual",
+    "players": [ { "battlefield": [ { "name": "Ratadrabik of Urborg", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] }, {} ],
+    "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "tapped": { "Grizzly Bears": true }, "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ward {2}: the opponent has only 1 spare mana, cannot pay, Bolt is countered and Ratadrabik survives",
+    "players": [ { "battlefield": ["Ratadrabik of Urborg"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Ratadrabik of Urborg"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Ratadrabik of Urborg"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ward {2}: the opponent pays with a third Mountain, Bolt resolves and kills Ratadrabik",
+    "players": [ { "battlefield": ["Ratadrabik of Urborg"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Ratadrabik of Urborg"] }, { "resolve": true, "auto": true } ],
+    "expect": { "players": [ { "graveyard": ["Ratadrabik of Urborg"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: the token copy enters untapped even though the legendary creature died tapped",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Ratadrabik of Urborg", "sick": false }, { "name": "Brawn, Amadeus Cho", "sick": false, "tapped": true }] },
+      {}
+    ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Brawn, Amadeus Cho"] }, { "resolve": true }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Ratadrabik of Urborg", "Brawn, Amadeus Cho"] }, {} ], "tapped": { "Brawn, Amadeus Cho": false } }
+  },
+  {
+    "name": "ruling: the token copy's enters-the-battlefield ability triggers (Brawn draws a card)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Ratadrabik of Urborg", "sick": false }, { "name": "Brawn, Amadeus Cho", "sick": false }] },
+      {}
+    ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Brawn, Amadeus Cho"] }, { "resolve": true }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Ratadrabik of Urborg", "Brawn, Amadeus Cho"], "hand_count": 1 }, {} ] }
+  }
+]

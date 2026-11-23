@@ -1,0 +1,72 @@
+[
+  {
+    "name": "you can't cast a second spell in a turn: the second Shock is illegal",
+    "players": [
+      { "hand": ["Lightning Bolt", "Shock"], "battlefield": ["Arcane Laboratory", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [{ "hand": ["Shock"] }, { "life": 17 }] }
+  },
+  {
+    "name": "the opponent can't cast a second spell in a turn: their second Shock is illegal",
+    "players": [
+      { "battlefield": ["Arcane Laboratory"] },
+      { "hand": ["Lightning Bolt", "Shock"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": { "players": [{ "life": 17 }, { "hand": ["Shock"] }] }
+  },
+  {
+    "name": "ruling: Arcane Laboratory counts its own casting, so the next spell that turn is illegal",
+    "players": [
+      { "hand": ["Arcane Laboratory", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Arcane Laboratory" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [{ "hand": ["Lightning Bolt"], "battlefield_has": ["Arcane Laboratory"] }, { "life": 20 }] }
+  },
+  {
+    "name": "ruling: a countered spell still counts as the one spell cast (countered Bolt, then Shock is illegal)",
+    "players": [
+      { "hand": ["Lightning Bolt", "Shock"], "battlefield": ["Arcane Laboratory", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [{ "hand": ["Shock"], "graveyard_has": ["Lightning Bolt"] }, { "life": 20, "graveyard_has": ["Counterspell"] }] }
+  },
+  {
+    "name": "ruling: when Arcane Laboratory leaves the battlefield the restriction ends (Disenchant it, then Bolt)",
+    "players": [
+      { "hand": ["Disenchant", "Lightning Bolt"], "battlefield": ["Arcane Laboratory", "Plains", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Disenchant", "targets": ["Arcane Laboratory"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "hand": [], "battlefield_lacks": ["Arcane Laboratory"], "graveyard_has": ["Disenchant", "Lightning Bolt"] }, { "life": 17 }] }
+  }
+]

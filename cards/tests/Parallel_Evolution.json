@@ -1,0 +1,98 @@
+[
+  {
+    "name": "each controller gets a copy of their own creature tokens",
+    "players": [
+      { "hand": ["Parallel Evolution"], "battlefield": ["Forest", "Forest", "Forest", "Plains", "Plains", "Angel 3-3 Flying"] },
+      { "battlefield": ["Robot Hero 1-1 Flying"] }
+    ],
+    "steps": [
+      { "cast": "Parallel Evolution" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Angel 3-3 Flying"], "battlefield_lacks": ["Robot Hero 1-1 Flying"] },
+        { "battlefield_has": ["Robot Hero 1-1 Flying"], "battlefield_lacks": ["Angel 3-3 Flying"] }
+      ]
+    }
+  },
+  {
+    "name": "no creature tokens on the battlefield means no copies",
+    "players": [
+      { "hand": ["Parallel Evolution"], "battlefield": ["Forest", "Forest", "Forest", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Parallel Evolution" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Angel 3-3 Flying"], "graveyard_has": ["Parallel Evolution"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "flashback for its flashback cost, then it is exiled",
+    "players": [
+      { "graveyard": ["Parallel Evolution"], "battlefield": ["Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains", "Angel 3-3 Flying"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Parallel Evolution", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Parallel Evolution"], "battlefield_has": ["Angel 3-3 Flying"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a flashback card that hits the graveyard on your turn can be flashed back right away",
+    "players": [
+      { "hand": ["Parallel Evolution"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Parallel Evolution" },
+      { "resolve": true },
+      { "cast": "Parallel Evolution", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Parallel Evolution"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a flashback spell that is countered is still exiled",
+    "players": [
+      { "graveyard": ["Parallel Evolution"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Parallel Evolution", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Parallel Evolution" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Parallel Evolution"] }, { "hand_count": 0 } ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing, so it is illegal in the opponent's turn",
+    "players": [
+      { "graveyard": ["Parallel Evolution"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Parallel Evolution", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Parallel Evolution"] }, {} ]
+    }
+  }
+]

@@ -1,0 +1,88 @@
+[
+  {
+    "name": "creatures target player controls become 1/1",
+    "players": [
+      { "hand": ["Mass Diminish"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Mass Diminish", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Mass Diminish"] }, {} ], "pt": { "Grizzly Bears": [1, 1] } }
+  },
+  {
+    "name": "flashback from the graveyard is exiled afterwards",
+    "players": [
+      { "graveyard": ["Mass Diminish"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Mass Diminish", "alt": 0, "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Mass Diminish"] }, {} ], "pt": { "Grizzly Bears": [1, 1] } }
+  },
+  {
+    "name": "ruling: a later +4/+4 pump still applies on top of the 1/1 base",
+    "players": [
+      { "hand": ["Mass Diminish", "Titanic Growth"], "battlefield": ["Island", "Island", "Forest", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Mass Diminish", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Titanic Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Mass Diminish", "Titanic Growth"] }, {} ], "pt": { "Grizzly Bears": [5, 5] } }
+  },
+  {
+    "name": "ruling: Mass Diminish overrides an earlier base-setting effect (Lignify 0/4 becomes 1/1)",
+    "players": [
+      { "hand": ["Lignify", "Mass Diminish"], "battlefield": ["Forest", "Forest", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lignify", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Mass Diminish", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Mass Diminish"] }, {} ], "pt": { "Grizzly Bears": [1, 1] } }
+  },
+  {
+    "name": "ruling: a base-setting effect applied after Mass Diminish overwrites it (Lignify 0/4)",
+    "players": [
+      { "hand": ["Lignify", "Mass Diminish"], "battlefield": ["Forest", "Forest", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Mass Diminish", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lignify", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Mass Diminish"] }, {} ], "pt": { "Grizzly Bears": [0, 4] } }
+  },
+  {
+    "name": "ruling: nonlethal damage becomes lethal once base toughness is 1 (Shocked Hill Giant dies)",
+    "players": [
+      { "hand": ["Shock", "Mass Diminish"], "battlefield": ["Mountain", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Shock", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Mass Diminish", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Mass Diminish", "Shock"] }, { "graveyard": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: flashback is sorcery-speed, not castable during combat",
+    "players": [
+      { "graveyard": ["Mass Diminish"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Mass Diminish", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Mass Diminish"] }, {} ], "pt": { "Grizzly Bears": [2, 2] } }
+  }
+]

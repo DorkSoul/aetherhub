@@ -1,0 +1,168 @@
+[
+ {
+  "name": "attack: cast both exiled spells; both are on the stack before either resolves",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest", "Lightning Bolt"] },
+   { "library": ["Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes", "yes", "p1" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "attack: decline both, the cards stay exiled",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest", "Lightning Bolt"] },
+   { "library": ["Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "no", "no" ] }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Lightning Bolt"] },
+    { "exile": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "attack: cast only the opponent's card; a land is exiled but can't be cast",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest", "Forest"] },
+   { "library": ["Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"], "exile": ["Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a free-cast X spell has X = 0 (Exsanguinate drains nothing)",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest"] },
+   { "library": ["Forest", "Exsanguinate"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20 },
+    { "life": 20, "graveyard": ["Exsanguinate"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card not cast stays exiled and is not castable after a later attack",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest", "Forest"] },
+   { "library": ["Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "no" ] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "exile": ["Grizzly Bears", "Forest"], "battlefield_lacks": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature cast from the attack trigger can't attack in that combat, even with haste",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest"] },
+   { "library": ["Forest", "Goblin Guide"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes" ] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 14 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell cast from the attack trigger can target a later spell cast from it",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest", "Lightning Bolt"] },
+   { "library": ["Forest", "Counterspell"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes", "yes", "p1" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "life": 20, "graveyard": ["Counterspell"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a sorcery cast from the attack trigger is cast in combat (timing ignored)",
+  "players": [
+   { "battlefield": ["Etali, Primal Storm"], "library": ["Forest"] },
+   { "library": ["Forest", "Mind Rot"], "hand": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Etali, Primal Storm", "at": "p1" } ] },
+   { "resolve": true, "answers": [ "yes", ["Grizzly Bears", "Hill Giant"] ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "graveyard_has": ["Mind Rot", "Grizzly Bears", "Hill Giant"] }
+   ]
+  }
+ }
+]

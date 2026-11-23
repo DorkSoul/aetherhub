@@ -1,0 +1,175 @@
+[
+ {
+  "name": "cast Roaring Furnace with three cards in hand: door 1 deals 3 to the opponent's creature",
+  "players": [
+   {
+    "hand": ["Roaring Furnace // Steaming Sauna", "Plains", "Plains", "Plains"],
+    "battlefield": ["Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {"cast": "Roaring Furnace // Steaming Sauna"},
+   {"resolve": true},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {},
+    {"graveyard": ["Grizzly Bears"]}
+   ]
+  }
+ },
+ {
+  "name": "boundary: with only one card left in hand, the 2-toughness creature survives 1 damage",
+  "players": [
+   {
+    "hand": ["Roaring Furnace // Steaming Sauna", "Plains"],
+    "battlefield": ["Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   {"cast": "Roaring Furnace // Steaming Sauna"},
+   {"resolve": true},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {},
+    {"battlefield_has": ["Grizzly Bears"]}
+   ]
+  }
+ },
+ {
+  "name": "unlock Steaming Sauna (door 2): no maximum hand size, and draw a card at the beginning of your end step",
+  "players": [
+   {
+    "hand": [],
+    "battlefield": ["Roaring Furnace // Steaming Sauna", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"unlock": "Roaring Furnace // Steaming Sauna", "door": 2},
+   {"advance_to": "End"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Forest"]},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "boundary: passing the opponent's end step adds no second draw (one draw at your end step)",
+  "players": [
+   {
+    "hand": [],
+    "battlefield": ["Roaring Furnace // Steaming Sauna", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"unlock": "Roaring Furnace // Steaming Sauna", "door": 2},
+   {"advance_to": "Main2"},
+   {"advance_to": "Main1"},
+   {"advance_to": "End"}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Forest"], "hand_count": 1},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Steaming Sauna has no maximum hand size: 9 cards in hand after the end-step draw are kept at cleanup",
+  "players": [
+   {
+    "hand": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"],
+    "battlefield": ["Roaring Furnace // Steaming Sauna", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"unlock": "Roaring Furnace // Steaming Sauna", "door": 2},
+   {"advance_to": "End"},
+   {"resolve": true},
+   {"advance_to": "Upkeep", "auto": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand_count": 9},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Null Profusion (max hand 2) entered before the Sauna unlock: the Sauna's no-maximum applies, 9 cards kept",
+  "players": [
+   {
+    "hand": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"],
+    "battlefield": ["Null Profusion", "Roaring Furnace // Steaming Sauna", "Island", "Island", "Island", "Island", "Island"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"unlock": "Roaring Furnace // Steaming Sauna", "door": 2},
+   {"advance_to": "End"},
+   {"resolve": true},
+   {"advance_to": "Upkeep", "auto": true}
+  ],
+  "expect": {"players": [{"hand_count": 9}, {}]}
+ },
+ {
+  "name": "ruling: Null Profusion cast after the Sauna unlock is the later effect: hand is cut to two at cleanup",
+  "players": [
+   {
+    "hand": ["Null Profusion", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"],
+    "battlefield": ["Roaring Furnace // Steaming Sauna", "Island", "Island", "Island", "Island", "Island", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"unlock": "Roaring Furnace // Steaming Sauna", "door": 2},
+   {"cast": "Null Profusion"},
+   {"resolve": true},
+   {"advance_to": "End"},
+   {"resolve": true},
+   {"advance_to": "Upkeep", "auto": true}
+  ],
+  "expect": {"players": [{"hand_count": 2}, {}]}
+ },
+ {
+  "name": "ruling: door 1 unlocks with no opposing creature to target: the Room enters and its trigger never goes on the stack",
+  "players": [
+   {
+    "hand": ["Roaring Furnace // Steaming Sauna", "Plains", "Plains", "Plains"],
+    "battlefield": ["Mountain", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Roaring Furnace // Steaming Sauna"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"hand_count": 3, "battlefield_has": ["Roaring Furnace // Steaming Sauna"]},
+    {"life": 20}
+   ],
+   "stack_empty": true
+  }
+ }
+]

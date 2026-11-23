@@ -1,0 +1,121 @@
+[
+  {
+    "name": "when Volo enters, create Volo's Journal",
+    "players": [
+      { "hand": ["Volo, Itinerant Scholar"], "battlefield": ["Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Volo, Itinerant Scholar" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Volo, Itinerant Scholar", "Volo's Journal"] }, {} ] }
+  },
+  {
+    "name": "noting types: Bear, then one of Elf or Druid; Volo draws a card per noted type",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Llanowar Elves"],
+        "battlefield": ["Volo, Itinerant Scholar", "Volo's Journal", "Forest", "Forest", "Forest", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Llanowar Elves" },
+      { "resolve": true, "answers": ["Elf"] },
+      { "activate": "Volo, Itinerant Scholar", "targets": ["Volo's Journal"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2 }, {} ] }
+  },
+  {
+    "name": "a creature type that was already noted isn't noted again",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Grizzly Bears"],
+        "battlefield": ["Volo, Itinerant Scholar", "Volo's Journal", "Forest", "Forest", "Forest", "Forest", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "activate": "Volo, Itinerant Scholar", "targets": ["Volo's Journal"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1 }, {} ] }
+  },
+  {
+    "name": "when the spell's only unnoted type is left it is noted without a question",
+    "players": [
+      {
+        "hand": ["Llanowar Elves", "Elvish Mystic", "Elvish Mystic"],
+        "battlefield": ["Volo, Itinerant Scholar", "Volo's Journal", "Forest", "Forest", "Forest", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Llanowar Elves" },
+      { "resolve": true, "answers": ["Druid"] },
+      { "cast": "Elvish Mystic" },
+      { "resolve": true },
+      { "activate": "Volo, Itinerant Scholar", "targets": ["Volo's Journal"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 3 }, {} ] }
+  },
+  {
+    "name": "noncreature spells note nothing",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Volo, Itinerant Scholar", "Volo's Journal", "Mountain", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Volo, Itinerant Scholar", "targets": ["Volo's Journal"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 0 }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: casting one commander doesn't tax the other the first time (tax tracked per commander)",
+    "commander": true,
+    "players": [
+      { "command": ["Criminal Past", "Volo, Itinerant Scholar"], "battlefield": ["Swamp", "Swamp", "Swamp", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Criminal Past" },
+      { "resolve": true },
+      { "cast": "Volo, Itinerant Scholar" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Criminal Past", "Volo, Itinerant Scholar"] }, {} ] }
+  },
+  {
+    "name": "ruling: a Background grants its ability to every commander creature you own (two commanders)",
+    "commander": true,
+    "players": [
+      { "command": ["Volo, Itinerant Scholar", "Maralen of the Mornsong"], "battlefield": ["Criminal Past", "Swamp", "Swamp", "Swamp", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Maralen of the Mornsong" },
+      { "resolve": true },
+      { "cast": "Volo, Itinerant Scholar" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Volo, Itinerant Scholar", "Maralen of the Mornsong", "Criminal Past"] }, {} ],
+      "keywords": { "Volo, Itinerant Scholar": ["Menace"], "Maralen of the Mornsong": ["Menace"] }
+    }
+  }
+]

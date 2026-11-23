@@ -1,0 +1,147 @@
+[
+ {"name": "the Octopus's own combat damage draws a card",
+  "players": [
+    {"battlefield": [{"name": "Acquisition Octopus", "sick": false}]},
+    {}
+  ],
+  "steps": [
+    {"attack": [{"card": "Acquisition Octopus", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2"}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 1},
+      {"life": 18}
+    ]
+  }},
+ {"name": "reconfigured onto a creature: equipped creature's combat damage draws a card and the Octopus is not a creature",
+  "players": [
+    {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2"}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 1, "battlefield_has": ["Acquisition Octopus"]},
+      {"life": 18}
+    ],
+    "attached": {"Acquisition Octopus": "Grizzly Bears"}
+  }},
+ {"name": "reconfigure again unattaches it, and the Octopus itself attacks and draws",
+  "players": [
+    {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island", "Island", "Island"]},
+    {}
+  ],
+  "steps": [
+    {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"activate": "Acquisition Octopus", "ability": 1},
+    {"resolve": true},
+    {"attack": [{"card": "Acquisition Octopus", "at": "p1"}]},
+    {"block": []},
+    {"advance_to": "Main2"}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 1},
+      {"life": 18}
+    ],
+    "attached": {}
+  }},
+ {"name": "a blocked equipped creature deals no combat damage to a player: no card",
+  "players": [
+    {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island"]},
+    {"battlefield": ["Hill Giant"]}
+  ],
+  "steps": [
+    {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+    {"block": [{"blocker": "Hill Giant", "attacker": "Grizzly Bears"}]},
+    {"advance_to": "Main2"}
+  ],
+  "expect": {
+    "players": [
+      {"hand_count": 0},
+      {"life": 20}
+    ]
+  }},
+ {"name": "reconfigured Octopus is not a creature: while attached it cannot block, so Hill Giant's 3 damage gets through",
+  "players": [
+    {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island"]},
+    {"battlefield": [{"name": "Hill Giant", "sick": false}]}
+  ],
+  "steps": [
+    {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]},
+    {"resolve": true},
+    {"advance_to": "Main2"},
+    {"advance_to": "Main1", "player": 1},
+    {"attack": [{"card": "Hill Giant", "at": "p0"}], "player": 1},
+    {"block": [{"blocker": "Acquisition Octopus", "attacker": "Hill Giant"}], "player": 0, "illegal": true},
+    {"advance_to": "Main2", "player": 1}
+  ],
+  "expect": {
+    "players": [
+      {"life": 17},
+      {}
+    ],
+    "attached": {"Acquisition Octopus": "Grizzly Bears"}
+  }},
+ {"name": "control: unattached Octopus is a creature and blocks Hill Giant",
+  "players": [
+    {"battlefield": [{"name": "Acquisition Octopus", "sick": false}]},
+    {"battlefield": [{"name": "Hill Giant", "sick": false}]}
+  ],
+  "steps": [
+    {"advance_to": "Main2"},
+    {"advance_to": "Main1", "player": 1},
+    {"attack": [{"card": "Hill Giant", "at": "p0"}], "player": 1},
+    {"block": [{"blocker": "Acquisition Octopus", "attacker": "Hill Giant"}], "player": 0},
+    {"advance_to": "Main2", "player": 1}
+  ],
+  "expect": {
+    "players": [
+      {"life": 20},
+      {}
+    ]
+  }},
+ {"name": "ruling: attached to a creature, the Octopus loses its Octopus subtype and stops being a creature",
+  "players": [ {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island"]}, {} ],
+  "steps": [ {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true} ],
+  "expect": {"attached": {"Acquisition Octopus": "Grizzly Bears"}, "subtypes": {"Acquisition Octopus": ["Equipment"]}, "not_subtypes": {"Acquisition Octopus": ["Octopus"]}, "players": [ {"battlefield_has": ["Acquisition Octopus", "Grizzly Bears"]}, {} ]}},
+ {"name": "ruling: the unattach ability is not available while the Octopus is unattached",
+  "players": [ {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, "Island", "Island"]}, {} ],
+  "steps": [ {"activate": "Acquisition Octopus", "ability": 1, "illegal": true} ],
+  "expect": {"players": [ {"battlefield_has": ["Acquisition Octopus"]}, {} ]}},
+ {"name": "ruling: another card (Brass Squire) can attach the Equipment creature to a creature",
+  "players": [ {"battlefield": [{"name": "Brass Squire", "sick": false}, {"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}]}, {} ],
+  "steps": [ {"activate": "Brass Squire", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true} ],
+  "expect": {"attached": {"Acquisition Octopus": "Grizzly Bears"}, "not_subtypes": {"Acquisition Octopus": ["Octopus"]}, "players": [ {"battlefield_has": ["Brass Squire", "Acquisition Octopus", "Grizzly Bears"]}, {} ]}},
+ {"name": "ruling: a tapped Equipment can be reconfigured onto a creature, and attaching does not untap it",
+  "players": [ {"battlefield": [{"name": "Acquisition Octopus", "sick": false, "tapped": true}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island"]}, {} ],
+  "steps": [ {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true} ],
+  "expect": {"attached": {"Acquisition Octopus": "Grizzly Bears"}, "tapped": {"Acquisition Octopus": true}}},
+ {"name": "ruling: an Aura on the Octopus while it was a creature is put into the graveyard when it becomes an Equipment",
+  "players": [ {"hand": ["Pacifism"], "battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Plains", "Plains", "Island", "Island"]}, {} ],
+  "steps": [ {"cast": "Pacifism", "targets": ["Acquisition Octopus"]}, {"resolve": true}, {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true} ],
+  "expect": {"players": [ {"graveyard": ["Pacifism"], "battlefield_has": ["Acquisition Octopus"]}, {} ], "attached": {"Acquisition Octopus": "Grizzly Bears"}}},
+ {"name": "ruling: the equipped creature attacking does not tap the Equipment, and unattaching after combat leaves it untapped",
+  "players": [ {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island", "Island", "Island"]}, {} ],
+  "steps": [ {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true}, {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}, {"activate": "Acquisition Octopus", "ability": 1}, {"resolve": true} ],
+  "expect": {"tapped": {"Grizzly Bears": true, "Acquisition Octopus": false}, "attached": {}, "players": [ {"hand_count": 1}, {"life": 18} ]}},
+ {"name": "ruling: an Equipment creature can never be attached to itself: with no other creature its reconfigure is unavailable",
+  "players": [ {"battlefield": [{"name": "Acquisition Octopus", "sick": false}, "Island", "Island"]}, {} ],
+  "steps": [ {"activate": "Acquisition Octopus", "ability": 0, "illegal": true} ],
+  "expect": {"pt": {"Acquisition Octopus": [2, 2]}, "players": [ {"battlefield_has": ["Acquisition Octopus"]}, {} ]}},
+ {"name": "ruling: a reconfigured Equipment that becomes a creature (March of the Machines) becomes unattached",
+  "players": [ {"battlefield": ["March of the Machines", {"name": "Acquisition Octopus", "sick": false}, {"name": "Grizzly Bears", "sick": false}, "Island", "Island"]}, {} ],
+  "steps": [ {"activate": "Acquisition Octopus", "ability": 0, "targets": ["Grizzly Bears"]}, {"resolve": true} ],
+  "expect": {"attached": {}, "pt": {"Acquisition Octopus": [2, 2]}, "players": [ {"battlefield_has": ["March of the Machines", "Acquisition Octopus"]}, {} ]}}
+]

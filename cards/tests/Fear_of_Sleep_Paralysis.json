@@ -1,0 +1,376 @@
+[
+  {
+    "name": "entering taps up to one target creature and puts a stun counter on it",
+    "players": [
+      {
+        "hand": [
+          "Fear of Sleep Paralysis"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Fear of Sleep Paralysis"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "another enchantment entering triggers it too",
+    "players": [
+      {
+        "hand": [
+          "Pacifism"
+        ],
+        "battlefield": [
+          "Fear of Sleep Paralysis",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Pacifism",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "opponents' stun counters are not removed: the creature stays tapped through its untap step",
+    "players": [
+      {
+        "battlefield": [
+          "Fear of Sleep Paralysis"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "tapped": true,
+            "counters": {
+              "stun": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "turn": 2,
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "without an opposing Fear the stun counter is removed instead of untapping",
+    "players": [
+      {},
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "tapped": true,
+            "counters": {
+              "stun": 1
+            }
+          },
+          "Fear of Sleep Paralysis"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "turn": 2,
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "a creature with no stun counter untaps normally",
+    "players": [
+      {
+        "battlefield": [
+          "Fear of Sleep Paralysis"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "tapped": true
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "turn": 2,
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "fully unlocking a Room taps and stuns up to one target creature",
+    "players": [
+      {
+        "hand": [
+          "Dazzling Theater // Prop Room"
+        ],
+        "battlefield": [
+          "Fear of Sleep Paralysis",
+          "Plains",
+          "Plains",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Dazzling Theater // Prop Room"
+      },
+      {
+        "resolve": true,
+        "targets": []
+      },
+      {
+        "unlock": "Dazzling Theater // Prop Room",
+        "door": 2,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "fully unlocking with no target chosen does nothing to the opponent's creature",
+    "players": [
+      {
+        "hand": [
+          "Dazzling Theater // Prop Room"
+        ],
+        "battlefield": [
+          "Fear of Sleep Paralysis",
+          "Plains",
+          "Plains",
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Dazzling Theater // Prop Room"
+      },
+      {
+        "resolve": true,
+        "targets": []
+      },
+      {
+        "unlock": "Dazzling Theater // Prop Room",
+        "door": 2,
+        "targets": []
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Grizzly Bears": false
+      },
+      "counters": {
+        "Grizzly Bears": {}
+      }
+    }
+  },
+  {
+    "name": "ruling control: the same tapped {Q} creature without a stun counter can pay the untap cost",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Patrol Signaler",
+            "tapped": true,
+            "sick": false
+          },
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Fear of Sleep Paralysis"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Patrol Signaler",
+        "ability": 0
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "tapped": {
+        "Patrol Signaler": false
+      }
+    }
+  },
+  {
+    "name": "ruling: an opponent cannot pay a {Q} cost with a stunned tapped permanent",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Patrol Signaler",
+            "tapped": true,
+            "sick": false,
+            "counters": {
+              "stun": 1
+            }
+          },
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Fear of Sleep Paralysis"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Patrol Signaler",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "tapped": {
+        "Patrol Signaler": true
+      },
+      "counters": {
+        "Patrol Signaler": {
+          "stun": 1
+        }
+      }
+    }
+  }
+]

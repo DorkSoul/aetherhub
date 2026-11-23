@@ -1,0 +1,114 @@
+[
+  {
+    "name": "full party at beginning of combat: the chosen opposing creature can't block this turn cycle",
+    "players": [
+      { "battlefield": ["Linvala, Shield of Sea Gate", "Drana's Silencer", "Ascendant Dustspeaker", "Abzan Guide"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Abzan Guide", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Abzan Guide" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_has": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "party of only three (no Warrior): no trigger, the opposing creature can still block",
+    "players": [
+      { "battlefield": ["Linvala, Shield of Sea Gate", "Drana's Silencer", "Ascendant Dustspeaker"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Drana's Silencer", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Drana's Silencer" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_lacks": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "sacrifice Linvala: choose hexproof or indestructible (mode 0 resolves, Linvala is sacrificed)",
+    "players": [
+      { "battlefield": ["Linvala, Shield of Sea Gate", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Linvala, Shield of Sea Gate", "ability": 0 },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Linvala, Shield of Sea Gate"] }, {}]
+    }
+  },
+  {
+    "name": "sacrifice Linvala: indestructible mode (mode 1) also sacrifices her",
+    "players": [
+      { "battlefield": ["Linvala, Shield of Sea Gate", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Linvala, Shield of Sea Gate", "ability": 0 },
+      { "resolve": true, "answers": [[1]] }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Linvala, Shield of Sea Gate"], "battlefield_has": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: the chosen creature stays unable to block after Linvala is sacrificed",
+    "players": [
+      { "battlefield": ["Linvala, Shield of Sea Gate", "Drana's Silencer", "Ascendant Dustspeaker", "Abzan Guide"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Linvala, Shield of Sea Gate", "ability": 0 },
+      { "resolve": true, "answers": [[0]] },
+      { "attack": [{ "card": "Abzan Guide", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Abzan Guide" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Linvala, Shield of Sea Gate"] }, { "life": 16, "battlefield_has": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: the chosen permanent's activated abilities can't be activated, even by its controller",
+    "players": [
+      { "battlefield": ["Linvala, Shield of Sea Gate", "Drana's Silencer", "Ascendant Dustspeaker", "Abzan Guide"] },
+      { "battlefield": ["Skyserpent Seeker", "Forest", "Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Skyserpent Seeker"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Skyserpent Seeker", "ability": 0, "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "battlefield_has": ["Skyserpent Seeker"] }],
+      "pt": { "Skyserpent Seeker": [1, 1] }
+    }
+  },
+  {
+    "name": "control for the ruling above: without Linvala the opponent can activate the Seeker's exhaust",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "battlefield": ["Skyserpent Seeker", "Forest", "Forest", "Forest", "Forest"], "library": ["Plains", "Swamp"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "activate": "Skyserpent Seeker", "ability": 0, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Skyserpent Seeker": [2, 2] }
+    }
+  }
+]

@@ -1,0 +1,133 @@
+[
+  {
+    "name": "stats",
+    "players": [{ "battlefield": ["Bohn, Beguiling Balladeer"] }, {}],
+    "steps": [],
+    "expect": { "pt": { "Bohn, Beguiling Balladeer": [3, 3] } }
+  },
+  {
+    "name": "a nonland card in hand can be foretold for 2 and cast on a later turn for its mana cost reduced by 2",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hill Giant", "ability": 32768 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Hill Giant" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain", "Hill Giant"] },
+        {}
+      ],
+      "tapped": { "Mountain": true },
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "the foretold card cannot be cast on the same turn",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Hill Giant", "ability": 32768 },
+      { "resolve": true },
+      { "cast": "Hill Giant", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Hill Giant"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain", "Mountain"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "foretelling needs {2}",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain"] },
+      {}
+    ],
+    "steps": [{ "activate": "Hill Giant", "ability": 32768, "illegal": true }],
+    "expect": { "players": [{ "hand": ["Hill Giant"] }, {}] }
+  },
+  {
+    "name": "a land card has no foretell",
+    "players": [
+      { "hand": ["Mountain"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [{ "activate": "Mountain", "ability": 32768, "illegal": true }],
+    "expect": { "players": [{ "hand": ["Mountain"] }, {}] }
+  },
+  {
+    "name": "without Bohn a card has no foretell",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [{ "activate": "Hill Giant", "ability": 32768, "illegal": true }],
+    "expect": { "players": [{ "hand": ["Hill Giant"] }, {}] }
+  },
+  {
+    "name": "a card that already has foretell keeps its own foretell cost",
+    "players": [
+      { "hand": ["Demon Bolt"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Demon Bolt", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "cast": "Demon Bolt", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Demon Bolt"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "the second spell each turn goads a creature an opponent controls",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 18 }, { "life": 14 }]
+    }
+  },
+  {
+    "name": "the first spell each turn does not goad",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Bohn, Beguiling Balladeer", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, { "life": 17 }]
+    }
+  }
+]

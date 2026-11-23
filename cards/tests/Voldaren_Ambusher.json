@@ -1,0 +1,109 @@
+[
+ {
+  "name": "opponent lost life this turn: deals X (Vampires you control) to up to one target creature",
+  "players": [
+   { "hand": ["Lightning Bolt", "Voldaren Ambusher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Sengir Vampire"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Voldaren Ambusher" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "no opponent life lost this turn: the enters trigger does nothing",
+  "players": [
+   { "hand": ["Voldaren Ambusher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Sengir Vampire"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Voldaren Ambusher" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "graveyard": [] }
+   ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "X counts only Vampires: with Ambusher the only Vampire, X is 1 and a 2/2 target survives",
+  "players": [
+   { "hand": ["Lightning Bolt", "Voldaren Ambusher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Voldaren Ambusher" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Hill Giant"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ],
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: Ambusher killed in response leaves no Vampire on resolution, so X is 0 and nothing is dealt",
+  "players": [
+   { "hand": ["Lightning Bolt", "Voldaren Ambusher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Llanowar Elves"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Voldaren Ambusher" },
+   { "pass": true },
+   { "pass": true, "player": 1, "targets": ["Llanowar Elves"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Voldaren Ambusher"] },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Voldaren Ambusher", "Lightning Bolt"] },
+    { "battlefield_has": ["Llanowar Elves"], "graveyard_has": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an opponent who lost life and gained it back still lost life this turn (life total unchanged)",
+  "players": [
+   { "hand": ["Lightning Bolt", "Voldaren Ambusher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Healing Salve"], "battlefield": ["Plains", "Llanowar Elves"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Healing Salve", "player": 1, "targets": ["p1"], "answers": [0] },
+   { "resolve": true },
+   { "cast": "Voldaren Ambusher" },
+   { "resolve": true, "targets": ["Llanowar Elves"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"] },
+    { "life": 20, "battlefield_lacks": ["Llanowar Elves"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,37 @@
+{
+  "name": "Twenty-Toed Toad",
+  "mana_cost": "{3}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Frog", "Wizard"],
+  "power": 3,
+  "toughness": 3,
+  "abilities": [
+    { "type": "Static", "effect": { "type": "MaxHandSize", "n": 20 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "types": ["Creature"], "controller": "You" }, "batched": true, "one_per_declaration": true },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "Count", "filter": { "types": ["Creature"], "controller": "You", "attacking": true }, "zone": "Battlefield" },
+        "cmp": { "n": 2, "op": "Ge" }
+      },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } },
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "condition": {
+        "type": "AnyOf",
+        "cs": [
+          { "type": "Compare", "a": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } }, "cmp": { "n": 20, "op": "Ge" } },
+          { "type": "Compare", "a": { "type": "HandSize", "who": { "type": "You" } }, "cmp": { "n": 20, "op": "Ge" } }
+        ]
+      },
+      "effects": [ { "type": "WinGame", "who": { "type": "You" } } ]
+    }
+  ],
+  "oracle_text": "Your maximum hand size is twenty.\nWhenever you attack with two or more creatures, put a +1/+1 counter on this creature and draw a card.\nWhenever this creature attacks, you win the game if there are twenty or more counters on it or you have twenty or more cards in hand."
+}

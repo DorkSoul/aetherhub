@@ -1,0 +1,76 @@
+[
+  {
+    "name": "paying {2}{B} twice gives two +1/+1 counters and four decayed Zombie tokens",
+    "players": [
+      { "hand": ["Tainted Adversary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tainted Adversary" },
+      { "resolve": true, "answers": [true, 2] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tainted Adversary", "Zombie 2-2 Decayed"] },
+        {}
+      ],
+      "pt": { "Tainted Adversary": [4, 5] }
+    }
+  },
+  {
+    "name": "paying once gives one counter and two decayed Zombie tokens",
+    "players": [
+      { "hand": ["Tainted Adversary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tainted Adversary" },
+      { "resolve": true, "answers": [true, 1] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tainted Adversary", "Zombie 2-2 Decayed"] },
+        {}
+      ],
+      "pt": { "Tainted Adversary": [3, 4] }
+    }
+  },
+  {
+    "name": "declining to pay leaves a 2/3 with no tokens",
+    "players": [
+      { "hand": ["Tainted Adversary"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tainted Adversary" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Tainted Adversary"], "battlefield_lacks": ["Zombie 2-2 Decayed"] },
+        {}
+      ],
+      "pt": { "Tainted Adversary": [2, 3] }
+    }
+  },
+  {
+    "name": "ruling: a decayed Zombie that attacks deals its damage and is sacrificed at end of combat",
+    "players": [ { "battlefield": [ { "name": "Zombie 2-2 Decayed", "sick": false } ] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Zombie 2-2 Decayed", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Zombie 2-2 Decayed"] }, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: a decayed Zombie cannot block (Grizzly Bears' 2 damage goes through)",
+    "players": [ { "battlefield": [ { "name": "Zombie 2-2 Decayed", "sick": false } ] }, { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] } ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Zombie 2-2 Decayed", "attacker": "Grizzly Bears" } ], "player": 0, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield_has": ["Zombie 2-2 Decayed"] }, {} ] }
+  }
+]

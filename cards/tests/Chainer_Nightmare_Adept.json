@@ -1,0 +1,142 @@
+[
+  {
+    "name": "discards a card to cast a creature card from your graveyard this turn",
+    "players": [
+      { "hand": ["Mountain"], "graveyard": ["Grizzly Bears"], "battlefield": ["Chainer, Nightmare Adept", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chainer, Nightmare Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Mountain"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "can only activate once each turn",
+    "players": [
+      { "hand": ["Mountain", "Swamp"], "graveyard": ["Grizzly Bears"], "battlefield": ["Chainer, Nightmare Adept", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chainer, Nightmare Adept", "answers": ["Mountain"] },
+      { "resolve": true },
+      { "activate": "Chainer, Nightmare Adept", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Mountain", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "creature cast from your graveyard gains haste until your next turn",
+    "players": [
+      { "graveyard": ["Grizzly Bears"], "battlefield": ["Chainer, Nightmare Adept", "Forest", "Forest"], "hand": ["Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chainer, Nightmare Adept" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Haste"] },
+      "players": [
+        {},
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "creature cast from your hand does not gain haste",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Chainer, Nightmare Adept", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the creature to cast is chosen later, not when the ability is activated or resolved",
+    "players": [
+      { "hand": ["Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant"], "battlefield": ["Chainer, Nightmare Adept", "Forest", "Forest", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chainer, Nightmare Adept" },
+      { "resolve": true },
+      { "cast": "Hill Giant" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Hill Giant"], "graveyard": ["Grizzly Bears", "Swamp"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Chainer itself gains haste when it enters without being cast from hand (Ugin -10)",
+    "players": [
+      { "hand": ["Chainer, Nightmare Adept"], "battlefield": [ { "name": "Ugin, the Spirit Dragon", "counters": { "Loyalty": 10 } } ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ugin, the Spirit Dragon", "ability": 2 },
+      { "resolve": true, "answers": [["Chainer, Nightmare Adept"]] }
+    ],
+    "expect": {
+      "keywords": { "Chainer, Nightmare Adept": ["Haste"] },
+      "players": [ { "battlefield_has": ["Chainer, Nightmare Adept"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a creature put onto the battlefield from hand without being cast gains haste (Ugin -10)",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Chainer, Nightmare Adept", { "name": "Ugin, the Spirit Dragon", "counters": { "Loyalty": 10 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ugin, the Spirit Dragon", "ability": 2 },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Haste"] },
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a flash creature can be cast from the graveyard at instant speed (end step)",
+    "players": [
+      { "hand": ["Swamp"], "graveyard": ["Spectral Sailor"], "battlefield": ["Chainer, Nightmare Adept", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chainer, Nightmare Adept" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "cast": "Spectral Sailor" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Spectral Sailor"] }, {} ]
+    }
+  }
+]

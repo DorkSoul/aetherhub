@@ -1,0 +1,213 @@
+[
+ {
+  "name": "blinks your creature and it returns with a +1/+1 counter",
+  "players": [
+   {
+    "hand": [
+     "Daydream"
+    ],
+    "battlefield": [
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Daydream",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Daydream"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "PlusOnePlusOne": 1
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "flashback from the graveyard exiles it afterwards",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ],
+    "graveyard": [
+     "Daydream"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Daydream",
+    "alt": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Daydream"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "counters": {
+    "Grizzly Bears": {
+     "PlusOnePlusOne": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: flashback is a sorcery-speed permission, so it cannot be cast on an opponent's turn",
+  "players": [
+   {
+    "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"],
+    "graveyard": ["Daydream"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "pass": true, "player": 1 },
+   { "cast": "Daydream", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Daydream"], "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ],
+   "counters": {},
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: counters on the exiled creature cease to exist; the returned creature has only the new counter",
+  "players": [
+   {
+    "hand": ["Daydream"],
+    "battlefield": ["Plains", { "name": "Grizzly Bears", "counters": { "+1/+1": 2 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Daydream", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Daydream"], "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ],
+   "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: an Aura attached to the exiled creature goes to its owner's graveyard",
+  "players": [
+   {
+    "hand": ["Daydream", "Pacifism"],
+    "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Daydream", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Pacifism", "Daydream"], "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: Equipment becomes unattached when the creature is exiled and stays on the battlefield",
+  "players": [
+   {
+    "hand": ["Daydream"],
+    "battlefield": ["Plains", "Plains", "Grizzly Bears", "Bonesplitter"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Daydream", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Daydream"], "battlefield_has": ["Grizzly Bears", "Bonesplitter"] },
+    {}
+   ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: a flashback spell is exiled even when it fizzles on the stack",
+  "players": [
+   {
+    "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"],
+    "graveyard": ["Daydream"]
+   },
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Daydream", "alt": 0, "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Daydream"], "graveyard_has": ["Grizzly Bears"] },
+    { "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ }
+]

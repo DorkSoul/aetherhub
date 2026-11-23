@@ -1,0 +1,219 @@
+[
+ {
+  "name": "enchanted creature can't attack, the other attacker still deals 3",
+  "players": [ { "hand": ["Heliod's Punishment"], "battlefield": ["Plains", "Plains", "Grizzly Bears", "Hill Giant"] }, {} ],
+  "steps": [
+    { "cast": "Heliod's Punishment", "targets": ["Grizzly Bears"] },
+    { "resolve": true },
+    { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+    { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 17 } ] }
+ },
+ {
+  "name": "enchanted creature can't block: the other blocker is dropped and the attacker connects",
+  "players": [ { "hand": ["Heliod's Punishment"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] }, { "battlefield": ["Hill Giant", "Craw Wurm"] } ],
+  "steps": [
+    { "cast": "Heliod's Punishment", "targets": ["Hill Giant"] },
+    { "resolve": true },
+    { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+    { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 },
+    { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18 } ] }
+ },
+ {
+  "name": "enchanted creature loses its abilities: Hexdrinker at level 3 is a 2/1",
+  "players": [ { "hand": ["Heliod's Punishment"], "battlefield": ["Plains", "Plains", { "name": "Hexdrinker", "counters": { "Level": 3 } }] }, {} ],
+  "steps": [
+    { "cast": "Heliod's Punishment", "targets": ["Hexdrinker"] },
+    { "resolve": true }
+  ],
+  "expect": { "pt": { "Hexdrinker": [2, 1] } }
+ },
+ {
+  "name": "enchanted creature can't attack",
+  "players": [
+   {
+    "hand": [
+     "Heliod's Punishment"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Heliod's Punishment",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Heliod's Punishment": "Grizzly Bears"
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Heliod's Punishment"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "enchanted creature can't block",
+  "players": [
+   {
+    "hand": [
+     "Heliod's Punishment"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Heliod's Punishment",
+    "targets": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Grizzly Bears"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "attached": {
+    "Heliod's Punishment": "Hill Giant"
+   }
+  }
+ },
+ {
+  "name": "granted tap ability removes a task counter and keeps the Aura",
+  "players": [
+   {
+    "hand": [
+     "Heliod's Punishment"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Heliod's Punishment",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Grizzly Bears",
+    "ability": 32768
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Heliod's Punishment"
+     ]
+    },
+    {}
+   ],
+   "attached": {
+    "Heliod's Punishment": "Grizzly Bears"
+   },
+   "counters": {
+    "Heliod's Punishment": {
+     "task": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "ruling: a keyword gained after attaching is kept (Wings of Hubris gives the enchanted creature flying)",
+  "players": [
+   { "hand": ["Heliod's Punishment"], "battlefield": ["Plains", "Plains", "Island", "Wings of Hubris", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Heliod's Punishment", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Wings of Hubris", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "attached": { "Heliod's Punishment": "Grizzly Bears" },
+   "keywords": { "Grizzly Bears": ["Flying"] }
+  }
+ },
+ {
+  "name": "ruling: the enchanted creature's characteristic-defining */ is 0 (Tarmogoyf is 0/1 with a card type in a graveyard)",
+  "players": [
+   { "hand": ["Heliod's Punishment"], "battlefield": ["Plains", "Plains", "Tarmogoyf"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Heliod's Punishment", "targets": ["Tarmogoyf"] },
+   { "resolve": true }
+  ],
+  "expect": { "pt": { "Tarmogoyf": [0, 1] } }
+ }
+]

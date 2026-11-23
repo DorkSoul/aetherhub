@@ -1,0 +1,23 @@
+[
+  { "name": "enchants a tapped creature",
+    "players": [ { "hand": ["Entangling Vines"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "cast": "Entangling Vines", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Entangling Vines"] }, { "battlefield_has": ["Grizzly Bears"] } ],
+                "attached": { "Entangling Vines": "Grizzly Bears" } } },
+  { "name": "cannot target an untapped creature",
+    "players": [ { "hand": ["Entangling Vines"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Entangling Vines", "targets": ["Grizzly Bears"], "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Entangling Vines"] }, { "battlefield_has": ["Grizzly Bears"] } ] } },
+  { "name": "the enchanted tapped creature stays tapped through its controller's untap step",
+    "players": [ { "hand": ["Entangling Vines"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+    "steps": [ { "cast": "Entangling Vines", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "Upkeep" } ],
+    "expect": { "turn": 2, "tapped": { "Grizzly Bears": true } } },
+  { "name": "ruling: if the enchanted creature is untapped by an instant, Entangling Vines goes to the graveyard as a state-based action",
+    "players": [ { "hand": ["Entangling Vines"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] }, { "hand": ["Benefactor's Draught"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "tapped": true }] } ],
+    "steps": [ { "cast": "Entangling Vines", "targets": ["Grizzly Bears"] }, { "resolve": true }, { "pass": true }, { "cast": "Benefactor's Draught", "player": 1 }, { "pass": true, "player": 1 }, { "pass": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Entangling Vines"] }, { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Benefactor's Draught"] } ], "tapped": { "Grizzly Bears": false } } },
+  { "name": "ruling: if the creature untaps in response to Entangling Vines, the Aura is countered on resolution and goes to the graveyard",
+    "players": [ { "hand": ["Entangling Vines"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] }, { "hand": ["Benefactor's Draught"], "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "tapped": true }] } ],
+    "steps": [ { "cast": "Entangling Vines", "targets": ["Grizzly Bears"] }, { "pass": true }, { "cast": "Benefactor's Draught", "player": 1 }, { "pass": true, "player": 1 }, { "pass": true }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Entangling Vines"] }, { "battlefield_has": ["Grizzly Bears"] } ], "tapped": { "Grizzly Bears": false } } }
+]

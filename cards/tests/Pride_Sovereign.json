@@ -1,0 +1,88 @@
+[
+  {
+    "name": "gets +1/+1 for each other Cat I control",
+    "players": [
+      { "battlefield": ["Pride Sovereign", "Cat 2-2", "Cat 1-1 White Lifelink"] },
+      {}
+    ],
+    "steps": [
+      { "pass": true }
+    ],
+    "expect": {
+      "pt": { "Pride Sovereign": [4, 4] }
+    }
+  },
+  {
+    "name": "exert makes two lifelink Cats and the Sovereign stays tapped",
+    "players": [
+      { "battlefield": ["Pride Sovereign", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Pride Sovereign" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Pride Sovereign", "Cat 1-1 White Lifelink", "Cat 1-1 White Lifelink"] },
+        {}
+      ],
+      "tapped": { "Pride Sovereign": true }
+    }
+  },
+  {
+    "name": "cannot be activated again while tapped",
+    "players": [
+      { "battlefield": ["Pride Sovereign", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Pride Sovereign" },
+      { "resolve": true },
+      { "activate": "Pride Sovereign", "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: damage stays marked, so losing a Cat later in the turn makes Pride Sovereign lethal",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Pride Sovereign", "Cat 2-2", "Cat 1-1 White Lifelink", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Pride Sovereign", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Pride Sovereign" } ] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["Cat 2-2"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Pride Sovereign", "Lightning Bolt"], "battlefield_lacks": ["Cat 2-2"] },
+        { "graveyard_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exerted Pride Sovereign stolen until end of turn untaps in its owner's untap step",
+    "players": [
+      { "hand": ["Act of Treason"], "battlefield": ["Mountain", "Mountain", "Mountain", "Plains"] },
+      { "battlefield": ["Pride Sovereign"] }
+    ],
+    "steps": [
+      { "cast": "Act of Treason" },
+      { "resolve": true },
+      { "activate": "Pride Sovereign" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "battlefield_has": ["Cat 1-1 White Lifelink", "Cat 1-1 White Lifelink"] },
+        { "battlefield_has": ["Pride Sovereign"] }
+      ],
+      "tapped": { "Pride Sovereign": false }
+    }
+  }
+]

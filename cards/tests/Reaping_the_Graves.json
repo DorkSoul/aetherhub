@@ -1,0 +1,21 @@
+[
+  { "name": "returns a creature card from your graveyard to hand",
+    "players": [ { "hand": ["Reaping the Graves"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Reaping the Graves", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "graveyard": ["Reaping the Graves"] }, {} ] } },
+  { "name": "needs a creature card in your graveyard to cast",
+    "players": [ { "hand": ["Reaping the Graves"], "battlefield": ["Swamp", "Swamp", "Swamp"], "graveyard": ["Lightning Bolt"] }, {} ],
+    "steps": [ { "cast": "Reaping the Graves", "targets": ["Lightning Bolt"], "illegal": true } ],
+    "expect": {} },
+  { "name": "ruling: a storm copy may choose a new target (a different creature card)",
+    "players": [ { "hand": ["Lightning Bolt", "Reaping the Graves"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+               { "cast": "Reaping the Graves", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": ["Hill Giant"] } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears", "Hill Giant"], "graveyard_has": ["Lightning Bolt", "Reaping the Graves"] }, { "life": 17 } ] } },
+  { "name": "ruling: copies are not cast and are not counted by a later storm spell",
+    "players": [ { "hand": ["Lightning Bolt", "Reaping the Graves", "Reaping the Graves"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant", "Serra Angel", "Llanowar Elves", "Craw Wurm", "Prodigal Sorcerer"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+               { "cast": "Reaping the Graves", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": ["Hill Giant"] },
+               { "cast": "Reaping the Graves", "targets": ["Serra Angel"] }, { "resolve": true, "answers": ["Llanowar Elves", "Craw Wurm"] } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears", "Hill Giant", "Serra Angel", "Llanowar Elves", "Craw Wurm"], "graveyard_has": ["Prodigal Sorcerer"] }, { "life": 17 } ] } }
+]

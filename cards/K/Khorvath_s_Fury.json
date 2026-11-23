@@ -1,0 +1,72 @@
+{
+  "name": "Khorvath's Fury",
+  "mana_cost": "{4}{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "ClearRemembered" },
+        { "type": "StoreRemembered", "slot": 0 },
+        { "type": "StoreRemembered", "slot": 1 },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachPlayer" },
+          "effects": [
+            {
+              "type": "ChooseModes",
+              "choose_min": 1,
+              "choose_max": 1,
+              "modes": [
+                {
+                  "text": "Friend",
+                  "effects": [ { "type": "StoreRemembered", "slot": 0, "append": true } ]
+                },
+                {
+                  "text": "Foe",
+                  "effects": [ { "type": "StoreRemembered", "slot": 1, "append": true } ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "Stored", "slot": 0 },
+          "effects": [
+            { "type": "ClearRemembered" },
+            {
+              "type": "Move",
+              "what": { "type": "AllOfPlayer", "player": { "type": "EachObject" }, "zone": "Hand" },
+              "to": "Graveyard",
+              "discard": true,
+              "remember": true
+            },
+            {
+              "type": "Draw",
+              "who": { "type": "EachObject" },
+              "n": {
+                "type": "Plus",
+                "a": { "type": "RememberedCount" },
+                "b": { "type": "Fixed", "n": 1 }
+              }
+            }
+          ]
+        },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "Stored", "slot": 1 },
+          "effects": [
+            {
+              "type": "DealDamage",
+              "to": { "type": "EachObject" },
+              "amount": { "type": "HandSize", "who": { "type": "EachObject" } },
+              "source": { "type": "This" }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "For each player, choose friend or foe. Each friend discards all cards from their hand, then draws that many cards plus one. Khorvath's Fury deals damage to each foe equal to the number of cards in their hand."
+}

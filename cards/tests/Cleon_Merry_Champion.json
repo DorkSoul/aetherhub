@@ -1,0 +1,43 @@
+[
+  {
+    "name": "heroic exiles the top card of your library",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": ["Cleon, Merry Champion", "Forest"], "library": ["Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Giant Growth", "targets": ["Cleon, Merry Champion"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"], "battlefield_has": ["Cleon, Merry Champion"] }, {} ] }
+  },
+  {
+    "name": "a spell that does not target Cleon exiles nothing",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": ["Cleon, Merry Champion", "Forest"], "library": ["Grizzly Bears"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Giant Growth", "targets": ["p1:Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: a land exiled by heroic can be played only when the stack is empty",
+    "players": [ { "hand": ["Giant Growth"], "battlefield": ["Cleon, Merry Champion", "Forest"], "library": ["Forest"] }, {} ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Cleon, Merry Champion"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "play_land": "Forest", "illegal": true },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "play_land": "Forest" }
+    ],
+    "expect": { "players": [ { "exile": [], "battlefield_has": ["Cleon, Merry Champion", "Forest"] }, {} ] }
+  },
+  {
+    "name": "ruling: Cleon's exile trigger resolves even when the spell that caused it is countered",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Cleon, Merry Champion", "Forest"], "library": ["Grizzly Bears"] },
+      { "hand": ["Unified Will"], "battlefield": ["Island", "Island", "Grizzly Bears", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Cleon, Merry Champion"] },
+      { "pass": true },
+      { "cast": "Unified Will", "targets": [{ "stack": "Giant Growth" }], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Grizzly Bears"], "graveyard": ["Giant Growth"], "battlefield_has": ["Cleon, Merry Champion"] }, { "graveyard": ["Unified Will"] } ] }
+  }
+]

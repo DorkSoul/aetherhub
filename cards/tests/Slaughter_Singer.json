@@ -1,0 +1,86 @@
+[
+  {
+    "name": "another attacking toxic creature gets +1/+1",
+    "players": [
+      { "battlefield": [ { "name": "Slaughter Singer", "sick": false }, { "name": "Ribskiff", "sick": false }, "Grizzly Bears", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Ribskiff", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Ribskiff", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Ribskiff": [5, 5] }
+    }
+  },
+  {
+    "name": "non-toxic attacker is not pumped",
+    "players": [
+      { "battlefield": [ { "name": "Slaughter Singer", "sick": false }, { "name": "Grizzly Bears", "sick": false } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "does not pump itself",
+    "players": [
+      { "battlefield": [ { "name": "Slaughter Singer", "sick": false } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Slaughter Singer", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Slaughter Singer": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: toxic 2 unblocked: 2 combat damage and two poison counters",
+    "players": [ { "battlefield": ["Slaughter Singer"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Slaughter Singer", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: toxic does nothing when blocked (creature damage gives no poison)",
+    "players": [ { "battlefield": ["Slaughter Singer"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [ { "card": "Slaughter Singer", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Slaughter Singer" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 20, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: toxic does nothing against a planeswalker (no poison, 2 loyalty lost)",
+    "players": [ { "battlefield": ["Slaughter Singer"] }, { "battlefield": ["Ajani Unyielding"] } ],
+    "steps": [ { "attack": [ { "card": "Slaughter Singer", "at": "Ajani Unyielding" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "counters": { "Ajani Unyielding": { "loyalty": 2 } }, "players": [ {}, { "life": 20, "poison": 0 } ] }
+  },
+  {
+    "name": "ruling: ten or more poison counters loses the game",
+    "players": [ { "battlefield": ["Slaughter Singer"] }, { "poison": 8 } ],
+    "steps": [ { "attack": [ { "card": "Slaughter Singer", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "poison": 10 } ], "winner": 0 }
+  },
+  {
+    "name": "ruling: Vorinclex doubles the toxic counters its controller's creature puts (4 poison)",
+    "players": [ { "battlefield": ["Slaughter Singer", "Vorinclex, Monstrous Raider"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Slaughter Singer", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 4 } ] }
+  },
+  {
+    "name": "ruling: an opponent's Vorinclex halves the toxic counters (2 becomes 1)",
+    "players": [ { "battlefield": ["Slaughter Singer"] }, { "battlefield": ["Vorinclex, Monstrous Raider"] } ],
+    "steps": [ { "attack": [ { "card": "Slaughter Singer", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 18, "poison": 1 } ] }
+  }
+]

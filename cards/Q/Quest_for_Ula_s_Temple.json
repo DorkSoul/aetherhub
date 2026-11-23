@@ -1,0 +1,78 @@
+{
+  "name": "Quest for Ula's Temple",
+  "mana_cost": "{U}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BeginningOfStep",
+        "step": "Upkeep",
+        "whose": "You"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "SelIs",
+            "what": { "type": "TopOfLibrary", "who": { "type": "You" }, "n": 1 },
+            "filter": { "types": ["Creature"] }
+          },
+          "then": [
+            {
+              "type": "May",
+              "effects": [
+                {
+                  "type": "AddCounters",
+                  "kind": "Quest",
+                  "n": { "type": "Fixed", "n": 1 },
+                  "what": { "type": "This" }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BeginningOfStep",
+        "step": "End"
+      },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Quest", "of": { "type": "This" } },
+        "cmp": { "op": "Ge", "n": 3 }
+      },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Hand",
+          "min": 0,
+          "max": 1,
+          "filter": {
+            "types": ["Creature"],
+            "any_of": [
+              { "subtypes": ["Kraken"] },
+              { "subtypes": ["Leviathan"] },
+              { "subtypes": ["Octopus"] },
+              { "subtypes": ["Serpent"] }
+            ]
+          },
+          "then": [
+            {
+              "type": "Move",
+              "what": { "type": "Remembered" },
+              "to": "Battlefield",
+              "from": "Hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of your upkeep, you may look at the top card of your library. If it's a creature card, you may reveal it and put a quest counter on this enchantment.\nAt the beginning of each end step, if there are three or more quest counters on this enchantment, you may put a Kraken, Leviathan, Octopus, or Serpent creature card from your hand onto the battlefield."
+}

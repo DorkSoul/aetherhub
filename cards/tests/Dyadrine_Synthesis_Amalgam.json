@@ -1,0 +1,240 @@
+[
+ {
+  "name": "enters with a +1/+1 counter for each mana spent",
+  "players": [
+   {
+    "hand": [
+     "Dyadrine, Synthesis Amalgam"
+    ],
+    "battlefield": [
+     "Forest",
+     "Plains",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dyadrine, Synthesis Amalgam",
+    "answers": [
+     2
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Dyadrine, Synthesis Amalgam": {
+     "PlusOnePlusOne": 4
+    }
+   },
+   "pt": {
+    "Dyadrine, Synthesis Amalgam": [
+     4,
+     5
+    ]
+   }
+  }
+ },
+ {
+  "name": "attack: remove a counter from each of two creatures to draw and make a Robot",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Dyadrine, Synthesis Amalgam",
+      "counters": {
+       "PlusOnePlusOne": 3
+      }
+     },
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "PlusOnePlusOne": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Dyadrine, Synthesis Amalgam",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     true,
+     "Dyadrine, Synthesis Amalgam",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Dyadrine, Synthesis Amalgam": {
+     "PlusOnePlusOne": 2
+    },
+    "Grizzly Bears": {
+     "PlusOnePlusOne": 0
+    }
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Robot 2-2"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "declining the attack trigger changes nothing",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Dyadrine, Synthesis Amalgam",
+      "counters": {
+       "PlusOnePlusOne": 3
+      }
+     },
+     {
+      "name": "Grizzly Bears",
+      "counters": {
+       "PlusOnePlusOne": 1
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Dyadrine, Synthesis Amalgam",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Dyadrine, Synthesis Amalgam": {
+     "PlusOnePlusOne": 3
+    },
+    "Grizzly Bears": {
+     "PlusOnePlusOne": 1
+    }
+   },
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Robot 2-2"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "only one creature with counters: cannot remove from two, so no draw and no Robot",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Dyadrine, Synthesis Amalgam",
+      "counters": {
+       "PlusOnePlusOne": 3
+      }
+     },
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Dyadrine, Synthesis Amalgam",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Dyadrine, Synthesis Amalgam": {
+     "PlusOnePlusOne": 3
+    }
+   },
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Robot 2-2"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: cast without paying its mana cost (cascade) means X=0: no counters, it is a 0/1 that survives",
+  "players": [
+   { "hand": ["Bloodbraid Elf"], "battlefield": ["Mountain", "Forest", "Plains", "Plains"], "library": ["Dyadrine, Synthesis Amalgam"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bloodbraid Elf" },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Bloodbraid Elf", "Dyadrine, Synthesis Amalgam"] }, {} ],
+   "pt": { "Dyadrine, Synthesis Amalgam": [0, 1] }
+  }
+ },
+ {
+  "name": "ruling: mana paid to pay a Force Spike tax is not counted: Dyadrine still gets 4 counters for the 4 mana spent to cast it",
+  "players": [
+   { "hand": ["Dyadrine, Synthesis Amalgam"], "battlefield": ["Forest", "Forest", "Plains", "Plains", "Plains"] },
+   { "hand": ["Force Spike"], "battlefield": ["Island"] }
+  ],
+  "steps": [
+   { "cast": "Dyadrine, Synthesis Amalgam", "answers": [2] },
+   { "pass": true },
+   { "cast": "Force Spike", "player": 1, "targets": [{ "stack": "Dyadrine, Synthesis Amalgam" }] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Dyadrine, Synthesis Amalgam"] }, { "graveyard": ["Force Spike"] } ],
+   "counters": { "Dyadrine, Synthesis Amalgam": { "PlusOnePlusOne": 4 } },
+   "pt": { "Dyadrine, Synthesis Amalgam": [4, 5] }
+  }
+ }
+]

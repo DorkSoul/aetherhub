@@ -1,0 +1,57 @@
+[
+  {
+    "name": "at the first main phase, adds B for each charge counter",
+    "players": [ { "battlefield": [ { "name": "Altar of Shadows", "counters": { "charge": 2 } } ] }, {} ],
+    "start": "Upkeep",
+    "steps": [
+      { "advance_to": "Main1" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "pool": { "B": 2 } }, {} ]
+    }
+  },
+  {
+    "name": "destroys a creature and gets a charge counter",
+    "players": [
+      { "battlefield": ["Altar of Shadows", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Altar of Shadows", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_lacks": ["Grizzly Bears"] } ],
+      "counters": { "Altar of Shadows": { "charge": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a postcombat main phase does not trigger (only the first main phase does)",
+    "players": [ { "battlefield": [ { "name": "Altar of Shadows", "counters": { "charge": 2 } } ] }, {} ],
+    "start": "BeginCombat",
+    "steps": [
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "stack_empty": true,
+      "players": [ { "pool": {} }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the charge counter is put on even if the creature regenerates",
+    "players": [
+      { "battlefield": ["Altar of Shadows", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Augur of Skulls", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "activate": "Altar of Shadows", "ability": 0, "targets": ["Augur of Skulls"] },
+      { "activate": "Augur of Skulls", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Altar of Shadows"] }, { "battlefield_has": ["Augur of Skulls"] } ],
+      "counters": { "Altar of Shadows": { "charge": 1 } }
+    }
+  }
+]

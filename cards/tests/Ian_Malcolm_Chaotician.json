@@ -1,0 +1,102 @@
+[
+ {
+  "name": "my second draw each turn exiles the top card of my library",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Ian Malcolm, Chaotician", "Island", "Island", "Island"], "library": ["Mountain", "Mountain", "Lightning Bolt", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 2, "exile": ["Lightning Bolt"] }, {} ]
+  }
+ },
+ {
+  "name": "I may not cast a card I own that was exiled with Ian",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Ian Malcolm, Chaotician", "Island", "Island", "Island", "Mountain"], "library": ["Mountain", "Mountain", "Lightning Bolt", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "exile": ["Lightning Bolt"] }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "on my turn I may cast an opponent's card exiled with Ian, spending any type of mana",
+  "players": [
+   { "battlefield": ["Ian Malcolm, Chaotician", "Plains"] },
+   { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Lightning Bolt", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1", "auto": true },
+   { "player": 1, "cast": "Divination" },
+   { "resolve": true },
+   { "advance_to": "Main1", "auto": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17, "graveyard_has": ["Lightning Bolt"] } ]
+  }
+ },
+ {
+  "name": "the owner of the exiled card can't cast it on their own turn either",
+  "players": [
+   { "battlefield": ["Ian Malcolm, Chaotician"] },
+   { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island", "Mountain"], "library": ["Forest", "Forest", "Forest", "Lightning Bolt", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1", "auto": true },
+   { "player": 1, "cast": "Divination" },
+   { "resolve": true },
+   { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 20 }, { "exile": ["Lightning Bolt"] } ]
+  }
+ }
+,
+ {
+  "name": "ruling: an exiled opponent's sorcery can't be cast in combat, only in a main phase",
+  "players": [
+   { "battlefield": ["Ian Malcolm, Chaotician", "Island", "Island", "Island"] },
+   { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Divination", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1", "auto": true },
+   { "player": 1, "cast": "Divination" },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "advance_to": "Main1", "auto": true },
+   { "advance_to": "BeginCombat", "auto": true },
+   { "cast": "Divination", "illegal": true },
+   { "advance_to": "Main2", "auto": true },
+   { "cast": "Divination" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "graveyard": ["Divination", "Divination"], "exile": [] } ]
+  }
+ },
+ {
+  "name": "ruling: the second-draw trigger happens once a turn, even when a third card is drawn",
+  "players": [
+   { "hand": ["Winged Portent"], "battlefield": ["Ian Malcolm, Chaotician", "Island", "Island", "Island", "Wind Drake", "Wind Drake", "Serra Angel"], "library": ["Mountain", "Mountain", "Lightning Bolt", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Winged Portent" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 3, "exile": ["Mountain"] }, {} ]
+  }
+ }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "name": "enters: exiles a card from a graveyard",
+    "players": [
+      { "hand": ["Cemetery Illuminator"], "battlefield": ["Island", "Island", "Island"] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Cemetery Illuminator" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Illuminator"] }, { "exile": ["Hill Giant"], "graveyard": [] } ] }
+  },
+  {
+    "name": "a spell sharing a card type with the exiled card can be cast from the top of the library",
+    "players": [
+      { "hand": ["Cemetery Illuminator"], "battlefield": ["Island", "Island", "Island", "Forest", "Forest"], "library": ["Grizzly Bears", "Forest"] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Cemetery Illuminator" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Illuminator", "Grizzly Bears"], "library_count": 1 }, {} ] }
+  },
+  {
+    "name": "a spell sharing no card type can't be cast from the top of the library",
+    "players": [
+      { "hand": ["Cemetery Illuminator"], "battlefield": ["Island", "Island", "Island", "Forest", "Forest", "Forest"], "library": ["Giant Growth", "Forest"] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Cemetery Illuminator" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Giant Growth", "illegal": true }
+    ]
+  },
+  {
+    "name": "only one spell each turn",
+    "players": [
+      { "hand": ["Cemetery Illuminator"], "battlefield": ["Island", "Island", "Island", "Forest", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears", "Grizzly Bears", "Forest"] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Cemetery Illuminator" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "library_count": 2 }, {} ] }
+  },
+  {
+    "name": "attacking exiles a card from a graveyard",
+    "players": [ { "battlefield": ["Cemetery Illuminator"] }, { "graveyard": ["Hill Giant"] } ],
+    "steps": [ { "advance_to": "Main1" }, { "attack": [ { "card": "Cemetery Illuminator", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Illuminator"] }, { "exile": ["Hill Giant"], "graveyard": [] } ] }
+  },
+  {
+    "name": "attacking with no card in any graveyard exiles nothing",
+    "players": [ { "battlefield": ["Cemetery Illuminator"] }, {} ],
+    "steps": [ { "advance_to": "Main1" }, { "attack": [ { "card": "Cemetery Illuminator", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Illuminator"] }, { "exile": [] } ] }
+  },
+  {
+    "name": "ruling: an exiled instant lets an instant on top of the library be cast, sharing only the card type",
+    "players": [
+      { "hand": ["Cemetery Illuminator"], "battlefield": ["Island", "Island", "Island", "Forest"], "library": ["Giant Growth", "Forest"] },
+      { "graveyard": ["Shock"] }
+    ],
+    "steps": [
+      { "cast": "Cemetery Illuminator" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Cemetery Illuminator"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Cemetery Illuminator"], "graveyard_has": ["Giant Growth"], "library_count": 1 }, { "exile": ["Shock"], "graveyard": [] } ] }
+  }
+]

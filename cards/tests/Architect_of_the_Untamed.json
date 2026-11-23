@@ -1,0 +1,144 @@
+[
+ {
+  "name": "landfall: playing a land gets you one energy",
+  "players": [
+   {
+    "hand": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Architect of the Untamed"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 1,
+     "battlefield_has": [
+      "Architect of the Untamed",
+      "Forest"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "pay eight energy: needs eight energy counters",
+  "players": [
+   {
+    "hand": [
+     "Forest"
+    ],
+    "battlefield": [
+     "Architect of the Untamed"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "play_land": "Forest"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Architect of the Untamed",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "energy": 1,
+     "battlefield_lacks": [
+      "Beast 6-6"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "pay eight energy: creates a 6/6 Beast token and spends the energy",
+  "players": [ { "battlefield": ["Architect of the Untamed"], "energy": 8 }, {} ],
+  "steps": [ { "activate": "Architect of the Untamed" }, { "resolve": true } ],
+  "expect": { "players": [ { "energy": 0, "battlefield_has": ["Architect of the Untamed", "Beast 6-6"] }, {} ] }
+ },
+ {
+  "name": "pay eight energy: seven energy is not enough",
+  "players": [ { "battlefield": ["Architect of the Untamed"], "energy": 7 }, {} ],
+  "steps": [ { "activate": "Architect of the Untamed", "illegal": true } ],
+  "expect": { "players": [ { "energy": 7, "battlefield_lacks": ["Beast 6-6"] }, {} ] }
+ },
+ {
+    "name": "ruling: paying eight from nine energy leaves one",
+    "players": [ { "battlefield": ["Architect of the Untamed"], "energy": 9 }, {} ],
+    "steps": [ { "activate": "Architect of the Untamed" }, { "resolve": true } ],
+    "expect": { "players": [ { "energy": 1, "battlefield_has": ["Beast 6-6"] }, {} ] }
+  },
+  {
+    "name": "ruling: energy belongs to the player, so it stays when the Architect leaves",
+    "players": [
+      { "battlefield": ["Architect of the Untamed"], "energy": 3 },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Architect of the Untamed"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 3, "graveyard_has": ["Architect of the Untamed"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: energy counters do not go away at the end of the turn",
+    "players": [ { "battlefield": ["Architect of the Untamed"], "energy": 3 }, {} ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "players": [ { "energy": 3 }, {} ] }
+  },
+  {
+    "name": "ruling: each landfall trigger gives energy (two Architects, one land: two energy)",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Architect of the Untamed", "Architect of the Untamed"] },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "energy": 2 }, {} ] }
+  },
+  {
+    "name": "ruling: a land put onto the battlefield by a spell also triggers landfall",
+    "players": [
+      {
+        "hand": ["Rampant Growth"],
+        "battlefield": ["Architect of the Untamed", "Forest", "Forest"],
+        "library": ["Forest", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rampant Growth" },
+      { "resolve": true, "answers": ["Forest"] }
+    ],
+    "expect": { "players": [ { "energy": 1, "battlefield_has": ["Forest"] }, {} ] }
+  }
+]

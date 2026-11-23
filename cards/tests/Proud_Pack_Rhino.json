@@ -1,0 +1,201 @@
+[
+  {
+    "name": "mode 1: shield counter on target permanent (an opponent's creature)",
+    "players": [
+      {
+        "hand": ["Proud Pack-Rhino"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Proud Pack-Rhino" },
+      { "resolve": true, "answers": [[0], "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Proud Pack-Rhino"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "counters": {
+        "Grizzly Bears": { "shield": 1 }
+      }
+    }
+  },
+  {
+    "name": "mode 1: a shield counter stops the next destruction (Lightning Bolt damage) and is removed",
+    "players": [
+      {
+        "hand": ["Proud Pack-Rhino"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Proud Pack-Rhino" },
+      { "resolve": true, "answers": [[0], "Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Proud Pack-Rhino"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] }
+      ],
+      "counters": {
+        "Grizzly Bears": { "shield": 0 }
+      }
+    }
+  },
+  {
+    "name": "mode 2: proliferate adds another +1/+1 counter to a permanent that already has one",
+    "players": [
+      {
+        "hand": ["Proud Pack-Rhino"],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Proud Pack-Rhino" },
+      { "resolve": true, "answers": [[1]], "auto": true },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Proud Pack-Rhino"] },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": { "p1p1": 2 }
+      }
+    }
+  },
+  {
+    "name": "ruling: proliferate gives one of each kind of counter a permanent already has",
+    "players": [
+      {
+        "hand": ["Proud Pack-Rhino"],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1, "shield": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Proud Pack-Rhino" },
+      { "resolve": true, "answers": [[1]], "auto": true },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Proud Pack-Rhino"] },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": { "p1p1": 2, "shield": 2 }
+      }
+    }
+  },
+  {
+    "name": "ruling: a shield counter on a permanent with two shield counters prevents the damage and removes only one",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "counters": { "shield": 2 } }
+        ]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ],
+      "counters": {
+        "Grizzly Bears": { "shield": 1 }
+      }
+    }
+  },
+  {
+    "name": "ruling: proliferate can give a counter to an opponent's permanent",
+    "players": [
+      {
+        "hand": ["Proud Pack-Rhino"],
+        "battlefield": ["Plains", "Plains", "Plains"]
+      },
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }
+        ]
+      }
+    ],
+    "steps": [
+      { "cast": "Proud Pack-Rhino" },
+      { "resolve": true, "answers": [[1]], "auto": true },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Proud Pack-Rhino"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "counters": {
+        "Grizzly Bears": { "p1p1": 2 }
+      }
+    }
+  },
+  {
+    "name": "ruling: proliferate may choose no permanents, so existing counters stay as they are",
+    "players": [
+      {
+        "hand": ["Proud Pack-Rhino"],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Proud Pack-Rhino" },
+      { "resolve": true, "answers": [[1], []] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Proud Pack-Rhino"] },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": { "p1p1": 1 }
+      }
+    }
+  }
+]

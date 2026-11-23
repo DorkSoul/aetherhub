@@ -1,0 +1,70 @@
+[
+  {
+    "name": "destroys the blocking creature at the end of combat",
+    "players": [
+      { "battlefield": ["Silent Assassin", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Silent Assassin", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Silent Assassin" } ] },
+      { "activate": "Silent Assassin", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "EndCombat" },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Silent Assassin"] }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "needs a blocking creature to target",
+    "players": [
+      { "battlefield": ["Silent Assassin", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Silent Assassin", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Silent Assassin"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: activated during the end of combat step, the destroy is not this combat's (it waits for the next end of combat step)",
+    "players": [
+      { "battlefield": ["Silent Assassin", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Wall of Stone"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Silent Assassin", "at": "p1" } ] },
+      { "block": [ { "blocker": "Wall of Stone", "attacker": "Silent Assassin" } ] },
+      { "advance_to": "EndCombat" },
+      { "activate": "Silent Assassin", "ability": 0, "targets": ["Wall of Stone"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Silent Assassin"] }, { "battlefield_has": ["Wall of Stone"] } ]
+    }
+  },
+  {
+    "name": "ruling: the delayed destroy happens at the next end of combat step, even in the opponent's turn",
+    "players": [
+      { "battlefield": ["Silent Assassin", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Wall of Stone"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Silent Assassin", "at": "p1" } ] },
+      { "block": [ { "blocker": "Wall of Stone", "attacker": "Silent Assassin" } ] },
+      { "advance_to": "EndCombat" },
+      { "activate": "Silent Assassin", "ability": 0, "targets": ["Wall of Stone"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "EndCombat" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Silent Assassin"] }, { "graveyard": ["Wall of Stone"] } ]
+    }
+  }
+]

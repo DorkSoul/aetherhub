@@ -1,0 +1,96 @@
+[
+ {
+  "name": "historic spell creates a Treasure",
+  "players": [
+   { "hand": ["Sol Ring"], "battlefield": ["Mountain", "Glóin, Dwarf Emissary"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Treasure", "Sol Ring"] }, {} ]
+  }
+ },
+ {
+  "name": "non-historic spell creates no Treasure",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Glóin, Dwarf Emissary"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield": ["Mountain", "Glóin, Dwarf Emissary"] }, {} ]
+  }
+ },
+ {
+  "name": "only one Treasure per turn from historic spells",
+  "players": [
+   { "hand": ["Sol Ring", "Sol Ring"], "battlefield": ["Mountain", "Mountain", "Glóin, Dwarf Emissary"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "resolve": true },
+   { "resolve": true },
+   { "cast": "Sol Ring" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield": ["Mountain", "Mountain", "Glóin, Dwarf Emissary", "Sol Ring", "Sol Ring", "Treasure"] }, {} ]
+  }
+ },
+ {
+  "name": "tap and sacrifice a Treasure to goad a creature",
+  "players": [
+   { "battlefield": ["Glóin, Dwarf Emissary", "Treasure"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "activate": "Glóin, Dwarf Emissary", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield": ["Glóin, Dwarf Emissary"] }, {} ],
+   "tapped": { "Glóin, Dwarf Emissary": true }
+  }
+ },
+ {
+  "name": "ruling: a legendary artifact spell (historic two ways) makes only one Treasure",
+  "players": [
+   { "hand": ["Bilbo's Ring"], "battlefield": ["Mountain", "Mountain", "Mountain", "Glóin, Dwarf Emissary"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bilbo's Ring" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield": ["Mountain", "Mountain", "Mountain", "Glóin, Dwarf Emissary", "Bilbo's Ring", "Treasure"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the Treasure trigger resolves even if the historic spell is countered",
+  "players": [
+   { "hand": ["Sol Ring"], "battlefield": ["Mountain", "Glóin, Dwarf Emissary"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Sol Ring" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Treasure"], "graveyard": ["Sol Ring"] }, { "graveyard": ["Counterspell"] } ]
+  }
+ }
+]

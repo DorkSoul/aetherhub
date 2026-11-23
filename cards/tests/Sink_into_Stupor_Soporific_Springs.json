@@ -1,0 +1,47 @@
+[
+  { "name": "returns an opponent's spell to its owner's hand",
+    "players": [
+      { "hand": ["Sink into Stupor"], "battlefield": ["Island", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+      { "cast": "Sink into Stupor", "targets": [{ "stack": "Lightning Bolt" }], "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20, "graveyard": ["Sink into Stupor"] }, { "hand": ["Lightning Bolt"], "life": 20 } ] } },
+  { "name": "returns an opponent's nonland permanent to its owner's hand",
+    "players": [
+      { "hand": ["Sink into Stupor"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Sink into Stupor", "targets": ["Grizzly Bears"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Sink into Stupor"] }, { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] } ] } },
+  { "name": "cannot target a land or one of your own permanents",
+    "players": [
+      { "hand": ["Sink into Stupor"], "battlefield": ["Island", "Island", "Island", "Grizzly Bears"] },
+      { "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Sink into Stupor", "targets": ["Grizzly Bears"], "answers": [1], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Sink into Stupor"], "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Mountain"] } ] } },
+  { "name": "Soporific Springs: not paying 3 life enters tapped",
+    "players": [ { "hand": ["Sink into Stupor"] }, {} ],
+    "steps": [
+      { "play_land": "Sink into Stupor", "face": true },
+      { "pass": true, "answers": [false] }
+    ],
+    "expect": { "tapped": { "Soporific Springs": true }, "players": [ { "life": 20, "battlefield_has": ["Soporific Springs"] }, {} ] } },
+  { "name": "Soporific Springs: paying 3 life enters untapped",
+    "players": [ { "hand": ["Sink into Stupor"] }, {} ],
+    "steps": [
+      { "play_land": "Sink into Stupor", "face": true },
+      { "pass": true, "answers": [true] }
+    ],
+    "expect": { "tapped": { "Soporific Springs": false }, "players": [ { "life": 17, "battlefield_has": ["Soporific Springs"] }, {} ] } }
+]

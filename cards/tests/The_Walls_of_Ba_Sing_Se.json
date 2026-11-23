@@ -1,0 +1,168 @@
+[
+  {
+    "name": "other permanents you control have indestructible",
+    "players": [
+      {
+        "battlefield": [
+          "The Walls of Ba Sing Se",
+          "Grizzly Bears",
+          "Sol Ring",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "keywords": {
+        "Grizzly Bears": [
+          "Indestructible"
+        ],
+        "Sol Ring": [
+          "Indestructible"
+        ],
+        "Plains": [
+          "Indestructible"
+        ],
+        "The Walls of Ba Sing Se": [
+          "Defender"
+        ]
+      },
+      "pt": {
+        "The Walls of Ba Sing Se": [
+          0,
+          30
+        ]
+      }
+    }
+  },
+  {
+    "name": "Wrath of God destroys the Walls itself and the opponent's creatures but not the other permanents",
+    "players": [
+      {
+        "hand": [
+          "Wrath of God"
+        ],
+        "battlefield": [
+          "The Walls of Ba Sing Se",
+          "Grizzly Bears",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Wrath of God"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "The Walls of Ba Sing Se"
+          ],
+          "graveyard_has": [
+            "The Walls of Ba Sing Se"
+          ]
+        },
+        {
+          "graveyard": [
+            "Hill Giant"
+          ],
+          "battlefield": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: indestructible planeswalker still loses loyalty to damage and goes to the graveyard at 0",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["The Walls of Ba Sing Se", "Mountain", { "name": "Ajani Steadfast", "counters": { "Loyalty": 3 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Ajani Steadfast"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Ajani Steadfast", "Lightning Bolt"], "battlefield_lacks": ["Ajani Steadfast"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: indestructible planeswalker with loyalty left stays and loses only the damage",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["The Walls of Ba Sing Se", "Mountain", { "name": "Ajani Steadfast", "counters": { "Loyalty": 5 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Ajani Steadfast"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ajani Steadfast"] },
+        {}
+      ],
+      "counters": { "Ajani Steadfast": { "Loyalty": 2 } }
+    }
+  },
+  {
+    "name": "ruling: damage stays marked after the Walls leave, so a second Bolt kills Port Razer",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["The Walls of Ba Sing Se", "Port Razer", "Mountain", "Mountain"]
+      },
+      {
+        "hand": ["Erode"],
+        "battlefield": ["Plains"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Port Razer"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Erode", "player": 1, "targets": ["The Walls of Ba Sing Se"] },
+      { "resolve": true, "auto": true },
+      { "cast": "Lightning Bolt", "targets": ["Port Razer"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Port Razer", "The Walls of Ba Sing Se"], "battlefield_lacks": ["Port Razer"] },
+        { "graveyard": ["Erode"] }
+      ]
+    }
+  }
+]

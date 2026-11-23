@@ -1,0 +1,51 @@
+{
+  "name": "Soul Echo",
+  "mana_cost": "{X}{W}{W}",
+  "types": ["Enchantment"],
+  "colors": ["W"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Echo", "n": { "type": "X" } },
+    { "type": "Static", "effect": { "type": "NoLoseAtZeroLife", "who": "You" } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "targets": [
+        {
+          "what": { "type": "Player", "filter": "Opponent" },
+          "label": "target opponent"
+        }
+      ],
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "SourceHasCounter", "kind": "Echo", "at_least": 1 },
+          "then": [
+            {
+              "type": "May",
+              "who": { "type": "Target", "idx": 0 },
+              "effects": [
+                {
+                  "type": "AddReplacement",
+                  "until_your_next_turn": true,
+                  "what": {
+                    "type": "Damage",
+                    "source": {},
+                    "to": "You",
+                    "prevent_amount": { "type": "CountersOn", "kind": "Echo", "of": { "type": "This" } },
+                    "then": [
+                      { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Echo", "n": { "type": "EventAmount" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "else": [
+            { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "this": true } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "This enchantment enters with X echo counters on it.\nYou don't lose the game for having 0 or less life.\nAt the beginning of your upkeep, sacrifice this enchantment if there are no echo counters on it. Otherwise, target opponent may choose that for each 1 damage that would be dealt to you until your next upkeep, you remove an echo counter from this enchantment instead."
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "name": "prevents combat damage dealt to it by a blocked attacker",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "battlefield": ["Fog Bank"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Fog Bank", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Hill Giant"] },
+        { "battlefield": ["Fog Bank"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "noncombat damage to it is not prevented",
+    "players": [
+      { "battlefield": ["Fog Bank"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Fog Bank"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Fog Bank"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "damage dealt by Fog Bank itself is prevented (a 3-power Fog Bank does not kill the attacker)",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "battlefield": [ { "name": "Fog Bank", "counters": { "p1p1": 3 } } ] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Fog Bank", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"] },
+        { "battlefield_has": ["Fog Bank"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: trample damage assignment ignores the prevention (lethal 2 to Fog Bank, 1 to player)",
+    "players": [
+      { "battlefield": ["War Mammoth"] },
+      { "battlefield": ["Fog Bank"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "War Mammoth", "at": "p1" } ] },
+      { "block": [ { "blocker": "Fog Bank", "attacker": "War Mammoth" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["War Mammoth"] },
+        { "battlefield": ["Fog Bank"], "life": 19 }
+      ]
+    }
+  }
+]

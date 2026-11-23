@@ -1,0 +1,125 @@
+[
+  {
+    "name": "exiling a creature card gains you 3 life (no draw)",
+    "players": [
+      { "hand": ["Cling to Dust"], "battlefield": ["Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Cling to Dust", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "hand_count": 0, "graveyard": ["Cling to Dust"] },
+        { "graveyard": [], "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "exiling a non-creature card draws a card (no life)",
+    "players": [
+      { "hand": ["Cling to Dust"], "battlefield": ["Swamp"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Cling to Dust", "targets": ["Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "hand_count": 1 },
+        { "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "escape: exile five other cards from your graveyard, then exile a card from an opponent's graveyard",
+    "players": [
+      {
+        "graveyard": ["Cling to Dust", "Grizzly Bears", "Hill Giant", "Serra Angel", "Savannah Lions", "Shock"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Cling to Dust", "alt": 0, "targets": ["Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Cling to Dust"] },
+        { "graveyard": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a second Cling to Dust whose target is gone does not draw",
+    "players": [
+      { "hand": ["Cling to Dust", "Cling to Dust"], "battlefield": ["Swamp", "Swamp"] },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Cling to Dust", "targets": ["Lightning Bolt"] },
+      { "cast": "Cling to Dust", "targets": ["Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "hand_count": 1 }, { "exile": ["Lightning Bolt"], "graveyard": [] } ]
+    }
+  },
+  {
+    "name": "ruling: a card exiled to pay the escape cost cannot be the target, so nothing resolves",
+    "players": [
+      {
+        "graveyard": ["Cling to Dust", "Grizzly Bears", "Hill Giant", "Serra Angel", "Savannah Lions", "Shock"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Cling to Dust", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20, "hand_count": 0, "graveyard": ["Cling to Dust"], "exile": ["Grizzly Bears", "Hill Giant", "Serra Angel", "Savannah Lions", "Shock"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: exiling a creature that is also another card type gains 3 life and draws nothing",
+    "players": [
+      { "hand": ["Cling to Dust"], "battlefield": ["Swamp"] },
+      { "graveyard": ["Memnite"] }
+    ],
+    "steps": [
+      { "cast": "Cling to Dust", "targets": ["Memnite"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 23, "hand_count": 0 }, { "exile": ["Memnite"] } ]
+    }
+  },
+  {
+    "name": "ruling: escape can be cast at instant speed on the opponent's turn",
+    "players": [
+      {
+        "graveyard": ["Cling to Dust", "Grizzly Bears", "Hill Giant", "Serra Angel", "Savannah Lions", "Shock"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      { "graveyard": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Cling to Dust", "alt": 0, "player": 0, "targets": ["Lightning Bolt"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "graveyard": ["Cling to Dust"] }, { "graveyard": [], "exile": ["Lightning Bolt"] } ]
+    }
+  }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "name": "ETB: lone eligible creature in hand enters with haste, returns to hand at the next end step",
+    "players": [
+      { "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Plains", "Plains"], "hand": ["Swift Warkite", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Swift Warkite" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swift Warkite", "Grizzly Bears"], "hand": ["Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB: the put-onto-battlefield creature returns to hand at the beginning of the next end step",
+    "players": [
+      { "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Plains", "Plains"], "hand": ["Swift Warkite", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Swift Warkite" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swift Warkite"], "hand": ["Grizzly Bears", "Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB: a creature card with mana value 3 or less in the graveyard can be chosen",
+    "players": [
+      { "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Plains", "Plains"], "hand": ["Swift Warkite"], "graveyard": ["Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Swift Warkite" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swift Warkite", "Grizzly Bears"], "graveyard": ["Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB: may choose nothing and the hand and graveyard stay unchanged",
+    "players": [
+      { "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Plains", "Plains"], "hand": ["Swift Warkite", "Grizzly Bears"], "graveyard": ["Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Swift Warkite" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swift Warkite"], "hand": ["Grizzly Bears"], "graveyard": ["Llanowar Elves"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the put-onto-battlefield creature dies before the end step and stays in the graveyard",
+    "players": [
+      { "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Plains", "Plains"], "hand": ["Swift Warkite", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Mountain"], "hand": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Swift Warkite" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Swift Warkite"], "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears"], "hand": ["Hill Giant"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the delayed return still triggers when Swift Warkite itself leaves the battlefield first",
+    "players": [
+      { "battlefield": ["Swamp", "Mountain", "Forest", "Island", "Plains", "Plains"], "hand": ["Swift Warkite", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Mountain", "Mountain"], "hand": ["Lightning Bolt", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Swift Warkite" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Swift Warkite"], "player": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Swift Warkite"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Swift Warkite", "Grizzly Bears"], "graveyard": ["Swift Warkite"], "hand": ["Grizzly Bears", "Hill Giant"] },
+        { "graveyard_has": ["Lightning Bolt", "Lightning Bolt"] }
+      ]
+    }
+  }
+]

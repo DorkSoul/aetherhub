@@ -1,0 +1,275 @@
+[
+ {
+  "name": "a second non-Phyrexian spell can't be cast in the same turn; the first creature enters tapped",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Phyrexian Censor",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ],
+     "hand_count": 1
+    },
+    {}
+   ],
+   "tapped": {
+    "Grizzly Bears": true
+   }
+  }
+ },
+ {
+  "name": "a Phyrexian spell is still castable after a non-Phyrexian one, and enters untapped",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Phyrexian Rager"
+    ],
+    "battlefield": [
+     "Phyrexian Censor",
+     "Forest",
+     "Forest",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Phyrexian Rager"
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears",
+      "Phyrexian Rager"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Phyrexian Rager": false,
+    "Grizzly Bears": true
+   }
+  }
+ },
+ {
+  "name": "the restriction applies to the opponent too",
+  "players": [
+   {
+    "battlefield": [
+     "Phyrexian Censor"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "player": 1,
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "hand_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Phyrexian Censor itself enters untapped (it is a Phyrexian)",
+  "players": [
+   {
+    "hand": [
+     "Phyrexian Censor"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Phyrexian Censor"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "tapped": {
+    "Phyrexian Censor": false
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Phyrexian Censor"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell with Phyrexian in its name but no Phyrexian type is non-Phyrexian (Phyrexian Arena blocks a second spell)",
+  "players": [
+   {"hand": ["Phyrexian Arena", "Sol Ring"], "battlefield": ["Phyrexian Censor", "Swamp", "Swamp", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Phyrexian Arena"},
+   {"resolve": true},
+   {"cast": "Sol Ring", "illegal": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Phyrexian Arena"], "hand_count": 1}, {}]
+  }
+ },
+ {
+  "name": "ruling: an artifact spell counts as non-Phyrexian (Sol Ring blocks Phyrexian Arena)",
+  "players": [
+   {"hand": ["Sol Ring", "Phyrexian Arena"], "battlefield": ["Phyrexian Censor", "Swamp", "Swamp", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Sol Ring"},
+   {"resolve": true},
+   {"cast": "Phyrexian Arena", "illegal": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Sol Ring"], "hand_count": 1}, {}]
+  }
+ },
+ {
+  "name": "ruling: a countered non-Phyrexian spell still counts toward the one-spell limit",
+  "players": [
+   {"hand": ["Grizzly Bears", "Grizzly Bears"], "battlefield": ["Phyrexian Censor", "Forest", "Forest", "Forest", "Forest"]},
+   {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Grizzly Bears"},
+   {"pass": true},
+   {"player": 1, "cast": "Counterspell", "targets": [{"stack": "Grizzly Bears"}]},
+   {"resolve": true},
+   {"cast": "Grizzly Bears", "illegal": true}
+  ],
+  "expect": {
+   "players": [{"graveyard_has": ["Grizzly Bears"], "hand_count": 1}, {"graveyard_has": ["Counterspell"]}]
+  }
+ },
+ {
+  "name": "ruling: a non-Phyrexian spell cast before Phyrexian Censor entered still counts for the turn",
+  "players": [
+   {"hand": ["Grizzly Bears", "Phyrexian Censor", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Grizzly Bears"},
+   {"resolve": true},
+   {"cast": "Phyrexian Censor"},
+   {"resolve": true},
+   {"cast": "Grizzly Bears", "illegal": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Grizzly Bears", "Phyrexian Censor"], "hand_count": 1}, {}]
+  }
+ },
+ {
+  "name": "ruling: Phyrexian Censor itself is not a non-Phyrexian spell, so a non-Phyrexian spell may follow it",
+  "players": [
+   {"hand": ["Phyrexian Censor", "Grizzly Bears"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest"]},
+   {}
+  ],
+  "steps": [
+   {"cast": "Phyrexian Censor"},
+   {"resolve": true},
+   {"cast": "Grizzly Bears"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [{"battlefield_has": ["Phyrexian Censor", "Grizzly Bears"]}, {}]
+  }
+ }
+]

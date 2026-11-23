@@ -1,0 +1,49 @@
+[
+ {
+  "name": "unblockable after casting two spells this turn",
+  "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Illvoi Infiltrator"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+    { "attack": [ { "card": "Illvoi Infiltrator", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Illvoi Infiltrator"], "hand_count": 1 }, { "life": 13 } ] }
+ },
+ {
+  "name": "blockable after only one spell",
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Illvoi Infiltrator"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+    { "attack": [ { "card": "Illvoi Infiltrator", "at": "p1" } ] },
+    { "block": [ { "blocker": "Grizzly Bears", "attacker": "Illvoi Infiltrator" } ] },
+    { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Illvoi Infiltrator"], "hand_count": 0 }, { "life": 17 } ] }
+ },
+ {
+  "name": "unblockable after two spells: the Bears' block on it is dropped, so the Hill Giant is blocked by nothing",
+  "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Illvoi Infiltrator", "Hill Giant"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+    { "attack": [ { "card": "Illvoi Infiltrator", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+    { "block": [ { "blocker": "Grizzly Bears", "attacker": "Illvoi Infiltrator" } ] },
+    { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Illvoi Infiltrator", "Hill Giant"] }, { "life": 10 } ] }
+ },
+ {
+  "name": "ruling: a countered spell still counts toward the two-spells condition",
+  "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Illvoi Infiltrator"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Grizzly Bears"] } ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"] },
+    { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+    { "resolve": true },
+    { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true },
+    { "attack": [ { "card": "Illvoi Infiltrator", "at": "p1" } ] },
+    { "block": [ { "blocker": "Grizzly Bears", "attacker": "Illvoi Infiltrator" } ], "illegal": true },
+    { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Illvoi Infiltrator"], "hand_count": 1 }, { "life": 16, "battlefield_has": ["Grizzly Bears"] } ] }
+ }
+]

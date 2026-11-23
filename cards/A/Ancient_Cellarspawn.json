@@ -1,0 +1,56 @@
+{
+  "name": "Ancient Cellarspawn",
+  "mana_cost": "{1}{B}{B}",
+  "types": ["Enchantment", "Creature"],
+  "subtypes": ["Horror"],
+  "power": 3,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CostChange",
+        "filter": {
+          "any_of": [
+            { "subtypes": ["Demon"] },
+            { "subtypes": ["Horror"] },
+            { "subtypes": ["Nightmare"] }
+          ]
+        },
+        "whose": "You",
+        "generic": -1
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "SpellCast",
+        "by": "You",
+        "filter": {
+          "mana_value_vs": {
+            "op": "Gt",
+            "amount": { "type": "ManaSpent", "of": { "type": "TriggerSource" } }
+          }
+        }
+      },
+      "targets": [
+        {
+          "what": { "type": "Player", "filter": "Opponent" },
+          "label": "target opponent"
+        }
+      ],
+      "effects": [
+        {
+          "type": "LoseLife",
+          "who": { "type": "Target", "idx": 0 },
+          "n": {
+            "type": "Minus",
+            "a": { "type": "ManaValueOf", "of": { "type": "TriggerSource" } },
+            "b": { "type": "ManaSpent", "of": { "type": "TriggerSource" } }
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Each spell you cast that's a Demon, Horror, or Nightmare costs {1} less to cast.\nWhenever you cast a spell, if the amount of mana spent to cast it was less than its mana value, target opponent loses life equal to the difference."
+}

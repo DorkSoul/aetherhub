@@ -1,0 +1,81 @@
+{
+  "name": "D-7 Battle Cruiser",
+  "mana_cost": "{1}{R}",
+  "types": ["Artifact"],
+  "subtypes": ["Spacecraft"],
+  "power": 3,
+  "toughness": 3,
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [],
+      "timing": "Sorcery",
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "controller": "You", "other": true, "tapped": false },
+          "min": 1,
+          "max": 1,
+          "then": [
+            { "type": "Tap", "what": { "type": "Remembered" } },
+            {
+              "type": "AddCounters",
+              "what": { "type": "This" },
+              "kind": "Charge",
+              "n": { "type": "StationValue", "of": { "type": "Remembered" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "BeginCombat", "whose": "You" },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Charge", "of": { "type": "This" } },
+        "cmp": { "op": "Ge", "n": 3 }
+      },
+      "effects": [
+        {
+          "type": "CreateToken",
+          "token": "Klingon Warrior",
+          "n": { "type": "Fixed", "n": 1 },
+          "controller": { "type": "You" }
+        },
+        {
+          "type": "Delayed",
+          "at": "NextEndStep",
+          "effects": [
+            {
+              "type": "Sacrifice",
+              "who": { "type": "You" },
+              "filter": { "name": "Klingon Warrior", "token": true, "controller": "You", "entered_this_turn": true }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Charge", "of": { "type": "This" } },
+        "cmp": { "op": "Ge", "n": 8 }
+      },
+      "effect": { "type": "AddType", "affects": { "this": true }, "types": ["Creature"], "subtypes": [] }
+    },
+    {
+      "type": "Static",
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "Charge", "of": { "type": "This" } },
+        "cmp": { "op": "Ge", "n": 8 }
+      },
+      "effect": { "type": "GrantKeyword", "affects": { "this": true }, "keyword": "Flying" }
+    }
+  ],
+  "oracle_text": "Station (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 8+.)\n3+ | At the beginning of combat on your turn, create a 2/1 red Klingon Warrior creature token with haste. Sacrifice it at the beginning of the next end step.\n8+ | Flying"
+}

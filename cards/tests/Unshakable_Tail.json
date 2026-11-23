@@ -1,0 +1,118 @@
+[
+  {
+    "name": "{2}, sacrifice a Clue: return from graveyard to hand",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Clue"], "graveyard": ["Unshakable Tail"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Unshakable Tail", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Unshakable Tail"], "battlefield_lacks": ["Clue"] }, {} ]
+    }
+  },
+  {
+    "name": "cannot return from graveyard without a Clue",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp"], "graveyard": ["Unshakable Tail"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Unshakable Tail", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Unshakable Tail"] }, {} ]
+    }
+  },
+  {
+    "name": "enters: surveil 1 (bin the top card)",
+    "players": [
+      { "hand": ["Unshakable Tail"], "battlefield": ["Swamp", "Swamp", "Swamp"], "library": ["Serra Angel", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unshakable Tail" },
+      { "resolve": true, "answers": [["Serra Angel"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Unshakable Tail"], "graveyard": ["Serra Angel"], "library_top": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "your upkeep: surveil 1 (keep the top card on top)",
+    "players": [
+      { "battlefield": ["Unshakable Tail"], "library": ["Serra Angel", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [[]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": [], "library_top": ["Serra Angel"] }, {} ]
+    }
+  },
+  {
+    "name": "creature cards milled from your library create a Clue",
+    "players": [
+      { "hand": ["Glimpse the Unthinkable"], "battlefield": ["Unshakable Tail", "Island", "Swamp"], "library": ["Grizzly Bears", "Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimpse the Unthinkable", "targets": ["p0"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Grizzly Bears", "Serra Angel"], "battlefield_has": ["Clue"] }, {} ]
+    }
+  },
+  {
+    "name": "milling only non-creature cards creates no Clue",
+    "players": [
+      { "hand": ["Glimpse the Unthinkable"], "battlefield": ["Unshakable Tail", "Island", "Swamp"], "library": ["Sol Ring", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimpse the Unthinkable", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Clue"], "graveyard_has": ["Sol Ring"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Clue sacrificed for its own draw cannot also pay for Unshakable Tail's return",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Clue"], "graveyard": ["Unshakable Tail"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Clue" },
+      { "resolve": true },
+      { "activate": "Unshakable Tail", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Unshakable Tail"], "battlefield_lacks": ["Clue"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: sacrificing a Clue to return Unshakable Tail also triggers 'whenever you sacrifice a Clue' (Ulvenwald Mysteries)",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Clue", "Ulvenwald Mysteries"], "graveyard": ["Unshakable Tail"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Unshakable Tail", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Unshakable Tail"], "battlefield_lacks": ["Clue"], "battlefield_has": ["Human Soldier"] }, {} ]
+    }
+  }
+]

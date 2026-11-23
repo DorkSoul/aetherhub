@@ -1,0 +1,66 @@
+[
+  { "name": "creates a tapped Powerstone for each other creature you control",
+    "players": [
+      { "hand": ["Great Desert Prospector"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Great Desert Prospector" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Great Desert Prospector", "Powerstone", "Powerstone"], "hand": [] },
+        {}
+      ],
+      "tapped": { "Powerstone": true }
+    }
+  },
+  { "name": "creates no Powerstone when you control no other creature",
+    "players": [
+      { "hand": ["Great Desert Prospector"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Great Desert Prospector" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Great Desert Prospector"], "battlefield_lacks": ["Powerstone"] },
+        {}
+      ]
+    }
+  },
+  { "name": "opposing creatures are not counted",
+    "players": [
+      { "hand": ["Great Desert Prospector"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Great Desert Prospector" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Powerstone"] },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: Powerstone mana can pay for an artifact spell",
+    "players": [ { "hand": ["Sol Ring"], "battlefield": ["Powerstone"] }, {} ],
+    "steps": [ { "cast": "Sol Ring" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Sol Ring"], "hand_count": 0 }, {} ] } },
+  { "name": "ruling: Powerstone mana can pay part of a nonartifact permanent's activated ability",
+    "players": [ { "battlefield": ["Soulreaper of Mogis", "Swamp", "Swamp", "Powerstone"] }, {} ],
+    "steps": [ { "activate": "Soulreaper of Mogis", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard": ["Soulreaper of Mogis"] }, {} ] } },
+  { "name": "ruling: Powerstone mana cannot pay for a nonartifact spell",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Powerstone"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }, {} ] } }
+]

@@ -1,0 +1,197 @@
+[
+  {
+    "name": "exiles target creature and its controller manifests the top card of their library",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        { "exile": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"], "library_count": 19 }
+      ]
+    }
+  },
+  {
+    "name": "needs a creature target",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "illegal": true }
+    ]
+  },
+  {
+    "name": "the manifested card goes to the controller of the exiled creature, not the caster",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 20 },
+        { "library_count": 19 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the manifested card is a colourless 2/2 creature",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "library": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Llanowar Elves": [2, 2] },
+      "colors": { "Llanowar Elves": [] },
+      "players": [ { "hand_count": 0 }, { "battlefield_has": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "ruling: a manifested double-faced creature turns face up on its front face for its mana cost",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Island"], "library": ["Delver of Secrets // Insectile Aberration"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Delver of Secrets // Insectile Aberration", "player": 1 }
+    ],
+    "expect": {
+      "pt": { "Delver of Secrets // Insectile Aberration": [1, 1] },
+      "players": [ {}, { "battlefield_has": ["Delver of Secrets // Insectile Aberration"] } ]
+    }
+  },
+  {
+    "name": "ruling: a manifested creature can still be turned face up after Turn to Frog removed its abilities",
+    "players": [
+      { "hand": ["Reality Shift", "Turn to Frog"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Forest"], "library": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Turn to Frog", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Llanowar Elves", "player": 1 }
+    ],
+    "expect": {
+      "subtypes": { "Llanowar Elves": ["Frog"] },
+      "pt": { "Llanowar Elves": [1, 1] },
+      "players": [ { "graveyard": ["Reality Shift", "Turn to Frog"] }, { "battlefield_has": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "ruling: turning a manifested creature face up does not change whether it is tapped",
+    "players": [
+      { "battlefield": ["Forest", { "name": "Llanowar Elves", "face_down": true, "tapped": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Llanowar Elves" }
+    ],
+    "expect": {
+      "tapped": { "Llanowar Elves": true },
+      "players": [ { "battlefield_has": ["Llanowar Elves"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a manifested creature can be turned face up while a spell is on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Forest", { "name": "Llanowar Elves", "face_down": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "activate": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Llanowar Elves": [1, 1] },
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "ruling: a spell targeting the manifested creature still applies after it is turned face up",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Forest", "Forest", { "name": "Llanowar Elves", "face_down": true }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Llanowar Elves"] },
+      { "activate": "Llanowar Elves" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Llanowar Elves": [4, 4] },
+      "players": [ { "graveyard": ["Giant Growth"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a manifested creature with morph can be turned face up for its morph cost",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Forest"], "library": ["Branchsnap Lorian"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Branchsnap Lorian", "player": 1 }
+    ],
+    "expect": {
+      "pt": { "Branchsnap Lorian": [4, 1] },
+      "players": [ {}, { "battlefield_has": ["Branchsnap Lorian"] } ]
+    }
+  },
+  {
+    "name": "ruling: a manifested instant cannot be turned face up",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Mountain", "Mountain"], "library": ["Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Lightning Bolt", "player": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: turning a manifested creature face up does not trigger its enters ability (Elvish Visionary draw)",
+    "players": [
+      { "hand": ["Reality Shift"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears", "Forest", "Forest"], "library": ["Elvish Visionary"] }
+    ],
+    "steps": [
+      { "cast": "Reality Shift", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Elvish Visionary", "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        { "hand_count": 0, "battlefield_has": ["Elvish Visionary"], "library_count": 20 }
+      ]
+    }
+  }
+]

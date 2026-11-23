@@ -1,0 +1,164 @@
+[
+  {
+    "name": "ruling: a -1/-1 from before the aura still applies after the 0/1 base is set",
+    "players": [
+      { "hand": ["Peppersmoke", "Retro-Mutation"], "battlefield": ["Swamp", "Island", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Peppersmoke", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Retro-Mutation", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": ["Hill Giant"] } ]
+    }
+  },
+  {
+    "name": "enchanted creature becomes a 0/1 Turtle base P/T",
+    "players": [
+      {
+        "hand": [
+          "Retro-Mutation"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Retro-Mutation",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Retro-Mutation"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        }
+      ],
+      "pt": {
+        "Hill Giant": [
+          0,
+          1
+        ]
+      },
+      "attached": {
+        "Retro-Mutation": "Hill Giant"
+      }
+    }
+  },
+  {
+    "name": "counters still apply on top of the base 0/1",
+    "players": [
+      {
+        "hand": [
+          "Retro-Mutation"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Hill Giant",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Retro-Mutation",
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Hill Giant": [
+          1,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "enchanted creature is a Turtle and loses its other creature types",
+    "players": [
+      { "hand": ["Retro-Mutation"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Retro-Mutation", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Hill Giant": ["Turtle"] },
+      "not_subtypes": { "Hill Giant": ["Giant"] }
+    }
+  },
+  {
+    "name": "enchanted creature loses its activated ability (Prodigal Sorcerer cannot ping)",
+    "players": [
+      { "hand": ["Retro-Mutation"], "battlefield": ["Island", "Island", "Island", "Prodigal Sorcerer"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Retro-Mutation", "targets": ["Prodigal Sorcerer"] },
+      { "resolve": true },
+      { "activate": "Prodigal Sorcerer", "ability": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }]
+    }
+  },
+  {
+    "name": "enchanted creature can't attack; the other attacker still connects",
+    "players": [
+      { "hand": ["Retro-Mutation"], "battlefield": ["Island", "Island", "Island", { "name": "Hill Giant", "counters": { "p1p1": 3 } }, "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Retro-Mutation", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 18 }],
+      "pt": { "Hill Giant": [3, 4] }
+    }
+  }
+]

@@ -1,0 +1,158 @@
+[
+  {
+    "name": "enchanted creature gets +2/+2",
+    "players": [
+      {
+        "hand": [
+          "Acquired Mutation"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Acquired Mutation",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "unenchanted attacker deals only its own power",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          {
+            "name": "Hill Giant",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature attacks: the defending player gets two rad counters",
+    "players": [
+      {
+        "hand": ["Acquired Mutation"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "sick": false}]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Acquired Mutation", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+      {"block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {"players": [{}, {"rad": 2}]}
+  },
+  {
+    "name": "an unenchanted attacker gives the defending player no rad counters",
+    "players": [{"battlefield": [{"name": "Hill Giant", "sick": false}]}, {}],
+    "steps": [
+      {"attack": [{"card": "Hill Giant", "at": "p1"}]},
+      {"block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {"players": [{}, {"rad": 0}]}
+  },
+  {
+    "name": "goaded: the enchanted creature must attack, so attacking with only the other creature is illegal",
+    "players": [ { "hand": ["Acquired Mutation"], "battlefield": ["Mountain", "Plains", "Plains", { "name": "Hill Giant", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Acquired Mutation", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ], "illegal": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 15, "rad": 2 } ] }
+  },
+  {
+    "name": "goaded: attacking with only the other creature still sends the enchanted Hill Giant (7 damage)",
+    "players": [ { "hand": ["Acquired Mutation"], "battlefield": ["Mountain", "Plains", "Plains", { "name": "Hill Giant", "sick": false }, { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Acquired Mutation", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 13, "rad": 2 } ] }
+  },
+  {"name": "ruling: a goaded creature that came under control this turn does not have to attack",
+   "players": [{"hand": ["Acquired Mutation"], "battlefield": ["Mountain", "Mountain", "Mountain", {"name": "Hill Giant", "sick": true}, {"name": "Grizzly Bears", "sick": false}]}, {}],
+   "steps": [
+     {"cast": "Acquired Mutation", "targets": ["Hill Giant"]},
+     {"resolve": true},
+     {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+     {"block": []},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{}, {"life": 18}]}},
+  {"name": "ruling: a player with rad counters mills that many at the start of their precombat main, losing 1 life per nonland",
+   "players": [{"hand": ["Acquired Mutation"], "battlefield": ["Mountain", "Mountain", "Mountain", {"name": "Grizzly Bears", "sick": false}]}, {"library": ["Island", "Lightning Bolt", "Forest"]}],
+   "steps": [
+     {"cast": "Acquired Mutation", "targets": ["Grizzly Bears"]},
+     {"resolve": true},
+     {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+     {"block": []},
+     {"advance_to": "Main2"},
+     {"advance_to": "Main1", "player": 1}
+   ],
+   "expect": {"players": [{}, {"life": 15, "rad": 1, "graveyard_has": ["Lightning Bolt", "Forest"]}]}}
+]

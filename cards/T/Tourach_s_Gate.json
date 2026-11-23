@@ -1,0 +1,53 @@
+{
+  "name": "Tourach's Gate",
+  "mana_cost": "{1}{B}{B}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "colors": ["B"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Land"], "controller": "You" } },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Sacrifice", "filter": { "subtypes": ["Thrull"], "controller": "You" }, "n": 1 }
+      ],
+      "effects": [
+        { "type": "AddCounters", "kind": "Time", "n": { "type": "Fixed", "n": 3 }, "what": { "type": "This" } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        { "type": "RemoveCounters", "kind": "Time", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } },
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Time", "at_least": 1 } },
+          "then": [
+            { "type": "Sacrifice", "who": { "type": "This" } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "TapPermanents", "filter": { "attached_by_source": true, "tapped": false }, "n": 1 }
+      ],
+      "effects": [
+        {
+          "type": "Pump",
+          "what": {
+            "type": "All",
+            "filter": { "types": ["Creature"], "controller": "You", "attacking": true },
+            "zone": "Battlefield"
+          },
+          "power": { "type": "Fixed", "n": 2 },
+          "toughness": { "type": "Fixed", "n": -1 },
+          "duration": "UntilEndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Enchant land you control\nSacrifice a Thrull: Put three time counters on this Aura.\nAt the beginning of your upkeep, remove a time counter from this Aura. If there are no time counters on this Aura, sacrifice it.\nTap enchanted land: Attacking creatures you control get +2/-1 until end of turn. Activate only if enchanted land is untapped."
+}

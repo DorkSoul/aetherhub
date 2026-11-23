@@ -1,0 +1,89 @@
+[
+ {
+  "name": "is sacrificed when the target of a spell",
+  "players": [
+   {
+    "battlefield": [
+     "Labyrinth Guardian"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "Labyrinth Guardian"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Labyrinth Guardian"
+     ]
+    },
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "embalm exiles the guardian from the graveyard and creates a 2/3 white Zombie Illusion Warrior token copy",
+  "players": [ { "battlefield": ["Island", "Island", "Island", "Island"], "graveyard": ["Labyrinth Guardian"] }, {} ],
+  "steps": [ { "activate": "Labyrinth Guardian", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Labyrinth Guardian"], "graveyard": [] }, {} ], "pt": { "Labyrinth Guardian": [2, 3] } }
+ },
+ {
+  "name": "ruling: an Aura spell targeting the guardian sacrifices it",
+  "players": [ { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains"] }, { "battlefield": ["Labyrinth Guardian"] } ],
+  "steps": [ { "cast": "Pacifism", "targets": ["Labyrinth Guardian"] }, { "resolve": true }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Pacifism"] }, { "battlefield_lacks": ["Labyrinth Guardian"], "graveyard": ["Labyrinth Guardian"] } ] }
+ },
+ {
+  "name": "ruling: countering the targeting spell still sacrifices the guardian",
+  "players": [ { "hand": ["Counterspell"], "battlefield": ["Labyrinth Guardian", "Island", "Island"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Labyrinth Guardian"] },
+   { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Labyrinth Guardian"], "graveyard": ["Labyrinth Guardian", "Counterspell"] }, { "graveyard": ["Lightning Bolt"] } ] }
+ },
+ {
+  "name": "ruling: embalm token copies only the printed characteristics, not the counters the guardian had",
+  "players": [ { "battlefield": [ { "name": "Labyrinth Guardian", "counters": { "PlusOnePlusOne": 2 } }, "Island", "Island", "Island", "Island" ] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Labyrinth Guardian"] }, { "resolve": true }, { "resolve": true }, { "activate": "Labyrinth Guardian", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Labyrinth Guardian"], "graveyard": [] }, {} ], "pt": { "Labyrinth Guardian": [2, 3] } }
+ },
+ {
+  "name": "ruling: embalm exiles the card as soon as the ability is activated, before it resolves",
+  "players": [ { "battlefield": ["Island", "Island", "Island", "Island"], "graveyard": ["Labyrinth Guardian"] }, {} ],
+  "steps": [ { "activate": "Labyrinth Guardian", "ability": 0 } ],
+  "expect": { "players": [ { "graveyard": [], "exile": ["Labyrinth Guardian"], "battlefield_lacks": ["Labyrinth Guardian"] }, {} ] }
+ }
+]

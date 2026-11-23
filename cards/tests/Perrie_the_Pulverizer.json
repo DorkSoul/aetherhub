@@ -1,0 +1,90 @@
+[
+  {
+    "name": "ETB puts a shield counter on target creature",
+    "players": [
+      { "hand": ["Perrie, the Pulverizer"], "battlefield": ["Forest", "Plains", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Perrie, the Pulverizer" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "shield": 1 } }
+    }
+  },
+  {
+    "name": "attack trigger gives target creature trample and +X/+X, X = distinct counter kinds among your permanents",
+    "players": [
+      {
+        "battlefield": [
+          "Perrie, the Pulverizer",
+          { "name": "Grizzly Bears", "counters": { "p1p1": 1 } },
+          { "name": "Forest", "counters": { "time": 2 } }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Perrie, the Pulverizer", "at": "p1" }] },
+      { "block": [] , "targets": ["Grizzly Bears"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Trample"] },
+      "pt": { "Grizzly Bears": [5, 5] }
+    }
+  },
+  {
+    "name": "no counters among your permanents: X is 0 and only trample is gained",
+    "players": [
+      { "battlefield": ["Perrie, the Pulverizer", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Perrie, the Pulverizer", "at": "p1" }] },
+      { "block": [], "targets": ["Grizzly Bears"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Trample"] },
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "counters on opponent's permanents do not count toward X",
+    "players": [
+      { "battlefield": ["Perrie, the Pulverizer", "Grizzly Bears"] },
+      { "battlefield": [{ "name": "Forest", "counters": { "charge": 1 } }] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Perrie, the Pulverizer", "at": "p1" }] },
+      { "block": [], "targets": ["Grizzly Bears"] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: with two shield counters, one damage event is prevented and only one counter is removed",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "shield": 2 } }] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt"] }, { "battlefield_has": ["Grizzly Bears"] }],
+      "counters": { "Grizzly Bears": { "shield": 1 } }
+    }
+  }
+]

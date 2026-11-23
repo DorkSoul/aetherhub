@@ -1,0 +1,108 @@
+[
+  {
+    "name": "{3}{W}: puts a loyalty counter on target Gideon planeswalker",
+    "players": [
+      { "battlefield": ["Gideon's Company", "Plains", "Plains", "Plains", "Plains", "Gideon, Ally of Zendikar"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon's Company", "ability": 0, "targets": ["Gideon, Ally of Zendikar"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Gideon, Ally of Zendikar": { "Loyalty": 5 } }
+    }
+  },
+  {
+    "name": "whenever you gain life, two +1/+1 counters on this creature",
+    "players": [
+      { "hand": ["Angel's Mercy"], "battlefield": ["Gideon's Company", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Angel's Mercy" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Gideon's Company": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: a loyalty counter from the Company does not stop Gideon's own loyalty ability",
+    "players": [
+      { "battlefield": ["Gideon's Company", "Plains", "Plains", "Plains", "Plains", "Gideon, Ally of Zendikar"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon's Company", "ability": 0, "targets": ["Gideon, Ally of Zendikar"] },
+      { "resolve": true },
+      { "activate": "Gideon, Ally of Zendikar", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Gideon, Ally of Zendikar": { "Loyalty": 6 } }
+    }
+  },
+  {
+    "name": "ruling: one life-gain event of 1 (Ajani's Welcome) triggers the Company once: two counters",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Gideon's Company", "Ajani's Welcome", "Forest", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Gideon's Company": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: one life-gain event of 2 (Battlefield Promotion) triggers the Company once: two counters",
+    "players": [
+      { "hand": ["Battlefield Promotion"], "battlefield": ["Gideon's Company", "Grizzly Bears", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Battlefield Promotion", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": { "Gideon's Company": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: a lifelink creature's combat damage is one life-gain event: two counters",
+    "players": [
+      { "battlefield": ["Gideon's Company", "Vampire Nighthawk"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Vampire Nighthawk", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 22 }, { "life": 18 } ],
+      "pt": { "Gideon's Company": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: lifelink damage simultaneous with lethal damage to the Company: no counters in time, it dies",
+    "players": [
+      { "battlefield": ["Gideon's Company", "Vampire Nighthawk"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Gideon's Company", "at": "p1" }, { "card": "Vampire Nighthawk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Gideon's Company" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 22, "graveyard_has": ["Gideon's Company"] }, { "life": 18, "graveyard_has": ["Hill Giant"] } ]
+    }
+  }
+]

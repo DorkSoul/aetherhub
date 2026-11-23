@@ -1,0 +1,88 @@
+{
+  "name": "Danse Macabre",
+  "mana_cost": "{3}{B}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "ClearRemembered" },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "token": false, "controller": "You" },
+          "min": 1,
+          "max": 1,
+          "then": []
+        },
+        { "type": "StoreRemembered", "slot": 1 },
+        {
+          "type": "Choose",
+          "who": { "type": "EachOpponent" },
+          "zone": "Battlefield",
+          "filter": { "types": ["Creature"], "token": false, "controller": "You" },
+          "min": 1,
+          "max": 1,
+          "accumulate": true,
+          "then": []
+        },
+        { "type": "Sacrifice", "who": { "type": "Remembered" } },
+        { "type": "StoreRemembered", "slot": 2 },
+        {
+          "type": "RollDie",
+          "sides": 20,
+          "outcomes": [
+            {
+              "min": 1,
+              "max": 20,
+              "effects": [
+                {
+                  "type": "If",
+                  "cond": {
+                    "type": "Compare",
+                    "a": {
+                      "type": "Plus",
+                      "a": { "type": "DieRoll" },
+                      "b": { "type": "ToughnessOf", "of": { "type": "Stored", "slot": 1 } }
+                    },
+                    "cmp": { "op": "Le", "n": 14 }
+                  },
+                  "then": [
+                    {
+                      "type": "Choose",
+                      "who": { "type": "You" },
+                      "zone": "Graveyard",
+                      "from": { "type": "EachPlayer" },
+                      "filter": { "types": ["Creature"], "among_stored": 2 },
+                      "min": 1,
+                      "max": 1,
+                      "then": [
+                        { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "under_your_control": true }
+                      ]
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "Choose",
+                      "who": { "type": "You" },
+                      "zone": "Graveyard",
+                      "from": { "type": "EachPlayer" },
+                      "filter": { "types": ["Creature"], "among_stored": 2 },
+                      "min": 0,
+                      "max": 2,
+                      "then": [
+                        { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "under_your_control": true }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Each player sacrifices a nontoken creature of their choice. Roll a d20 and add the toughness of the creature you sacrificed this way.\n1—14 | Return a creature card put into a graveyard this way to the battlefield under your control.\n15+ | Return up to two creature cards put into graveyards this way to the battlefield under your control."
+}

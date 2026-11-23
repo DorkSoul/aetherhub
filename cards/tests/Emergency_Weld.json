@@ -1,0 +1,159 @@
+[
+  {
+    "name": "returns a creature card and creates a Soldier token",
+    "players": [
+      {
+        "hand": [
+          "Emergency Weld"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Emergency Weld"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "battlefield_has": [
+            "Soldier 1-1 Colorless Artifact"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "an artifact creature card in your graveyard is a legal target",
+    "players": [
+      {
+        "hand": [
+          "Emergency Weld"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Enatu Golem"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Emergency Weld"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Enatu Golem"
+          ],
+          "battlefield_has": [
+            "Soldier 1-1 Colorless Artifact"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "no artifact or creature card in graveyard: cannot cast",
+    "players": [
+      {
+        "hand": [
+          "Emergency Weld"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ],
+        "graveyard": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Emergency Weld",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: cannot cast with only instant and land cards in graveyard",
+    "players": [
+      {
+        "hand": ["Emergency Weld"],
+        "battlefield": ["Swamp", "Swamp"],
+        "graveyard": ["Lightning Bolt", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Emergency Weld", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "graveyard": ["Lightning Bolt", "Forest"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: target gone as it tries to resolve (exiled in response): Emergency Weld is removed, no token",
+    "players": [
+      {
+        "hand": ["Emergency Weld"],
+        "battlefield": ["Swamp", "Swamp", "Tormod's Crypt"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Emergency Weld" },
+      { "activate": "Tormod's Crypt", "targets": ["p0"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "graveyard": ["Emergency Weld"],
+          "exile": ["Grizzly Bears", "Tormod's Crypt"],
+          "battlefield_lacks": ["Soldier 1-1 Colorless Artifact"]
+        },
+        {}
+      ],
+      "stack_empty": true
+    }
+  }
+]

@@ -1,0 +1,104 @@
+[
+  {
+    "name": "morbid: investigates when a creature died this turn",
+    "players": [
+      {
+        "hand": ["Terror", "Funnel-Web Recluse"],
+        "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Terror", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Funnel-Web Recluse" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Funnel-Web Recluse", "Clue"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "no investigate when no creature died this turn",
+    "players": [
+      {
+        "hand": ["Funnel-Web Recluse"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Funnel-Web Recluse" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Funnel-Web Recluse"], "battlefield_lacks": ["Clue"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Clue token has the artifact subtype Clue",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Lonis, Cryptozoologist", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Clue"] },
+        {}
+      ],
+      "subtypes": { "Clue": ["Clue"] }
+    }
+  },
+  {
+    "name": "ruling: a Clue can be the target of an artifact-destroying spell (Break Ties)",
+    "players": [
+      { "battlefield": ["Lonis, Cryptozoologist", "Forest", "Forest", "Island", "Island"], "hand": ["Grizzly Bears"] },
+      { "hand": ["Break Ties"], "battlefield": ["Plains", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Break Ties", "player": 1, "answers": [0], "targets": ["Clue"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Lonis, Cryptozoologist", "Grizzly Bears"], "battlefield_lacks": ["Clue"] },
+        { "graveyard": ["Break Ties"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Clue sacrificed to Lonis is gone, so its own draw ability cannot also use it",
+    "players": [
+      { "battlefield": ["Lonis, Cryptozoologist", "Clue", "Forest", "Forest", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Lonis, Cryptozoologist", "ability": 0, "targets": ["p1"], "answers": [1] },
+      { "activate": "Clue", "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Lonis, Cryptozoologist"], "battlefield_lacks": ["Clue"] },
+        {}
+      ]
+    }
+  }
+]

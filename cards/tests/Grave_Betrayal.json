@@ -1,0 +1,211 @@
+[
+  {
+    "name": "opponent's creature returns under your control with a +1/+1 counter at the end step",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Grave Betrayal", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Grizzly Bears", "Grave Betrayal"],
+          "graveyard": ["Lightning Bolt"]
+        },
+        {
+          "battlefield": [],
+          "graveyard": []
+        }
+      ],
+      "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "does not return before the next end step",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Grave Betrayal", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": ["Grizzly Bears"],
+          "graveyard": ["Lightning Bolt"]
+        },
+        {
+          "graveyard": ["Grizzly Bears"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "creature you control dying does not return",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Grave Betrayal", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": ["Grizzly Bears"],
+          "graveyard": ["Lightning Bolt", "Grizzly Bears"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the returned creature gains black and Zombie, keeping its colour and types",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears", "Grave Betrayal"] }, {}],
+      "colors": { "Grizzly Bears": ["B", "G"] },
+      "subtypes": { "Grizzly Bears": ["Bear", "Zombie"] }
+    }
+  },
+  {
+    "name": "ruling: the returned creature gets one +1/+1 counter, not the counters it had when it died",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain", "Mountain"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "p1p1": 2 } }] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears", "Grave Betrayal"] }, {}],
+      "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: a creature that dies during the end step does not return until the next end step",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Lightning Bolt"] }, { "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears"] }]
+    }
+  },
+  {
+    "name": "ruling: that creature returns at the next end step after the one it died in",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears", "Grave Betrayal"], "graveyard": ["Lightning Bolt"] },
+        {}
+      ],
+      "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a card that left the graveyard before the delayed trigger resolves does not return",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain"] },
+      { "hand": ["Raise Dead"], "battlefield": ["Swamp", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "cast": "Raise Dead", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grave Betrayal"] },
+        { "hand_count": 2, "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that is colourless becomes black only",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain"] },
+      { "battlefield": ["Ornithopter"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Ornithopter"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Ornithopter", "Grave Betrayal"] }, {}],
+      "colors": { "Ornithopter": ["B"] }
+    }
+  },
+  {
+    "name": "ruling: two creatures dying in one turn both return at the next end step",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Grave Betrayal", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears", "Hill Giant", "Grave Betrayal"] }, {}],
+      "pt": { "Grizzly Bears": [3, 3], "Hill Giant": [4, 4] }
+    }
+  }
+]

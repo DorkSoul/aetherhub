@@ -1,0 +1,60 @@
+[
+  {
+    "name": "exiles the top three cards of the library",
+    "players": [
+      { "hand": ["Ignite the Future"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears", "Lightning Bolt", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ignite the Future" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears", "Lightning Bolt", "Forest"], "graveyard": ["Ignite the Future"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cast from hand: the exiled cards keep their mana costs (no free cast)",
+    "players": [
+      { "hand": ["Ignite the Future"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears", "Lightning Bolt", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ignite the Future" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears", "Lightning Bolt", "Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback: the exiled cards can be cast without paying their mana costs",
+    "players": [
+      { "graveyard": ["Ignite the Future"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears", "Lightning Bolt", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Ignite the Future", "alt": 0 },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "exile": ["Ignite the Future", "Lightning Bolt", "Forest"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: an exiled land can be played only with the stack empty", "players": [ { "hand": ["Ignite the Future"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Grizzly Bears", "Lightning Bolt"] }, {} ], "steps": [ { "cast": "Ignite the Future" }, { "play_land": "Forest", "illegal": true }, { "resolve": true }, { "play_land": "Forest" } ], "expect": { "players": [ { "battlefield_has": ["Forest"], "exile": ["Grizzly Bears", "Lightning Bolt"] }, {} ] } },
+  { "name": "ruling: an exiled land cannot be played once this turn's land drop is used", "players": [ { "hand": ["Ignite the Future", "Mountain"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Grizzly Bears", "Lightning Bolt"] }, {} ], "steps": [ { "play_land": "Mountain" }, { "cast": "Ignite the Future" }, { "resolve": true }, { "play_land": "Forest", "illegal": true } ], "expect": { "players": [ { "exile": ["Forest", "Grizzly Bears", "Lightning Bolt"] }, {} ] } },
+  { "name": "ruling: an exiled sorcery cannot be cast while Ignite the Future is still on the stack", "players": [ { "hand": ["Ignite the Future"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island", "Island"], "library": ["Divination", "Forest", "Lightning Bolt"] }, {} ], "steps": [ { "cast": "Ignite the Future" }, { "cast": "Divination", "illegal": true }, { "resolve": true }, { "cast": "Divination" }, { "resolve": true } ], "expect": { "players": [ { "hand_count": 2, "exile": ["Forest", "Lightning Bolt"], "graveyard": ["Ignite the Future", "Divination"] }, {} ] } },
+  { "name": "ruling: flashback is a sorcery, so it cannot be cast while another spell is on the stack", "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Ignite the Future"] }, { "battlefield": ["Grizzly Bears"] } ], "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "cast": "Ignite the Future", "alt": 0, "illegal": true }, { "resolve": true } ], "expect": { "players": [ { "graveyard": ["Ignite the Future", "Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ] } }
+]

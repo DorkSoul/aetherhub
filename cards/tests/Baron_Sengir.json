@@ -1,0 +1,43 @@
+[
+ {
+  "name": "ruling: regeneration targets must be Vampires, so a non-Vampire creature is illegal", "players": [ { "battlefield": ["Baron Sengir", "Grizzly Bears"] }, {} ], "steps": [ { "activate": "Baron Sengir", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true } ], "expect": { "players": [ { "battlefield_has": ["Baron Sengir", "Grizzly Bears"] }, {} ] } },
+  {
+   "name": "creature it damaged dies: +2/+2 counter",
+  "players": [ { "battlefield": ["Baron Sengir"] }, { "battlefield": ["Wind Drake"] } ],
+  "steps": [
+   { "attack": [ { "card": "Baron Sengir", "at": "p1" } ] },
+   { "block": [ { "blocker": "Wind Drake", "attacker": "Baron Sengir" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "counters": { "Baron Sengir": { "p1p1": 2 } }, "pt": { "Baron Sengir": [7, 7] } }
+ },
+ {
+  "name": "creature not damaged by it dying gives nothing",
+  "players": [ { "battlefield": ["Baron Sengir", "Mountain"], "hand": ["Lightning Bolt"] }, { "battlefield": ["Wind Drake"] } ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Wind Drake"] },
+   { "resolve": true }
+  ],
+  "expect": { "pt": { "Baron Sengir": [5, 5] } }
+ },
+ {
+  "name": "regenerate another Vampire: lethal damage is replaced, the Vampire survives tapped",
+  "players": [ { "battlefield": ["Baron Sengir", "Vampire Nighthawk", "Mountain"], "hand": ["Lightning Bolt"] }, {} ],
+  "steps": [
+   { "activate": "Baron Sengir", "ability": 0, "targets": ["Vampire Nighthawk"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Vampire Nighthawk"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Vampire Nighthawk", "Baron Sengir"], "hand": [] }, {} ],
+   "tapped": { "Vampire Nighthawk": true, "Baron Sengir": true }
+  }
+ },
+ {
+  "name": "regeneration cannot target Baron Sengir itself",
+  "players": [ { "battlefield": ["Baron Sengir"] }, {} ],
+  "steps": [ { "activate": "Baron Sengir", "ability": 0, "illegal": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Baron Sengir"] }, {} ] }
+ }
+]

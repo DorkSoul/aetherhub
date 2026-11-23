@@ -1,0 +1,61 @@
+[
+  {
+    "name": "GGGG and tap: target creature gains forestwalk",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Forest", "Scarwood Hag"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Scarwood Hag", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["Forestwalk"] },
+      "tapped": { "Scarwood Hag": true }
+    }
+  },
+  {
+    "name": "only three Forests: the forestwalk ability is not payable",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Scarwood Hag"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Scarwood Hag", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield": ["Forest", "Forest", "Forest", "Scarwood Hag"] }, { "battlefield": ["Grizzly Bears"] } ],
+      "keywords": { "Grizzly Bears": [] }
+    }
+  },
+  {
+    "name": "{T}: your creature loses forestwalk, so the Forest-controlling opponent can block it",
+    "players": [
+      { "battlefield": ["Scarwood Hag", "Somberwald Dryad"] },
+      { "battlefield": ["Forest", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Scarwood Hag", "ability": 1, "targets": ["Somberwald Dryad"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Somberwald Dryad", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Somberwald Dryad" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Somberwald Dryad"], "life": 20 }, { "graveyard": ["Grizzly Bears"] } ],
+      "tapped": { "Scarwood Hag": true }
+    }
+  },
+  {
+    "name": "a tapped Hag cannot use the lose-forestwalk ability",
+    "players": [
+      { "battlefield": [ { "name": "Scarwood Hag", "tapped": true }, "Somberwald Dryad" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Scarwood Hag", "ability": 1, "targets": ["Somberwald Dryad"], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Scarwood Hag"] }, {} ], "tapped": { "Scarwood Hag": true } }
+  }
+]

@@ -1,0 +1,109 @@
+[
+  {
+    "name": "opponent cannot cast an instant in the owner's end step",
+    "players": [
+      { "battlefield": ["Teferi, Time Raveler"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Teferi, Time Raveler"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Teferi, Time Raveler"] },
+        { "hand": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "+1 lets you cast a sorcery at instant speed until your next turn",
+    "players": [
+      { "hand": ["Wrath of God"], "battlefield": ["Teferi, Time Raveler", "Plains", "Plains", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Teferi, Time Raveler", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "cast": "Wrath of God" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Wrath of God"] },
+        {}
+      ],
+      "counters": { "Teferi, Time Raveler": { "loyalty": 5 } }
+    }
+  },
+  {
+    "name": "without +1 a sorcery cannot be cast in the end step",
+    "players": [
+      { "hand": ["Wrath of God"], "battlefield": ["Teferi, Time Raveler", "Plains", "Plains", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "cast": "Wrath of God", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Wrath of God"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "-3 returns target creature to its owner's hand and draws a card",
+    "players": [
+      { "battlefield": ["Teferi, Time Raveler"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Teferi, Time Raveler", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Teferi, Time Raveler": { "loyalty": 1 } },
+      "players": [
+        { "hand_count": 1 },
+        { "hand": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the opponent's sorcery-speed restriction beats the flash permission from their own Teferi",
+    "players": [
+      { "battlefield": ["Teferi, Time Raveler"] },
+      { "hand": ["Wrath of God"], "battlefield": ["Teferi, Time Raveler", "Plains", "Plains", "Island", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "End" }, { "pass": true }, { "advance_to": "Main1" },
+      { "activate": "Teferi, Time Raveler", "ability": 0, "player": 1 }, { "resolve": true },
+      { "advance_to": "End" }, { "advance_to": "End" }, { "pass": true },
+      { "cast": "Wrath of God", "player": 1, "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Teferi, Time Raveler"] }, { "hand_count": 2 } ] }
+  },
+  {
+    "name": "ruling: -3 with no target still draws a card",
+    "players": [ { "battlefield": ["Teferi, Time Raveler"] }, {} ],
+    "steps": [ { "activate": "Teferi, Time Raveler", "ability": 1 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1 }, {} ], "counters": { "Teferi, Time Raveler": { "loyalty": 1 } } }
+  },
+  {
+    "name": "ruling: -3 whose target became illegal does not resolve, so no card is drawn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Teferi, Time Raveler", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "activate": "Teferi, Time Raveler", "ability": 1, "targets": ["p1:Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0, "graveyard_has": ["Lightning Bolt"] }, { "hand_count": 0, "graveyard_has": ["Grizzly Bears"] } ],
+      "counters": { "Teferi, Time Raveler": { "loyalty": 1 } }
+    }
+  }
+]

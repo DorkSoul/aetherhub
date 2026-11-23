@@ -1,0 +1,94 @@
+[
+  {
+    "name": "on your turn he is a 4/4 indestructible creature",
+    "players": [
+      { "battlefield": ["Gideon Blackblade"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Gideon Blackblade": [4, 4] },
+      "keywords": { "Gideon Blackblade": ["Indestructible"] }
+    }
+  },
+  {
+    "name": "damage to him on your turn is prevented",
+    "players": [
+      { "battlefield": ["Gideon Blackblade"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Gideon Blackblade"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Gideon Blackblade": { "Loyalty": 4 } },
+      "players": [
+        { "battlefield": ["Gideon Blackblade"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "+1: target creature gains your chosen vigilance",
+    "players": [
+      { "battlefield": ["Gideon Blackblade", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon Blackblade", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[0]] }
+    ],
+    "expect": {
+      "counters": { "Gideon Blackblade": { "Loyalty": 5 } },
+      "keywords": { "Grizzly Bears": ["Vigilance"] }
+    }
+  },
+  {
+    "name": "-6 exiles target nonland permanent (an opponent's creature)",
+    "players": [
+      { "battlefield": [{ "name": "Gideon Blackblade", "counters": { "Loyalty": 6 } }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Gideon Blackblade", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Gideon Blackblade"] }, { "exile": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "-6 is not activatable with only 4 loyalty",
+    "players": [
+      { "battlefield": ["Gideon Blackblade"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Gideon Blackblade", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gideon Blackblade"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  { "name": "on your turn Gideon is a Human Soldier in addition",
+    "players": [ { "battlefield": ["Gideon Blackblade"] }, {} ],
+    "steps": [],
+    "expect": { "subtypes": { "Gideon Blackblade": ["Human", "Soldier"] } } },
+  { "name": "on the opponent's turn Gideon is not a Human Soldier",
+    "players": [ { "battlefield": ["Gideon Blackblade"] }, {} ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1", "player": 1 } ],
+    "expect": { "not_subtypes": { "Gideon Blackblade": ["Human", "Soldier"] } } },
+  { "name": "ruling: counters stay on Gideon while he is not a creature",
+    "players": [ { "battlefield": [ { "name": "Gideon Blackblade", "counters": { "Loyalty": 4, "p1p1": 1 } } ] }, {} ],
+    "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1", "player": 1 } ],
+    "expect": { "counters": { "Gideon Blackblade": { "p1p1": 1 } }, "not_subtypes": { "Gideon Blackblade": ["Human", "Soldier"] } } },
+  { "name": "ruling: the +1 mode is chosen as the ability resolves (indestructible)",
+    "players": [ { "battlefield": ["Gideon Blackblade", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Gideon Blackblade", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [[2]] }
+    ],
+    "expect": { "counters": { "Gideon Blackblade": { "Loyalty": 5 } }, "keywords": { "Grizzly Bears": ["Indestructible"] } } }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "name": "ETB destroys a creature with power 4 or greater, no regeneration",
+    "players": [
+      { "hand": ["Big Game Hunter"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Serra Angel", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Big Game Hunter" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Big Game Hunter"] },
+        { "graveyard": ["Serra Angel"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "no legal target (power under 4): the ETB does nothing",
+    "players": [
+      { "hand": ["Big Game Hunter"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Big Game Hunter" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Big Game Hunter"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "madness: discarded to Wild Guess, pay B, cast it for its ETB",
+    "players": [
+      { "hand": ["Wild Guess", "Big Game Hunter"], "battlefield": ["Mountain", "Mountain", "Swamp"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Big Game Hunter"], "graveyard_has": ["Wild Guess"] },
+        { "graveyard": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card milled (not discarded) goes to the graveyard with no madness trigger",
+    "players": [
+      { "hand": ["Glimpse the Unthinkable"], "battlefield": ["Island", "Swamp"] },
+      { "library": ["Big Game Hunter"] }
+    ],
+    "steps": [
+      { "cast": "Glimpse the Unthinkable", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "stack_empty": true,
+      "players": [
+        {},
+        { "graveyard_has": ["Big Game Hunter"], "hand_count": 0 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: madness card discarded to Wild Guess, declined: it goes to the graveyard",
+    "players": [
+      { "hand": ["Wild Guess", "Big Game Hunter"], "battlefield": ["Mountain", "Mountain", "Swamp"] },
+      { "battlefield": ["Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Big Game Hunter"], "graveyard_has": ["Big Game Hunter", "Wild Guess"] },
+        { "battlefield_has": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast for its madness cost can be countered",
+    "players": [
+      { "hand": ["Wild Guess", "Big Game Hunter"], "battlefield": ["Mountain", "Mountain", "Swamp"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "pass": true },
+      { "player": 1, "pass": true, "answers": [true] },
+      { "pass": true, "answers": [true] },
+      { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Big Game Hunter" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Big Game Hunter"], "graveyard_has": ["Big Game Hunter"] },
+        { "graveyard_has": ["Counterspell"], "hand_count": 0 }
+      ]
+    }
+  }
+]

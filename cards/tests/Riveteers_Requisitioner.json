@@ -1,0 +1,232 @@
+[
+  {
+    "name": "dies (normal cast): creates a Treasure token",
+    "players": [
+      {
+        "hand": [
+          "Riveteers Requisitioner",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Riveteers Requisitioner"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Riveteers Requisitioner"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Riveteers Requisitioner"
+          ],
+          "battlefield_has": [
+            "Treasure"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "blitz: haste, sacrificed at the end step, death trigger draws a card and makes a Treasure",
+    "players": [
+      {
+        "hand": [
+          "Riveteers Requisitioner"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Riveteers Requisitioner",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Riveteers Requisitioner"
+          ],
+          "battlefield_has": [
+            "Treasure"
+          ],
+          "hand": [
+            "Lightning Bolt"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "normal cast stays on the battlefield at the end step, no blitz draw",
+    "players": [
+      {
+        "hand": [
+          "Riveteers Requisitioner"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Riveteers Requisitioner"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Riveteers Requisitioner"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature killed by a spell dies for any reason and its draw trigger draws a card",
+    "players": [
+      { "hand": ["Riveteers Requisitioner", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Riveteers Requisitioner", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Riveteers Requisitioner"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard_has": ["Riveteers Requisitioner", "Lightning Bolt"], "battlefield_has": ["Treasure"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitz cast is a cast and can be countered (Cancel on the spell)",
+    "players": [
+      { "hand": ["Riveteers Requisitioner"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Cancel"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Riveteers Requisitioner", "alt": 0 },
+      { "pass": true },
+      { "player": 1, "cast": "Cancel", "targets": [{ "stack": "Riveteers Requisitioner" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Riveteers Requisitioner"], "battlefield_lacks": ["Riveteers Requisitioner", "Treasure"] },
+        { "graveyard": ["Cancel"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a blitzed creature that already died is not sacrificed again at the end step",
+    "players": [
+      { "hand": ["Riveteers Requisitioner", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Riveteers Requisitioner", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Riveteers Requisitioner"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "library_top": ["Hill Giant"], "graveyard_has": ["Riveteers Requisitioner"], "battlefield_has": ["Treasure"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Clone copy of a blitzed creature is not sacrificed and its death does not draw",
+    "players": [
+      { "hand": ["Riveteers Requisitioner", "Clone"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Island"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Riveteers Requisitioner", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Clone" },
+      { "resolve": true, "answers": ["Riveteers Requisitioner"] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"], "graveyard_has": ["Riveteers Requisitioner"], "battlefield_has": ["Riveteers Requisitioner", "Treasure"] },
+        {}
+      ]
+    }
+  }
+]

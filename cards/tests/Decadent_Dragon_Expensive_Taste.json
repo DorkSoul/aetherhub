@@ -1,0 +1,118 @@
+[
+  {
+    "name": "Expensive Taste exiles the top two cards of the target opponent's library",
+    "players": [
+      { "hand": ["Decadent Dragon // Expensive Taste"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "library": ["Lightning Bolt", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Decadent Dragon // Expensive Taste", "face": true, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [] },
+        { "exile": ["Lightning Bolt", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "cards exiled by Expensive Taste can be cast later from exile",
+    "players": [
+      { "hand": ["Decadent Dragon // Expensive Taste"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"] },
+      { "library": ["Lightning Bolt", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Decadent Dragon // Expensive Taste", "face": true, "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17, "exile": ["Island"] }
+      ]
+    }
+  },
+  {
+    "name": "creature side: attacking creates a Treasure",
+    "players": [
+      { "battlefield": ["Decadent Dragon // Expensive Taste"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Decadent Dragon // Expensive Taste", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Decadent Dragon // Expensive Taste", "Treasure"] },
+        { "life": 16 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered Adventure is not exiled - its card goes to the graveyard and the creature can't be cast later",
+    "players": [
+      { "hand": ["Decadent Dragon // Expensive Taste"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Decadent Dragon // Expensive Taste", "face": true, "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Expensive Taste" }] },
+      { "resolve": true },
+      { "cast": "Decadent Dragon // Expensive Taste", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Decadent Dragon // Expensive Taste"], "exile": [] },
+        { "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled Adventure creature is cast at sorcery speed (illegal in combat, castable in Main2)",
+    "players": [
+      { "hand": ["Decadent Dragon // Expensive Taste"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Decadent Dragon // Expensive Taste", "face": true, "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Decadent Dragon // Expensive Taste", "illegal": true },
+      { "advance_to": "Main2" },
+      { "cast": "Decadent Dragon // Expensive Taste" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Decadent Dragon // Expensive Taste"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land exiled by Expensive Taste can be played from exile",
+    "players": [
+      { "hand": ["Decadent Dragon // Expensive Taste"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "library": ["Island", "Lightning Bolt"] }
+    ],
+    "steps": [
+      { "cast": "Decadent Dragon // Expensive Taste", "face": true, "targets": ["p1"] },
+      { "resolve": true },
+      { "play_land": "Island" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Island"] },
+        { "exile": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

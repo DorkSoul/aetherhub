@@ -1,0 +1,74 @@
+[
+  {
+    "name": "ETB adds BBB that pays for a spell in the same step",
+    "players": [
+      { "hand": ["Priest of Gix", "Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Priest of Gix" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Priest of Gix"], "hand": [] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "the BBB empties at the end of the step",
+    "players": [
+      { "hand": ["Priest of Gix", "Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Priest of Gix" },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Murder", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Murder"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the BBB is added even when nothing needs it",
+    "players": [
+      { "hand": ["Priest of Gix"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [ { "cast": "Priest of Gix" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "pool": { "B": 3 } }, {} ] }
+  },
+  {
+    "name": "ruling: the ETB mana trigger still resolves after Priest is killed in response",
+    "players": [
+      { "hand": ["Priest of Gix", "Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Priest of Gix" },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Priest of Gix"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Priest of Gix", "Murder"] },
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"] }
+      ]
+    }
+  }
+]

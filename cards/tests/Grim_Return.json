@@ -1,0 +1,46 @@
+[
+  {
+    "name": "returns a creature that died this turn under your control",
+    "players": [
+      { "hand": ["Grim Return", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Grim Return" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Lightning Bolt", "Grim Return"] }, { "graveyard": [] } ]
+    }
+  },
+  {
+    "name": "a creature put into a graveyard in an earlier turn is not a target",
+    "players": [
+      { "hand": ["Grim Return"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Grim Return", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": [] }, { "graveyard": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: a creature spell that was countered never entered the battlefield, so it is not a target",
+    "players": [
+      { "hand": ["Grizzly Bears", "Grim Return"], "battlefield": ["Forest", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "hand": ["Essence Scatter"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "player": 1, "cast": "Essence Scatter", "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "cast": "Grim Return", "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears"], "hand": ["Grim Return"] }, {} ] }
+  }
+]

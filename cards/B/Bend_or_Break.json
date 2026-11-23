@@ -1,0 +1,65 @@
+{
+  "name": "Bend or Break",
+  "mana_cost": "{3}{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "effects": [
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachPlayer" },
+          "effects": [
+            { "type": "ClearRemembered" },
+            {
+              "type": "Choose",
+              "who": { "type": "EachObject" },
+              "zone": "Battlefield",
+              "filter": { "types": ["Land"], "token": false, "controlled_by": { "type": "EachObject" } },
+              "min": 0,
+              "max": 99,
+              "then": []
+            },
+            { "type": "StoreRemembered", "slot": 0, "append": false },
+            { "type": "ChoosePlayer", "who": { "type": "EachObject" }, "opponent": true },
+            {
+              "type": "ChooseModes",
+              "choose_min": 1,
+              "choose_max": 1,
+              "chooser": { "type": "ChosenPlayer" },
+              "modes": [
+                {
+                  "text": "Destroy the chosen pile and tap the other pile.",
+                  "effects": [
+                    { "type": "Destroy", "what": { "type": "Stored", "slot": 0 } },
+                    {
+                      "type": "Tap",
+                      "what": {
+                        "type": "All",
+                        "filter": { "types": ["Land"], "token": false, "controlled_by": { "type": "EachObject" }, "not_among_stored": 0 }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "text": "Destroy the other pile and tap the chosen pile.",
+                  "effects": [
+                    {
+                      "type": "Destroy",
+                      "what": {
+                        "type": "All",
+                        "filter": { "types": ["Land"], "token": false, "controlled_by": { "type": "EachObject" }, "not_among_stored": 0 }
+                      }
+                    },
+                    { "type": "Tap", "what": { "type": "Stored", "slot": 0 } }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Each player separates all nontoken lands they control into two piles. For each player, one of their piles is chosen by one of their opponents of their choice. Destroy all lands in the chosen piles. Tap all lands in the other piles."
+}

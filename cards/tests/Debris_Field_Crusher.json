@@ -1,0 +1,56 @@
+[
+  {
+    "name": "ETB deals 3 damage to target creature, killing a 3/3",
+    "players": [ { "hand": ["Debris Field Crusher"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Debris Field Crusher" }, { "resolve": true, "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Debris Field Crusher"] }, { "graveyard": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "station taps another creature and adds charge counters equal to its power",
+    "players": [ { "battlefield": [ "Debris Field Crusher", "Grizzly Bears", "Forest" ] }, {} ],
+    "steps": [ { "activate": "Debris Field Crusher", "ability": 1 }, { "resolve": true } ],
+    "expect": { "tapped": { "Grizzly Bears": true, "Debris Field Crusher": false }, "counters": { "Debris Field Crusher": { "charge": 2 } } }
+  },
+  {
+    "name": "with no other creature to tap, station is not available",
+    "players": [ { "battlefield": [ "Debris Field Crusher", "Forest" ] }, {} ],
+    "steps": [ { "activate": "Debris Field Crusher", "ability": 1, "illegal": true } ],
+    "expect": { "counters": { "Debris Field Crusher": { "charge": 0 } } }
+  },
+  {
+    "name": "at 8 charge counters it is a 1/5 flying creature",
+    "players": [ { "battlefield": [ { "name": "Debris Field Crusher", "counters": { "charge": 8 } } ] }, {} ],
+    "steps": [],
+    "expect": { "pt": { "Debris Field Crusher": [1, 5] }, "keywords": { "Debris Field Crusher": ["Flying"] } }
+  },
+  {
+    "name": "below 8 charge counters it has no flying",
+    "players": [ { "battlefield": [ { "name": "Debris Field Crusher", "counters": { "charge": 7 } } ] }, {} ],
+    "steps": [],
+    "expect": { "counters": { "Debris Field Crusher": { "charge": 7 } } }
+  },
+  {
+    "name": "{1}{R}: gets +2/+0 until end of turn",
+    "players": [ { "battlefield": [ { "name": "Debris Field Crusher", "counters": { "charge": 8 } }, "Mountain", "Mountain" ] }, {} ],
+    "steps": [ { "activate": "Debris Field Crusher", "ability": 0 }, { "resolve": true } ],
+    "expect": { "pt": { "Debris Field Crusher": [3, 5] } }
+  },
+  {
+    "name": "the +2/+0 ability needs red mana",
+    "players": [ { "battlefield": [ { "name": "Debris Field Crusher", "counters": { "charge": 8 } }, "Forest", "Forest" ] }, {} ],
+    "steps": [ { "activate": "Debris Field Crusher", "ability": 0, "illegal": true } ],
+    "expect": { "pt": { "Debris Field Crusher": [1, 5] } }
+  },
+  {
+    "name": "at 8 charge counters it is a creature: Unsummon can return it to hand",
+    "players": [ { "hand": ["Unsummon"], "battlefield": ["Island", { "name": "Debris Field Crusher", "counters": { "charge": 8 } }] }, {} ],
+    "steps": [ { "cast": "Unsummon", "targets": ["Debris Field Crusher"] }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Debris Field Crusher"] }, {} ] }
+  },
+  {
+    "name": "at 7 charge counters it is not a creature: Unsummon has no legal target",
+    "players": [ { "hand": ["Unsummon"], "battlefield": ["Island", { "name": "Debris Field Crusher", "counters": { "charge": 7 } }] }, {} ],
+    "steps": [ { "cast": "Unsummon", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Unsummon"] }, {} ] }
+  }
+]

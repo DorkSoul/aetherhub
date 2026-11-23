@@ -1,0 +1,102 @@
+{
+  "name": "Aladdin's Lamp",
+  "mana_cost": "{10}",
+  "types": [
+    "Artifact"
+  ],
+  "oracle_text": "{X}, {T}: The next time you would draw a card this turn, instead look at the top X cards of your library, put all but one of them on the bottom of your library in a random order, then draw a card. X can't be 0.",
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [
+        {
+          "type": "Mana",
+          "cost": "{X}"
+        },
+        {
+          "type": "Tap"
+        },
+        {
+          "type": "XMinimum",
+          "n": 1
+        }
+      ],
+      "effects": [
+        {
+          "type": "AddReplacement",
+          "what": {
+            "type": "Draw",
+            "who": "You",
+            "once": true,
+            "instead": [
+              {
+                "type": "LookAtTop",
+                "who": {
+                  "type": "You"
+                },
+                "n": {
+                  "type": "X"
+                },
+                "filter": {},
+                "take": 99,
+                "rest": "Library",
+                "all": true,
+                "to": "Exile"
+              },
+              {
+                "type": "StoreRemembered",
+                "slot": 0,
+                "append": false
+              },
+              {
+                "type": "Choose",
+                "who": {
+                  "type": "You"
+                },
+                "zone": "Exile",
+                "filter": {
+                  "among_stored": 0
+                },
+                "min": 1,
+                "max": 1,
+                "then": [
+                  {
+                    "type": "Move",
+                    "what": {
+                      "type": "Remembered"
+                    },
+                    "to": "Library",
+                    "top_of_library": true
+                  }
+                ]
+              },
+              {
+                "type": "Move",
+                "what": {
+                  "type": "All",
+                  "zone": "Exile",
+                  "filter": {
+                    "among_stored": 0,
+                    "not_among_remembered": true
+                  }
+                },
+                "to": "Library",
+                "random_order": true
+              },
+              {
+                "type": "Draw",
+                "who": {
+                  "type": "You"
+                },
+                "n": {
+                  "type": "Fixed",
+                  "n": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

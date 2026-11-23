@@ -1,0 +1,139 @@
+[
+  {
+    "name": "legendary creature spell: creatures can convoke for its cost",
+    "players": [
+      {
+        "hand": ["Eirdu, Carrier of Dawn"],
+        "battlefield": ["We Ride at Dawn", "Plains", "Plains", "Plains", "Savannah Lions", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eirdu, Carrier of Dawn", "answers": [["Savannah Lions", "Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Eirdu, Carrier of Dawn"], "hand_count": 0 },
+        {}
+      ],
+      "tapped": { "Savannah Lions": true, "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "non-legendary creature spell gets no convoke",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["We Ride at Dawn", "Forest", "Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "your commander attacking creates a Mercenary token",
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "battlefield": ["We Ride at Dawn", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Savannah Lions", "at": "p1" }] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Mercenary 1-1 Red", "Savannah Lions"] },
+        {}
+      ]
+    },
+    "commander": true
+  },
+  {
+    "name": "a non-commander attacking creates no token",
+    "players": [
+      {
+        "battlefield": ["We Ride at Dawn", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Mercenary 1-1 Red"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a summoning-sick creature can still be tapped to convoke",
+    "players": [
+      {
+        "hand": ["Eirdu, Carrier of Dawn"],
+        "battlefield": ["We Ride at Dawn", "Plains", "Plains", "Plains", { "name": "Savannah Lions", "sick": true }, "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Eirdu, Carrier of Dawn", "answers": [["Savannah Lions", "Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Eirdu, Carrier of Dawn"], "hand_count": 0 },
+        {}
+      ],
+      "tapped": { "Savannah Lions": true, "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: two commanders attacking create two Mercenary tokens",
+    "players": [
+      {
+        "command": ["Savannah Lions", "Grizzly Bears"],
+        "battlefield": ["We Ride at Dawn", "Plains", "Plains", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Savannah Lions", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["We Ride at Dawn", "Plains", "Plains", "Forest", "Savannah Lions", "Grizzly Bears", "Mercenary 1-1 Red", "Mercenary 1-1 Red"] },
+        {}
+      ]
+    },
+    "commander": true
+  }
+]

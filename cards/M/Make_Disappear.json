@@ -1,0 +1,54 @@
+{
+  "name": "Make Disappear",
+  "mana_cost": "{1}{U}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Kicker",
+      "multi": false,
+      "cost": [
+        {
+          "type": "Sacrifice",
+          "n": 1,
+          "filter": {
+            "controller": "You",
+            "types": ["Creature"],
+            "power": { "op": "Ge", "n": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Spell", "filter": {} },
+          "label": "target spell"
+        }
+      ],
+      "effects": [
+        {
+          "type": "CounterSpell",
+          "what": { "type": "Target", "idx": 0 },
+          "unless_pays": [ { "type": "Mana", "cost": "{2}" } ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "from": "Stack",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "Kicked" },
+          "then": [
+            { "type": "CopySpell", "what": { "type": "TriggerSource" }, "new_targets": true }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Casualty 1 (As you cast this spell, you may sacrifice a creature with power 1 or greater. When you do, copy this spell and you may choose a new target for the copy.)\nCounter target spell unless its controller pays {2}."
+}

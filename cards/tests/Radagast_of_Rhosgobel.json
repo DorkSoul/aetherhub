@@ -1,0 +1,104 @@
+[
+  {
+    "name": "first creature spell each turn costs {2} less",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Radagast of Rhosgobel", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "second creature spell that turn gets no discount",
+    "players": [
+      { "hand": ["Grizzly Bears", "Grizzly Bears"], "battlefield": ["Radagast of Rhosgobel", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ]
+  },
+  {
+    "name": "first creature spell can be cast at instant speed",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Radagast of Rhosgobel", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "second creature spell cannot be cast at instant speed",
+    "players": [
+      { "hand": ["Grizzly Bears", "Grizzly Bears"], "battlefield": ["Radagast of Rhosgobel", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ]
+  },
+  {
+    "name": "ruling: colored mana is not reduced, so a {G}{G} creature needs two green sources",
+    "players": [ { "hand": ["Strangleroot Geist"], "battlefield": ["Radagast of Rhosgobel", "Forest"] }, {} ],
+    "steps": [ { "cast": "Strangleroot Geist", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Strangleroot Geist"] }, {} ] }
+  },
+  {
+    "name": "ruling: colored mana is not reduced: two green sources pay for {G}{G}",
+    "players": [ { "hand": ["Strangleroot Geist"], "battlefield": ["Radagast of Rhosgobel", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Strangleroot Geist" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Strangleroot Geist"], "hand": [] }, {} ] }
+  },
+  {
+    "name": "ruling: X is chosen before the discount, so X=2 Hangarback Walker costs {2} with Radagast",
+    "players": [ { "hand": ["Hangarback Walker"], "battlefield": ["Radagast of Rhosgobel", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Hangarback Walker", "answers": [2] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Hangarback Walker"], "hand": [] }, {} ], "pt": { "Hangarback Walker": [2, 2] } }
+  },
+  {
+    "name": "ruling: the Radagast spell itself is the first creature spell, so the next creature gets no discount",
+    "players": [ { "hand": ["Radagast of Rhosgobel", "Grizzly Bears"], "battlefield": ["Island", "Island", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Radagast of Rhosgobel" }, { "resolve": true }, { "cast": "Grizzly Bears", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Radagast of Rhosgobel"], "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: the discount applies to an alternative (evoke) cost: Briarhorn evoked for {G}",
+    "players": [ { "hand": ["Briarhorn"], "battlefield": ["Radagast of Rhosgobel", "Forest"] }, {} ],
+    "steps": [ { "cast": "Briarhorn", "alt": 0 }, { "resolve": true, "targets": ["Radagast of Rhosgobel"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Briarhorn"], "battlefield_has": ["Radagast of Rhosgobel"] }, {} ], "tapped": { "Forest": true } }
+  },
+  {
+    "name": "ruling: without Radagast the evoke cost {1}{G} needs two mana",
+    "players": [ { "hand": ["Briarhorn"], "battlefield": ["Forest"] }, {} ],
+    "steps": [ { "cast": "Briarhorn", "alt": 0, "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Briarhorn"] }, {} ] }
+  },
+  {
+    "name": "ruling: a sorcery cast first does not stop the next creature spell getting the discount",
+    "players": [ { "hand": ["Explore", "Grizzly Bears"], "battlefield": ["Radagast of Rhosgobel", "Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Explore" }, { "resolve": true }, { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Radagast of Rhosgobel"] }, {} ] }
+  }
+]

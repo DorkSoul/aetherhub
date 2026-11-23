@@ -1,0 +1,212 @@
+[
+  {
+    "name": "first combat damage to a player gives two rad counters (milled at their next precombat main)",
+    "players": [
+      {
+        "battlefield": [
+          "Vexing Radgull"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Vexing Radgull",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 19,
+          "graveyard": [
+            "Forest",
+            "Forest"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "a second hit on a player with rad counters proliferates instead: +1/+1 counter on their creature",
+    "players": [
+      {
+        "battlefield": [
+          "Vexing Radgull"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Vexing Radgull",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Vexing Radgull",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18,
+          "graveyard": [
+            "Forest",
+            "Forest"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 2
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "blocked: no combat damage to the player, so no rad counters (no mill)",
+    "players": [
+      {
+        "battlefield": [
+          "Vexing Radgull"
+        ]
+      },
+      {
+        "battlefield": [
+          "Vexing Gull"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Vexing Radgull",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Vexing Gull",
+            "attacker": "Vexing Radgull"
+          }
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20,
+          "graveyard": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: proliferate adds a rad counter to a player who has rad counters",
+    "players": [ { "battlefield": ["Vexing Radgull"] }, { "rad": 2, "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Vexing Radgull", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 19, "rad": 3 } ] }
+  },
+  {
+    "name": "ruling: choosing no players or permanents to proliferate means nothing gets a counter",
+    "players": [ { "battlefield": ["Vexing Radgull"] }, { "rad": 2, "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] } ],
+    "steps": [ { "attack": [ { "card": "Vexing Radgull", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2", "answers": [[]] } ],
+    "expect": { "players": [ {}, { "life": 19, "rad": 2 } ], "counters": { "Grizzly Bears": { "p1p1": 1 } } }
+  },
+  {
+    "name": "ruling: proliferate gives a player one counter of each kind they already have, rad and poison",
+    "players": [ { "battlefield": ["Vexing Radgull"] }, { "rad": 2, "poison": 1, "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "attack": [ { "card": "Vexing Radgull", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 19, "rad": 3, "poison": 2 } ] }
+  },
+  {
+    "name": "ruling: rad counters stay on the player until an effect removes them, through the end of the turn",
+    "players": [ { "battlefield": ["Vexing Radgull"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Vexing Radgull", "at": "p1" } ] }, { "block": [] }, { "advance_to": "End" } ],
+    "expect": { "players": [ {}, { "life": 19, "rad": 2 } ] }
+  }
+]

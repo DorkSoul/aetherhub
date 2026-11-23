@@ -1,0 +1,226 @@
+[
+ {
+  "name": "taps for one mana of any color",
+  "players": [
+   {
+    "battlefield": [
+     "Cultivator's Caravan"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Cultivator's Caravan",
+    "color": "U"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "U": 1
+     }
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "crewed by power 3, attacks as 5/5",
+  "players": [
+   {
+    "battlefield": [
+     "Cultivator's Caravan",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Cultivator's Caravan"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Cultivator's Caravan",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "crew 3 cannot be paid with power 2",
+  "players": [
+   {
+    "battlefield": [
+     "Cultivator's Caravan",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Cultivator's Caravan",
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: a non-creature Vehicle taps for mana the turn it came under your control",
+  "players": [
+   { "hand": ["Cultivator's Caravan"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Cultivator's Caravan" },
+   { "resolve": true },
+   { "tap_for_mana": "Cultivator's Caravan", "color": "U" }
+  ],
+  "expect": {
+   "players": [
+    { "pool": { "U": 1 }, "battlefield_has": ["Cultivator's Caravan"] },
+    {}
+   ],
+   "tapped": { "Cultivator's Caravan": true }
+  }
+ },
+ {
+  "name": "ruling: a Vehicle becoming a creature is not a creature entering (Impact Tremors does not trigger)",
+  "players": [
+   { "battlefield": ["Cultivator's Caravan", "Hill Giant", "Impact Tremors"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Cultivator's Caravan" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: control case - a creature entering does trigger Impact Tremors",
+  "players": [
+   { "hand": ["Grizzly Bears"], "battlefield": ["Impact Tremors", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {},
+    { "life": 19 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a summoning-sick creature can crew the Vehicle",
+  "players": [
+   { "battlefield": ["Cultivator's Caravan", { "name": "Hill Giant", "sick": true }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Cultivator's Caravan" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Cultivator's Caravan", "Hill Giant"] },
+    {}
+   ],
+   "pt": { "Cultivator's Caravan": [5, 5] },
+   "tapped": { "Hill Giant": true }
+  }
+ },
+ {
+  "name": "ruling: crewing an already crewed Vehicle again has no effect on its P/T",
+  "players": [
+   { "battlefield": ["Cultivator's Caravan", "Hill Giant", "Grizzly Bears", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Cultivator's Caravan" },
+   { "resolve": true },
+   { "activate": "Cultivator's Caravan" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Cultivator's Caravan", "Hill Giant", "Grizzly Bears"] },
+    {}
+   ],
+   "pt": { "Cultivator's Caravan": [5, 5] },
+   "tapped": { "Hill Giant": true }
+  }
+ },
+ {
+  "name": "ruling: destroying the crewed Vehicle does not untap or affect the creature that crewed it",
+  "players": [
+   { "hand": ["Naturalize"], "battlefield": ["Cultivator's Caravan", "Hill Giant", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Cultivator's Caravan" },
+   { "resolve": true },
+   { "cast": "Naturalize", "targets": ["Cultivator's Caravan"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Cultivator's Caravan"], "battlefield_has": ["Hill Giant"] },
+    {}
+   ],
+   "tapped": { "Hill Giant": true }
+  }
+ },
+ {
+  "name": "ruling: a crewed Vehicle can block on the opponent's turn once crewed in the declare attackers step",
+  "players": [
+   { "battlefield": ["Cultivator's Caravan", "Hill Giant"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+   { "pass": true, "player": 1 },
+   { "activate": "Cultivator's Caravan", "player": 0 },
+   { "resolve": true },
+   { "block": [ { "blocker": "Cultivator's Caravan", "attacker": "Grizzly Bears" } ], "player": 0 },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "life": 20 },
+    { "graveyard_has": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

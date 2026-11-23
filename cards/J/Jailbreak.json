@@ -1,0 +1,84 @@
+{
+  "name": "Jailbreak",
+  "mana_cost": "{1}{W}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Graveyard",
+            "filter": {
+              "any_of": [
+                { "types": ["Artifact"] },
+                { "types": ["Battle"] },
+                { "types": ["Creature"] },
+                { "types": ["Enchantment"] },
+                { "types": ["Land"] },
+                { "types": ["Planeswalker"] }
+              ]
+            },
+            "whose": "Opponent"
+          },
+          "label": "target permanent card in an opponent's graveyard"
+        }
+      ],
+      "effects": [
+        {
+          "type": "AddTrigger",
+          "bind": { "type": "Target", "idx": 0 },
+          "trigger": { "type": "EntersBattlefield", "filter": {} },
+          "once": true,
+          "until": "EndOfTurn",
+          "effects": [
+            {
+              "type": "Reflexive",
+              "targets": [
+                {
+                  "what": {
+                    "type": "CardIn",
+                    "zone": "Graveyard",
+                    "filter": {
+                      "any_of": [
+                        { "types": ["Artifact"] },
+                        { "types": ["Battle"] },
+                        { "types": ["Creature"] },
+                        { "types": ["Enchantment"] },
+                        { "types": ["Land"] },
+                        { "types": ["Planeswalker"] }
+                      ],
+                      "mana_value_vs": {
+                        "op": "Le",
+                        "amount": { "type": "ManaValueOf", "of": { "type": "TriggerObject" } }
+                      }
+                    },
+                    "whose": "You"
+                  },
+                  "min": 0,
+                  "max": 1,
+                  "label": "up to one target permanent card with equal or lesser mana value in your graveyard"
+                }
+              ],
+              "effects": [
+                {
+                  "type": "Move",
+                  "what": { "type": "Target", "idx": 0 },
+                  "to": "Battlefield",
+                  "under_your_control": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Move",
+          "what": { "type": "Target", "idx": 0 },
+          "to": "Battlefield"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Return target permanent card in an opponent's graveyard to the battlefield under their control. When that permanent enters, return up to one target permanent card with equal or lesser mana value from your graveyard to the battlefield."
+}

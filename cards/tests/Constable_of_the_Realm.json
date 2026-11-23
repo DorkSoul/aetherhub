@@ -1,0 +1,191 @@
+[
+  {
+    "name": "renown counters trigger exiles the other nonland permanent",
+    "players": [
+      {
+        "battlefield": [
+          "Constable of the Realm"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Constable of the Realm",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Constable of the Realm": {
+          "p1p1": 2
+        }
+      },
+      "players": [
+        {},
+        {
+          "life": 17,
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "lands are not exiled by the trigger",
+    "players": [
+      {
+        "battlefield": [
+          "Constable of the Realm"
+        ]
+      },
+      {
+        "battlefield": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Constable of the Realm",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Constable of the Realm": {
+          "p1p1": 2
+        }
+      },
+      "players": [
+        {},
+        {
+          "life": 17,
+          "battlefield_has": [
+            "Forest"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: combat damage to a blocking creature does not trigger renown",
+    "players": [
+      { "battlefield": ["Constable of the Realm"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Constable of the Realm", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Constable of the Realm" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Constable of the Realm": { "p1p1": 0 } },
+      "players": [
+        { "battlefield_has": ["Constable of the Realm"] },
+        { "life": 20, "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a +1/+1 counter from another source also triggers the exile",
+    "players": [
+      { "hand": ["Battlegrowth"], "battlefield": ["Constable of the Realm", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Battlegrowth", "targets": ["Constable of the Realm"] },
+      { "resolve": true, "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Constable of the Realm": { "p1p1": 1 } },
+      "players": [
+        { "graveyard": ["Battlegrowth"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Constable leaves before its exile trigger resolves, so the target is not exiled",
+    "players": [
+      { "hand": ["Battlegrowth"], "battlefield": ["Constable of the Realm", "Forest"] },
+      { "hand": ["Unsummon"], "battlefield": ["Grizzly Bears", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Battlegrowth", "targets": ["Constable of the Realm"] },
+      { "resolve": true, "targets": ["p1:Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Constable of the Realm"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Constable of the Realm"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Unsummon"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Aura on the exiled permanent goes to its owner's graveyard",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Constable of the Realm", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Constable of the Realm", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2", "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "counters": { "Constable of the Realm": { "p1p1": 2 } },
+      "players": [
+        { "graveyard": ["Pacifism"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

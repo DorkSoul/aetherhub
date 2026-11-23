@@ -1,0 +1,74 @@
+[
+  {
+    "name": "commander creature you own has menace and +X/+0 for creature cards in your graveyard",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Test Commander"],
+        "battlefield": ["Criminal Past", "Forest", "Forest", "Forest", "Forest"],
+        "graveyard": ["Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Test Commander" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Test Commander": [5, 3] },
+      "keywords": { "Test Commander": ["Menace"] }
+    }
+  },
+  {
+    "name": "a non-commander creature gets nothing",
+    "players": [
+      { "battlefield": ["Criminal Past", "Grizzly Bears"], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: two commanders both get menace and the bonus, and the second one pays no tax",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Test Commander", "Savannah Lions"],
+        "battlefield": ["Criminal Past", "Forest", "Forest", "Forest", "Forest", "Plains", "Plains", "Plains"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Test Commander" },
+      { "resolve": true },
+      { "cast": "Savannah Lions" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Test Commander", "Savannah Lions"] }, {}],
+      "pt": { "Test Commander": [4, 3], "Savannah Lions": [3, 1] },
+      "keywords": { "Test Commander": ["Menace"], "Savannah Lions": ["Menace"] }
+    }
+  },
+  {
+    "name": "ruling: Command Beacon lets you choose which of two commanders goes to hand",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Test Commander", "Savannah Lions"],
+        "battlefield": ["Command Beacon", "Criminal Past"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Command Beacon", "ability": 0 },
+      { "resolve": true, "answers": ["Savannah Lions"] }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Savannah Lions"], "graveyard_has": ["Command Beacon"] }, {}]
+    }
+  }
+]

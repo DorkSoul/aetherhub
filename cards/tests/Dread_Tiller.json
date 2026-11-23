@@ -1,0 +1,72 @@
+[
+  {
+    "name": "ETB puts a -1/-1 counter on the target creature",
+    "players": [
+      { "hand": ["Dread Tiller"], "battlefield": ["Swamp", "Forest", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Dread Tiller" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dread Tiller"] },
+        { "battlefield": ["Grizzly Bears"] }
+      ],
+      "pt": { "Grizzly Bears": [1, 1] }
+    }
+  },
+  {
+    "name": "creature with a -1/-1 counter dies: may put a land from hand onto the battlefield tapped",
+    "players": [
+      { "hand": ["Lightning Bolt", "Forest"], "battlefield": ["Mountain", "Dread Tiller"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "m1m1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest", "Dread Tiller"], "hand_count": 0, "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ],
+      "tapped": { "Forest": true }
+    }
+  },
+  {
+    "name": "declining the may leaves the land in hand",
+    "players": [
+      { "hand": ["Lightning Bolt", "Forest"], "battlefield": ["Mountain", "Dread Tiller"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "counters": { "m1m1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "creature without a -1/-1 counter dies: no land is put onto the battlefield",
+    "players": [
+      { "hand": ["Lightning Bolt", "Forest"], "battlefield": ["Mountain", "Dread Tiller"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

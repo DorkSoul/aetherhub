@@ -1,0 +1,44 @@
+{
+  "name": "Surge to Victory",
+  "mana_cost": "{4}{R}{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": {
+            "type": "CardIn",
+            "zone": "Graveyard",
+            "filter": { "any_of": [ { "types": ["Instant"] }, { "types": ["Sorcery"] } ] },
+            "whose": "You"
+          },
+          "label": "target instant or sorcery card in your graveyard"
+        }
+      ],
+      "effects": [
+        { "type": "Move", "what": { "type": "Targets" }, "to": "Exile", "remember": true },
+        {
+          "type": "Pump",
+          "what": { "type": "All", "filter": { "types": ["Creature"], "controller": "You" } },
+          "power": { "type": "ManaValueOf", "of": { "type": "Remembered" } },
+          "toughness": { "type": "Fixed", "n": 0 },
+          "duration": "UntilEndOfTurn"
+        },
+        {
+          "type": "AddTrigger",
+          "trigger": {
+            "type": "CombatDamageToPlayer",
+            "filter": { "types": ["Creature"], "controller": "You" },
+            "batched": false
+          },
+          "effects": [
+            { "type": "CastFree", "what": { "type": "Remembered" }, "may": true, "copy": true }
+          ],
+          "until": "EndOfTurn"
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Exile target instant or sorcery card from your graveyard. Creatures you control get +X/+0 until end of turn, where X is that card's mana value. Whenever a creature you control deals combat damage to a player this turn, copy the exiled card. You may cast the copy without paying its mana cost."
+}

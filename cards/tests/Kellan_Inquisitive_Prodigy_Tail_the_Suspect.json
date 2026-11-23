@@ -1,0 +1,208 @@
+[
+  {
+    "name": "attack: destroys my own artifact and I draw a card because I controlled it",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Kellan, Inquisitive Prodigy // Tail the Suspect", "sick": false },
+          "Sol Ring"
+        ],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kellan, Inquisitive Prodigy // Tail the Suspect", "at": "p1" } ] },
+      { "block": [], "targets": ["Sol Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Kellan, Inquisitive Prodigy // Tail the Suspect"],
+          "graveyard": ["Sol Ring"],
+          "hand": ["Grizzly Bears"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "attack: destroys an opponent's artifact and I draw nothing",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Kellan, Inquisitive Prodigy // Tail the Suspect", "sick": false }
+        ],
+        "library": ["Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Sol Ring"]
+      }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kellan, Inquisitive Prodigy // Tail the Suspect", "at": "p1" } ] },
+      { "block": [], "targets": ["Sol Ring"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Kellan, Inquisitive Prodigy // Tail the Suspect"],
+          "hand": []
+        },
+        {
+          "graveyard": ["Sol Ring"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "attack: indestructible artifact I control stays, but I still draw because I control it",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Kellan, Inquisitive Prodigy // Tail the Suspect", "sick": false },
+          "Darksteel Plate"
+        ],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kellan, Inquisitive Prodigy // Tail the Suspect", "at": "p1" } ] },
+      { "block": [], "targets": ["Darksteel Plate"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Kellan, Inquisitive Prodigy // Tail the Suspect", "Darksteel Plate"],
+          "hand": ["Grizzly Bears"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "attack with no artifact on the battlefield: nothing is destroyed and no card is drawn",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Kellan, Inquisitive Prodigy // Tail the Suspect", "sick": false }
+        ],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Kellan, Inquisitive Prodigy // Tail the Suspect", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": ["Kellan, Inquisitive Prodigy // Tail the Suspect"],
+          "hand": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Tail the Suspect (adventure): Investigate makes a Clue and allows an extra land drop",
+    "players": [
+      {
+        "hand": ["Kellan, Inquisitive Prodigy // Tail the Suspect", "Forest", "Forest"],
+        "battlefield": ["Forest", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kellan, Inquisitive Prodigy // Tail the Suspect", "face": true },
+      { "resolve": true },
+      { "play_land": "Forest" },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": ["Kellan, Inquisitive Prodigy // Tail the Suspect"],
+          "battlefield_has": ["Clue"],
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: two Tail the Suspects allow three land drops in one turn, not four",
+    "players": [
+      {
+        "hand": ["Kellan, Inquisitive Prodigy // Tail the Suspect", "Kellan, Inquisitive Prodigy // Tail the Suspect", "Forest", "Forest", "Forest", "Forest"],
+        "battlefield": ["Forest", "Forest", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kellan, Inquisitive Prodigy // Tail the Suspect", "face": true },
+      { "resolve": true },
+      { "cast": "Kellan, Inquisitive Prodigy // Tail the Suspect", "face": true },
+      { "resolve": true },
+      { "play_land": "Forest" },
+      { "play_land": "Forest" },
+      { "play_land": "Forest" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "battlefield_has": ["Clue"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a non-token Clue (Wrench) can be sacrificed to pay for Alquist Proft's ability",
+    "players": [
+      {
+        "battlefield": ["Alquist Proft, Master Sleuth", "Wrench", "Plains", "Island", "Island", "Forest"],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Alquist Proft, Master Sleuth", "ability": 0, "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Alquist Proft, Master Sleuth"], "graveyard": ["Wrench"], "hand": ["Grizzly Bears"], "life": 21 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Clue sacrificed to pay its own ability cannot also pay for Alquist Proft",
+    "players": [
+      {
+        "battlefield": ["Alquist Proft, Master Sleuth", "Clue", "Forest", "Mountain", "Plains", "Island", "Island"],
+        "library": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Forest" },
+      { "tap_for_mana": "Mountain" },
+      { "activate": "Clue", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Alquist Proft, Master Sleuth", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Alquist Proft, Master Sleuth"], "battlefield_lacks": ["Clue"], "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

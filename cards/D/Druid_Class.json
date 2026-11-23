@@ -1,0 +1,66 @@
+{
+  "name": "Druid Class",
+  "mana_cost": "{1}{G}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "types": ["Land"], "controller": "You" } },
+      "effects": [
+        { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "timing": "Sorcery",
+      "cost": [{ "type": "Mana", "cost": "{2}{G}" }],
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 0 } },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Level", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Static",
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Ge", "n": 1 } },
+      "effect": { "type": "AdditionalLandDrop", "n": 1 }
+    },
+    {
+      "type": "Activated",
+      "timing": "Sorcery",
+      "cost": [{ "type": "Mana", "cost": "{4}{G}" }],
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 1 } },
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Level", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterAdded", "kind": "Level", "filter": { "this": true } },
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Level", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 2 } },
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Land"], "controller": "You" } }, "label": "target land you control" }
+      ],
+      "effects": [
+        {
+          "type": "Animate",
+          "what": { "type": "Target", "idx": 0 },
+          "add_types": ["Creature"],
+          "keywords": ["Haste"],
+          "duration": "Forever"
+        },
+        {
+          "type": "GrantStatic",
+          "what": { "type": "Target", "idx": 0 },
+          "duration": "Forever",
+          "effect": {
+            "type": "CdaPT",
+            "power": { "type": "Count", "filter": { "types": ["Land"], "controller": "You" } },
+            "toughness": { "type": "Count", "filter": { "types": ["Land"], "controller": "You" } }
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nLandfall — Whenever a land you control enters, you gain 1 life.\n{2}{G}: Level 2\nYou may play an additional land on each of your turns.\n{4}{G}: Level 3\nWhen this Class becomes level 3, target land you control becomes a creature with haste and \"This creature's power and toughness are each equal to the number of lands you control.\" It's still a land."
+}

@@ -1,0 +1,240 @@
+[
+ {
+  "name": "cast without attacking this turn: a 5/4",
+  "players": [
+   {
+    "hand": [
+     "Cruel Administrator"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Cruel Administrator"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Cruel Administrator": [
+     5,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "cast after attacking this turn (raid): a 6/5",
+  "players": [
+   {
+    "hand": [
+     "Cruel Administrator"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Mountain",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "cast": "Cruel Administrator"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Cruel Administrator": [
+     6,
+     5
+    ]
+   }
+  }
+ },
+ {
+  "name": "attacking creates a 2/2 red Soldier token",
+  "players": [
+   {
+    "battlefield": [
+     "Cruel Administrator"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Cruel Administrator",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Soldier 2-2 Red Firebending"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the token's attack adds R until end of combat",
+  "players": [
+   {
+    "battlefield": [
+     "Soldier 2-2 Red Firebending"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Soldier 2-2 Red Firebending",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "pool": {
+      "R": 1
+     }
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no attack, no token",
+  "players": [
+   {
+    "battlefield": [
+     "Cruel Administrator"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Soldier 2-2 Red Firebending"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: firebending mana lasts until end of combat, so it can be spent after combat damage",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Soldier 2-2 Red Firebending"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier 2-2 Red Firebending", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "EndCombat" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [] },
+    { "life": 15 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: firebending mana is lost when leaving combat, so it cannot be spent in the second main phase",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Soldier 2-2 Red Firebending"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier 2-2 Red Firebending", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Lightning Bolt"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: each firebending trigger adds its own R (two attacking Soldiers add two R)",
+  "players": [
+   { "battlefield": ["Soldier 2-2 Red Firebending", "Soldier 2-2 Red Firebending"] },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Soldier 2-2 Red Firebending", "at": "p1" }, { "card": "Soldier 2-2 Red Firebending", "at": "p1" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "pool": { "R": 2 } },
+    {}
+   ]
+  }
+ }
+]

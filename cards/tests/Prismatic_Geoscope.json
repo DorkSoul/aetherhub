@@ -1,0 +1,157 @@
+[
+ {
+  "name": "pays for a spell with its mana",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Prismatic Geoscope",
+     "Plains",
+     "Island",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "graveyard": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "enters tapped",
+  "players": [
+   {
+    "hand": [
+     "Prismatic Geoscope"
+    ],
+    "battlefield": [
+     "Plains",
+     "Island",
+     "Mountain",
+     "Forest",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Prismatic Geoscope"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Plains",
+      "Island",
+      "Mountain",
+      "Forest",
+      "Swamp",
+      "Prismatic Geoscope"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Prismatic Geoscope": true
+   }
+  }
+ },
+ {
+  "name": "taps for one mana per basic land type: three types pay for a 3-cost spell",
+  "players": [
+   { "hand": ["Darksteel Myr"], "battlefield": ["Prismatic Geoscope", {"name": "Plains", "tapped": true}, {"name": "Island", "tapped": true}, {"name": "Mountain", "tapped": true}] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Prismatic Geoscope", "ability": 0 },
+   { "resolve": true, "answers": ["W", "U", "R"] },
+   { "cast": "Darksteel Myr" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Darksteel Myr", "Prismatic Geoscope"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "two basic land types make only two mana: a 3-cost spell is not castable",
+  "players": [
+   { "hand": ["Darksteel Myr"], "battlefield": ["Prismatic Geoscope", {"name": "Plains", "tapped": true}, {"name": "Island", "tapped": true}] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Prismatic Geoscope", "ability": 0 },
+   { "resolve": true, "answers": ["W", "U"] },
+   { "cast": "Darksteel Myr", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Darksteel Myr"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: with no basic land types the ability can be activated but adds no mana",
+  "players": [ { "battlefield": ["Prismatic Geoscope"] }, {} ],
+  "steps": [ { "activate": "Prismatic Geoscope", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Prismatic Geoscope"] }, {} ], "tapped": { "Prismatic Geoscope": true } }
+ },
+ {
+  "name": "ruling: the colours need not match the basic land types (Plains and Island make R and G)",
+  "players": [ { "hand": ["Lightning Bolt", "Llanowar Elves"], "battlefield": ["Prismatic Geoscope", {"name": "Plains", "tapped": true}, {"name": "Island", "tapped": true}] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "activate": "Prismatic Geoscope", "ability": 0 }, { "resolve": true, "answers": ["R", "G"] },
+             { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true },
+             { "cast": "Llanowar Elves" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Llanowar Elves"] }, { "graveyard_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: five basic land types give five mana, so a 5-cost spell is castable",
+  "players": [ { "hand": ["Prismatic Geoscope"], "battlefield": ["Prismatic Geoscope", {"name": "Plains", "tapped": true}, {"name": "Island", "tapped": true}, {"name": "Swamp", "tapped": true}, {"name": "Mountain", "tapped": true}, {"name": "Forest", "tapped": true}] }, {} ],
+  "steps": [ { "activate": "Prismatic Geoscope", "ability": 0 }, { "resolve": true, "answers": ["W", "U", "B", "R", "G"] },
+             { "cast": "Prismatic Geoscope" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Prismatic Geoscope", "Prismatic Geoscope"], "hand_count": 0 }, {} ] }
+ },
+ {
+  "name": "ruling: several Forests count as one basic land type (Island and Forest make two mana)",
+  "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Prismatic Geoscope", {"name": "Island", "tapped": true}, {"name": "Forest", "tapped": true}, {"name": "Forest", "tapped": true}, {"name": "Forest", "tapped": true}] }, {} ],
+  "steps": [ { "activate": "Prismatic Geoscope", "ability": 0 }, { "resolve": true, "answers": ["U", "G"] },
+             { "cast": "Grizzly Bears" }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Prismatic Geoscope"] }, {} ] }
+ }
+]

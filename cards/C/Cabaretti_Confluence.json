@@ -1,0 +1,71 @@
+{
+  "name": "Cabaretti Confluence",
+  "mana_cost": "{3}{R}{G}{W}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 3,
+      "choose_max": 3,
+      "allow_repeat": true,
+      "modes": [
+        {
+          "text": "Create a token that's a copy of target creature you control. It gains haste. Sacrifice it at the beginning of the next end step.",
+          "targets": [
+            {
+              "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } },
+              "label": "target creature you control"
+            }
+          ],
+          "effects": [
+            { "type": "CopyPermanent", "what": { "type": "Target", "idx": 0 }, "n": { "type": "Fixed", "n": 1 }, "except": [ { "type": "AddKeyword", "keyword": "Haste" } ] },
+            {
+              "type": "Delayed",
+              "at": "NextEndStep",
+              "effects": [
+                { "type": "Sacrifice", "who": { "type": "Remembered" } }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Exile target artifact or enchantment.",
+          "targets": [
+            {
+              "what": { "type": "Permanent", "filter": { "types": ["Artifact", "Enchantment"] } },
+              "label": "target artifact or enchantment"
+            }
+          ],
+          "effects": [
+            { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Exile" }
+          ]
+        },
+        {
+          "text": "Creatures target player controls get +1/+1 and gain first strike until end of turn.",
+          "targets": [
+            {
+              "what": { "type": "Player", "filter": "Any" },
+              "label": "target player"
+            }
+          ],
+          "effects": [
+            {
+              "type": "Pump",
+              "what": { "type": "All", "filter": { "types": ["Creature"], "controlled_by": { "type": "Target", "idx": 0 } }, "zone": "Battlefield" },
+              "power": { "type": "Fixed", "n": 1 },
+              "toughness": { "type": "Fixed", "n": 1 },
+              "duration": "UntilEndOfTurn"
+            },
+            {
+              "type": "GrantKeyword",
+              "what": { "type": "All", "filter": { "types": ["Creature"], "controlled_by": { "type": "Target", "idx": 0 } }, "zone": "Battlefield" },
+              "keyword": "FirstStrike",
+              "duration": "UntilEndOfTurn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• Create a token that's a copy of target creature you control. It gains haste. Sacrifice it at the beginning of the next end step.\n• Exile target artifact or enchantment.\n• Creatures target player controls get +1/+1 and gain first strike until end of turn."
+}

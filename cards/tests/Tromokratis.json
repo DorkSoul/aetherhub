@@ -1,0 +1,117 @@
+[
+  {
+    "name": "blocked by all of the defender's creatures",
+    "players": [
+      { "battlefield": ["Tromokratis"] },
+      { "battlefield": ["Grizzly Bears", "Savannah Lions"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Tromokratis", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Tromokratis" }, { "blocker": "Savannah Lions", "attacker": "Tromokratis" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Tromokratis"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "a partial block is not allowed",
+    "players": [
+      { "battlefield": ["Tromokratis"] },
+      { "battlefield": ["Grizzly Bears", "Savannah Lions"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Tromokratis", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Tromokratis" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Tromokratis"] },
+        { "life": 12, "battlefield": ["Grizzly Bears", "Savannah Lions"] }
+      ]
+    }
+  },
+  {
+    "name": "hexproof while not attacking or blocking",
+    "players": [
+      { "battlefield": ["Tromokratis"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Tromokratis"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Tromokratis"] },
+        { "battlefield": ["Swamp", "Island"] }
+      ]
+    }
+  },
+  {
+    "name": "loses hexproof while attacking",
+    "players": [
+      { "battlefield": ["Tromokratis"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Tromokratis", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Tromokratis"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Tromokratis"] },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    }
+  },
+  {
+    "name": "a partial block by Grizzly Bears is dropped, so Tromokratis connects for 8",
+    "players": [
+      { "battlefield": ["Tromokratis", "Savannah Lions"] },
+      { "battlefield": ["Grizzly Bears", "Wind Drake"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Tromokratis", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Tromokratis" }, { "blocker": "Wind Drake", "attacker": "Savannah Lions" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 12 } ] }
+  },
+  {
+    "name": "ruling: a tapped creature of the defender cannot block, so a partial block by its untapped creature is dropped",
+    "players": [
+      { "battlefield": ["Tromokratis"] },
+      { "battlefield": [{ "name": "Grizzly Bears", "tapped": true }, "Savannah Lions"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Tromokratis", "at": "p1" } ] },
+      { "block": [ { "blocker": "Savannah Lions", "attacker": "Tromokratis" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 12 }
+      ]
+    }
+  }
+]

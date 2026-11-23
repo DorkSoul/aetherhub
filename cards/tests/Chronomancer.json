@@ -1,0 +1,77 @@
+[
+  {
+    "name": "sacrifice another artifact to draw a card",
+    "players": [
+      { "battlefield": ["Chronomancer", "Chronomaton", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chronomancer", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "battlefield_lacks": ["Chronomaton"], "graveyard_has": ["Chronomaton"], "battlefield_has": ["Chronomancer"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot sacrifice itself: no other artifact means no activation",
+    "players": [
+      { "battlefield": ["Chronomancer", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Chronomancer", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Chronomancer"], "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "unearth {2}{B}: returns it with haste, so it can attack this turn",
+    "players": [ { "graveyard": ["Chronomancer"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Chronomancer", "ability": 1 },
+      { "resolve": true },
+      { "attack": [ { "card": "Chronomancer", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Chronomancer"] }, { "life": 19 } ] }
+  },
+  {
+    "name": "ruling: unearth creature killed by Shock is exiled instead of going to the graveyard",
+    "players": [ { "graveyard": ["Chronomancer"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, { "hand": ["Shock"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "activate": "Chronomancer", "ability": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Chronomancer"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Chronomancer"], "battlefield_lacks": ["Chronomancer"] }, { "graveyard": ["Shock"] } ] }
+  },
+  {
+    "name": "ruling: unearth creature is exiled at the beginning of the end step",
+    "players": [ { "graveyard": ["Chronomancer"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Chronomancer", "ability": 1 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": { "players": [ { "exile": ["Chronomancer"], "battlefield_lacks": ["Chronomancer"] }, {} ] }
+  },
+  {
+    "name": "ruling: unearth fizzles if the card leaves the graveyard before the ability resolves",
+    "players": [ { "graveyard": ["Chronomancer"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Tormod's Crypt"] } ],
+    "steps": [
+      { "activate": "Chronomancer", "ability": 1 },
+      { "pass": true },
+      { "activate": "Tormod's Crypt", "player": 1, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Chronomancer"], "exile": ["Chronomancer"] }, { "graveyard": ["Tormod's Crypt"] } ] }
+  }
+]

@@ -1,0 +1,68 @@
+[
+  { "name": "creates a Clue when it dies",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Knowledge Seeker"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Knowledge Seeker"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Clue"], "graveyard": ["Lightning Bolt", "Knowledge Seeker"] }, {} ] }
+  },
+  { "name": "second card drawn in a turn puts a +1/+1 counter on it",
+    "players": [ { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island", "Knowledge Seeker"] }, {} ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "counters": { "Knowledge Seeker": { "p1p1": 1 } }, "pt": { "Knowledge Seeker": [3, 2] } }
+  },
+  { "name": "the first card drawn in a turn does nothing",
+    "players": [ { "hand": ["Opt"], "battlefield": ["Island", "Knowledge Seeker"], "library": ["Mountain", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Opt" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": { "pt": { "Knowledge Seeker": [2, 1] } }
+  },
+  { "name": "ruling: a creature entering after the second draw of the turn cannot trigger that turn",
+    "players": [ { "hand": ["Divination", "Knowledge Seeker"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "cast": "Knowledge Seeker" },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Knowledge Seeker": [2, 1] } }
+  },
+  { "name": "ruling: a third card drawn in the turn adds no counter",
+    "players": [ { "hand": ["Divination", "Opt"], "battlefield": ["Island", "Island", "Island", "Island", "Knowledge Seeker"], "library": ["Mountain", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Opt" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": { "pt": { "Knowledge Seeker": [3, 2] } }
+  },
+  { "name": "ruling: cards put into hand by Dark Bargain are not drawn",
+    "players": [ { "hand": ["Dark Bargain"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Knowledge Seeker"], "library": ["Island", "Mountain", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Dark Bargain" },
+      { "resolve": true, "answers": [["Island", "Mountain"]] }
+    ],
+    "expect": { "pt": { "Knowledge Seeker": [2, 1] } }
+  },
+  { "name": "ruling: a Clue token is an artifact with the draw ability",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Knowledge Seeker"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Knowledge Seeker"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Clue", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1, "battlefield_lacks": ["Clue"] }, {} ] }
+  }
+]

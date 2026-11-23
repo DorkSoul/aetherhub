@@ -1,0 +1,86 @@
+[
+  {
+    "name": "after {1}, a creature without haste can't block it",
+    "players": [
+      { "battlefield": ["Gingerbrute", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Gingerbrute", "ability": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Gingerbrute", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Gingerbrute" }], "illegal": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 19 }] }
+  },
+  {
+    "name": "a creature with haste can still block it",
+    "players": [
+      { "battlefield": ["Gingerbrute", "Mountain"] },
+      { "battlefield": ["Raging Goblin"] }
+    ],
+    "steps": [
+      { "activate": "Gingerbrute", "ability": 0 },
+      { "resolve": true },
+      { "attack": [{ "card": "Gingerbrute", "at": "p1" }] },
+      { "block": [{ "blocker": "Raging Goblin", "attacker": "Gingerbrute" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{ "graveyard": ["Gingerbrute"] }, { "life": 20, "graveyard": ["Raging Goblin"] }] }
+  },
+  {
+    "name": "without the activation, a normal creature can block",
+    "players": [
+      { "battlefield": ["Gingerbrute"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Gingerbrute", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Gingerbrute" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{ "graveyard": ["Gingerbrute"] }, { "life": 20 }] }
+  },
+  {
+    "name": "{2},{T}, sacrifice: gain 3 life",
+    "players": [
+      { "battlefield": ["Gingerbrute", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gingerbrute", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [{ "life": 23, "graveyard": ["Gingerbrute"] }, {}] }
+  },
+  {
+    "name": "ruling: once blocked by a creature without haste, the {1} ability does not unblock Gingerbrute",
+    "players": [ { "battlefield": ["Gingerbrute", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "attack": [{ "card": "Gingerbrute", "at": "p1" }] },
+      { "block": [{ "blocker": "Grizzly Bears", "attacker": "Gingerbrute" }] },
+      { "activate": "Gingerbrute", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Gingerbrute"] }, { "life": 20, "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a non-token Food creature (Gingerbrute) can be sacrificed to Maraleaf Rider's Food cost",
+    "players": [ { "battlefield": ["Maraleaf Rider", "Gingerbrute"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Maraleaf Rider", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Maraleaf Rider"], "graveyard": ["Gingerbrute"] }, {} ] }
+  },
+  {
+    "name": "ruling: a Food pays one cost only: once Gingerbrute is sacrificed, a second Maraleaf Rider activation is illegal",
+    "players": [ { "battlefield": ["Maraleaf Rider", "Gingerbrute"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "activate": "Maraleaf Rider", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Maraleaf Rider", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Maraleaf Rider"], "graveyard": ["Gingerbrute"] }, {} ] }
+  }
+]

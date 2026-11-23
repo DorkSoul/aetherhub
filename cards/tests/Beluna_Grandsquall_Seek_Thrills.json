@@ -1,0 +1,75 @@
+[
+  {
+    "name": "your creature spell with an Adventure costs {1} less",
+    "players": [
+      {
+        "hand": ["Bonecrusher Giant // Stomp"],
+        "battlefield": ["Beluna Grandsquall // Seek Thrills", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bonecrusher Giant // Stomp" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Bonecrusher Giant // Stomp"] }, {} ] }
+  },
+  {
+    "name": "the reduction is only {1}: one Mountain is not enough",
+    "players": [
+      {
+        "hand": ["Bonecrusher Giant // Stomp"],
+        "battlefield": ["Beluna Grandsquall // Seek Thrills", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bonecrusher Giant // Stomp", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Bonecrusher Giant // Stomp"] }, {} ] }
+  },
+  {
+    "name": "a spell without an Adventure costs full price",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Beluna Grandsquall // Seek Thrills", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "Seek Thrills: mills seven and puts the milled Adventure cards into hand",
+    "players": [
+      {
+        "hand": ["Beluna Grandsquall // Seek Thrills"],
+        "battlefield": ["Forest", "Island", "Mountain", "Mountain", "Mountain"],
+        "library": ["Bonecrusher Giant // Stomp", "Forest", "Grizzly Bears", "Island", "Swamp", "Mountain", "Plains", "Lightning Bolt", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Beluna Grandsquall // Seek Thrills", "face": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Bonecrusher Giant // Stomp"], "graveyard": ["Forest", "Grizzly Bears", "Island", "Swamp", "Mountain", "Plains"] }, {} ]
+    }
+  },
+  { "name": "ruling: a permanent spell cast from exile after its Adventure can be cast in a main phase with an empty stack",
+    "players": [ { "hand": ["Bonecrusher Giant // Stomp"], "battlefield": ["Beluna Grandsquall // Seek Thrills", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Bonecrusher Giant // Stomp", "face": true, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "cast": "Bonecrusher Giant // Stomp" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Bonecrusher Giant // Stomp"], "hand_count": 0 }, { "graveyard_has": ["Grizzly Bears"] } ] } },
+  { "name": "ruling: the exiled Adventure creature cannot be cast during combat",
+    "players": [ { "hand": ["Bonecrusher Giant // Stomp"], "battlefield": ["Beluna Grandsquall // Seek Thrills", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Bonecrusher Giant // Stomp", "face": true, "targets": ["Grizzly Bears"] }, { "resolve": true }, { "advance_to": "BeginCombat" }, { "cast": "Bonecrusher Giant // Stomp", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Bonecrusher Giant // Stomp"], "hand_count": 0 }, { "graveyard_has": ["Grizzly Bears"] } ] } },
+  { "name": "ruling: an Adventure spell that fizzles goes to the graveyard, not exile",
+    "players": [ { "hand": ["Bonecrusher Giant // Stomp", "Lightning Bolt"], "battlefield": ["Beluna Grandsquall // Seek Thrills", "Mountain", "Mountain", "Mountain", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Bonecrusher Giant // Stomp", "face": true, "targets": ["Grizzly Bears"] }, { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Bonecrusher Giant // Stomp", "Lightning Bolt"], "battlefield_lacks": ["Bonecrusher Giant // Stomp"] }, { "graveyard_has": ["Grizzly Bears"] } ] } }
+]

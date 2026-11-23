@@ -1,0 +1,89 @@
+[
+  {
+    "name": "normal cost: opponent mills half their library rounded up (21 cards mills 11)",
+    "players": [
+      { "hand": ["Kitsune's Technique"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "library": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Kitsune's Technique", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Kitsune's Technique"] },
+        { "library_count": 10 }
+      ]
+    }
+  },
+  {
+    "name": "sneak: return an unblocked attacker in the declare blockers step to cast for {1}{U}",
+    "players": [
+      { "hand": ["Kitsune's Technique"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }, "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "cast": "Kitsune's Technique", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "graveyard": ["Kitsune's Technique"] },
+        { "life": 20, "library_count": 10 }
+      ]
+    }
+  },
+  {
+    "name": "sneak is illegal outside the declare blockers step (no attacker to return)",
+    "players": [
+      { "hand": ["Kitsune's Technique"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }, "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kitsune's Technique", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "library_count": 20 }
+      ]
+    }
+  },
+  {
+    "name": "sneak is illegal when the only attacker is blocked",
+    "players": [
+      { "hand": ["Kitsune's Technique"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }, "Island", "Island"] },
+      { "battlefield": ["Craw Wurm"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Craw Wurm", "attacker": "Grizzly Bears" }] },
+      { "cast": "Kitsune's Technique", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "library_count": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: sneak cannot be cast before the opponent has declared blockers",
+    "players": [
+      { "hand": ["Kitsune's Technique"], "battlefield": [{ "name": "Grizzly Bears", "sick": false }, "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "cast": "Kitsune's Technique", "alt": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1 },
+        { "life": 20, "library_count": 20 }
+      ]
+    }
+  }
+]

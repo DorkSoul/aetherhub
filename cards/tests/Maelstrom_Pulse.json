@@ -1,0 +1,90 @@
+[
+  {
+    "name": "destroys the target and every other permanent with its name",
+    "players": [
+      { "hand": ["Maelstrom Pulse"], "battlefield": ["Swamp", "Forest", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears", "Grizzly Bears", "Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Maelstrom Pulse", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Maelstrom Pulse", "Grizzly Bears"] },
+        { "graveyard": ["Grizzly Bears", "Grizzly Bears"], "battlefield_has": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "permanents with other names are not destroyed",
+    "players": [
+      { "hand": ["Maelstrom Pulse"], "battlefield": ["Swamp", "Forest", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Maelstrom Pulse", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Maelstrom Pulse"] },
+        { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Serra Angel"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot target a land",
+    "players": [
+      { "hand": ["Maelstrom Pulse"], "battlefield": ["Swamp", "Forest", "Plains"] },
+      { "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Maelstrom Pulse", "targets": ["p1:Forest"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Maelstrom Pulse"] },
+        { "battlefield_has": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: target made illegal in response, Pulse does nothing, the other same-name Bears survive",
+    "players": [
+      { "hand": ["Maelstrom Pulse"], "battlefield": ["Swamp", "Forest", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Maelstrom Pulse", "targets": ["p1:Grizzly Bears"] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Maelstrom Pulse"] },
+        { "graveyard_has": ["Lightning Bolt", "Grizzly Bears"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Pulse on one token destroys every other token with the same name (Soldier)",
+    "players": [
+      { "hand": ["Maelstrom Pulse", "Raise the Alarm"], "battlefield": ["Plains", "Plains", "Plains", "Swamp", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Raise the Alarm" },
+      { "resolve": true },
+      { "cast": "Maelstrom Pulse", "targets": ["Soldier"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Maelstrom Pulse"], "battlefield_lacks": ["Soldier"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

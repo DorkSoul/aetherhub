@@ -1,0 +1,58 @@
+[
+ { "name": "ETB may search for a planeswalker card into hand",
+   "players": [
+     { "hand": ["Djeru, With Eyes Open"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"], "library": ["Test Walker"] },
+     {}
+   ],
+   "steps": [
+     { "cast": "Djeru, With Eyes Open" },
+     { "resolve": true, "answers": [true, "Test Walker"] }
+   ],
+   "expect": {
+     "players": [
+       { "hand": ["Test Walker"], "battlefield_has": ["Djeru, With Eyes Open"] },
+       {}
+     ]
+   } },
+ { "name": "declining the search leaves the hand empty",
+   "players": [
+     { "hand": ["Djeru, With Eyes Open"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"], "library": ["Test Walker"] },
+     {}
+   ],
+   "steps": [
+     { "cast": "Djeru, With Eyes Open" },
+     { "resolve": true, "answers": [false] }
+   ],
+   "expect": {
+     "players": [
+       { "hand": [], "hand_count": 0, "battlefield_has": ["Djeru, With Eyes Open"] },
+       {}
+     ]
+   } },
+ { "name": "damage to a planeswalker you control is reduced by 1: Shock leaves Test Walker at 3 loyalty",
+   "players": [
+     { "battlefield": ["Djeru, With Eyes Open", "Test Walker"] },
+     { "hand": ["Shock"], "battlefield": ["Mountain"] }
+   ],
+   "steps": [
+     { "pass": true },
+     { "cast": "Shock", "player": 1, "targets": ["Test Walker"] },
+     { "pass": true, "player": 1 },
+     { "resolve": true }
+   ],
+   "expect": {
+     "players": [
+       { "battlefield": ["Djeru, With Eyes Open", "Test Walker"] },
+       { "graveyard": ["Shock"] }
+     ],
+     "counters": { "Test Walker": { "loyalty": 3 } }
+   } },
+ { "name": "ruling: each source's damage is prevented separately: two attackers at a walker have 2 damage prevented in total",
+   "players": [ { "battlefield": ["Grizzly Bears", "Hill Giant"] },
+                { "battlefield": ["Djeru, With Eyes Open", "Test Walker"] } ],
+   "steps": [ { "attack": [ { "card": "Grizzly Bears", "at": "Test Walker" }, { "card": "Hill Giant", "at": "Test Walker" } ] },
+              { "block": [] },
+              { "advance_to": "Main2" } ],
+   "expect": { "players": [ {}, { "battlefield_has": ["Djeru, With Eyes Open", "Test Walker"] } ],
+               "counters": { "Test Walker": { "loyalty": 1 } } } }
+]

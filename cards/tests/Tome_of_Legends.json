@@ -1,0 +1,311 @@
+[
+  {
+    "name": "enters with a page counter",
+    "players": [
+      {
+        "hand": [
+          "Tome of Legends"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Tome of Legends"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Tome of Legends": {
+          "page": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "your commander entering puts a page counter on it",
+    "commander": true,
+    "players": [
+      {
+        "command": [
+          "Savannah Lions"
+        ],
+        "battlefield": [
+          {
+            "name": "Tome of Legends",
+            "counters": {
+              "page": 1
+            }
+          },
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Savannah Lions"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Tome of Legends": {
+          "page": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "a non-commander creature entering does not add a page counter",
+    "players": [
+      {
+        "hand": [
+          "Savannah Lions"
+        ],
+        "battlefield": [
+          {
+            "name": "Tome of Legends",
+            "counters": {
+              "page": 1
+            }
+          },
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Savannah Lions"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Tome of Legends": {
+          "page": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "attacking with your commander puts a page counter on it",
+    "commander": true,
+    "players": [
+      {
+        "command": [
+          "Savannah Lions"
+        ],
+        "battlefield": [
+          {
+            "name": "Tome of Legends",
+            "counters": {
+              "page": 0
+            }
+          },
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Savannah Lions"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "attack": [
+          {
+            "card": "Savannah Lions",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Tome of Legends": {
+          "page": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "{1}, {T}, remove a page counter: draw a card",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Tome of Legends",
+            "counters": {
+              "page": 1
+            }
+          },
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Tome of Legends",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ],
+      "counters": {
+        "Tome of Legends": {
+          "page": 0
+        }
+      },
+      "tapped": {
+        "Tome of Legends": true
+      }
+    }
+  },
+  {
+    "name": "without a page counter it cannot draw",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Tome of Legends",
+            "counters": {
+              "page": 0
+            }
+          },
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Tome of Legends",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: another player's commander stolen and attacked by you does not add a page counter",
+    "commander": true,
+    "players": [
+      {
+        "hand": ["Control Magic"],
+        "battlefield": [
+          { "name": "Tome of Legends", "counters": { "page": 0 } },
+          "Mountain",
+          "Island",
+          "Island",
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "command": ["Raging Goblin"],
+        "battlefield": ["Mountain"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Raging Goblin", "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Raging Goblin", "at": "p1" } ] },
+      { "block": [], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": {
+        "Tome of Legends": { "page": 0 }
+      }
+    }
+  },
+  {
+    "name": "ruling: your commander controlled by another player still adds page counters to your Tome (enters, then attacks)",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Raging Goblin"],
+        "battlefield": [
+          { "name": "Tome of Legends", "counters": { "page": 0 } },
+          "Mountain"
+        ]
+      },
+      {
+        "hand": ["Control Magic"],
+        "battlefield": ["Island", "Island", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Raging Goblin" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "player": 1 },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Raging Goblin", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 19 },
+        {}
+      ],
+      "counters": {
+        "Tome of Legends": { "page": 2 }
+      }
+    }
+  }
+]

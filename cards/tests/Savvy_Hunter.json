@@ -1,0 +1,124 @@
+[
+  {
+    "name": "attacking creates a Food token",
+    "players": [
+      {
+        "battlefield": [
+          "Savvy Hunter"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Savvy Hunter",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Savvy Hunter",
+            "Food"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sacrificing two Foods draws a card",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": [
+          "Savvy Hunter",
+          "Food",
+          "Food"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "activate": "Savvy Hunter"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 2,
+          "battlefield_lacks": [
+            "Food"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "blocking creates a Food token",
+    "players": [ { "battlefield": ["Savvy Hunter"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat", "player": 1 },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Savvy Hunter", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Savvy Hunter", "Food"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "an unblocked attacker creates no Food for the Hunter",
+    "players": [ { "battlefield": ["Savvy Hunter"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat", "player": 1 },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield_lacks": ["Food"] }, {} ] }
+  },
+  {
+    "name": "ruling: a Food artifact creature such as Tough Cookie can be sacrificed to the draw ability",
+    "players": [ { "hand": [], "battlefield": ["Savvy Hunter", "Tough Cookie", "Food"], "library": ["Lightning Bolt"] }, {} ],
+    "steps": [ { "activate": "Savvy Hunter" }, { "resolve": true } ],
+    "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Savvy Hunter"], "battlefield_lacks": ["Tough Cookie", "Food"] }, {} ] }
+  },
+  {
+    "name": "ruling: a Food sacrificed for Maraleaf Rider cannot also be counted toward the draw ability",
+    "players": [ { "hand": [], "battlefield": ["Savvy Hunter", "Maraleaf Rider", "Food", "Food", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "activate": "Maraleaf Rider", "targets": ["Grizzly Bears"], "answers": [[0]] },
+      { "resolve": true },
+      { "activate": "Savvy Hunter", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand_count": 0, "battlefield_has": ["Food"] }, {} ] }
+  }
+]

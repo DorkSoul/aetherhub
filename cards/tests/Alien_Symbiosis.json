@@ -1,0 +1,251 @@
+[
+  {
+    "name": "ruling: cast from the graveyard follows normal timing: not on the opponent's turn",
+    "players": [
+      { "hand": ["Forest"], "graveyard": ["Alien Symbiosis"], "battlefield": ["Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Alien Symbiosis", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Alien Symbiosis"], "hand": ["Forest"] }, {} ]
+    }
+  },
+  {
+    "name": "cast from graveyard by discarding a card: aura attaches",
+    "players": [
+      {
+        "hand": [
+          "Forest"
+        ],
+        "graveyard": [
+          "Alien Symbiosis"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Alien Symbiosis",
+        "alt": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Alien Symbiosis"
+          ],
+          "hand": [],
+          "graveyard": [
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "from hand: normal cast, no discard",
+    "players": [
+      {
+        "hand": [
+          "Alien Symbiosis"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Alien Symbiosis",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Alien Symbiosis"
+          ],
+          "hand": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "from graveyard illegal with no other card to discard",
+    "players": [
+      {
+        "graveyard": [
+          "Alien Symbiosis"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Alien Symbiosis",
+        "alt": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Alien Symbiosis"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "aura gives the enchanted creature +1/+1",
+    "players": [
+      {
+        "hand": ["Alien Symbiosis"],
+        "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alien Symbiosis", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Alien Symbiosis"] }, {} ],
+      "pt": { "Grizzly Bears": [3, 3] },
+      "attached": { "Alien Symbiosis": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "menace: a single blocker cannot block the enchanted creature",
+    "players": [
+      {
+        "hand": ["Alien Symbiosis"],
+        "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Alien Symbiosis", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Alien Symbiosis"] }, { "life": 17 } ]
+    }
+  },
+  {
+    "name": "menace: two blockers together can block the enchanted creature",
+    "players": [
+      {
+        "hand": ["Alien Symbiosis"],
+        "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Alien Symbiosis", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Hill Giant", "attacker": "Grizzly Bears" },
+          { "blocker": "p1:Grizzly Bears", "attacker": "Grizzly Bears" }
+      ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "enchanted creature is a Symbiote: shares a type with Symbiote Spawn for Synchronized Eviction",
+    "players": [
+      {
+        "hand": ["Alien Symbiosis", "Synchronized Eviction"],
+        "battlefield": ["Swamp", "Swamp", "Island", "Island", "Island", "Grizzly Bears", "Symbiote Spawn"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Alien Symbiosis", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Synchronized Eviction", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Synchronized Eviction"] },
+        { "battlefield_lacks": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "without the aura Bear and Symbiote Spawn share no type: Synchronized Eviction is full cost and illegal",
+    "players": [
+      {
+        "hand": ["Synchronized Eviction"],
+        "battlefield": ["Island", "Island", "Island", "Grizzly Bears", "Symbiote Spawn"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Synchronized Eviction", "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Synchronized Eviction"] }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  }
+]

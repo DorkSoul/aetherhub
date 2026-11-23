@@ -1,0 +1,195 @@
+[
+  {
+    "name": "firebending adds R when it attacks",
+    "players": [
+      {
+        "battlefield": ["Jeong Jeong, the Deserter"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [{ "card": "Jeong Jeong, the Deserter", "at": "p1" }]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "R": 1 } },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "exhaust puts a +1/+1 counter on it for three mana",
+    "players": [
+      {
+        "battlefield": ["Jeong Jeong, the Deserter", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Jeong Jeong, the Deserter",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Jeong Jeong, the Deserter": { "PlusOnePlusOne": 1 }
+      },
+      "pt": {
+        "Jeong Jeong, the Deserter": [3, 4]
+      }
+    }
+  },
+  {
+    "name": "exhaust can be activated only once",
+    "players": [
+      {
+        "battlefield": ["Jeong Jeong, the Deserter", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Jeong Jeong, the Deserter",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Jeong Jeong, the Deserter",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Jeong Jeong, the Deserter": { "PlusOnePlusOne": 1 }
+      }
+    }
+  },
+  {
+    "name": "without exhaust, the next Lesson is not copied",
+    "players": [
+      {
+        "hand": ["Basic Conjuration"],
+        "battlefield": ["Jeong Jeong, the Deserter", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Basic Conjuration"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "after exhaust, the next Lesson spell is copied with the same effect",
+    "players": [
+      {
+        "hand": ["Basic Conjuration"],
+        "battlefield": ["Jeong Jeong, the Deserter", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Jeong Jeong, the Deserter",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Basic Conjuration"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        { "life": 26 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: firebending is a triggered ability, so a spell can be cast in response",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Jeong Jeong, the Deserter", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Jeong Jeong, the Deserter", "at": "p1" }] },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "R": 1 }, "graveyard_has": ["Lightning Bolt"] },
+        { "life": 17 }
+      ],
+      "tapped": { "Mountain": true }
+    }
+  },
+  {
+    "name": "ruling: firebending mana is still available after combat damage, until end of combat",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Jeong Jeong, the Deserter"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Jeong Jeong, the Deserter", "at": "p1" }] },
+      { "resolve": true },
+      { "advance_to": "EndCombat" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "pool": { "R": 0 }, "graveyard_has": ["Lightning Bolt"] },
+        { "life": 15 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exhaust can be activated during the opponent's turn",
+    "players": [
+      { "battlefield": ["Jeong Jeong, the Deserter", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "activate": "Jeong Jeong, the Deserter", "ability": 0, "player": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {
+        "Jeong Jeong, the Deserter": { "PlusOnePlusOne": 1 }
+      },
+      "pt": {
+        "Jeong Jeong, the Deserter": [3, 4]
+      }
+    }
+  }
+]

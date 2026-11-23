@@ -1,0 +1,224 @@
+[
+  {
+    "name": "end step: a creature died this turn, each opponent loses 1 life",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", { "name": "Warlock Class", "counters": { "level": 1 } }]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 19, "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "end step: no creature died this turn, no life loss",
+    "players": [
+      {
+        "battlefield": ["Mountain", { "name": "Warlock Class", "counters": { "level": 1 } }]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 20, "battlefield": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "level 2 ability: look at the top three, put one into your hand",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", { "name": "Warlock Class", "counters": { "level": 1 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Warlock Class", "ability": 0 },
+      { "resolve": true, "answers": ["Forest"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"] },
+        {}
+      ],
+      "counters": { "Warlock Class": { "level": 2 } }
+    }
+  },
+  {
+    "name": "level 3: each opponent loses life equal to the life they lost this turn",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", { "name": "Warlock Class", "counters": { "level": 3 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "{6}{B} at level 2 gains level 3",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", { "name": "Warlock Class", "counters": { "level": 2 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Warlock Class", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": { "Warlock Class": { "level": 3 } }
+    }
+  },
+  {
+    "name": "{6}{B} needs seven mana: with six lands the level 3 ability is not available",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", { "name": "Warlock Class", "counters": { "level": 2 } }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Warlock Class", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "counters": { "Warlock Class": { "level": 2 } }
+    }
+  },
+  {
+    "name": "entering the battlefield at level 1 lets the level 2 ability be activated",
+    "players": [
+      { "hand": ["Warlock Class"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Warlock Class" },
+      { "resolve": true },
+      { "activate": "Warlock Class", "ability": 0 },
+      { "resolve": true, "answers": ["Forest"] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Forest"] }, {} ],
+      "counters": { "Warlock Class": { "level": 2 } }
+    }
+  },
+  {
+    "name": "ruling: gaining level 3 keeps the level 1 end-step ability",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", { "name": "Warlock Class", "counters": { "level": 2 } }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Warlock Class", "ability": 1 },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19, "graveyard_has": ["Grizzly Bears"] } ],
+      "counters": { "Warlock Class": { "level": 3 } }
+    }
+  },
+  {
+    "name": "ruling: a level 2 Class cannot use the level 2 ability again",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", { "name": "Warlock Class", "counters": { "level": 2 } }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Warlock Class", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "counters": { "Warlock Class": { "level": 2 } }
+    }
+  },
+  {
+    "name": "ruling: two creatures dying in one turn still cost the opponent only 1 life at the end step",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", { "name": "Warlock Class", "counters": { "level": 1 } }] },
+      { "battlefield": ["Grizzly Bears", "Llanowar Elves"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1:Llanowar Elves"] },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19, "graveyard_has": ["Grizzly Bears", "Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "ruling: a Class cast after the creature died still triggers at the end step",
+    "players": [
+      { "hand": ["Lightning Bolt", "Warlock Class"], "battlefield": ["Mountain", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "cast": "Warlock Class" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 19 } ]
+    }
+  },
+  {
+    "name": "ruling: a Class entering at level 1 does not yet have its level 2 ability (no top-three look)",
+    "players": [
+      { "hand": ["Warlock Class"], "battlefield": ["Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Warlock Class" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, {} ],
+      "counters": { "Warlock Class": { "level": 1 } }
+    }
+  }
+]

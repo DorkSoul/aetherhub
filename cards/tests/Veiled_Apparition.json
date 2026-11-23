@@ -1,0 +1,180 @@
+[
+ {
+  "name": "opponent casting a spell turns it into a 3/3 flying Illusion creature",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Apparition",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "battlefield_has": [
+      "Veiled Apparition"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "as a creature it can attack for 3",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Apparition",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "player": 1,
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Veiled Apparition",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "an enchantment cannot attack before an opponent casts a spell",
+  "players": [
+   {
+    "battlefield": [
+     "Veiled Apparition",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Veiled Apparition",
+      "at": "p1"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20,
+     "battlefield_has": [
+      "Veiled Apparition"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: it becomes a creature when the spell is cast, so Scour cast by the opponent fizzles",
+  "players": [ { "battlefield": ["Veiled Apparition", "Island", "Island"] }, { "hand": ["Scour"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] } ],
+  "steps": [ { "pass": true }, { "player": 1, "cast": "Scour", "targets": ["Veiled Apparition"] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Veiled Apparition"] }, { "graveyard": ["Scour"] } ], "pt": { "Veiled Apparition": [3, 3] } }
+ },
+ {
+  "name": "ruling: once a creature it is no longer an enchantment, so Scour cannot target it",
+  "players": [ { "hand": ["Scour"], "battlefield": ["Veiled Apparition", "Plains", "Plains", "Plains", "Plains"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "pass": true }, { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"] }, { "resolve": true }, { "cast": "Scour", "targets": ["Veiled Apparition"], "illegal": true } ],
+  "expect": { "players": [ { "life": 17, "hand": ["Scour"], "battlefield_has": ["Veiled Apparition"] }, {} ] }
+ },
+ {
+  "name": "ruling: contrast, while still an enchantment its controller's Scour exiles it",
+  "players": [ { "hand": ["Scour"], "battlefield": ["Veiled Apparition", "Plains", "Plains", "Plains", "Plains"] }, {} ],
+  "steps": [ { "cast": "Scour", "targets": ["Veiled Apparition"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Scour"], "exile": ["Veiled Apparition"] }, {} ] }
+ },
+ {
+  "name": "ruling: paying the upkeep cost on resolution keeps the creature",
+  "players": [ { "battlefield": ["Veiled Apparition", "Island", "Island"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"] }, { "resolve": true }, { "advance_to": "Upkeep", "answers": [true] }, { "resolve": true } ],
+  "expect": { "players": [ { "life": 17, "battlefield_has": ["Veiled Apparition"] }, {} ] }
+ },
+ {
+  "name": "ruling: choosing not to pay on resolution sacrifices the creature",
+  "players": [ { "battlefield": ["Veiled Apparition", "Island", "Island"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+  "steps": [ { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"] }, { "resolve": true }, { "advance_to": "Upkeep", "answers": [false] }, { "resolve": true } ],
+  "expect": { "players": [ { "life": 17, "graveyard": ["Veiled Apparition"] }, {} ] }
+ }
+]

@@ -1,0 +1,89 @@
+[
+  {
+    "name": "blinks own creature (returns to battlefield) and draws a card",
+    "players": [
+      { "hand": ["Blur"], "battlefield": ["Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blur", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Blur"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot target a creature you don't control",
+    "players": [
+      { "hand": ["Blur"], "battlefield": ["Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blur", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Blur"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a token exiled by Blur ceases to exist and does not return",
+    "players": [
+      { "hand": ["Raise the Alarm", "Blur"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raise the Alarm" },
+      { "resolve": true },
+      { "cast": "Blur", "targets": ["Soldier"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Plains", "Plains", "Island", "Island", "Island", "Soldier"], "graveyard": ["Raise the Alarm", "Blur"], "hand_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the returned card is a new object: its +1/+1 counters are gone",
+    "players": [
+      { "hand": ["Blur"], "battlefield": ["Island", "Island", "Island", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blur", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] },
+      "counters": { "Grizzly Bears": { "p1p1": 0 } }
+    }
+  },
+  {
+    "name": "ruling: an Aura attached to the blinked creature goes to its owner's graveyard",
+    "players": [
+      { "hand": ["Pacifism", "Blur"], "battlefield": ["Plains", "Plains", "Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Blur", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Pacifism", "Blur"] },
+        {}
+      ]
+    }
+  }
+]

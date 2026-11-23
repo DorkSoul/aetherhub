@@ -1,0 +1,302 @@
+[
+  {
+    "name": "attack: taps and stuns the target, then the controller removes that stun counter and draws one",
+    "players": [
+      {
+        "battlefield": [
+          "Sensational Spider-Man"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sensational Spider-Man",
+            "at": "p1"
+          }
+        ],
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "declining to remove the stun counter keeps it and draws nothing",
+    "players": [
+      {
+        "battlefield": [
+          "Sensational Spider-Man"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sensational Spider-Man",
+            "at": "p1"
+          }
+        ],
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": []
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "removes stun counters from several permanents (any controller) and draws one per counter",
+    "players": [
+      {
+        "battlefield": [
+          "Sensational Spider-Man"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "stun": 2
+            }
+          },
+          {
+            "name": "Hill Giant",
+            "counters": {
+              "stun": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sensational Spider-Man",
+            "at": "p1"
+          }
+        ],
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Grizzly Bears",
+          "Hill Giant",
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 3
+        },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 1
+        },
+        "Hill Giant": {
+          "stun": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "at most three stun counters are removed even when more are available",
+    "players": [
+      {
+        "battlefield": [
+          "Sensational Spider-Man"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "stun": 4
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sensational Spider-Man",
+            "at": "p1"
+          }
+        ],
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Grizzly Bears",
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 3
+        },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "declining a further removal stops the loop: one counter removed, one card drawn, the rest stay",
+    "players": [
+      {
+        "battlefield": [
+          "Sensational Spider-Man"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "stun": 2
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sensational Spider-Man",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Grizzly Bears",
+          []
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1
+        },
+        {}
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "stun": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: the controller may remove stun counters from permanents they control too",
+    "players": [
+      { "battlefield": ["Sensational Spider-Man", { "name": "Grizzly Bears", "counters": { "stun": 1 } }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sensational Spider-Man", "at": "p1" } ], "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, {} ],
+      "tapped": { "Hill Giant": true },
+      "counters": { "Grizzly Bears": { "stun": 0 }, "Hill Giant": { "stun": 1 } }
+    }
+  },
+  {
+    "name": "ruling: a stunned permanent that would untap loses a stun counter instead and stays tapped",
+    "players": [
+      { "battlefield": [ { "name": "Grizzly Bears", "tapped": true, "counters": { "stun": 1 } } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ],
+      "tapped": { "Grizzly Bears": true },
+      "counters": { "Grizzly Bears": { "stun": 0 } }
+    }
+  }
+]

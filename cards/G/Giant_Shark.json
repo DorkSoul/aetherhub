@@ -1,0 +1,77 @@
+{
+  "name": "Giant Shark",
+  "mana_cost": "{5}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Shark"],
+  "power": 4,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CantAttackPlayer",
+        "affects": { "this": true },
+        "defender_controls": { "types": ["Land"], "subtypes": ["Island"] }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Blocks", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "TriggerObject" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "RememberedIs", "filter": { "was_dealt_damage_this_turn": true } },
+              "then": [
+                { "type": "Pump", "what": { "type": "This" }, "power": { "type": "Fixed", "n": 2 }, "toughness": { "type": "Fixed", "n": 0 }, "duration": "UntilEndOfTurn" },
+                { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Trample", "duration": "UntilEndOfTurn" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BecomesBlocked", "filter": { "this": true }, "by_each": true },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "TriggerObject" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "RememberedIs", "filter": { "was_dealt_damage_this_turn": true } },
+              "then": [
+                { "type": "Pump", "what": { "type": "This" }, "power": { "type": "Fixed", "n": 2 }, "toughness": { "type": "Fixed", "n": 0 }, "duration": "UntilEndOfTurn" },
+                { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Trample", "duration": "UntilEndOfTurn" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "State",
+        "condition": {
+          "type": "Not",
+          "c": {
+            "type": "Control",
+            "who": { "type": "You" },
+            "filter": { "types": ["Land"], "subtypes": ["Island"] },
+            "at_least": 1
+          }
+        }
+      },
+      "effects": [
+        { "type": "Sacrifice", "who": { "type": "This" }, "filter": { "this": true } }
+      ]
+    }
+  ],
+  "oracle_text": "This creature can't attack unless defending player controls an Island.\nWhenever this creature blocks or becomes blocked by a creature that has been dealt damage this turn, this creature gets +2/+0 and gains trample until end of turn.\nWhen you control no Islands, sacrifice this creature."
+}

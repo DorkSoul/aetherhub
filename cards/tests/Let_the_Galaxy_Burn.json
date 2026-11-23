@@ -1,0 +1,90 @@
+[
+  {
+    "name": "X=1 deals 3 to creatures that did not enter this turn, spares the cascaded creature",
+    "players": [
+      { "hand": ["Let the Galaxy Burn"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"], "library": ["Forest", "Grizzly Bears", "Island"] },
+      { "battlefield": ["Savannah Lions", "Serra Angel"] }
+    ],
+    "steps": [
+      { "cast": "Let the Galaxy Burn", "answers": [1] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Hill Giant"], "graveyard": ["Let the Galaxy Burn", "Hill Giant"] },
+        { "battlefield_has": ["Serra Angel"], "battlefield_lacks": ["Savannah Lions"] }
+      ]
+    }
+  },
+  {
+    "name": "X=0 deals 2 and a big creature survives",
+    "players": [
+      { "hand": ["Let the Galaxy Burn"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Hill Giant"], "library": ["Forest", "Island"] },
+      { "battlefield": ["Savannah Lions"] }
+    ],
+    "steps": [
+      { "cast": "Let the Galaxy Burn", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"] },
+        { "battlefield_lacks": ["Savannah Lions"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a cascaded spell with {X} is cast with X = 0 (cascaded Fireball deals no damage)",
+    "players": [
+      { "hand": ["Let the Galaxy Burn"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Fireball"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Let the Galaxy Burn", "answers": [0] },
+      { "resolve": true, "answers": [true], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Let the Galaxy Burn", "Fireball"], "library_count": 21 },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countering Let the Galaxy Burn does not stop its cascade trigger, which still casts the Lightning Bolt it finds",
+    "players": [
+      { "hand": ["Let the Galaxy Burn"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Lightning Bolt"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Let the Galaxy Burn", "answers": [0] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1 },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Let the Galaxy Burn", "Lightning Bolt"] },
+        { "life": 17, "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascade exiles down to the first cheaper nonland card; declining to cast it puts the exiled cards on the bottom",
+    "players": [
+      { "hand": ["Let the Galaxy Burn"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Mountain", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Let the Galaxy Burn", "answers": [0] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Let the Galaxy Burn"], "exile": [], "library_count": 23 },
+        { "life": 20 }
+      ]
+    }
+  }
+]

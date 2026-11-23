@@ -1,0 +1,59 @@
+{
+  "name": "Magma Pummeler",
+  "mana_cost": "{X}{R}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Elemental"],
+  "power": 0,
+  "toughness": 0,
+  "abilities": [
+    {
+      "type": "EntersWithCounters",
+      "kind": "PlusOnePlusOne",
+      "n": { "type": "X" }
+    },
+    {
+      "type": "Replace",
+      "what": {
+        "type": "Damage",
+        "source": {},
+        "to_this": true,
+        "prevent": true,
+        "then": [
+          {
+            "type": "Reflexive",
+            "targets": [
+              { "what": { "type": "AnyTarget" }, "min": 1, "max": 1, "label": "any target" }
+            ],
+            "effects": [
+              {
+                "type": "DealDamage",
+                "amount": {
+                  "type": "Min",
+                  "a": { "type": "EventAmount" },
+                  "b": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } }
+                },
+                "to": { "type": "Target", "idx": 0 }
+              },
+              {
+                "type": "RemoveCounters",
+                "kind": "PlusOnePlusOne",
+                "n": {
+                  "type": "Min",
+                  "a": { "type": "EventAmount" },
+                  "b": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } }
+                },
+                "what": { "type": "This" }
+              }
+            ]
+          }
+        ]
+      },
+      "condition": {
+        "type": "Compare",
+        "a": { "type": "CountersOn", "kind": "PlusOnePlusOne", "of": { "type": "This" } },
+        "cmp": { "n": 1, "op": "Ge" }
+      }
+    }
+  ],
+  "oracle_text": "This creature enters with X +1/+1 counters on it.\nIf damage would be dealt to this creature while it has a +1/+1 counter on it, prevent that damage and remove that many +1/+1 counters from it. When one or more counters are removed from this creature this way, it deals that much damage to any target."
+}

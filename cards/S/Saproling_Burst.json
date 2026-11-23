@@ -1,0 +1,42 @@
+{
+  "name": "Saproling Burst",
+  "mana_cost": "{4}{G}",
+  "types": ["Enchantment"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Fade", "n": { "type": "Fixed", "n": 7 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "SourceHasCounter", "kind": "Fade", "at_least": 1 },
+          "then": [ { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Fade", "n": { "type": "Fixed", "n": 1 } } ],
+          "else": [ { "type": "Sacrifice", "who": { "type": "This" } } ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "RemoveCounters", "kind": "Fade", "n": 1 } ],
+      "effects": [ { "type": "CreateToken", "token": "Saproling" } ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "SetBasePTAmount",
+        "affects": { "created_by_this": true, "types": ["Creature"] },
+        "power": { "type": "CountersOn", "of": { "type": "This" }, "kind": "Fade" },
+        "toughness": { "type": "CountersOn", "of": { "type": "This" }, "kind": "Fade" }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "LeavesBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "Destroy", "what": { "type": "All", "filter": { "created_by_this": true } }, "no_regeneration": true }
+      ]
+    }
+  ],
+  "oracle_text": "Fading 7 (This enchantment enters with seven fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\nRemove a fade counter from this enchantment: Create a green Saproling creature token. It has \"This token's power and toughness are each equal to the number of fade counters on Saproling Burst.\"\nWhen this enchantment leaves the battlefield, destroy all tokens created with this enchantment. They can't be regenerated."
+}

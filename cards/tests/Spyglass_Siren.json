@@ -1,0 +1,110 @@
+[
+ {
+  "name": "ETB creates a Map token",
+  "players": [
+   { "hand": ["Spyglass Siren"], "battlefield": ["Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Spyglass Siren" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Spyglass Siren", "Map"] }, {} ]
+  }
+ },
+ {
+  "name": "Map: target creature explores (nonland revealed gets a +1/+1 counter)",
+  "players": [
+   { "battlefield": ["Island", { "name": "Spyglass Siren", "sick": false }, "Map"], "library": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Map", "targets": ["Spyglass Siren"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Map"] }, {} ],
+   "counters": { "Spyglass Siren": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "Map: a land revealed goes to hand and no counter is placed",
+  "players": [
+   { "battlefield": ["Island", { "name": "Spyglass Siren", "sick": false }, "Map"], "library": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Map", "targets": ["Spyglass Siren"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Forest"] }, {} ],
+   "pt": { "Spyglass Siren": [1, 1] }
+  }
+ },
+ {
+  "name": "ruling: a nonland revealed by explore can be left on top of the library (counter still placed)",
+  "players": [
+   { "battlefield": ["Island", { "name": "Spyglass Siren", "sick": false }, "Map"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Map", "targets": ["Spyglass Siren"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Grizzly Bears"] }, {} ],
+   "counters": { "Spyglass Siren": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a nonland revealed by explore may be put into the graveyard instead, still getting the counter",
+  "players": [
+   { "battlefield": ["Island", { "name": "Spyglass Siren", "sick": false }, "Map"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Map", "targets": ["Spyglass Siren"] },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"], "library_top": ["Forest"] }, {} ],
+   "counters": { "Spyglass Siren": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a Map token is a colorless Map artifact that can only be activated as a sorcery",
+  "players": [
+   { "battlefield": ["Island", { "name": "Spyglass Siren", "sick": false }, "Map"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "activate": "Map", "targets": ["Spyglass Siren"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Map", "Spyglass Siren"] }, {} ],
+   "subtypes": { "Map": ["Map"] },
+   "colors": { "Map": [] }
+  }
+ },
+ {
+  "name": "ruling: a creature exploring again reveals the same nonland card left on top",
+  "players": [
+   { "battlefield": ["Island", "Island", { "name": "Spyglass Siren", "sick": false }, "Map", "Map"], "library": ["Grizzly Bears", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Map", "targets": ["Spyglass Siren"] },
+   { "resolve": true, "answers": [false] },
+   { "activate": "Map", "targets": ["Spyglass Siren"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Grizzly Bears"] }, {} ],
+   "counters": { "Spyglass Siren": { "p1p1": 2 } }
+  }
+ }
+]

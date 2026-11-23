@@ -1,0 +1,67 @@
+{
+  "name": "Human Torch",
+  "mana_cost": "{3}{R}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Human", "Hero"],
+  "power": 3,
+  "toughness": 2,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "BeginningOfStep",
+        "step": "BeginCombat",
+        "whose": "You"
+      },
+      "condition": {
+        "type": "CastThisTurn",
+        "at_least": 1,
+        "filter": {
+          "not_types": ["Creature"],
+          "controller": "You"
+        }
+      },
+      "effects": [
+        { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Flying", "duration": "UntilEndOfTurn" },
+        { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "DoubleStrike", "duration": "UntilEndOfTurn" },
+        { "type": "GrantKeyword", "what": { "type": "This" }, "keyword": "Haste", "duration": "UntilEndOfTurn" }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Attacks",
+        "filter": { "this": true }
+      },
+      "effects": [
+        {
+          "type": "MayPay",
+          "payer": { "type": "You" },
+          "cost": [{ "type": "Mana", "cost": "{R}{G}{W}{U}" }],
+          "effects": [
+            {
+              "type": "AddTrigger",
+              "bind": { "type": "This" },
+              "trigger": {
+                "type": "DealsCombatDamage",
+                "filter": { "this": true },
+                "to": "Opponent"
+              },
+              "effects": [
+                {
+                  "type": "DealDamage",
+                  "to": { "type": "EachOpponentExceptTriggerPlayer" },
+                  "amount": { "type": "EventAmount" },
+                  "source": { "type": "TriggerSource" }
+                }
+              ],
+              "until": "EndOfTurn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "At the beginning of combat on your turn, if you've cast a noncreature spell this turn, Human Torch gains flying, double strike, and haste until end of turn.\nWhenever Human Torch attacks, you may pay {R}{G}{W}{U}. If you do, until end of turn, whenever he deals combat damage to an opponent, he deals that much damage to each other opponent."
+}

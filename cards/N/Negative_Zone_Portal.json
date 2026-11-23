@@ -1,0 +1,54 @@
+{
+  "name": "Negative Zone Portal",
+  "mana_cost": "{2}",
+  "types": ["Artifact"],
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{2}" }, { "type": "Tap" } ],
+      "targets": [
+        { "what": { "type": "CardIn", "zone": "Graveyard", "filter": {}, "whose": "Opponent" }, "label": "target card in an opponent's graveyard" }
+      ],
+      "effects": [
+        { "type": "Exile", "what": { "type": "Target", "idx": 0 } },
+        {
+          "type": "If",
+          "cond": { "type": "SelIs", "what": { "type": "Remembered" }, "filter": { "types": ["Creature"] } },
+          "then": [ { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } } ],
+          "else": []
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "condition": {
+        "type": "CompareAmounts",
+        "a": { "type": "Count", "filter": { "types": ["Creature"], "exiled_with_this": true }, "zone": "Exile" },
+        "op": "Ge",
+        "b": { "type": "Fixed", "n": 4 }
+      },
+      "effects": [
+        {
+          "type": "FlipCoin",
+          "win": [],
+          "lose": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Exile",
+              "from": { "type": "EachPlayer" },
+              "filter": { "exiled_with_this": true },
+              "min": 1,
+              "max": 1,
+              "random": true,
+              "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ]
+            },
+            { "type": "Sacrifice", "who": { "type": "This" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{2}, {T}: Exile target card from an opponent's graveyard. If it's a creature card, draw a card.\nAt the beginning of your upkeep, if there are four or more creature cards exiled with this artifact, flip a coin. If you lose the flip, sacrifice this artifact and return a card exiled with it at random to its owner's hand."
+}

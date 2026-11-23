@@ -1,0 +1,37 @@
+{
+  "name": "Systems Override",
+  "mana_cost": "{2}{R}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Artifact", "Creature"] } },
+          "label": "target artifact or creature"
+        }
+      ],
+      "effects": [
+        { "type": "Untap", "what": { "type": "Target", "idx": 0 } },
+        { "type": "GainControl", "what": { "type": "Target", "idx": 0 }, "duration": "UntilEndOfTurn" },
+        { "type": "GrantKeyword", "what": { "type": "Target", "idx": 0 }, "keyword": "Haste", "duration": "UntilEndOfTurn" },
+        {
+          "type": "If",
+          "cond": { "type": "TargetIs", "filter": { "subtypes": ["Spacecraft"] }, "idx": 0 },
+          "then": [
+            { "type": "AddCounters", "kind": "Charge", "n": { "type": "Fixed", "n": 10 }, "what": { "type": "Target", "idx": 0 } },
+            {
+              "type": "Delayed",
+              "at": "NextEndStep",
+              "effects": [
+                { "type": "RemoveCounters", "kind": "Charge", "n": { "type": "Fixed", "n": 10 }, "what": { "type": "Target", "idx": 0 } }
+              ]
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Gain control of target artifact or creature until end of turn. Untap that permanent. It gains haste until end of turn. If it's a Spacecraft, put ten charge counters on it. If you do, remove ten charge counters from it at the beginning of the next end step."
+}

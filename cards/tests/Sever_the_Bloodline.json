@@ -1,0 +1,174 @@
+[
+  {
+    "name": "exiles the target and all other creatures with its name",
+    "players": [
+      {
+        "hand": [
+          "Sever the Bloodline"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sever the Bloodline",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Sever the Bloodline"
+          ]
+        },
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "battlefield_has": [
+            "Hill Giant"
+          ],
+          "exile": [
+            "Grizzly Bears",
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "flashback {5}{B}{B} from the graveyard exiles the target, then the card itself is exiled",
+    "players": [
+      {
+        "graveyard": ["Sever the Bloodline"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"cast": "Sever the Bloodline", "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"exile": ["Sever the Bloodline"], "graveyard": []},
+        {"battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"]}
+      ]
+    }
+  },
+  {
+    "name": "flashback needs seven mana: with six Swamps the card stays in the graveyard",
+    "players": [
+      {
+        "graveyard": ["Sever the Bloodline"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"cast": "Sever the Bloodline", "targets": ["Grizzly Bears"], "illegal": true}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Sever the Bloodline"]},
+        {"battlefield_has": ["Grizzly Bears"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: only creatures on the battlefield are exiled; a same-named card in the graveyard stays",
+    "players": [
+      {
+        "hand": ["Sever the Bloodline"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"],
+        "graveyard": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Sever the Bloodline", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Sever the Bloodline"] },
+        { "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the target is gone on resolution, nothing is exiled (same-named creatures survive)",
+    "players": [
+      {
+        "hand": ["Sever the Bloodline"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Sever the Bloodline", "targets": ["p1:Grizzly Bears"] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Sever the Bloodline"], "battlefield_has": ["Grizzly Bears"], "exile": [] },
+        { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing: not castable on the opponent's turn",
+    "players": [
+      {
+        "graveyard": ["Sever the Bloodline"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Sever the Bloodline", "targets": ["p1:Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Sever the Bloodline"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

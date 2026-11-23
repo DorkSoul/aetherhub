@@ -1,0 +1,299 @@
+[
+ {
+  "name": "an unequipped creature cannot use the granted ability",
+  "players": [
+   {
+    "hand": [
+     "Razor Boomerang"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Razor Boomerang"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Grizzly Bears",
+    "ability": 32768,
+    "targets": [
+     "Serra Angel"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Razor Boomerang",
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Serra Angel"
+     ]
+    }
+   ],
+   "tapped": {
+    "Serra Angel": false
+   }
+  }
+ },
+ {
+  "name": "equip {2} attaches Razor Boomerang to my creature",
+  "players": [
+   {
+    "battlefield": [
+     "Razor Boomerang",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Razor Boomerang",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Razor Boomerang",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ],
+   "attached": {
+    "Razor Boomerang": "Grizzly Bears"
+   }
+  }
+ },
+ {
+  "name": "equip needs two mana",
+  "players": [
+   {
+    "battlefield": [
+     "Razor Boomerang",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Razor Boomerang",
+    "ability": 0,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Razor Boomerang"
+     ]
+    },
+    {}
+   ],
+   "attached": {}
+  }
+ },
+ {
+  "name": "equipped creature can tap, unattach and return Boomerang to deal 1 damage to a player",
+  "players": [
+   {
+    "battlefield": [
+     "Razor Boomerang",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Razor Boomerang",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Grizzly Bears",
+    "ability": 32768,
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 19
+    }
+   ]
+  }
+ },
+ {
+  "name": "equipped creature taps, unattaches Razor Boomerang and returns it to hand (the Boomerang moves, not the creature)",
+  "players": [
+   {
+    "battlefield": [
+     "Razor Boomerang",
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Razor Boomerang",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "activate": "Grizzly Bears",
+    "ability": 32768,
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Razor Boomerang"
+     ],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 19
+    }
+   ],
+   "tapped": {
+    "Grizzly Bears": true
+   }
+  }
+ },
+ {
+  "name": "ruling: unattaching is a cost, so the Boomerang is off the creature while the ability is on the stack",
+  "players": [
+   { "battlefield": ["Razor Boomerang", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Razor Boomerang", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"] }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Razor Boomerang", "Grizzly Bears"] }, { "life": 20 } ],
+   "attached": {},
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "ruling: Boomerang stays on the battlefield unattached if the targeted creature is gone on resolution",
+  "players": [
+   { "battlefield": ["Razor Boomerang", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Soldevi Machinist", "Mountain"] }
+  ],
+  "steps": [
+   { "activate": "Razor Boomerang", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Soldevi Machinist"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Soldevi Machinist"], "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Razor Boomerang", "Grizzly Bears"] }, { "graveyard_has": ["Soldevi Machinist", "Lightning Bolt"] } ],
+   "attached": {},
+   "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "ruling: a red equipped creature's granted ability cannot target a pro-red creature",
+  "players": [
+   { "battlefield": ["Razor Boomerang", "Plains", "Plains", { "name": "Gouged Zealot", "sick": false }] },
+   { "battlefield": ["Silver Knight"] }
+  ],
+  "steps": [
+   { "activate": "Razor Boomerang", "ability": 0, "targets": ["Gouged Zealot"] },
+   { "resolve": true },
+   { "activate": "Gouged Zealot", "ability": 32768, "targets": ["Silver Knight"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Razor Boomerang", "Gouged Zealot"] }, { "battlefield_has": ["Silver Knight"] } ],
+   "attached": { "Razor Boomerang": "Gouged Zealot" },
+   "tapped": { "Gouged Zealot": false }
+  }
+ },
+ {
+  "name": "ruling: the same granted ability on a green creature can target the pro-red creature (source is colourless)",
+  "players": [
+   { "battlefield": ["Razor Boomerang", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+   { "battlefield": ["Silver Knight"] }
+  ],
+  "steps": [
+   { "activate": "Razor Boomerang", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Grizzly Bears", "ability": 32768, "targets": ["Silver Knight"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Razor Boomerang"], "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Silver Knight"] } ],
+   "tapped": { "Grizzly Bears": true }
+  }
+ }
+]

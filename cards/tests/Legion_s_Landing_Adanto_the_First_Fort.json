@@ -1,0 +1,63 @@
+[
+  {
+    "name": "enters: creates a 1/1 Vampire with lifelink",
+    "players": [ { "hand": ["Legion's Landing // Adanto, the First Fort"], "battlefield": ["Plains"] }, {} ],
+    "steps": [ { "cast": "Legion's Landing // Adanto, the First Fort" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Vampire 1-1 Lifelink", "Legion's Landing // Adanto, the First Fort"] }, {} ] }
+  },
+  {
+    "name": "attacking with three creatures transforms it into Adanto",
+    "players": [
+      { "battlefield": [ "Legion's Landing // Adanto, the First Fort", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }, { "name": "Savannah Lions", "sick": false } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Adanto, the First Fort"] }, { "life": 13 } ] }
+  },
+  {
+    "name": "attacking with two creatures does not transform it",
+    "players": [
+      { "battlefield": [ "Legion's Landing // Adanto, the First Fort", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Legion's Landing // Adanto, the First Fort"] }, { "life": 15 } ] }
+  },
+  {
+    "name": "Adanto: {2}{W}, {T}: creates a 1/1 Vampire with lifelink",
+    "players": [ { "battlefield": ["Adanto, the First Fort", "Plains", "Island", "Island"] }, {} ],
+    "steps": [ { "activate": "Adanto, the First Fort", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Vampire 1-1 Lifelink", "Adanto, the First Fort"] }, {} ], "tapped": { "Adanto, the First Fort": true } }
+  },
+  {
+    "name": "Adanto: needs three other mana sources (Adanto cannot tap for its own cost)",
+    "players": [ { "battlefield": ["Adanto, the First Fort", "Plains", "Island"] }, {} ],
+    "steps": [ { "activate": "Adanto, the First Fort", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Vampire 1-1 Lifelink"] }, {} ], "tapped": { "Adanto, the First Fort": false } }
+  },
+  {
+    "name": "ruling: transforms once three creatures attacked, even if attackers die in combat",
+    "players": [
+      { "battlefield": [ "Legion's Landing // Adanto, the First Fort", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }, { "name": "Savannah Lions", "sick": false } ] },
+      { "battlefield": ["Knight of Meadowgrain"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }, { "card": "Savannah Lions", "at": "p1" } ] },
+      { "block": [ { "blocker": "Knight of Meadowgrain", "attacker": "Savannah Lions" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Adanto, the First Fort", "Grizzly Bears", "Hill Giant"], "battlefield_lacks": ["Savannah Lions", "Legion's Landing // Adanto, the First Fort"], "graveyard_has": ["Savannah Lions"] }, { "life": 17, "battlefield_has": ["Knight of Meadowgrain"] } ]
+    }
+  }
+]

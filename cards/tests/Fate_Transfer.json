@@ -1,0 +1,212 @@
+[
+  {
+    "name": "moves all counters of every kind from the first creature onto the second",
+    "players": [
+      {
+        "hand": [
+          "Fate Transfer"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 2,
+              "charge": 1,
+              "finality": 1
+            }
+          },
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Fate Transfer",
+        "targets": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 0,
+          "charge": 0,
+          "finality": 0
+        },
+        "Hill Giant": {
+          "p1p1": 2,
+          "charge": 1,
+          "finality": 1
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ],
+        "Hill Giant": [
+          5,
+          5
+        ]
+      }
+    }
+  },
+  {
+    "name": "if the receiving creature is removed in response, no counters move",
+    "players": [
+      {
+        "hand": [
+          "Fate Transfer"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 2,
+              "charge": 1
+            }
+          },
+          "Hill Giant"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Fate Transfer",
+        "targets": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "player": 1,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "graveyard_has": [
+            "Fate Transfer",
+            "Hill Giant"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ],
+      "counters": {
+        "Grizzly Bears": {
+          "p1p1": 2,
+          "charge": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "the second target must be a different creature",
+    "players": [
+      {
+        "hand": [
+          "Fate Transfer"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Fate Transfer",
+        "targets": [
+          "Grizzly Bears",
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Fate Transfer"
+          ],
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the source creature is removed in response, no counters move",
+    "players": [
+      { "hand": ["Fate Transfer"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "counters": { "charge": 1 } }, "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Fate Transfer", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Fate Transfer", "Grizzly Bears"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": { "Hill Giant": { "charge": 0 } }
+    }
+  },
+  {
+    "name": "ruling: a moved counter with no effect on the new creature is still placed there",
+    "players": [
+      { "hand": ["Fate Transfer"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "counters": { "Age": 2 } }, "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fate Transfer", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "Age": 0 }, "Hill Giant": { "Age": 2 } },
+      "pt": { "Hill Giant": [3, 3] }
+    }
+  }
+]

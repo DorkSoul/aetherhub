@@ -1,0 +1,346 @@
+[
+  {
+    "name": "another player's enchanted creature can't attack",
+    "players": [
+      {
+        "hand": [
+          "Dog Umbra"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Dog Umbra",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p0"
+          }
+        ],
+        "player": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Dog Umbra",
+            "Plains"
+          ]
+        },
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "attached": {
+        "Dog Umbra": "Grizzly Bears"
+      }
+    }
+  },
+  {
+    "name": "your own enchanted creature can still attack",
+    "players": [
+      {
+        "hand": [
+          "Dog Umbra"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Dog Umbra",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Dog Umbra"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "no umbra armor while another player controls the enchanted creature",
+    "players": [
+      {
+        "hand": [
+          "Dog Umbra",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Dog Umbra",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Dog Umbra",
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard_has": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature of another player: the attack is dropped, the other attacker deals damage",
+    "players": [
+      {
+        "hand": ["Dog Umbra"],
+        "battlefield": ["Plains", "Plains", {"name": "Hill Giant", "sick": false}]
+      },
+      {
+        "battlefield": [{"name": "Grizzly Bears", "sick": false}, {"name": "Savannah Lions", "sick": false}]
+      }
+    ],
+    "steps": [
+      {"cast": "Dog Umbra", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"advance_to": "Main2"},
+      {"advance_to": "Main1", "player": 1},
+      {"attack": [{"card": "Grizzly Bears", "at": "p0"}, {"card": "Savannah Lions", "at": "p0"}], "player": 1},
+      {"block": []},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"life": 18},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature of another player cannot block",
+    "players": [
+      {
+        "battlefield": [{"name": "Grizzly Bears", "sick": false}, {"name": "Savannah Lions", "sick": false}]
+      },
+      {
+        "hand": ["Dog Umbra"],
+        "battlefield": ["Plains", "Plains", {"name": "Hill Giant", "sick": false}]
+      }
+    ],
+    "steps": [
+      {"pass": true},
+      {"player": 1, "cast": "Dog Umbra", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"advance_to": "Main2"},
+      {"advance_to": "Main1", "player": 1},
+      {"attack": [{"card": "Hill Giant", "at": "p0"}], "player": 1},
+      {"player": 0, "block": [{"blocker": "Grizzly Bears", "attacker": "Hill Giant"}]},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {
+      "players": [
+        {"life": 17},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature you control has umbra armor: the aura is destroyed instead of the creature",
+    "players": [
+      {
+        "hand": ["Dog Umbra", "Lightning Bolt"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Dog Umbra", "targets": ["Grizzly Bears"]},
+      {"resolve": true},
+      {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Dog Umbra", "Lightning Bolt"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Dog Umbra put on an attacking creature does not remove it from combat",
+    "players": [
+      { "hand": ["Dog Umbra"], "battlefield": ["Plains", "Plains"] },
+      { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1", "player": 1 },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Dog Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 18, "battlefield_has": ["Dog Umbra"] }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: deathtouch damage destroys the creature, so umbra armor saves it and the Aura dies instead",
+    "players": [
+      { "hand": ["Dog Umbra"], "battlefield": ["Plains", "Plains", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": [ { "name": "Typhoid Rats", "sick": false } ] }
+    ],
+    "steps": [
+      { "cast": "Dog Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Typhoid Rats", "attacker": "Grizzly Bears" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Dog Umbra"] }, { "graveyard_has": ["Typhoid Rats"] } ]
+    }
+  },
+  {
+    "name": "ruling: a destroy effect such as Murder destroys the Aura instead of the enchanted creature",
+    "players": [
+      { "hand": ["Dog Umbra", "Murder"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dog Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Dog Umbra", "Murder"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a sacrifice is not a destroy, so umbra armor does not apply: creature and Aura both die",
+    "players": [
+      { "hand": ["Dog Umbra", "Diabolic Edict"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dog Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Diabolic Edict", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears", "Dog Umbra"], "graveyard_has": ["Grizzly Bears", "Dog Umbra"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: with two umbra armor Auras on one creature, a destroy effect destroys only one of them",
+    "players": [
+      { "hand": ["Dog Umbra", "Dog Umbra", "Murder"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dog Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Dog Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Dog Umbra"], "graveyard_has": ["Dog Umbra", "Murder"] }, {} ]
+    }
+  }
+]

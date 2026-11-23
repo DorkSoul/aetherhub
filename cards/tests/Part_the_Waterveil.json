@@ -1,0 +1,79 @@
+[
+  {
+    "name": "normal cast: take an extra turn and exile itself instead of going to the graveyard",
+    "players": [
+      { "hand": ["Part the Waterveil"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Part the Waterveil" },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [ { "exile": ["Part the Waterveil"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "normal cast is illegal with only five mana",
+    "players": [
+      { "hand": ["Part the Waterveil"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Part the Waterveil", "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "awaken: six +1/+1 counters on the target land, which becomes a 0/0 haste Elemental; extra turn too",
+    "players": [
+      { "hand": ["Part the Waterveil"], "battlefield": ["Plains", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Part the Waterveil", "alt": 0, "targets": ["Plains"] },
+      { "resolve": true },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [ { "exile": ["Part the Waterveil"], "battlefield_has": ["Plains"] }, {} ],
+      "pt": { "Plains": [6, 6] },
+      "keywords": { "Plains": ["Haste"] },
+      "counters": { "Plains": { "p1p1": 6 } }
+    }
+  },
+  {
+    "name": "ruling: normal cast leaves the land a non-creature (no Elemental subtype)",
+    "players": [
+      { "hand": ["Part the Waterveil"], "battlefield": ["Plains", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Part the Waterveil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Plains"] }, {} ],
+      "not_subtypes": { "Plains": ["Elemental"] }
+    }
+  },
+  {
+    "name": "ruling: awakened land stays colourless and keeps its Plains subtype, gaining Elemental",
+    "players": [
+      { "hand": ["Part the Waterveil"], "battlefield": ["Plains", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Part the Waterveil", "alt": 0, "targets": ["Plains"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Plains": [6, 6] },
+      "colors": { "Plains": [] },
+      "subtypes": { "Plains": ["Plains", "Elemental"] }
+    }
+  }
+]

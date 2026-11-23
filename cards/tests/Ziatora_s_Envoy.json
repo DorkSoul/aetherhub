@@ -1,0 +1,329 @@
+[
+ {
+  "name": "top card is a land: play it",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Ziatora's Envoy",
+      "sick": false
+     }
+    ],
+    "library": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ziatora's Envoy",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     "yes"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Forest"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "top card is a cheap spell: cast it free",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Ziatora's Envoy",
+      "sick": false
+     }
+    ],
+    "library": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ziatora's Envoy",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     "yes"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "decline: the card goes to hand",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Ziatora's Envoy",
+      "sick": false
+     }
+    ],
+    "library": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ziatora's Envoy",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     "no"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Ziatora's Envoy"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "spell too expensive: goes to hand",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Ziatora's Envoy",
+      "sick": false
+     }
+    ],
+    "library": [
+     "Grave Titan"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Ziatora's Envoy",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2",
+    "answers": []
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grave Titan"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "blitzed (alt cost): the ETB grants haste, so it attacks at once and the damage trigger runs",
+  "players": [
+   {
+    "hand": ["Ziatora's Envoy"],
+    "battlefield": ["Swamp", "Mountain", "Forest", "Forest", "Forest"],
+    "library": ["Island"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Ziatora's Envoy", "alt": 0},
+   {"resolve": true},
+   {"resolve": true},
+   {"attack": [{"card": "Ziatora's Envoy", "at": "p1"}]},
+   {"block": []},
+   {"advance_to": "Main2", "answers": ["no"]}
+  ],
+  "expect": {
+   "players": [
+    {"hand": ["Island"], "battlefield_has": ["Ziatora's Envoy"]},
+    {"life": 15}
+   ],
+   "keywords": {"Ziatora's Envoy": ["Haste"]}
+  }
+ },
+ {
+  "name": "blitzed: sacrificed at the next end step, and its owner draws a card when it dies",
+  "players": [
+   {
+    "hand": ["Ziatora's Envoy"],
+    "battlefield": ["Swamp", "Mountain", "Forest", "Forest", "Forest"],
+    "library": ["Grizzly Bears", "Swamp"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Ziatora's Envoy", "alt": 0},
+   {"resolve": true},
+   {"resolve": true},
+   {"advance_to": "End"},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Ziatora's Envoy"], "hand": ["Grizzly Bears"]},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "normal cast for {1}{B}{R}{G}: no blitz effects, it stays on the battlefield past the end step",
+  "players": [
+   {
+    "hand": ["Ziatora's Envoy"],
+    "battlefield": ["Swamp", "Mountain", "Forest", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Ziatora's Envoy"},
+   {"resolve": true},
+   {"advance_to": "End"}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Ziatora's Envoy"], "graveyard": []},
+    {}
+   ]
+  }
+ },
+ {"name": "ruling: a land played from the top is not also put into hand",
+  "players": [
+   {"battlefield": [{"name": "Ziatora's Envoy", "sick": false}], "library": ["Forest"]},
+   {}
+  ],
+  "steps": [
+   {"attack": [{"card": "Ziatora's Envoy", "at": "p1"}]},
+   {"advance_to": "Main2", "answers": ["yes"]}
+  ],
+  "expect": {
+   "players": [
+    {"battlefield_has": ["Forest"], "hand_count": 0},
+    {"life": 15}
+   ]
+  }
+ },
+ {"name": "ruling: a blitz cast is still a cast on the stack and can be countered",
+  "players": [
+   {"hand": ["Ziatora's Envoy"], "battlefield": ["Swamp", "Mountain", "Forest", "Forest", "Forest"]},
+   {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}
+  ],
+  "steps": [
+   {"cast": "Ziatora's Envoy", "alt": 0},
+   {"cast": "Counterspell", "player": 1, "targets": [{"stack": "Ziatora's Envoy"}]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Ziatora's Envoy"], "battlefield_lacks": ["Ziatora's Envoy"]},
+    {"graveyard": ["Counterspell"]}
+   ],
+   "stack_empty": true
+  }
+ },
+ {"name": "ruling: a blitzed creature that dies in combat draws a card (the death trigger fires for any reason)",
+  "players": [
+   {"hand": ["Ziatora's Envoy"], "battlefield": ["Swamp", "Mountain", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears"]},
+   {"battlefield": ["Grave Titan"]}
+  ],
+  "steps": [
+   {"cast": "Ziatora's Envoy", "alt": 0},
+   {"resolve": true},
+   {"resolve": true},
+   {"attack": [{"card": "Ziatora's Envoy", "at": "p1"}]},
+   {"block": [{"blocker": "Grave Titan", "attacker": "Ziatora's Envoy"}]},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Ziatora's Envoy"], "hand": ["Grizzly Bears"]},
+    {"battlefield_has": ["Grave Titan"], "life": 20}
+   ]
+  }
+ },
+ {"name": "ruling: a blitzed creature that already died is not sacrificed again at the end step, so no second draw",
+  "players": [
+   {"hand": ["Ziatora's Envoy"], "battlefield": ["Swamp", "Mountain", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears"]},
+   {"battlefield": ["Grave Titan"]}
+  ],
+  "steps": [
+   {"cast": "Ziatora's Envoy", "alt": 0},
+   {"resolve": true},
+   {"resolve": true},
+   {"attack": [{"card": "Ziatora's Envoy", "at": "p1"}]},
+   {"block": [{"blocker": "Grave Titan", "attacker": "Ziatora's Envoy"}]},
+   {"advance_to": "Main2"},
+   {"advance_to": "End"}
+  ],
+  "expect": {
+   "players": [
+    {"graveyard": ["Ziatora's Envoy"], "hand": ["Grizzly Bears"]},
+    {"battlefield_has": ["Grave Titan"], "life": 20}
+   ]
+  }
+ }
+]

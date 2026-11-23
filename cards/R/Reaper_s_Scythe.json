@@ -1,0 +1,66 @@
+{
+  "name": "Reaper's Scythe",
+  "mana_cost": "{2}{B}",
+  "types": ["Artifact"],
+  "subtypes": ["Equipment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        { "type": "CreateToken", "token": "Hero", "n": { "type": "Fixed", "n": 1 } },
+        { "type": "Attach", "what": { "type": "This" }, "to": { "type": "Remembered" } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "EachPlayer" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "Compare", "a": { "type": "LifeLostThisTurn", "who": { "type": "EachObject" } }, "cmp": { "op": "Ge", "n": 1 } },
+              "then": [
+                { "type": "AddCounters", "what": { "type": "This" }, "kind": "Soul", "n": { "type": "Fixed", "n": 1 } }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "EnchantedGets",
+        "power": { "type": "CountersOn", "kind": "Soul", "of": { "type": "This" } },
+        "toughness": { "type": "CountersOn", "kind": "Soul", "of": { "type": "This" } },
+        "keywords": []
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "AddType",
+        "affects": { "attached_by_source": true },
+        "subtypes": ["Assassin"],
+        "types": []
+      }
+    },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{2}" } ],
+      "timing": "Sorcery",
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } }, "label": "target creature you control" }
+      ],
+      "effects": [
+        { "type": "Attach", "what": { "type": "This" }, "to": { "type": "Target", "idx": 0 } }
+      ]
+    }
+  ],
+  "oracle_text": "Job select\nAt the beginning of your end step, put a soul counter on this Equipment for each player who lost life this turn.\nEquipped creature gets +1/+1 for each soul counter on this Equipment and is an Assassin in addition to its other types.\nDeath Sickle — Equip {2}"
+}

@@ -1,0 +1,50 @@
+[
+  { "name": "equip gives +2/+1",
+    "players": [ { "battlefield": ["Giant's Skewer", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Giant's Skewer", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [4, 3] } } },
+  { "name": "equip to a bigger creature",
+    "players": [ { "battlefield": ["Giant's Skewer", "Hill Giant", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Giant's Skewer", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": { "pt": { "Hill Giant": [5, 4] } } },
+  { "name": "equipped creature dealing combat damage to a creature creates a Food token",
+    "players": [ { "battlefield": ["Giant's Skewer", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Giant Spider"] } ],
+    "steps": [
+      { "activate": "Giant's Skewer", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Giant Spider", "attacker": "Grizzly Bears" }], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Food"] }, { "graveyard_has": ["Giant Spider"] } ], "pt": { "Grizzly Bears": [4, 3] } } },
+  { "name": "equipped creature dealing combat damage to a player does not create a Food token",
+    "players": [ { "battlefield": ["Giant's Skewer", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Giant's Skewer", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Food"] }, { "life": 16 } ] } },
+  { "name": "ruling: Food is created even when the equipped creature dies in the combat",
+    "players": [ { "battlefield": ["Giant's Skewer", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "activate": "Giant's Skewer", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Hill Giant", "attacker": "Grizzly Bears" }], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Food"], "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Hill Giant"] } ] } },
+  { "name": "ruling: Food is created when the creature dealt damage survives",
+    "players": [ { "battlefield": ["Giant's Skewer", "Grizzly Bears", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Wall of Stone"] } ],
+    "steps": [
+      { "activate": "Giant's Skewer", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Wall of Stone", "attacker": "Grizzly Bears" }], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Food", "Grizzly Bears"] }, { "battlefield_has": ["Wall of Stone"] } ] } }
+]

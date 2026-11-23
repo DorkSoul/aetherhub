@@ -1,0 +1,84 @@
+[
+  {
+    "name": "a spell cast from exile costs 2 less, so a foretold Saw It Coming is castable with one Island",
+    "players": [
+      { "hand": ["Saw It Coming", "Lightning Bolt"], "battlefield": ["Island", "Mountain", "Sage of the Beyond"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Saw It Coming", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Saw It Coming", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Lightning Bolt", "Saw It Coming"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a spell cast from hand gets no reduction",
+    "players": [
+      { "hand": ["Lightning Bolt", "Saw It Coming"], "battlefield": ["Island", "Island", "Mountain", "Sage of the Beyond"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Saw It Coming", "targets": [{ "stack": "Lightning Bolt" }], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Saw It Coming"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "foretell exiles the Sage face down for {2}",
+    "players": [ { "hand": ["Sage of the Beyond"], "battlefield": ["Island", "Island"] }, {} ],
+    "steps": [ { "activate": "Sage of the Beyond", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Sage of the Beyond"], "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "cannot foretell the Sage with one land (foretell costs {2})",
+    "players": [ { "hand": ["Sage of the Beyond"], "battlefield": ["Island"] }, {} ],
+    "steps": [ { "activate": "Sage of the Beyond", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Sage of the Beyond"] }, {} ] }
+  },
+  {
+    "name": "foretold Sage is cast from exile for its foretell cost {4}{U}: five lands are enough on a later turn",
+    "players": [ { "hand": ["Sage of the Beyond"], "battlefield": ["Island", "Island", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Sage of the Beyond", "ability": 0 }, { "resolve": true }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Main1" }, { "cast": "Sage of the Beyond", "alt": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Sage of the Beyond"] }, {} ] }
+  },
+  {
+    "name": "foretold Sage needs {4}{U}: four lands cannot cast it from exile",
+    "players": [ { "hand": ["Sage of the Beyond"], "battlefield": ["Island", "Island", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Sage of the Beyond", "ability": 0 }, { "resolve": true }, { "advance_to": "Upkeep" }, { "advance_to": "Upkeep" }, { "advance_to": "Main1" }, { "cast": "Sage of the Beyond", "alt": 0, "illegal": true } ],
+    "expect": { "players": [ { "exile": ["Sage of the Beyond"] }, {} ] }
+  },
+  {
+    "name": "ruling: foretelling is a special action, so it can be taken in response to a spell you cast on your turn",
+    "players": [ { "hand": ["Sage of the Beyond", "Lightning Bolt"], "battlefield": ["Mountain", "Island", "Island"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "activate": "Sage of the Beyond", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Sage of the Beyond"], "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: a foretold non-instant creature cannot be cast on the opponent's turn",
+    "players": [ { "hand": ["Sage of the Beyond"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "activate": "Sage of the Beyond", "ability": 0 }, { "resolve": true }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "pass": true, "player": 1 }, { "cast": "Sage of the Beyond", "alt": 0, "illegal": true } ],
+    "expect": { "players": [ { "exile": ["Sage of the Beyond"] }, {} ] }
+  },
+  {
+    "name": "ruling: the Sage's reduction only lowers generic mana, so the foretold Saw It Coming still needs {U} (Mountains cannot pay it)",
+    "players": [ { "hand": ["Saw It Coming", "Lightning Bolt"], "battlefield": ["Sage of the Beyond", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [ { "activate": "Saw It Coming", "ability": 0 }, { "resolve": true }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "cast": "Lightning Bolt", "targets": ["Hill Giant"] }, { "cast": "Saw It Coming", "alt": 0, "targets": [{ "stack": "Lightning Bolt" }], "illegal": true } ],
+    "expect": { "players": [ { "exile": ["Saw It Coming"] }, {} ] }
+  }
+]

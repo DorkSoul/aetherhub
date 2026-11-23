@@ -1,0 +1,270 @@
+[
+  {
+    "name": "even number of counters: may attack",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sab-Sunen, Luxa Embodied",
+            "counters": {
+              "plusoneplusone": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sab-Sunen, Luxa Embodied",
+            "at": "p1"
+          }
+        ]
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sab-Sunen, Luxa Embodied": {
+          "plusoneplusone": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "odd number of counters: may not attack",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sab-Sunen, Luxa Embodied",
+            "counters": {
+              "plusoneplusone": 1
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Sab-Sunen, Luxa Embodied",
+            "at": "p1"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sab-Sunen, Luxa Embodied": {
+          "plusoneplusone": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "odd number of counters: may not block",
+    "players": [
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Sab-Sunen, Luxa Embodied",
+            "counters": {
+              "plusoneplusone": 1
+            }
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Sab-Sunen, Luxa Embodied",
+            "attacker": "Hill Giant"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "first main phase: counter added, odd total draws two",
+    "start": "Upkeep",
+    "players": [
+      {
+        "battlefield": [
+          "Sab-Sunen, Luxa Embodied"
+        ],
+        "library": [
+          "Forest",
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sab-Sunen, Luxa Embodied": {
+          "plusoneplusone": 1
+        }
+      },
+      "players": [
+        {
+          "hand": [
+            "Forest",
+            "Island"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "first main phase: counter added, even total draws nothing",
+    "start": "Upkeep",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Sab-Sunen, Luxa Embodied",
+            "counters": {
+              "plusoneplusone": 1
+            }
+          }
+        ],
+        "library": [
+          "Forest",
+          "Island",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Sab-Sunen, Luxa Embodied": {
+          "plusoneplusone": 2
+        }
+      },
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "odd counters after first main phase (0 -> 1): can't attack, Bears still attacks",
+    "start": "Upkeep",
+    "players": [
+      { "battlefield": ["Sab-Sunen, Luxa Embodied", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Sab-Sunen, Luxa Embodied", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Sab-Sunen, Luxa Embodied": { "plusoneplusone": 1 } },
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "even counters after first main phase (1 -> 2): attacks as an 8/8",
+    "start": "Upkeep",
+    "players": [
+      { "battlefield": [ { "name": "Sab-Sunen, Luxa Embodied", "counters": { "plusoneplusone": 1 } }, "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Sab-Sunen, Luxa Embodied", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Sab-Sunen, Luxa Embodied": { "plusoneplusone": 2 } },
+      "pt": { "Sab-Sunen, Luxa Embodied": [8, 8] },
+      "players": [ {}, { "life": 10 } ]
+    }
+  },
+  {
+    "name": "odd counters: can't block (a second blocker still blocks; Sab's block is dropped)",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "battlefield": [ { "name": "Sab-Sunen, Luxa Embodied", "counters": { "plusoneplusone": 1 } }, "Grizzly Bears" ] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [
+          { "blocker": "Sab-Sunen, Luxa Embodied", "attacker": "Hill Giant" },
+          { "blocker": "Grizzly Bears", "attacker": "Hill Giant" }
+      ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"] },
+        { "battlefield_has": ["Sab-Sunen, Luxa Embodied"], "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "even counters: can block; Sab kills the attacker alone",
+    "players": [
+      { "battlefield": ["Hill Giant"] },
+      { "battlefield": [ { "name": "Sab-Sunen, Luxa Embodied", "counters": { "plusoneplusone": 2 } } ] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Sab-Sunen, Luxa Embodied", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Hill Giant"] },
+        { "battlefield_has": ["Sab-Sunen, Luxa Embodied"] }
+      ]
+    }
+  }
+]

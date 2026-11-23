@@ -1,0 +1,52 @@
+[
+ {
+  "name": "lands you control gain a sacrifice-for-B ability until end of turn",
+  "players": [
+   { "hand": ["Rain of Filth"], "battlefield": ["Swamp", "Plains"] },
+   { "battlefield": ["Forest"] }
+  ],
+  "steps": [
+   { "cast": "Rain of Filth" },
+   { "resolve": true },
+   { "tap_for_mana": "Plains", "color": "B" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Plains"], "battlefield_lacks": ["Plains"], "battlefield_has": ["Swamp"], "pool": { "B": 1 } },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent's lands do not gain the ability",
+  "players": [
+   { "hand": ["Rain of Filth"], "battlefield": ["Swamp"] },
+   { "battlefield": ["Forest"] }
+  ],
+  "steps": [
+   { "cast": "Rain of Filth" },
+   { "resolve": true },
+   { "tap_for_mana": "Forest", "color": "B", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Swamp"] }, { "battlefield_has": ["Forest"] } ]
+  }
+ },
+ {
+  "name": "ruling: a land played after Rain of Filth resolves does not gain the sacrifice ability",
+  "players": [ { "hand": ["Rain of Filth", "Forest"], "battlefield": ["Swamp"] }, {} ],
+  "steps": [
+   { "cast": "Rain of Filth" },
+   { "resolve": true },
+   { "play_land": "Forest" },
+   { "tap_for_mana": "Forest", "color": "B", "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Swamp", "Forest"] }, {} ] }
+ },
+ {
+  "name": "ruling: the granted sacrifice ability can be used while the land is tapped",
+  "players": [ { "hand": ["Rain of Filth"], "battlefield": ["Swamp", { "name": "Plains", "tapped": true }] }, {} ],
+  "steps": [ { "cast": "Rain of Filth" }, { "resolve": true }, { "tap_for_mana": "Plains", "color": "B" } ],
+  "expect": { "players": [ { "graveyard_has": ["Plains"], "battlefield_has": ["Swamp"], "pool": { "B": 1 } }, {} ] }
+ }
+]

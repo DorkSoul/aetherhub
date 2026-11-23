@@ -1,0 +1,100 @@
+[
+  {
+    "name": "gift promised: opponent draws, sacrifices greatest-power creature, caster returns a creature card",
+    "players": [
+      { "hand": ["Consumed by Greed"], "battlefield": ["Swamp", "Swamp", "Island"], "graveyard": ["Llanowar Elves"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant Herdgorger"] }
+    ],
+    "steps": [
+      { "cast": "Consumed by Greed", "answers": [true], "targets": ["p1", "Llanowar Elves"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Llanowar Elves"], "graveyard_has": ["Consumed by Greed"] },
+        { "hand_count": 1, "battlefield": ["Grizzly Bears"], "graveyard": ["Hill Giant Herdgorger"] }
+      ]
+    }
+  },
+  {
+    "name": "no gift: opponent sacrifices greatest-power creature, nothing returns",
+    "players": [
+      { "hand": ["Consumed by Greed"], "battlefield": ["Swamp", "Swamp", "Island"], "graveyard": ["Llanowar Elves"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant Herdgorger"] }
+    ],
+    "steps": [
+      { "cast": "Consumed by Greed", "answers": [false], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Consumed by Greed", "Llanowar Elves"] },
+        { "hand_count": 0, "battlefield": ["Grizzly Bears"], "graveyard": ["Hill Giant Herdgorger"] }
+      ]
+    }
+  },
+  {
+    "name": "only the target opponent's creatures are compared: caster's bigger creature is safe",
+    "players": [
+      { "hand": ["Consumed by Greed"], "battlefield": ["Swamp", "Swamp", "Island", "Hill Giant Herdgorger"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Consumed by Greed", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant Herdgorger"], "graveyard_has": ["Consumed by Greed"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: without the gift, a graveyard creature target is not needed and the opponent still sacrifices",
+    "players": [ { "hand": ["Consumed by Greed"], "battlefield": ["Swamp", "Swamp", "Island"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Consumed by Greed", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Consumed by Greed"] },
+        { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a countered gift spell gives no gift and none of its effects happen",
+    "players": [
+      { "hand": ["Consumed by Greed"], "battlefield": ["Swamp", "Swamp", "Island"], "graveyard": ["Llanowar Elves"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Consumed by Greed", "answers": [true], "targets": ["p1", "Llanowar Elves"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Consumed by Greed", "Llanowar Elves"] },
+        { "hand_count": 0, "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with tied greatest power the opponent chooses which creature to sacrifice",
+    "players": [ { "hand": ["Consumed by Greed"], "battlefield": ["Swamp", "Swamp", "Island"] }, { "battlefield": ["Grizzly Bears", "Generator Servant"] } ],
+    "steps": [
+      { "cast": "Consumed by Greed", "targets": ["p1"] },
+      { "resolve": true, "answers": ["Generator Servant"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0 },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Generator Servant"] }
+      ]
+    }
+  }
+]

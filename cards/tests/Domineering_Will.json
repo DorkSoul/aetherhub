@@ -1,0 +1,292 @@
+[
+ {
+  "name": "target player gains control of a target creature until end of turn",
+  "players": [
+   {
+    "hand": [
+     "Domineering Will"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Domineering Will",
+    "targets": [
+     "p0",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "up to three: a fourth nonattacking creature stays under its controller's control",
+  "players": [
+   {
+    "hand": [
+     "Domineering Will"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant",
+     "Llanowar Elves",
+     "Glory Seeker"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Domineering Will",
+    "targets": [
+     "p0",
+     "Grizzly Bears",
+     "Hill Giant",
+     "Llanowar Elves"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Grizzly Bears",
+      "Hill Giant",
+      "Llanowar Elves"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Glory Seeker"
+     ],
+     "battlefield_lacks": [
+      "Grizzly Bears",
+      "Hill Giant",
+      "Llanowar Elves"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "cast during the opponent's attack: the stolen creature must block if able",
+  "players": [
+   {
+    "hand": [
+     "Domineering Will"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p0"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Domineering Will",
+    "targets": [
+     "p0",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Hill Giant"
+     }
+    ]
+   },
+   {
+    "advance_to": "End"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {
+     "graveyard_has": [
+      "Grizzly Bears"
+     ],
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "an attacking creature can't be targeted (only the player is chosen; the attacker stays put)",
+  "players": [
+   {
+    "hand": [
+     "Domineering Will"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "advance_to": "End"
+   },
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "attack": [
+     {
+      "card": "Hill Giant",
+      "at": "p0"
+     }
+    ],
+    "player": 1
+   },
+   {
+    "pass": true,
+    "player": 1
+   },
+   {
+    "cast": "Domineering Will",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Hill Giant"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a tapped creature is untapped by Domineering Will and so must block if able",
+  "players": [
+   {
+    "hand": [
+     "Domineering Will"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant",
+     "Prodigal Sorcerer"
+    ]
+   }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "activate": "Prodigal Sorcerer", "player": 1, "targets": [ "p0" ] },
+   { "resolve": true },
+   { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1 },
+   { "pass": true, "player": 1 },
+   { "cast": "Domineering Will", "targets": [ "p0", "Prodigal Sorcerer" ] },
+   { "resolve": true },
+   { "block": [], "illegal": true },
+   { "block": [ { "blocker": "Prodigal Sorcerer", "attacker": "Hill Giant" } ] },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "turn": 2,
+   "players": [
+    { "life": 19 },
+    { "graveyard_has": ["Prodigal Sorcerer"], "life": 20 }
+   ]
+  }
+ }
+]

@@ -1,0 +1,188 @@
+[
+  {
+    "name": "first spell gains 1, second gains 2",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Aetherflux Reservoir",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 23
+        },
+        {
+          "life": 14
+        }
+      ]
+    }
+  },
+  {
+    "name": "pay 50 life to deal 50 damage",
+    "players": [
+      {
+        "life": 60,
+        "battlefield": [
+          "Aetherflux Reservoir"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Aetherflux Reservoir",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 10
+        },
+        {
+          "life": -30
+        }
+      ]
+    }
+  },
+  {
+    "name": "opponent's spells do not trigger it",
+    "players": [
+      {
+        "battlefield": [
+          "Aetherflux Reservoir"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "start": "Main1",
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ],
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: spells cast before it entered count toward the total",
+    "players": [
+      { "hand": ["Lightning Bolt", "Aetherflux Reservoir", "Consider"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Aetherflux Reservoir" },
+      { "resolve": true },
+      { "cast": "Consider" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard_has": ["Lightning Bolt", "Consider"] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: countered spells still count toward the total",
+    "players": [
+      { "hand": ["Lightning Bolt", "Aetherflux Reservoir", "Consider"], "battlefield": ["Mountain", "Island", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }], "player": 1 },
+      { "resolve": true },
+      { "cast": "Aetherflux Reservoir" },
+      { "resolve": true },
+      { "cast": "Consider" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 23, "graveyard_has": ["Lightning Bolt", "Consider"] },
+        { "life": 20, "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell cast in response to the trigger makes the total four life",
+    "players": [
+      { "hand": ["Consider", "Lightning Bolt"], "battlefield": ["Aetherflux Reservoir", "Island", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Consider" },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 24, "graveyard_has": ["Consider", "Lightning Bolt"] },
+        { "life": 17 }
+      ]
+    }
+  }
+]

@@ -1,0 +1,308 @@
+[
+  {
+    "name": "ETB exiles all cards in the targeted player's graveyard",
+    "players": [
+      {
+        "hand": [
+          "Nautiloid Ship"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "graveyard": [
+          "Grizzly Bears",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nautiloid Ship"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Nautiloid Ship"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard": [],
+          "exile": [
+            "Grizzly Bears",
+            "Forest"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ETB does not touch cards in its controller's own graveyard",
+    "players": [
+      {
+        "hand": [
+          "Nautiloid Ship"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "graveyard": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nautiloid Ship"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ],
+          "exile": []
+        },
+        {
+          "graveyard": [],
+          "exile": [
+            "Forest"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "crewed by a power-3 creature it attacks as a creature",
+    "players": [
+      {
+        "battlefield": [
+          "Nautiloid Ship",
+          {
+            "name": "Hill Giant",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Nautiloid Ship",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Nautiloid Ship",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 15
+        }
+      ]
+    }
+  },
+  {
+    "name": "crew needs total power 3: a power-2 creature cannot crew",
+    "players": [
+      {
+        "battlefield": [
+          "Nautiloid Ship",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Nautiloid Ship",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Nautiloid Ship"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "combat damage to a player returns a creature exiled with it",
+    "players": [
+      {
+        "hand": [
+          "Nautiloid Ship"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          {
+            "name": "Hill Giant",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Nautiloid Ship"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "activate": "Nautiloid Ship",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Nautiloid Ship",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Nautiloid Ship",
+            "Hill Giant"
+          ]
+        },
+        {
+          "life": 15,
+          "exile": []
+        }
+      ]
+    }
+  }
+  ,{
+    "name": "ruling: a Ship that left and came back is a new object and does not return the card exiled by its earlier incarnation",
+    "players": [
+      {
+        "hand": ["Nautiloid Ship", "Nautiloid Ship", "Shatter"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Mountain", "Mountain", { "name": "Hill Giant", "sick": false }]
+      },
+      {
+        "graveyard": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Nautiloid Ship" },
+      { "resolve": true, "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Shatter" },
+      { "resolve": true },
+      { "cast": "Nautiloid Ship" },
+      { "resolve": true, "targets": ["p1"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "activate": "Nautiloid Ship", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Nautiloid Ship", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Nautiloid Ship", "Hill Giant"] },
+        { "life": 15, "exile": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

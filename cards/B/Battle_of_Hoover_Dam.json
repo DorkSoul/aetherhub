@@ -1,0 +1,81 @@
+{
+  "name": "Battle of Hoover Dam",
+  "mana_cost": "{3}{W}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "ChooseModes",
+          "choose_min": 1,
+          "choose_max": 1,
+          "modes": [
+            {
+              "text": "NCR — At the beginning of your end step, return target creature card with mana value 3 or less from your graveyard to the battlefield with a finality counter on it.",
+              "effects": [
+                {
+                  "type": "GrantStatic",
+                  "what": { "type": "This" },
+                  "duration": "WhileSourceOnBattlefield",
+                  "effect": {
+                    "type": "GrantAbility",
+                    "affects": {},
+                    "ability": {
+                      "type": "Triggered",
+                      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+                      "targets": [
+                        {
+                          "what": {
+                            "type": "CardIn",
+                            "zone": "Graveyard",
+                            "whose": "You",
+                            "filter": { "types": ["Creature"], "mana_value": { "op": "Le", "n": 3 } }
+                          },
+                          "label": "target creature card with mana value 3 or less in your graveyard"
+                        }
+                      ],
+                      "effects": [
+                        { "type": "Move", "what": { "type": "Target", "idx": 0 }, "to": "Battlefield", "under_your_control": true, "remember": true },
+                        { "type": "AddCounters", "kind": "Finality", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Remembered" } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "text": "Legion — Whenever a creature you control dies, put two +1/+1 counters on target creature you control.",
+              "effects": [
+                {
+                  "type": "GrantStatic",
+                  "what": { "type": "This" },
+                  "duration": "WhileSourceOnBattlefield",
+                  "effect": {
+                    "type": "GrantAbility",
+                    "affects": {},
+                    "ability": {
+                      "type": "Triggered",
+                      "trigger": { "type": "Dies", "filter": { "types": ["Creature"], "controller": "You" } },
+                      "targets": [
+                        {
+                          "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } },
+                          "label": "target creature you control"
+                        }
+                      ],
+                      "effects": [
+                        { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 2 }, "what": { "type": "Target", "idx": 0 } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "As Battle of Hoover Dam enters, choose NCR or Legion.\n• NCR — At the beginning of your end step, return target creature card with mana value 3 or less from your graveyard to the battlefield with a finality counter on it.\n• Legion — Whenever a creature you control dies, put two +1/+1 counters on target creature you control."
+}

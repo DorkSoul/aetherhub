@@ -1,0 +1,44 @@
+[
+  {
+    "name": "when it dies, create a Treasure",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Impulsive Pilferer"] }, {} ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Impulsive Pilferer"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Impulsive Pilferer", "Lightning Bolt"], "battlefield_has": ["Treasure"] }, {} ]
+    }
+  },
+  {
+    "name": "encore from the graveyard: exiles the card, a hasty token attacks and is sacrificed at end step (its death makes a Treasure)",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Impulsive Pilferer"] }, { "life": 20 } ],
+    "steps": [
+      { "activate": "Impulsive Pilferer", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Impulsive Pilferer"], "battlefield_has": ["Treasure"], "battlefield_lacks": ["Impulsive Pilferer"] }, {} ]
+    }
+  },
+  {
+    "name": "encore needs four mana: illegal with three lands",
+    "players": [ { "battlefield": ["Mountain", "Mountain", "Mountain"], "graveyard": ["Impulsive Pilferer"] }, {} ],
+    "steps": [ { "activate": "Impulsive Pilferer", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Impulsive Pilferer"] }, {} ] }
+  },
+  {
+    "name": "ruling: the encore token copies only the printed card (the +1/+1 counter it died with is not copied)",
+    "players": [ { "hand": ["Terror"], "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain", { "name": "Impulsive Pilferer", "counters": { "p1p1": 1 } }] }, {} ],
+    "steps": [
+      { "cast": "Terror", "targets": ["Impulsive Pilferer"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Impulsive Pilferer", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Impulsive Pilferer"], "graveyard_has": ["Terror"] }, {} ],
+      "pt": { "Impulsive Pilferer": [1, 1] }
+    }
+  }
+]

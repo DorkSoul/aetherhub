@@ -1,0 +1,213 @@
+[
+  {
+    "name": "attacks: gets a velocity counter at end of combat",
+    "players": [
+      {
+        "battlefield": [
+          "Daredevil Dragster",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Daredevil Dragster",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Daredevil Dragster",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Daredevil Dragster",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ],
+      "counters": {
+        "Daredevil Dragster": {
+          "velocity": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "second velocity counter: sacrificed and draws two",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Daredevil Dragster",
+            "counters": {
+              "velocity": 1
+            }
+          },
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Daredevil Dragster",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Daredevil Dragster",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Daredevil Dragster"
+          ],
+          "hand_count": 2,
+          "battlefield": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "blocks: gets a velocity counter at end of combat",
+    "players": [
+      { "battlefield": ["Daredevil Dragster", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": [ { "name": "Hill Giant", "sick": false } ] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "activate": "Daredevil Dragster", "ability": 0, "player": 0 },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "player": 1, "attack": [ { "card": "Hill Giant", "at": "p0" } ] },
+      { "block": [ { "blocker": "Daredevil Dragster", "attacker": "Hill Giant" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, {} ],
+      "counters": { "Daredevil Dragster": { "velocity": 1 } }
+    }
+  },
+  {
+    "name": "ruling: crewed at beginning of combat, the vehicle can still attack",
+    "players": [
+      { "battlefield": ["Daredevil Dragster", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Daredevil Dragster", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Daredevil Dragster", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 16 } ] }
+  },
+  {
+    "name": "ruling: a creature that just came under your control can crew",
+    "players": [
+      { "battlefield": ["Daredevil Dragster", { "name": "Hill Giant", "sick": true }] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Daredevil Dragster", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Hill Giant": true } }
+  },
+  {
+    "name": "ruling: a crewed vehicle is a creature with its printed 4/4",
+    "players": [
+      { "battlefield": ["Daredevil Dragster", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Daredevil Dragster", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Daredevil Dragster": [4, 4] } }
+  },
+  {
+    "name": "ruling: crewing an already crewed vehicle does not change its P/T",
+    "players": [
+      { "battlefield": ["Daredevil Dragster", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Daredevil Dragster", "ability": 0 },
+      { "resolve": true },
+      { "activate": "Daredevil Dragster", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true },
+      "pt": { "Daredevil Dragster": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a vehicle that dies in combat damage gets no velocity counter and draws nothing",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Daredevil Dragster", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "activate": "Daredevil Dragster", "ability": 0 },
+      { "resolve": true },
+      { "attack": [ { "card": "Daredevil Dragster", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Daredevil Dragster" } ] },
+      { "cast": "Lightning Bolt", "targets": ["Daredevil Dragster"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Daredevil Dragster"], "hand_count": 0 },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  }
+]

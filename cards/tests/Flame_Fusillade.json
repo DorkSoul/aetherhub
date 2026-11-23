@@ -1,0 +1,76 @@
+[
+  {
+    "name": "your creatures gain a tap ping until end of turn",
+    "players": [
+      { "hand": ["Flame Fusillade"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Flame Fusillade" },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 19 }],
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "opponent's permanents do not gain the ability",
+    "players": [
+      { "hand": ["Flame Fusillade"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Flame Fusillade" },
+      { "resolve": true },
+      { "pass": true },
+      { "activate": "Hill Giant", "ability": 32768, "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, {}],
+      "tapped": { "Hill Giant": false }
+    }
+  },
+  {
+    "name": "ruling: a token that entered this turn can tap for the granted ping (no summoning sickness for noncreatures)",
+    "players": [
+      { "hand": ["Air Nomad Legacy", "Flame Fusillade"], "battlefield": ["Plains", "Island", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Air Nomad Legacy" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Flame Fusillade" },
+      { "resolve": true },
+      { "activate": "Clue", "ability": 32768, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 19 }],
+      "tapped": { "Clue": true }
+    }
+  },
+  {
+    "name": "ruling: tapping an Equipment for the ping does not tap the creature it is attached to",
+    "players": [
+      { "hand": ["Flame Fusillade"], "battlefield": ["Bonesplitter", "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Flame Fusillade" },
+      { "resolve": true },
+      { "activate": "Bonesplitter", "ability": 32768, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Bonesplitter", "Grizzly Bears"] }, { "life": 19 }],
+      "attached": { "Bonesplitter": "Grizzly Bears" },
+      "tapped": { "Grizzly Bears": false, "Bonesplitter": true }
+    }
+  }
+]

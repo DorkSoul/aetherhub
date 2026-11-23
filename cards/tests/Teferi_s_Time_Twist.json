@@ -1,0 +1,86 @@
+[
+  {
+    "name": "creature returns at end step with a +1/+1 counter",
+    "players": [ { "hand": ["Teferi's Time Twist"], "battlefield": ["Grizzly Bears", "Island", "Plains"] }, {} ],
+    "steps": [
+      { "cast": "Teferi's Time Twist", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "land returns at end step without a counter",
+    "players": [ { "hand": ["Teferi's Time Twist"], "battlefield": ["Island", "Plains"] }, {} ],
+    "steps": [
+      { "cast": "Teferi's Time Twist", "targets": ["Island"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Island", "Plains"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a tapped creature returns untapped at the end step",
+    "players": [
+      { "hand": ["Teferi's Time Twist"], "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, "Island", "Plains" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Teferi's Time Twist", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false },
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: an exiled token ceases to exist and does not return",
+    "players": [
+      { "hand": ["Teferi's Time Twist"], "battlefield": ["Black Market Tycoon", "Island", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Black Market Tycoon" },
+      { "resolve": true },
+      { "tap_for_mana": "Island" },
+      { "tap_for_mana": "Plains" },
+      { "cast": "Teferi's Time Twist", "targets": ["Treasure"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Treasure"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: an Aura on the exiled creature goes to the graveyard; counters do not carry over; the return gets exactly one +1/+1 counter",
+    "players": [
+      { "hand": ["Pacifism", "Teferi's Time Twist"], "battlefield": [ { "name": "Grizzly Bears", "counters": { "PlusOnePlusOne": 1 } }, "Plains", "Island", "Plains", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Teferi's Time Twist", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "PlusOnePlusOne": 1 } },
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Pacifism"] }, {} ]
+    }
+  }
+]

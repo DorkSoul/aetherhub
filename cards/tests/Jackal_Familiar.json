@@ -1,0 +1,64 @@
+[
+  {
+    "name": "can't attack alone",
+    "players": [ { "battlefield": ["Jackal Familiar"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Jackal Familiar", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": { "tapped": { "Jackal Familiar": false } }
+  },
+  {
+    "name": "can attack together with another creature",
+    "players": [ { "battlefield": ["Jackal Familiar", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Jackal Familiar", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "tapped": { "Jackal Familiar": true, "Grizzly Bears": true } }
+  },
+  {
+    "name": "can't block alone",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Jackal Familiar"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "pass": true },
+      { "block": [ { "blocker": "Jackal Familiar", "attacker": "Hill Giant" } ], "illegal": true }
+    ],
+    "expect": { "players": [ {}, {} ] }
+  },
+  {
+    "name": "attacking alone is not allowed: no damage, Jackal stays untapped",
+    "players": [ { "battlefield": ["Jackal Familiar"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Jackal Familiar", "at": "p1" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 20 } ], "tapped": { "Jackal Familiar": false } }
+  },
+  {
+    "name": "a lone block is dropped: Hill Giant is unblocked and deals 3",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Jackal Familiar", "Llanowar Elves"] } ],
+    "steps": [ { "attack": [ { "card": "Hill Giant", "at": "p1" } ] }, { "block": [ { "blocker": "Jackal Familiar", "attacker": "Hill Giant" } ] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "life": 17, "battlefield_has": ["Jackal Familiar", "Llanowar Elves"] } ] }
+  },
+  {
+    "name": "ruling: the other blocker may block a different attacker than Jackal Familiar",
+    "players": [ { "battlefield": ["Hill Giant", "Grizzly Bears"] }, { "battlefield": ["Jackal Familiar", "Llanowar Elves"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Jackal Familiar", "attacker": "Grizzly Bears" }, { "blocker": "Llanowar Elves", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"], "battlefield_lacks": ["Grizzly Bears"] }, { "life": 20, "battlefield_lacks": ["Llanowar Elves"] } ] }
+  },
+  {
+    "name": "ruling: Jackal Familiar keeps attacking after the other attacker leaves the battlefield",
+    "players": [ { "battlefield": ["Jackal Familiar", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "attack": [ { "card": "Jackal Familiar", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Jackal Familiar"], "battlefield_lacks": ["Grizzly Bears"] }, { "life": 18 } ] }
+  }
+]

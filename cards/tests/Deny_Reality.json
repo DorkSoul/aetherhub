@@ -1,0 +1,186 @@
+[
+ {
+  "name": "cascades into a cheaper spell and bounces",
+  "players": [
+   {
+    "hand": [
+     "Deny Reality"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Forest",
+     "Serra Angel",
+     "Hill Giant"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Deny Reality",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Hill Giant"
+     ],
+     "graveyard": [
+      "Deny Reality"
+     ]
+    },
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "bounces a land too",
+  "players": [
+   {
+    "hand": [
+     "Deny Reality"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Swamp",
+     "Swamp"
+    ],
+    "library": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Deny Reality",
+    "targets": [
+     "Mountain"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Deny Reality"
+     ]
+    },
+    {
+     "hand": [
+      "Mountain"
+     ],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: declining to cast the cascaded spell leaves it on the bottom, and nothing is cast",
+  "players": [
+   {
+    "hand": ["Deny Reality"],
+    "battlefield": ["Island", "Island", "Island", "Swamp", "Swamp"],
+    "library": ["Forest", "Serra Angel", "Hill Giant"]
+   },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Deny Reality", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [false] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Deny Reality"], "battlefield_lacks": ["Hill Giant", "Serra Angel"], "library_count": 3 },
+    { "hand": ["Grizzly Bears"], "battlefield": [] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the cascaded spell's mana value is its printed cost (X counts as 0), so Fireball is cast",
+  "players": [
+   {
+    "hand": ["Deny Reality"],
+    "battlefield": ["Island", "Island", "Island", "Swamp", "Swamp"],
+    "library": ["Fireball", "Hill Giant"]
+   },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Deny Reality", "targets": ["Grizzly Bears"] },
+   { "resolve": true, "answers": [true], "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Deny Reality", "Fireball"], "library_count": 1 },
+    { "hand": ["Grizzly Bears"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a countered Deny Reality still cascades (the cascade trigger resolves first)",
+  "players": [
+   {
+    "hand": ["Deny Reality"],
+    "battlefield": ["Island", "Island", "Island", "Swamp", "Swamp"],
+    "library": ["Forest", "Hill Giant"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island", "Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Deny Reality", "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1 },
+   { "pass": true, "player": 1 },
+   { "resolve": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Deny Reality"], "battlefield_has": ["Hill Giant"] },
+    { "graveyard_has": ["Counterspell"], "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

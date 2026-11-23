@@ -1,0 +1,178 @@
+[
+  {
+    "name": "exiles opponent's hand; casting a card this way makes its owner draw",
+    "players": [
+      {
+        "battlefield": [
+          "Apple of Eden, Isu Relic",
+          "Mountain"
+        ],
+        "life": 20
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Grizzly Bears"
+        ],
+        "library": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Apple of Eden, Isu Relic"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 16
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears",
+            "Lightning Bolt"
+          ],
+          "hand_count": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "exiled cards return to the owner's hand at the next end step",
+    "players": [
+      {
+        "battlefield": [
+          "Apple of Eden, Isu Relic",
+          "Mountain"
+        ],
+        "life": 20
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "library": [
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Apple of Eden, Isu Relic"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 16
+        },
+        {
+          "hand_count": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played in the main phase",
+    "players": [
+      { "battlefield": ["Apple of Eden, Isu Relic", "Mountain"] },
+      { "hand": ["Forest"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "activate": "Apple of Eden, Isu Relic" },
+      { "resolve": true },
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"] },
+        { "hand_count": 1, "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can't be played during combat",
+    "players": [
+      { "battlefield": ["Apple of Eden, Isu Relic", "Mountain"] },
+      { "hand": ["Forest"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "activate": "Apple of Eden, Isu Relic" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Forest"] },
+        { "exile": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: only cards still exiled return at the end step; a played card does not",
+    "players": [
+      { "battlefield": ["Apple of Eden, Isu Relic", "Mountain"] },
+      { "hand": ["Forest", "Lightning Bolt"], "library": ["Forest"] }
+    ],
+    "steps": [
+      { "activate": "Apple of Eden, Isu Relic" },
+      { "resolve": true },
+      { "play_land": "Forest" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"] },
+        { "hand_count": 2, "exile": [] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card drawn by the Apple's draw trigger is not exiled",
+    "players": [
+      { "battlefield": ["Apple of Eden, Isu Relic", "Mountain"] },
+      { "hand": ["Forest"], "library": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Apple of Eden, Isu Relic" },
+      { "resolve": true },
+      { "play_land": "Forest" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"] },
+        { "hand": ["Mountain"], "exile": [] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "name": "Phyrexian Portal",
+  "mana_cost": "{3}",
+  "types": ["Artifact"],
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{3}" } ],
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "min": 1, "max": 1 }
+      ],
+      "timing": "Instant",
+      "effects": [
+        {
+          "type": "If",
+          "cond": { "type": "Compare", "a": { "type": "Count", "filter": {}, "zone": "Library", "player": { "type": "You" } }, "cmp": { "op": "Ge", "n": 10 } },
+          "then": [
+            { "type": "LookAtTop", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 10 }, "filter": {}, "take": 10, "must": true, "to": "Exile", "rest": "Library" },
+            { "type": "StoreRemembered", "slot": 1 },
+            { "type": "ClearRemembered" },
+            {
+              "type": "Choose", "who": { "type": "Target", "idx": 0 }, "from": { "type": "You" }, "zone": "Exile",
+              "filter": { "among_stored": 1 }, "min": 0, "max": 10,
+              "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+            },
+            {
+              "type": "ChooseModes", "choose_min": 1, "choose_max": 1,
+              "modes": [
+                {
+                  "text": "Search the pile the opponent put on the left; exile the other pile.",
+                  "effects": [
+                    { "type": "Choose", "who": { "type": "You" }, "zone": "Exile", "filter": { "among_stored": 0 }, "min": 0, "max": 1,
+                      "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ] },
+                    { "type": "Move", "what": { "type": "All", "zone": "Exile", "filter": { "among_stored": 0 } }, "to": "Library" },
+                    { "type": "Shuffle", "who": { "type": "You" } }
+                  ]
+                },
+                {
+                  "text": "Search the other pile; exile the pile the opponent put on the left.",
+                  "effects": [
+                    { "type": "Choose", "who": { "type": "You" }, "zone": "Exile", "filter": { "among_stored": 1, "not_among_stored": 0 }, "min": 0, "max": 1,
+                      "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" } ] },
+                    { "type": "Move", "what": { "type": "All", "zone": "Exile", "filter": { "among_stored": 1, "not_among_stored": 0 } }, "to": "Library" },
+                    { "type": "Shuffle", "who": { "type": "You" } }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{3}: If your library has ten or more cards in it, target opponent looks at the top ten cards of your library and separates them into two face-down piles. Exile one of those piles. Search the other pile for a card, put it into your hand, then shuffle the rest of that pile into your library."
+}

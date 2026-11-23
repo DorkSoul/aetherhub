@@ -1,0 +1,56 @@
+[
+ { "name": "{1},{T}: a tapped copy of a token that entered this turn; Romana becomes tapped",
+   "players": [
+     { "hand": ["Ancestors' Aid"], "battlefield": ["Mountain", "Mountain", "Plains", "Romana II"] },
+     { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+     { "cast": "Ancestors' Aid", "targets": ["Grizzly Bears"] }, { "resolve": true },
+     { "activate": "Romana II", "targets": ["Treasure"] }, { "resolve": true } ],
+   "expect": {
+     "players": [ { "battlefield_has": ["Treasure", "Treasure", "Romana II"] }, {} ],
+     "tapped": { "Romana II": true } } },
+ { "name": "the target must be a token: a nontoken creature is not a legal target",
+   "players": [
+     { "battlefield": ["Romana II", "Plains"] },
+     { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [ { "activate": "Romana II", "targets": ["Grizzly Bears"], "illegal": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Romana II"] }, {} ], "tapped": { "Romana II": false } } },
+ { "name": "a token that did not enter this turn is not a legal target",
+   "players": [
+     { "battlefield": ["Romana II", "Plains", "Treasure"] },
+     {} ],
+   "steps": [ { "activate": "Romana II", "targets": ["Treasure"], "illegal": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Romana II", "Treasure"] }, {} ], "tapped": { "Romana II": false } } },
+ { "name": "ruling: Time Lord is one two-word creature subtype",
+   "players": [ { "battlefield": ["Romana II"] }, {} ],
+   "steps": [],
+   "expect": { "subtypes": { "Romana II": ["Time Lord"] } } },
+ { "name": "ruling: Time and Lord are not creature types",
+   "players": [ { "battlefield": ["Romana II"] }, {} ],
+   "steps": [],
+   "expect": { "not_subtypes": { "Romana II": ["Time", "Lord"] } } },
+ { "name": "ruling: a token copy's enters-the-battlefield trigger fires (copied Mulldrifter draws two)",
+   "players": [
+     { "battlefield": ["Kiki-Jiki, Mirror Breaker", "Mulldrifter", "Romana II", "Plains"] },
+     {} ],
+   "steps": [
+     { "activate": "Kiki-Jiki, Mirror Breaker", "targets": ["Mulldrifter"] }, { "resolve": true }, { "resolve": true },
+     { "activate": "Romana II" }, { "resolve": true }, { "resolve": true } ],
+   "expect": { "players": [ { "hand_count": 4, "battlefield_has": ["Mulldrifter", "Romana II"] }, {} ] } },
+ { "name": "ruling: the commander tax is per commander; casting the second commander is not taxed",
+   "players": [
+     { "command": ["Romana II", "Jamie McCrimmon"], "battlefield": ["Plains", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest"] },
+     {} ],
+   "steps": [ { "cast": "Romana II" }, { "resolve": true }, { "cast": "Jamie McCrimmon" }, { "resolve": true } ],
+   "expect": { "players": [ { "battlefield_has": ["Romana II", "Jamie McCrimmon"] }, {} ] },
+   "commander": true },
+ { "name": "ruling: Time Lord can be chosen as the creature type (Cavern of Souls makes Romana castable)",
+   "players": [ { "hand": ["Cavern of Souls", "Romana II"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, {} ],
+   "steps": [ { "play_land": "Cavern of Souls" }, { "cast": "Romana II", "answers": ["Time Lord"] }, { "resolve": true } ],
+   "expect": { "players": [ { "hand": [], "battlefield_has": ["Cavern of Souls", "Romana II"] }, {} ] } },
+ { "name": "ruling: Command Beacon lets you choose which of your two commanders goes to hand",
+   "players": [ { "command": ["Romana II", "Jamie McCrimmon"], "battlefield": ["Command Beacon"] }, {} ],
+   "steps": [ { "activate": "Command Beacon" }, { "resolve": true, "answers": ["Jamie McCrimmon"] } ],
+   "expect": { "players": [ { "hand": ["Jamie McCrimmon"], "command": ["Romana II"], "battlefield_lacks": ["Command Beacon"] }, {} ] },
+   "commander": true }
+]

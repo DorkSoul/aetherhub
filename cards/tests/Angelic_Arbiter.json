@@ -1,0 +1,125 @@
+[
+  {
+    "name": "opponent who cast a spell this turn can't attack",
+    "players": [
+      { "battlefield": ["Angelic Arbiter"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, { "life": 20, "graveyard_has": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "opponent who attacked this turn can't cast spells",
+    "players": [
+      { "battlefield": ["Angelic Arbiter"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 18 }, {} ]
+    }
+  },
+  {
+    "name": "opponent who did nothing this turn can still attack",
+    "players": [
+      { "battlefield": ["Angelic Arbiter"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 18 }, {} ]
+    }
+  },
+  {
+    "name": "controller's own creatures are not restricted after casting",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Angelic Arbiter", "Grizzly Bears", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15 } ]
+    }
+  },
+  {
+    "name": "opponent who cast a creature this turn cannot attack with Savannah Lions (no damage)",
+    "players": [ { "battlefield": ["Angelic Arbiter"] }, { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", "Savannah Lions"] } ],
+    "steps": [ { "advance_to": "End" }, { "advance_to": "Upkeep" }, { "advance_to": "Main1" }, { "cast": "Grizzly Bears", "player": 1 }, { "resolve": true }, { "attack": [ { "card": "Savannah Lions", "at": "p0" } ], "player": 1 }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "life": 20 }, {} ] }
+  },
+  {
+    "name": "ruling: if Angelic Arbiter leaves during the opponent's turn, that opponent may attack",
+    "players": [
+      { "battlefield": ["Angelic Arbiter"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Angelic Arbiter"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 18, "graveyard": ["Angelic Arbiter"] }, { "graveyard": ["Doom Blade"] } ]
+    }
+  },
+  {
+    "name": "ruling: an Arbiter entering on the opponent's turn counts that opponent's earlier attack",
+    "players": [
+      { "hand": ["Angelic Arbiter"], "battlefield": ["Leyline of Anticipation", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "pass": true, "player": 1 },
+      { "cast": "Angelic Arbiter", "player": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "life": 18, "battlefield_has": ["Angelic Arbiter"] }, { "hand_count": 2 } ]
+    }
+  }
+]

@@ -1,0 +1,280 @@
+[
+  {
+    "name": "an opponent's spell makes it a creature with P/T equal to that spell's mana value (Impulse, mana value 2)",
+    "players": [
+      {
+        "battlefield": [
+          "Veiled Sentry"
+        ]
+      },
+      {
+        "battlefield": [
+          "Island",
+          "Island"
+        ],
+        "hand": [
+          "Impulse"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Impulse",
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Veiled Sentry": [
+          2,
+          2
+        ]
+      },
+      "players": [
+        {
+          "battlefield": [
+            "Veiled Sentry"
+          ]
+        },
+        {
+          "graveyard": [
+            "Impulse"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "once it is a creature, a later opponent spell (Dark Ritual, mana value 1) does not change its P/T again",
+    "players": [
+      {
+        "battlefield": [
+          "Veiled Sentry"
+        ]
+      },
+      {
+        "battlefield": [
+          "Island",
+          "Island",
+          "Swamp"
+        ],
+        "hand": [
+          "Impulse",
+          "Dark Ritual"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Impulse",
+        "player": 1
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "cast": "Dark Ritual",
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Veiled Sentry": [
+          2,
+          2
+        ]
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Veiled Sentry"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a spell cast by its controller does not animate it (cannot attack)",
+    "players": [
+      {
+        "battlefield": [
+          "Veiled Sentry",
+          "Island",
+          "Island"
+        ],
+        "hand": [
+          "Impulse"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Impulse"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Veiled Sentry",
+            "at": "p1"
+          }
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Veiled Sentry"
+          ],
+          "graveyard": [
+            "Impulse"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "once animated it can attack and deals damage equal to the spell's mana value",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Veiled Sentry",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Island",
+          "Island"
+        ],
+        "hand": [
+          "Impulse"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Impulse",
+        "player": 1
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Veiled Sentry",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell countered before its trigger resolves still sets P/T from its mana value (2)",
+    "players": [
+      {"battlefield": ["Veiled Sentry", "Island", "Island"], "hand": ["Counterspell"]},
+      {"battlefield": ["Island", "Island"], "hand": ["Impulse"]}
+    ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Impulse", "player": 1},
+      {"pass": true, "player": 1},
+      {"cast": "Counterspell", "targets": [{"stack": "Impulse"}]},
+      {"pass": true},
+      {"pass": true, "player": 1},
+      {"resolve": true}
+    ],
+    "expect": {
+      "pt": {"Veiled Sentry": [2, 2]},
+      "players": [
+        {"battlefield_has": ["Veiled Sentry"], "graveyard": ["Counterspell"]},
+        {"graveyard": ["Impulse"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Sentry is already a creature while the spell is still on the stack (Lightning Bolt can target it)",
+    "players": [
+      {"battlefield": ["Veiled Sentry", "Mountain"], "hand": ["Lightning Bolt"]},
+      {"battlefield": ["Island", "Island"], "hand": ["Impulse"]}
+    ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Impulse", "player": 1},
+      {"pass": true, "player": 1},
+      {"pass": true},
+      {"pass": true, "player": 1},
+      {"cast": "Lightning Bolt", "targets": ["Veiled Sentry"]},
+      {"pass": true},
+      {"pass": true, "player": 1},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Lightning Bolt", "Veiled Sentry"]},
+        {"graveyard": ["Impulse"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: once it is a creature it is no longer an enchantment, so Naturalize cannot target it",
+    "players": [
+      {"battlefield": ["Veiled Sentry", "Forest", "Forest"], "hand": ["Naturalize"]},
+      {"battlefield": ["Island", "Island"], "hand": ["Impulse"]}
+    ],
+    "steps": [
+      {"pass": true},
+      {"cast": "Impulse", "player": 1},
+      {"resolve": true},
+      {"cast": "Naturalize", "targets": ["Veiled Sentry"], "illegal": true}
+    ],
+    "expect": {
+      "pt": {"Veiled Sentry": [2, 2]},
+      "players": [
+        {"battlefield_has": ["Veiled Sentry"], "hand": ["Naturalize"]},
+        {"graveyard": ["Impulse"]}
+      ]
+    }
+  }
+]

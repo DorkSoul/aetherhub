@@ -1,0 +1,181 @@
+[
+  {
+    "name": "attack: may goad target creature the defending player controls",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Goblin Racketeer",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Goblin Racketeer",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Goblin Racketeer"
+          ]
+        },
+        {
+          "battlefield": [
+            "Grizzly Bears",
+            "Hill Giant"
+          ]
+        }
+      ],
+      "pt": {
+        "Goblin Racketeer": [
+          4,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "declining the optional goad leaves the creature alone",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Goblin Racketeer",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Goblin Racketeer",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "battlefield": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no other opponent to attack, a goaded creature must attack the goader",
+    "players": [
+      { "battlefield": [ { "name": "Goblin Racketeer", "sick": false } ] },
+      { "battlefield": [ "Grizzly Bears", "Hill Giant" ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Goblin Racketeer", "at": "p1" } ] },
+      { "resolve": true, "targets": [ "Grizzly Bears" ], "answers": [ true ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1, "illegal": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 18 }, { "battlefield": [ "Grizzly Bears", "Hill Giant" ] } ]
+    }
+  },
+  {
+    "name": "ruling: a goaded creature must attack again in an additional combat phase",
+    "players": [
+      { "battlefield": [ { "name": "Goblin Racketeer", "sick": false } ] },
+      { "hand": [ "Relentless Assault" ], "battlefield": [ "Grizzly Bears", "Hill Giant", "Mountain", "Mountain", "Mountain", "Mountain" ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Goblin Racketeer", "at": "p1" } ] },
+      { "resolve": true, "targets": [ "Grizzly Bears" ], "answers": [ true ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" },
+      { "cast": "Relentless Assault", "player": 1 },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1, "illegal": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [ { "life": 16 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: goad still applies after the goaded creature loses all abilities (Lignify)",
+    "players": [
+      { "hand": [ "Lignify" ], "battlefield": [ { "name": "Goblin Racketeer", "sick": false }, "Forest", "Forest" ] },
+      { "battlefield": [ "Grizzly Bears", "Hill Giant" ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Goblin Racketeer", "at": "p1" } ] },
+      { "resolve": true, "targets": [ "Grizzly Bears" ], "answers": [ true ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Lignify", "targets": [ "Grizzly Bears" ] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ], "player": 1, "illegal": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ],
+      "pt": { "Grizzly Bears": [ 0, 4 ] },
+      "attached": { "Lignify": "Grizzly Bears" }
+    }
+  }
+]

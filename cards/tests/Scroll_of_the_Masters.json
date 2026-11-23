@@ -1,0 +1,42 @@
+[
+  {
+    "name": "noncreature spell puts a lore counter on the scroll",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Scroll of the Masters", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ], "counters": { "Scroll of the Masters": { "lore": 1 } } }
+  },
+  {
+    "name": "creature spell does not add a lore counter",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Scroll of the Masters", "Forest", "Forest"] }, {} ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears", "Scroll of the Masters"] }, {} ] }
+  },
+  {
+    "name": "{3},{T}: target creature gets +1/+1 per lore counter",
+    "players": [ { "battlefield": [ { "name": "Scroll of the Masters", "counters": { "lore": 2 } }, "Grizzly Bears", "Mountain", "Mountain", "Mountain" ] }, {} ],
+    "steps": [
+      { "activate": "Scroll of the Masters", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [4, 4] }, "tapped": { "Scroll of the Masters": true } }
+  },
+  {
+    "name": "ruling: the bonus is fixed when the ability resolves; a later lore counter does not change it",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Scroll of the Masters", "counters": { "lore": 2 } }, "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain" ] }, {} ],
+    "steps": [
+      { "activate": "Scroll of the Masters", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ], "pt": { "Grizzly Bears": [4, 4] }, "counters": { "Scroll of the Masters": { "lore": 3 } } }
+  }
+]

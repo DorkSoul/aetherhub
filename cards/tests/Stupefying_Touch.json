@@ -1,0 +1,139 @@
+[
+  {
+    "name": "enchanted creature cannot activate and the aura draws a card",
+    "players": [
+      {
+        "hand": [
+          "Stupefying Touch"
+        ],
+        "library": [
+          "Forest"
+        ],
+        "battlefield": [
+          "Island",
+          "Mountain",
+          {
+            "name": "Bold Impaler",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Stupefying Touch",
+        "targets": [
+          "Bold Impaler"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Bold Impaler",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Forest"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Bold Impaler": [
+          1,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "without the aura the creature can activate",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Bold Impaler",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Bold Impaler",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Bold Impaler": [
+          3,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "with the Aura attached the creature cannot activate, though mana is spare",
+    "players": [
+      {
+        "hand": ["Stupefying Touch"],
+        "battlefield": ["Island", "Mountain", "Island", "Mountain", "Mountain", { "name": "Bold Impaler", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Stupefying Touch", "targets": ["Bold Impaler"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Bold Impaler", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "pt": { "Bold Impaler": [1, 2] }
+    }
+  },
+  {
+    "name": "ruling: the enchanted creature's mana abilities are stopped too, so Llanowar Elves cannot pay for Grizzly Bears",
+    "players": [
+      { "hand": ["Stupefying Touch", "Grizzly Bears"], "battlefield": ["Island", "Plains", "Forest", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Plains" },
+      { "cast": "Stupefying Touch", "targets": ["Llanowar Elves"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Grizzly Bears", "illegal": true }
+    ],
+    "expect": { "players": [ { "hand_count": 2 }, {} ], "tapped": { "Llanowar Elves": false } }
+  },
+  {
+    "name": "control: without the aura Llanowar Elves and a Forest pay for Grizzly Bears",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", { "name": "Llanowar Elves", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  }
+]

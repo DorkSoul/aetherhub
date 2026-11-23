@@ -1,0 +1,75 @@
+[
+  {
+    "name": "teleport ({3}{W}) makes Blink Dog phase out",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Blink Dog"] }, {} ],
+    "steps": [
+      { "activate": "Blink Dog", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Blink Dog"] }, {} ] }
+  },
+  {
+    "name": "teleport needs four mana: with three lands it cannot be activated",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Blink Dog"] }, {} ],
+    "steps": [
+      { "activate": "Blink Dog", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Blink Dog"] }, {} ] }
+  },
+  {
+    "name": "a phased out Blink Dog phases back in at its controller's next untap step",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Blink Dog"] }, {} ],
+    "steps": [
+      { "activate": "Blink Dog", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Blink Dog"] }, {} ] }
+  },
+  {
+    "name": "ruling: a phased out Blink Dog cannot be the target of a spell",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Blink Dog"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "activate": "Blink Dog", "ability": 0 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Blink Dog"], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Blink Dog"] }, { "hand": ["Lightning Bolt"], "life": 20 } ] }
+  },
+  {
+    "name": "ruling: an attacking Blink Dog that phases out is removed from combat and deals no damage",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Blink Dog"] }, { "life": 20 } ],
+    "steps": [
+      { "attack": [{ "card": "Blink Dog", "at": "p1" }] },
+      { "activate": "Blink Dog", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Blink Dog"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling control: an attacking Blink Dog that does not phase out deals 2 damage (double strike)",
+    "players": [ { "battlefield": ["Blink Dog"] }, { "life": 20 } ],
+    "steps": [
+      { "attack": [{ "card": "Blink Dog", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Blink Dog"] }, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: Blink Dog phases in during its controller's untap step and can attack that turn",
+    "players": [ { "battlefield": ["Plains", "Plains", "Plains", "Plains", "Blink Dog"] }, { "life": 20 } ],
+    "steps": [
+      { "activate": "Blink Dog", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [{ "card": "Blink Dog", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Blink Dog"] }, { "life": 18 } ] }
+  }
+]

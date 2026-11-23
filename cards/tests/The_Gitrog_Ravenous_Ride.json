@@ -1,0 +1,217 @@
+[
+  {
+    "name": "saddled combat damage: sacrifice the saddler, draw its power, put that many lands onto the battlefield tapped",
+    "players": [
+      {
+        "hand": ["Forest", "Swamp", "Island"],
+        "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears"],
+        "library": ["Mountain", "Plains", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "The Gitrog, Ravenous Ride" },
+      { "resolve": true },
+      { "attack": [{ "card": "The Gitrog, Ravenous Ride", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true, [0, 1]] }
+    ],
+    "expect": {
+      "tapped": { "Forest": true, "Swamp": true },
+      "players": [
+        {
+          "hand_count": 4,
+          "graveyard": ["Grizzly Bears"],
+          "battlefield_has": ["The Gitrog, Ravenous Ride", "Forest", "Swamp"]
+        },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "declining the sacrifice: the saddler stays, nothing is drawn",
+    "players": [
+      {
+        "hand": ["Forest", "Swamp", "Island"],
+        "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears"],
+        "library": ["Mountain", "Plains", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "The Gitrog, Ravenous Ride" },
+      { "resolve": true },
+      { "attack": [{ "card": "The Gitrog, Ravenous Ride", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 4,
+          "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears"]
+        },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "unsaddled attack: no creature saddled it, so there is nothing to sacrifice and no draw",
+    "players": [
+      {
+        "hand": ["Forest", "Swamp", "Island"],
+        "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears"],
+        "library": ["Mountain", "Plains", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "The Gitrog, Ravenous Ride", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 4,
+          "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears"]
+        },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: lands put onto the battlefield by the trigger do not count as a land drop",
+    "players": [
+      {
+        "hand": ["Forest", "Swamp", "Island"],
+        "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears"],
+        "library": ["Mountain", "Plains", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "play_land": "Forest" },
+      { "activate": "The Gitrog, Ravenous Ride" },
+      { "resolve": true },
+      { "attack": [{ "card": "The Gitrog, Ravenous Ride", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true, [0, 1]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["The Gitrog, Ravenous Ride", "Forest", "Swamp", "Island"],
+          "graveyard": ["Grizzly Bears"]
+        },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: X is the sacrificed creature's power as it last existed (a +1/+1 counter counts)",
+    "players": [
+      {
+        "hand": ["Forest", "Swamp", "Island"],
+        "battlefield": ["The Gitrog, Ravenous Ride", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }],
+        "library": ["Mountain", "Plains", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "The Gitrog, Ravenous Ride" },
+      { "resolve": true },
+      { "attack": [{ "card": "The Gitrog, Ravenous Ride", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2", "answers": [true, [0, 1, 2]] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 4,
+          "battlefield_has": ["The Gitrog, Ravenous Ride", "Forest", "Swamp", "Island"],
+          "graveyard": ["Grizzly Bears"]
+        },
+        { "life": 14 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: saddling again while already saddled is a legal activation (a second creature crews)",
+    "players": [
+      {
+        "battlefield": ["The Gitrog, Ravenous Ride", "Grizzly Bears", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "The Gitrog, Ravenous Ride" },
+      { "resolve": true },
+      { "activate": "The Gitrog, Ravenous Ride" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true, "Hill Giant": true },
+      "players": [
+        { "battlefield_has": ["The Gitrog, Ravenous Ride", "Grizzly Bears", "Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: saddle needs other untapped creatures; the Mount alone cannot saddle itself",
+    "players": [
+      {
+        "battlefield": ["The Gitrog, Ravenous Ride"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "The Gitrog, Ravenous Ride", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Gitrog, Ravenous Ride"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a tapped creature cannot be tapped to saddle",
+    "start": "Main1",
+    "players": [
+      {
+        "battlefield": ["The Gitrog, Ravenous Ride", { "name": "Grizzly Bears", "tapped": true }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "The Gitrog, Ravenous Ride", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["The Gitrog, Ravenous Ride", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  }
+]

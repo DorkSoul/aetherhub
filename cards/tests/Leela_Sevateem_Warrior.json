@@ -1,0 +1,134 @@
+[
+  {
+    "name": "opponent's first card in their draw step does not put a counter on Leela",
+    "players": [
+      { "battlefield": ["Leela, Sevateem Warrior"] },
+      { "library": ["Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Draw" }
+    ],
+    "expect": {
+      "pt": { "Leela, Sevateem Warrior": [3, 3] }
+    }
+  },
+  {
+    "name": "opponent drawing two cards outside the draw step puts a counter on Leela for each",
+    "players": [
+      { "battlefield": ["Leela, Sevateem Warrior"] },
+      { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Draw", "player": 1 },
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Divination", "player": 1 },
+      { "resolve": true, "player": 1 }
+    ],
+    "expect": {
+      "pt": { "Leela, Sevateem Warrior": [5, 5] },
+      "counters": { "Leela, Sevateem Warrior": { "+1/+1": 2 } }
+    }
+  },
+  {
+    "name": "you drawing cards does not put a counter on Leela",
+    "players": [
+      { "hand": ["Divination"], "battlefield": ["Leela, Sevateem Warrior", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Leela, Sevateem Warrior": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: the two commanders are tracked separately, so 18 from Yargle and 3 from Leela (21 combined) does not end the game",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Yargle and Multani", "Leela, Sevateem Warrior"],
+        "hand": [],
+        "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      { "life": 40 }
+    ],
+    "steps": [
+      { "cast": "Yargle and Multani" },
+      { "resolve": true },
+      { "cast": "Leela, Sevateem Warrior" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      {
+        "attack": [
+          { "card": "Yargle and Multani", "at": "p1" },
+          { "card": "Leela, Sevateem Warrior", "at": "p1" }
+        ]
+      },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the first cast of the second commander pays no commander tax (tax is per commander)",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Yargle and Multani", "Leela, Sevateem Warrior"],
+        "hand": [],
+        "battlefield": ["Swamp", "Swamp", "Forest", "Forest", "Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Yargle and Multani" },
+      { "resolve": true },
+      { "cast": "Leela, Sevateem Warrior" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Yargle and Multani", "Leela, Sevateem Warrior"], "command": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two commanders Command Beacon puts only the one chosen into hand",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Yargle and Multani", "Leela, Sevateem Warrior"],
+        "battlefield": ["Command Beacon"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Command Beacon", "ability": 0 },
+      { "resolve": true, "answers": ["Leela, Sevateem Warrior"] }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": ["Leela, Sevateem Warrior"],
+          "hand_count": 1,
+          "command": ["Yargle and Multani"],
+          "graveyard": ["Command Beacon"]
+        },
+        {}
+      ]
+    }
+  }
+]

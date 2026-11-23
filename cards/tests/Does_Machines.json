@@ -1,0 +1,296 @@
+[
+ {
+  "name": "enters: mill two, draw two, discard two",
+  "players": [
+   {
+    "hand": [
+     "Does Machines"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Does Machines"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "level 2 returns an artifact card from the graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Island",
+     "Island",
+     {
+      "name": "Does Machines",
+      "counters": {
+       "level": 1
+      }
+     }
+    ],
+    "graveyard": [
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Does Machines",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Sol Ring"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Sol Ring"
+     ],
+     "graveyard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "level 3: a creature artifact keeps its own P/T and gets three counters",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Does Machines",
+      "counters": {
+       "level": 3
+      }
+     },
+     {
+      "name": "Dockworker Drone",
+      "sick": false
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Dockworker Drone": [
+     5,
+     5
+    ]
+   }
+  }
+ },
+ {
+  "name": "level 3: a noncreature artifact becomes a 0/0 Robot with three counters",
+  "players": [
+   {
+    "battlefield": [
+     {
+      "name": "Does Machines",
+      "counters": {
+       "level": 3
+      }
+     },
+     "Sol Ring"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "BeginCombat"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Sol Ring": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "level 3 costs {4}{U} from level 2",
+  "players": [
+   {
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     {
+      "name": "Does Machines",
+      "counters": {
+       "level": 2
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Does Machines",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Does Machines": {
+     "level": 3
+    }
+   }
+  }
+ },
+ {
+  "name": "level 3 is illegal with only four lands",
+  "players": [
+   {
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island",
+     {
+      "name": "Does Machines",
+      "counters": {
+       "level": 2
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Does Machines",
+    "ability": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Does Machines": {
+     "level": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "entering at level 1 lets the level 2 ability be used",
+  "players": [
+   {
+    "hand": ["Does Machines"],
+    "battlefield": ["Island", "Island", "Island", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   {"cast": "Does Machines"},
+   {"resolve": true},
+   {"resolve": true, "auto": true},
+   {"activate": "Does Machines", "ability": 0},
+   {"resolve": true}
+  ],
+  "expect": {
+   "counters": {"Does Machines": {"level": 2}}
+  }
+ },
+ {
+  "name": "ruling: a noncreature artifact that became a creature this turn can attack (under control since turn start)",
+  "players": [
+   { "battlefield": [ { "name": "Does Machines", "counters": { "level": 3 } }, "Sol Ring" ] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "resolve": true },
+   { "attack": [ { "card": "Sol Ring", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 17 } ] }
+ },
+ {
+  "name": "ruling: the level-up is an activated ability on the stack that can be responded to",
+  "players": [
+   { "battlefield": ["Island", "Island", { "name": "Does Machines", "counters": { "level": 1 } }], "graveyard": ["Sol Ring"] },
+   { "hand": ["Giant Growth"], "battlefield": ["Forest", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Does Machines", "ability": 0 },
+   { "pass": true },
+   { "cast": "Giant Growth", "player": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Does Machines": { "level": 2 } },
+   "pt": { "Grizzly Bears": [5, 5] }
+  }
+ },
+ {
+  "name": "ruling: a Class already at level 2 can't be advanced to level 2 again",
+  "players": [
+   { "battlefield": ["Island", "Island", { "name": "Does Machines", "counters": { "level": 2 } }] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Does Machines", "ability": 0, "illegal": true }
+  ],
+  "expect": { "counters": { "Does Machines": { "level": 2 } } }
+ }
+]

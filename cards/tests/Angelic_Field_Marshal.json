@@ -1,0 +1,161 @@
+[
+  {
+    "name": "without a commander it is a plain 3/3",
+    "players": [
+      { "hand": ["Angelic Field Marshal"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Angelic Field Marshal" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Angelic Field Marshal": [3, 3] }
+    }
+  },
+  {
+    "name": "with your commander on the battlefield it is a 5/5",
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "hand": ["Angelic Field Marshal"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Angelic Field Marshal" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Angelic Field Marshal": [5, 5], "Savannah Lions": [2, 1] }
+    },
+    "commander": true
+  },
+  {
+    "name": "creatures you control have vigilance while you control your commander",
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "battlefield": ["Plains", "Angelic Field Marshal", "Grizzly Bears"]
+      },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false }
+    },
+    "commander": true
+  },
+  {
+    "name": "without your commander creatures do not gain vigilance",
+    "players": [
+      { "battlefield": ["Angelic Field Marshal", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true }
+    }
+  },
+  {
+    "name": "ruling: an opponent's commander does not make Angelic Field Marshal a lieutenant",
+    "players": [
+      { "battlefield": ["Angelic Field Marshal"] },
+      { "command": ["Savannah Lions"], "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Savannah Lions", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ {}, { "battlefield_has": ["Savannah Lions"] } ], "pt": { "Angelic Field Marshal": [3, 3] } },
+    "commander": true
+  },
+  {
+    "name": "ruling: when the commander leaves the battlefield the lieutenant bonus stops",
+    "players": [
+      { "command": ["Savannah Lions"], "hand": ["Lightning Bolt"], "battlefield": ["Angelic Field Marshal", "Plains", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Angelic Field Marshal": [3, 3] } },
+    "commander": true
+  },
+  {
+    "name": "ruling: a creature you gain control of gets the lieutenant bonus if you control your commander",
+    "players": [
+      { "command": ["Savannah Lions"], "hand": ["Control Magic"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Island"] },
+      { "battlefield": ["Angelic Field Marshal"] }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "cast": "Control Magic", "targets": ["Angelic Field Marshal"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Angelic Field Marshal"] }, {} ], "pt": { "Angelic Field Marshal": [5, 5] } },
+    "commander": true
+  },
+  {
+    "name": "ruling: losing the commander stops the lieutenant bonus, so a damaged Field Marshal is destroyed",
+    "players": [
+      { "command": ["Savannah Lions"], "battlefield": ["Angelic Field Marshal", "Plains"] },
+      { "hand": ["Lightning Bolt", "Control Magic"], "battlefield": ["Mountain", "Island", "Island", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Angelic Field Marshal"] },
+      { "resolve": true },
+      { "cast": "Control Magic", "player": 1, "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Angelic Field Marshal"] }, { "battlefield_has": ["Savannah Lions"] } ] },
+    "commander": true
+  },
+  {
+    "name": "ruling: losing the commander with no damage on the Field Marshal leaves a 3/3 that survives",
+    "players": [
+      { "command": ["Savannah Lions"], "battlefield": ["Angelic Field Marshal", "Plains"] },
+      { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Plains", "Plains"] }
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "cast": "Control Magic", "player": 1, "targets": ["Savannah Lions"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Angelic Field Marshal"] }, {} ], "pt": { "Angelic Field Marshal": [3, 3] } },
+    "commander": true
+  },
+  {
+    "name": "ruling: with both of two commanders on the battlefield the bonus applies once (5/5, not 7/7)",
+    "players": [{"command": ["Lae'zel, Vlaakith's Champion", "Ganax, Astral Hunter"], "hand": ["Angelic Field Marshal"], "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]}, {}],
+    "steps": [{"cast": "Lae'zel, Vlaakith's Champion"}, {"resolve": true}, {"cast": "Ganax, Astral Hunter"}, {"resolve": true}, {"cast": "Angelic Field Marshal"}, {"resolve": true}],
+    "expect": {"players": [{"battlefield_has": ["Angelic Field Marshal"]}, {}], "pt": {"Angelic Field Marshal": [5, 5]}},
+    "commander": true
+  }
+]

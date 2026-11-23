@@ -1,0 +1,57 @@
+{
+ "name": "Anzrag's Rampage",
+ "mana_cost": "{3}{R}{R}",
+ "types": ["Sorcery"],
+ "abilities": [
+  {
+   "type": "Spell",
+   "targets": [],
+   "effects": [
+    {
+     "type": "Destroy",
+     "what": { "type": "All", "filter": { "types": ["Artifact"], "controller": "Opponent" } }
+    },
+    { "type": "ClearRemembered" },
+    { "type": "StoreRemembered", "slot": 0 },
+    {
+     "type": "Repeat",
+     "n": {
+      "type": "CardsPutIntoGraveyardThisTurn",
+      "whose": "Any",
+      "from_battlefield": true,
+      "filter": { "types": ["Artifact"] }
+     },
+     "effects": [
+      {
+       "type": "Move",
+       "what": { "type": "TopOfLibrary", "who": { "type": "You" }, "n": 1 },
+       "to": "Exile",
+       "remember": true
+      },
+      { "type": "StoreRemembered", "slot": 0, "append": true }
+     ]
+    },
+    {
+     "type": "Choose",
+     "who": { "type": "You" },
+     "zone": "Exile",
+     "filter": { "types": ["Creature"], "among_stored": 0 },
+     "min": 0,
+     "max": 1,
+     "then": [
+      { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "remember": true },
+      { "type": "GrantKeyword", "what": { "type": "Remembered" }, "keyword": "Haste", "duration": "UntilEndOfTurn" },
+      {
+       "type": "Delayed",
+       "at": "NextEndStep",
+       "effects": [
+        { "type": "Move", "what": { "type": "Remembered" }, "to": "Hand" }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "oracle_text": "Destroy all artifacts you don't control, then exile the top X cards of your library, where X is the number of artifacts that were put into graveyards from the battlefield this turn. You may put a creature card exiled this way onto the battlefield. It gains haste. Return it to your hand at the beginning of the next end step."
+}

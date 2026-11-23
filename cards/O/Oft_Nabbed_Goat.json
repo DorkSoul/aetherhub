@@ -1,0 +1,51 @@
+{
+  "name": "Oft-Nabbed Goat",
+  "mana_cost": "{1}{B}",
+  "types": ["Creature"],
+  "subtypes": ["Goat"],
+  "power": 0,
+  "toughness": 5,
+  "abilities": [
+    { "type": "AnyPlayerMayActivate" },
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{1}" } ],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "Not",
+        "c": { "type": "Control", "who": { "type": "You" }, "filter": { "this": true }, "at_least": 1 }
+      },
+      "effects": [
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "GainControl", "what": { "type": "This" }, "duration": "Forever", "to": { "type": "You" } },
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "MinusOneMinusOne", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "condition": { "type": "Compare", "a": { "type": "CountersOn", "of": { "type": "TriggerObject" }, "kind": "MinusOneMinusOne" }, "cmp": { "op": "Ge", "n": 1 } },
+      "effects": [
+        {
+          "type": "Draw",
+          "who": { "type": "OwnerOf", "of": { "type": "TriggerObject" } },
+          "n": { "type": "CountersOn", "of": { "type": "TriggerObject" }, "kind": "MinusOneMinusOne" }
+        },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachPlayer" },
+          "effects": [
+            {
+              "type": "If",
+              "cond": { "type": "Compare", "a": { "type": "Count", "filter": { "this": true }, "zone": "Graveyard", "player": { "type": "EachObject" } }, "cmp": { "op": "Eq", "n": 0 } },
+              "then": [
+                { "type": "LoseLife", "who": { "type": "EachObject" }, "n": { "type": "CountersOn", "of": { "type": "TriggerObject" }, "kind": "MinusOneMinusOne" } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{1}: Draw a card. Gain control of this creature and put a -1/-1 counter on it. Only your opponents may activate this ability and only as a sorcery.\nWhen this creature dies, if it had one or more -1/-1 counters on it, its owner draws that many cards and each other player loses that much life."
+}

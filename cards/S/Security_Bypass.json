@@ -1,0 +1,35 @@
+{
+  "name": "Security Bypass",
+  "mana_cost": "{1}{U}",
+  "types": ["Enchantment"],
+  "subtypes": ["Aura"],
+  "abilities": [
+    { "type": "Attach", "to": { "types": ["Creature"] } },
+    {
+      "type": "Static",
+      "condition": { "type": "Compare", "a": { "type": "Count", "filter": { "types": ["Creature"], "attacking": true }, "zone": "Battlefield", "player": null }, "cmp": { "op": "Eq", "n": 1 } },
+      "effect": { "type": "CantBeBlockedBy", "affects": { "attached_by_source": true }, "by": { "types": ["Creature"] } }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "attached_by_source": true },
+        "ability": {
+          "type": "Triggered",
+          "trigger": { "type": "DealsCombatDamage", "filter": { "this": true }, "to": "Player" },
+          "effects": [
+            { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+            { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+            {
+              "type": "If",
+              "cond": { "type": "RememberedIs", "filter": { "not_types": ["Land"] } },
+              "then": [{ "type": "AddCounters", "what": { "type": "This" }, "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 1 } }]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "oracle_text": "Enchant creature\nAs long as enchanted creature is attacking alone, it can't be blocked.\nEnchanted creature has \"Whenever this creature deals combat damage to a player, it connives.\" (Its controller draws a card, then discards a card. If they discarded a nonland card, they put a +1/+1 counter on this creature.)"
+}

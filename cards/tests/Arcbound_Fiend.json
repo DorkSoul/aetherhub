@@ -1,0 +1,270 @@
+[
+  {
+    "name": "upkeep: moves a +1/+1 counter from target creature onto itself",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Arcbound Fiend",
+            "counters": {
+              "p1p1": 3
+            }
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "start": "Untap",
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Arcbound Fiend": {
+          "p1p1": 4
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          2,
+          2
+        ],
+        "Arcbound Fiend": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "declining the may leaves the counters alone",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Arcbound Fiend",
+            "counters": {
+              "p1p1": 3
+            }
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Grizzly Bears",
+            "counters": {
+              "p1p1": 1
+            }
+          }
+        ]
+      }
+    ],
+    "start": "Untap",
+    "steps": [
+      {
+        "advance_to": "Upkeep",
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Arcbound Fiend": {
+          "p1p1": 3
+        }
+      },
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "dies: modular counters move to target artifact creature",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Arcbound Fiend",
+            "counters": {
+              "p1p1": 3
+            }
+          },
+          "Arcbound Worker"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Arcbound Fiend"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Arcbound Fiend"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Arcbound Worker": {
+          "p1p1": 4
+        }
+      },
+      "pt": {
+        "Arcbound Worker": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "dies: declining the modular trigger moves no counters",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Arcbound Fiend",
+            "counters": {
+              "p1p1": 3
+            }
+          },
+          "Arcbound Worker"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Arcbound Fiend"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Arcbound Fiend"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Arcbound Worker": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "enters with three +1/+1 counters (modular 3): the cast Fiend is a 3/3",
+    "players": [
+      { "hand": ["Arcbound Fiend"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Arcbound Fiend" },
+      { "resolve": true }
+    ],
+    "expect": { "counters": { "Arcbound Fiend": { "p1p1": 3 } }, "pt": { "Arcbound Fiend": [3, 3] } }
+  },
+  {
+    "name": "ruling: upkeep move targeting a creature with no +1/+1 counters does nothing",
+    "players": [
+      { "battlefield": [ { "name": "Arcbound Fiend", "counters": { "p1p1": 3 } } ] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "start": "Untap",
+    "steps": [
+      { "advance_to": "Upkeep", "targets": ["Grizzly Bears"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Arcbound Fiend": { "p1p1": 3 } },
+      "pt": { "Grizzly Bears": [2, 2], "Arcbound Fiend": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: modular moves the counters the Fiend had when it died (2 counters to the Worker)",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Arcbound Fiend", "counters": { "p1p1": 2 } }, "Arcbound Worker"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Arcbound Fiend"] },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Arcbound Fiend"] }, {} ],
+      "counters": { "Arcbound Worker": { "p1p1": 3 } },
+      "pt": { "Arcbound Worker": [3, 3] }
+    }
+  }
+]

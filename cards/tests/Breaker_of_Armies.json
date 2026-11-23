@@ -1,0 +1,41 @@
+[
+ { "name": "every opposing creature able to block it must block it",
+   "players": [ { "battlefield": [ { "name": "Breaker of Armies", "sick": false } ] },
+                { "battlefield": ["Grizzly Bears", "Hill Giant"] } ],
+   "steps": [
+     { "attack": [ { "card": "Breaker of Armies", "at": "p1" } ] },
+     { "block": [ { "blocker": "Grizzly Bears", "attacker": "Breaker of Armies" }, { "blocker": "Hill Giant", "attacker": "Breaker of Armies" } ] },
+     { "advance_to": "EndCombat" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Breaker of Armies"] }, { "life": 20 } ] } },
+ { "name": "not blocking with an able creature is illegal",
+   "players": [ { "battlefield": [ { "name": "Breaker of Armies", "sick": false } ] },
+                { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+     { "attack": [ { "card": "Breaker of Armies", "at": "p1" } ] },
+     { "block": [], "illegal": true }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Breaker of Armies"] }, { "battlefield_has": ["Grizzly Bears"] } ] } },
+ { "name": "a tapped creature is not able to block, so the attack goes through unblocked",
+   "players": [ { "battlefield": [ { "name": "Breaker of Armies", "sick": false } ] },
+                { "battlefield": [ { "name": "Grizzly Bears", "tapped": true } ] } ],
+   "steps": [
+     { "attack": [ { "card": "Breaker of Armies", "at": "p1" } ] },
+     { "advance_to": "EndCombat" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Breaker of Armies"] }, { "life": 10 } ] } },
+ { "name": "a creature able to block it must block it, even with an empty block declaration",
+   "players": [ { "battlefield": [ { "name": "Breaker of Armies", "sick": false } ] }, { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [ { "attack": [ { "card": "Breaker of Armies", "at": "p1" } ] }, { "block": [] }, { "advance_to": "EndCombat" } ],
+   "expect": { "players": [ { "battlefield_has": ["Breaker of Armies"] }, { "life": 20, "graveyard_has": ["Grizzly Bears"] } ] } },
+ { "name": "ruling: a creature affected by a can't-block effect is not forced to block",
+   "players": [ { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains", { "name": "Breaker of Armies", "sick": false }] },
+                { "battlefield": ["Grizzly Bears"] } ],
+   "steps": [
+     { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+     { "resolve": true },
+     { "attack": [ { "card": "Breaker of Armies", "at": "p1" } ] },
+     { "advance_to": "EndCombat" }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Breaker of Armies", "Pacifism"] }, { "life": 10 } ] } }
+]

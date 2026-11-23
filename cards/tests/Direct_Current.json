@@ -1,0 +1,186 @@
+[
+  {
+    "name": "cast from graveyard by discarding a card: 2 damage, then exile",
+    "players": [
+      {
+        "hand": [
+          "Forest"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "graveyard": [
+          "Direct Current"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Direct Current",
+        "alt": 0,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Direct Current"
+          ],
+          "graveyard": [
+            "Forest"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "cannot cast from graveyard without a card to discard",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ],
+        "graveyard": [
+          "Direct Current"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Direct Current",
+        "alt": 0,
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Direct Current"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "cast from hand goes to the graveyard",
+    "players": [
+      {
+        "hand": [
+          "Direct Current"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Direct Current",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Direct Current"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a jump-start card put into the graveyard this turn can be cast right away",
+    "players": [
+      { "hand": ["Direct Current", "Forest"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Direct Current", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Direct Current", "alt": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Direct Current"], "graveyard": ["Forest"] },
+        { "life": 18, "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: jump-start follows sorcery timing; it cannot be cast during combat",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Mountain", "Mountain", "Mountain"], "graveyard": ["Direct Current"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Direct Current", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Direct Current"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a jump-start spell is exiled even when it fizzles",
+    "players": [
+      { "hand": ["Forest"], "battlefield": ["Mountain", "Mountain", "Mountain"], "graveyard": ["Direct Current"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Direct Current", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Direct Current"], "graveyard": ["Forest"] },
+        { "graveyard": ["Lightning Bolt", "Grizzly Bears"] }
+      ]
+    }
+  }
+]

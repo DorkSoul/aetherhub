@@ -1,0 +1,73 @@
+[
+  {
+    "name": "an opponent's spell targeting it creates an Elf Warrior token (resolves before the spell)",
+    "players": [
+      { "battlefield": ["Thorn Lieutenant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Thorn Lieutenant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Elf Warrior"], "graveyard": ["Thorn Lieutenant"] }, { "graveyard": ["Lightning Bolt"] }]
+    }
+  },
+  {
+    "name": "its controller's own pump spell targeting it creates no token",
+    "players": [
+      { "hand": ["Giant Growth"], "battlefield": ["Forest", "Thorn Lieutenant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Giant Growth", "targets": ["Thorn Lieutenant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Thorn Lieutenant"], "battlefield_lacks": ["Elf Warrior"], "graveyard": ["Giant Growth"] }, {}]
+    }
+  },
+  {
+    "name": "{5}{G}: gets +4/+4 until end of turn with six mana",
+    "players": [
+      { "battlefield": ["Thorn Lieutenant", "Forest", "Plains", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Thorn Lieutenant", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Thorn Lieutenant": [6, 7] } }
+  },
+  {
+    "name": "{5}{G}: cannot be activated with only five mana",
+    "players": [
+      { "battlefield": ["Thorn Lieutenant", "Forest", "Plains", "Plains", "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Thorn Lieutenant", "ability": 0, "illegal": true }
+    ],
+    "expect": { "pt": { "Thorn Lieutenant": [2, 3] } }
+  },
+  {
+    "name": "ruling: the token trigger resolves before the targeting spell, so it still makes the token when that spell is countered",
+    "players": [
+      { "hand": ["Counterspell"], "battlefield": ["Thorn Lieutenant", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Thorn Lieutenant"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Thorn Lieutenant", "Elf Warrior"], "graveyard_has": ["Counterspell"] }, { "graveyard": ["Lightning Bolt"] }]
+    }
+  }
+]

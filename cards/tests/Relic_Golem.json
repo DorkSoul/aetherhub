@@ -1,0 +1,113 @@
+[
+  {
+    "name": "ruling: emptying the opponent's graveyard after attacking does not remove the Golem from combat",
+      "players": [
+        { "battlefield": ["Relic Golem", "Tormod's Crypt"] },
+        { "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }
+      ],
+      "steps": [
+        { "attack": [ { "card": "Relic Golem", "at": "p1" } ] },
+        { "activate": "Tormod's Crypt", "ability": 0, "targets": ["p1"] },
+        { "resolve": true },
+        { "advance_to": "Main2" }
+      ],
+      "expect": { "players": [ {}, { "life": 14, "graveyard": [] } ] }
+    },
+    {
+      "name": "ruling: emptying the opponent's graveyard after blocking does not unblock the attacker",
+      "players": [
+        { "battlefield": ["Grizzly Bears", "Tormod's Crypt"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+        { "battlefield": ["Relic Golem"] }
+      ],
+      "steps": [
+        { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+        { "block": [ { "blocker": "Relic Golem", "attacker": "Grizzly Bears" } ], "player": 1 },
+        { "activate": "Tormod's Crypt", "ability": 0, "targets": ["p0"] },
+        { "resolve": true },
+        { "advance_to": "Main2" }
+      ],
+      "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, { "life": 20 } ] }
+    },
+    {
+      "name": "can attack once an opponent has eight cards in graveyard",
+    "players": [
+      { "battlefield": ["Relic Golem"] },
+      { "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Relic Golem", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 14 } ]
+    }
+  },
+  {
+    "name": "cannot attack while every opponent has seven or fewer cards in graveyard",
+    "players": [
+      { "battlefield": ["Relic Golem"] },
+      { "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Relic Golem", "at": "p1" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "two mana and tap: target player mills two cards",
+    "players": [
+      { "battlefield": ["Relic Golem", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Relic Golem", "ability": 0, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "library_count": 18 } ],
+      "tapped": { "Relic Golem": true }
+    }
+  },
+  {
+    "name": "mill ability needs {2}: one Forest is not enough",
+    "players": [
+      { "battlefield": ["Relic Golem", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Relic Golem", "ability": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "library_count": 20 } ]
+    }
+  },
+  {
+    "name": "with seven opposing cards in graveyard the Golem can't attack, but another attacker still hits for 2",
+    "players": [
+      { "battlefield": ["Relic Golem", "Grizzly Bears"] },
+      { "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Relic Golem", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "with seven opposing cards in graveyard the Golem can't block: the Giant is unblocked and deals 3",
+    "players": [
+      { "battlefield": ["Relic Golem", "Savannah Lions"] },
+      { "battlefield": ["Hill Giant", "Grizzly Bears"], "graveyard": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [ { "blocker": "Relic Golem", "attacker": "Hill Giant" }, { "blocker": "Savannah Lions", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 17 }, {} ] }
+  }
+]

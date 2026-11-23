@@ -1,0 +1,71 @@
+[
+  {
+    "name": "casting a spell untaps your nonland permanents",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Paradox Engine", "Mountain", { "name": "Grizzly Bears", "tapped": true }] },
+      { }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 17 }
+      ],
+      "tapped": { "Grizzly Bears": false, "Mountain": true }
+    }
+  },
+  {
+    "name": "lands are not untapped",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Paradox Engine", "Mountain", { "name": "Forest", "tapped": true }] },
+      { }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "tapped": { "Forest": true, "Mountain": true }
+    }
+  },
+  {
+    "name": "ruling: the untap trigger resolves before the spell that caused it",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Paradox Engine", "Mountain", { "name": "Grizzly Bears", "tapped": true }] },
+      { }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ],
+      "tapped": { "Grizzly Bears": false },
+      "stack_empty": false
+    }
+  },
+  {
+    "name": "ruling: the untap trigger still resolves when the spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Paradox Engine", "Mountain", { "name": "Grizzly Bears", "tapped": true }] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Counterspell"], "life": 20 } ],
+      "tapped": { "Grizzly Bears": false },
+      "stack_empty": true
+    }
+  }
+]

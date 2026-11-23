@@ -1,0 +1,77 @@
+[
+  { "name": "bloodthirst 3: an opponent was dealt damage this turn, so it enters with three +1/+1 counters",
+    "players": [
+      { "hand": ["Lightning Bolt", "Skarrgan Firebird"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Skarrgan Firebird" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Skarrgan Firebird"] }, { "life": 17 } ],
+      "pt": { "Skarrgan Firebird": [6, 6] },
+      "counters": { "Skarrgan Firebird": { "PlusOnePlusOne": 3 } }
+    }
+  },
+  { "name": "bloodthirst does not apply when no opponent was dealt damage this turn",
+    "players": [
+      { "hand": ["Skarrgan Firebird"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Skarrgan Firebird" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Skarrgan Firebird"] }, {} ],
+      "pt": { "Skarrgan Firebird": [3, 3] }
+    }
+  },
+  { "name": "{R}{R}{R} from the graveyard returns it to hand once an opponent was dealt damage this turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "graveyard": ["Skarrgan Firebird"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Skarrgan Firebird", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "graveyard": ["Lightning Bolt"] }, { "life": 17 } ]
+    }
+  },
+  { "name": "the graveyard return is illegal when no opponent was dealt damage this turn",
+    "players": [
+      { "graveyard": ["Skarrgan Firebird"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Skarrgan Firebird", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Skarrgan Firebird"], "hand_count": 0 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: damage to the opponent from a source I don't control still enables the return",
+    "players": [
+      { "graveyard": ["Skarrgan Firebird"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"], "player": 1 },
+      { "resolve": true },
+      { "activate": "Skarrgan Firebird", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, { "life": 17, "graveyard": ["Lightning Bolt"] } ]
+    }
+  }
+]

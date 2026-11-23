@@ -1,0 +1,90 @@
+[
+  {
+    "name": "destroys target creature that isn't enchanted",
+    "players": [
+      { "hand": ["Brainspoil"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Brainspoil" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Brainspoil"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature can't be targeted: no legal target means the spell can't be cast",
+    "players": [
+      { "hand": ["Pacifism"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Brainspoil", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Pacifism"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "enchanted creature is skipped; the unenchanted one is destroyed",
+    "players": [
+      { "hand": ["Pacifism", "Brainspoil"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Brainspoil", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Brainspoil"] },
+        { "battlefield_has": ["Grizzly Bears"], "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "transmute: discard it and search for a card with the same mana value (5)",
+    "players": [
+      { "hand": ["Brainspoil"], "battlefield": ["Swamp", "Swamp", "Swamp"], "library": ["Serra Angel"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Brainspoil", "ability": 0 },
+      { "resolve": true, "answers": ["Serra Angel"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Serra Angel"], "hand_count": 1, "graveyard": ["Brainspoil"], "library_count": 20 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "transmute finds nothing when no card has the same mana value",
+    "players": [
+      { "hand": ["Brainspoil"], "battlefield": ["Swamp", "Swamp", "Swamp"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Brainspoil", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard": ["Brainspoil"] },
+        {}
+      ]
+    }
+  }
+]

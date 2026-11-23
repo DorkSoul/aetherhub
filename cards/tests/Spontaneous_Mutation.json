@@ -1,0 +1,63 @@
+[
+ {
+  "name": "enchanted creature gets -X/-0 where X is cards in your graveyard",
+  "players": [
+   { "hand": ["Spontaneous Mutation"], "battlefield": ["Island"], "graveyard": ["Lightning Bolt", "Shock", "Giant Growth"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Spontaneous Mutation", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [-1, 2] },
+   "attached": { "Spontaneous Mutation": "Grizzly Bears" }
+  }
+ },
+ {
+  "name": "flash: opponent can cast it during your turn (empty graveyard, X = 0)",
+  "players": [
+   { "battlefield": ["Grizzly Bears"] },
+   { "hand": ["Spontaneous Mutation"], "battlefield": ["Island"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "player": 1, "cast": "Spontaneous Mutation", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "can only enchant a creature",
+  "players": [
+   { "hand": ["Spontaneous Mutation"], "battlefield": ["Island"] },
+   { "battlefield": ["Forest"] }
+  ],
+  "steps": [
+   { "cast": "Spontaneous Mutation", "targets": ["Forest"], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 }, {} ]
+  }
+ },
+  {
+    "name": "ruling: X keeps updating as the graveyard grows after the Mutation is attached",
+    "players": [
+      { "hand": ["Spontaneous Mutation", "Lightning Bolt"], "battlefield": ["Island", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Spontaneous Mutation", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [1, 2] },
+      "attached": { "Spontaneous Mutation": "Grizzly Bears" },
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 17 } ]
+    }
+  }
+]

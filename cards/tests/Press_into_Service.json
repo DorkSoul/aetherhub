@@ -1,0 +1,110 @@
+[
+ {
+  "name": "support counters on two creatures, steal a creature until end of turn",
+  "players": [
+   { "hand": ["Press into Service"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { "battlefield": ["Aardvark Sloth"] }
+  ],
+  "steps": [
+   { "cast": "Press into Service", "targets": ["Grizzly Bears", "Aardvark Sloth", "Aardvark Sloth"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Aardvark Sloth"] },
+    { "battlefield_lacks": ["Aardvark Sloth"] }
+   ],
+   "counters": { "Grizzly Bears": { "p1p1": 1 }, "Aardvark Sloth": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "steal only: the stolen creature gets no counter",
+  "players": [
+   { "hand": ["Press into Service"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Aardvark Sloth"] }
+  ],
+  "steps": [
+   { "cast": "Press into Service", "targets": ["Aardvark Sloth"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Aardvark Sloth"] },
+    { "battlefield_lacks": ["Aardvark Sloth"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: one support counter per target: the same creature cannot be the first and second support target",
+  "players": [
+   { "hand": ["Press into Service"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { "battlefield": ["Aardvark Sloth"] }
+  ],
+  "steps": [
+   { "cast": "Press into Service", "targets": ["Grizzly Bears", "Grizzly Bears", "Aardvark Sloth"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Press into Service"], "battlefield_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Aardvark Sloth"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the steal target may already be controlled by you (Bears), and a support target may be the creature you already control",
+  "players": [
+   { "hand": ["Press into Service"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { "battlefield": ["Aardvark Sloth"] }
+  ],
+  "steps": [
+   { "cast": "Press into Service", "targets": ["Grizzly Bears", "Aardvark Sloth", "Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears"] },
+    { "battlefield_has": ["Aardvark Sloth"] }
+   ],
+   "counters": { "Grizzly Bears": { "p1p1": 1 }, "Aardvark Sloth": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a support target can be a creature you don't control (Sloth gets the counter)",
+  "players": [
+   { "hand": ["Press into Service"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { "battlefield": ["Aardvark Sloth", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Press into Service", "targets": ["Aardvark Sloth", "Grizzly Bears", "Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Grizzly Bears", "Hill Giant"] },
+    { "battlefield_has": ["Aardvark Sloth"], "battlefield_lacks": ["Hill Giant"] }
+   ],
+   "counters": { "Aardvark Sloth": { "p1p1": 1 }, "Grizzly Bears": { "p1p1": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a legal target remains: Bolt kills support target Bears, Press still resolves for Sloth and steals Hill Giant",
+  "players": [
+   { "hand": ["Press into Service"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Aardvark Sloth", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Press into Service", "targets": ["Grizzly Bears", "Aardvark Sloth", "Hill Giant"] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Grizzly Bears", "Press into Service"], "battlefield_has": ["Hill Giant"] },
+    { "graveyard": ["Lightning Bolt"], "battlefield_has": ["Aardvark Sloth"], "battlefield_lacks": ["Hill Giant"] }
+   ],
+   "counters": { "Aardvark Sloth": { "p1p1": 1 } }
+  }
+ }
+]

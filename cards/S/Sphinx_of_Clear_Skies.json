@@ -1,0 +1,46 @@
+{
+  "name": "Sphinx of Clear Skies",
+  "mana_cost": "{3}{U}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Sphinx"],
+  "power": 5,
+  "toughness": 5,
+  "keywords": ["Flying"],
+  "abilities": [
+    { "type": "Ward", "cost": [ { "type": "Mana", "cost": "{2}" } ] },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "DealsCombatDamage", "filter": { "this": true }, "to": "Player" },
+      "effects": [
+        { "type": "RevealTop", "who": { "type": "You" }, "n": { "type": "Domain", "who": { "type": "You" } } },
+        { "type": "StoreRemembered", "slot": 1 },
+        {
+          "type": "Choose", "who": { "type": "EachOpponent" }, "from": { "type": "You" }, "zone": "Library",
+          "filter": { "among_stored": 1 }, "min": 0, "max": 5,
+          "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+        },
+        {
+          "type": "ChooseModes", "choose_min": 1, "choose_max": 1,
+          "modes": [
+            {
+              "text": "Put the first pile into your hand and the other pile into your graveyard.",
+              "effects": [
+                { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "from": "Library", "to": "Hand" },
+                { "type": "Move", "what": { "type": "All", "zone": "Library", "filter": { "among_stored": 1, "not_among_stored": 0 } }, "from": "Library", "to": "Graveyard" }
+              ]
+            },
+            {
+              "text": "Put the second pile into your hand and the first pile into your graveyard.",
+              "effects": [
+                { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "from": "Library", "to": "Graveyard" },
+                { "type": "Move", "what": { "type": "All", "zone": "Library", "filter": { "among_stored": 1, "not_among_stored": 0 } }, "from": "Library", "to": "Hand" }
+              ]
+            }
+          ]
+        },
+        { "type": "ClearRemembered" }
+      ]
+    }
+  ],
+  "oracle_text": "Flying, ward {2}\nDomain — Whenever this creature deals combat damage to a player, reveal the top X cards of your library, where X is the number of basic land types among lands you control. An opponent separates those cards into two piles. Put one pile into your hand and the other into your graveyard. (Piles can be empty.)"
+}

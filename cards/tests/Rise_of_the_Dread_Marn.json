@@ -1,0 +1,101 @@
+[
+  {
+    "name": "creates one 2/2 Zombie for each nontoken creature that died this turn",
+    "players": [
+      { "hand": ["Rise of the Dread Marn"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "cast": "Rise of the Dread Marn" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Zombie Berserker 2-2 Black"] }, {} ]
+    }
+  },
+  {
+    "name": "no tokens when no creature died this turn",
+    "players": [
+      { "hand": ["Rise of the Dread Marn"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rise of the Dread Marn" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Zombie Berserker 2-2 Black"] }, {} ]
+    }
+  },
+  {
+    "name": "foretell {2}: pay two on your turn to exile it face down",
+    "players": [ { "hand": ["Rise of the Dread Marn"], "battlefield": ["Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Rise of the Dread Marn", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Rise of the Dread Marn"], "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "foretold card is cast on a later turn for {B}: two Swamps can cast it (the full cost would need three)",
+    "players": [ { "hand": ["Rise of the Dread Marn"], "battlefield": ["Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Rise of the Dread Marn", "ability": 0 }, { "resolve": true },
+      { "advance_to": "Main1" }, { "advance_to": "Main1" },
+      { "cast": "Rise of the Dread Marn", "alt": 0 }, { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Rise of the Dread Marn"] }, {} ] }
+  },
+  {
+    "name": "ruling: a nontoken creature that dies in response to Rise still counts when Rise resolves",
+    "players": [
+      { "hand": ["Rise of the Dread Marn", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Rise of the Dread Marn" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Swamp", "Swamp", "Swamp", "Mountain", "Zombie Berserker 2-2 Black"], "graveyard_has": ["Lightning Bolt", "Rise of the Dread Marn"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a foretold card cannot be cast on the turn it was foretold, even with {B} available",
+    "players": [ { "hand": ["Rise of the Dread Marn"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Rise of the Dread Marn", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Rise of the Dread Marn", "alt": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "exile": ["Rise of the Dread Marn"], "hand_count": 0 }, {} ] }
+  },
+  {
+    "name": "ruling: a foretold instant can be cast on the next player's turn for its foretell cost",
+    "players": [ { "hand": ["Rise of the Dread Marn"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "activate": "Rise of the Dread Marn", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Rise of the Dread Marn", "alt": 0, "player": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Rise of the Dread Marn"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: foretelling is a special action that can be taken in response to a spell",
+    "players": [ { "hand": ["Lightning Bolt", "Rise of the Dread Marn"], "battlefield": ["Mountain", "Swamp", "Swamp"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "activate": "Rise of the Dread Marn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Rise of the Dread Marn"], "graveyard_has": ["Lightning Bolt"], "hand_count": 0 }, { "graveyard": ["Grizzly Bears"] } ] }
+  }
+]

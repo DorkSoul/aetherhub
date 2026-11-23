@@ -1,0 +1,64 @@
+[
+  {
+    "name": "entering puts an impostor counter on each creature you control",
+    "players": [
+      { "hand": ["Illicit Masquerade"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Elite Vanguard"] }
+    ],
+    "steps": [
+      { "cast": "Illicit Masquerade" },
+      { "resolve": true }
+    ],
+    "expect": { "counters": { "Grizzly Bears": { "impostor": 1 }, "Hill Giant": { "impostor": 1 } } }
+  },
+  {
+    "name": "a creature with an impostor counter dies: exile it and return another creature card from your graveyard",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Illicit Masquerade", { "name": "Grizzly Bears", "counters": { "impostor": 1 } }], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "targets": ["Hill Giant"] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"], "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ] }
+  },
+  {
+    "name": "the creature that just died can't be the returned card",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Illicit Masquerade", { "name": "Grizzly Bears", "counters": { "impostor": 1 } }], "graveyard": [] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "exile": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "a creature without an impostor counter dying does nothing",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Illicit Masquerade", "Grizzly Bears"], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"], "exile": [] }, {} ] }
+  },
+  {
+    "name": "ruling: impostor counter from the enters trigger lets the last ability apply",
+    "players": [
+      { "hand": ["Illicit Masquerade", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Mountain", "Grizzly Bears"], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Illicit Masquerade" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "targets": ["Hill Giant"] }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"], "exile": ["Grizzly Bears"], "graveyard": ["Lightning Bolt"] }, {} ] }
+  }
+]

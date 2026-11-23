@@ -1,0 +1,192 @@
+[
+ {
+  "name": "copies Lightning Bolt: both resolve",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Reverberate"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Reverberate",
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Reverberate"
+     ]
+    },
+    {
+     "life": 14
+    }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "cannot target a creature spell",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears",
+     "Reverberate"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "cast": "Reverberate",
+    "targets": [
+     {
+      "stack": "Grizzly Bears"
+     }
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: the copy of an X spell has the same X (Earthquake X=2 copied: 2 more to each player)",
+  "players": [
+   { "hand": ["Earthquake", "Reverberate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Earthquake", "answers": [2] },
+   { "cast": "Reverberate", "targets": [{ "stack": "Earthquake" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "life": 16 }, { "life": 16 } ]
+  }
+ },
+ {
+  "name": "ruling: the copy can take a new target: Bolt aimed at the opponent is copied at me",
+  "players": [
+   { "hand": ["Lightning Bolt", "Reverberate"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Reverberate", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "answers": [0] }
+  ],
+  "expect": {
+   "players": [ { "life": 17 }, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: Reverberate can copy an opponent's targetless instant: the copy's controller draws, and so does the original caster",
+  "players": [
+   { "hand": ["Reverberate"], "battlefield": ["Mountain", "Mountain"] },
+   { "hand": ["Think Twice"], "battlefield": ["Island", "Island", "Island"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Think Twice", "player": 1 },
+   { "cast": "Reverberate", "targets": [{ "stack": "Think Twice" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 }, { "hand_count": 1 } ]
+  }
+ },
+ {
+  "name": "ruling: a copy is not cast, so Young Pyromancer's cast trigger does not fire for it",
+  "players": [
+   { "hand": ["Lightning Bolt", "Reverberate"], "battlefield": ["Young Pyromancer", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Reverberate", "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield": ["Young Pyromancer", "Mountain", "Mountain", "Mountain", "Elemental", "Elemental"] }, { "life": 14 } ]
+  }
+ },
+ {
+  "name": "ruling: the copy of an opponent's 'you draw' spell affects the copy's controller (me), not the original caster",
+  "players": [
+   { "hand": ["Reverberate"], "battlefield": ["Mountain", "Mountain", "Hill Giant"] },
+   { "hand": ["Abzan Charm"], "battlefield": ["Plains", "Swamp", "Forest"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Abzan Charm", "player": 1, "answers": [1] },
+   { "cast": "Reverberate", "targets": [{ "stack": "Abzan Charm" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 2, "life": 18 }, { "hand_count": 2, "life": 18 } ]
+  }
+ },
+ {
+  "name": "ruling: a copy of a modal spell has the same mode (copy draws, does not ask for the exile mode)",
+  "players": [
+   { "hand": ["Abzan Charm", "Reverberate"], "battlefield": ["Plains", "Swamp", "Forest", "Mountain", "Mountain"] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Abzan Charm", "answers": [1] },
+   { "cast": "Reverberate", "targets": [{ "stack": "Abzan Charm" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 4, "life": 16 }, { "battlefield_has": ["Hill Giant"] } ]
+  }
+ },
+ {
+  "name": "ruling: the copy of Fling also deals damage equal to the sacrificed creature's power",
+  "players": [
+   { "hand": ["Fling", "Reverberate"], "battlefield": ["Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Fling", "targets": ["p1"] },
+   { "cast": "Reverberate", "targets": [{ "stack": "Fling" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Grizzly Bears"] }, { "life": 16 } ]
+  }
+ }
+]

@@ -1,0 +1,140 @@
+[
+ {
+  "name": "job select makes a Hero that is equipped",
+  "players": [
+   {
+    "hand": [
+     "Monk's Fist"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Monk's Fist"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Hero": [
+     2,
+     1
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Monk's Fist",
+      "Hero"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equip {2}: attaches to a creature you control and gives +1/+0",
+  "players": [
+   { "battlefield": ["Monk's Fist", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Monk's Fist", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "attached": { "Monk's Fist": "Grizzly Bears" },
+   "pt": { "Grizzly Bears": [3, 2] }
+  }
+ },
+ {
+  "name": "equip {2}: illegal with only one land",
+  "players": [
+   { "battlefield": ["Monk's Fist", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Monk's Fist", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "equipped creature is a Monk in addition to its other types; an unequipped creature is not",
+  "players": [
+   { "battlefield": ["Monk's Fist", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Monk's Fist", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "attached": { "Monk's Fist": "Grizzly Bears" },
+   "subtypes": { "Grizzly Bears": ["Monk"] },
+   "not_subtypes": { "Hill Giant": ["Monk"] }
+  }
+ },
+ {
+  "name": "job select Hero token is a Monk while equipped",
+  "players": [
+   { "hand": ["Monk's Fist"], "battlefield": ["Plains", "Plains"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Monk's Fist" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "subtypes": { "Hero": ["Monk"] }
+  }
+ },
+ {
+  "name": "ruling: the Equipment moves from the Hero token to another creature you control for its equip cost",
+  "players": [
+   { "hand": ["Monk's Fist"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Monk's Fist" },
+   { "resolve": true },
+   { "resolve": true },
+   { "activate": "Monk's Fist", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Monk's Fist", "Hero"] }, {} ],
+   "attached": { "Monk's Fist": "Grizzly Bears" },
+   "pt": { "Grizzly Bears": [3, 2], "Hero": [1, 1] }
+  }
+ },
+ {
+  "name": "ruling: if the Hero token is destroyed, the Equipment stays on the battlefield",
+  "players": [
+   { "hand": ["Monk's Fist", "Eliminate"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Monk's Fist" },
+   { "resolve": true },
+   { "resolve": true },
+   { "cast": "Eliminate", "targets": ["Hero"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Monk's Fist"], "battlefield_lacks": ["Hero"], "graveyard": ["Eliminate"] }, {} ]
+  }
+ }
+]

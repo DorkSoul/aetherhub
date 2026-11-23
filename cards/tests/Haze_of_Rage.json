@@ -1,0 +1,250 @@
+[
+ {
+  "name": "creatures you control get +1/+0",
+  "players": [
+   {
+    "hand": [
+     "Haze of Rage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Haze of Rage"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Haze of Rage"
+     ]
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "buyback returns it to hand",
+  "players": [
+   {
+    "hand": [
+     "Haze of Rage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Haze of Rage",
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Haze of Rage"
+     ],
+     "graveyard": []
+    },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "storm copies for each earlier spell",
+  "players": [
+   {
+    "hand": [
+     "Haze of Rage",
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Haze of Rage"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt",
+      "Haze of Rage"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ],
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     2
+    ]
+   }
+  }
+ },
+  {
+   "name": "ruling: a later storm spell copies only spells cast, not earlier copies (3 casts: 0, 1, 2 copies)",
+   "players": [
+    {
+     "hand": ["Haze of Rage", "Haze of Rage", "Haze of Rage"],
+     "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+    },
+    {}
+   ],
+   "steps": [
+    { "cast": "Haze of Rage", "answers": [false] },
+    { "resolve": true },
+    { "cast": "Haze of Rage", "answers": [false] },
+    { "resolve": true },
+    { "cast": "Haze of Rage" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Haze of Rage", "Haze of Rage", "Haze of Rage"] },
+     {}
+    ],
+    "pt": { "Grizzly Bears": [8, 2] }
+   }
+  },
+  {
+   "name": "ruling: a creature that enters after Haze resolves does not get +1/+0",
+   "players": [
+    {
+     "hand": ["Haze of Rage", "Hill Giant"],
+     "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+    },
+    {}
+   ],
+   "steps": [
+    { "cast": "Haze of Rage", "answers": [false] },
+    { "resolve": true },
+    { "cast": "Hill Giant" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Haze of Rage"] },
+     {}
+    ],
+    "pt": { "Grizzly Bears": [3, 2], "Hill Giant": [3, 3] }
+   }
+  },
+  {
+   "name": "ruling: a countered spell still counts for storm",
+   "players": [
+    {
+     "hand": ["Lightning Bolt", "Haze of Rage"],
+     "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+    },
+    {
+     "hand": ["Mana Leak"],
+     "battlefield": ["Island", "Island"]
+    }
+   ],
+   "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"] },
+    { "pass": true },
+    { "cast": "Mana Leak", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+    { "resolve": true },
+    { "cast": "Haze of Rage" },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Lightning Bolt", "Haze of Rage"], "life": 20 },
+     { "graveyard": ["Mana Leak"] }
+    ],
+    "pt": { "Grizzly Bears": [5, 2] }
+   }
+  },
+  {
+   "name": "ruling: countering the storm trigger means no copies, and Haze still resolves",
+   "players": [
+    {
+     "hand": ["Lightning Bolt", "Haze of Rage"],
+     "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+    },
+    {
+     "hand": ["Disallow"],
+     "battlefield": ["Island", "Island", "Island"]
+    }
+   ],
+   "steps": [
+    { "cast": "Lightning Bolt", "targets": ["p1"] },
+    { "resolve": true },
+    { "cast": "Haze of Rage" },
+    { "pass": true },
+    { "cast": "Disallow", "player": 1, "targets": [{ "stack": "Haze of Rage" }] },
+    { "resolve": true }
+   ],
+   "expect": {
+    "players": [
+     { "graveyard": ["Lightning Bolt", "Haze of Rage"], "life": 20 },
+     { "graveyard": ["Disallow"], "life": 17 }
+    ],
+    "pt": { "Grizzly Bears": [3, 2] }
+   }
+  }
+]

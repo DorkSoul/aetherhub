@@ -1,0 +1,65 @@
+[
+  {
+    "name": "returns one card of each mana value from the graveyard",
+    "players": [
+      { "hand": ["Seasons Past"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Seasons Past" },
+      { "resolve": true, "answers": [["Grizzly Bears", "Hill Giant", "Lightning Bolt"]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 3, "graveyard": [], "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "two cards with the same mana value: only one can be returned",
+    "players": [
+      { "hand": ["Seasons Past"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Lightning Bolt", "Savannah Lions", "Grizzly Bears"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Seasons Past" },
+      { "resolve": true, "answers": [["Lightning Bolt", "Savannah Lions", "Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 2, "graveyard_has": ["Savannah Lions"], "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "returning nothing still puts Seasons Past on the bottom of the library",
+    "players": [
+      { "hand": ["Seasons Past"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Grizzly Bears"], "library": ["Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Seasons Past" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "graveyard_has": ["Grizzly Bears"], "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: {X} counts as 0 in the graveyard, so Fireball (mana value 1) and Lightning Bolt share a mana value",
+    "players": [ { "hand": ["Seasons Past"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Fireball", "Lightning Bolt"], "library": ["Island"] }, {} ],
+    "steps": [ { "cast": "Seasons Past" }, { "resolve": true, "answers": [["Fireball", "Lightning Bolt"]] } ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard_has": ["Lightning Bolt"] }, {} ] } },
+  { "name": "ruling: a card with mana value 6 can be returned, compared only with the other graveyard cards",
+    "players": [ { "hand": ["Seasons Past"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Doom Weaver", "Grizzly Bears"], "library": ["Island"] }, {} ],
+    "steps": [ { "cast": "Seasons Past" }, { "resolve": true, "answers": [["Doom Weaver", "Grizzly Bears"]] } ],
+    "expect": { "players": [ { "hand_count": 2, "graveyard": [] }, {} ] } },
+  { "name": "ruling: lands have mana value 0, so Forest and Island share one mana value",
+    "players": [ { "hand": ["Seasons Past"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Forest", "Island"], "library": ["Island"] }, {} ],
+    "steps": [ { "cast": "Seasons Past" }, { "resolve": true, "answers": [["Forest", "Island"]] } ],
+    "expect": { "players": [ { "hand_count": 1, "graveyard_has": ["Island"] }, {} ] } }
+]

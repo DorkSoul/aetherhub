@@ -1,0 +1,226 @@
+[
+ {
+  "name": "draw mode: a card is drawn after a bird deals combat damage to a player",
+  "players": [
+   {
+    "battlefield": [
+     "Kastral, the Windcrested"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Kastral, the Windcrested",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "pass": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     2
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {
+     "life": 16
+    }
+   ]
+  }
+ },
+ {
+  "name": "return mode: a bird card from the graveyard enters with a finality counter",
+  "players": [
+   {
+    "battlefield": [
+     "Kastral, the Windcrested"
+    ],
+    "graveyard": [
+     "Birds of Paradise"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Kastral, the Windcrested",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "pass": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     0,
+     "Birds of Paradise"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Birds of Paradise"
+     ]
+    },
+    {
+     "life": 16
+    }
+   ],
+   "counters": {
+    "Birds of Paradise": {
+     "Finality": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "counter mode: each bird you control gets a +1/+1 counter",
+  "players": [
+   {
+    "battlefield": [
+     "Kastral, the Windcrested",
+     "Birds of Paradise"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Kastral, the Windcrested",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "pass": true
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Main2",
+    "answers": [
+     1
+    ]
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Kastral, the Windcrested": [
+     5,
+     6
+    ],
+    "Birds of Paradise": [
+     1,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: a finality counter still exiles a permanent that lost all its abilities",
+  "players": [
+   { "hand": ["Frogify"], "battlefield": [{ "name": "Birds of Paradise", "counters": { "Finality": 1 } }, "Island", "Island"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Frogify", "targets": ["Birds of Paradise"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["Birds of Paradise"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [], "exile": ["Birds of Paradise"], "graveyard": ["Frogify"] },
+    { "hand": [], "graveyard": ["Lightning Bolt"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a finality counter does not stop a permanent returning to its owner's hand",
+  "players": [
+   { "hand": ["Unsummon"], "battlefield": [{ "name": "Birds of Paradise", "counters": { "Finality": 1 } }, "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Unsummon", "targets": ["Birds of Paradise"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Birds of Paradise"], "graveyard": ["Unsummon"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a finality counter exiles a noncreature permanent instead of the graveyard",
+  "players": [
+   { "hand": ["Shatter"], "battlefield": [{ "name": "Sol Ring", "counters": { "Finality": 1 } }, "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Shatter", "targets": ["Sol Ring"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": [], "exile": ["Sol Ring"], "graveyard": ["Shatter"] },
+    {}
+   ]
+  }
+ }
+]

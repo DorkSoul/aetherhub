@@ -1,0 +1,272 @@
+[
+ {
+  "name": "enters: fetch a basic Forest and a basic Plains",
+  "players": [
+   {
+    "hand": [
+     "Yasharn, Implacable Earth"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Plains",
+     "Plains"
+    ],
+    "library": [
+     "Plains",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Yasharn, Implacable Earth"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest",
+     "Plains"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Forest",
+      "Plains"
+     ],
+     "battlefield_has": [
+      "Yasharn, Implacable Earth"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "players can't pay life to activate abilities",
+  "players": [
+   {
+    "battlefield": [
+     "Yasharn, Implacable Earth",
+     "Mana Confluence"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Mana Confluence",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 20
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "players can't sacrifice nonland permanents as a cost",
+  "players": [
+   {
+    "battlefield": [
+     "Yasharn, Implacable Earth",
+     "Viscera Seer",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Viscera Seer",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Viscera Seer",
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "players can't sacrifice a permanent itself as a cost",
+  "players": [
+   {
+    "battlefield": [
+     "Yasharn, Implacable Earth",
+     "Mogg Fanatic"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Mogg Fanatic",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Mogg Fanatic"
+     ]
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "lands can still be sacrificed as a cost",
+  "players": [
+   {
+    "battlefield": [
+     "Yasharn, Implacable Earth",
+     "Zuran Orb",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Zuran Orb"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 22,
+     "graveyard_has": [
+      "Swamp"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "without Yasharn the Seer's cost can be paid",
+  "players": [
+   {
+    "battlefield": [
+     "Viscera Seer",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Viscera Seer",
+    "answers": [
+     [
+      "Grizzly Bears"
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "players can't pay life to cast a spell: Mutagenic Growth's {G/P} can't be paid with life",
+  "players": [
+   { "hand": ["Mutagenic Growth"], "battlefield": ["Yasharn, Implacable Earth", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mutagenic Growth", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": { "players": [ { "hand": ["Mutagenic Growth"], "life": 20 }, {} ] }
+ },
+ {
+  "name": "without Yasharn, Mutagenic Growth's {G/P} is paid with 2 life",
+  "players": [
+   { "hand": ["Mutagenic Growth"], "battlefield": ["Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Mutagenic Growth", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Mutagenic Growth"], "life": 18 }, {} ] }
+ },
+ {
+  "name": "an opponent can't pay life to cast Mutagenic Growth while Yasharn is out",
+  "players": [
+   { "battlefield": ["Yasharn, Implacable Earth", "Grizzly Bears"] },
+   { "hand": ["Mutagenic Growth"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Mutagenic Growth", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": { "players": [ {}, { "hand": ["Mutagenic Growth"], "life": 20 } ] }
+ },
+ {
+  "name": "ruling: the enters search may find just one basic land when only a Forest is in the library",
+  "players": [
+   { "hand": ["Yasharn, Implacable Earth"], "battlefield": ["Forest", "Plains", "Island", "Island"], "library": ["Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Yasharn, Implacable Earth" },
+   { "resolve": true, "answers": ["Forest"] }
+  ],
+  "expect": { "players": [ { "hand": ["Forest"], "hand_count": 1, "battlefield_has": ["Yasharn, Implacable Earth"] }, {} ] }
+ },
+ {
+  "name": "ruling: a spell with a sacrifice cost can't be cast while Yasharn is out",
+  "players": [
+   { "hand": ["Kazuul's Fury"], "battlefield": ["Yasharn, Implacable Earth", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Kazuul's Fury", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": { "players": [ { "hand": ["Kazuul's Fury"], "battlefield_has": ["Grizzly Bears"], "life": 20 }, { "life": 20 } ] }
+ },
+ {
+  "name": "without Yasharn, the same sacrifice-cost spell is castable and deals the sacrificed creature's power (2)",
+  "players": [
+   { "hand": ["Kazuul's Fury"], "battlefield": ["Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Kazuul's Fury", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Kazuul's Fury", "Grizzly Bears"] }, { "life": 18 } ] }
+ }
+]

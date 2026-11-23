@@ -1,0 +1,43 @@
+{
+  "name": "Binding Negotiation",
+  "mana_cost": "{1}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "Player", "filter": "Opponent" }, "label": "targetopponent" }
+      ],
+      "effects": [
+        { "type": "ClearRemembered" },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "from": { "type": "Target", "idx": 0 },
+          "zone": "Hand",
+          "filter": { "not_types": ["Land"] },
+          "min": 0,
+          "max": 1,
+          "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard", "discard": true } ]
+        },
+        {
+          "type": "If",
+          "cond": { "type": "Compare", "a": { "type": "RememberedCount" }, "cmp": { "op": "Eq", "n": 0 } },
+          "then": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "from": { "type": "Target", "idx": 0 },
+              "zone": "Exile",
+              "filter": { "face_down": false },
+              "min": 0,
+              "max": 1,
+              "then": [ { "type": "Move", "what": { "type": "Remembered" }, "to": "Graveyard" } ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Target opponent reveals their hand. You may choose a nonland card from it. If you do, they discard it. Otherwise, you may put a face-up exiled card they own into their graveyard."
+}

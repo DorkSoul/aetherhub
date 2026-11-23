@@ -1,0 +1,41 @@
+[
+  { "name": "a historic spell cast from the top of your library creates a Food",
+    "players": [
+      { "battlefield": ["The Fourth Doctor", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Crystal Shard"] },
+      {}
+    ],
+    "steps": [ { "cast": "Crystal Shard" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["The Fourth Doctor", "Crystal Shard", "Food"] }, {} ] } },
+  { "name": "a non-historic card on top of your library cannot be cast from there",
+    "players": [
+      { "battlefield": ["The Fourth Doctor", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "cast": "Grizzly Bears", "illegal": true } ] },
+  { "name": "a historic land from the top of your library can be played and creates a Food",
+    "players": [
+      { "battlefield": ["The Fourth Doctor"], "library": ["Goldmire Bridge"] },
+      {}
+    ],
+    "steps": [ { "play_land": "Goldmire Bridge" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["The Fourth Doctor", "Goldmire Bridge", "Food"] }, {} ] } },
+  { "name": "only once each turn: a second historic spell from the library is not castable after the first",
+    "players": [
+      { "battlefield": ["The Fourth Doctor", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island", "Island"], "library": ["Crystal Shard", "Crystal Skull, Isu Spyglass"] },
+      {}
+    ],
+    "steps": [ { "cast": "Crystal Shard" }, { "resolve": true }, { "cast": "Crystal Skull, Isu Spyglass", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["The Fourth Doctor", "Crystal Shard", "Food"] }, {} ] } },
+  { "name": "ruling: Time Lord is one creature type, so a Cavern of Souls naming it pays for The Fourth Doctor",
+    "players": [ { "hand": ["Cavern of Souls", "The Fourth Doctor"], "battlefield": ["Forest", "Island", "Plains"] }, {} ],
+    "steps": [ { "play_land": "Cavern of Souls" }, { "advance_to": "Main1", "answers": ["Time Lord"] }, { "advance_to": "Main1" }, { "cast": "The Fourth Doctor" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["The Fourth Doctor", "Cavern of Souls"] }, {} ], "subtypes": { "The Fourth Doctor": ["Time Lord", "Doctor"] }, "not_subtypes": { "The Fourth Doctor": ["Time", "Lord"] } } },
+  { "name": "ruling: a Food token is an artifact, not a creature, so Lightning Bolt cannot target it",
+    "players": [ { "hand": ["Tough Cookie", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Tough Cookie" }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Food"], "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Tough Cookie", "Food"] }, {} ] } },
+  { "name": "ruling: a Food cannot pay for its own ability and also for Maraleaf Rider's sacrifice",
+    "players": [ { "battlefield": ["Maraleaf Rider", "Tough Cookie", "Forest", "Forest"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "activate": "Tough Cookie", "ability": 1 }, { "activate": "Maraleaf Rider", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 23, "graveyard": ["Tough Cookie"], "battlefield_has": ["Maraleaf Rider"] }, { "battlefield_has": ["Grizzly Bears"] } ] } }
+]

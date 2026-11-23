@@ -1,0 +1,79 @@
+{
+  "name": "Hostile Hostel // Creeping Inn",
+  "types": ["Land"],
+  "layout": "Transform",
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "effects": [
+        { "type": "AddMana", "mana": [ { "t": "Fixed", "m": "C", "n": 1 } ] }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [
+        { "type": "Mana", "cost": "{1}" },
+        { "type": "Tap" },
+        { "type": "Sacrifice", "filter": { "types": ["Creature"], "controller": "You" }, "n": 1 }
+      ],
+      "timing": "Sorcery",
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "This" }, "kind": "Soul", "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "Soul", "of": { "type": "This" } },
+            "cmp": { "op": "Ge", "n": 3 }
+          },
+          "then": [
+            { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Soul", "n": { "type": "CountersOn", "kind": "Soul", "of": { "type": "This" } } },
+            { "type": "Transform", "what": { "type": "This" } },
+            { "type": "Untap", "what": { "type": "This" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}, Sacrifice a creature: Put a soul counter on this land. Then if there are three or more soul counters on it, remove those counters, transform it, then untap it. Activate only as a sorcery.",
+  "back": {
+    "name": "Creeping Inn",
+    "types": ["Artifact", "Creature"],
+    "subtypes": ["Horror", "Construct"],
+    "power": 3,
+    "toughness": 7,
+    "abilities": [
+      {
+        "type": "Triggered",
+        "trigger": { "type": "Attacks", "filter": { "this": true } },
+        "effects": [
+          {
+            "type": "May",
+            "effects": [
+              {
+                "type": "Choose",
+                "who": { "type": "You" },
+                "zone": "Graveyard",
+                "filter": { "types": ["Creature"], "owner": "You" },
+                "min": 1,
+                "max": 1,
+                "then": [
+                  { "type": "Exile", "what": { "type": "Remembered" } },
+                  { "type": "LoseLife", "who": { "type": "EachOpponent" }, "n": { "type": "Count", "filter": { "types": ["Creature"], "exiled_with_this": true }, "zone": "Exile" } },
+                  { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Count", "filter": { "types": ["Creature"], "exiled_with_this": true }, "zone": "Exile" } }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Activated",
+        "cost": [ { "type": "Mana", "cost": "{4}" } ],
+        "effects": [ { "type": "PhaseOut", "what": { "type": "This" } } ]
+      }
+    ],
+    "oracle_text": "Whenever this creature attacks, you may exile a creature card from your graveyard. If you do, each opponent loses X life and you gain X life, where X is the number of creature cards exiled with this creature.\n{4}: This creature phases out."
+  }
+}

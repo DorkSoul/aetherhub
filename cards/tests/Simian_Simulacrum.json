@@ -1,0 +1,78 @@
+[
+  {
+    "name": "enters and puts two +1/+1 counters on a creature you control",
+    "players": [
+      { "hand": ["Simian Simulacrum"], "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Simian Simulacrum" },
+      { "resolve": true, "targets": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Simian Simulacrum", "Grizzly Bears"] }, {}],
+      "counters": { "Grizzly Bears": { "p1p1": 2 } },
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "unearth costs {2}{G}{G}: not payable with three lands",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest"], "graveyard": ["Simian Simulacrum"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Simian Simulacrum", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Simian Simulacrum"] }, {}]
+    }
+  },
+  {
+    "name": "unearth returns it and it is exiled at the end step",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Forest"], "graveyard": ["Simian Simulacrum"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Simian Simulacrum", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Simian Simulacrum"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: unearthed Simian killed by Lightning Bolt is exiled instead of going to the graveyard",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain"], "graveyard": ["Simian Simulacrum"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Simian Simulacrum", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Simian Simulacrum"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "exile": ["Simian Simulacrum"], "graveyard_has": ["Lightning Bolt"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: Tormod's Crypt exiles the graveyard in response to unearth: unearth does nothing",
+    "players": [
+      { "battlefield": ["Forest", "Forest", "Forest", "Forest", "Tormod's Crypt"], "graveyard": ["Simian Simulacrum"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Simian Simulacrum", "ability": 0 },
+      { "activate": "Tormod's Crypt", "ability": 0, "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Simian Simulacrum"], "exile": ["Simian Simulacrum", "Tormod's Crypt"] }, {}]
+    }
+  }
+]

@@ -1,0 +1,216 @@
+[
+  {
+    "name": "creatures have haste; a power-4 creature entering lets you draw",
+    "players": [
+      {
+        "hand": [
+          "Serra Angel"
+        ],
+        "battlefield": [
+          "Temur Ascendancy",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Serra Angel"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "battlefield_has": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ],
+      "keywords": {
+        "Serra Angel": [
+          "Haste"
+        ]
+      }
+    }
+  },
+  {
+    "name": "you may decline the draw",
+    "players": [
+      {
+        "hand": [
+          "Serra Angel"
+        ],
+        "battlefield": [
+          "Temur Ascendancy",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Serra Angel"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "battlefield_has": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "power 3 creature does not draw but still has haste",
+    "players": [
+      {
+        "hand": [
+          "Hill Giant"
+        ],
+        "battlefield": [
+          "Temur Ascendancy",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Hill Giant"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "battlefield_has": [
+            "Hill Giant"
+          ]
+        },
+        {}
+      ],
+      "keywords": {
+        "Hill Giant": [
+          "Haste"
+        ]
+      }
+    }
+  },
+  {
+    "name": "an opponent's power-4 creature does not draw",
+    "players": [
+      {
+        "battlefield": [
+          "Temur Ascendancy"
+        ]
+      },
+      {
+        "hand": [
+          "Serra Angel"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Serra Angel",
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0
+        },
+        {
+          "battlefield_has": [
+            "Serra Angel"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: when Temur Ascendancy leaves, a creature that came in this turn loses haste and can't attack",
+    "players": [
+      { "hand": ["Disenchant"], "battlefield": ["Temur Ascendancy", { "name": "Hill Giant", "sick": true }, "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Disenchant", "targets": ["Temur Ascendancy"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"], "graveyard_has": ["Temur Ascendancy"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: a creature that already attacked when Temur Ascendancy leaves stays attacking and deals damage",
+    "players": [
+      { "hand": ["Disenchant"], "battlefield": ["Temur Ascendancy", { "name": "Hill Giant", "sick": true }, "Plains", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "cast": "Disenchant", "targets": ["Temur Ascendancy"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: static power boosts count when a creature enters, so a 4/4 Hill Giant under Glorious Anthem draws",
+    "players": [
+      { "hand": ["Hill Giant"], "battlefield": ["Temur Ascendancy", "Glorious Anthem", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Hill Giant" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Hill Giant"] }, {} ], "pt": { "Hill Giant": [4, 4] } }
+  }
+]

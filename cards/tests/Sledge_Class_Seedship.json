@@ -1,0 +1,76 @@
+[
+  {
+    "name": "at 7 charge counters it attacks and puts a creature card from hand onto the battlefield",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Sledge-Class Seedship", "Hill Giant", "Hill Giant", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sledge-Class Seedship", "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Sledge-Class Seedship", "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Sledge-Class Seedship" },
+      { "resolve": true },
+      { "attack": [ { "card": "Sledge-Class Seedship", "at": "p1" } ] },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Grizzly Bears"], "hand_count": 0 }, {}],
+      "counters": { "Sledge-Class Seedship": { "charge": 9 } }
+    }
+  },
+  {
+    "name": "the attack trigger may put nothing onto the battlefield",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Sledge-Class Seedship", "Hill Giant", "Hill Giant", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sledge-Class Seedship", "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Sledge-Class Seedship", "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Sledge-Class Seedship" },
+      { "resolve": true },
+      { "attack": [ { "card": "Sledge-Class Seedship", "at": "p1" } ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "hand_count": 1, "battlefield_lacks": ["Grizzly Bears"] }, {}]
+    }
+  },
+  {
+    "name": "below 7 charge counters the Seedship is not a creature and cannot attack",
+    "players": [
+      { "battlefield": ["Sledge-Class Seedship", "Hill Giant", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sledge-Class Seedship", "answers": ["Hill Giant"] },
+      { "resolve": true },
+      { "activate": "Sledge-Class Seedship" },
+      { "resolve": true },
+      { "attack": [ { "card": "Sledge-Class Seedship", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {
+      "counters": { "Sledge-Class Seedship": { "charge": 6 } },
+      "players": [{}, { "life": 20 }]
+    }
+  },
+  {
+    "name": "at 7 charge counters the Seedship has flying: Grizzly Bears (no flying) cannot block it",
+    "players": [
+      { "battlefield": [{ "name": "Sledge-Class Seedship", "counters": { "Charge": 7 } }] },
+      { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Sledge-Class Seedship", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Sledge-Class Seedship" }, { "blocker": "Serra Angel", "attacker": "Sledge-Class Seedship" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Sledge-Class Seedship"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  }
+]

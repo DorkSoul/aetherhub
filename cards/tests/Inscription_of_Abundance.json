@@ -1,0 +1,103 @@
+[
+  {
+    "name": "unkicked: choose one mode - two +1/+1 counters on target creature",
+    "players": [
+      {
+        "hand": ["Inscription of Abundance"],
+        "battlefield": ["Forest", "Forest", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Inscription of Abundance", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Inscription of Abundance"] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "unkicked: gain life equal to greatest power among creatures the target player controls",
+    "players": [
+      {
+        "hand": ["Inscription of Abundance"],
+        "battlefield": ["Forest", "Forest"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Inscription of Abundance", "targets": ["p1"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 23 } ]
+    }
+  },
+  {
+    "name": "kicked: may choose any number of modes (counters and life gain)",
+    "players": [
+      {
+        "hand": ["Inscription of Abundance"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Inscription of Abundance", "targets": ["Grizzly Bears", "p1"], "answers": [true, [0, 1]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 23 } ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: kicked modes resolve in written order, so the life gain sees the counters",
+    "players": [
+      {
+        "hand": ["Inscription of Abundance"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Inscription of Abundance", "targets": ["p0"], "answers": [true, [0, 1]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 24 }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: a target that becomes illegal does not stop the other kicked mode (life gain still happens)",
+    "players": [
+      {
+        "hand": ["Inscription of Abundance"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Hill Giant"]
+      }
+    ],
+    "steps": [
+      { "cast": "Inscription of Abundance", "targets": ["Grizzly Bears", "p1"], "answers": [true, [0, 1]] },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears", "Inscription of Abundance"] },
+        { "life": 23, "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

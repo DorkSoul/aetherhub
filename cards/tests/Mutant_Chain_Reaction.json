@@ -1,0 +1,38 @@
+[
+  {
+    "name": "destroys a targeted creature with flying and creates a Mutagen",
+    "players": [ { "hand": ["Mutant Chain Reaction"], "battlefield": ["Forest", "Forest", "Forest"] }, { "battlefield": ["Air Elemental"] } ],
+    "steps": [ { "cast": "Mutant Chain Reaction", "targets": ["Air Elemental"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Mutagen"] }, { "graveyard_has": ["Air Elemental"] } ] }
+  },
+  {
+    "name": "destroys a targeted enchantment",
+    "players": [ { "hand": ["Mutant Chain Reaction"], "battlefield": ["Forest", "Forest", "Forest"] }, { "battlefield": ["Muster the Departed"] } ],
+    "steps": [ { "cast": "Mutant Chain Reaction", "targets": ["Muster the Departed"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Mutagen"] }, { "graveyard_has": ["Muster the Departed"] } ] }
+  },
+  {
+    "name": "with no target chosen it still creates a Mutagen",
+    "players": [ { "hand": ["Mutant Chain Reaction"], "battlefield": ["Forest", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Mutant Chain Reaction" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Mutagen"] }, {} ] }
+  },
+  {
+    "name": "the Mutagen token can be sacrificed at sorcery speed to put a +1/+1 counter on a creature",
+    "players": [ { "hand": ["Mutant Chain Reaction"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Mutant Chain Reaction" }, { "resolve": true }, { "activate": "Mutagen" }, { "resolve": true } ],
+    "expect": { "pt": { "Grizzly Bears": [3, 3] }, "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: if its only target becomes illegal on resolution the spell does not resolve and no Mutagen is created",
+    "players": [ { "hand": ["Mutant Chain Reaction"], "battlefield": ["Forest", "Forest", "Forest"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Storm Crow"] } ],
+    "steps": [ { "cast": "Mutant Chain Reaction", "targets": ["Storm Crow"] }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Storm Crow"] }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Mutagen"], "graveyard_has": ["Mutant Chain Reaction"] }, { "graveyard_has": ["Storm Crow", "Lightning Bolt"] } ] }
+  },
+  {
+    "name": "ruling: the Mutagen token can be activated only at sorcery speed (not on the opponent's turn)",
+    "players": [ { "hand": ["Mutant Chain Reaction"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Mutant Chain Reaction" }, { "resolve": true }, { "advance_to": "Upkeep" }, { "pass": true, "player": 1 }, { "activate": "Mutagen", "player": 0, "illegal": true } ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] }, "players": [ { "battlefield_has": ["Mutagen"] }, {} ] }
+  }
+]

@@ -1,0 +1,63 @@
+[
+  {
+    "name": "counters an instant that targets a permanent you control",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Avoid Fate"], "battlefield": ["Forest", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Avoid Fate", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Avoid Fate"], "battlefield": ["Forest", "Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "cannot counter a spell that targets an opponent's permanent",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] },
+      { "hand": ["Avoid Fate"], "battlefield": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "cast": "Avoid Fate", "player": 1, "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Grizzly Bears"] },
+        { "hand": ["Avoid Fate"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Misdirection changes Avoid Fate's target to an Aura spell; Avoid Fate still counters that Aura",
+    "players": [
+      { "hand": ["Avoid Fate"], "battlefield": ["Forest", "Hill Giant"] },
+      { "hand": ["Pacifism", "Shock", "Misdirection"], "battlefield": ["Plains", "Mountain", "Island", "Island", "Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1", "player": 1 },
+      { "cast": "Pacifism", "player": 1, "targets": ["Hill Giant"] },
+      { "cast": "Shock", "player": 1, "targets": ["Hill Giant"] },
+      { "pass": true, "player": 1 },
+      { "cast": "Avoid Fate", "player": 0, "targets": [{ "stack": "Shock" }] },
+      { "pass": true, "player": 0 },
+      { "cast": "Misdirection", "player": 1, "targets": [{ "stack": "Avoid Fate" }] },
+      { "resolve": true, "answers": ["Pacifism"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Avoid Fate"], "battlefield_has": ["Hill Giant"] },
+        { "graveyard": ["Shock", "Misdirection", "Pacifism"] }
+      ]
+    }
+  }
+]

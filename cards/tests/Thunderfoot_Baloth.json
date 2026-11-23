@@ -1,0 +1,68 @@
+[
+  {
+    "name": "without your commander it is a plain 5/5 and gives nothing to other creatures",
+    "players": [
+      { "battlefield": ["Thunderfoot Baloth", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "pt": { "Thunderfoot Baloth": [5, 5], "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "lieutenant: with your commander on the battlefield it gets +2/+2 and others get +2/+2 and trample",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Savannah Lions"],
+        "battlefield": ["Thunderfoot Baloth", "Grizzly Bears", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Savannah Lions" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": {
+        "Thunderfoot Baloth": [7, 7],
+        "Grizzly Bears": [4, 4],
+        "Savannah Lions": [4, 3]
+      },
+      "keywords": {
+        "Thunderfoot Baloth": ["Trample"],
+        "Grizzly Bears": ["Trample"],
+        "Savannah Lions": ["Trample"]
+      }
+    }
+  },
+  {
+    "name": "ruling: a commander in the command zone is not on the battlefield, so lieutenant does not apply",
+    "commander": true,
+    "players": [ { "command": ["Savannah Lions"], "battlefield": ["Thunderfoot Baloth", "Grizzly Bears"] }, {} ],
+    "steps": [],
+    "expect": { "pt": { "Thunderfoot Baloth": [5, 5], "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "ruling: losing control of your commander turns lieutenant off",
+    "commander": true,
+    "players": [ { "command": ["Savannah Lions"], "battlefield": ["Thunderfoot Baloth", "Grizzly Bears", "Plains"] }, { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island"] } ],
+    "steps": [ { "cast": "Savannah Lions" }, { "resolve": true }, { "advance_to": "Main1" }, { "player": 1, "cast": "Control Magic", "targets": ["Savannah Lions"] }, { "player": 1, "resolve": true } ],
+    "expect": { "pt": { "Thunderfoot Baloth": [5, 5], "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "ruling: an opponent's commander does not enable lieutenant",
+    "commander": true,
+    "players": [ { "battlefield": ["Thunderfoot Baloth", "Grizzly Bears"] }, { "command": ["Savannah Lions"], "battlefield": ["Plains"] } ],
+    "steps": [ { "advance_to": "Main1" }, { "player": 1, "cast": "Savannah Lions" }, { "player": 1, "resolve": true } ],
+    "expect": { "pt": { "Thunderfoot Baloth": [5, 5], "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "ruling: a stolen lieutenant creature uses the commander of its new controller, not its owner",
+    "commander": true,
+    "players": [ { "command": ["Savannah Lions"], "battlefield": ["Plains", "Island", "Island", "Island", "Island", "Island"], "hand": ["Mind Control"] }, { "battlefield": ["Thunderfoot Baloth"] } ],
+    "steps": [ { "cast": "Savannah Lions" }, { "resolve": true }, { "cast": "Mind Control", "targets": ["Thunderfoot Baloth"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Thunderfoot Baloth"] }, { "battlefield_lacks": ["Thunderfoot Baloth"] } ], "pt": { "Thunderfoot Baloth": [7, 7] } }
+  }
+]

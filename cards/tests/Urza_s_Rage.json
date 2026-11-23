@@ -1,0 +1,207 @@
+[
+ {
+  "name": "unkicked: 3 damage to a player",
+  "players": [
+   {
+    "hand": [
+     "Urza's Rage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Urza's Rage",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "kicked: 10 damage to a player",
+  "players": [
+   {
+    "hand": [
+     "Urza's Rage"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Urza's Rage",
+    "targets": [
+     "p1"
+    ],
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 10
+    }
+   ]
+  }
+ },
+ {
+  "name": "kicked 10 damage ignores a 3-point prevention shield on the creature",
+  "players": [
+   {
+    "hand": [
+     "Healing Salve",
+     "Urza's Rage"
+    ],
+    "battlefield": [
+     "Plains",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Healing Salve",
+    "targets": [
+     "Serra Angel"
+    ],
+    "answers": [
+     1
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Urza's Rage",
+    "targets": [
+     "Serra Angel"
+    ],
+    "answers": [
+     true
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "graveyard": [
+      "Serra Angel"
+     ],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "CantBeCountered: the opponent's Counterspell does not stop the 3 damage",
+  "players": [
+   { "hand": ["Urza's Rage"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Urza's Rage", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Urza's Rage" } ] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": { "players": [ {}, { "life": 17, "graveyard_has": ["Counterspell"] } ] }
+ },
+ {
+  "name": "ruling: if the target becomes illegal (creature killed in response), the spell fizzles with no damage",
+  "players": [
+   { "hand": ["Urza's Rage"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+   { "hand": ["Murder"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Urza's Rage", "targets": ["Grizzly Bears"], "answers": [true] },
+   { "pass": true },
+   { "cast": "Murder", "player": 1, "targets": ["Grizzly Bears"] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Urza's Rage", "Grizzly Bears"] },
+    { "life": 20, "graveyard_has": ["Murder"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a copy (Twincast) of a kicked Urza's Rage is also kicked and deals 10",
+  "players": [
+   { "hand": ["Urza's Rage", "Twincast"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Island", "Island"] },
+   { "life": 30 }
+  ],
+  "steps": [
+   { "cast": "Urza's Rage", "targets": ["p1"], "answers": [true] },
+   { "cast": "Twincast", "targets": [{ "stack": "Urza's Rage" }], "auto": true },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "pass": true },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 10 } ]
+  }
+ }
+]

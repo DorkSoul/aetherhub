@@ -1,0 +1,187 @@
+[
+ {
+  "name": "combat damage exiles the top card, which can then be cast while you control Lightning",
+  "players": [
+   {
+    "battlefield": [
+     "Lightning, Security Sergeant",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Lightning, Security Sergeant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 15
+    }
+   ]
+  }
+ },
+ {
+  "name": "a creature blocked by two creatures deals no combat damage to the player, so nothing is exiled",
+  "players": [
+   {
+    "battlefield": [
+     "Lightning, Security Sergeant",
+     "Mountain"
+    ],
+    "library": [
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Lightning, Security Sergeant",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [
+     {
+      "blocker": "Grizzly Bears",
+      "attacker": "Lightning, Security Sergeant"
+     },
+     {
+      "blocker": "Hill Giant",
+      "attacker": "Lightning, Security Sergeant"
+     }
+    ]
+   },
+   {
+    "advance_to": "Main2"
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    },
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled land can be played in your main phase when you have a land play left",
+  "players": [
+   {
+    "battlefield": ["Lightning, Security Sergeant"],
+    "library": ["Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Lightning, Security Sergeant", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "play_land": "Mountain" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lightning, Security Sergeant", "Mountain"], "exile": [] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an exiled land cannot be played if you already played a land this turn",
+  "players": [
+   {
+    "hand": ["Forest"],
+    "battlefield": ["Lightning, Security Sergeant"],
+    "library": ["Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Lightning, Security Sergeant", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "play_land": "Forest" },
+   { "play_land": "Mountain", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lightning, Security Sergeant", "Forest"], "exile": ["Mountain"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: once Lightning leaves the battlefield, the cards exiled with it can no longer be played",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Lightning, Security Sergeant", "Mountain", "Mountain"],
+    "library": ["Lightning Bolt"]
+   },
+   {}
+  ],
+  "steps": [
+   { "attack": [ { "card": "Lightning, Security Sergeant", "at": "p1" } ] },
+   { "block": [] },
+   { "advance_to": "Main2" },
+   { "cast": "Lightning Bolt", "targets": ["Lightning, Security Sergeant"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning, Security Sergeant", "Lightning Bolt"], "exile": ["Lightning Bolt"] },
+    { "life": 18 }
+   ]
+  }
+ }
+]

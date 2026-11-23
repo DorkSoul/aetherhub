@@ -1,0 +1,258 @@
+[
+ {
+  "name": "attacking one opponent makes one Junk at end of combat",
+  "players": [
+   {
+    "battlefield": [
+     "Rose, Cutthroat Raider"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Rose, Cutthroat Raider",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "advance_to": "EndCombat"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Rose, Cutthroat Raider",
+      "Junk"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no attack means no Junk",
+  "players": [
+   {
+    "battlefield": [
+     "Rose, Cutthroat Raider"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Rose, Cutthroat Raider"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "sacrificing a Junk adds R",
+  "players": [
+   {
+    "battlefield": [
+     "Rose, Cutthroat Raider",
+     "Junk"
+    ],
+    "library": [
+     "Forest",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Junk",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Rose, Cutthroat Raider"
+     ],
+     "pool": {
+      "R": 1
+     }
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "two opponents attacked makes two Junk (multiplayer)",
+  "players": [
+   {
+    "battlefield": [
+     "Rose, Cutthroat Raider",
+     "Grizzly Bears"
+    ]
+   },
+   {},
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "attack": [
+     {
+      "card": "Rose, Cutthroat Raider",
+      "at": "p1"
+     },
+     {
+      "card": "Grizzly Bears",
+      "at": "p2"
+     }
+    ]
+   },
+   {
+    "advance_to": "EndCombat"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Rose, Cutthroat Raider",
+      "Grizzly Bears",
+      "Junk",
+      "Junk"
+     ]
+    },
+    {},
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land exiled by Junk can be played in my main phase this turn",
+  "players": [
+   { "battlefield": ["Rose, Cutthroat Raider", "Junk"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk", "ability": 0 },
+   { "resolve": true },
+   { "play_land": "Forest" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Rose, Cutthroat Raider", "Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land exiled by Junk cannot be played during combat",
+  "players": [
+   { "battlefield": ["Rose, Cutthroat Raider", "Junk"], "library": ["Forest", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk", "ability": 0 },
+   { "resolve": true },
+   { "advance_to": "BeginCombat" },
+   { "play_land": "Forest", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Forest"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: sacrificing a Junk to another cost (Junk Jet) still adds R",
+  "players": [
+   { "battlefield": ["Rose, Cutthroat Raider", "Junk Jet", "Junk", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Junk Jet", "ability": 0, "answers": [[1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Rose, Cutthroat Raider", "Junk Jet"], "battlefield_lacks": ["Junk"], "pool": { "R": 1 } },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: raid counts a creature that attacked even if it died in combat",
+  "players": [
+   { "battlefield": ["Rose, Cutthroat Raider", { "name": "Grizzly Bears", "sick": false }] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "EndCombat" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Rose, Cutthroat Raider", "Junk"], "graveyard": ["Grizzly Bears"] },
+    { "battlefield": ["Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: two creatures attacking one opponent still make only one Junk",
+  "players": [
+   { "battlefield": ["Rose, Cutthroat Raider", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Rose, Cutthroat Raider", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "EndCombat" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": ["Rose, Cutthroat Raider", "Grizzly Bears", "Junk"] },
+    {}
+   ]
+  }
+ }
+]

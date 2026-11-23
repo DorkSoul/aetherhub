@@ -1,0 +1,89 @@
+[
+  {
+    "name": "being blocked deals 1 damage to the blocker",
+    "players": [
+      {
+        "battlefield": [
+          "Skewer Slinger"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Skewer Slinger",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Grizzly Bears",
+            "attacker": "Skewer Slinger"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Skewer Slinger"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "blocking a creature deals 1 damage to it (blocks trigger)",
+    "players": [ { "battlefield": ["Skewer Slinger"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main1", "auto": true },
+      { "player": 1, "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "player": 0, "block": [ { "blocker": "Skewer Slinger", "attacker": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Skewer Slinger"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "not blocking: the blocks trigger does not happen and the attacker is unblocked",
+    "players": [ { "battlefield": ["Skewer Slinger"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "advance_to": "Main1", "auto": true },
+      { "player": 1, "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "player": 0, "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18, "battlefield_has": ["Skewer Slinger"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: a blocker killed by the blocks trigger leaves the attacker blocked, so no damage",
+    "players": [ { "battlefield": ["Skewer Slinger"] }, { "battlefield": ["Savannah Lions"] } ],
+    "steps": [
+      { "attack": [ { "card": "Skewer Slinger", "at": "p1" } ] },
+      { "block": [ { "blocker": "Savannah Lions", "attacker": "Skewer Slinger" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Skewer Slinger"] }, { "life": 20, "graveyard": ["Savannah Lions"] } ] }
+  }
+]

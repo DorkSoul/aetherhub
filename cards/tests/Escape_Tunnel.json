@@ -1,0 +1,192 @@
+[
+ {
+  "name": "sacrifice to fetch a basic land tapped",
+  "players": [
+   {
+    "battlefield": [
+     "Escape Tunnel"
+    ],
+    "library": [
+     "Forest",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Escape Tunnel",
+    "ability": 0
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Forest"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Escape Tunnel"
+     ],
+     "battlefield": [
+      "Forest"
+     ]
+    },
+    {}
+   ],
+   "tapped": {
+    "Forest": true
+   }
+  }
+ },
+ {
+  "name": "makes a small creature unblockable",
+  "players": [
+   {
+    "battlefield": [
+     "Escape Tunnel",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "battlefield": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Escape Tunnel",
+    "ability": 1,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Escape Tunnel"
+     ]
+    },
+    {}
+   ],
+   "keywords": {
+    "Grizzly Bears": [
+     "Unblockable"
+    ]
+   }
+  }
+ },
+ {
+  "name": "power 3 creature cannot be targeted",
+  "players": [
+   {
+    "battlefield": [
+     "Escape Tunnel",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Escape Tunnel",
+    "ability": 1,
+    "targets": [
+     "Hill Giant"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Escape Tunnel",
+      "Hill Giant"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature already blocked stays blocked when the ability is activated after blocks",
+  "players": [
+   {
+    "battlefield": ["Escape Tunnel", "Grizzly Bears"]
+   },
+   {
+    "battlefield": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "activate": "Escape Tunnel", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Escape Tunnel", "Grizzly Bears"], "life": 20 },
+    { "battlefield_has": ["Hill Giant"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: power raised to 3+ before the ability resolves makes it fizzle (creature can be blocked)",
+  "players": [
+   {
+    "hand": ["Giant Growth"],
+    "battlefield": ["Escape Tunnel", "Grizzly Bears", "Forest"]
+   },
+   {
+    "battlefield": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "activate": "Escape Tunnel", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Escape Tunnel"], "battlefield_has": ["Grizzly Bears"], "life": 20 },
+    { "graveyard_has": ["Hill Giant"], "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: power raised after the ability resolves, the creature still can't be blocked",
+  "players": [
+   {
+    "hand": ["Giant Growth"],
+    "battlefield": ["Escape Tunnel", "Grizzly Bears", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Escape Tunnel", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{}, {}],
+   "keywords": { "Grizzly Bears": ["Unblockable"] },
+   "pt": { "Grizzly Bears": [5, 5] }
+  }
+ }
+]

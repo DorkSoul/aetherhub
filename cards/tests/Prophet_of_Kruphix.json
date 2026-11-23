@@ -1,0 +1,68 @@
+[
+  {
+    "name": "untaps your creatures and lands during each opponent's untap step",
+    "players": [
+      { "battlefield": ["Prophet of Kruphix", { "name": "Forest", "tapped": true }, { "name": "Grizzly Bears", "tapped": true }, { "name": "Sol Ring", "tapped": true }] },
+      {}
+    ],
+    "steps": [ { "advance_to": "Main2", "auto": true }, { "advance_to": "Upkeep", "auto": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Prophet of Kruphix"] }, {} ],
+      "tapped": { "Forest": false, "Grizzly Bears": false, "Sol Ring": true }
+    }
+  },
+  {
+    "name": "without Prophet of Kruphix tapped permanents stay tapped",
+    "players": [
+      { "battlefield": [{ "name": "Forest", "tapped": true }, { "name": "Grizzly Bears", "tapped": true }] },
+      {}
+    ],
+    "steps": [ { "advance_to": "Main2", "auto": true }, { "advance_to": "Upkeep", "auto": true } ],
+    "expect": { "tapped": { "Forest": true, "Grizzly Bears": true } }
+  },
+  {
+    "name": "creature spells can be cast as though they had flash",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Prophet of Kruphix", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "End" }, { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Prophet of Kruphix", "Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "noncreature sorceries still can't be cast at instant speed",
+    "players": [
+      { "hand": ["Divination"], "battlefield": ["Prophet of Kruphix", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "End" }, { "cast": "Divination", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Divination"] }, {} ] }
+  },
+  {
+    "name": "ruling: a creature card in the graveyard can be cast as though it had flash",
+    "players": [
+      { "battlefield": ["Prophet of Kruphix", "Swamp", "Diregraf Ghoul"], "graveyard": ["Gravecrawler"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "End" }, { "cast": "Gravecrawler" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Gravecrawler", "Diregraf Ghoul"] }, {} ] }
+  },
+  {
+    "name": "ruling: without Prophet the Gravecrawler in the graveyard is still sorcery speed",
+    "players": [
+      { "battlefield": ["Swamp", "Diregraf Ghoul"], "graveyard": ["Gravecrawler"] },
+      {}
+    ],
+    "steps": [ { "advance_to": "End" }, { "cast": "Gravecrawler", "illegal": true } ],
+    "expect": { "players": [ { "graveyard": ["Gravecrawler"] }, {} ] }
+  },
+  {
+    "name": "ruling: a skipped untap does not stop Prophet untapping creatures in an opponent's untap step",
+    "players": [
+      { "hand": ["Sleep"], "battlefield": ["Prophet of Kruphix", "Grizzly Bears", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [ { "cast": "Sleep", "targets": ["p0"] }, { "resolve": true }, { "advance_to": "Main2", "auto": true }, { "advance_to": "Upkeep", "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Prophet of Kruphix", "Grizzly Bears"] }, {} ], "tapped": { "Grizzly Bears": false, "Prophet of Kruphix": false } }
+  }
+]

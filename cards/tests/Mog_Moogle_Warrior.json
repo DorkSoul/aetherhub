@@ -1,0 +1,101 @@
+[
+  {
+    "name": "nobody discards: nothing happens",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Grizzly Bears"], "library": ["Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "library": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [[], []] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mog, Moogle Warrior": [1, 2] },
+      "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Mog, Moogle Warrior"] }, { "hand": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "a creature card discarded: draw a card and create a Moogle, no counters",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Grizzly Bears"], "library": ["Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "library": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [["Grizzly Bears"], []] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mog, Moogle Warrior": [1, 2], "Moogle 1-2 Lifelink": [1, 2] },
+      "players": [ { "graveyard": ["Grizzly Bears"], "hand_count": 1, "battlefield_has": ["Moogle 1-2 Lifelink"] }, { "hand": ["Lightning Bolt"], "hand_count": 1 } ]
+    }
+  },
+  {
+    "name": "a noncreature card discarded by an opponent: only that player draws, counter on each Moogle, no token",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Grizzly Bears"], "library": ["Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "library": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [[], ["Lightning Bolt"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mog, Moogle Warrior": [2, 3] },
+      "players": [ { "hand": ["Grizzly Bears"], "hand_count": 1, "battlefield_lacks": ["Moogle 1-2 Lifelink"] }, { "graveyard": ["Lightning Bolt"], "hand": ["Forest"] } ]
+    }
+  },
+  {
+    "name": "both kinds discarded: both draw, token is created first, then counters go on Mog and the new Moogle",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Grizzly Bears"], "library": ["Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "library": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [["Grizzly Bears"], ["Lightning Bolt"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mog, Moogle Warrior": [2, 3], "Moogle 1-2 Lifelink": [2, 3] },
+      "players": [ { "graveyard": ["Grizzly Bears"], "hand": ["Forest"], "battlefield_has": ["Moogle 1-2 Lifelink"] }, { "graveyard": ["Lightning Bolt"], "hand": ["Forest"] } ]
+    }
+  },
+  {
+    "name": "does not trigger on the opponent's end step",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Grizzly Bears"], "library": ["Forest"] },
+      { "library": ["Forest"] }
+    ],
+    "steps": [ { "advance_to": "End" } ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: several creature cards discarded still make only one Moogle token",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Grizzly Bears"], "library": ["Forest", "Forest"] },
+      { "hand": ["Grizzly Bears"], "library": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [["Grizzly Bears"], ["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mog, Moogle Warrior": [1, 2], "Moogle 1-2 Lifelink": [1, 2] },
+      "players": [ { "battlefield": ["Mog, Moogle Warrior", "Moogle 1-2 Lifelink"], "graveyard": ["Grizzly Bears"], "hand": ["Forest"] }, { "graveyard": ["Grizzly Bears"], "hand": ["Forest"] } ]
+    }
+  },
+  {
+    "name": "ruling: several noncreature cards discarded still put only one +1/+1 counter on each Moogle",
+    "players": [
+      { "battlefield": ["Mog, Moogle Warrior"], "hand": ["Lightning Bolt"], "library": ["Forest", "Forest"] },
+      { "hand": ["Lightning Bolt"], "library": ["Forest", "Forest"] }
+    ],
+    "steps": [
+      { "advance_to": "End", "answers": [["Lightning Bolt"], ["Lightning Bolt"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Mog, Moogle Warrior": [2, 3] },
+      "players": [ { "battlefield": ["Mog, Moogle Warrior"], "graveyard": ["Lightning Bolt"], "hand": ["Forest"] }, { "graveyard": ["Lightning Bolt"], "hand": ["Forest"] } ]
+    }
+  }
+]

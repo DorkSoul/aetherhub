@@ -1,0 +1,82 @@
+[
+  { "name": "sneak {B}: return the unblocked attacker, destroy the target creature (no life loss)",
+    "players": [
+      { "hand": ["Shredder's Technique"], "battlefield": ["Swamp", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Shredder's Technique", "alt": 0, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Shredder's Technique"], "hand_count": 1, "life": 20 }, { "graveyard": ["Hill Giant"], "life": 20 } ]
+    }
+  },
+  { "name": "sneak: destroying an enchantment makes you lose 2 life",
+    "players": [
+      { "hand": ["Shredder's Technique"], "battlefield": ["Swamp", "Swamp", "Swamp", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Propaganda"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "cast": "Shredder's Technique", "alt": 0, "targets": ["Propaganda"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Shredder's Technique"], "hand_count": 1, "life": 18 }, { "graveyard": ["Propaganda"], "life": 20 } ]
+    }
+  },
+  { "name": "sneak cost is not available outside the declare blockers step (no attacker to return)",
+    "players": [
+      { "hand": ["Shredder's Technique"], "battlefield": ["Swamp"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Shredder's Technique", "alt": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "life": 20 }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  },
+  { "name": "normal {2}{B} cast in a main phase destroys the creature and costs no life",
+    "players": [
+      { "hand": ["Shredder's Technique"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Shredder's Technique", "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Shredder's Technique"], "life": 20 }, { "graveyard": ["Hill Giant"], "life": 20 } ]
+    }
+  },
+  { "name": "CastOnlyIf: normal cost cannot be cast at instant speed in the opponent's combat (no sneak)",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "hand": ["Shredder's Technique"], "battlefield": ["Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "pass": true },
+      { "player": 1, "cast": "Shredder's Technique", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "hand_count": 1, "life": 20 } ]
+    }
+  },
+  { "name": "ruling: sneak cost cannot be paid in the declare attackers step, before blockers are declared",
+    "players": [
+      { "hand": ["Shredder's Technique"], "battlefield": ["Swamp", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "cast": "Shredder's Technique", "alt": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand_count": 1, "life": 20 }, { "battlefield_has": ["Hill Giant"], "life": 20 } ] }
+  }
+]

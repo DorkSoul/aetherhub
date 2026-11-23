@@ -1,0 +1,71 @@
+[
+  {
+    "name": "Animate Dead cannot return a creature card from a graveyard",
+    "players": [
+      { "hand": ["Animate Dead"], "battlefield": ["Swamp", "Swamp", "Weathered Runestone"] },
+      { "graveyard": ["Hill Giant"] }
+    ],
+    "steps": [ { "cast": "Animate Dead", "targets": ["Hill Giant"] }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Weathered Runestone"], "graveyard": ["Animate Dead"] },
+        { "graveyard": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "players can't cast flashback spells from a graveyard",
+    "players": [
+      { "battlefield": ["Island", "Island", "Weathered Runestone"], "graveyard": ["Deep Analysis"] },
+      {}
+    ],
+    "steps": [ { "cast": "Deep Analysis", "alt": 0, "targets": ["p0"], "illegal": true } ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Deep Analysis"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the Runestone itself can be cast from hand",
+    "players": [
+      { "hand": ["Weathered Runestone"], "battlefield": ["Plains", "Plains"] },
+      {}
+    ],
+    "steps": [ { "cast": "Weathered Runestone" }, { "resolve": true } ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Weathered Runestone"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Future Sight cannot cast the top library card while the Runestone is out",
+    "players": [ { "battlefield": ["Future Sight", "Weathered Runestone", "Forest", "Forest"], "library": ["Grizzly Bears", "Forest"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears", "illegal": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "library_count": 2 }, {} ] }
+  },
+  {
+    "name": "Anchor to Reality cannot put the Equipment/Vehicle from the library onto the battlefield",
+    "players": [ { "hand": ["Anchor to Reality"], "battlefield": ["Island", "Island", "Island", "Island", "Grizzly Bears", "Weathered Runestone"], "library": ["Adventurer's Airship", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Anchor to Reality", "answers": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [["Adventurer's Airship"]] }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Adventurer's Airship"], "library_count": 2, "graveyard_has": ["Anchor to Reality"] }, {} ] }
+  },
+  {
+    "name": "ruling: a land in the graveyard can still be played when an effect allows it (Crucible of Worlds)",
+    "players": [ { "battlefield": ["Crucible of Worlds", "Weathered Runestone"], "graveyard": ["Forest"] }, {} ],
+    "steps": [ { "play_land": "Forest" } ],
+    "expect": { "players": [ { "battlefield_has": ["Forest", "Crucible of Worlds", "Weathered Runestone"] }, {} ] }
+  },
+  {
+    "name": "ruling: a cascade cast from exile is still allowed (Bloodbraid Elf casts Grizzly Bears)",
+    "players": [ { "hand": ["Bloodbraid Elf"], "battlefield": ["Mountain", "Forest", "Plains", "Plains", "Weathered Runestone"], "library": ["Grizzly Bears", "Forest"] }, {} ],
+    "steps": [ { "cast": "Bloodbraid Elf" }, { "resolve": true, "answers": [true] } ],
+    "expect": { "players": [ { "battlefield_has": ["Bloodbraid Elf", "Grizzly Bears"] }, {} ] }
+  }
+]

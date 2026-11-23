@@ -1,0 +1,80 @@
+[
+  {
+    "name": "haste, and combat damage to a player adds a +1/+1 counter",
+    "players": [
+      { "hand": ["Dreadhorde Butcher"], "battlefield": ["Mountain", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dreadhorde Butcher" },
+      { "resolve": true },
+      { "attack": [ { "card": "Dreadhorde Butcher", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Dreadhorde Butcher": { "PlusOnePlusOne": 1 } },
+      "pt": { "Dreadhorde Butcher": [2, 2] },
+      "players": [
+        {},
+        { "life": 19 }
+      ]
+    }
+  },
+  {
+    "name": "when it dies it deals damage equal to its power to any target",
+    "players": [
+      { "battlefield": ["Dreadhorde Butcher"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Dreadhorde Butcher", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Dreadhorde Butcher" } ] },
+      { "advance_to": "Main2", "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dreadhorde Butcher"] },
+        { "life": 19, "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "combat damage to a planeswalker adds a +1/+1 counter (the opponent's life is unchanged)",
+    "players": [
+      { "hand": ["Dreadhorde Butcher"], "battlefield": ["Mountain", "Swamp"] },
+      { "battlefield": ["Jace Beleren"] }
+    ],
+    "steps": [
+      { "cast": "Dreadhorde Butcher" },
+      { "resolve": true },
+      { "attack": [ { "card": "Dreadhorde Butcher", "at": "Jace Beleren" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "counters": { "Dreadhorde Butcher": { "PlusOnePlusOne": 1 } },
+      "pt": { "Dreadhorde Butcher": [2, 2] },
+      "players": [
+        {},
+        { "life": 20, "battlefield_has": ["Jace Beleren"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: dies with power 0 (last known), its death trigger deals no damage",
+    "players": [
+      { "battlefield": [ { "name": "Dreadhorde Butcher", "counters": { "MinusOneMinusOne": 1 } } ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2", "targets": ["p1"] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Dreadhorde Butcher"] },
+        { "life": 20 }
+      ]
+    }
+  }
+]

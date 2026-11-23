@@ -1,0 +1,43 @@
+[
+  { "name": "three infect damage at once gives only one poison counter",
+    "players": [ { "battlefield": ["Scourge Servant"] }, { "battlefield": ["Melira, the Living Cure"] } ],
+    "steps": [ { "attack": [ { "card": "Scourge Servant", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "poison": 1, "life": 20 } ] } },
+  { "name": "a second source in the same turn gives no additional poison counter",
+    "players": [ { "battlefield": ["Glistener Elf", "Plague Stinger"] }, { "battlefield": ["Melira, the Living Cure"] } ],
+    "steps": [ { "attack": [ { "card": "Glistener Elf", "at": "p1" }, { "card": "Plague Stinger", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "poison": 1 } ] } },
+  { "name": "without Melira the same attack gives two poison counters",
+    "players": [ { "battlefield": ["Glistener Elf", "Plague Stinger"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Glistener Elf", "at": "p1" }, { "card": "Plague Stinger", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "poison": 2 } ] } },
+  { "name": "Melira only protects her controller: the opponent still gets all three counters",
+    "players": [ { "battlefield": ["Melira, the Living Cure", "Scourge Servant"] }, {} ],
+    "steps": [ { "attack": [ { "card": "Scourge Servant", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "poison": 3 } ] } },
+  { "name": "exile Melira: the chosen creature returns when it is put into a graveyard this turn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Melira, the Living Cure", "Grizzly Bears", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Melira, the Living Cure", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"], "exile": ["Melira, the Living Cure"], "graveyard": ["Lightning Bolt"] }, {} ] } },
+  { "name": "the delayed return does not outlast the turn",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Melira, the Living Cure", "Grizzly Bears", "Mountain"] }, {} ],
+    "steps": [
+      { "activate": "Melira, the Living Cure", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] }, {} ] } },
+  { "name": "ruling: the once-per-turn limit resets on a new turn, so a poison hit next turn gives a counter",
+    "players": [ { "battlefield": ["Scourge Servant"] }, { "battlefield": ["Melira, the Living Cure"] } ],
+    "steps": [ { "attack": [ { "card": "Scourge Servant", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" }, { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "attack": [ { "card": "Scourge Servant", "at": "p1" } ] }, { "block": [] }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ {}, { "poison": 2, "life": 20 } ] } }
+]

@@ -1,0 +1,298 @@
+[
+  {
+    "name": "two nonland cards milled: up to two target creatures each get a +1/+1 counter",
+    "players": [
+      {
+        "hand": [
+          "Brain Freeze"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          {
+            "name": "The Wise Mothman",
+            "sick": false
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "library": [
+          "Grizzly Bears",
+          "Mountain",
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Brain Freeze",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "The Wise Mothman",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "The Wise Mothman",
+            "Grizzly Bears",
+            "Island",
+            "Island"
+          ],
+          "graveyard": [
+            "Brain Freeze"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears",
+            "Hill Giant",
+            "Mountain"
+          ],
+          "library_count": 0
+        }
+      ],
+      "counters": {
+        "The Wise Mothman": {
+          "p1p1": 1
+        },
+        "Grizzly Bears": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "The Wise Mothman": [
+          4,
+          4
+        ],
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "one nonland card milled: only one target creature gets a counter",
+    "players": [
+      {
+        "hand": [
+          "Brain Freeze"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          {
+            "name": "The Wise Mothman",
+            "sick": false
+          },
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "library": [
+          "Grizzly Bears",
+          "Mountain",
+          "Forest"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Brain Freeze",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "The Wise Mothman"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "The Wise Mothman": {
+          "p1p1": 1
+        },
+        "Grizzly Bears": {
+          "p1p1": 0
+        }
+      },
+      "pt": {
+        "The Wise Mothman": [
+          4,
+          4
+        ],
+        "Grizzly Bears": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "only land cards milled: no trigger, no counters",
+    "players": [
+      {
+        "hand": [
+          "Brain Freeze"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          {
+            "name": "The Wise Mothman",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "library": [
+          "Mountain",
+          "Forest",
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Brain Freeze",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Brain Freeze"
+          ]
+        },
+        {
+          "graveyard": [
+            "Forest",
+            "Mountain",
+            "Plains"
+          ],
+          "library_count": 0
+        }
+      ],
+      "pt": {
+        "The Wise Mothman": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "enters: each player gets a rad counter",
+    "players": [
+      { "hand": ["The Wise Mothman"], "battlefield": ["Swamp", "Forest", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Wise Mothman" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "rad": 1, "battlefield_has": ["The Wise Mothman"] }, { "rad": 1 } ] }
+  },
+  {
+    "name": "attacks: each player gets a rad counter",
+    "players": [
+      { "battlefield": [ { "name": "The Wise Mothman", "sick": false } ] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "The Wise Mothman", "at": "p1" } ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "rad": 1 }, { "rad": 1 } ] }
+  },
+  {
+    "name": "ruling: rad counters belong to the player, not a permanent: they stay when The Wise Mothman dies",
+    "players": [
+      { "rad": 2, "hand": [ "Lightning Bolt" ], "battlefield": [ "Mountain", "The Wise Mothman" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "The Wise Mothman" ] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "rad": 2, "graveyard": [ "Lightning Bolt", "The Wise Mothman" ] }, {} ] }
+  },
+  {
+    "name": "ruling: rad counters stay on the player when the turn ends (opponent's turn)",
+    "players": [
+      { "rad": 1, "battlefield": [ "Mountain" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": { "players": [ { "rad": 1 }, {} ] }
+  },
+  {
+    "name": "ruling: precombat main of a player with rad counters mills that many; each milled nonland loses 1 life and a rad counter",
+    "start": "Upkeep",
+    "players": [
+      { "rad": 2, "library": [ "Grizzly Bears", "Grizzly Bears", "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "rad": 0, "life": 18, "graveyard_has": [ "Grizzly Bears" ] }, {} ] }
+  },
+  {
+    "name": "ruling: several nonland cards milled at once trigger The Wise Mothman once (one target gets one counter)",
+    "players": [
+      {
+        "hand": [ "Brain Freeze" ],
+        "battlefield": [ "Island", "Island", { "name": "The Wise Mothman", "sick": false }, { "name": "Grizzly Bears", "sick": false } ]
+      },
+      {
+        "library": [ "Grizzly Bears", "Grizzly Bears", "Mountain" ]
+      }
+    ],
+    "steps": [
+      { "cast": "Brain Freeze", "targets": [ "p1" ] },
+      { "resolve": true, "targets": [ "Grizzly Bears" ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "graveyard": [ "Grizzly Bears", "Grizzly Bears", "Mountain" ] } ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } }
+    }
+  }
+]

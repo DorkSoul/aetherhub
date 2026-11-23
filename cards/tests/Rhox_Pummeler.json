@@ -1,0 +1,120 @@
+[
+  {
+    "name": "enters with a shield counter",
+    "players": [
+      { "hand": ["Rhox Pummeler"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Rhox Pummeler" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Rhox Pummeler"] }, {} ],
+      "counters": { "Rhox Pummeler": { "Shield": 1 } }
+    }
+  },
+  {
+    "name": "Shock is prevented and removes the shield counter; Rhox stays",
+    "players": [
+      { "hand": ["Rhox Pummeler"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Rhox Pummeler" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Rhox Pummeler"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Rhox Pummeler"] }, {} ],
+      "counters": { "Rhox Pummeler": { "Shield": 0 } }
+    }
+  },
+  {
+    "name": "second damage with no shield left is dealt: Bolt kills the 6/3",
+    "players": [
+      { "hand": ["Rhox Pummeler"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Shock", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Rhox Pummeler" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Rhox Pummeler"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Rhox Pummeler"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Rhox Pummeler"] }, {} ]
+    }
+  },
+  {
+    "name": "with a shield counter Rhox has trample: 6 power over a 1/1 blocker, 5 tramples through",
+    "players": [
+      { "battlefield": [ { "name": "Rhox Pummeler", "sick": false, "counters": { "Shield": 1 } } ] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Rhox Pummeler", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Rhox Pummeler" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 15, "graveyard_has": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "without a shield counter Rhox has no trample: a 1/1 blocker stops all 6 damage",
+    "players": [
+      { "battlefield": [ { "name": "Rhox Pummeler", "sick": false, "counters": { "Shield": 0 } } ] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Rhox Pummeler", "at": "p1" } ] },
+      { "block": [ { "blocker": "Llanowar Elves", "attacker": "Rhox Pummeler" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20, "graveyard_has": ["Llanowar Elves"] } ]
+    }
+  },
+  {
+    "name": "ruling: a first strike blocker removes the shield in the first damage step, so the attacker has no trample for regular damage",
+    "players": [
+      { "battlefield": [ { "name": "Rhox Pummeler", "sick": false, "counters": { "Shield": 1 } } ] },
+      { "battlefield": ["Zada's Commando"] }
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Rhox Pummeler", "at": "p1" } ] },
+      { "block": [ { "blocker": "Zada's Commando", "attacker": "Rhox Pummeler" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20, "graveyard_has": ["Zada's Commando"] } ],
+      "counters": { "Rhox Pummeler": { "Shield": 0 } }
+    }
+  },
+  {
+    "name": "ruling: with two shield counters, damage is prevented and only one shield counter is removed",
+    "players": [
+      { "battlefield": [ { "name": "Rhox Pummeler", "counters": { "Shield": 2 } } ] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Rhox Pummeler"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Rhox Pummeler"] }, {} ],
+      "counters": { "Rhox Pummeler": { "Shield": 1 } }
+    }
+  }
+]

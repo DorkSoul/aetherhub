@@ -1,0 +1,215 @@
+[
+  {
+    "name": "equipped creature deals damage equal to its power to a player by unattaching the Trident",
+    "players": [
+      {
+        "hand": [
+          "Surestrike Trident"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": []
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Surestrike Trident"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Surestrike Trident",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Grizzly Bears",
+        "ability": 32768,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Surestrike Trident",
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ],
+      "tapped": {
+        "Grizzly Bears": true
+      },
+      "attached": {}
+    }
+  },
+  {
+    "name": "an unequipped creature cannot use the granted damage ability",
+    "players": [
+      {
+        "hand": [
+          "Surestrike Trident"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": []
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Surestrike Trident"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Grizzly Bears",
+        "ability": 32768,
+        "targets": [
+          "p1"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ],
+      "tapped": {
+        "Grizzly Bears": false
+      }
+    }
+  },
+  {
+    "name": "equip costs four and cannot be activated without enough mana",
+    "players": [
+      {
+        "hand": [],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears",
+          "Surestrike Trident"
+        ]
+      },
+      {
+        "battlefield": []
+      }
+    ],
+    "steps": [
+      {
+        "activate": "Surestrike Trident",
+        "ability": 0,
+        "targets": [
+          "Grizzly Bears"
+        ],
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "attached": {}
+    }
+  },
+  {
+    "name": "equipped creature has first strike",
+    "players": [
+      {
+        "hand": ["Surestrike Trident"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Surestrike Trident" },
+      { "resolve": true },
+      { "activate": "Surestrike Trident", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["FirstStrike"] },
+      "attached": { "Surestrike Trident": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "first strike equipped attacker kills a blocker before it deals damage",
+    "players": [
+      {
+        "hand": ["Surestrike Trident"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {
+        "battlefield": [{ "name": "Savannah Lions", "sick": false }]
+      }
+    ],
+    "steps": [
+      { "cast": "Surestrike Trident" },
+      { "resolve": true },
+      { "activate": "Surestrike Trident", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Savannah Lions", "attacker": "Grizzly Bears" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Savannah Lions"] } ]
+    }
+  },
+  {
+    "name": "ruling: unattaching leaves the Trident on the battlefield, and it can be equipped again",
+    "players": [
+      {
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Surestrike Trident", { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Surestrike Trident", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Grizzly Bears", "ability": 32768, "targets": ["p1"] },
+      { "resolve": true },
+      { "activate": "Surestrike Trident", "ability": 0, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Surestrike Trident"] }, { "life": 18 } ],
+      "attached": { "Surestrike Trident": "Hill Giant" }
+    }
+  }
+]

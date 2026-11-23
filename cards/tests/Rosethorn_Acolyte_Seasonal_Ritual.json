@@ -1,0 +1,110 @@
+[
+ {
+  "name": "{T}: adds one mana of any color",
+  "players": [
+   {
+    "battlefield": [
+     "Rosethorn Acolyte // Seasonal Ritual"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Rosethorn Acolyte // Seasonal Ritual",
+    "color": "R"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {}
+   ],
+   "tapped": {
+    "Rosethorn Acolyte // Seasonal Ritual": true
+   }
+  }
+ },
+ {
+  "name": "Seasonal Ritual adventure is cast then the creature is castable from exile",
+  "players": [
+   {
+    "hand": [
+     "Rosethorn Acolyte // Seasonal Ritual"
+    ],
+    "battlefield": [
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Rosethorn Acolyte // Seasonal Ritual",
+    "face": true
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "G"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Rosethorn Acolyte // Seasonal Ritual"
+     ],
+     "graveyard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a card that reached exile without the adventure gives no permission to cast the creature",
+  "players": [
+   {
+    "battlefield": ["Forest", "Forest", "Forest"],
+    "exile": ["Rosethorn Acolyte // Seasonal Ritual"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Rosethorn Acolyte // Seasonal Ritual", "illegal": true },
+   { "cast": "Rosethorn Acolyte // Seasonal Ritual", "face": true, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Rosethorn Acolyte // Seasonal Ritual"], "graveyard": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a countered adventure goes to the graveyard, not exile, so the creature can't be cast later",
+  "players": [
+   {
+    "hand": ["Rosethorn Acolyte // Seasonal Ritual"],
+    "battlefield": ["Forest"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Rosethorn Acolyte // Seasonal Ritual", "face": true },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Seasonal Ritual" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Rosethorn Acolyte // Seasonal Ritual"], "exile": [] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

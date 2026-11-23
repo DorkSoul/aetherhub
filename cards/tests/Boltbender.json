@@ -1,0 +1,92 @@
+[
+ {
+  "name": "turned face up in response, it redirects a Lightning Bolt to the opponent",
+  "players": [
+   { "hand": ["Boltbender", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Boltbender", "alt": 254 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "activate": "Boltbender", "ability": 0 },
+   { "resolve": true, "answers": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "life": 17, "battlefield_has": ["Grizzly Bears"] }
+   ],
+   "pt": { "Boltbender": [4, 2] }
+  }
+ },
+ {
+  "name": "choosing no new target keeps the original target",
+  "players": [
+   { "hand": ["Boltbender", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Boltbender", "alt": 254 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "activate": "Boltbender", "ability": 0 },
+   { "resolve": true, "answers": [[]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "life": 20, "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "two spells on the stack can both be redirected",
+  "players": [
+   { "hand": ["Boltbender", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+  ],
+  "steps": [
+   { "cast": "Boltbender", "alt": 254 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1:Grizzly Bears"] },
+   { "cast": "Lightning Bolt", "targets": ["p1:Hill Giant"] },
+   { "activate": "Boltbender", "ability": 0 },
+   { "resolve": true, "answers": ["p1", "p1"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+    { "life": 14, "battlefield_has": ["Grizzly Bears", "Hill Giant"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with only two lands the face-down spell ({3}) cannot be cast",
+  "players": [ { "hand": ["Boltbender"], "battlefield": ["Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Boltbender", "alt": 254, "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Boltbender"] }, {} ] }
+ },
+ {
+  "name": "ruling: the face-down spell costs {3} and resolves as a 2/2 creature",
+  "players": [ { "hand": ["Boltbender"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, {} ],
+  "steps": [ { "cast": "Boltbender", "alt": 254 }, { "resolve": true } ],
+  "expect": { "players": [ { "hand": [], "battlefield_has": ["Boltbender"] }, {} ], "pt": { "Boltbender": [2, 2] } }
+ },
+ {
+  "name": "ruling: a face-down Boltbender has ward {2}: a Lightning Bolt with one spare mana is countered",
+  "players": [ { "hand": ["Boltbender"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] } ],
+  "steps": [ { "cast": "Boltbender", "alt": 254 }, { "resolve": true }, { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Boltbender"] }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Boltbender"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+ },
+ {
+  "name": "ruling: turned face up while attacking it stays tapped and now deals 4",
+  "players": [ { "battlefield": [ { "name": "Boltbender", "face_down": true }, "Mountain", "Mountain" ] }, {} ],
+  "steps": [ { "attack": [ { "card": "Boltbender", "at": "p1" } ] }, { "activate": "Boltbender", "ability": 0 }, { "resolve": true }, { "advance_to": "Main2" } ],
+  "expect": { "players": [ {}, { "life": 16 } ], "tapped": { "Boltbender": true } }
+ }
+]

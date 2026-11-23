@@ -1,0 +1,332 @@
+[
+  {
+    "name": "ETB searches the library for an Equipment card into hand",
+    "players": [
+      { "hand": ["Fighter Class"], "battlefield": ["Mountain", "Plains"], "library": ["Grizzly Bears", "Bonesplitter"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fighter Class" },
+      { "resolve": true, "answers": ["Bonesplitter"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Fighter Class"], "hand": ["Bonesplitter"] }, {} ],
+      "counters": { "Fighter Class": { "level": 1 } }
+    }
+  },
+  {
+    "name": "level 3: an attacking creature must be blocked by the chosen creature",
+    "players": [
+      { "battlefield": [{ "name": "Fighter Class", "counters": { "level": 3 } }, "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant", "Mountain"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true, "answers": ["Hill Giant"] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "level 2: equip abilities cost {2} less (Bonesplitter equips with no mana)",
+    "players": [
+      { "battlefield": [{ "name": "Fighter Class", "counters": { "level": 2 } }, "Bonesplitter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [4, 2] }, "attached": { "Bonesplitter": "Grizzly Bears" } }
+  },
+  {
+    "name": "level 1: no equip discount (Bonesplitter needs its {1})",
+    "players": [
+      { "battlefield": [{ "name": "Fighter Class", "counters": { "level": 1 } }, "Bonesplitter", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Bonesplitter", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "pt": { "Grizzly Bears": [2, 2] } }
+  },
+  {
+    "name": "level 2: non-equip abilities are not reduced (Batterskull {3} return)",
+    "players": [
+      { "battlefield": [{ "name": "Fighter Class", "counters": { "level": 2 } }, "Batterskull", "Mountain", "Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Batterskull", "ability": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Batterskull"] }, {} ] }
+  },
+{"name": "gaining level 2 costs {1}{R}{W}", "players": [{"battlefield": [{"name": "Fighter Class", "counters": {"level": 1}}, "Mountain", "Plains", "Plains"]}, {}], "steps": [{"activate": "Fighter Class", "ability": 0}, {"resolve": true}], "expect": {"counters": {"Fighter Class": {"level": 2}}, "players": [{"battlefield_has": ["Fighter Class"]}, {}]}},
+{"name": "gaining level 3 costs {3}{R}{W} from level 2", "players": [{"battlefield": [{"name": "Fighter Class", "counters": {"level": 2}}, "Mountain", "Mountain", "Mountain", "Plains", "Plains"]}, {}], "steps": [{"activate": "Fighter Class", "ability": 1}, {"resolve": true}], "expect": {"counters": {"Fighter Class": {"level": 3}}, "players": [{"battlefield_has": ["Fighter Class"]}, {}]}},
+{"name": "level 3 cannot be gained straight from level 1", "players": [{"battlefield": [{"name": "Fighter Class", "counters": {"level": 1}}, "Mountain", "Mountain", "Mountain", "Plains", "Plains"]}, {}], "steps": [{"activate": "Fighter Class", "ability": 1, "illegal": true}], "expect": {"counters": {"Fighter Class": {"level": 1}}}},
+  {
+    "name": "ruling: two level-2 Classes each discount equip by {2} (Batterskull {5} costs {1})",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Fighter Class",
+            "counters": {
+              "level": 2
+            }
+          },
+          {
+            "name": "Fighter Class",
+            "counters": {
+              "level": 2
+            }
+          },
+          "Batterskull",
+          "Grizzly Bears",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Batterskull",
+        "ability": 1,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Batterskull",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          6,
+          6
+        ]
+      },
+      "attached": {
+        "Batterskull": "Grizzly Bears"
+      }
+    }
+  },
+  {
+    "name": "ruling: a Class at level 2 cannot gain level 2 again",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Fighter Class",
+            "counters": {
+              "level": 2
+            }
+          },
+          "Mountain",
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Fighter Class",
+        "ability": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Fighter Class"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Fighter Class": {
+          "level": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: a tapped creature chosen by the level 3 trigger does not block",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Fighter Class",
+            "counters": {
+              "level": 3
+            }
+          },
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          {
+            "name": "Hill Giant",
+            "tapped": true
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two attack triggers in one combat can make one blocker block only one attacker",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Fighter Class",
+            "counters": {
+              "level": 3
+            }
+          },
+          "Grizzly Bears",
+          "Savannah Lions"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          },
+          {
+            "card": "Savannah Lions",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ],
+          "battlefield_has": [
+            "Savannah Lions"
+          ]
+        },
+        {
+          "life": 18
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a level 3 Class keeps the level 2 equip discount (Bonesplitter needs no mana)",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Fighter Class",
+            "counters": {
+              "level": 3
+            }
+          },
+          "Bonesplitter",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Bonesplitter",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          2
+        ]
+      },
+      "attached": {
+        "Bonesplitter": "Grizzly Bears"
+      }
+    }
+  },
+  {"name": "level 3, two attackers: each chosen creature blocks the attacker whose trigger chose it", "players": [{"battlefield": [{"name": "Fighter Class", "counters": {"level": 3}}, "Grizzly Bears", "Llanowar Elves"]}, {"battlefield": ["Hill Giant", "Wall of Wood"]}], "steps": [{"attack": [{"card": "Grizzly Bears", "at": "p1"}, {"card": "Llanowar Elves", "at": "p1"}]}, {"resolve": true, "answers": ["Hill Giant", "Wall of Wood"]}, {"resolve": true}, {"block": []}, {"advance_to": "Main2"}], "expect": {"turn": 1, "players": [{}, {"life": 20}]}}
+]

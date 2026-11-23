@@ -1,0 +1,104 @@
+[
+ {
+  "name": "instant and sorcery spells cost 1 less while the Case is on the battlefield",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Case of the Ransacked Lab", "Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 2, "graveyard": ["Divination"] }, {} ]
+  }
+ },
+ {
+  "name": "without the Case Divination costs three and is illegal with two Islands",
+  "players": [
+   { "hand": ["Divination"], "battlefield": ["Island", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Divination", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Divination"] }, {} ]
+  }
+ },
+ {
+  "name": "solves at the end step after four instant or sorcery spells this turn",
+  "players": [
+   { "hand": ["Dark Ritual", "Dark Ritual", "Dark Ritual", "Dark Ritual"],
+     "battlefield": ["Case of the Ransacked Lab", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Dark Ritual", "Dark Ritual", "Dark Ritual", "Dark Ritual"] }, {} ],
+   "counters": { "Case of the Ransacked Lab": { "judgment": 1 } }
+  }
+ },
+ {
+  "name": "three spells this turn are not enough to solve it",
+  "players": [
+   { "hand": ["Dark Ritual", "Dark Ritual", "Dark Ritual"],
+     "battlefield": ["Case of the Ransacked Lab", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "counters": { "Case of the Ransacked Lab": { "judgment": 0 } }
+  }
+ },
+ {
+  "name": "once solved, casting an instant draws a card",
+  "players": [
+   { "hand": ["Dark Ritual", "Dark Ritual", "Dark Ritual", "Dark Ritual", "Dark Ritual"],
+     "battlefield": ["Case of the Ransacked Lab", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "cast": "Dark Ritual" }, { "resolve": true },
+   { "advance_to": "End" },
+   { "cast": "Dark Ritual" }, { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 }, {} ],
+   "counters": { "Case of the Ransacked Lab": { "judgment": 1 } }
+  }
+ },
+ {
+  "name": "ruling: an unsolved Case has no draw trigger; casting an instant draws nothing",
+  "players": [
+   { "hand": ["Dark Ritual"], "battlefield": ["Case of the Ransacked Lab", "Swamp"] },
+   {}
+  ],
+  "steps": [ { "cast": "Dark Ritual" }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 0, "graveyard": ["Dark Ritual"] }, {} ] }
+ },
+ {
+  "name": "ruling: a solved Case keeps its cost reduction and its draw trigger (Divination draws 2 + 1)",
+  "players": [
+   { "hand": ["Divination"], "battlefield": [{ "name": "Case of the Ransacked Lab", "counters": { "judgment": 1 } }, "Island", "Island"] },
+   {}
+  ],
+  "steps": [ { "cast": "Divination" }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 3, "graveyard": ["Divination"] }, {} ] }
+ }
+]

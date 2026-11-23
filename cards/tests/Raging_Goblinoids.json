@@ -1,0 +1,73 @@
+[
+  {
+    "name": "mayhem: cast from graveyard the turn it was discarded and it has haste",
+    "players": [
+      {
+        "hand": ["Faithless Looting", "Raging Goblinoids"],
+        "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp"],
+        "library": ["Island", "Swamp", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Looting" },
+      { "resolve": true, "answers": [["Raging Goblinoids", "Island"]] },
+      { "cast": "Raging Goblinoids", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Raging Goblinoids"] },
+        {}
+      ],
+      "pt": { "Raging Goblinoids": [5, 4] }
+    }
+  },
+  {
+    "name": "not discarded: cannot cast from graveyard with mayhem",
+    "players": [
+      {
+        "graveyard": ["Raging Goblinoids"],
+        "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raging Goblinoids", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Raging Goblinoids"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: discarded on the opponent's turn, mayhem still follows sorcery timing (no cast on their turn)",
+    "players": [
+      {
+        "hand": ["Raging Goblinoids"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "hand": ["Mind Rot"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"]
+      }
+    ],
+    "steps": [
+      {"advance_to": "End"},
+      {"pass": true},
+      {"advance_to": "Main1"},
+      {"cast": "Mind Rot", "targets": ["p0"], "player": 1},
+      {"resolve": true},
+      {"pass": true, "player": 1},
+      {"cast": "Raging Goblinoids", "alt": 0, "illegal": true, "player": 0}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Raging Goblinoids"]},
+        {}
+      ]
+    }
+  }
+]

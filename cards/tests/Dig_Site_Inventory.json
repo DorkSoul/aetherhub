@@ -1,0 +1,53 @@
+[
+  { "name": "puts a +1/+1 counter on your creature and goes to the graveyard",
+    "players": [ { "hand": ["Dig Site Inventory"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Dig Site Inventory", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [ { "graveyard_has": ["Dig Site Inventory"] }, {} ]
+    }
+  },
+  { "name": "flashback from the graveyard for W, then exiled",
+    "players": [ { "graveyard": ["Dig Site Inventory"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "cast": "Dig Site Inventory", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "players": [ { "exile": ["Dig Site Inventory"] }, {} ]
+    }
+  },
+  { "name": "cannot target an opponent creature",
+    "players": [ { "hand": ["Dig Site Inventory"], "battlefield": ["Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [
+      { "cast": "Dig Site Inventory", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Dig Site Inventory"] }, {} ] }
+  },
+  { "name": "ruling: flashback follows sorcery timing, so it cannot be cast on the opponent's turn",
+    "players": [ { "graveyard": ["Dig Site Inventory"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Dig Site Inventory", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Dig Site Inventory"] }, {} ] }
+  },
+  { "name": "ruling: a flashback spell that fizzles (its target dies in response) is still exiled",
+    "players": [ { "graveyard": ["Dig Site Inventory"], "battlefield": ["Plains", { "name": "Grizzly Bears", "sick": false }] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "cast": "Dig Site Inventory", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["p0:Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "exile": ["Dig Site Inventory"], "graveyard_has": ["Grizzly Bears"] }, { "graveyard_has": ["Lightning Bolt"] } ] }
+  }
+]

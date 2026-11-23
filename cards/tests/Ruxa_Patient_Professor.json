@@ -1,0 +1,373 @@
+[
+  {
+    "name": "attack trigger returns a creature card with no abilities from the graveyard",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ruxa, Patient Professor",
+            "sick": false
+          }
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Ruxa, Patient Professor",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "graveyard": []
+        },
+        {
+          "life": 16
+        }
+      ]
+    }
+  },
+  {
+    "name": "creatures with no abilities get +1/+1 (Ruxa itself has abilities and does not)",
+    "players": [
+      {
+        "battlefield": [
+          "Ruxa, Patient Professor",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Ruxa, Patient Professor": [
+          4,
+          4
+        ],
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "enters: return a creature card with no abilities from the graveyard to hand",
+    "players": [
+      {
+        "hand": [
+          "Ruxa, Patient Professor"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ruxa, Patient Professor"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [],
+          "battlefield_has": [
+            "Ruxa, Patient Professor"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters: a creature card with abilities is not a legal target",
+    "players": [
+      {
+        "hand": [
+          "Ruxa, Patient Professor"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Serra Angel"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ruxa, Patient Professor"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "graveyard_has": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "creature with no abilities may assign combat damage as though unblocked",
+    "players": [
+      {
+        "battlefield": [
+          "Ruxa, Patient Professor",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "battlefield": [
+          "Savannah Lions"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Savannah Lions",
+            "attacker": "Grizzly Bears"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17,
+          "battlefield_has": [
+            "Savannah Lions"
+          ]
+        }
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: an Aura that gives no ability (Holy Strength) keeps the +1/+1 from Ruxa",
+    "players": [
+      {
+        "hand": [
+          "Holy Strength"
+        ],
+        "battlefield": [
+          "Ruxa, Patient Professor",
+          "Grizzly Bears",
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Holy Strength",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          5
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: an Aura that gives an ability (Rancor's trample) removes the +1/+1 from Ruxa",
+    "players": [
+      {
+        "hand": [
+          "Rancor"
+        ],
+        "battlefield": [
+          "Ruxa, Patient Professor",
+          "Grizzly Bears",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Rancor",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "ruling: each no-ability attacker chooses separately: the Bears assign to the player, the Giant to its blocker",
+    "players": [
+      {
+        "battlefield": [
+          "Ruxa, Patient Professor",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          },
+          {
+            "name": "Hill Giant",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "battlefield": [
+          "Savannah Lions",
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "BeginCombat"
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          },
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Savannah Lions",
+            "attacker": "Grizzly Bears"
+          },
+          {
+            "blocker": "Llanowar Elves",
+            "attacker": "Hill Giant"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2",
+        "answers": [
+          "p1=3",
+          "Llanowar Elves=4"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17,
+          "graveyard": [
+            "Llanowar Elves"
+          ],
+          "battlefield_has": [
+            "Savannah Lions"
+          ]
+        }
+      ]
+    }
+  }
+]

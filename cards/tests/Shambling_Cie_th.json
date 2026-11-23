@@ -1,0 +1,88 @@
+[
+  {
+    "name": "casting a noncreature spell and paying B returns it to hand",
+    "players": [
+      { "hand": ["Duress"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Shambling Cie'th"] },
+      { "hand": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Duress", "targets": ["p1"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Shambling Cie'th"], "graveyard": ["Duress"] },
+        { "hand": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "declining to pay B leaves it in the graveyard",
+    "players": [
+      { "hand": ["Duress"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Shambling Cie'th"] },
+      { "hand": ["Forest"] }
+    ],
+    "steps": [
+      { "cast": "Duress", "targets": ["p1"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Shambling Cie'th", "Duress"] },
+        { "hand": ["Forest"] }
+      ]
+    }
+  },
+  {
+    "name": "casting a creature spell does not trigger it",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Swamp"], "graveyard": ["Shambling Cie'th"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Shambling Cie'th"], "battlefield_has": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "enters the battlefield tapped",
+    "players": [
+      { "hand": ["Shambling Cie'th"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shambling Cie'th" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Shambling Cie'th"] }, {}],
+      "tapped": { "Shambling Cie'th": true }
+    }
+  },
+  {
+    "name": "ruling: the trigger still resolves and returns it after the triggering spell is countered",
+    "players": [
+      { "hand": ["Duress"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Shambling Cie'th"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Duress", "targets": ["p1"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Duress" }] },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Shambling Cie'th"], "graveyard": ["Duress"] },
+        { "hand": [], "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,157 @@
+[
+  {
+    "name": "unkicked (3 mana): 3/2 with no counters",
+    "players": [
+      {
+        "hand": [
+          "Kavu Aggressor"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Kavu Aggressor"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Kavu Aggressor"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Kavu Aggressor": [
+          3,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "kicked (7 mana): enters with a +1/+1 counter",
+    "players": [
+      {
+        "hand": [
+          "Kavu Aggressor"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Kavu Aggressor",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Kavu Aggressor"
+          ]
+        },
+        {}
+      ],
+      "counters": {
+        "Kavu Aggressor": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Kavu Aggressor": [
+          4,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "name": "can't block: Kavu Aggressor's block is dropped, Wall of Stone blocks and Hill Giant survives",
+    "players": [ { "battlefield": ["Hill Giant"] }, { "battlefield": ["Kavu Aggressor", "Wall of Stone"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Kavu Aggressor", "attacker": "Hill Giant" }, { "blocker": "Wall of Stone", "attacker": "Hill Giant" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Hill Giant"] }, { "battlefield_has": ["Kavu Aggressor", "Wall of Stone"] } ] }
+  },
+  {
+    "name": "ruling: a kicked creature that is put onto the battlefield again by Reanimate is not kicked (no counter)",
+    "players": [
+      { "hand": ["Kavu Aggressor", "Lightning Bolt", "Reanimate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kavu Aggressor", "answers": [true] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Kavu Aggressor"] },
+      { "resolve": true },
+      { "cast": "Reanimate", "targets": ["Kavu Aggressor"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kavu Aggressor"], "life": 17 }, {} ],
+      "pt": { "Kavu Aggressor": [3, 2] },
+      "counters": { "Kavu Aggressor": { "p1p1": 0 } }
+    }
+  },
+  {
+    "name": "ruling: total cost (7 with kicker) does not change mana value: Reanimate costs 3 life",
+    "players": [
+      { "hand": ["Kavu Aggressor", "Lightning Bolt", "Reanimate"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kavu Aggressor", "answers": [true] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Kavu Aggressor"] },
+      { "resolve": true },
+      { "cast": "Reanimate", "targets": ["Kavu Aggressor"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 17, "battlefield_has": ["Kavu Aggressor"] }, {} ] }
+  },
+  {
+    "name": "ruling: a permanent that enters as a copy of a kicked creature is not kicked",
+    "players": [
+      { "hand": ["Clone", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Mountain"] },
+      { "battlefield": [ { "name": "Kavu Aggressor", "counters": { "p1p1": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Clone" },
+      { "resolve": true, "answers": [0] },
+      { "cast": "Lightning Bolt", "targets": ["p1:Kavu Aggressor"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kavu Aggressor"], "graveyard_has": ["Lightning Bolt"] }, { "graveyard_has": ["Kavu Aggressor"] } ],
+      "pt": { "Kavu Aggressor": [3, 2] }
+    }
+  }
+]

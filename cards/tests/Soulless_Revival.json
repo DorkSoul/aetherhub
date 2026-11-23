@@ -1,0 +1,91 @@
+[
+  {
+    "name": "returns a creature card from your graveyard to hand",
+    "players": [
+      { "hand": ["Soulless Revival"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Soulless Revival", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "splice onto Blind with Anger returns the graveyard creature too",
+    "players": [
+      { "hand": ["Blind with Anger", "Soulless Revival"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears", "Hill Giant"], "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Hill Giant", "Soulless Revival"], "battlefield_lacks": ["Hill Giant"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "declining the splice: graveyard creature stays put",
+    "players": [
+      { "hand": ["Blind with Anger", "Soulless Revival"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Swamp", "Swamp"], "graveyard": ["Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Grizzly Bears"], "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Hill Giant"], "hand": ["Soulless Revival"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two Revivals in hand are each spliced once onto the same spell",
+    "players": [
+      { "hand": ["Blind with Anger", "Soulless Revival", "Soulless Revival"], "battlefield": ["Island", "Island", "Island", "Mountain", "Mountain", "Mountain", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Hill Giant", "Serra Angel"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blind with Anger", "targets": ["Hill Giant", "Serra Angel", "Grizzly Bears"], "answers": [true, true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Soulless Revival", "Soulless Revival", "Hill Giant", "Serra Angel"] },
+        { "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the only target becomes illegal the Revival does not resolve",
+    "players": [
+      { "hand": ["Soulless Revival"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Hill Giant"] },
+      { "battlefield": ["Tormod's Crypt"] }
+    ],
+    "steps": [
+      { "cast": "Soulless Revival", "targets": ["Hill Giant"] },
+      { "activate": "Tormod's Crypt", "player": 1, "targets": ["p0"] },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": [], "graveyard": ["Soulless Revival"], "exile": ["Hill Giant"] },
+        {}
+      ],
+      "stack_empty": true
+    }
+  }
+]

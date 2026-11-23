@@ -1,0 +1,52 @@
+{
+  "name": "Regenerations Restored",
+  "mana_cost": "{W}{U}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "EntersWithCounters",
+      "kind": "Time",
+      "n": { "type": "Fixed", "n": 12 }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        { "type": "RemoveCounters", "what": { "type": "This" }, "kind": "Time", "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "State",
+        "condition": { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Time", "at_least": 1 } }
+      },
+      "effects": [
+        { "type": "Sacrifice", "who": { "type": "You" }, "filter": { "this": true }, "n": { "type": "Fixed", "n": 1 } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "CounterRemoved", "filter": { "this": true }, "kind": "Time" },
+      "effects": [
+        { "type": "Scry", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "GainLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Time", "at_least": 1 } },
+          "then": [
+            { "type": "Move", "what": { "type": "This" }, "from": "Battlefield", "to": "Exile", "remember": true },
+            {
+              "type": "If",
+              "cond": { "type": "SelIs", "what": { "type": "Remembered" }, "filter": {} },
+              "then": [ { "type": "ExtraTurn", "who": { "type": "You" } } ],
+              "else": []
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Vanishing 12 (This enchantment enters with twelve time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nWhenever one or more time counters are removed from this enchantment, scry 1 and you gain 1 life. Then if this enchantment has no time counters on it, exile it. When you do, take an extra turn after this one."
+}

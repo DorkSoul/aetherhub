@@ -1,0 +1,103 @@
+[
+ {
+  "name": "end step: a creature with a +1/+1 counter that attacked this turn draws a card",
+  "players": [
+   { "battlefield": ["Warrior's Resolve", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 1 } ]
+  }
+ },
+ {
+  "name": "a creature with a counter that did not attack does not trigger the draw",
+  "players": [
+   { "battlefield": ["Warrior's Resolve", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0 } ]
+  }
+ },
+ {
+  "name": "a creature that attacked without a +1/+1 counter does not trigger the draw",
+  "players": [
+   { "battlefield": ["Warrior's Resolve", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [ { "hand_count": 0 } ]
+  }
+ },
+ {
+  "name": "training: Grizzly Bears (lesser power) gets a +1/+1 counter when attacking with Hill Giant",
+  "players": [ { "battlefield": ["Warrior's Resolve", "Grizzly Bears", "Hill Giant"] }, {} ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 14 } ], "pt": { "Grizzly Bears": [3, 3] } }
+ },
+ {
+  "name": "ruling: training needs the greater-power creature to attack too (Bears alone gets no counter)",
+  "players": [ { "battlefield": ["Warrior's Resolve", "Grizzly Bears", "Hill Giant"] }, {} ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ {}, { "life": 18 } ], "pt": { "Grizzly Bears": [2, 2] } }
+ },
+ {
+  "name": "ruling: killing the greater-power attacker after training triggers does not stop the counter on Grizzly Bears",
+  "players": [
+   { "battlefield": ["Warrior's Resolve", "Grizzly Bears", "Hill Giant"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Hill Giant"], "player": 1 },
+   { "resolve": true },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Hill Giant"] }, { "graveyard": ["Lightning Bolt"], "life": 17 } ],
+   "pt": { "Grizzly Bears": [3, 3] }
+  }
+ },
+ {
+  "name": "ruling: a creature that gets its training counter during combat still counts for the end step draw",
+  "players": [ { "battlefield": ["Warrior's Resolve", "Grizzly Bears", "Hill Giant"] }, {} ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "End" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 1 }, { "life": 14 } ] }
+ }
+]

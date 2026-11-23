@@ -1,0 +1,291 @@
+[
+ {
+  "name": "enters with +1/+1, flying, deathtouch and shield counters",
+  "players": [
+   {
+    "hand": [
+     "Agent's Toolkit"
+    ],
+    "battlefield": [
+     "Forest",
+     "Island",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Agent's Toolkit"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Agent's Toolkit": {
+     "p1p1": 1,
+     "flying": 1,
+     "deathtouch": 1,
+     "shield": 1
+    }
+   }
+  }
+ },
+ {
+  "name": "when a creature enters, may move a counter onto it",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     {
+      "name": "Agent's Toolkit",
+      "counters": {
+       "p1p1": 1,
+       "flying": 0,
+       "deathtouch": 0,
+       "shield": 0
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Agent's Toolkit": {
+     "p1p1": 0
+    },
+    "Grizzly Bears": {
+     "p1p1": 1
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "declining to move leaves the counter on the toolkit",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     {
+      "name": "Agent's Toolkit",
+      "counters": {
+       "p1p1": 1,
+       "flying": 0,
+       "deathtouch": 0,
+       "shield": 0
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     false
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Agent's Toolkit": {
+     "p1p1": 1
+    },
+    "Grizzly Bears": {
+     "p1p1": 0
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "{2}, sacrifice: draw a card",
+  "players": [
+   {
+    "battlefield": [
+     "Agent's Toolkit",
+     "Island",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Agent's Toolkit",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Agent's Toolkit"
+     ],
+     "hand_count": 1,
+     "battlefield": [
+      "Island",
+      "Plains"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "chooses which counter kind to move when there are several",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     {
+      "name": "Agent's Toolkit",
+      "counters": {
+       "p1p1": 1,
+       "deathtouch": 1,
+       "flying": 0,
+       "shield": 0
+      }
+     }
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true,
+    "answers": [
+     true,
+     0
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Agent's Toolkit": {
+     "p1p1": 1,
+     "deathtouch": 0
+    },
+    "Grizzly Bears": {
+     "deathtouch": 1
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: with two shield counters, one damage event is prevented and removes only one",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "counters": { "shield": 2 } } ] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Lightning Bolt"] }, { "battlefield_has": ["Grizzly Bears"] } ],
+   "counters": { "Grizzly Bears": { "shield": 1 } }
+  }
+ },
+ {
+  "name": "ruling: a shield counter does not stop the Toolkit being sacrificed",
+  "players": [
+   { "battlefield": [ { "name": "Agent's Toolkit", "counters": { "shield": 1 } }, "Island", "Plains" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Agent's Toolkit", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard": ["Agent's Toolkit"], "hand_count": 1 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a lifelink counter (not one it entered with) can be moved onto the entering creature",
+  "players": [
+   { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Forest", { "name": "Agent's Toolkit", "counters": { "lifelink": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true, "answers": [true, 4] }
+  ],
+  "expect": {
+   "counters": { "Agent's Toolkit": { "lifelink": 0 }, "Grizzly Bears": { "lifelink": 1 } },
+   "keywords": { "Grizzly Bears": ["Lifelink"] }
+  }
+ },
+ {
+  "name": "ruling: a shield counter still protects a creature after it loses all abilities",
+  "players": [
+   {
+    "hand": ["Abigale, Eloquent First-Year", "Lightning Bolt"],
+    "battlefield": ["Plains", "Plains", "Mountain", { "name": "Grizzly Bears", "counters": { "shield": 1 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Abigale, Eloquent First-Year" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Grizzly Bears", "Abigale, Eloquent First-Year"], "graveyard": ["Lightning Bolt"] }, {} ],
+   "counters": { "Grizzly Bears": { "shield": 0 } }
+  }
+ }
+]

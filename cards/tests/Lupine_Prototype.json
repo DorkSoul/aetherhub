@@ -1,0 +1,114 @@
+[
+  {
+    "name": "attacks once a player has no cards in hand",
+    "players": [
+      { "battlefield": ["Lupine Prototype"], "hand": ["Island"] },
+      { "hand": [] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Lupine Prototype", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 15 }]
+    }
+  },
+  {
+    "name": "cannot attack while every player has cards in hand",
+    "players": [
+      { "battlefield": ["Lupine Prototype"], "hand": ["Island"] },
+      { "hand": ["Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Lupine Prototype", "at": "p1" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{}, { "life": 20 }],
+      "tapped": { "Lupine Prototype": false }
+    }
+  },
+  {
+    "name": "blocks once a player has no cards in hand",
+    "players": [
+      { "battlefield": ["Grizzly Bears"], "hand": ["Island"] },
+      { "battlefield": ["Lupine Prototype"], "hand": [] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Lupine Prototype", "attacker": "Grizzly Bears" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "cannot block while every player has cards in hand",
+    "players": [
+      { "battlefield": ["Grizzly Bears"], "hand": ["Island"] },
+      { "battlefield": ["Lupine Prototype"], "hand": ["Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "resolve": true },
+      { "block": [{ "blocker": "Lupine Prototype", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, { "life": 18 }]
+    }
+  },
+  {
+    "name": "cannot attack while every player has cards in hand: the other attacker still hits",
+    "players": [
+      { "battlefield": ["Lupine Prototype", "Grizzly Bears"], "hand": ["Island"] },
+      { "hand": ["Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Lupine Prototype", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 18 }] }
+  },
+  {
+    "name": "cannot block while every player has cards in hand: the Prototype's block is dropped, the Bears hit",
+    "players": [
+      { "battlefield": ["Grizzly Bears", "Hill Giant"], "hand": ["Island"] },
+      { "battlefield": ["Lupine Prototype", "Serra Angel"], "hand": ["Island"] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" }] },
+      { "block": [{ "blocker": "Lupine Prototype", "attacker": "Grizzly Bears" }, { "blocker": "Serra Angel", "attacker": "Hill Giant" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 18 }] }
+  },
+  {
+    "name": "ruling: a card put into hand mid-combat does not remove an attacker that was legal at declaration",
+    "players": [
+      { "battlefield": ["Lupine Prototype", "Island"], "hand": ["Unsummon", "Island"] },
+      { "battlefield": ["Grizzly Bears"], "hand": [] }
+    ],
+    "steps": [
+      { "attack": [{ "card": "Lupine Prototype", "at": "p1" }] },
+      { "cast": "Unsummon", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 15, "hand": ["Grizzly Bears"] }] }
+  },
+  {
+    "name": "ruling: Floodtide's enchantment return is paid after the hand check, so Lupine and Floodtide both attack",
+    "players": [
+      { "battlefield": ["Lupine Prototype", "Floodtide Serpent", "Propaganda"], "hand": [] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Lupine Prototype", "at": "p1" }, { "card": "Floodtide Serpent", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{ "hand": ["Propaganda"] }, { "life": 11 }] }
+  }
+]

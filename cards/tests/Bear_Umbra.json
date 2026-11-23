@@ -1,0 +1,272 @@
+[
+  {
+    "name": "enchanted creature gets +2/+2",
+    "players": [
+      {
+        "hand": [
+          "Bear Umbra"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bear Umbra",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Bear Umbra"
+          ]
+        },
+        {}
+      ],
+      "pt": {
+        "Grizzly Bears": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "enchanted creature attacking untaps all your lands",
+    "players": [
+      {
+        "hand": [
+          "Bear Umbra"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bear Umbra",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": []
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Forest": false
+      }
+    }
+  },
+  {
+    "name": "a different creature attacking does not untap your lands",
+    "players": [
+      {
+        "hand": [
+          "Bear Umbra"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bear Umbra",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "block": []
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Forest": true
+      }
+    }
+  },
+  {
+    "name": "umbra armor: lethal damage destroys the Aura instead and the creature survives",
+    "players": [
+      { "hand": ["Bear Umbra", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Bear Umbra"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: the controller of the umbra-armoured creature untaps their lands when it attacks",
+    "players": [
+      { "hand": ["Bear Umbra"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "tap_for_mana": "Mountain", "player": 1 },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "resolve": true },
+      { "block": [], "player": 0 }
+    ],
+    "expect": { "tapped": { "Mountain": false } }
+  },
+  {
+    "name": "ruling: with two umbra-armoured Auras only one is destroyed and the creature survives",
+    "players": [
+      { "hand": ["Bear Umbra", "Bear Umbra", "Shock", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Shock", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Bear Umbra"], "graveyard_has": ["Bear Umbra", "Shock", "Lightning Bolt"] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: deathtouch damage destroys the Aura instead and the creature survives",
+    "players": [
+      { "hand": ["Bear Umbra"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Grizzly Bears"] },
+      { "battlefield": ["Typhoid Rats"] }
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Typhoid Rats", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Bear Umbra"] }, { "graveyard_has": ["Typhoid Rats"] } ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: an indestructible creature with lethal damage keeps its umbra-armoured Aura",
+    "players": [
+      { "hand": ["Bear Umbra", "Fireball"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Mountain", "Mountain", "Mountain", "Mountain", "Darksteel Myr"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Darksteel Myr"] },
+      { "resolve": true },
+      { "cast": "Fireball", "targets": ["Darksteel Myr"], "answers": [3] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Darksteel Myr", "Bear Umbra"], "graveyard_has": ["Fireball"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a destroy effect destroys the Aura instead, and the creature survives",
+    "players": [
+      { "hand": ["Bear Umbra", "Murder"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Bear Umbra", "Murder"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: umbra armour does not stop a sacrifice: the enchanted creature is sacrificed",
+    "players": [
+      { "hand": ["Bear Umbra", "Diabolic Edict"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Swamp", "Swamp", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bear Umbra", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Diabolic Edict", "targets": ["p0"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grizzly Bears"], "graveyard_has": ["Grizzly Bears"] }, {} ]
+    }
+  }
+]

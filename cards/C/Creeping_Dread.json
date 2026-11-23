@@ -1,0 +1,44 @@
+{
+  "name": "Creeping Dread",
+  "mana_cost": "{3}{B}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "effects": [
+        { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": { "type": "Compare", "a": { "type": "RememberedCount" }, "cmp": { "op": "Ge", "n": 1 } },
+          "then": [
+            { "type": "StoreRemembered", "slot": 0 },
+            { "type": "ClearRemembered" }
+          ]
+        },
+        {
+          "type": "ForEachPlayer",
+          "players": { "type": "EachOpponent" },
+          "effects": [
+            { "type": "Discard", "who": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 1 } },
+            {
+              "type": "If",
+              "cond": {
+                "type": "All",
+                "cs": [
+                  { "type": "Compare", "a": { "type": "RememberedCount" }, "cmp": { "op": "Ge", "n": 1 } },
+                  { "type": "RememberedIs", "filter": { "shares_card_type_with": { "type": "Stored", "slot": 0 } } }
+                ]
+              },
+              "then": [
+                { "type": "LoseLife", "who": { "type": "EachObject" }, "n": { "type": "Fixed", "n": 3 } }
+              ]
+            }
+          ]
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "oracle_text": "At the beginning of your upkeep, each player discards a card. Each opponent who discarded a card that shares a card type with the card you discarded loses 3 life. (Players reveal the discarded cards simultaneously.)"
+}

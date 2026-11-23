@@ -1,0 +1,247 @@
+[
+ {
+  "name": "counters a bolt when its controller can't pay",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Flusterstorm"
+    ],
+    "battlefield": [
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Flusterstorm",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 20,
+     "graveyard": [
+      "Flusterstorm"
+     ]
+    }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "bolt resolves if controller pays 1 (storm copy: pays twice)",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Flusterstorm"
+    ],
+    "battlefield": [
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Flusterstorm",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ]
+   },
+   {
+    "resolve": true,
+    "auto": true,
+    "answers": [
+     true,
+     true
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "life": 17,
+     "graveyard": [
+      "Flusterstorm"
+     ]
+    }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "cannot target a creature spell",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "hand": [
+     "Flusterstorm"
+    ],
+    "battlefield": [
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "cast": "Flusterstorm",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Grizzly Bears"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "stack_empty": false
+  }
+ },
+ {
+  "name": "ruling: a storm copy is countered individually; the original Flusterstorm still counters the Bolt",
+  "players": [
+   {
+    "hand": ["Lightning Bolt", "Counterspell"],
+    "battlefield": ["Mountain", "Island", "Island"]
+   },
+   {
+    "hand": ["Flusterstorm"],
+    "battlefield": ["Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Flusterstorm", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "pass": true },
+   { "pass": true, "player": 1 },
+   { "cast": "Counterspell", "targets": [{ "stack": "Flusterstorm" }] },
+   { "resolve": true, "auto": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt", "Counterspell"] },
+    { "life": 20, "graveyard_has": ["Flusterstorm"] }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "ruling: spells countered earlier this turn still count for storm",
+  "players": [
+   {
+    "hand": ["Lightning Bolt", "Lightning Bolt"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Island", "Island"]
+   },
+   {
+    "hand": ["Counterspell", "Flusterstorm"],
+    "battlefield": ["Island", "Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Flusterstorm", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true, "auto": true, "answers": [true, true, true] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"] },
+    { "life": 20, "graveyard_has": ["Counterspell", "Flusterstorm"] }
+   ],
+   "stack_empty": true
+  }
+ },
+ {
+  "name": "ruling: countering the storm trigger means no copies are made",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Mountain"]
+   },
+   {
+    "hand": ["Flusterstorm", "Stifle"],
+    "battlefield": ["Island", "Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Flusterstorm", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "pass": true },
+   { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Flusterstorm" }] },
+   { "resolve": true, "auto": true, "answers": [true] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"] },
+    { "life": 17, "graveyard_has": ["Flusterstorm", "Stifle"] }
+   ],
+   "stack_empty": true
+  }
+ }
+]

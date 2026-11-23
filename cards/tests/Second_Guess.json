@@ -1,0 +1,158 @@
+[
+ {
+  "name": "counters the second spell cast this turn",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "hand": [
+     "Second Guess"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "cast": "Second Guess",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Grizzly Bears"
+     }
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Grizzly Bears",
+      "Lightning Bolt"
+     ]
+    },
+    {
+     "graveyard": [
+      "Second Guess"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "cannot target the first spell cast this turn",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   },
+   {
+    "hand": [
+     "Second Guess"
+    ],
+    "battlefield": [
+     "Island",
+     "Island"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "cast": "Second Guess",
+    "player": 1,
+    "targets": [
+     {
+      "stack": "Lightning Bolt"
+     }
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "hand_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a spell cast after the second one can't be targeted (it is not the second spell)",
+  "players": [
+   { "hand": ["Lightning Bolt", "Grizzly Bears", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest"] },
+   { "hand": ["Second Guess"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Grizzly Bears" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Second Guess", "player": 1, "targets": [{ "stack": "Lightning Bolt" }], "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"], "battlefield_has": ["Grizzly Bears"] },
+    { "life": 14, "hand_count": 1 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: the second spell can still be countered while later spells are on the stack",
+  "players": [
+   { "hand": ["Lightning Bolt", "Grizzly Bears", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Forest", "Forest"] },
+   { "hand": ["Second Guess"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Grizzly Bears" },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "cast": "Second Guess", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Grizzly Bears", "Lightning Bolt"], "battlefield_lacks": ["Grizzly Bears"] },
+    { "graveyard_has": ["Second Guess"], "life": 14 }
+   ]
+  }
+ }
+]

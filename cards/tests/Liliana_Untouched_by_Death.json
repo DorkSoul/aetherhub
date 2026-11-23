@@ -1,0 +1,184 @@
+[
+ {
+  "name": "+1 mills three and drains 2 when a Zombie is milled",
+  "players": [
+   {
+    "battlefield": ["Liliana, Untouched by Death", "Swamp"],
+    "library": ["Mountain", "Diregraf Ghoul", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Liliana, Untouched by Death": { "loyalty": 5 } },
+   "players": [
+    { "graveyard": ["Diregraf Ghoul", "Island", "Mountain"], "life": 22 },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "+1 gains nothing when no Zombie is milled",
+  "players": [
+   {
+    "battlefield": ["Liliana, Untouched by Death", "Swamp"],
+    "library": ["Mountain", "Island", "Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Liliana, Untouched by Death": { "loyalty": 5 } },
+   "players": [
+    { "life": 20 },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "-2 gives -X/-X where X is the Zombies you control",
+  "players": [
+   {
+    "battlefield": ["Liliana, Untouched by Death", "Diregraf Ghoul", "Diregraf Ghoul", "Swamp"]
+   },
+   {
+    "battlefield": ["Grizzly Bears", "Diregraf Ghoul"]
+   }
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 1, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Liliana, Untouched by Death": { "loyalty": 2 } },
+   "players": [
+    {},
+    { "battlefield": ["Diregraf Ghoul"] }
+   ]
+  }
+ },
+ {
+  "name": "-3 lets you cast Zombie spells from your graveyard this turn",
+  "players": [
+   {
+    "battlefield": ["Liliana, Untouched by Death", "Swamp"],
+    "graveyard": ["Diregraf Ghoul"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Diregraf Ghoul" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Liliana, Untouched by Death": { "loyalty": 1 } },
+   "players": [
+    { "battlefield": ["Liliana, Untouched by Death", "Swamp", "Diregraf Ghoul"], "graveyard": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "-3 permission ends with the turn",
+  "players": [
+   {
+    "battlefield": ["Liliana, Untouched by Death", "Swamp"],
+    "graveyard": ["Diregraf Ghoul"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 2 },
+   { "resolve": true },
+   { "advance_to": "Main1" },
+   { "advance_to": "Main1" },
+   { "cast": "Diregraf Ghoul", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Diregraf Ghoul"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Zombie that enters the graveyard after -3 resolved can be cast from there this turn",
+  "players": [
+   {
+    "hand": ["Diregraf Ghoul", "Lightning Bolt"],
+    "battlefield": ["Liliana, Untouched by Death", "Swamp", "Swamp", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Diregraf Ghoul" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Diregraf Ghoul"] },
+   { "resolve": true },
+   { "cast": "Diregraf Ghoul" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Liliana, Untouched by Death", "Diregraf Ghoul"], "graveyard_has": ["Lightning Bolt"], "hand": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: casting a Zombie from the graveyard still requires its mana cost",
+  "players": [
+   {
+    "battlefield": ["Liliana, Untouched by Death"],
+    "graveyard": ["Diregraf Ghoul"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 2 },
+   { "resolve": true },
+   { "cast": "Diregraf Ghoul", "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Diregraf Ghoul"], "battlefield_has": ["Liliana, Untouched by Death"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the -X/-X uses the Zombie count on resolution; later losing a Zombie does not change it",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Liliana, Untouched by Death", "Diregraf Ghoul", "Diregraf Ghoul", "Mountain"]
+   },
+   {
+    "battlefield": ["Serra Angel"]
+   }
+  ],
+  "steps": [
+   { "activate": "Liliana, Untouched by Death", "ability": 1, "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Diregraf Ghoul"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Diregraf Ghoul", "Lightning Bolt"] },
+    { "battlefield_has": ["Serra Angel"] }
+   ],
+   "pt": { "Serra Angel": [2, 2] }
+  }
+ }
+]

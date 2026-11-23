@@ -1,0 +1,126 @@
+[
+  {
+    "name": "sacrificed when targeted by a spell",
+    "players": [
+      {
+        "battlefield": [
+          "Gossamer Phantasm",
+          "Island"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Gossamer Phantasm"
+        ],
+        "player": 1
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Gossamer Phantasm"
+          ],
+          "battlefield_lacks": [
+            "Gossamer Phantasm"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "stays on the battlefield when nothing targets it",
+    "players": [
+      {
+        "battlefield": [
+          "Gossamer Phantasm",
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Gossamer Phantasm"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: an Aura whose only target is sacrificed in response does not resolve",
+    "players": [
+      { "hand": ["Grounded"], "battlefield": ["Gossamer Phantasm", "Forest", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grounded", "targets": ["Gossamer Phantasm"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Gossamer Phantasm", "Grounded"], "battlefield_lacks": ["Gossamer Phantasm", "Grounded"] },
+        {}
+      ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: the sacrifice trigger still resolves when the targeting spell is countered",
+    "players": [
+      { "hand": ["Counterspell"], "battlefield": ["Gossamer Phantasm", "Island", "Island"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Gossamer Phantasm"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Counterspell", "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Gossamer Phantasm", "Counterspell"], "battlefield_lacks": ["Gossamer Phantasm"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

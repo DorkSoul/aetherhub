@@ -1,0 +1,76 @@
+{
+  "name": "Campsite Cuisine",
+  "mana_cost": "{1}{G}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "EntersBattlefield",
+        "filter": {
+          "any_of": [
+            { "this": true },
+            { "types": ["Creature"], "supertypes": ["Legendary"], "controller": "You" }
+          ]
+        }
+      },
+      "effects": [
+        {
+          "type": "CreateToken",
+          "token": "Food",
+          "n": { "type": "Fixed", "n": 1 }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "Attacks",
+        "batched": true, "one_per_declaration": true,
+        "filter": { "types": ["Creature"], "controller": "You" }
+      },
+      "effects": [
+        {
+          "type": "SacrificeAny",
+          "filter": { "types": ["Artifact"], "subtypes": ["Food"], "controller": "You" }
+        },
+        {
+          "type": "Reflexive",
+          "targets": [
+            {
+              "what": {
+                "type": "Permanent",
+                "filter": { "types": ["Creature"], "attacking": true }
+              },
+              "min": 0,
+              "label": "up to X target attacking creatures, where X is the number of Foods sacrificed",
+              "max_amount": { "type": "RememberedCount" }
+            }
+          ],
+          "effects": [
+            {
+              "type": "Pump",
+              "what": { "type": "Targets" },
+              "power": { "type": "Fixed", "n": 3 },
+              "toughness": { "type": "Fixed", "n": 3 },
+              "duration": "UntilEndOfTurn"
+            },
+            {
+              "type": "GrantKeyword",
+              "what": { "type": "Targets" },
+              "keyword": "Trample",
+              "duration": "UntilEndOfTurn"
+            },
+            {
+              "type": "GrantKeyword",
+              "what": { "type": "Targets" },
+              "keyword": "Indestructible",
+              "duration": "UntilEndOfTurn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever this enchantment or a legendary creature you control enters, create a Food token.\nWhenever you attack, you may sacrifice X Foods. When you do, up to X target attacking creatures each get +3/+3 and gain trample and indestructible until end of turn."
+}

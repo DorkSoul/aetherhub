@@ -1,0 +1,117 @@
+[
+  {
+    "name": "ETB: each player gets a poison counter",
+    "players": [
+      {
+        "hand": [
+          "Ichor Rats"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ichor Rats"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "poison": 1
+        },
+        {
+          "poison": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "infect: unblocked combat damage gives poison, not damage",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ichor Rats",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Ichor Rats",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "poison": 0
+        },
+        {
+          "poison": 2,
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a player with ten or more poison counters loses the game",
+    "players": [
+      { "hand": ["Ichor Rats"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "cast": "Ichor Rats" },
+      { "resolve": true }
+    ],
+    "expect": { "winner": 0 }
+  },
+  {
+    "name": "ruling: if both players reach ten poison counters the game is a draw",
+    "players": [
+      { "hand": ["Ichor Rats"], "battlefield": ["Swamp", "Swamp", "Swamp"], "poison": 9 },
+      { "poison": 9 }
+    ],
+    "steps": [
+      { "cast": "Ichor Rats" },
+      { "resolve": true }
+    ],
+    "expect": { "winner": -2 }
+  },
+  {
+    "name": "ruling: infect damage to a creature is -1/-1 counters that stay after the turn ends",
+    "players": [
+      { "battlefield": [ { "name": "Ichor Rats", "sick": false } ] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Ichor Rats", "at": "p1" } ] },
+      { "player": 1, "block": [ { "blocker": "Hill Giant", "attacker": "Ichor Rats" } ] },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "counters": { "Hill Giant": { "m1m1": 2 } },
+      "pt": { "Hill Giant": [1, 1] }
+    }
+  }
+]

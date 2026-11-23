@@ -1,0 +1,203 @@
+[
+ {
+  "name": "ETB taps the target creature and puts two stun counters on it",
+  "players": [
+   {
+    "hand": ["Lodestone Needle // Guidestone Compass"],
+    "battlefield": ["Island", "Island"]
+   },
+   {
+    "battlefield": ["Grizzly Bears"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lodestone Needle // Guidestone Compass" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lodestone Needle // Guidestone Compass"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ],
+   "tapped": { "Grizzly Bears": true },
+   "counters": { "Grizzly Bears": { "stun": 2 } }
+  }
+ },
+ {
+  "name": "craft exiling another artifact on the battlefield: returns transformed",
+  "players": [
+   {
+    "battlefield": ["Lodestone Needle // Guidestone Compass", "Bonesplitter", "Island", "Island", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lodestone Needle // Guidestone Compass", "ability": 0, "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Guidestone Compass"], "battlefield_lacks": ["Bonesplitter"], "exile": ["Bonesplitter"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "craft exiling an artifact card from the graveyard instead",
+  "players": [
+   {
+    "battlefield": ["Lodestone Needle // Guidestone Compass", "Island", "Island", "Island"],
+    "graveyard": ["Bonesplitter"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lodestone Needle // Guidestone Compass", "ability": 0, "answers": [[1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Guidestone Compass"], "graveyard": [], "exile": ["Bonesplitter"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "craft is illegal with no other artifact and no artifact card in the graveyard",
+  "players": [
+   {
+    "battlefield": ["Lodestone Needle // Guidestone Compass", "Island", "Island", "Island"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Lodestone Needle // Guidestone Compass", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Lodestone Needle // Guidestone Compass"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Guidestone Compass: explore reveals a land, which goes to hand (no counter)",
+  "players": [
+   {
+    "battlefield": ["Guidestone Compass", "Grizzly Bears", "Plains"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Guidestone Compass",
+    "ability": 0,
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": { "Grizzly Bears": [2, 2] },
+   "players": [
+    {
+     "hand": ["Forest"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Guidestone Compass: explore a nonland, leave it on top: +1/+1 counter and the card stays on top",
+  "players": [
+   {
+    "battlefield": ["Guidestone Compass", "Grizzly Bears", "Plains"],
+    "library": ["Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Guidestone Compass",
+    "ability": 0,
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "resolve": true,
+    "answers": [false]
+   }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] },
+   "players": [
+    {
+     "hand": [],
+     "library_top": ["Hill Giant"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "Guidestone Compass: explore a nonland, put it into the graveyard: +1/+1 counter",
+  "players": [
+   {
+    "battlefield": ["Guidestone Compass", "Grizzly Bears", "Plains"],
+    "library": ["Hill Giant"]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Guidestone Compass",
+    "ability": 0,
+    "targets": ["Grizzly Bears"]
+   },
+   {
+    "resolve": true,
+    "answers": [true]
+   }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] },
+   "players": [
+    {
+     "hand": [],
+     "graveyard": ["Hill Giant"]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the ETB can target an already tapped artifact, which gets two stun counters",
+  "players": [
+   {
+    "hand": ["Lodestone Needle // Guidestone Compass"],
+    "battlefield": ["Guidestone Compass", "Grizzly Bears", "Island", "Island", "Island"],
+    "library": ["Forest"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Guidestone Compass", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lodestone Needle // Guidestone Compass" },
+   { "resolve": true, "targets": ["Guidestone Compass"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "counters": { "Guidestone Compass": { "stun": 2 } },
+   "tapped": { "Guidestone Compass": true },
+   "players": [
+    { "hand": ["Forest"], "battlefield_has": ["Lodestone Needle // Guidestone Compass", "Guidestone Compass"] },
+    {}
+   ]
+  }
+ }
+]

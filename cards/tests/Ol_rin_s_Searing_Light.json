@@ -1,0 +1,140 @@
+[
+  {
+    "name": "each opponent exiles their creature with the greatest power",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "exile": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"], "battlefield_lacks": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "greatest power is among the opponent's own creatures, not the caster's",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Hill Giant"] },
+        { "exile": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "spell mastery (two instants or sorceries in your graveyard): damage equal to the exiled creature's power",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"],
+        "graveyard": ["Lightning Bolt", "Brainstorm"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 17, "exile": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "spell mastery needs two instant or sorcery cards: one is not enough",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"],
+        "graveyard": ["Lightning Bolt", "Grizzly Bears"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "exile": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the spell itself is still on the stack, so one instant in the graveyard is not enough for spell mastery",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"], "graveyard": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "exile": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: tied for greatest power, the opponent chooses which creature to exile (Grizzly Bears with a counter)",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Hill Giant", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true, "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "exile": ["Grizzly Bears"], "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: tied for greatest power, the opponent chooses which creature to exile (Hill Giant)",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"] },
+      { "battlefield": ["Hill Giant", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true, "answers": ["Hill Giant"] }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 20, "exile": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: spell mastery damage uses the exiled creature's power as it last existed on the battlefield (4 with a counter)",
+    "players": [
+      { "hand": ["Olórin's Searing Light"], "battlefield": ["Mountain", "Plains", "Plains", "Plains"], "graveyard": ["Lightning Bolt", "Brainstorm"] },
+      { "battlefield": [{ "name": "Hill Giant", "counters": { "p1p1": 1 } }] }
+    ],
+    "steps": [
+      { "cast": "Olórin's Searing Light" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 16, "exile": ["Hill Giant"] }
+      ]
+    }
+  }
+]

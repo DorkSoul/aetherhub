@@ -1,0 +1,70 @@
+[
+  {
+    "name": "combat damage mills two and gives two energy",
+    "players": [
+      { "battlefield": ["Rex, Cyber-Hound"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Rex, Cyber-Hound", "at": "p1" }] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "energy": 2 }, { "life": 18, "library_count": 18 } ] }
+  },
+  {
+    "name": "pay energy to exile a creature card with a brain counter",
+    "players": [
+      { "battlefield": ["Rex, Cyber-Hound"], "energy": 2 },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Rex, Cyber-Hound", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "energy": 0 }, { "graveyard": [], "exile": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "Rex gains the activated abilities of a braincounter card in exile",
+    "players": [
+      { "battlefield": ["Rex, Cyber-Hound"], "energy": 2 },
+      { "graveyard": ["Prodigal Sorcerer"] }
+    ],
+    "steps": [
+      { "activate": "Rex, Cyber-Hound", "ability": 0, "targets": ["Prodigal Sorcerer"] },
+      { "resolve": true },
+      { "activate": "Rex, Cyber-Hound", "ability": 32768, "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "tapped": { "Rex, Cyber-Hound": true }, "players": [ { "energy": 0 }, { "life": 19, "exile": ["Prodigal Sorcerer"] } ] }
+  },
+  {
+    "name": "a card exiled without a brain counter grants nothing",
+    "players": [
+      { "battlefield": ["Rex, Cyber-Hound"] },
+      { "exile": ["Prodigal Sorcerer"] }
+    ],
+    "steps": [
+      { "activate": "Rex, Cyber-Hound", "ability": 32768, "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: a granted ability naming its printed card refers to Rex (quest counter goes on Rex)",
+    "players": [
+      { "battlefield": ["Rex, Cyber-Hound"], "energy": 2, "library": ["Island", "Forest"] },
+      { "graveyard": ["Arcade Gannon"] }
+    ],
+    "steps": [
+      { "activate": "Rex, Cyber-Hound", "ability": 0, "targets": ["Arcade Gannon"] },
+      { "resolve": true },
+      { "activate": "Rex, Cyber-Hound", "ability": 32768 },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "energy": 0, "hand_count": 0, "library_count": 1 }, { "graveyard": [], "exile": ["Arcade Gannon"] } ],
+      "tapped": { "Rex, Cyber-Hound": true },
+      "counters": { "Rex, Cyber-Hound": { "quest": 1 } }
+    }
+  }
+]

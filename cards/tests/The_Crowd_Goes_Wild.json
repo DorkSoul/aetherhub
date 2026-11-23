@@ -1,0 +1,114 @@
+[
+  {
+    "name": "support X=1: a +1/+1 counter on one target creature",
+    "players": [
+      {
+        "hand": ["The Crowd Goes Wild"],
+        "battlefield": ["Forest", "Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Crowd Goes Wild", "answers": [1], "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": { "p1p1": 1 }
+      },
+      "pt": {
+        "Grizzly Bears": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "X=0: no targets, creatures are not changed",
+    "players": [
+      {
+        "hand": ["The Crowd Goes Wild"],
+        "battlefield": ["Forest", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Crowd Goes Wild", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": {
+        "Grizzly Bears": [2, 2]
+      }
+    }
+  },
+  {
+    "name": "a creature that already has a +1/+1 counter is not targeted, but still gets the counter-based pump check",
+    "players": [
+      {
+        "hand": ["The Crowd Goes Wild"],
+        "battlefield": ["Forest", "Forest", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "The Crowd Goes Wild", "answers": [0] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": { "p1p1": 1 }
+      },
+      "pt": {
+        "Grizzly Bears": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "ruling: support can put the counter on an opponent's creature",
+    "players": [
+      { "hand": ["The Crowd Goes Wild"], "battlefield": ["Forest", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "The Crowd Goes Wild", "answers": [1], "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": {
+        "Grizzly Bears": { "p1p1": 1 }
+      },
+      "pt": {
+        "Grizzly Bears": [3, 3]
+      }
+    }
+  },
+  {
+    "name": "ruling: X=2 support, opponent's Bolt kills one target in response; the other target still gets its counter",
+    "players": [
+      { "hand": ["The Crowd Goes Wild"], "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "The Crowd Goes Wild", "answers": [2], "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "The Crowd Goes Wild"], "battlefield_has": ["Hill Giant"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "counters": {
+        "Hill Giant": { "p1p1": 1 }
+      },
+      "pt": {
+        "Hill Giant": [4, 4]
+      },
+      "keywords": {
+        "Hill Giant": ["Trample"]
+      }
+    }
+  }
+]

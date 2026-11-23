@@ -1,0 +1,137 @@
+[
+  {
+    "name": "owner's {0} activation redirects the next 1 damage to the owner",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "battlefield": ["Personal Incarnation"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Personal Incarnation"] },
+      { "pass": true },
+      { "activate": "Personal Incarnation", "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 19, "battlefield": ["Personal Incarnation"] }
+      ]
+    }
+  },
+  {
+    "name": "only the next 1 damage is redirected: a second Bolt hits the creature",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Personal Incarnation"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Personal Incarnation"] },
+      { "pass": true },
+      { "activate": "Personal Incarnation", "player": 1 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Personal Incarnation"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 19, "battlefield": ["Personal Incarnation"] }
+      ]
+    }
+  },
+  {
+    "name": "the controller's opponent (not the owner) cannot activate the ability",
+    "players": [
+      { "battlefield": ["Mountain"] },
+      { "battlefield": ["Personal Incarnation"] }
+    ],
+    "steps": [
+      { "activate": "Personal Incarnation", "player": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "battlefield": ["Personal Incarnation"] }
+      ]
+    }
+  },
+  {
+    "name": "a player who controls but does not own it cannot activate the ability",
+    "players": [
+      { "hand": ["Control Magic"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Personal Incarnation"] }
+    ],
+    "steps": [
+      { "cast": "Control Magic", "targets": ["Personal Incarnation"] },
+      { "resolve": true },
+      { "activate": "Personal Incarnation", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Island", "Island", "Island", "Island", "Control Magic", "Personal Incarnation"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "when it dies its owner loses half their life, rounded up",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Personal Incarnation"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Personal Incarnation"] },
+      { "pass": true },
+      { "activate": "Personal Incarnation", "player": 1 },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Personal Incarnation"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Personal Incarnation"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 9, "graveyard": ["Personal Incarnation"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: exiled (not dead) - its owner does not lose life",
+    "players": [
+      { "life": 21, "battlefield": ["Personal Incarnation"] },
+      { "hand": ["Swords to Plowshares"], "battlefield": ["Plains"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Swords to Plowshares", "player": 1, "targets": ["Personal Incarnation"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 27, "exile": ["Personal Incarnation"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: controlled by another player - its owner (not the controller) loses half life when it dies",
+    "players": [
+      { "hand": ["Control Magic", "Murder"], "battlefield": ["Island", "Island", "Island", "Island", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "life": 21, "battlefield": ["Personal Incarnation"] }
+    ],
+    "steps": [
+      { "cast": "Control Magic", "targets": ["Personal Incarnation"] },
+      { "resolve": true },
+      { "cast": "Murder", "targets": ["Personal Incarnation"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 20 },
+        { "life": 10, "graveyard_has": ["Personal Incarnation"] }
+      ]
+    }
+  }
+]

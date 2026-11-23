@@ -1,0 +1,170 @@
+[
+  {
+    "name": "attacking adds a counter, end step returns a creature with MV <= power 3 (Hill Giant MV 4 stays)",
+    "players": [
+      {
+        "battlefield": [
+          "Alesha, Who Laughs at Fate"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Alesha, Who Laughs at Fate",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "End",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "graveyard": [
+            "Hill Giant"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ],
+      "counters": {
+        "Alesha, Who Laughs at Fate": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "no attack: no raid, nothing returns",
+    "players": [
+      {
+        "battlefield": [
+          "Alesha, Who Laughs at Fate"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      },
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "creature with MV above power is not returned",
+    "players": [
+      {
+        "battlefield": [
+          "Alesha, Who Laughs at Fate"
+        ],
+        "graveyard": [
+          "Serra Angel"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Alesha, Who Laughs at Fate",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "pass": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Serra Angel"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: X is 0 in a graveyard creature's mana value (Balduvian Hydra MV 2 returns to power 2 after Hill Giant attacks)",
+    "players": [ { "battlefield": ["Alesha, Who Laughs at Fate", "Hill Giant"], "graveyard": ["Balduvian Hydra"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "End", "targets": ["Balduvian Hydra"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Alesha, Who Laughs at Fate", "Balduvian Hydra"], "graveyard": [] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: raid counts an attack earlier in the turn, so Alesha cast in main 2 still returns a creature at the end step",
+    "players": [ { "hand": ["Alesha, Who Laughs at Fate"], "battlefield": ["Hill Giant", "Swamp", "Mountain", "Plains"], "graveyard": ["Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "cast": "Alesha, Who Laughs at Fate" },
+      { "resolve": true },
+      { "advance_to": "End", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Alesha, Who Laughs at Fate", "Grizzly Bears"], "graveyard": [] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: the attacker died in combat but the raid still happens at the end step (Hill Giant blocked by Serra Angel)",
+    "players": [ { "battlefield": ["Alesha, Who Laughs at Fate", "Hill Giant"], "graveyard": ["Grizzly Bears"] }, { "battlefield": ["Serra Angel"] } ],
+    "steps": [
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Serra Angel", "attacker": "Hill Giant" } ] },
+      { "advance_to": "End", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Alesha, Who Laughs at Fate", "Grizzly Bears"], "graveyard": ["Hill Giant"] }, {} ] }
+  }
+]

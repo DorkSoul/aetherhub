@@ -1,0 +1,232 @@
+[
+ {
+  "name": "living weapon germ is +X/+X with creature cards in all graveyards",
+  "players": [
+   {
+    "hand": [
+     "Bonehoard"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Grizzly Bears",
+     "Lightning Bolt"
+    ]
+   },
+   {
+    "graveyard": [
+     "Hill Giant",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Bonehoard"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Phyrexian Germ": [
+     3,
+     3
+    ]
+   },
+   "attached": {
+    "Bonehoard": "Phyrexian Germ"
+   }
+  }
+ },
+ {
+  "name": "germ dies with no creature cards in graveyards",
+  "players": [
+   {
+    "hand": [
+     "Bonehoard"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Bonehoard"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Mountain",
+      "Bonehoard"
+     ],
+     "graveyard_has": [
+      "Lightning Bolt"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equip moves it to another creature",
+  "players": [
+   {
+    "battlefield": [
+     "Bonehoard",
+     "Grizzly Bears",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Hill Giant"
+    ]
+   },
+   {
+    "graveyard": [
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Bonehoard",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Grizzly Bears": [
+     4,
+     4
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: X is recalculated continuously: Bears is 3/3 once Hill Giant (a creature card) hits the graveyard",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Bonehoard", "Grizzly Bears", "Mountain", "Mountain", "Mountain"]
+   },
+   {
+    "battlefield": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "activate": "Bonehoard", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Lightning Bolt"] },
+    { "graveyard_has": ["Hill Giant"] }
+   ],
+   "pt": {
+    "Grizzly Bears": [3, 3]
+   }
+  }
+ },
+ {
+  "name": "ruling: if the Germ is destroyed, Bonehoard stays on the battlefield",
+  "players": [
+   {
+    "hand": ["Bonehoard", "Lightning Bolt"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+    "graveyard": []
+   },
+   {
+    "graveyard": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "cast": "Bonehoard" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Phyrexian Germ"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Bonehoard"], "battlefield_lacks": ["Phyrexian Germ"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: equipping Bonehoard to another creature leaves the unequipped 0/0 Germ to die",
+  "players": [
+   {
+    "hand": ["Bonehoard"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Grizzly Bears"]
+   },
+   {
+    "graveyard": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "cast": "Bonehoard" },
+   { "resolve": true },
+   { "activate": "Bonehoard", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_lacks": ["Phyrexian Germ"], "battlefield_has": ["Bonehoard", "Grizzly Bears"] },
+    {}
+   ],
+   "pt": {
+    "Grizzly Bears": [3, 3]
+   }
+  }
+ },
+ {
+  "name": "ruling: with Doubling Season two Germs are created; one is attached and the other (0/0) dies",
+  "players": [
+   {
+    "hand": ["Bonehoard"],
+    "battlefield": ["Doubling Season", "Mountain", "Mountain", "Mountain", "Mountain"]
+   },
+   {
+    "graveyard": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "cast": "Bonehoard" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "battlefield_has": ["Bonehoard", "Doubling Season"] }, {}],
+   "pt": { "Phyrexian Germ": [1, 1] },
+   "attached": { "Bonehoard": "Phyrexian Germ" }
+  }
+ }
+]

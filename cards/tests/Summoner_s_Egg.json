@@ -1,0 +1,116 @@
+[
+  {
+    "name": "ETB exiles a chosen card from hand face down",
+    "players": [
+      { "hand": ["Summoner's Egg", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summoner's Egg" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Summoner's Egg"], "exile": ["Grizzly Bears"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB with an empty hand exiles nothing",
+    "players": [
+      { "hand": ["Summoner's Egg"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Summoner's Egg" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Summoner's Egg"], "exile": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "dies: exiled creature card enters the battlefield under your control",
+    "players": [
+      { "hand": ["Summoner's Egg", "Grizzly Bears"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Summoner's Egg" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Summoner's Egg"] },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Grizzly Bears", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Summoner's Egg"], "exile": [] },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    }
+  },
+  {
+    "name": "dies: a noncreature exiled card stays in exile",
+    "players": [
+      { "hand": ["Summoner's Egg", "Forest"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Summoner's Egg" },
+      { "resolve": true, "answers": [["Forest"]] },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Summoner's Egg"] },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"], "graveyard": ["Summoner's Egg"] },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature turned face up on death does not trigger its turned-face-up ability (it was not turned face up on the battlefield)",
+    "players": [
+      { "hand": ["Summoner's Egg", "Ainok Survivalist"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", "Sol Ring"] }
+    ],
+    "steps": [
+      { "cast": "Summoner's Egg" },
+      { "resolve": true, "answers": [["Ainok Survivalist"]] },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Summoner's Egg"] },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Ainok Survivalist"], "graveyard": ["Summoner's Egg"], "exile": [] },
+        { "battlefield_has": ["Sol Ring"], "graveyard": ["Doom Blade"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a noncreature card turned face up when the Egg dies stays in exile face up",
+    "players": [
+      { "hand": ["Summoner's Egg", "Lightning Bolt"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Summoner's Egg" },
+      { "resolve": true, "answers": [["Lightning Bolt"]] },
+      { "pass": true },
+      { "cast": "Doom Blade", "player": 1, "targets": ["Summoner's Egg"] },
+      { "resolve": true, "answers": [] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Lightning Bolt"], "graveyard": ["Summoner's Egg"], "exile": ["Lightning Bolt"], "hand_count": 0 },
+        { "graveyard": ["Doom Blade"] }
+      ]
+    }
+  }
+]

@@ -1,0 +1,234 @@
+[
+ {
+  "name": "{B} gives haste",
+  "players": [
+   {
+    "battlefield": [
+     "Skithiryx, the Blight Dragon",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Skithiryx, the Blight Dragon",
+    "ability": 0
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "keywords": {
+    "Skithiryx, the Blight Dragon": [
+     "Haste",
+     "Flying",
+     "Infect"
+    ]
+   }
+  }
+ },
+ {
+  "name": "infect: combat damage is poison",
+  "players": [
+   {
+    "battlefield": [
+     "Skithiryx, the Blight Dragon"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Skithiryx, the Blight Dragon",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "advance_to": "Main2"
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20,
+     "poison": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "{B}{B} regenerates",
+  "players": [
+   {
+    "battlefield": [
+     "Skithiryx, the Blight Dragon",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "activate": "Skithiryx, the Blight Dragon",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "Skithiryx, the Blight Dragon"
+    ],
+    "player": 1
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Skithiryx, the Blight Dragon"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+  {
+    "name": "ruling: a regeneration shield used on lethal damage taps Skithiryx and removes its damage (third Bolt does not kill)",
+    "players": [
+      { "battlefield": ["Skithiryx, the Blight Dragon", "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Skithiryx, the Blight Dragon", "ability": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Skithiryx, the Blight Dragon"], "player": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Skithiryx, the Blight Dragon"], "player": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Skithiryx, the Blight Dragon"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Skithiryx, the Blight Dragon"] },
+        { "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] }
+      ],
+      "tapped": { "Skithiryx, the Blight Dragon": true }
+    }
+  },
+  {
+    "name": "ruling: Skithiryx can regenerate while already tapped and undamaged; the shield then works against lethal damage",
+    "players": [
+      { "battlefield": [{ "name": "Skithiryx, the Blight Dragon", "tapped": true }, "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Skithiryx, the Blight Dragon", "ability": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Skithiryx, the Blight Dragon"], "player": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Skithiryx, the Blight Dragon"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Skithiryx, the Blight Dragon"] },
+        { "graveyard": ["Lightning Bolt", "Lightning Bolt"] }
+      ],
+      "tapped": { "Skithiryx, the Blight Dragon": true }
+    }
+  },
+  {
+    "name": "ruling: infect damage to a creature is -1/-1 counters, not damage (Barkweave Crusher 2/5 blocked by Skithiryx ends at -2/1)",
+    "players": [
+      { "battlefield": ["Skithiryx, the Blight Dragon"] },
+      { "battlefield": ["Barkweave Crusher"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Barkweave Crusher", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Skithiryx, the Blight Dragon", "attacker": "Barkweave Crusher" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "pt": {
+        "Barkweave Crusher": [-2, 1],
+        "Skithiryx, the Blight Dragon": [4, 4]
+      }
+    }
+  },
+  {
+    "name": "ruling: ten or more poison counters loses the game (6 poison + 4 infect damage)",
+    "players": [
+      { "battlefield": ["Skithiryx, the Blight Dragon"] },
+      { "poison": 6 }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Skithiryx, the Blight Dragon", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "winner": 0,
+      "players": [
+        {},
+        { "poison": 10 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: -1/-1 counters stay on Skithiryx after its regeneration (3/3 survives lethal Bolt, still 3/3)",
+    "players": [
+      { "battlefield": [{ "name": "Skithiryx, the Blight Dragon", "counters": { "m1m1": 1 } }, "Swamp", "Swamp"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Skithiryx, the Blight Dragon", "ability": 1 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Skithiryx, the Blight Dragon"], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Skithiryx, the Blight Dragon"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "pt": { "Skithiryx, the Blight Dragon": [3, 3] },
+      "counters": { "Skithiryx, the Blight Dragon": { "m1m1": 1 } },
+      "tapped": { "Skithiryx, the Blight Dragon": true }
+    }
+  }
+]

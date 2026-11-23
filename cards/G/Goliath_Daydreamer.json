@@ -1,0 +1,55 @@
+{
+  "name": "Goliath Daydreamer",
+  "mana_cost": "{2}{R}{R}",
+  "types": ["Creature"],
+  "subtypes": ["Giant", "Wizard"],
+  "colors": ["R"],
+  "power": 4,
+  "toughness": 4,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "SpellCast",
+        "by": "You",
+        "filter": { "types": ["Instant", "Sorcery"], "cast_from": "Hand" }
+      },
+      "effects": [
+        {
+          "type": "AddReplacement",
+          "what": {
+            "type": "ZoneChange",
+            "from": "Stack",
+            "to": "Graveyard",
+            "instead": "Exile",
+            "bind_to": { "type": "TriggerObject" },
+            "once": true,
+            "on_resolve": true,
+            "then": [
+              { "type": "Remember", "what": { "type": "TriggerObject" } },
+              { "type": "AddCounters", "kind": "Dream", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "Remembered" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Attacks", "filter": { "this": true } },
+      "effects": [
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Exile",
+          "filter": { "has_counter": "Dream", "owner": "You" },
+          "min": 0,
+          "max": 1,
+          "then": [
+            { "type": "CastFree", "what": { "type": "Remembered" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Whenever you cast an instant or sorcery spell from your hand, exile that card with a dream counter on it instead of putting it into your graveyard as it resolves.\nWhenever this creature attacks, you may cast a spell from among cards you own in exile with dream counters on them without paying its mana cost."
+}

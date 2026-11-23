@@ -1,0 +1,141 @@
+[
+  {
+    "name": "kicked with {1}{G}: two +1/+1 counters and trample",
+    "players": [
+      {
+        "hand": ["Necravolver"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Necravolver", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Necravolver"] }, {}],
+      "counters": { "Necravolver": { "p1p1": 2 } },
+      "pt": { "Necravolver": [4, 4] },
+      "keywords": { "Necravolver": ["Trample"] }
+    }
+  },
+  {
+    "name": "kicked with {W}: one +1/+1 counter, no trample",
+    "players": [
+      {
+        "hand": ["Necravolver"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Necravolver", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Necravolver"] }, {}],
+      "counters": { "Necravolver": { "p1p1": 1 } },
+      "pt": { "Necravolver": [3, 3] }
+    }
+  },
+  {
+    "name": "kicked with both: three +1/+1 counters, trample",
+    "players": [
+      {
+        "hand": ["Necravolver"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Forest", "Forest", "Plains", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Necravolver", "answers": [true, true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Necravolver"] }, {}],
+      "counters": { "Necravolver": { "p1p1": 3 } },
+      "pt": { "Necravolver": [5, 5] },
+      "keywords": { "Necravolver": ["Trample"] }
+    }
+  },
+  {
+    "name": "not kicked: plain 2/2 without counters or trample",
+    "players": [
+      {
+        "hand": ["Necravolver"],
+        "battlefield": ["Swamp", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Necravolver", "answers": [] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Necravolver"] }, {}],
+      "pt": { "Necravolver": [2, 2] }
+    }
+  },
+  {
+    "name": "kicked with {W}: damage dealt gains that much life",
+    "players": [
+      {
+        "hand": ["Necravolver"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Necravolver", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "attack": [{ "card": "Necravolver", "at": "p1" }] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 23 }, { "life": 17 }]
+    }
+  },
+  {
+    "name": "ruling: a Clone copy of a kicked creature is not kicked (no counters, no trample)",
+    "players": [
+      { "hand": ["Necravolver", "Clone"], "battlefield": ["Swamp", "Swamp", "Swamp", "Forest", "Forest", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Terminate"], "battlefield": ["Swamp", "Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Necravolver", "answers": [true] },
+      { "resolve": true },
+      { "cast": "Clone" },
+      { "resolve": true, "answers": [0] },
+      { "pass": true },
+      { "cast": "Terminate", "player": 1, "targets": ["Necravolver"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Necravolver"], "graveyard_has": ["Necravolver"] },
+        { "graveyard": ["Terminate"] }
+      ],
+      "pt": { "Necravolver": [2, 2] },
+      "keywords": { "Necravolver": [] }
+    }
+  },
+  {
+    "name": "ruling: put onto the battlefield by Reanimate (not cast), it cannot be kicked",
+    "players": [
+      { "hand": ["Reanimate"], "battlefield": ["Swamp"], "graveyard": ["Necravolver"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reanimate", "targets": ["Necravolver"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Necravolver"] }, {}],
+      "pt": { "Necravolver": [2, 2] },
+      "keywords": { "Necravolver": [] },
+      "counters": { "Necravolver": { "p1p1": 0 } }
+    }
+  }
+]

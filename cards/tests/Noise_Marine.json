@@ -1,0 +1,142 @@
+[
+  {
+    "name": "damage equals spells cast this turn including itself",
+    "players": [
+      {
+        "hand": [
+          "Noise Marine"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Noise Marine"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Noise Marine"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "without cast triggers it deals nothing extra",
+    "players": [
+      {
+        "battlefield": [
+          "Noise Marine"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascade casts the exiled card above Noise Marine, so it resolves first",
+    "players": [
+      { "hand": ["Noise Marine"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Noise Marine" },
+      { "resolve": true, "answers": [true], "targets": ["Grizzly Bears", "p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Noise Marine"], "graveyard": ["Lightning Bolt"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the cascade cast leaves the exiled cards out of play and casts nothing",
+    "players": [
+      { "hand": ["Noise Marine"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Forest", "Lightning Bolt"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Noise Marine" },
+      { "resolve": true, "answers": [false], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Noise Marine"], "graveyard": [] },
+        { "life": 19, "battlefield_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascade into an X spell casts it with X=0 (Fireball deals nothing; Marine's ETB counts both spells)",
+    "players": [
+      { "hand": ["Noise Marine"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Fireball"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Noise Marine" },
+      { "resolve": true, "answers": [true], "targets": ["p1", "p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Noise Marine"], "graveyard": ["Fireball"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cascade spell resolves before Noise Marine, so its ETB counts it as cast this turn",
+    "players": [
+      { "hand": ["Noise Marine"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Noise Marine" },
+      { "resolve": true, "answers": [true], "targets": ["p1", "p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Noise Marine"] },
+        { "life": 15 }
+      ]
+    }
+  }
+]

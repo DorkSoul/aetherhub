@@ -1,0 +1,180 @@
+[
+  {
+    "name": "dies: exiles itself and returns own creatures that died this turn",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Gerrard, Weatherlight Hero",
+          "Mountain",
+          "Mountain",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Gerrard, Weatherlight Hero"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Gerrard, Weatherlight Hero"
+          ],
+          "exile": [
+            "Gerrard, Weatherlight Hero"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "opponent creature that died this turn is not returned",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Gerrard, Weatherlight Hero",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Gerrard, Weatherlight Hero"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: returns a creature that died this turn before Gerrard entered the battlefield",
+    "players": [
+      {
+        "hand": [ "Lightning Bolt", "Lightning Bolt", "Gerrard, Weatherlight Hero" ],
+        "battlefield": [ "Grizzly Bears", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Plains", "Plains" ]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": [ "Grizzly Bears" ] },
+      { "resolve": true },
+      { "cast": "Gerrard, Weatherlight Hero" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": [ "Gerrard, Weatherlight Hero" ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [ "Grizzly Bears" ],
+          "battlefield_lacks": [ "Gerrard, Weatherlight Hero" ],
+          "exile": [ "Gerrard, Weatherlight Hero" ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature spell countered this turn never entered the battlefield, so Gerrard does not return it",
+    "players": [
+      {
+        "hand": [ "Grizzly Bears", "Lightning Bolt" ],
+        "battlefield": [ "Gerrard, Weatherlight Hero", "Forest", "Forest", "Mountain" ]
+      },
+      {
+        "hand": [ "Counterspell" ],
+        "battlefield": [ "Island", "Island" ]
+      }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Grizzly Bears" } ] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": [ "Gerrard, Weatherlight Hero" ] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [ "Grizzly Bears", "Gerrard, Weatherlight Hero" ],
+          "graveyard_has": [ "Grizzly Bears" ],
+          "exile": [ "Gerrard, Weatherlight Hero" ]
+        },
+        {
+          "graveyard_has": [ "Counterspell" ]
+        }
+      ]
+    }
+  }
+]

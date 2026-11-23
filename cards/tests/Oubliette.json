@@ -1,0 +1,221 @@
+[
+ {
+  "name": "target creature phases out",
+  "players": [
+   {
+    "hand": [
+     "Oubliette"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Oubliette"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Oubliette"
+     ]
+    },
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "when Oubliette leaves the creature phases in tapped",
+  "players": [
+   {
+    "hand": [
+     "Oubliette",
+     "Disenchant"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Oubliette"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Disenchant",
+    "targets": [
+     "Oubliette"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Oubliette",
+      "Disenchant"
+     ]
+    },
+    {
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    }
+   ],
+   "tapped": {
+    "Grizzly Bears": true
+   }
+  }
+ },
+ {
+  "name": "Oubliette can target my own creature (the only legal target)",
+  "players": [
+   {
+    "hand": [
+     "Oubliette"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Oubliette",
+    "targets": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a phased-out creature cannot block",
+  "players": [
+   { "hand": ["Oubliette"], "battlefield": ["Swamp", "Swamp", "Swamp", "Hill Giant"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Oubliette" },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+   { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ], "illegal": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [ {}, { "life": 17 } ]
+  }
+ },
+ {
+  "name": "ruling: a permanent phasing in does not trigger its enters-the-battlefield ability",
+  "players": [
+   { "hand": ["Oubliette", "Disenchant"], "battlefield": ["Swamp", "Swamp", "Swamp", "Plains", "Plains", "Woodfall Primus"] },
+   { "battlefield": ["Sol Ring"] }
+  ],
+  "steps": [
+   { "cast": "Oubliette" },
+   { "resolve": true },
+   { "cast": "Disenchant", "targets": ["Oubliette"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Woodfall Primus"] }, { "battlefield_has": ["Sol Ring"] } ]
+  }
+ },
+ {
+  "name": "ruling: a card exiled by Kitesail Freebooter stays exiled when Freebooter phases out",
+  "players": [
+   { "hand": ["Kitesail Freebooter", "Oubliette"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "hand": ["Giant Growth"] }
+  ],
+  "steps": [
+   { "cast": "Kitesail Freebooter" },
+   { "resolve": true },
+   { "cast": "Oubliette" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Kitesail Freebooter"] }, { "exile": ["Giant Growth"], "hand": [] } ]
+  }
+ },
+ {
+  "name": "ruling: an Aura attached to a phasing-out creature phases out with it",
+  "players": [
+   { "hand": ["Pacifism", "Oubliette"], "battlefield": ["Plains", "Plains", "Swamp", "Swamp", "Swamp"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Oubliette" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Pacifism"] }, { "battlefield_lacks": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "ruling: counters on a phasing-out creature are kept when it phases in",
+  "players": [
+   { "hand": ["Oubliette", "Disenchant"], "battlefield": ["Swamp", "Swamp", "Swamp", "Plains", "Plains", { "name": "Feasting Hobbit", "counters": { "p1p1": 3 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Oubliette" },
+   { "resolve": true },
+   { "cast": "Disenchant", "targets": ["Oubliette"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Feasting Hobbit"] }, {} ],
+   "counters": { "Feasting Hobbit": { "p1p1": 3 } },
+   "pt": { "Feasting Hobbit": [5, 5] }
+  }
+ }
+]

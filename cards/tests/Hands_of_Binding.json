@@ -1,0 +1,89 @@
+[
+  {
+    "name": "taps the opponent's creature, which stays tapped through its controller's next untap step",
+    "players": [
+      { "hand": ["Hands of Binding"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Hands of Binding", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "players": [
+        { "graveyard": ["Hands of Binding"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the creature untaps in the untap step after that one",
+    "players": [
+      { "hand": ["Hands of Binding"], "battlefield": ["Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Hands of Binding", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: the encoded card goes from the stack to exile, never to the graveyard",
+    "players": [
+      { "hand": ["Hands of Binding"], "battlefield": ["Island", "Island", "Grizzly Bears"] },
+      { "battlefield": ["Llanowar Druid"] }
+    ],
+    "steps": [
+      { "cast": "Hands of Binding", "targets": ["Llanowar Druid"] },
+      { "resolve": true, "answers": ["Grizzly Bears"] }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Hands of Binding"], "graveyard": [] }, {} ],
+      "tapped": { "Llanowar Druid": true }
+    }
+  },
+  {
+    "name": "ruling: encoded creature's combat damage lets you cast a copy from exile during the trigger, ignoring timing",
+    "players": [
+      { "hand": ["Hands of Binding"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Llanowar Druid", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Hands of Binding", "targets": ["Llanowar Druid"] },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [true, "Hill Giant"] }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Hands of Binding"] }, { "life": 18 } ],
+      "tapped": { "Llanowar Druid": true, "Hill Giant": true }
+    }
+  },
+  {
+    "name": "ruling: declining the cipher copy casts nothing, so the Hill Giant stays untapped",
+    "players": [
+      { "hand": ["Hands of Binding"], "battlefield": ["Island", "Island", { "name": "Grizzly Bears", "sick": false }] },
+      { "battlefield": ["Llanowar Druid", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Hands of Binding", "targets": ["Llanowar Druid"] },
+      { "resolve": true, "answers": ["Grizzly Bears"] },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2", "answers": [false] }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Hands of Binding"] }, { "life": 18 } ],
+      "tapped": { "Llanowar Druid": true, "Hill Giant": false }
+    }
+  }
+]

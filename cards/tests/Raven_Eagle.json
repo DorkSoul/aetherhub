@@ -1,0 +1,154 @@
+[
+  {
+    "name": "ETB exiles a creature card from a graveyard and makes a Clue",
+    "players": [
+      {
+        "hand": [
+          "Raven Eagle"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Raven Eagle"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Raven Eagle",
+            "Clue"
+          ]
+        },
+        {
+          "exile": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "exiling a non-creature card makes no Clue",
+    "players": [
+      {
+        "hand": [
+          "Raven Eagle"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "graveyard": [
+          "Shock"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Raven Eagle"
+      },
+      {
+        "resolve": true,
+        "targets": [
+          "Shock"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Raven Eagle"
+          ],
+          "battlefield_lacks": [
+            "Clue"
+          ]
+        },
+        {
+          "exile": [
+            "Shock"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "attacking exiles a creature card from a graveyard and makes a Clue",
+    "players": [ { "battlefield": [ {"name": "Raven Eagle", "sick": false} ] }, { "graveyard": ["Grizzly Bears", "Lightning Bolt"] } ],
+    "steps": [ { "attack": [ { "card": "Raven Eagle", "at": "p1" } ] }, { "resolve": true, "targets": ["Grizzly Bears"] } ],
+    "expect": { "players": [ { "battlefield_has": ["Clue"] }, { "exile": ["Grizzly Bears"], "graveyard_has": ["Lightning Bolt"] } ] }
+  },
+  {
+    "name": "exiling a non-creature card makes no Clue",
+    "players": [ { "battlefield": [ {"name": "Raven Eagle", "sick": false} ] }, { "graveyard": ["Grizzly Bears", "Lightning Bolt"] } ],
+    "steps": [ { "attack": [ { "card": "Raven Eagle", "at": "p1" } ] }, { "resolve": true, "targets": ["Lightning Bolt"] } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Clue"] }, { "exile": ["Lightning Bolt"], "graveyard_has": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "drawing your second card each turn drains 1 from each opponent",
+    "players": [ { "hand": ["Divination"], "battlefield": ["Raven Eagle", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Divination" }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 21 }, { "life": 19 } ] }
+  },
+  {
+    "name": "ruling: a Clue is an artifact that is sacrificed to draw a card for {2}",
+    "players": [
+      { "hand": ["Raven Eagle"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      { "graveyard": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Raven Eagle" },
+      { "resolve": true, "targets": ["Grizzly Bears"] },
+      { "activate": "Clue", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 1, "battlefield_lacks": ["Clue"] },
+        { "exile": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: only the second card drawn in a turn triggers, not the third or fourth",
+    "players": [
+      { "hand": ["Divination", "Divination"], "battlefield": ["Raven Eagle", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true },
+      { "cast": "Divination" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 21, "hand_count": 4 },
+        { "life": 19 }
+      ]
+    }
+  }
+]

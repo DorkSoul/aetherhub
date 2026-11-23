@@ -1,0 +1,136 @@
+[
+  {
+    "name": "enchanted creature can't transform at night",
+    "players": [
+      {
+        "hand": ["Bound by Moonsilver"],
+        "battlefield": ["Plains", "Plains", "Plains", "Brutal Cathar"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Bound by Moonsilver",
+        "targets": ["Brutal Cathar"]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Brutal Cathar", "Bound by Moonsilver"]
+        },
+        {}
+      ],
+      "pt": {
+        "Brutal Cathar": [2, 2]
+      }
+    }
+  },
+  {
+    "name": "an unenchanted Werewolf still transforms at night",
+    "players": [
+      {
+        "hand": ["Bound by Moonsilver"],
+        "battlefield": ["Plains", "Plains", "Plains", "Brutal Cathar"]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": ["Moonrage Brute"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "sacrifice another permanent: attach to target creature (once each turn)",
+    "players": [
+      {
+        "hand": ["Bound by Moonsilver"],
+        "battlefield": ["Plains", "Plains", "Plains", "Forest", "Brutal Cathar"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "cast": "Bound by Moonsilver", "targets": ["Brutal Cathar"] },
+      { "resolve": true },
+      { "activate": "Bound by Moonsilver", "ability": 0, "answers": ["Forest"], "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Bound by Moonsilver", "ability": 0, "answers": ["Plains"], "targets": ["Brutal Cathar"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Bound by Moonsilver", "Brutal Cathar"], "battlefield_lacks": ["Forest"] },
+        { "battlefield_has": ["Grizzly Bears"] }
+      ],
+      "attached": { "Bound by Moonsilver": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "enchanted creature can't attack; its unenchanted companion's damage still lands",
+    "players": [
+      { "hand": ["Bound by Moonsilver"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Bound by Moonsilver", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" }, { "card": "Hill Giant", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "enchanted creature can't block: the attacker it would block is unblocked",
+    "players": [
+      { "hand": ["Bound by Moonsilver"], "battlefield": ["Plains", "Plains", "Plains", "Hill Giant", "Elite Vanguard"] },
+      { "battlefield": ["Grizzly Bears", "Savannah Lions"] }
+    ],
+    "steps": [
+      { "cast": "Bound by Moonsilver", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Elite Vanguard", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Savannah Lions", "attacker": "Elite Vanguard" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: only the Aura's controller can activate its ability, even while it enchants an opponent's creature",
+    "players": [
+      { "hand": ["Bound by Moonsilver"], "battlefield": ["Plains", "Plains", "Plains", "Forest"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Bound by Moonsilver", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "player": 1, "activate": "Bound by Moonsilver", "ability": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "battlefield_has": ["Grizzly Bears", "Hill Giant"] } ],
+      "attached": { "Bound by Moonsilver": "Grizzly Bears" }
+    }
+  }
+]

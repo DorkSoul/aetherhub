@@ -1,0 +1,93 @@
+[
+  {
+    "name": "dash: haste, attacks for 3, returns to hand at end step",
+    "players": [
+      { "hand": ["Alesha's Vanguard"], "battlefield": ["Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alesha's Vanguard", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Alesha's Vanguard", "at": "p1" } ] },
+      { "resolve": true },
+      { "block": [] },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Alesha's Vanguard"], "battlefield_has": [] },
+        { "life": 17 }
+      ]
+    }
+  },
+  {
+    "name": "normal cast: no haste, stays on battlefield at end step",
+    "players": [
+      { "hand": ["Alesha's Vanguard"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alesha's Vanguard" },
+      { "resolve": true },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Alesha's Vanguard"], "hand": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "dash illegal with only two mana",
+    "players": [
+      { "hand": ["Alesha's Vanguard"], "battlefield": ["Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Alesha's Vanguard", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Alesha's Vanguard"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a dashed creature need not attack; it still returns at the end step",
+    "players": [ { "hand": ["Alesha's Vanguard"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "cast": "Alesha's Vanguard", "alt": 0 },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Main2" },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": ["Alesha's Vanguard"], "battlefield_has": [] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: dash is still a creature spell, so it cannot be cast during combat",
+    "players": [ { "hand": ["Alesha's Vanguard"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "cast": "Alesha's Vanguard", "alt": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "hand": ["Alesha's Vanguard"] }, {} ] }
+  },
+  {
+    "name": "ruling: if the dashed creature dies before its return trigger resolves, it stays in the graveyard",
+    "players": [ { "hand": ["Alesha's Vanguard"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "cast": "Alesha's Vanguard", "alt": 0 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Alesha's Vanguard"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": [], "graveyard": ["Alesha's Vanguard"] }, { "graveyard": ["Lightning Bolt"] } ] }
+  }
+]

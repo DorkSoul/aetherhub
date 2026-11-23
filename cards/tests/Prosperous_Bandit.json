@@ -1,0 +1,110 @@
+[
+  {
+    "name": "unkicked enters alone",
+    "players": [
+      { "hand": ["Prosperous Bandit"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prosperous Bandit" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Prosperous Bandit"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "kicked makes a 1/1 token copy",
+    "players": [
+      { "hand": ["Prosperous Bandit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prosperous Bandit", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Prosperous Bandit", "Prosperous Bandit"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "combat damage makes that many tapped Treasures",
+    "players": [
+      { "battlefield": ["Prosperous Bandit"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [{ "card": "Prosperous Bandit", "at": "p1" }] },
+      { "advance_to": "FirstStrikeDamage" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {},
+        { "life": 18 }
+      ],
+      "tapped": { "Treasure": true }
+    }
+  },
+  {
+    "name": "ruling: the offspring token is still created if the Bandit left the battlefield before the ability resolved",
+    "players": [
+      { "hand": ["Prosperous Bandit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Prosperous Bandit", "answers": [true] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Prosperous Bandit"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Prosperous Bandit"], "graveyard_has": ["Prosperous Bandit"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ],
+      "pt": { "Prosperous Bandit": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: a creature-cast trigger sees the Bandit spell but not its offspring token",
+    "players": [
+      { "hand": ["Prosperous Bandit"], "battlefield": ["Beast Whisperer", "Mountain", "Mountain", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Prosperous Bandit", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "battlefield_has": ["Prosperous Bandit", "Prosperous Bandit"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a countered Bandit makes no offspring token",
+    "players": [
+      { "hand": ["Prosperous Bandit"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Prosperous Bandit", "answers": [true] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Prosperous Bandit" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Prosperous Bandit"], "graveyard_has": ["Prosperous Bandit"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

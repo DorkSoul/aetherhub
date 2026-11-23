@@ -1,0 +1,43 @@
+[
+  { "name": "paying 3U makes a 4/4 Giant Wizard token equipped with the Amulet",
+    "players": [ { "hand": ["Giant's Amulet"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Giant's Amulet" }, { "resolve": true, "answers": [true] }, { "resolve": true } ],
+    "expect": { "pt": { "Giant Wizard 4-4 Blue": [4, 5] }, "attached": { "Giant's Amulet": "Giant Wizard 4-4 Blue" } } },
+  { "name": "declining the payment makes no token",
+    "players": [ { "hand": ["Giant's Amulet"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }, {} ],
+    "steps": [ { "cast": "Giant's Amulet" }, { "resolve": true, "answers": [false] } ],
+    "expect": { "players": [ { "battlefield_has": ["Giant's Amulet"], "battlefield_lacks": ["Giant Wizard 4-4 Blue"] }, {} ] } },
+  { "name": "equip {2} attaches the Amulet to a creature you control (+0/+1)",
+    "players": [ { "battlefield": ["Giant's Amulet", "Grizzly Bears", "Island", "Island"] }, {} ],
+    "steps": [ { "activate": "Giant's Amulet", "ability": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "attached": { "Giant's Amulet": "Grizzly Bears" }, "pt": { "Grizzly Bears": [2, 3] } } },
+  { "name": "equip needs {2}: with only one land it cannot be activated",
+    "players": [ { "battlefield": ["Giant's Amulet", "Grizzly Bears", "Island"] }, {} ],
+    "steps": [ { "activate": "Giant's Amulet", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Giant's Amulet"] }, {} ], "pt": { "Grizzly Bears": [2, 2] } } },
+  { "name": "untapped equipped creature has hexproof: opponent's Unsummon has no legal target",
+    "players": [ { "battlefield": ["Giant's Amulet", "Grizzly Bears", "Island", "Island"] }, { "hand": ["Unsummon"], "battlefield": ["Island"] } ],
+    "steps": [
+      { "activate": "Giant's Amulet", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "keywords": { "Grizzly Bears": ["Hexproof"] }, "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "hand": ["Unsummon"] } ] } },
+  { "name": "tapped equipped creature loses hexproof: Unsummon can bounce it after it attacked",
+    "players": [ { "battlefield": ["Giant's Amulet", "Grizzly Bears", "Island", "Island"] }, { "hand": ["Unsummon"], "battlefield": ["Island"] } ],
+    "steps": [
+      { "activate": "Giant's Amulet", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "hand": ["Grizzly Bears"], "battlefield_has": ["Giant's Amulet"] }, { "graveyard_has": ["Unsummon"] } ] } },
+  { "name": "ruling: paying 3U creates the token and attaches the Amulet in the same resolution, so the token is hexproof at once",
+    "players": [ { "hand": ["Giant's Amulet"], "battlefield": ["Island", "Island", "Island", "Island", "Island"] }, { "hand": ["Unsummon"], "battlefield": ["Island", "Island"] } ],
+    "steps": [ { "cast": "Giant's Amulet" }, { "resolve": true, "answers": [true] }, { "resolve": true }, { "pass": true }, { "cast": "Unsummon", "player": 1, "targets": ["Giant Wizard 4-4 Blue"], "illegal": true } ],
+    "expect": { "keywords": { "Giant Wizard 4-4 Blue": ["Hexproof"] }, "attached": { "Giant's Amulet": "Giant Wizard 4-4 Blue" }, "players": [ {}, { "hand": ["Unsummon"] } ] } }
+]

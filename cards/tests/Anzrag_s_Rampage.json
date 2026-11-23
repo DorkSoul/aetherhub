@@ -1,0 +1,111 @@
+[
+ {
+  "name": "destroys opposing artifacts, exiles X cards (X = artifacts put into graveyards from the battlefield), puts an exiled creature onto the battlefield and returns it at end step",
+  "players": [
+   {
+    "hand": ["Anzrag's Rampage"],
+    "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Plains", "Mind Stone"],
+    "library": ["Grizzly Bears", "Island", "Forest"]
+   },
+   { "battlefield": ["Sol Ring", "Mind Stone"] }
+  ],
+  "steps": [
+   { "cast": "Anzrag's Rampage" },
+   { "resolve": true, "answers": [["Grizzly Bears"]] },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Mind Stone"], "battlefield_lacks": ["Grizzly Bears"], "hand": ["Grizzly Bears"], "exile": ["Island"] },
+    { "graveyard_has": ["Sol Ring", "Mind Stone"], "battlefield_lacks": ["Sol Ring"] }
+   ]
+  }
+ },
+ {
+  "name": "no artifacts put into graveyards this turn: X is 0 and nothing is exiled",
+  "players": [
+   {
+    "hand": ["Anzrag's Rampage"],
+    "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Plains"],
+    "library": ["Grizzly Bears"]
+   },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Anzrag's Rampage" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "exile": [], "battlefield_lacks": ["Grizzly Bears"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "an exiled noncreature card stays exiled when there is no creature among them",
+  "players": [
+   {
+    "hand": ["Anzrag's Rampage"],
+    "battlefield": ["Mountain", "Mountain", "Plains", "Plains", "Plains"],
+    "library": ["Island"]
+   },
+   { "battlefield": ["Sol Ring"] }
+  ],
+  "steps": [
+   { "cast": "Anzrag's Rampage" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 0, "exile": ["Island"], "battlefield_lacks": ["Island"] },
+    { "graveyard_has": ["Sol Ring"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: an artifact sacrificed to its own ability this turn counts toward X",
+  "players": [
+   {
+    "hand": ["Anzrag's Rampage"],
+    "battlefield": ["Mind Stone", "Mountain", "Mountain", "Plains", "Plains", "Plains", "Plains"],
+    "library": ["Island", "Grizzly Bears"]
+   },
+   {}
+  ],
+  "steps": [
+   { "tap_for_mana": "Plains" },
+   { "activate": "Mind Stone" },
+   { "resolve": true },
+   { "cast": "Anzrag's Rampage" },
+   { "resolve": true, "answers": [["Grizzly Bears"]] }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Mind Stone"], "battlefield_has": ["Grizzly Bears"], "hand": ["Island"], "exile": [] },
+    {}
+   ]
+  }
+ },
+  {
+  "name": "cast twice in one turn: each end-step trigger returns the creature its own spell put onto the battlefield",
+  "players": [
+   {
+    "hand": ["Anzrag's Rampage", "Anzrag's Rampage"],
+    "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"],
+    "library": ["Grizzly Bears", "Hill Giant", "Island", "Forest"]
+   },
+   { "battlefield": ["Sol Ring"] }
+  ],
+  "steps": [
+   { "cast": "Anzrag's Rampage" },
+   { "resolve": true, "answers": [["Grizzly Bears"]] },
+   { "cast": "Anzrag's Rampage" },
+   { "resolve": true, "answers": [["Hill Giant"]] },
+   { "advance_to": "End" },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Grizzly Bears", "Hill Giant"], "hand": ["Grizzly Bears", "Hill Giant"] }, {} ] }
+ }
+]

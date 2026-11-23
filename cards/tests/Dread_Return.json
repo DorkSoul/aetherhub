@@ -1,0 +1,218 @@
+[
+ {
+  "name": "returns a creature card from your graveyard",
+  "players": [
+   {
+    "hand": [
+     "Dread Return"
+    ],
+    "graveyard": [
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dread Return",
+    "targets": [
+     "Serra Angel"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Serra Angel"
+     ],
+     "graveyard": [
+      "Dread Return"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "cannot target an opponent's graveyard",
+  "players": [
+   {
+    "hand": [
+     "Dread Return"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {
+    "graveyard": [
+     "Serra Angel"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Dread Return",
+    "targets": [
+     "Serra Angel"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "cannot target a noncreature card",
+  "players": [
+   {
+    "hand": [
+     "Dread Return"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Swamp",
+     "Swamp"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dread Return",
+    "targets": [
+     "Lightning Bolt"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "flashback: sacrifice three creatures, then exiled",
+  "players": [
+   {
+    "graveyard": [
+     "Dread Return",
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Grizzly Bears",
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dread Return",
+    "alt": 0,
+    "targets": [
+     "Serra Angel"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Serra Angel"
+     ],
+     "graveyard": [
+      "Grizzly Bears",
+      "Grizzly Bears",
+      "Grizzly Bears"
+     ],
+     "exile": [
+      "Dread Return"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "flashback needs three creatures",
+  "players": [
+   {
+    "graveyard": [
+     "Dread Return",
+     "Serra Angel"
+    ],
+    "battlefield": [
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Dread Return",
+    "alt": 0,
+    "targets": [
+     "Serra Angel"
+    ],
+    "illegal": true
+   }
+  ]
+ },
+ {
+  "name": "ruling: flashback is cast at sorcery speed only (not with a spell on the stack)",
+  "players": [
+   { "graveyard": ["Dread Return", "Serra Angel"], "battlefield": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "player": 1, "targets": ["p0"] },
+   { "cast": "Dread Return", "alt": 0, "targets": ["Serra Angel"], "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "life": 17, "battlefield_has": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"], "graveyard_has": ["Dread Return", "Serra Angel"] }, { "graveyard": ["Lightning Bolt"] }]
+  }
+ },
+ {
+  "name": "ruling: a countered flashback spell is still exiled",
+  "players": [
+   { "graveyard": ["Dread Return", "Serra Angel"], "battlefield": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Dread Return", "alt": 0, "targets": ["Serra Angel"] },
+   { "cast": "Counterspell", "targets": [{ "stack": "Dread Return" }], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [{ "exile": ["Dread Return"], "graveyard_has": ["Serra Angel"] }, { "graveyard": ["Counterspell"] }]
+  }
+ },
+ {
+  "name": "ruling: the target is chosen before the sacrifice, so a creature sacrificed for flashback can't be the target",
+  "players": [
+   { "graveyard": ["Dread Return"], "battlefield": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [{ "cast": "Dread Return", "alt": 0, "targets": ["Grizzly Bears"], "illegal": true }],
+  "expect": {
+   "players": [{ "graveyard": ["Dread Return"], "battlefield_has": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }, {}]
+  }
+ }
+]

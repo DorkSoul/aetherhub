@@ -1,0 +1,101 @@
+[
+  {
+    "name": "ruling: the delayed draw still happens when the creature spell that triggered it is countered",
+    "players": [
+      {
+        "hand": ["Glimpse of Nature", "Grizzly Bears"],
+        "battlefield": ["Forest", "Forest", "Forest"],
+        "library": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {
+        "hand": ["Broken Concentration"],
+        "battlefield": ["Island", "Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Glimpse of Nature" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "pass": true },
+      { "cast": "Broken Concentration", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 4, "hand": ["Forest"], "graveyard_has": ["Grizzly Bears", "Glimpse of Nature"] },
+        { "graveyard_has": ["Broken Concentration"] }
+      ]
+    }
+  },
+  {
+    "name": "creature spell cast this turn after Glimpse draws a card",
+    "players": [
+      {
+        "hand": ["Glimpse of Nature", "Grizzly Bears"],
+        "battlefield": ["Forest", "Forest", "Forest"],
+        "library": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimpse of Nature" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "library_count": 4,
+          "hand_count": 1,
+          "battlefield_has": ["Grizzly Bears"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-creature spell cast this turn does not draw",
+    "players": [
+      {
+        "hand": ["Glimpse of Nature", "Giant Growth"],
+        "battlefield": ["Forest", "Forest", "Grizzly Bears"],
+        "library": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimpse of Nature" },
+      { "resolve": true },
+      { "cast": "Giant Growth", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 5, "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Glimpse alone draws nothing on resolution",
+    "players": [
+      {
+        "hand": ["Glimpse of Nature"],
+        "battlefield": ["Forest"],
+        "library": ["Forest", "Forest", "Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Glimpse of Nature" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "library_count": 5, "hand_count": 0, "graveyard": ["Glimpse of Nature"] },
+        {}
+      ]
+    }
+  }
+]

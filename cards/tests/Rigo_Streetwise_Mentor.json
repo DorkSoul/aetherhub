@@ -1,0 +1,257 @@
+[
+ {
+  "name": "attacking with one or more creatures of power 1 or less draws one card",
+  "players": [
+   {
+    "battlefield": [
+     "Rigo, Streetwise Mentor",
+     "Birds of Paradise",
+     "Rabble-Rouser"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Birds of Paradise",
+      "at": "p1"
+     },
+     {
+      "card": "Rabble-Rouser",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "attacking only with creatures of power 2 or more draws nothing",
+  "players": [
+   {
+    "battlefield": [
+     "Rigo, Streetwise Mentor",
+     "Grizzly Bears",
+     "Birds of Paradise"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Grizzly Bears",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rigo attacking alone does not trigger itself",
+  "players": [
+   {
+    "battlefield": [
+     "Rigo, Streetwise Mentor",
+     "Birds of Paradise"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Rigo, Streetwise Mentor",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "two creatures attacking the same planeswalker give one trigger",
+  "players": [
+   {
+    "battlefield": [
+     "Rigo, Streetwise Mentor",
+     "Birds of Paradise",
+     "Rabble-Rouser"
+    ]
+   },
+   {
+    "battlefield": [
+     "Garruk, Primal Hunter"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Birds of Paradise",
+      "at": "Garruk, Primal Hunter"
+     },
+     {
+      "card": "Rabble-Rouser",
+      "at": "Garruk, Primal Hunter"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "attacking a player and a planeswalker draws one card for each",
+  "players": [
+   {
+    "battlefield": [
+     "Rigo, Streetwise Mentor",
+     "Birds of Paradise",
+     "Rabble-Rouser"
+    ]
+   },
+   {
+    "battlefield": [
+     "Jace Beleren"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Birds of Paradise",
+      "at": "p1"
+     },
+     {
+      "card": "Rabble-Rouser",
+      "at": "Jace Beleren"
+     }
+    ]
+   },
+   {
+    "block": []
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "enters with a shield counter: Shock is prevented and removes the shield, Rigo (2/2) survives",
+  "players": [
+   { "hand": ["Rigo, Streetwise Mentor"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "hand": ["Shock"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Rigo, Streetwise Mentor" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Rigo, Streetwise Mentor"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Rigo, Streetwise Mentor"] }, {} ],
+   "counters": { "Rigo, Streetwise Mentor": { "Shield": 0 } }
+  }
+ },
+ {
+  "name": "ruling: damage equal to toughness destroys Rigo after its shield is gone",
+  "players": [
+   { "hand": ["Rigo, Streetwise Mentor"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "hand": ["Shock", "Shock"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Rigo, Streetwise Mentor" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Rigo, Streetwise Mentor"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Shock", "player": 1, "targets": ["Rigo, Streetwise Mentor"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Rigo, Streetwise Mentor"] }, { "hand_count": 0 } ]
+  }
+ },
+ {
+  "name": "ruling: a shield counter does not stop Rigo being sacrificed",
+  "players": [
+   { "hand": ["Rigo, Streetwise Mentor"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "hand": ["Diabolic Edict"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Rigo, Streetwise Mentor" },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Diabolic Edict", "player": 1, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Rigo, Streetwise Mentor"] }, { "hand_count": 0 } ]
+  }
+ }
+]

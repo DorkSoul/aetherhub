@@ -1,0 +1,172 @@
+[
+ {
+  "name": "enter trigger destroys a noncreature permanent",
+  "players": [
+   {
+    "hand": [
+     "Woodfall Primus"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring",
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Woodfall Primus"
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Woodfall Primus"
+     ]
+    },
+    {
+     "battlefield": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Sol Ring"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "persist returns it once with a -1/-1 counter and it triggers again",
+  "players": [
+   {
+    "hand": [
+     "Doom Blade"
+    ],
+    "battlefield": [
+     "Swamp",
+     "Swamp",
+     "Woodfall Primus"
+    ]
+   },
+   {
+    "battlefield": [
+     "Sol Ring",
+     "Mind Stone"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Doom Blade",
+    "targets": [
+     "Woodfall Primus"
+    ]
+   },
+   {
+    "resolve": true,
+    "targets": [
+     "Sol Ring"
+    ]
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Woodfall Primus": {
+     "m1m1": 1
+    }
+   },
+   "pt": {
+    "Woodfall Primus": [
+     5,
+     5
+    ]
+   },
+   "players": [
+    {
+     "battlefield_has": [
+      "Woodfall Primus"
+     ]
+    },
+    {
+     "battlefield": [
+      "Mind Stone"
+     ],
+     "graveyard": [
+      "Sol Ring"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a persist return is a new object, so its +1/+1 counters are gone",
+  "players": [
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", { "name": "Woodfall Primus", "counters": { "p1p1": 1 } }] },
+   { "battlefield": ["Grizzly Bears", "Sol Ring"] }
+  ],
+  "steps": [
+   { "cast": "Doom Blade", "targets": ["Woodfall Primus"] },
+   { "resolve": true, "targets": ["Sol Ring"] }
+  ],
+  "expect": {
+   "counters": { "Woodfall Primus": { "p1p1": 0, "m1m1": 1 } },
+   "pt": { "Woodfall Primus": [5, 5] },
+   "players": [
+    { "battlefield_has": ["Woodfall Primus"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a Primus that dies with a -1/-1 counter on it does not persist",
+  "players": [
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp", { "name": "Woodfall Primus", "counters": { "m1m1": 1 } }] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Doom Blade", "targets": ["Woodfall Primus"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Woodfall Primus"], "battlefield_lacks": ["Woodfall Primus"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: persist creatures that die at the same time each return (Wrath of God)",
+  "players": [
+   { "hand": ["Wrath of God"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Woodfall Primus"] },
+   { "battlefield": ["Woodfall Primus", "Sol Ring", "Mind Stone"] }
+  ],
+  "steps": [
+   { "cast": "Wrath of God" },
+   { "resolve": true, "targets": ["Sol Ring", "Mind Stone"] }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Woodfall Primus"], "graveyard_has": ["Wrath of God"] },
+    { "battlefield_has": ["Woodfall Primus"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,173 @@
+[
+  {
+    "name": "next noncreature spell has cascade: cast the cheaper nonland card for free",
+    "players": [
+      {
+        "hand": ["Sol Ring"],
+        "battlefield": ["Dark Apostle", "Mountain", "Forest", "Forest", "Forest"],
+        "library": ["Forest", "Savannah Lions", "Ornithopter"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Sol Ring" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Sol Ring", "Ornithopter"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "declining the cascade cast leaves the card on the bottom of the library",
+    "players": [
+      {
+        "hand": ["Sol Ring"],
+        "battlefield": ["Dark Apostle", "Mountain", "Forest", "Forest", "Forest"],
+        "library": ["Ornithopter"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Sol Ring" },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Sol Ring"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a creature spell does not get cascade",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Dark Apostle", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Ornithopter"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cascade only hits cards with lesser mana value: equal-cost card is skipped",
+    "players": [
+      {
+        "hand": ["Sol Ring"],
+        "battlefield": ["Dark Apostle", "Mountain", "Forest", "Forest", "Forest"],
+        "library": ["Savannah Lions"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Sol Ring" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Sol Ring"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the cascade effect waits for the next noncreature spell (a creature cast first does not use it)",
+    "players": [
+      {
+        "hand": ["Grizzly Bears", "Sol Ring"],
+        "battlefield": ["Dark Apostle", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Ornithopter"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "cast": "Sol Ring" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Grizzly Bears", "Sol Ring", "Ornithopter"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a cascade spell that is countered still cascades",
+    "players": [
+      {
+        "hand": ["Sol Ring"],
+        "battlefield": ["Dark Apostle", "Mountain", "Forest", "Forest", "Forest"],
+        "library": ["Ornithopter"]
+      },
+      {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Sol Ring" },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{"stack": "Sol Ring"}], "player": 1 },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Ornithopter"], "graveyard": ["Sol Ring"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two Dark Apostle activations give the next noncreature spell two instances of cascade",
+    "players": [
+      {
+        "hand": ["Sol Ring"],
+        "battlefield": ["Dark Apostle", "Dark Apostle", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Ornithopter", "Ornithopter"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "activate": "Dark Apostle" },
+      { "resolve": true },
+      { "cast": "Sol Ring" },
+      { "resolve": true, "answers": [true, true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Dark Apostle", "Dark Apostle", "Sol Ring", "Ornithopter", "Ornithopter"] },
+        {}
+      ]
+    }
+  }
+]

@@ -1,0 +1,156 @@
+[
+ {
+  "name": "ETB destroys the opponent's creature that was dealt damage this turn",
+  "players": [
+   {
+    "battlefield": ["Mountain", "Swamp", "Swamp", "Swamp"],
+    "hand": ["Lightning Bolt", "Orzhov Euthanist"]
+   },
+   {
+    "battlefield": ["Serra Angel"]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": ["Serra Angel"]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Orzhov Euthanist"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Orzhov Euthanist"]
+    },
+    {
+     "graveyard": ["Serra Angel"],
+     "battlefield_lacks": ["Serra Angel"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ETB has no target when the opponent's creature was not dealt damage this turn",
+  "players": [
+   {
+    "battlefield": ["Swamp", "Swamp", "Swamp"],
+    "hand": ["Orzhov Euthanist"]
+   },
+   {
+    "battlefield": ["Serra Angel"]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Orzhov Euthanist"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": ["Orzhov Euthanist"]
+    },
+    {
+     "battlefield_has": ["Serra Angel"]
+    }
+   ]
+  }
+ },
+ {
+  "name": "dying Euthanist haunts the creature it targets",
+  "players": [
+   { "battlefield": ["Mountain", "Orzhov Euthanist"], "hand": ["Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Euthanist"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Euthanist"], "graveyard": ["Lightning Bolt"] },
+    { "battlefield_has": ["Grizzly Bears"] }
+   ]
+  }
+ },
+ {
+  "name": "haunt has no target without another creature, so Euthanist goes to the graveyard",
+  "players": [
+   { "battlefield": ["Mountain", "Orzhov Euthanist"], "hand": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Euthanist"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Orzhov Euthanist"], "exile": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "when the haunted creature dies, destroy the creature that was dealt damage this turn",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Mountain", "Orzhov Euthanist"], "hand": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Serra Angel"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Euthanist"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Euthanist"], "graveyard": ["Lightning Bolt", "Lightning Bolt", "Lightning Bolt"] },
+    { "graveyard": ["Grizzly Bears", "Serra Angel"], "battlefield": [] }
+   ]
+  }
+ },
+ {
+  "name": "haunted creature dying with no creature dealt damage destroys nothing",
+  "players": [
+   { "battlefield": ["Mountain", "Mountain", "Orzhov Euthanist"], "hand": ["Lightning Bolt", "Lightning Bolt"] },
+   { "battlefield": ["Grizzly Bears", "Serra Angel"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Orzhov Euthanist"] },
+   { "resolve": true, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Orzhov Euthanist"] },
+    { "battlefield": ["Serra Angel"], "graveyard": ["Grizzly Bears"] }
+   ]
+  }
+ }
+]

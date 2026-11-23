@@ -1,0 +1,79 @@
+[
+ {
+  "name": "an opponent with no lands can't cast a noncreature spell with mana value 1",
+  "players": [
+   { "battlefield": ["Lavinia, Azorius Renegade"] },
+   { "hand": ["Gut Shot"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Gut Shot", "targets": ["p0"], "player": 1, "illegal": true }
+  ],
+  "expect": { "players": [ { "life": 20 }, { "hand": ["Gut Shot"] } ] }
+ },
+ {
+  "name": "with one land the opponent may cast it, but a spell cast with no mana spent is countered",
+  "players": [
+   { "battlefield": ["Lavinia, Azorius Renegade"] },
+   { "hand": ["Gut Shot"], "battlefield": ["Island"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Gut Shot", "targets": ["p0"], "player": 1 },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 20, "battlefield_has": ["Lavinia, Azorius Renegade"] }, { "graveyard": ["Gut Shot"] } ] }
+ },
+ {
+  "name": "mana value 2 noncreature spell with one land (and a Sol Ring) is barred",
+  "players": [
+   { "battlefield": ["Lavinia, Azorius Renegade"] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Sol Ring"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Doom Blade", "targets": ["Lavinia, Azorius Renegade"], "player": 1, "illegal": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Lavinia, Azorius Renegade"] }, { "hand": ["Doom Blade"] } ] }
+ },
+ {
+  "name": "with two lands the same spell is allowed and, paid for with mana, resolves",
+  "players": [
+   { "battlefield": ["Lavinia, Azorius Renegade"] },
+   { "hand": ["Doom Blade"], "battlefield": ["Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Doom Blade", "targets": ["Lavinia, Azorius Renegade"], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Lavinia, Azorius Renegade"] }, { "graveyard": ["Doom Blade"] } ] }
+ },
+ {
+  "name": "creature spells are not restricted",
+  "players": [
+   { "hand": ["Grizzly Bears"], "battlefield": ["Forest", "Sol Ring"] },
+   { "battlefield": ["Lavinia, Azorius Renegade"] }
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Lavinia, Azorius Renegade"] } ] }
+ },
+ { "name": "ruling: a spell an opponent casts for free (no mana spent, via Gríma) is countered by Lavinia",
+   "players": [
+    { "battlefield": ["Gríma, Saruman's Footman", "Island", "Island", "Swamp"] },
+    { "battlefield": ["Lavinia, Azorius Renegade"], "library": ["Forest", "Mountain", "Divination", "Plains"] }
+   ],
+   "steps": [
+    { "advance_to": "Main1" },
+    { "advance_to": "Main1" },
+    { "attack": [ { "card": "Gríma, Saruman's Footman", "at": "p1" } ] },
+    { "block": [] },
+    { "advance_to": "Main2", "answers": [true] },
+    { "resolve": true }
+   ],
+   "expect": { "players": [ { "life": 20, "battlefield_has": ["Gríma, Saruman's Footman"], "pool": {} }, { "life": 19, "graveyard_has": ["Divination"], "battlefield_has": ["Lavinia, Azorius Renegade"] } ] } }
+]

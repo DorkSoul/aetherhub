@@ -1,0 +1,186 @@
+[
+  {
+    "name": "target player sacrifices a creature",
+    "players": [
+      {
+        "hand": [
+          "Sudden Edict"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sudden Edict",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Sudden Edict"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "a player with no creatures sacrifices nothing",
+    "players": [
+      {
+        "hand": [
+          "Sudden Edict"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {
+        "battlefield": [
+          "Plains"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Sudden Edict",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Sudden Edict"
+          ]
+        },
+        {
+          "battlefield": [
+            "Plains"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: after split second resolves, spells can be cast again before the next object resolves",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt", "Sudden Edict"],
+        "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"cast": "Sudden Edict", "targets": ["p1"]},
+      {"pass": true},
+      {"pass": true, "player": 1},
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"hand_count": 0},
+        {"life": 14, "battlefield_lacks": ["Grizzly Bears"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: while split second is on the stack the opponent cannot cast spells",
+    "players": [
+      {
+        "hand": ["Sudden Edict"],
+        "battlefield": ["Swamp", "Swamp"]
+      },
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", "Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"cast": "Sudden Edict", "targets": ["p1"]},
+      {"pass": true},
+      {"cast": "Lightning Bolt", "player": 1, "targets": ["p0"], "illegal": true},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"life": 20},
+        {"hand": ["Lightning Bolt"], "battlefield_lacks": ["Grizzly Bears"], "battlefield_has": ["Mountain"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a spell already on the stack is unaffected by a split second spell cast on top of it",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Sudden Edict"],
+        "battlefield": ["Swamp", "Swamp", "Mountain"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["p1"]},
+      {"cast": "Sudden Edict", "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {},
+        {"life": 17, "battlefield_lacks": ["Grizzly Bears"]}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a triggered counter ability still triggers while split second is on the stack",
+    "players": [
+      {
+        "hand": ["Sudden Edict"],
+        "battlefield": ["Swamp", "Swamp", {"name": "Chalice of the Void", "counters": {"Charge": 2}}]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      {"cast": "Sudden Edict", "targets": ["p1"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"graveyard": ["Sudden Edict"]},
+        {"battlefield_has": ["Grizzly Bears"]}
+      ]
+    }
+  }
+]

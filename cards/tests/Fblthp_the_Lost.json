@@ -1,0 +1,144 @@
+[
+  {
+    "name": "cast from hand: draws one card on entering (not two)",
+    "players": [
+      {
+        "hand": ["Fblthp, the Lost"],
+        "battlefield": ["Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fblthp, the Lost" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "battlefield_has": ["Fblthp, the Lost"]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "targeted by a spell: shuffled into its owner's library and the spell fizzles",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain"]
+      },
+      {
+        "battlefield": ["Fblthp, the Lost"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Fblthp, the Lost"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": ["Lightning Bolt"]
+        },
+        {
+          "library_count": 21
+        }
+      ]
+    }
+  },
+  {
+    "name": "put onto the battlefield from hand (Sneak Attack): draws one card, not two",
+    "players": [
+      { "hand": ["Fblthp, the Lost"], "battlefield": ["Sneak Attack", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Sneak Attack" },
+      { "resolve": true, "answers": ["Fblthp, the Lost"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sneak Attack", "Fblthp, the Lost"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "returned from the graveyard (Reanimate): draws one card and you lose 2 life",
+    "players": [
+      { "hand": ["Reanimate"], "battlefield": ["Swamp"], "graveyard": ["Fblthp, the Lost"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Reanimate", "targets": ["Fblthp, the Lost"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 18, "hand_count": 1, "battlefield_has": ["Fblthp, the Lost"] }, {} ]
+    }
+  },
+  {
+    "name": "returned from exile in your upkeep (Dimensional Breach): draws one card",
+    "players": [
+      { "hand": ["Dimensional Breach"], "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Fblthp, the Lost"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Dimensional Breach" },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": ["Fblthp, the Lost"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Fblthp, the Lost"], "hand_count": 1 }, {} ]
+    }
+  },
+  {
+    "name": "put onto the battlefield from the library (Birthing Pod): draws two cards",
+    "players": [
+      { "battlefield": ["Birthing Pod", "Llanowar Elves", "Forest", "Island"], "library": ["Fblthp, the Lost"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Birthing Pod", "ability": 0 },
+      { "resolve": true, "answers": ["Fblthp, the Lost"] }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Birthing Pod", "Fblthp, the Lost"], "battlefield_lacks": ["Llanowar Elves"], "hand_count": 2 }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a card cast from exile (Light Up the Stage) is not cast from the library: draws one, not two",
+    "players": [
+      { "hand": ["Light Up the Stage"], "battlefield": ["Mountain", "Plains", "Forest", "Island", "Island"], "library": ["Fblthp, the Lost", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "tap_for_mana": "Mountain" },
+      { "tap_for_mana": "Plains" },
+      { "tap_for_mana": "Forest" },
+      { "cast": "Light Up the Stage" },
+      { "resolve": true },
+      { "cast": "Fblthp, the Lost" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Fblthp, the Lost"], "hand_count": 1, "exile": ["Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Fblthp's shuffle trigger resolves even when the spell that targeted it is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island", "Fblthp, the Lost"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Fblthp, the Lost"] },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Lightning Bolt" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Lightning Bolt"] }, { "battlefield_lacks": ["Fblthp, the Lost"], "library_count": 21, "graveyard": ["Counterspell"] } ]
+    }
+  }
+]

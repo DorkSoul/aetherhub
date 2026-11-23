@@ -1,0 +1,48 @@
+{
+  "name": "Ao, the Dawn Sky",
+  "mana_cost": "{3}{W}{W}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Dragon", "Spirit"],
+  "power": 5,
+  "toughness": 4,
+  "keywords": ["Flying", "Vigilance"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Dies", "filter": { "this": true } },
+      "effects": [
+        { "type": "ChooseModes", "choose_min": 1, "choose_max": 1,
+          "modes": [
+            {
+              "text": "Look at the top seven cards of your library. Put any number of nonland permanent cards with total mana value 4 or less from among them onto the battlefield. Put the rest on the bottom of your library in a random order.",
+              "effects": [
+                { "type": "ClearRemembered" },
+                { "type": "ChooseWithin", "who": { "type": "You" }, "zone": "Library",
+                  "from": { "type": "TopOfLibrary", "who": { "type": "You" }, "n": 7 },
+                  "filter": { "types": ["Artifact", "Creature", "Enchantment", "Planeswalker", "Battle"] },
+                  "kind": "ManaValue", "budget": { "type": "Fixed", "n": 4 },
+                  "then": [
+                    { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield" }
+                  ]
+                },
+                { "type": "LookAtTop", "who": { "type": "You" },
+                  "n": { "type": "Minus", "a": { "type": "Fixed", "n": 7 }, "b": { "type": "RememberedCount" } },
+                  "filter": {}, "take": 0, "must": true, "rest": "Library", "random_rest": true }
+              ]
+            },
+            {
+              "text": "Put two +1/+1 counters on each permanent you control that's a creature or Vehicle.",
+              "effects": [
+                { "type": "AddCounters", "kind": "PlusOnePlusOne", "n": { "type": "Fixed", "n": 2 },
+                  "what": { "type": "All", "zone": "Battlefield",
+                    "filter": { "any_of": [{ "types": ["Creature"] }, { "subtypes": ["Vehicle"] }], "controller": "You" } } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Flying, vigilance\nWhen Ao, the Dawn Sky dies, choose one —\n• Look at the top seven cards of your library. Put any number of nonland permanent cards with total mana value 4 or less from among them onto the battlefield. Put the rest on the bottom of your library in a random order.\n• Put two +1/+1 counters on each permanent you control that's a creature or Vehicle."
+}

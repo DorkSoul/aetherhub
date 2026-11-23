@@ -1,0 +1,96 @@
+[
+  {
+    "name": "beginning of combat: Settlement token is attached to the target land",
+    "players": [
+      { "battlefield": ["Preston Garvey, Minuteman", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Settlement", "Forest"] }, {}],
+      "attached": { "Settlement": "Forest" }
+    }
+  },
+  {
+    "name": "no target chosen: no Settlement stays on the battlefield",
+    "players": [
+      { "battlefield": ["Preston Garvey, Minuteman", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_lacks": ["Settlement"] }, {}]
+    }
+  },
+ {
+  "name": "attacking untaps each enchanted permanent you control",
+  "players": [
+   {
+    "battlefield": ["Preston Garvey, Minuteman", "Plains", {"name": "Forest", "tapped": true}]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "targets": ["Plains"] },
+   { "resolve": true },
+   { "tap_for_mana": "Plains" },
+   { "attack": [ { "card": "Preston Garvey, Minuteman", "at": "p1" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Preston Garvey, Minuteman", "Settlement"] },
+    {}
+   ],
+   "tapped": { "Plains": false, "Forest": true }
+  }
+ },
+ {
+  "name": "without attacking, an enchanted land stays tapped",
+  "players": [
+   {
+    "battlefield": ["Preston Garvey, Minuteman", "Plains"]
+   },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "targets": ["Plains"] },
+   { "resolve": true },
+   { "tap_for_mana": "Plains" },
+   { "advance_to": "Main2" }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Preston Garvey, Minuteman", "Settlement"] },
+    {}
+   ],
+   "tapped": { "Plains": true }
+  }
+ },
+ {
+  "name": "ruling: if the target land is gone when the trigger resolves, no Settlement is created",
+  "players": [
+   { "battlefield": ["Preston Garvey, Minuteman", "Forest"] },
+   { "hand": ["Assassin's Trophy"], "battlefield": ["Swamp", "Forest"] }
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat", "targets": ["p0:Forest"] },
+   { "pass": true },
+   { "cast": "Assassin's Trophy", "player": 1, "targets": ["p0:Forest"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Preston Garvey, Minuteman"], "battlefield_lacks": ["Settlement"], "graveyard_has": ["Forest"] },
+    { "graveyard_has": ["Assassin's Trophy"] }
+   ]
+  }
+ }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "name": "two targets cost {2}{G} + {1}{G}: both get +2/+2 and untap",
+    "players": [
+      {
+        "hand": ["Colossal Heroics"],
+        "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest",
+          { "name": "Grizzly Bears", "tapped": true },
+          { "name": "Hill Giant", "tapped": true }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4], "Hill Giant": [5, 5] },
+      "players": [ { "graveyard": ["Colossal Heroics"] }, {} ]
+    }
+  },
+  {
+    "name": "one target costs only {2}{G}: the other creature is unchanged",
+    "players": [
+      { "hand": ["Colossal Heroics"], "battlefield": ["Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4], "Hill Giant": [3, 3] }
+    }
+  },
+  {
+    "name": "strive: two targets use all five lands, so Sol Ring (cost 1) is uncastable afterwards",
+    "players": [
+      { "hand": ["Colossal Heroics", "Sol Ring"], "battlefield": ["Forest", "Forest", "Forest", "Plains", "Plains"] },
+      { "battlefield": ["Grizzly Bears", "Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true },
+      { "cast": "Sol Ring", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Sol Ring"] }, {} ],
+      "pt": { "Grizzly Bears": [4, 4], "Hill Giant": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: untapped creatures can be targeted; both get +2/+2 and stay untapped",
+    "players": [
+      { "hand": ["Colossal Heroics"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4], "Hill Giant": [5, 5] },
+      "players": [ { "graveyard": ["Colossal Heroics"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: one target removed in response; the spell still resolves for the legal target only",
+    "players": [
+      { "hand": ["Colossal Heroics"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Hill Giant": [5, 5] },
+      "players": [ { "graveyard": ["Colossal Heroics", "Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: the same creature cannot be chosen twice for one strive spell",
+    "players": [
+      { "hand": ["Colossal Heroics"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears", "Grizzly Bears"], "illegal": true },
+      { "cast": "Colossal Heroics", "targets": ["Grizzly Bears", "Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4], "Hill Giant": [5, 5] },
+      "players": [ { "graveyard": ["Colossal Heroics"] }, {} ]
+    }
+  }
+]

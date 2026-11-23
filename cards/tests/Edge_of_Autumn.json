@@ -1,0 +1,141 @@
+[
+  {
+    "name": "four or fewer lands: fetch a basic tapped",
+    "players": [
+      {
+        "hand": [
+          "Edge of Autumn"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Edge of Autumn"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          "Plains"
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Forest",
+            "Forest",
+            "Plains"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Plains": true
+      }
+    }
+  },
+  {
+    "name": "five lands: no search",
+    "players": [
+      {
+        "hand": [
+          "Edge of Autumn"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Edge of Autumn"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Plains"
+          ],
+          "library_count": 1
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cycling: sacrifice a land and discard this card to draw a card",
+    "players": [
+      { "hand": ["Edge of Autumn"], "battlefield": ["Forest"], "library": ["Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Edge of Autumn", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Plains"], "graveyard_has": ["Edge of Autumn", "Forest"], "battlefield_lacks": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cycling needs a land to sacrifice",
+    "players": [
+      { "hand": ["Edge of Autumn"], "library": ["Plains"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Edge of Autumn", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Edge of Autumn"], "library_count": 21 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: lands are counted as it resolves (five at cast, four at resolution still searches)",
+    "players": [
+      { "hand": ["Edge of Autumn"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Island"], "library": ["Plains"] },
+      { "hand": ["Rain of Rust"], "battlefield": ["Mountain", "Mountain", "Swamp", "Swamp", "Swamp"] }
+    ],
+    "steps": [
+      { "cast": "Edge of Autumn" },
+      { "pass": true },
+      { "cast": "Rain of Rust", "player": 1, "answers": [1], "targets": ["Island"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true, "answers": ["Plains"] }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Plains"], "battlefield_lacks": ["Island"] },
+        { "graveyard_has": ["Rain of Rust"] }
+      ],
+      "tapped": { "Plains": true }
+    }
+  }
+]

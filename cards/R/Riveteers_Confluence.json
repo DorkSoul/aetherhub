@@ -1,0 +1,84 @@
+{
+  "name": "Riveteers Confluence",
+  "mana_cost": "{2}{B}{R}{G}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Modal",
+      "choose_min": 3,
+      "choose_max": 3,
+      "allow_repeat": true,
+      "modes": [
+        {
+          "text": "You draw a card and you lose 1 life.",
+          "effects": [
+            { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+            { "type": "LoseLife", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } }
+          ]
+        },
+        {
+          "text": "Riveteers Confluence deals 1 damage to each creature and planeswalker you don't control.",
+          "effects": [
+            {
+              "type": "DealDamage",
+              "source": { "type": "This" },
+              "to": {
+                "type": "All",
+                "filter": {
+                  "any_of": [
+                    { "types": ["Creature"], "controller": "Opponent" },
+                    { "types": ["Planeswalker"], "controller": "Opponent" }
+                  ]
+                }
+              },
+              "amount": { "type": "Fixed", "n": 1 }
+            }
+          ]
+        },
+        {
+          "text": "You may put a land card from your hand or graveyard onto the battlefield tapped.",
+          "effects": [
+            {
+              "type": "Choose",
+              "who": { "type": "You" },
+              "zone": "Hand",
+              "filter": { "types": ["Land"], "controller": "You" },
+              "min": 0,
+              "max": 1,
+              "then": [
+                { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "tapped": true }
+              ]
+            },
+            {
+              "type": "If",
+              "cond": {
+                "type": "Compare",
+                "a": {
+                  "type": "Count",
+                  "filter": { "among_remembered": true, "types": ["Land"] },
+                  "zone": "Battlefield",
+                  "player": { "type": "You" }
+                },
+                "cmp": { "op": "Eq", "n": 0 }
+              },
+              "then": [
+                {
+                  "type": "Choose",
+                  "who": { "type": "You" },
+                  "zone": "Graveyard",
+                  "filter": { "types": ["Land"], "controller": "You" },
+                  "min": 0,
+                  "max": 1,
+                  "then": [
+                    { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "tapped": true }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• You draw a card and you lose 1 life.\n• Riveteers Confluence deals 1 damage to each creature and planeswalker you don't control.\n• You may put a land card from your hand or graveyard onto the battlefield tapped."
+}

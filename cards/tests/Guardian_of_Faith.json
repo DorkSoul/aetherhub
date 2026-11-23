@@ -1,0 +1,72 @@
+[
+  {"name": "ETB: the targeted other creature you control phases out",
+   "players": [
+     {"hand": ["Guardian of Faith"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"]},
+     {}
+   ],
+   "steps": [
+     {"cast": "Guardian of Faith"},
+     {"resolve": true, "targets": ["Grizzly Bears"]}
+   ],
+   "expect": {"players": [{"battlefield_has": ["Guardian of Faith"], "battlefield_lacks": ["Grizzly Bears"]}, {}]}},
+  {"name": "ETB with no other creature: Guardian itself is not targeted and stays",
+   "players": [
+     {"hand": ["Guardian of Faith"], "battlefield": ["Plains", "Plains", "Plains"]},
+     {"battlefield": ["Grizzly Bears"]}
+   ],
+   "steps": [
+     {"cast": "Guardian of Faith"},
+     {"resolve": true}
+   ],
+   "expect": {"players": [{"battlefield_has": ["Guardian of Faith"]}, {"battlefield_has": ["Grizzly Bears"]}]}},
+  {"name": "ruling: a phased-out creature is not on the battlefield during the opponent's turn",
+   "players": [
+     {"hand": ["Guardian of Faith"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"]},
+     {}
+   ],
+   "steps": [
+     {"cast": "Guardian of Faith"},
+     {"resolve": true, "targets": ["Grizzly Bears"]},
+     {"advance_to": "Upkeep"}
+   ],
+   "expect": {"turn": 2, "players": [{"battlefield_has": ["Guardian of Faith"], "battlefield_lacks": ["Grizzly Bears"]}, {}]}},
+  {"name": "ruling: a phased-out creature phases in during my untap step, before untapping",
+   "players": [
+     {"hand": ["Guardian of Faith"], "battlefield": ["Plains", "Plains", "Plains", {"name": "Grizzly Bears", "tapped": true}]},
+     {}
+   ],
+   "steps": [
+     {"cast": "Guardian of Faith"},
+     {"resolve": true, "targets": ["Grizzly Bears"]},
+     {"advance_to": "Upkeep"},
+     {"advance_to": "Upkeep"}
+   ],
+   "expect": {"turn": 3, "players": [{"battlefield_has": ["Guardian of Faith", "Grizzly Bears"]}, {}], "tapped": {"Grizzly Bears": false}}},
+  {"name": "ruling: equipment on a phased-out creature phases back in still attached",
+   "players": [
+     {"hand": ["Guardian of Faith"], "battlefield": ["Winged Boots", "Plains", "Plains", "Plains", "Plains", "Grizzly Bears"]},
+     {}
+   ],
+   "steps": [
+     {"activate": "Winged Boots", "ability": 0, "targets": ["Grizzly Bears"]},
+     {"resolve": true},
+     {"cast": "Guardian of Faith"},
+     {"resolve": true, "targets": ["Grizzly Bears"]},
+     {"advance_to": "Upkeep"},
+     {"advance_to": "Upkeep"}
+   ],
+   "expect": {"turn": 3, "players": [{"battlefield_has": ["Winged Boots", "Grizzly Bears"]}, {}], "attached": {"Winged Boots": "Grizzly Bears"}}},
+  {"name": "ruling: an attacking creature that phases out is removed from combat and deals no damage",
+   "players": [
+     {"hand": ["Guardian of Faith"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"]},
+     {}
+   ],
+   "steps": [
+     {"advance_to": "BeginCombat"},
+     {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+     {"cast": "Guardian of Faith"},
+     {"resolve": true, "targets": ["Grizzly Bears"]},
+     {"advance_to": "Main2"}
+   ],
+   "expect": {"players": [{"battlefield_has": ["Guardian of Faith"]}, {"life": 20}]}}
+]

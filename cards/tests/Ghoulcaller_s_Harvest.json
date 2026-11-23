@@ -1,0 +1,168 @@
+[
+  {
+    "name": "three creature cards in graveyard make two Zombies (rounded up)",
+    "players": [
+      {
+        "hand": [
+          "Ghoulcaller's Harvest"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Forest"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Hill Giant",
+          "Elite Vanguard",
+          "Lightning Bolt"
+        ]
+      },
+      {
+        "graveyard": [
+          "Serra Angel"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Ghoulcaller's Harvest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Swamp",
+            "Forest",
+            "Zombie 2-2 Decayed",
+            "Zombie 2-2 Decayed"
+          ],
+          "graveyard": [
+            "Grizzly Bears",
+            "Hill Giant",
+            "Elite Vanguard",
+            "Lightning Bolt",
+            "Ghoulcaller's Harvest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "empty graveyard makes no tokens",
+    "players": [
+      {
+        "hand": [
+          "Ghoulcaller's Harvest"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ghoulcaller's Harvest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Swamp",
+            "Forest"
+          ],
+          "graveyard": [
+            "Ghoulcaller's Harvest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "flashback creates tokens and exiles it",
+    "players": [
+      {
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Ghoulcaller's Harvest",
+          "Grizzly Bears",
+          "Hill Giant"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Ghoulcaller's Harvest",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Zombie 2-2 Decayed"
+          ],
+          "exile": [
+            "Ghoulcaller's Harvest"
+          ],
+          "graveyard": [
+            "Grizzly Bears",
+            "Hill Giant"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: decayed tokens cannot block",
+    "players": [
+      { "hand": ["Ghoulcaller's Harvest"], "battlefield": ["Swamp", "Forest"], "graveyard": ["Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Ghoulcaller's Harvest" },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Zombie 2-2 Decayed", "attacker": "Grizzly Bears" } ], "player": 0, "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 18 }, {} ] }
+  },
+  {
+    "name": "ruling: flashback is still sorcery-speed, so it cannot be cast on the opponent's turn",
+    "players": [
+      { "battlefield": ["Swamp", "Swamp", "Swamp", "Forest", "Forest"], "graveyard": ["Ghoulcaller's Harvest", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Ghoulcaller's Harvest", "alt": 0, "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Zombie 2-2 Decayed"], "graveyard_has": ["Ghoulcaller's Harvest"] }, {} ] }
+  }
+]

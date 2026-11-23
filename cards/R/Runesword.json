@@ -1,0 +1,39 @@
+{
+  "name": "Runesword",
+  "mana_cost": "{6}",
+  "types": ["Artifact"],
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Mana", "cost": "{3}" }, { "type": "Tap" } ],
+      "targets": [
+        { "what": { "type": "Permanent", "filter": { "types": ["Creature"], "attacking": true } }, "label": "target attacking creature" }
+      ],
+      "effects": [
+        { "type": "Pump", "what": { "type": "Target", "idx": 0 }, "power": { "type": "Fixed", "n": 2 }, "toughness": { "type": "Fixed", "n": 0 }, "duration": "UntilEndOfTurn" },
+        {
+          "type": "AddTrigger",
+          "bind": { "type": "Target", "idx": 0 },
+          "trigger": { "type": "LeavesBattlefield", "filter": {} },
+          "effects": [ { "type": "Sacrifice", "who": { "type": "This" }, "filter": {}, "n": { "type": "Fixed", "n": 1 } } ],
+          "once": true,
+          "until": "EndOfTurn"
+        },
+        { "type": "CantRegenerateDamagedBy", "by": { "type": "Target", "idx": 0 } },
+        {
+          "type": "AddReplacement",
+          "what": {
+            "type": "ZoneChange",
+            "from": "Battlefield",
+            "to": "Graveyard",
+            "instead": "Exile",
+            "filter": { "types": ["Creature"] },
+            "whose": "Any",
+            "bind_damager": { "type": "Target", "idx": 0 }
+          }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{3}, {T}: Target attacking creature gets +2/+0 until end of turn. When that creature leaves the battlefield this turn, sacrifice this artifact. If the creature deals damage to a creature this turn, the creature dealt damage can't be regenerated this turn. If a creature dealt damage by the targeted creature would die this turn, exile that creature instead."
+}

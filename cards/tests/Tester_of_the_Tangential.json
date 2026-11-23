@@ -1,0 +1,33 @@
+[
+  { "name": "increment: casting a spell that spends more mana than its power puts a +1/+1 counter on it",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Tester of the Tangential", "Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "resolve": true } ],
+    "expect": { "pt": { "Tester of the Tangential": [2, 2] }, "players": [ { "battlefield_has": ["Grizzly Bears"] }, {} ] } },
+  { "name": "beginning of combat: pay X=2 to move 2 counters onto another creature",
+    "players": [
+      { "battlefield": [ { "name": "Tester of the Tangential", "counters": { "p1p1": 3 } }, "Grizzly Bears", "Island", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [2, true] },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Tester of the Tangential": [2, 2], "Grizzly Bears": [4, 4] }, "players": [ { "battlefield_has": ["Tester of the Tangential", "Grizzly Bears"] }, {} ] } },
+  { "name": "beginning of combat: declining to pay moves no counters",
+    "players": [
+      { "battlefield": [ { "name": "Tester of the Tangential", "counters": { "p1p1": 3 } }, "Grizzly Bears", "Island", "Island" ] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "BeginCombat", "answers": [2, false] }
+    ],
+    "expect": { "pt": { "Tester of the Tangential": [4, 4], "Grizzly Bears": [2, 2] }, "players": [ { "battlefield_has": ["Tester of the Tangential", "Grizzly Bears"] }, {} ] } },
+  { "name": "ruling: increment still resolves and adds a counter when the spell is countered",
+    "players": [ { "hand": ["Grizzly Bears"], "battlefield": ["Tester of the Tangential", "Forest", "Forest"] }, { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] } ],
+    "steps": [ { "cast": "Grizzly Bears" }, { "pass": true }, { "pass": true, "player": 1 }, { "pass": true }, { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Grizzly Bears" }] }, { "pass": true, "player": 1 }, { "pass": true } ],
+    "expect": { "pt": { "Tester of the Tangential": [2, 2] }, "players": [ { "graveyard": ["Grizzly Bears"] }, { "graveyard": ["Counterspell"] } ] } },
+  { "name": "ruling: spending mana equal to the creature's power and toughness does not trigger increment",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Tester of the Tangential", "Mountain"] }, { "battlefield": ["Grizzly Bears"] } ],
+    "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "pt": { "Tester of the Tangential": [1, 1] }, "players": [ { "graveyard": ["Lightning Bolt"] }, { "graveyard": ["Grizzly Bears"] } ] } }
+]

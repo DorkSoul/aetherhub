@@ -1,0 +1,201 @@
+[
+  {
+    "name": "prevents damage to you and your creatures this turn",
+    "players": [
+      {
+        "hand": [
+          "Safe Passage"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "start": "Main1",
+    "steps": [
+      {
+        "cast": "Safe Passage"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20,
+          "battlefield_has": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "damage to you is prevented too",
+    "players": [
+      {
+        "hand": [
+          "Safe Passage"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Safe Passage"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p0"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "does not protect the opponent: your own Lightning Bolt still hits them",
+    "players": [
+      {
+        "hand": [
+          "Safe Passage",
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Safe Passage"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: damage to a planeswalker you control is not prevented",
+    "start": "Main1",
+    "players": [
+      { "hand": ["Safe Passage"], "battlefield": ["Plains", "Plains", "Plains", "Jace, the Mind Sculptor"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Safe Passage" },
+      { "resolve": true },
+      { "pass": true },
+      { "player": 1, "cast": "Lightning Bolt", "targets": ["Jace, the Mind Sculptor"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Jace, the Mind Sculptor"] }, { "graveyard": ["Lightning Bolt"] } ]
+    }
+  },
+  {
+    "name": "ruling: combat damage to your creature is prevented too (the blocked Bears survives)",
+    "start": "Main1",
+    "players": [
+      { "hand": ["Safe Passage"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "cast": "Safe Passage" },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 20, "battlefield_has": ["Grizzly Bears"] }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  }
+]

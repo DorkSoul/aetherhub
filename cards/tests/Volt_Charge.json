@@ -1,0 +1,181 @@
+[
+  {
+    "name": "deals 3 damage to any target, then proliferates",
+    "players": [
+      {
+        "hand": [
+          "Volt Charge"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Hill Giant",
+            "counters": {
+              "p1p1": 2
+            }
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Volt Charge",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Hill Giant"
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Volt Charge"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ],
+      "counters": {
+        "Hill Giant": {
+          "p1p1": 3
+        }
+      }
+    }
+  },
+  {
+    "name": "proliferate does nothing without counters; a creature dies to 3 damage",
+    "players": [
+      {
+        "hand": [
+          "Volt Charge"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Volt Charge",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Volt Charge"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Volt Charge whose target is gone when it resolves does nothing, so no proliferate",
+    "players": [
+      { "hand": ["Volt Charge", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", { "name": "Hill Giant", "counters": { "p1p1": 2 } }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Volt Charge", "targets": ["Grizzly Bears"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Volt Charge", "Lightning Bolt"], "battlefield_has": ["Hill Giant"], "life": 20 },
+        { "graveyard": ["Grizzly Bears"], "life": 20 }
+      ],
+      "counters": { "Hill Giant": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "ruling: proliferate adds one counter of each kind the permanent already has",
+    "players": [
+      { "hand": ["Volt Charge"], "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Hill Giant", "counters": { "p1p1": 2, "charge": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Volt Charge", "targets": ["p1"] },
+      { "resolve": true, "answers": [["Hill Giant"]] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Volt Charge"] }, { "life": 17 } ],
+      "counters": { "Hill Giant": { "p1p1": 3, "charge": 2 } }
+    }
+  },
+  {
+    "name": "ruling: proliferate with no permanents chosen adds no counters",
+    "players": [
+      { "hand": ["Volt Charge"], "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Hill Giant", "counters": { "p1p1": 2 } }] },
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Volt Charge", "targets": ["p1"] },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Volt Charge"] }, { "life": 17 } ],
+      "counters": { "Hill Giant": { "p1p1": 2 }, "Grizzly Bears": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: +1/+1 and -1/-1 counters are removed in pairs before proliferate adds to them",
+    "players": [
+      { "hand": ["Volt Charge"], "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Hill Giant", "counters": { "p1p1": 2, "m1m1": 1 } }] },
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Volt Charge", "targets": ["p1"] },
+      { "resolve": true, "answers": [["Hill Giant"]] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Volt Charge"] }, { "life": 17 } ],
+      "counters": { "Hill Giant": { "p1p1": 2, "m1m1": 0 } }
+    }
+  },
+  {
+    "name": "ruling: proliferate can choose an opponent's permanent that has a counter",
+    "players": [
+      { "hand": ["Volt Charge"], "battlefield": ["Mountain", "Mountain", "Mountain", { "name": "Hill Giant", "counters": { "p1p1": 2 } }] },
+      { "battlefield": [ { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] }
+    ],
+    "steps": [
+      { "cast": "Volt Charge", "targets": ["p1"] },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Volt Charge"] }, { "life": 17 } ],
+      "counters": { "Hill Giant": { "p1p1": 2 }, "Grizzly Bears": { "p1p1": 2 } }
+    }
+  }
+]

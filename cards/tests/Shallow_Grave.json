@@ -1,0 +1,77 @@
+[
+  {
+    "name": "returns the top creature card of the graveyard with haste",
+    "players": [
+      { "hand": ["Shallow Grave"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shallow Grave" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Lightning Bolt", "Shallow Grave"], "battlefield_has": ["Hill Giant"] },
+        {}
+      ],
+      "keywords": { "Hill Giant": ["Haste"] }
+    }
+  },
+  {
+    "name": "the returned creature is exiled at the beginning of the next end step",
+    "players": [
+      { "hand": ["Shallow Grave"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shallow Grave" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "graveyard": ["Shallow Grave"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "does nothing when the graveyard has no creature card",
+    "players": [
+      { "hand": ["Shallow Grave"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shallow Grave" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Lightning Bolt", "Shallow Grave"], "battlefield_has": ["Swamp", "Swamp"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature that left the battlefield before the end step is not exiled",
+    "players": [
+      { "hand": ["Shallow Grave", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain", "Mountain"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Shallow Grave" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Grizzly Bears", "Lightning Bolt", "Shallow Grave"], "exile": [] },
+        {}
+      ]
+    }
+  }
+]

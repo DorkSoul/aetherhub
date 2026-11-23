@@ -1,0 +1,542 @@
+[
+  {
+    "name": "an opponent loses exactly 1 life: +1/+1 counter, exile the top card and cast it this turn",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Acolyte of Xathrid",
+            "sick": false
+          },
+          "Swamp",
+          "Snow-Covered Swamp",
+          "Forest",
+          "Snow-Covered Forest"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Acolyte of Xathrid",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "exile": []
+        },
+        {
+          "life": 19
+        }
+      ],
+      "counters": {
+        "Ob Nixilis, Captive Kingpin": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "losing 3 life is not exactly 1: no trigger",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          "Mountain"
+        ],
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": []
+        },
+        {
+          "life": 17
+        }
+      ],
+      "counters": {
+        "Ob Nixilis, Captive Kingpin": {
+          "PlusOnePlusOne": 0
+        }
+      }
+    }
+  },
+  {
+    "name": "two opponents each losing exactly 1 life at once is a single trigger",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Vicious Conquistador",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Hill Giant",
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Vicious Conquistador",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Grizzly Bears",
+            "attacker": "Vicious Conquistador"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Hill Giant"
+          ]
+        },
+        {
+          "life": 19
+        },
+        {
+          "life": 19
+        }
+      ],
+      "counters": {
+        "Ob Nixilis, Captive Kingpin": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: a single 1/1 hitting for exactly 1 triggers Ob; the exiled creature is cast only at sorcery speed",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          },
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "EndCombat"
+      },
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "exile": []
+        },
+        {
+          "life": 19
+        }
+      ],
+      "counters": {
+        "Ob Nixilis, Captive Kingpin": {
+          "PlusOnePlusOne": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: an exiled card that is not played stays exiled after the turn ends",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Grizzly Bears"
+          ],
+          "hand_count": 0,
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land cannot be played after a land was already played this turn",
+    "players": [
+      {
+        "hand": [
+          "Mountain"
+        ],
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "play_land": "Mountain"
+      },
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "play_land": "Forest",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Forest"
+          ],
+          "battlefield_has": [
+            "Mountain"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played in the second main phase if no land was played this turn",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "play_land": "Forest"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Forest"
+          ],
+          "exile": []
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the exiled creature can still be cast after Ob Nixilis leaves the battlefield",
+    "players": [
+      {
+        "hand": [
+          "Fireball"
+        ],
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          },
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Mountain",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "cast": "Fireball",
+        "targets": [
+          "Ob Nixilis, Captive Kingpin"
+        ],
+        "answers": [
+          4
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard_has": [
+            "Fireball",
+            "Ob Nixilis, Captive Kingpin"
+          ],
+          "battlefield_has": [
+            "Grizzly Bears"
+          ],
+          "exile": []
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: two 1/1s hitting for 1 each is 2 damage in total: no trigger",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Ob Nixilis, Captive Kingpin",
+            "sick": false
+          },
+          {
+            "name": "Llanowar Elves",
+            "sick": false
+          },
+          {
+            "name": "Elvish Mystic",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p1"
+          },
+          {
+            "card": "Elvish Mystic",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": []
+        },
+        {
+          "life": 18
+        }
+      ],
+      "counters": {
+        "Ob Nixilis, Captive Kingpin": {
+          "PlusOnePlusOne": 0
+        }
+      }
+    }
+  }
+]

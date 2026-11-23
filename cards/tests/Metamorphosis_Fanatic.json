@@ -1,0 +1,88 @@
+[
+  {
+    "name": "miracle: first card drawn this turn, pay {1}{B} and cast it; ETB returns the chosen creature with a lifelink counter",
+    "players": [
+      { "library": ["Metamorphosis Fanatic"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Draw" },
+      { "advance_to": "Draw", "answers": [true, "Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Metamorphosis Fanatic", "Grizzly Bears"], "graveyard": ["Hill Giant"], "hand_count": 0 },
+        {}
+      ],
+      "keywords": { "Grizzly Bears": ["Lifelink"], "Metamorphosis Fanatic": ["Lifelink"] }
+    }
+  },
+  {
+    "name": "miracle: up to one target, choosing none returns nothing",
+    "players": [
+      { "library": ["Metamorphosis Fanatic"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Draw" },
+      { "advance_to": "Draw", "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Metamorphosis Fanatic"], "battlefield_lacks": ["Grizzly Bears"], "graveyard": ["Grizzly Bears", "Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "miracle: declining leaves the card in hand",
+    "players": [
+      { "library": ["Metamorphosis Fanatic"], "battlefield": ["Swamp", "Swamp"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Draw" },
+      { "advance_to": "Draw", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Metamorphosis Fanatic"], "battlefield_lacks": ["Metamorphosis Fanatic"], "graveyard": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a card put into hand by Fecund Greenshell is not drawn, so no miracle trigger",
+    "players": [
+      { "hand": ["Fecund Greenshell"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "library": ["Metamorphosis Fanatic", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Fecund Greenshell" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Metamorphosis Fanatic"] }, {} ],
+      "stack_empty": true
+    }
+  },
+  {
+    "name": "ruling: after declining the miracle, the card cannot be cast later for its miracle cost",
+    "players": [
+      { "library": ["Metamorphosis Fanatic"], "battlefield": ["Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Draw" },
+      { "advance_to": "Draw", "answers": [false] },
+      { "advance_to": "Main1" },
+      { "cast": "Metamorphosis Fanatic", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Metamorphosis Fanatic"] }, {} ]
+    }
+  }
+]

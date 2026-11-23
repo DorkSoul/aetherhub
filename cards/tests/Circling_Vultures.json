@@ -1,0 +1,108 @@
+[
+  {
+    "name": "discarded from hand at instant speed",
+    "players": [
+      { "hand": ["Circling Vultures"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Circling Vultures", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Circling Vultures"], "hand_count": 0 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "upkeep: exile the top creature card of your graveyard to keep it",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Circling Vultures"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "battlefield_has": ["Circling Vultures"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "upkeep: declining to exile sacrifices it",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Circling Vultures"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Circling Vultures", "Grizzly Bears"], "battlefield_lacks": ["Circling Vultures"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "upkeep: no creature card in graveyard means it is sacrificed",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Circling Vultures"], "graveyard": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Circling Vultures"], "battlefield_lacks": ["Circling Vultures"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: upkeep exiles the most recently put creature card of your graveyard",
+    "start": "Untap",
+    "players": [
+      { "battlefield": ["Circling Vultures"], "graveyard": ["Grizzly Bears", "Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Llanowar Elves"], "graveyard_has": ["Grizzly Bears"], "battlefield_has": ["Circling Vultures"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Vultures died in response, but you may still exile a creature card for it",
+    "start": "Untap",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Circling Vultures", "Mountain"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "cast": "Lightning Bolt", "targets": ["Circling Vultures"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Grizzly Bears"], "graveyard_has": ["Circling Vultures"] },
+        {}
+      ]
+    }
+  }
+]

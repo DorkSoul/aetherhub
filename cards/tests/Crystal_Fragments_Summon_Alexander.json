@@ -1,0 +1,82 @@
+[
+ {
+  "name": "{5}{W}{W} exiles it and returns it transformed as Summon: Alexander",
+  "players": [
+   { "battlefield": ["Crystal Fragments", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Crystal Fragments", "ability": 0 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Summon: Alexander"], "exile": [] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "six lands cannot pay {5}{W}{W}: no transformation",
+  "players": [
+   { "battlefield": ["Crystal Fragments", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Crystal Fragments", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Crystal Fragments"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the transform ability is sorcery-speed: illegal during the opponent's turn",
+  "players": [
+   { "battlefield": ["Crystal Fragments", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "activate": "Crystal Fragments", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Crystal Fragments"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "equip {1} attaches to a creature you control: +1/+1",
+  "players": [ { "battlefield": ["Crystal Fragments", "Plains", { "name": "Grizzly Bears", "sick": false }] }, {} ],
+  "steps": [ { "activate": "Crystal Fragments", "ability": 1, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+  "expect": { "pt": { "Grizzly Bears": [3, 3] }, "attached": { "Crystal Fragments": "Grizzly Bears" } }
+ },
+ {
+  "name": "equip needs a creature you control: an opponent's creature is not a legal target",
+  "players": [ { "battlefield": ["Crystal Fragments", "Plains"] }, { "battlefield": ["Grizzly Bears"] } ],
+  "steps": [ { "activate": "Crystal Fragments", "ability": 1, "illegal": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Crystal Fragments"] }, {} ] }
+ },
+ {
+  "name": "chapter I of the transformed Saga prevents damage to your creatures this turn",
+  "players": [
+   { "battlefield": ["Crystal Fragments", "Plains", "Plains", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }] },
+   { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+  ],
+  "steps": [
+   { "activate": "Crystal Fragments", "ability": 0 },
+   { "resolve": true },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Summon: Alexander", "Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ]
+  }
+ }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "name": "enters: exile the top two cards of target opponent's library",
+    "players": [
+      { "hand": ["Maralen, Fae Ascendant"], "battlefield": ["Swamp", "Forest", "Island", "Island", "Island"] },
+      { "library": ["Hill Giant", "Grizzly Bears", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Maralen, Fae Ascendant" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Maralen, Fae Ascendant"] }, { "exile": ["Hill Giant", "Grizzly Bears"], "library_top": ["Island"] } ] }
+  },
+  {
+    "name": "cast a spell exiled with her free when its mana value is at most the number of Elves and Faeries (just Maralen: 1)",
+    "players": [
+      { "hand": ["Maralen, Fae Ascendant"], "battlefield": ["Swamp", "Forest", "Island", "Island", "Island"] },
+      { "library": ["Elite Vanguard", "Hill Giant", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Maralen, Fae Ascendant" },
+      { "resolve": true },
+      { "cast": "Hill Giant", "illegal": true },
+      { "cast": "Elite Vanguard" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Maralen, Fae Ascendant", "Elite Vanguard"], "hand_count": 0 }, { "exile": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "only once each turn",
+    "players": [
+      { "hand": ["Maralen, Fae Ascendant"], "battlefield": ["Swamp", "Forest", "Island", "Island", "Island"] },
+      { "library": ["Elite Vanguard", "Llanowar Elves", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Maralen, Fae Ascendant" },
+      { "resolve": true },
+      { "cast": "Elite Vanguard" },
+      { "resolve": true },
+      { "cast": "Llanowar Elves", "illegal": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Elite Vanguard"] }, { "exile": ["Llanowar Elves"] } ] }
+  },
+  {
+    "name": "another Elf entering exiles two more; two Elves/Faeries allow mana value 2",
+    "players": [
+      { "hand": ["Llanowar Elves"], "battlefield": ["Maralen, Fae Ascendant", "Forest"] },
+      { "library": ["Runeclaw Bear", "Hill Giant", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Llanowar Elves" },
+      { "resolve": true },
+      { "cast": "Runeclaw Bear" },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Llanowar Elves", "Runeclaw Bear"] }, { "exile": ["Hill Giant"] } ] }
+  },
+  {
+    "name": "cards exiled on an earlier turn can't be cast",
+    "players": [
+      { "hand": ["Maralen, Fae Ascendant"], "battlefield": ["Swamp", "Forest", "Island", "Island", "Island"] },
+      { "library": ["Elite Vanguard", "Hill Giant", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Maralen, Fae Ascendant" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" },
+      { "cast": "Elite Vanguard", "illegal": true }
+    ],
+    "expect": { "players": [ {}, { "exile": ["Elite Vanguard", "Hill Giant"] } ] }
+  },
+  {
+    "name": "ruling: X is 0 for the free cast: Fireball (mana value 1 with X = 0) is castable with Maralen as the only Elf or Faerie",
+    "players": [ { "hand": ["Maralen, Fae Ascendant"], "battlefield": ["Swamp", "Forest", "Island", "Island", "Island"] }, { "library": ["Fireball", "Island"] } ],
+    "steps": [ { "cast": "Maralen, Fae Ascendant" }, { "resolve": true }, { "cast": "Fireball", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ {}, { "graveyard_has": ["Fireball"], "life": 20 } ] }
+  }
+]

@@ -1,0 +1,91 @@
+[
+  {
+    "name": "taps to put a +1/+1 counter on a creature that entered this turn",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": [ { "name": "Cathedral Acolyte", "sick": false }, "Forest", "Forest" ] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "activate": "Cathedral Acolyte", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "counters": { "Grizzly Bears": { "p1p1": 1 } },
+      "tapped": { "Cathedral Acolyte": true }
+    }
+  },
+  {
+    "name": "cannot target a creature that did not enter this turn",
+    "players": [
+      { "battlefield": [ { "name": "Cathedral Acolyte", "sick": false }, "Grizzly Bears" ] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Cathedral Acolyte", "ability": 0, "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "creature with a counter has ward {1}: opponent without spare mana is countered",
+    "players": [
+      { "hand": ["Grizzly Bears"], "battlefield": [ { "name": "Cathedral Acolyte", "sick": false }, "Forest", "Forest" ] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "cast": "Grizzly Bears" },
+      { "resolve": true },
+      { "activate": "Cathedral Acolyte", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "counters": { "Grizzly Bears": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "ruling: ward applies to a creature with any kind of counter, not just +1/+1 counters",
+    "players": [
+      { "battlefield": [ { "name": "Cathedral Acolyte", "sick": false }, "Forest", { "name": "Grizzly Bears", "counters": { "Charge": 1 } } ] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "counters": { "Grizzly Bears": { "Charge": 1 } }
+    }
+  },
+  {
+    "name": "ruling: ward still resolves after Cathedral Acolyte leaves; the opponent must still pay or be countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": [ { "name": "Cathedral Acolyte", "sick": false }, "Mountain", { "name": "Grizzly Bears", "counters": { "p1p1": 1 } } ] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["Cathedral Acolyte"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Grizzly Bears"], "graveyard_has": ["Cathedral Acolyte", "Lightning Bolt"] },
+        { "graveyard": ["Lightning Bolt"] }
+      ]
+    }
+  }
+]

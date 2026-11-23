@@ -1,0 +1,205 @@
+[
+  {
+    "name": "Kytheon and two other attackers transform him at end of combat",
+    "players": [
+      { "battlefield": ["Kytheon, Hero of Akros // Gideon, Battle-Forged", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [
+        { "card": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "at": "p1" },
+        { "card": "Grizzly Bears", "at": "p1" },
+        { "card": "Hill Giant", "at": "p1" }
+      ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Gideon, Battle-Forged"], "battlefield_lacks": ["Kytheon, Hero of Akros // Gideon, Battle-Forged"] },
+        {}
+      ],
+      "counters": { "Gideon, Battle-Forged": { "loyalty": 3 } }
+    }
+  },
+  {
+    "name": "an attacker that dies in combat still counts toward the transform",
+    "players": [
+      { "battlefield": ["Kytheon, Hero of Akros // Gideon, Battle-Forged", "Grizzly Bears", "Hill Giant"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [
+        { "card": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "at": "p1" },
+        { "card": "Grizzly Bears", "at": "p1" },
+        { "card": "Hill Giant", "at": "p1" }
+      ] },
+      { "block": [ { "blocker": "p1:Hill Giant", "attacker": "Grizzly Bears" } ], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Gideon, Battle-Forged"], "battlefield_lacks": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Kytheon with only one other attacker stays a creature",
+    "players": [
+      { "battlefield": ["Kytheon, Hero of Akros // Gideon, Battle-Forged", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [
+        { "card": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "at": "p1" },
+        { "card": "Grizzly Bears", "at": "p1" }
+      ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Kytheon, Hero of Akros // Gideon, Battle-Forged"] },
+        {}
+      ],
+      "pt": { "Kytheon, Hero of Akros // Gideon, Battle-Forged": [2, 1] }
+    }
+  },
+  {
+    "name": "Gideon +2 forces the creature to attack Gideon next turn",
+    "players": [
+      { "battlefield": ["Gideon, Battle-Forged"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Gideon, Battle-Forged", "ability": 0, "targets": ["p1:Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "DeclareAttackers", "player": 1 },
+      { "attack": [], "player": 1, "illegal": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 }
+    ],
+    "expect": {
+      "players": [{ "life": 20 }, {}],
+      "counters": { "Gideon, Battle-Forged": { "loyalty": 3 } }
+    }
+  },
+  {
+    "name": "{2}{W} gives Kytheon indestructible in response to a lethal Shock",
+    "players": [
+      { "battlefield": ["Kytheon, Hero of Akros // Gideon, Battle-Forged", "Plains", "Plains", "Plains"] },
+      { "hand": ["Shock"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Kytheon, Hero of Akros // Gideon, Battle-Forged"] },
+      { "activate": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "ability": 0 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Kytheon, Hero of Akros // Gideon, Battle-Forged"] }, { "graveyard_has": ["Shock"] } ]
+    }
+  },
+  {
+    "name": "indestructible ability needs {2}{W}: two Plains are not enough",
+    "players": [ { "battlefield": ["Kytheon, Hero of Akros // Gideon, Battle-Forged", "Plains", "Plains"] }, {} ],
+    "steps": [ { "activate": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "ability": 0, "illegal": true } ]
+  },
+  {
+    "name": "Gideon +1 untaps the target creature and gives it indestructible until your next turn",
+    "players": [ { "battlefield": ["Gideon, Battle-Forged", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "activate": "Gideon, Battle-Forged", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ],
+      "tapped": { "Grizzly Bears": false },
+      "keywords": { "Grizzly Bears": ["Indestructible"] },
+      "counters": { "Gideon, Battle-Forged": { "loyalty": 4 } }
+    }
+  },
+  {
+    "name": "Gideon 0 becomes a 4/4 creature and prevents damage to him: Shock does not remove loyalty",
+    "players": [ { "battlefield": ["Gideon, Battle-Forged"] }, { "hand": ["Shock"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "activate": "Gideon, Battle-Forged", "ability": 2 },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Shock", "player": 1, "targets": ["Gideon, Battle-Forged"] },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gideon, Battle-Forged"] }, { "graveyard_has": ["Shock"] } ],
+      "pt": { "Gideon, Battle-Forged": [4, 4] },
+      "counters": { "Gideon, Battle-Forged": { "loyalty": 3 } }
+    }
+  },
+  {
+    "name": "ruling: the planeswalker that entered by transforming in combat can use a loyalty ability in the same turn's main phase",
+    "players": [
+      { "battlefield": ["Kytheon, Hero of Akros // Gideon, Battle-Forged", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [
+        { "card": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "at": "p1" },
+        { "card": "Grizzly Bears", "at": "p1" },
+        { "card": "Hill Giant", "at": "p1" }
+      ] },
+      { "advance_to": "Main2" },
+      { "activate": "Gideon, Battle-Forged", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 13 } ],
+      "counters": { "Gideon, Battle-Forged": { "loyalty": 4 } },
+      "tapped": { "Grizzly Bears": false }
+    }
+  },
+  {
+    "name": "ruling: Gideon becoming a creature does not count as a creature entering (Soul Warden gains no life)",
+    "players": [
+      { "battlefield": ["Gideon, Battle-Forged", "Soul Warden"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, Battle-Forged", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "life": 20 }, {} ],
+      "pt": { "Gideon, Battle-Forged": [4, 4] }
+    }
+  },
+  {
+    "name": "ruling: the back face of a double-faced card cannot be cast from hand",
+    "players": [
+      { "hand": ["Kytheon, Hero of Akros // Gideon, Battle-Forged"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Kytheon, Hero of Akros // Gideon, Battle-Forged", "face": true, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Kytheon, Hero of Akros // Gideon, Battle-Forged"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: Gideon's 0 adds the creature types Human and Soldier and keeps his planeswalker subtype",
+    "players": [
+      { "battlefield": ["Gideon, Battle-Forged"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Gideon, Battle-Forged", "ability": 2 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Gideon, Battle-Forged"] }, {} ],
+      "subtypes": { "Gideon, Battle-Forged": ["Human", "Soldier", "Gideon"] }
+    }
+  }
+]

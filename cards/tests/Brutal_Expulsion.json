@@ -1,0 +1,321 @@
+[
+ {
+  "name": "mode 1: bounce a creature",
+  "players": [
+   {
+    "hand": [
+     "Brutal Expulsion"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Brutal Expulsion",
+    "answers": [
+     [
+      0
+     ]
+    ],
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Brutal Expulsion"
+     ]
+    },
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield": []
+    }
+   ],
+   "colors": {}
+  }
+ },
+ {
+  "name": "mode 2: 2 damage kills the creature and exiles it",
+  "players": [
+   {
+    "hand": [
+     "Brutal Expulsion"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Brutal Expulsion",
+    "answers": [
+     [
+      1
+     ]
+    ],
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Brutal Expulsion"
+     ]
+    },
+    {
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "mode 2 on a planeswalker that loses its last loyalty: exiled",
+  "players": [
+   {
+    "hand": [
+     "Brutal Expulsion"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     {
+      "name": "Test Walker",
+      "counters": {
+       "loyalty": 2
+      }
+     }
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Brutal Expulsion",
+    "answers": [
+     [
+      1
+     ]
+    ],
+    "targets": [
+     "Test Walker"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "exile": [
+      "Test Walker"
+     ],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "both modes: bounce one creature and exile-kill another",
+  "players": [
+   {
+    "hand": [
+     "Brutal Expulsion"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Brutal Expulsion",
+    "answers": [
+     [
+      0,
+      1
+     ]
+    ],
+    "targets": [
+     "Hill Giant",
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "hand": [
+      "Hill Giant"
+     ],
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "battlefield": []
+    }
+   ]
+  }
+ },
+ {
+  "name": "mode 1 returns a spell on the stack to its owner's hand",
+  "players": [
+   {
+    "hand": [
+     "Brutal Expulsion",
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Mountain",
+     "Mountain",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "tap_for_mana": "Forest"
+   },
+   {
+    "tap_for_mana": "Mountain"
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "cast": "Brutal Expulsion",
+    "answers": [
+     [
+      0
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Brutal Expulsion"
+     ]
+    },
+    {}
+   ]
+  }
+ }
+,
+ {
+  "name": "ruling: a spell returned to hand by mode 1 is removed from the stack and does not resolve",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain"]
+   },
+   {
+    "hand": ["Brutal Expulsion"],
+    "battlefield": ["Island", "Mountain", "Island", "Mountain"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Brutal Expulsion", "player": 1, "answers": [[0]], "targets": [{ "stack": "Lightning Bolt" }] },
+   { "pass": true, "player": 1 },
+   { "pass": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand": ["Lightning Bolt"], "graveyard": [] },
+    { "life": 20, "graveyard": ["Brutal Expulsion"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: exile applies to a creature destroyed later this turn, not only by damage",
+  "players": [
+   {
+    "hand": ["Brutal Expulsion", "Terror"],
+    "battlefield": ["Island", "Island", "Mountain", "Mountain", "Swamp", "Swamp"]
+   },
+   {
+    "battlefield": ["Hill Giant"]
+   }
+  ],
+  "steps": [
+   { "cast": "Brutal Expulsion", "answers": [[1]], "targets": ["Hill Giant"] },
+   { "resolve": true },
+   { "cast": "Terror", "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Brutal Expulsion", "Terror"] },
+    { "exile": ["Hill Giant"], "battlefield": [] }
+   ]
+  }
+ }
+]

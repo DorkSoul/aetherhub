@@ -1,0 +1,131 @@
+[
+ {
+  "name": "behold a Goblin you control: it is exiled and Champion enters",
+  "players": [
+   { "hand": ["Champion of the Weird"], "battlefield": ["Goblin Guide", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Champion of the Weird", "answers": [[0]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Champion of the Weird"], "battlefield_lacks": ["Goblin Guide"], "exile": ["Goblin Guide"] }, {} ]
+  }
+ },
+ {
+  "name": "behold a Goblin card from hand: it is exiled from hand",
+  "players": [
+   { "hand": ["Champion of the Weird", "Goblin Guide"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Champion of the Weird", "answers": [[1]] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Champion of the Weird"], "exile": ["Goblin Guide"] }, {} ]
+  }
+ },
+ {
+  "name": "no Goblin to behold: it can't be cast",
+  "players": [
+   { "hand": ["Champion of the Weird"], "battlefield": ["Grizzly Bears", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [ { "cast": "Champion of the Weird", "illegal": true } ],
+  "expect": { "players": [ { "hand": ["Champion of the Weird"] }, {} ] }
+ },
+ {
+  "name": "pay 1 life, blight 2: the opponent puts two -1/-1 counters on their creature",
+  "players": [
+   { "battlefield": [ { "name": "Champion of the Weird", "sick": false } ] },
+   { "battlefield": ["Hill Giant"] }
+  ],
+  "steps": [
+   { "activate": "Champion of the Weird", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 19 }, { "battlefield": ["Hill Giant"] } ],
+   "pt": { "Champion of the Weird": [3, 3], "Hill Giant": [1, 1] }
+  }
+ },
+ {
+  "name": "leaving the battlefield returns the exiled Goblin to its owner's hand",
+  "players": [
+   { "hand": ["Terminate", "Champion of the Weird"], "battlefield": ["Goblin Guide", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Champion of the Weird", "answers": [[0]] },
+   { "resolve": true },
+   { "resolve": true },
+   { "cast": "Terminate", "targets": ["Champion of the Weird"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "hand": ["Goblin Guide"], "graveyard": ["Champion of the Weird", "Terminate"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the chosen creature need not survive the counters (a 2/2 dies to blight 2)",
+  "players": [
+   { "battlefield": [ { "name": "Champion of the Weird", "sick": false } ] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Champion of the Weird", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 19 }, { "graveyard": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: blight 2 on three +1/+1 counters leaves one +1/+1 counter and no -1/-1 counter",
+  "players": [
+   { "battlefield": [ { "name": "Champion of the Weird", "sick": false } ] },
+   { "battlefield": [ { "name": "Hill Giant", "counters": { "+1/+1": 3 } } ] }
+  ],
+  "steps": [
+   { "activate": "Champion of the Weird", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ {}, { "battlefield": ["Hill Giant"] } ],
+   "counters": { "Hill Giant": { "+1/+1": 1, "-1/-1": 0 } },
+   "pt": { "Hill Giant": [4, 4] }
+  }
+ },
+ {
+  "name": "ruling: all blight counters go on the one creature the opponent chooses, never split",
+  "players": [
+   { "battlefield": [ { "name": "Champion of the Weird", "sick": false } ] },
+   { "battlefield": ["Hill Giant", "Grizzly Bears"] }
+  ],
+  "steps": [
+   { "activate": "Champion of the Weird", "targets": ["p1"] },
+   { "resolve": true, "answers": ["Hill Giant"] }
+  ],
+  "expect": {
+   "players": [ {}, {} ],
+   "pt": { "Hill Giant": [1, 1], "Grizzly Bears": [2, 2] }
+  }
+ },
+ {
+  "name": "ruling: a beheld card stays exiled when the Champion is countered",
+  "players": [
+   { "hand": ["Champion of the Weird"], "battlefield": ["Goblin Guide", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "hand": ["Essence Scatter"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Champion of the Weird", "answers": [[0]] },
+   { "pass": true },
+   { "cast": "Essence Scatter", "player": 1, "targets": [ { "stack": "Champion of the Weird" } ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "graveyard_has": ["Champion of the Weird"], "battlefield_lacks": ["Goblin Guide"], "exile": ["Goblin Guide"] }, {} ]
+  }
+ }
+]

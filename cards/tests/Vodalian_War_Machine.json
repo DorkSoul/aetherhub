@@ -1,0 +1,81 @@
+[
+  {
+    "name": "Dies: destroys only the Merfolk tapped to pay its abilities",
+    "players": [ { "hand": ["Doom Blade"], "battlefield": ["Vodalian War Machine", "Merfolk of the Pearl Trident", "Merfolk Looter", "Swamp", "Island"] }, {} ],
+    "steps": [
+      { "activate": "Vodalian War Machine", "ability": 1, "answers": ["Merfolk of the Pearl Trident"] },
+      { "resolve": true },
+      { "cast": "Doom Blade", "targets": ["Vodalian War Machine"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Doom Blade", "Merfolk of the Pearl Trident", "Vodalian War Machine"], "battlefield_has": ["Merfolk Looter"] }, {} ]
+    }
+  },
+  {
+    "name": "Dies with nothing tapped for it: Merfolk survive",
+    "players": [ { "hand": ["Doom Blade"], "battlefield": ["Vodalian War Machine", "Merfolk of the Pearl Trident", "Swamp", "Island"] }, {} ],
+    "steps": [
+      { "cast": "Doom Blade", "targets": ["Vodalian War Machine"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Doom Blade", "Vodalian War Machine"], "battlefield_has": ["Merfolk of the Pearl Trident"] }, {} ]
+    }
+  },
+  {
+    "name": "Tapping a Merfolk pumps +2/+1",
+    "players": [ { "battlefield": ["Vodalian War Machine", "Merfolk Looter"] }, {} ],
+    "steps": [
+      { "activate": "Vodalian War Machine", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "pt": { "Vodalian War Machine": [2, 5] } }
+  },
+  {
+    "name": "tapping a Merfolk lets it attack as though it had no defender (pumped by another Merfolk)",
+    "players": [ { "battlefield": ["Vodalian War Machine", "Merfolk Looter", "Merfolk of the Pearl Trident"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Vodalian War Machine", "ability": 0, "answers": ["Merfolk Looter"] },
+      { "resolve": true },
+      { "activate": "Vodalian War Machine", "ability": 1 },
+      { "resolve": true },
+      { "attack": [ { "card": "Vodalian War Machine", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ],
+      "pt": { "Vodalian War Machine": [2, 5] }
+    }
+  },
+  {
+    "name": "without an untapped Merfolk the War Machine cannot attack (defender stays)",
+    "players": [ { "battlefield": ["Vodalian War Machine", "Swamp"] }, {} ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "activate": "Vodalian War Machine", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Vodalian War Machine"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a Merfolk tapped to pay for an ability cannot pay for another one",
+    "players": [ { "battlefield": ["Vodalian War Machine", "Merfolk Looter"] }, {} ],
+    "steps": [
+      { "activate": "Vodalian War Machine", "ability": 1 },
+      { "resolve": true },
+      { "activate": "Vodalian War Machine", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "pt": { "Vodalian War Machine": [2, 5] },
+      "tapped": { "Merfolk Looter": true }
+    }
+  }
+]

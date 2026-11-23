@@ -1,0 +1,75 @@
+[
+ {
+  "name": "casting an artifact spell creates a 3/1 red Dinosaur, once each turn",
+  "players": [
+   { "hand": ["Sol Ring", "Sol Ring"], "battlefield": ["Poetic Ingenuity", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "resolve": true },
+   { "cast": "Sol Ring" },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Dinosaur 3-1"] }, {} ],
+   "pt": { "Dinosaur 3-1": [3, 1] }
+  }
+ },
+ {
+  "name": "a non-artifact spell does not create a Dinosaur",
+  "players": [
+   { "hand": ["Lightning Bolt"], "battlefield": ["Poetic Ingenuity", "Mountain"] },
+   { "battlefield": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_lacks": ["Dinosaur 3-1"] }, { "graveyard": ["Grizzly Bears"] } ]
+  }
+ },
+ {
+  "name": "attacking Dinosaurs: one Treasure per attacking Dinosaur",
+  "players": [ { "battlefield": ["Poetic Ingenuity", "Ancient Brontodon", "Dinosaur 3-1"] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Ancient Brontodon", "at": "p1" }, { "card": "Dinosaur 3-1", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield": ["Poetic Ingenuity", "Ancient Brontodon", "Dinosaur 3-1", "Treasure", "Treasure"] }, {} ] }
+ },
+ {
+  "name": "a non-Dinosaur attacker makes no Treasure",
+  "players": [ { "battlefield": ["Poetic Ingenuity", "Grizzly Bears"] }, {} ],
+  "steps": [
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "resolve": true },
+   { "block": [] },
+   { "advance_to": "Main2" }
+  ],
+  "expect": { "players": [ { "battlefield_lacks": ["Treasure"] }, { "life": 18 } ] }
+ },
+ {
+  "name": "ruling: the Dinosaur is created even when the artifact spell is countered",
+  "players": [
+   { "hand": ["Sol Ring"], "battlefield": ["Poetic Ingenuity", "Mountain", "Mountain", "Mountain", "Mountain"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Sol Ring" },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Sol Ring" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Sol Ring"], "battlefield_has": ["Poetic Ingenuity", "Dinosaur 3-1"] },
+    { "graveyard": ["Counterspell"] }
+   ],
+   "pt": { "Dinosaur 3-1": [3, 1] }
+  }
+ }
+]

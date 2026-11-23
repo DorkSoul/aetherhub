@@ -1,0 +1,59 @@
+[
+  {
+    "name": "escape: exile three other cards, enters with two +1/+1 counters",
+    "players": [
+      { "graveyard": ["Underworld Charger", "Grizzly Bears", "Grizzly Bears", "Grizzly Bears"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] },
+      {}
+    ],
+    "steps": [{ "cast": "Underworld Charger", "alt": 0 }, { "resolve": true }],
+    "expect": {
+      "players": [{ "battlefield_has": ["Underworld Charger"], "exile": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] }, {}],
+      "pt": { "Underworld Charger": [5, 5] },
+      "counters": { "Underworld Charger": { "p1p1": 2 } }
+    }
+  },
+  {
+    "name": "cast from hand: no counters",
+    "players": [{ "hand": ["Underworld Charger"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {}],
+    "steps": [{ "cast": "Underworld Charger" }, { "resolve": true }],
+    "expect": { "pt": { "Underworld Charger": [3, 3] } }
+  },
+  {
+    "name": "can't block",
+    "players": [{ "battlefield": ["Grizzly Bears"] }, { "battlefield": ["Underworld Charger"] }],
+    "steps": [
+      { "attack": [{ "card": "Grizzly Bears", "at": "p1" }] },
+      { "block": [{ "blocker": "Underworld Charger", "attacker": "Grizzly Bears" }], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [{}, { "life": 18 }] }
+  },
+  {
+    "name": "can't block: an illegal blocker is dropped and the attacker's damage goes through",
+    "players": [ { "battlefield": ["Hill Giant", "Grizzly Bears"] }, { "battlefield": ["Underworld Charger", "Savannah Lions"] } ],
+    "steps": [
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [ { "blocker": "Underworld Charger", "attacker": "Grizzly Bears" }, { "blocker": "Savannah Lions", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ {}, { "life": 18 } ] }
+  },
+  {
+    "name": "ruling: a card with escape can be escaped right after it dies on your turn",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Underworld Charger", "Mountain", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Underworld Charger"] },
+      { "resolve": true },
+      { "cast": "Underworld Charger", "alt": 0, "answers": [["Grizzly Bears", "Grizzly Bears", "Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Underworld Charger"] }, {} ],
+      "pt": { "Underworld Charger": [5, 5] }
+    }
+  }
+]

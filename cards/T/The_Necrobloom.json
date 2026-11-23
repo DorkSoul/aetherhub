@@ -1,0 +1,64 @@
+{
+  "name": "The Necrobloom",
+  "mana_cost": "{1}{W}{B}{G}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Plant"],
+  "power": 2,
+  "toughness": 7,
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "Landfall" },
+      "effects": [
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "DistinctNames", "filter": { "types": ["Land"], "controller": "You" }, "zone": "Battlefield" },
+            "cmp": { "op": "Ge", "n": 7 }
+          },
+          "then": [ { "type": "CreateToken", "token": "Zombie", "n": { "type": "Fixed", "n": 1 } } ],
+          "else": [ { "type": "CreateToken", "token": "Plant", "n": { "type": "Fixed", "n": 1 } } ]
+        }
+      ]
+    },
+    {
+      "type": "Replace",
+      "what": {
+        "type": "Draw",
+        "who": "You",
+        "optional": true,
+        "instead": [
+          {
+            "type": "Choose",
+            "who": { "type": "You" },
+            "zone": "Graveyard",
+            "filter": { "types": ["Land"], "owner": "You" },
+            "min": 1,
+            "max": 1,
+            "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+          },
+          { "type": "Mill", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 2 } },
+          { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "to": "Hand", "from": "Graveyard" }
+        ]
+      },
+      "condition": {
+        "type": "All",
+        "cs": [
+          {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": {}, "zone": "Library", "player": { "type": "You" } },
+            "cmp": { "op": "Ge", "n": 2 }
+          },
+          {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "types": ["Land"], "owner": "You" }, "zone": "Graveyard", "player": { "type": "You" } },
+            "cmp": { "op": "Ge", "n": 1 }
+          }
+        ]
+      }
+    }
+  ],
+  "oracle_text": "Landfall — Whenever a land you control enters, create a 0/1 green Plant creature token. If you control seven or more lands with different names, create a 2/2 black Zombie creature token instead.\nLand cards in your graveyard have dredge 2. (You may return a land card from your graveyard to your hand and mill two cards instead of drawing a card.)"
+}

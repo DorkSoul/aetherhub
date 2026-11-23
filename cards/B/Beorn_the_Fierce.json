@@ -1,0 +1,55 @@
+{
+  "name": "Beorn the Fierce",
+  "mana_cost": "{3}{G}{G}",
+  "supertypes": ["Legendary"],
+  "types": ["Creature"],
+  "subtypes": ["Bear", "Shapeshifter", "Warrior"],
+  "power": 6,
+  "toughness": 6,
+  "keywords": ["Trample"],
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "Modify",
+        "affects": { "subtypes": ["Bear"], "controller": "You", "other": true },
+        "power": { "type": "Fixed", "n": 2 },
+        "toughness": { "type": "Fixed", "n": 2 }
+      }
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantKeyword",
+        "affects": { "has_counter": "Trample" },
+        "keyword": "Trample"
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "BeginCombat", "whose": "You" },
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature"], "controller": "You" } },
+          "min": 0,
+          "max": 1,
+          "label": "up to one target creature you control"
+        }
+      ],
+      "effects": [
+        { "type": "AddCounters", "what": { "type": "Target", "idx": 0 }, "kind": "Trample", "n": { "type": "Fixed", "n": 1 } },
+        { "type": "Animate", "what": { "type": "Target", "idx": 0 }, "add_subtypes": ["Bear"], "duration": "Forever" },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "subtypes": ["Bear"], "controller": "You" }, "zone": "Battlefield" },
+            "cmp": { "op": "Ge", "n": 3 }
+          },
+          "then": [ { "type": "Draw", "n": { "type": "Fixed", "n": 2 }, "who": { "type": "You" } } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards."
+}

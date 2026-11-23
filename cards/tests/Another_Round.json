@@ -1,0 +1,230 @@
+[
+  {
+    "name": "X=0: flickers the chosen creature once (Wall of Omens draws again)",
+    "players": [
+      {
+        "hand": [
+          "Another Round"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Wall of Omens"
+        ],
+        "library": [
+          "Forest",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Another Round",
+        "auto": true
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Wall of Omens"
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "battlefield_has": [
+            "Wall of Omens"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "choosing no creatures does nothing; opponent's creature is untouched",
+    "players": [
+      {
+        "hand": [
+          "Another Round"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Wall of Omens"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Wall of Omens"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Another Round",
+        "auto": true
+      },
+      {
+        "resolve": true,
+        "answers": [
+          []
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 0,
+          "battlefield_has": [
+            "Wall of Omens"
+          ]
+        },
+        {
+          "battlefield": [
+            "Wall of Omens"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "tokens exiled this way cease to exist and do not return",
+    "players": [
+      {
+        "hand": [
+          "Raise the Alarm",
+          "Another Round"
+        ],
+        "battlefield": [
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Plains",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Raise the Alarm"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Another Round",
+        "auto": true
+      },
+      {
+        "resolve": true,
+        "answers": [
+          [
+            "Soldier",
+            "Soldier",
+            "Grizzly Bears"
+          ]
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Plains",
+            "Plains",
+            "Plains",
+            "Plains",
+            "Plains",
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: each repeat may choose a different set of creatures",
+    "players": [
+      {
+        "hand": ["Another Round"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Wall of Omens", "Grizzly Bears"],
+        "library": ["Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Another Round", "answers": [1], "auto": true },
+      { "resolve": true, "answers": [["Wall of Omens"], ["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1, "battlefield_has": ["Wall of Omens", "Grizzly Bears"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a creature flickered in each pass enters again each time (Wall of Omens draws twice at X=1)",
+    "players": [
+      {
+        "hand": ["Another Round"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Wall of Omens"],
+        "library": ["Forest", "Forest", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Another Round", "answers": [1], "auto": true },
+      { "resolve": true, "answers": [["Wall of Omens"], ["Wall of Omens"]] }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 2, "battlefield_has": ["Wall of Omens"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: counters on a flickered creature cease to exist when it returns",
+    "players": [
+      {
+        "hand": ["Another Round"],
+        "battlefield": ["Plains", "Plains", "Plains", { "name": "Wall of Omens", "counters": { "+1/+1": 1 } }],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Another Round", "auto": true },
+      { "resolve": true, "answers": [["Wall of Omens"]] }
+    ],
+    "expect": {
+      "pt": { "Wall of Omens": [0, 4] },
+      "players": [ { "battlefield_has": ["Wall of Omens"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: an Aura on a flickered creature is put into its owner's graveyard",
+    "players": [
+      {
+        "hand": ["Pacifism", "Another Round"],
+        "battlefield": ["Plains", "Plains", "Plains", "Plains", "Plains", "Wall of Omens"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Pacifism", "targets": ["Wall of Omens"] },
+      { "resolve": true },
+      { "cast": "Another Round", "auto": true },
+      { "resolve": true, "answers": [["Wall of Omens"]] }
+    ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Pacifism"], "battlefield_has": ["Wall of Omens"], "battlefield_lacks": ["Pacifism"] }, {} ]
+    }
+  }
+]

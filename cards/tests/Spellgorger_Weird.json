@@ -1,0 +1,161 @@
+[
+ {
+  "name": "noncreature spell adds a counter",
+  "players": [
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Spellgorger Weird"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Spellgorger Weird": {
+     "PlusOnePlusOne": 1
+    }
+   },
+   "pt": {
+    "Spellgorger Weird": [
+     3,
+     3
+    ]
+   }
+  }
+ },
+ {
+  "name": "creature spell does not",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Forest",
+     "Forest",
+     "Spellgorger Weird"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Spellgorger Weird": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "opponent's noncreature spell does not",
+  "players": [
+   {
+    "battlefield": [
+     "Spellgorger Weird"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt"
+    ],
+    "battlefield": [
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "pt": {
+    "Spellgorger Weird": [
+     2,
+     2
+    ]
+   }
+  }
+ },
+ {
+  "name": "ruling: the cast trigger resolves before the spell it was triggered by",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Spellgorger Weird"]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "pass": true }
+  ],
+  "expect": {
+   "stack_empty": false,
+   "players": [ {}, { "life": 20 } ],
+   "counters": { "Spellgorger Weird": { "PlusOnePlusOne": 1 } }
+  }
+ },
+ {
+  "name": "ruling: the trigger still resolves when the spell is countered",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Mountain", "Spellgorger Weird"]
+   },
+   {
+    "hand": ["Counterspell"],
+    "battlefield": ["Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "pass": true },
+   { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt"] },
+    { "life": 20, "graveyard": ["Counterspell"] }
+   ],
+   "counters": { "Spellgorger Weird": { "PlusOnePlusOne": 1 } },
+   "pt": { "Spellgorger Weird": [3, 3] }
+  }
+ }
+]

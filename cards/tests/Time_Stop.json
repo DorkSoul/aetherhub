@@ -1,0 +1,80 @@
+[
+  {
+    "name": "ends the turn: spell goes to graveyard, turn passes",
+    "players": [
+      {
+        "hand": ["Time Stop"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Time Stop" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "graveyard_has": ["Time Stop"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "five lands: not enough mana to cast",
+    "players": [
+      {
+        "hand": ["Time Stop"],
+        "battlefield": ["Island", "Island", "Island", "Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Time Stop", "illegal": true }
+    ],
+    "expect": {
+      "turn": 1
+    }
+  },
+  {
+    "name": "ruling: Time Stop exiles a spell on the stack instead of letting it resolve",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] },
+      { "hand": ["Time Stop"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "player": 1, "cast": "Time Stop" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        { "exile": ["Lightning Bolt"] },
+        { "life": 20, "graveyard_has": ["Time Stop"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Time Stop removes attacking creatures from combat, so no combat damage is dealt",
+    "players": [
+      { "battlefield": ["Grizzly Bears"] },
+      { "hand": ["Time Stop"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "pass": true },
+      { "player": 1, "cast": "Time Stop" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "turn": 2,
+      "players": [
+        {},
+        { "life": 20, "graveyard_has": ["Time Stop"] }
+      ]
+    }
+  }
+]

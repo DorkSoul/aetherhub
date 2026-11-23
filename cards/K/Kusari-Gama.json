@@ -1,0 +1,86 @@
+{
+  "name": "Kusari-Gama",
+  "mana_cost": "{3}",
+  "types": ["Artifact"],
+  "subtypes": ["Equipment"],
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "GrantAbility",
+        "affects": { "types": ["Creature"], "attached_by_source": true },
+        "ability": {
+          "type": "Activated",
+          "cost": [{ "type": "Mana", "cost": "{2}" }],
+          "effects": [
+            {
+              "type": "Pump",
+              "what": { "type": "This" },
+              "power": { "type": "Fixed", "n": 1 },
+              "toughness": { "type": "Fixed", "n": 0 },
+              "duration": "UntilEndOfTurn"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": {
+        "type": "DealsDamage",
+        "filter": { "types": ["Creature"], "attached_by_source": true },
+        "to": "Creature",
+        "combat": true
+      },
+      "condition": {
+        "type": "SelIs",
+        "what": { "type": "TriggerObject" },
+        "filter": { "blocking": true }
+      },
+      "effects": [
+        {
+          "type": "ForEach",
+          "objects": { "type": "TriggerObject" },
+          "effects": [
+            { "type": "StoreRemembered", "slot": 0 },
+            {
+              "type": "DealDamage",
+              "source": { "type": "This" },
+              "amount": { "type": "EventAmount" },
+              "to": {
+                "type": "All",
+                "filter": {
+                  "types": ["Creature"],
+                  "controlled_by": { "type": "ControllerOf", "of": { "type": "Remembered" } },
+                  "not_among_stored": 0
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{3}" }],
+      "timing": "Sorcery",
+      "targets": [
+        {
+          "what": {
+            "type": "Permanent",
+            "filter": { "types": ["Creature"], "controller": "You" }
+          },
+          "label": "target creature you control"
+        }
+      ],
+      "effects": [
+        {
+          "type": "Attach",
+          "what": { "type": "This" },
+          "to": { "type": "Target", "idx": 0 }
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Equipped creature has \"{2}: This creature gets +1/+0 until end of turn.\"\nWhenever equipped creature deals damage to a blocking creature, Kusari-Gama deals that much damage to each other creature defending player controls.\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)"
+}

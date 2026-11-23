@@ -1,0 +1,38 @@
+{
+  "name": "Mirrodin Besieged",
+  "mana_cost": "{2}{U}",
+  "types": ["Enchantment"],
+  "abilities": [
+    {
+      "type": "Triggered",
+      "trigger": { "type": "EntersBattlefield", "filter": { "this": true } },
+      "effects": [ { "type": "ChooseNumber", "who": { "type": "You" }, "min": 1, "max": 2 } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "SpellCast", "by": "You", "filter": { "types": ["Artifact"] } },
+      "condition": { "type": "Compare", "a": { "type": "ChosenNumber" }, "cmp": { "op": "Eq", "n": 1 } },
+      "effects": [ { "type": "CreateToken", "token": "Myr 1-1" } ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "End", "whose": "You" },
+      "condition": { "type": "Compare", "a": { "type": "ChosenNumber" }, "cmp": { "op": "Eq", "n": 2 } },
+      "targets": [ { "what": { "type": "Player", "filter": "Opponent" }, "label": "target opponent" } ],
+      "effects": [
+        { "type": "Draw", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        { "type": "Discard", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "Count", "filter": { "types": ["Artifact"], "owner": "You" }, "zone": "Graveyard" },
+            "cmp": { "op": "Ge", "n": 15 }
+          },
+          "then": [ { "type": "LoseGame", "who": { "type": "Target", "idx": 0 } } ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "As Mirrodin Besieged enters, choose Mirran or Phyrexian.\n• Mirran — Whenever you cast an artifact spell, create a 1/1 colorless Myr artifact creature token.\n• Phyrexian — At the beginning of your end step, draw a card, then discard a card. Then if there are fifteen or more artifact cards in your graveyard, target opponent loses the game."
+}

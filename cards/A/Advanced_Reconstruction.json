@@ -1,0 +1,79 @@
+{
+  "name": "Advanced Reconstruction",
+  "mana_cost": "{3}{R}",
+  "types": ["Enchantment"],
+  "subtypes": ["Class"],
+  "abilities": [
+    { "type": "EntersWithCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 } },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Main1", "whose": "You" },
+      "effects": [
+        { "type": "Mill", "who": { "type": "You" }, "n": { "type": "Fixed", "n": 1 } },
+        {
+          "type": "Choose",
+          "who": { "type": "You" },
+          "zone": "Graveyard",
+          "min": 1,
+          "max": 1,
+          "random": true,
+          "then": [
+            { "type": "Move", "what": { "type": "Remembered" }, "to": "Exile", "remember": true },
+            { "type": "GrantPlayFromExile", "what": { "type": "Remembered" }, "window": "ThisTurn" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{1}{R}" }],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 1 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 } }
+        ]
+      },
+      "effects": [
+        { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "ChangesZone", "filter": { "owner": "You" }, "from": "Graveyard" },
+      "batched": true,
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+      "effects": [
+        { "type": "DealDamage", "to": { "type": "EachOpponent" }, "amount": { "type": "Fixed", "n": 2 } }
+      ]
+    },
+    {
+      "type": "Activated",
+      "cost": [{ "type": "Mana", "cost": "{1}{R}" }],
+      "timing": "Sorcery",
+      "condition": {
+        "type": "All",
+        "cs": [
+          { "type": "SourceHasCounter", "kind": "Level", "at_least": 2 },
+          { "type": "Not", "c": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 } }
+        ]
+      },
+      "effects": [
+        { "type": "AddCounters", "kind": "Level", "n": { "type": "Fixed", "n": 1 }, "what": { "type": "This" } }
+      ]
+    },
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CostChange",
+        "filter": {},
+        "whose": "You",
+        "generic": -2,
+        "not_from": "Hand"
+      },
+      "condition": { "type": "SourceHasCounter", "kind": "Level", "at_least": 3 }
+    }
+  ],
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nAt the beginning of your first main phase, mill a card, then exile a card from your graveyard at random. You may play the exiled card this turn.\n{1}{R}: Level 2\nWhenever one or more cards leave your graveyard, this Class deals 2 damage to each opponent.\n{1}{R}: Level 3\nSpells you cast from anywhere other than your hand cost {2} less to cast."
+}

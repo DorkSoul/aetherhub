@@ -1,0 +1,78 @@
+[
+  {
+    "name": "attack with opponent holding no cards: you draw a card",
+    "players": [
+      { "battlefield": ["Aclazotz, Deepest Betrayal"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Aclazotz, Deepest Betrayal", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 1 }, { "hand_count": 0 } ]
+    }
+  },
+  {
+    "name": "attack with opponent holding a card: they discard and you draw nothing",
+    "players": [
+      { "battlefield": ["Aclazotz, Deepest Betrayal"] },
+      { "hand": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Aclazotz, Deepest Betrayal", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "hand_count": 0 }, { "hand_count": 0, "graveyard_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "opponent discards a land: you get a 1/1 Bat with flying",
+    "players": [
+      { "battlefield": ["Aclazotz, Deepest Betrayal"] },
+      { "hand": ["Forest"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Aclazotz, Deepest Betrayal", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Aclazotz, Deepest Betrayal", "Bat 1-1 Flying"] }, { "hand_count": 0 } ]
+    }
+  },
+  {
+    "name": "dies: returns to the battlefield tapped and transformed as Temple of the Dead",
+    "players": [
+      { "battlefield": ["Aclazotz, Deepest Betrayal"] },
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Aclazotz, Deepest Betrayal"] },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Aclazotz, Deepest Betrayal"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Temple of the Dead"], "battlefield_lacks": ["Aclazotz, Deepest Betrayal"] }, { "graveyard_has": ["Lightning Bolt"] } ],
+      "tapped": { "Temple of the Dead": true }
+    }
+  },
+  {
+    "name": "Temple of the Dead: {2}{B} transforms it back to Aclazotz while a player has one or fewer cards in hand",
+    "players": [ { "battlefield": ["Temple of the Dead", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Temple of the Dead", "ability": 0 }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Aclazotz, Deepest Betrayal"] }, {} ],
+      "pt": { "Aclazotz, Deepest Betrayal": [4, 4] }
+    }
+  },
+  {
+    "name": "Temple of the Dead can't transform while every player holds two or more cards",
+    "players": [ { "hand": ["Forest", "Forest"], "battlefield": ["Temple of the Dead", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Forest", "Forest"] } ],
+    "steps": [ { "activate": "Temple of the Dead", "ability": 0, "illegal": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Temple of the Dead"] }, {} ] }
+  }
+]

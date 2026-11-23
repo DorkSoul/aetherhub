@@ -1,0 +1,58 @@
+{
+  "name": "Tidewalker",
+  "mana_cost": "{2}{U}",
+  "types": ["Creature"],
+  "subtypes": ["Elemental"],
+  "power": 0,
+  "toughness": 0,
+  "abilities": [
+    {
+      "type": "Static",
+      "effect": {
+        "type": "CdaPT",
+        "power": { "type": "CountersOn", "kind": "Time", "of": { "type": "This" } },
+        "toughness": { "type": "CountersOn", "kind": "Time", "of": { "type": "This" } }
+      }
+    },
+    {
+      "type": "EntersWithCounters",
+      "kind": "Time",
+      "n": {
+        "type": "Count",
+        "filter": { "subtypes": ["Island"], "controller": "You" },
+        "zone": "Battlefield"
+      }
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "You" },
+      "condition": { "type": "SourceHasCounter", "kind": "Time", "at_least": 1 },
+      "effects": [
+        {
+          "type": "RemoveCounters",
+          "kind": "Time",
+          "n": { "type": "Fixed", "n": 1 },
+          "what": { "type": "This" }
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "Compare",
+            "a": { "type": "CountersOn", "kind": "Time", "of": { "type": "This" } },
+            "cmp": { "n": 0, "op": "Eq" }
+          },
+          "then": [
+            {
+              "type": "Sacrifice",
+              "who": { "type": "You" },
+              "filter": { "this": true },
+              "n": { "type": "Fixed", "n": 1 }
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "This creature enters with a time counter on it for each Island you control.\nVanishing (At the beginning of your upkeep, remove a time counter from this creature. When the last is removed, sacrifice it.)\nTidewalker's power and toughness are each equal to the number of time counters on it."
+}

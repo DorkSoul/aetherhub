@@ -1,0 +1,112 @@
+[
+  {
+    "name": "blocks a mana value 4 attacker: damage prevented, lifelink gains 1",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Mistmeadow Skulk", "sick": false }
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Hill Giant", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" } ] },
+      { "block": [ { "blocker": "Mistmeadow Skulk", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": [ "Mistmeadow Skulk" ], "life": 21 },
+        { "battlefield_has": [ "Hill Giant" ] }
+      ]
+    }
+  },
+  {
+    "name": "blocks a mana value 2 attacker: no protection, Skulk dies",
+    "players": [
+      {
+        "battlefield": [
+          { "name": "Mistmeadow Skulk", "sick": false }
+        ]
+      },
+      {
+        "battlefield": [
+          { "name": "Grizzly Bears", "sick": false }
+        ]
+      }
+    ],
+    "steps": [
+      { "advance_to": "End" },
+      { "pass": true },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+      { "block": [ { "blocker": "Mistmeadow Skulk", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": [ "Mistmeadow Skulk" ] },
+        { "battlefield_has": [ "Grizzly Bears" ] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Blaze with X=2 (mana value 3 on the stack) can't target Mistmeadow Skulk",
+    "players": [
+      { "hand": ["Blaze"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Mistmeadow Skulk"] }
+    ],
+    "steps": [
+      { "cast": "Blaze", "targets": ["Mistmeadow Skulk"], "answers": [2], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Blaze"] },
+        { "battlefield_has": ["Mistmeadow Skulk"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: Blaze with X=1 (mana value 2 on the stack) can target Mistmeadow Skulk and kills it",
+    "players": [
+      { "hand": ["Blaze"], "battlefield": ["Mountain", "Mountain"] },
+      { "battlefield": ["Mistmeadow Skulk"] }
+    ],
+    "steps": [
+      { "cast": "Blaze", "targets": ["Mistmeadow Skulk"], "answers": [1] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Blaze"] },
+        { "graveyard": ["Mistmeadow Skulk"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a creature with mana value 3 or greater can't block Mistmeadow Skulk; the illegal block is dropped and the damage goes through",
+    "players": [
+      { "battlefield": [ { "name": "Mistmeadow Skulk", "sick": false } ] },
+      { "battlefield": [ { "name": "Hill Giant", "sick": false } ] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Mistmeadow Skulk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Mistmeadow Skulk" } ], "illegal": true, "player": 1 },
+      { "block": [], "player": 1 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "life": 21 },
+        { "life": 19, "battlefield_has": ["Hill Giant"] }
+      ]
+    }
+  }
+]

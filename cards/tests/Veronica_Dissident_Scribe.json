@@ -1,0 +1,298 @@
+[
+ {
+  "name": "attack: discard a nonland card, draw a card, and make a Junk token",
+  "players": [
+   {
+    "battlefield": [
+     "Veronica, Dissident Scribe"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Serra Angel"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Veronica, Dissident Scribe",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     true,
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Serra Angel"
+     ],
+     "graveyard": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Veronica, Dissident Scribe",
+      "Junk"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "discarding a land does not make Junk",
+  "players": [
+   {
+    "battlefield": [
+     "Veronica, Dissident Scribe"
+    ],
+    "hand": [
+     "Forest"
+    ],
+    "library": [
+     "Serra Angel"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Veronica, Dissident Scribe",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     true,
+     "Forest"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Serra Angel"
+     ],
+     "graveyard": [
+      "Forest"
+     ],
+     "battlefield": [
+      "Veronica, Dissident Scribe"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "declining to discard: no discard, no draw, no Junk",
+  "players": [
+   {
+    "battlefield": [
+     "Veronica, Dissident Scribe"
+    ],
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Serra Angel"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "attack": [
+     {
+      "card": "Veronica, Dissident Scribe",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     false
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Veronica, Dissident Scribe"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "only the first nonland discard each turn makes Junk (later attack discard makes none)",
+  "players": [
+   {
+    "battlefield": [
+     "Veronica, Dissident Scribe",
+     "Swamp"
+    ],
+    "hand": [
+     "Raven's Crime",
+     "Grizzly Bears",
+     "Llanowar Elves"
+    ],
+    "library": [
+     "Serra Angel"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Raven's Crime",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true,
+    "answers": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "attack": [
+     {
+      "card": "Veronica, Dissident Scribe",
+      "at": "p1"
+     }
+    ]
+   },
+   {
+    "block": [],
+    "answers": [
+     true,
+     "Llanowar Elves"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Serra Angel"
+     ],
+     "graveyard": [
+      "Raven's Crime",
+      "Grizzly Bears",
+      "Llanowar Elves"
+     ],
+     "battlefield": [
+      "Veronica, Dissident Scribe",
+      "Swamp",
+      "Junk"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "two nonland cards discarded at once make a single Junk",
+  "players": [
+   {
+    "battlefield": [
+     "Veronica, Dissident Scribe",
+     "Swamp",
+     "Mountain",
+     "Mountain"
+    ],
+    "hand": [
+     "Blightning",
+     "Grizzly Bears",
+     "Hill Giant"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Blightning",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "graveyard": [
+      "Blightning",
+      "Grizzly Bears",
+      "Hill Giant"
+     ],
+     "battlefield": [
+      "Veronica, Dissident Scribe",
+      "Swamp",
+      "Mountain",
+      "Mountain",
+      "Junk"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a land exiled by a Junk's ability can be played this turn",
+  "players": [ { "battlefield": ["Junk"], "library": ["Forest", "Island"] }, {} ],
+  "steps": [ { "activate": "Junk", "ability": 0 }, { "resolve": true }, { "play_land": "Forest" } ],
+  "expect": { "players": [ { "battlefield_has": ["Forest"], "battlefield_lacks": ["Junk"], "library_top": ["Island"] }, {} ] }
+ },
+ {
+  "name": "ruling: a Junk that paid for its own ability cannot also pay for Junk Jet",
+  "players": [ { "battlefield": ["Junk Jet", "Junk", "Plains", "Plains", "Plains"], "library": ["Forest"] }, {} ],
+  "steps": [ { "activate": "Junk", "ability": 0 }, { "resolve": true }, { "activate": "Junk Jet", "illegal": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Junk Jet"], "battlefield_lacks": ["Junk"] }, {} ] }
+ }
+]

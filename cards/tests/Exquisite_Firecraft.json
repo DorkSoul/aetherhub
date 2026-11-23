@@ -1,0 +1,51 @@
+[
+  { "name": "deals 4 damage to the targeted player",
+    "players": [ { "hand": ["Exquisite Firecraft"], "battlefield": ["Mountain", "Mountain", "Mountain"] }, {} ],
+    "steps": [ { "cast": "Exquisite Firecraft", "targets": ["p1"] }, { "resolve": true } ],
+    "expect": { "players": [ { "life": 20 }, { "life": 16 } ] } },
+  { "name": "spell mastery: with two instant/sorcery cards in graveyard it can't be countered",
+    "players": [
+      { "hand": ["Exquisite Firecraft"], "battlefield": ["Mountain", "Mountain", "Mountain"], "graveyard": ["Opt", "Lightning Bolt"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Exquisite Firecraft", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [ { "stack": "Exquisite Firecraft" } ], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 16 } ] } },
+  { "name": "spell mastery off: with one instant/sorcery card in graveyard it can be countered",
+    "players": [
+      { "hand": ["Exquisite Firecraft"], "battlefield": ["Mountain", "Mountain", "Mountain"], "graveyard": ["Opt"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Exquisite Firecraft", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [ { "stack": "Exquisite Firecraft" } ], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Exquisite Firecraft", "Opt"] }, { "life": 20 } ] } },
+  {
+    "name": "ruling: spell mastery is checked when the counter resolves; a Bolt resolving first makes it uncounterable",
+    "players": [
+      { "hand": ["Exquisite Firecraft", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Opt"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Exquisite Firecraft", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [ { "stack": "Exquisite Firecraft" } ], "player": 1 },
+      { "pass": true, "player": 1 },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "life": 13 } ] }
+  }
+]

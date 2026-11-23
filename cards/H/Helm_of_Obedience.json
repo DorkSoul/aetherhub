@@ -1,0 +1,205 @@
+{
+ "name": "Helm of Obedience",
+ "mana_cost": "{4}",
+ "types": [
+  "Artifact"
+ ],
+ "abilities": [
+  {
+   "type": "Activated",
+   "cost": [
+    {
+     "type": "Mana",
+     "cost": "{X}"
+    },
+    {
+     "type": "Tap"
+    },
+    {
+     "type": "XMinimum",
+     "n": 1
+    }
+   ],
+   "targets": [
+    {
+     "what": {
+      "type": "Player",
+      "filter": "Opponent"
+     },
+     "min": 1,
+     "max": 1,
+     "label": "target opponent"
+    }
+   ],
+   "effects": [
+    {
+     "type": "ClearRemembered"
+    },
+    {
+     "type": "StoreRemembered",
+     "slot": 1
+    },
+    {
+     "type": "Repeat",
+     "n": {
+      "type": "Fixed",
+      "n": 300
+     },
+     "effects": [
+      {
+       "type": "If",
+       "cond": {
+        "type": "All",
+        "cs": [
+         {
+          "type": "Not",
+          "c": {
+           "type": "SelIs",
+           "what": {
+            "type": "Stored",
+            "slot": 1
+           },
+           "filter": {}
+          }
+         },
+         {
+          "type": "CompareAmounts",
+          "a": {
+           "type": "CountersOn",
+           "of": {
+            "type": "This"
+           },
+           "kind": "Other"
+          },
+          "op": "Lt",
+          "b": {
+           "type": "X"
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "type": "ClearRemembered"
+        },
+        {
+         "type": "Mill",
+         "n": {
+          "type": "Fixed",
+          "n": 1
+         },
+         "who": {
+          "type": "Target",
+          "idx": 0
+         }
+        },
+        {
+         "type": "If",
+         "cond": {
+          "type": "SelIs",
+          "what": {
+           "type": "Remembered"
+          },
+          "filter": {
+           "in_zone": "Graveyard"
+          }
+         },
+         "then": [
+          {
+           "type": "AddCounters",
+           "what": {
+            "type": "This"
+           },
+           "kind": "Other",
+           "n": {
+            "type": "Fixed",
+            "n": 1
+           }
+          }
+         ],
+         "else": []
+        },
+        {
+         "type": "If",
+         "cond": {
+          "type": "SelIs",
+          "what": {
+           "type": "Remembered"
+          },
+          "filter": {
+           "types": [
+            "Creature"
+           ],
+           "in_zone": "Graveyard"
+          }
+         },
+         "then": [
+          {
+           "type": "StoreRemembered",
+           "slot": 1
+          }
+         ],
+         "else": []
+        }
+       ],
+       "else": []
+      }
+     ]
+    },
+    {
+     "type": "RemoveCounters",
+     "what": {
+      "type": "This"
+     },
+     "kind": "Other",
+     "n": {
+      "type": "CountersOn",
+      "of": {
+       "type": "This"
+      },
+      "kind": "Other"
+     }
+    },
+    {
+     "type": "If",
+     "cond": {
+      "type": "SelIs",
+      "what": {
+       "type": "Stored",
+       "slot": 1
+      },
+      "filter": {}
+     },
+     "then": [
+      {
+       "type": "Sacrifice",
+       "who": {
+        "type": "You"
+       },
+       "filter": {
+        "this": true
+       },
+       "n": {
+        "type": "Fixed",
+        "n": 1
+       }
+      },
+      {
+       "type": "Move",
+       "what": {
+        "type": "Stored",
+        "slot": 1
+       },
+       "from": "Graveyard",
+       "to": "Battlefield",
+       "under_your_control": true
+      }
+     ],
+     "else": []
+    }
+   ],
+   "timing": "Instant"
+  }
+ ],
+ "oracle_text": "{X}, {T}: Target opponent mills a card, then repeats this process until a creature card or X cards have been put into their graveyard this way, whichever comes first. If one or more creature cards were put into that graveyard this way, sacrifice Helm of Obedience and put one of them onto the battlefield under your control. X can't be 0."
+}

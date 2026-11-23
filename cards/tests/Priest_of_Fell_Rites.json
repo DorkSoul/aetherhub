@@ -1,0 +1,186 @@
+[
+ {
+  "name": "sacrifice ability returns a creature card from your graveyard",
+  "players": [
+   {
+    "battlefield": [
+     "Priest of Fell Rites"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Priest of Fell Rites",
+    "ability": 0,
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 17,
+     "battlefield": [
+      "Grizzly Bears"
+     ],
+     "graveyard": [
+      "Priest of Fell Rites"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearth returns the priest and exiles it at the end step",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     "Swamp",
+     "Mountain",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Priest of Fell Rites"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Priest of Fell Rites",
+    "ability": 1
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_lacks": [
+      "Priest of Fell Rites"
+     ],
+     "exile": [
+      "Priest of Fell Rites"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "unearth needs five mana",
+  "players": [
+   {
+    "battlefield": [
+     "Plains",
+     "Swamp",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Priest of Fell Rites"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "activate": "Priest of Fell Rites",
+    "ability": 1,
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Priest of Fell Rites"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: an unearthed creature that would die is exiled instead",
+  "players": [
+   {
+    "hand": ["Lightning Bolt"],
+    "battlefield": ["Plains", "Swamp", "Mountain", "Mountain", "Mountain", "Mountain"],
+    "graveyard": ["Priest of Fell Rites"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Priest of Fell Rites", "ability": 1 },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["Priest of Fell Rites"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Priest of Fell Rites"], "graveyard": ["Lightning Bolt"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Cancel cannot counter an unearth ability (there is no spell to target)",
+  "players": [
+   {
+    "battlefield": ["Plains", "Swamp", "Mountain", "Mountain", "Mountain"],
+    "graveyard": ["Priest of Fell Rites"]
+   },
+   {
+    "hand": ["Cancel"],
+    "battlefield": ["Island", "Island", "Island"]
+   }
+  ],
+  "steps": [
+   { "activate": "Priest of Fell Rites", "ability": 1 },
+   { "cast": "Cancel", "player": 1, "illegal": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Priest of Fell Rites"], "graveyard": [] },
+    { "hand": ["Cancel"] }
+   ]
+  }
+ },
+ {
+  "name": "ruling: with no legal target the sacrifice ability cannot start, so no life or sacrifice is paid",
+  "players": [
+   {
+    "battlefield": [{ "name": "Priest of Fell Rites", "sick": false }, "Plains", "Swamp", "Mountain"]
+   },
+   {}
+  ],
+  "steps": [
+   { "activate": "Priest of Fell Rites", "ability": 0, "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Priest of Fell Rites"], "life": 20 },
+    {}
+   ]
+  }
+ }
+]

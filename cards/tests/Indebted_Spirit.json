@@ -1,0 +1,64 @@
+[
+  {
+    "name": "cast normally it is a 1/1 creature with afterlife 1",
+    "players": [ { "hand": ["Indebted Spirit"], "battlefield": ["Plains"] }, {} ],
+    "steps": [ { "cast": "Indebted Spirit" }, { "resolve": true } ],
+    "expect": {
+      "pt": { "Indebted Spirit": [1, 1] },
+      "keywords": { "Indebted Spirit": ["Afterlife1"] }
+    }
+  },
+  {
+    "name": "bestowed on Grizzly Bears: Bears are 3/3 with afterlife 1 and the Spirit is an Aura",
+    "players": [ { "hand": ["Indebted Spirit"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Indebted Spirit", "alt": 0, "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "keywords": { "Grizzly Bears": ["Afterlife1"] },
+      "attached": { "Indebted Spirit": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "when the bestowed Bears die, the Spirit is a creature again and afterlife triggers for the Bears",
+    "players": [ { "hand": ["Indebted Spirit", "Lightning Bolt"], "battlefield": ["Plains", "Plains", "Plains", "Mountain", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Indebted Spirit", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Indebted Spirit", "Spirit"], "graveyard_has": ["Grizzly Bears"] }, {} ],
+      "pt": { "Indebted Spirit": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: a bestow spell whose target is gone resolves as a creature spell, not countered",
+    "players": [ { "hand": ["Indebted Spirit"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [
+      { "cast": "Indebted Spirit", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Indebted Spirit"], "graveyard_has": ["Grizzly Bears"] }, { "graveyard": ["Lightning Bolt"] } ],
+      "pt": { "Indebted Spirit": [1, 1] }
+    }
+  },
+  {
+    "name": "ruling: a bestowed Spirit destroyed while it is still an Aura goes to the graveyard and its afterlife triggers",
+    "players": [ { "hand": ["Indebted Spirit", "Naturalize"], "battlefield": ["Plains", "Plains", "Plains", "Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Indebted Spirit", "alt": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "cast": "Naturalize", "targets": ["Indebted Spirit"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Grizzly Bears", "Spirit"], "battlefield_lacks": ["Indebted Spirit"], "graveyard_has": ["Indebted Spirit", "Naturalize"] }, {} ],
+      "pt": { "Grizzly Bears": [2, 2] }
+    }
+  }
+]

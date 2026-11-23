@@ -1,0 +1,132 @@
+[
+  {
+    "name": "enchanted creature can't attack or block",
+    "players": [
+      {
+        "hand": ["Suppression Bonds"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Suppression Bonds", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ], "illegal": true }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "enchanted nonland permanent's mana abilities can't be activated",
+    "players": [
+      {
+        "hand": ["Suppression Bonds"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Sol Ring"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Suppression Bonds", "targets": ["Sol Ring"] },
+      { "resolve": true },
+      { "activate": "Sol Ring", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sol Ring", "Suppression Bonds"] }, {} ]
+    }
+  },
+  {
+    "name": "without the aura the creature can attack",
+    "players": [
+      {
+        "battlefield": [{ "name": "Grizzly Bears", "sick": false }]
+      },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ {}, { "life": 18 } ]
+    }
+  },
+  {
+    "name": "enchanted creature can't block: the attacker it would have blocked hits you",
+    "players": [
+      {
+        "hand": ["Suppression Bonds"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", { "name": "Grizzly Bears", "sick": false }, { "name": "Savannah Lions", "sick": false }]
+      },
+      {
+        "battlefield": [{ "name": "Hill Giant", "sick": false }, { "name": "Gray Ogre", "sick": false }]
+      }
+    ],
+    "steps": [
+      { "cast": "Suppression Bonds", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Main1", "player": 1 },
+      { "attack": [ { "card": "Hill Giant", "at": "p0" }, { "card": "Gray Ogre", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" }, { "blocker": "Savannah Lions", "attacker": "Gray Ogre" } ], "player": 0 },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 17 }, {} ],
+      "tapped": { "Hill Giant": true, "Grizzly Bears": false },
+      "attached": { "Suppression Bonds": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "enchanted Sol Ring can't tap for mana: a 2-cost spell is illegal",
+    "players": [
+      {
+        "hand": ["Suppression Bonds", "Mind Stone"],
+        "battlefield": ["Plains", "Plains", "Mountain", "Mountain", "Sol Ring"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Suppression Bonds", "targets": ["Sol Ring"] },
+      { "resolve": true },
+      { "cast": "Mind Stone", "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Mind Stone"], "battlefield_has": ["Sol Ring", "Suppression Bonds"] }, {} ]
+    }
+  },
+  {
+    "name": "without the aura Sol Ring pays for a 2-cost spell",
+    "players": [
+      {
+        "hand": ["Mind Stone"],
+        "battlefield": ["Sol Ring"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Mind Stone" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Sol Ring", "Mind Stone"] }, {} ]
+    }
+  },
+  {
+   "name": "ruling: can enchant a noncreature artifact, whose activated ability then can't be activated",
+   "players": [ { "hand": ["Suppression Bonds"], "battlefield": ["Plains", "Plains", "Mountain", "Mountain"] }, { "battlefield": ["Clue", "Island", "Island"] } ],
+   "steps": [
+    { "cast": "Suppression Bonds", "targets": ["Clue"] },
+    { "resolve": true },
+    { "pass": true },
+    { "activate": "Clue", "ability": 0, "player": 1, "illegal": true }
+   ],
+   "expect": { "players": [ { "battlefield_has": ["Suppression Bonds"] }, { "battlefield_has": ["Clue"] } ] }
+  },
+  {
+   "name": "control: without the aura the Clue's activated ability can be activated",
+   "players": [ {}, { "battlefield": ["Clue", "Island", "Island"] } ],
+   "steps": [ { "pass": true }, { "activate": "Clue", "ability": 0, "player": 1 }, { "resolve": true } ],
+   "expect": { "players": [ {}, { "hand_count": 1 } ] }
+  }
+]

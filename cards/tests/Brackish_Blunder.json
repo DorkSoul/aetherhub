@@ -1,0 +1,160 @@
+[
+  {
+    "name": "tapped creature: bounced and a Map token is created",
+    "players": [
+      {
+        "hand": [
+          "Brackish Blunder"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "cast": "Brackish Blunder",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Map"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ],
+          "hand": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "untapped creature: bounced without a Map token",
+    "players": [
+      {
+        "hand": [
+          "Brackish Blunder"
+        ],
+        "battlefield": [
+          "Island",
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Brackish Blunder",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Map"
+          ]
+        },
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "battlefield": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: explore reveals a nonland card: +1/+1 counter, and it can be put into the graveyard",
+    "players": [
+      { "battlefield": ["Grizzly Bears", "Map", "Island"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Map" },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [ { "graveyard_has": ["Lightning Bolt"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: explore reveals a nonland card and it stays on top: +1/+1 counter, card not moved",
+    "players": [
+      { "battlefield": ["Grizzly Bears", "Map", "Island"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Map" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [3, 3] },
+      "players": [ { "library_top": ["Lightning Bolt"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: explore reveals a land: it goes to hand and the creature gets no counter",
+    "players": [
+      { "battlefield": ["Grizzly Bears", "Map", "Island"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Map" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] },
+      "players": [ { "hand": ["Forest"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: two explores in a row reveal the kept nonland card again, adding a counter each time",
+    "players": [
+      { "battlefield": ["Grizzly Bears", "Map", "Map", "Island", "Island"], "library": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Map" },
+      { "resolve": true, "answers": [false] },
+      { "activate": "Map" },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [4, 4] },
+      "players": [ { "library_top": ["Lightning Bolt"] }, {} ]
+    }
+  }
+]

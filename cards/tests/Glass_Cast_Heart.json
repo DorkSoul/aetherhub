@@ -1,0 +1,209 @@
+[
+  {
+    "name": "a Vampire attacking creates a Blood token",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart",
+          {
+            "name": "Vampire Nighthawk",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Vampire Nighthawk",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Blood"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a non-Vampire attacking creature creates no Blood token",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart",
+          {
+            "name": "Grizzly Bears",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Grizzly Bears",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Blood"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "{B}, {T}, pay 1 life: create a 1/1 white and black Vampire with lifelink",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Glass-Cast Heart",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 19,
+          "battlefield_has": [
+            "Vampire 1-1 Lifelink WB"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "the thirteen-Blood sacrifice is illegal with no Blood tokens",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Glass-Cast Heart",
+        "ability": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Glass-Cast Heart"
+          ],
+          "life": 20
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "{B}{B}, sacrifice thirteen Blood tokens: opponent loses 13 and you gain 13",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart", "Swamp", "Swamp",
+          "Blood", "Blood", "Blood", "Blood", "Blood", "Blood", "Blood",
+          "Blood", "Blood", "Blood", "Blood", "Blood", "Blood"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glass-Cast Heart", "ability": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 33, "graveyard": ["Glass-Cast Heart"], "battlefield_lacks": ["Blood"] },
+        { "life": 7 }
+      ]
+    }
+  },
+  {
+    "name": "the Blood sacrifice needs thirteen tokens",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart", "Swamp", "Swamp",
+          "Blood", "Blood", "Blood", "Blood", "Blood", "Blood", "Blood",
+          "Blood", "Blood", "Blood", "Blood", "Blood"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Glass-Cast Heart", "ability": 1, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Glass-Cast Heart"], "life": 20 }, { "life": 20 } ]
+    }
+  },
+  {
+    "name": "ruling: Blood tokens sacrificed for the Heart still trigger Blood Hypnotist, so the chosen creature can't block",
+    "players": [
+      {
+        "battlefield": [
+          "Glass-Cast Heart", "Swamp", "Swamp", { "name": "Blood Hypnotist", "sick": false },
+          "Blood", "Blood", "Blood", "Blood", "Blood", "Blood", "Blood",
+          "Blood", "Blood", "Blood", "Blood", "Blood", "Blood"
+        ]
+      },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "activate": "Glass-Cast Heart", "ability": 1, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "attack": [ { "card": "Blood Hypnotist", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Blood Hypnotist" } ], "illegal": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 33, "graveyard": ["Glass-Cast Heart"] }, { "life": 4 } ]
+    }
+  }
+]

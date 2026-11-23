@@ -1,0 +1,142 @@
+[
+  {
+    "name": "return a permanent card from your graveyard",
+    "players": [
+      {
+        "hand": [
+          "Unnatural Restoration"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Unnatural Restoration",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand_count": 1,
+          "graveyard": [
+            "Unnatural Restoration"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot target a sorcery in graveyard",
+    "players": [
+      {
+        "hand": [
+          "Unnatural Restoration"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Unnatural Restoration",
+        "targets": [
+          "Lightning Bolt"
+        ],
+        "illegal": true
+      }
+    ]
+  },
+  {
+    "name": "ruling: proliferate may choose only some permanents",
+    "players": [
+      { "hand": ["Unnatural Restoration"], "battlefield": ["Forest", "Forest", {"name": "Grizzly Bears", "counters": {"p1p1": 1}}, {"name": "Hill Giant", "counters": {"p1p1": 1}}], "graveyard": ["Elite Vanguard"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unnatural Restoration" },
+      { "resolve": true, "answers": [["Grizzly Bears"]] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": {"p1p1": 2}, "Hill Giant": {"p1p1": 1} },
+      "players": [ { "hand": ["Elite Vanguard"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: +1/+1 and -1/-1 counters on one permanent are removed in pairs",
+    "players": [
+      { "hand": ["Unnatural Restoration"], "battlefield": ["Forest", "Forest", {"name": "Grizzly Bears", "counters": {"p1p1": 2, "m1m1": 1}}], "graveyard": ["Elite Vanguard"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unnatural Restoration" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": {"p1p1": 1, "m1m1": 0} },
+      "pt": { "Grizzly Bears": [3, 3] }
+    }
+  },
+  {
+    "name": "ruling: proliferate can choose an opponent's permanent and player",
+    "players": [
+      { "hand": ["Unnatural Restoration"], "battlefield": ["Forest", "Forest"], "graveyard": ["Elite Vanguard"] },
+      { "battlefield": [ {"name": "Grizzly Bears", "counters": {"p1p1": 1}} ], "poison": 2 }
+    ],
+    "steps": [
+      { "cast": "Unnatural Restoration" },
+      { "resolve": true, "answers": [["Grizzly Bears", "p1"]] }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": {"p1p1": 2} },
+      "players": [ {}, { "poison": 3 } ]
+    }
+  },
+  {
+    "name": "ruling: a player with two kinds of counters gets one of each",
+    "players": [
+      { "hand": ["Unnatural Restoration"], "battlefield": ["Forest", "Forest"], "graveyard": ["Elite Vanguard"] },
+      { "poison": 2, "energy": 1 }
+    ],
+    "steps": [
+      { "cast": "Unnatural Restoration" },
+      { "resolve": true, "answers": [["p1"]] }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Elite Vanguard"] }, { "poison": 3, "energy": 2 } ]
+    }
+  },
+  {
+    "name": "ruling: 'whenever you proliferate' triggers even when nothing is chosen",
+    "players": [
+      { "hand": ["Unnatural Restoration"], "battlefield": ["Forest", "Forest", "Scheming Aspirant"], "graveyard": ["Elite Vanguard"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Unnatural Restoration" },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": {
+      "players": [ { "life": 22 }, { "life": 18 } ]
+    }
+  }
+]

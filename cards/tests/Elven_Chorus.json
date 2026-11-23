@@ -1,0 +1,86 @@
+[
+  {
+    "name": "cast a creature spell from the top of the library",
+    "players": [
+      {
+        "battlefield": ["Elven Chorus", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Grizzly Bears", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Grizzly Bears"},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {"battlefield_has": ["Grizzly Bears"]},
+        {}
+      ]
+    }
+  },
+  {
+    "name": "non-creature top card cannot be cast from the library",
+    "players": [
+      {
+        "battlefield": ["Elven Chorus", "Forest", "Forest", "Forest", "Forest"],
+        "library": ["Giant Growth", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      {"cast": "Giant Growth", "illegal": true}
+    ],
+    "expect": {}
+  },
+  {
+    "name": "creatures you control tap for any color",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Elven Chorus", "Grizzly Bears"]
+      },
+      {
+        "battlefield": ["Hill Giant"]
+      }
+    ],
+    "steps": [
+      {"cast": "Lightning Bolt", "targets": ["Hill Giant"]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [
+        {},
+        {"graveyard": ["Hill Giant"]}
+      ],
+      "tapped": {"Grizzly Bears": true}
+    }
+  },
+ {
+  "name": "ruling: the top creature cannot be cast from the library in combat, only at normal timing",
+  "players": [
+   { "battlefield": ["Elven Chorus", "Forest", "Forest", "Forest", "Forest"], "library": ["Grizzly Bears", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "BeginCombat" },
+   { "cast": "Grizzly Bears", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Grizzly Bears", "Island"] }, {} ]
+  }
+ },
+ {
+  "name": "ruling: the top creature is still paid for in full (not enough mana to cast it)",
+  "players": [
+   { "battlefield": ["Elven Chorus", "Forest"], "library": ["Grizzly Bears", "Island"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Grizzly Bears", "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "library_top": ["Grizzly Bears"], "battlefield_lacks": ["Grizzly Bears"] }, {} ]
+  }
+ }
+]

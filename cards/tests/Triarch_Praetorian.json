@@ -1,0 +1,22 @@
+[
+  { "name": "unearth returns it from the graveyard: enters from a graveyard so you draw two and lose 2 life",
+    "players": [ { "graveyard": ["Triarch Praetorian"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Triarch Praetorian", "ability": 0 }, { "resolve": true }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Triarch Praetorian"], "hand_count": 2, "life": 18 }, {} ] } },
+  { "name": "cast from hand: entering from hand does not trigger Dynastic Codes",
+    "players": [ { "hand": ["Triarch Praetorian"], "battlefield": ["Swamp", "Swamp"] }, {} ],
+    "steps": [ { "cast": "Triarch Praetorian" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Triarch Praetorian"], "hand_count": 0, "life": 20 }, {} ] } },
+  { "name": "ruling: Stifle counters the unearth ability (an ability, not a spell); the card stays in the graveyard",
+    "players": [ { "graveyard": ["Triarch Praetorian"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Stifle"], "battlefield": ["Island"] } ],
+    "steps": [ { "activate": "Triarch Praetorian", "ability": 0 }, { "pass": true }, { "player": 1, "cast": "Stifle", "targets": [{ "stack": "Triarch Praetorian" }] }, { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Triarch Praetorian"], "battlefield_lacks": ["Triarch Praetorian"], "hand_count": 0 }, { "graveyard": ["Stifle"] } ] } },
+  { "name": "ruling: an unearthed creature is exiled at the beginning of the next end step",
+    "players": [ { "graveyard": ["Triarch Praetorian"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, {} ],
+    "steps": [ { "activate": "Triarch Praetorian", "ability": 0 }, { "resolve": true }, { "resolve": true }, { "advance_to": "End" } ],
+    "expect": { "players": [ { "exile": ["Triarch Praetorian"], "battlefield_lacks": ["Triarch Praetorian"] }, {} ] } },
+  { "name": "ruling: an unearthed creature that would die is exiled instead of going to the graveyard",
+    "players": [ { "graveyard": ["Triarch Praetorian"], "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "activate": "Triarch Praetorian", "ability": 0 }, { "resolve": true }, { "resolve": true }, { "pass": true }, { "player": 1, "cast": "Lightning Bolt", "targets": ["Triarch Praetorian"] }, { "resolve": true } ],
+    "expect": { "players": [ { "exile": ["Triarch Praetorian"], "graveyard": [] }, { "graveyard": ["Lightning Bolt"], "life": 20 } ] } }
+]

@@ -1,0 +1,84 @@
+[
+  {
+    "name": "on the battlefield counts only creature cards in your graveyard",
+    "players": [
+      { "battlefield": ["Boneyard Mycodrax"], "graveyard": ["Grizzly Bears", "Hill Giant", "Lightning Bolt"] },
+      { "graveyard": ["Serra Angel"] }
+    ],
+    "steps": [],
+    "expect": { "pt": { "Boneyard Mycodrax": [2, 2] } }
+  },
+  {
+    "name": "scavenge puts counters equal to its power (the other creature cards) and exiles it",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "graveyard": ["Boneyard Mycodrax", "Hill Giant", "Serra Angel", "Lightning Bolt"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Boneyard Mycodrax", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "+1/+1": 2 } },
+      "pt": { "Grizzly Bears": [4, 4] },
+      "players": [
+        { "graveyard": ["Hill Giant", "Serra Angel", "Lightning Bolt"], "exile": ["Boneyard Mycodrax"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "scavenge with no other creature cards adds no counters",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "graveyard": ["Boneyard Mycodrax"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Boneyard Mycodrax", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Grizzly Bears": [2, 2] },
+      "players": [ { "graveyard": [], "exile": ["Boneyard Mycodrax"] }, {} ]
+    }
+  },
+  {
+    "name": "scavenge is a sorcery-speed ability: not activatable with too little mana",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Grizzly Bears"],
+        "graveyard": ["Boneyard Mycodrax", "Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Boneyard Mycodrax", "targets": ["Grizzly Bears"], "illegal": true }
+    ],
+    "expect": { "players": [ { "graveyard": ["Boneyard Mycodrax", "Hill Giant"] }, {} ] }
+  },
+  {
+    "name": "ruling: scavenge counters equal the power the card had in the graveyard (three other creature cards)",
+    "players": [
+      {
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"],
+        "graveyard": ["Boneyard Mycodrax", "Hill Giant", "Serra Angel", "Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Boneyard Mycodrax", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Grizzly Bears": { "+1/+1": 3 } },
+      "pt": { "Grizzly Bears": [5, 5] },
+      "players": [ { "graveyard": ["Hill Giant", "Serra Angel", "Grizzly Bears"], "exile": ["Boneyard Mycodrax"] }, {} ]
+    }
+  }
+]

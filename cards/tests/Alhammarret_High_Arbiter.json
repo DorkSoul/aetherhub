@@ -1,0 +1,81 @@
+[
+ {
+  "name": "the opponent can't cast a spell with the chosen name",
+  "players": [
+   { "hand": ["Alhammarret, High Arbiter"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "hand": ["Lightning Bolt", "Mountain", "Grizzly Bears"], "battlefield": ["Mountain", "Forest", "Forest"] }
+  ],
+  "steps": [
+   { "cast": "Alhammarret, High Arbiter" },
+   { "resolve": true, "answers": ["Lightning Bolt"] },
+   { "pass": true },
+   { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"], "illegal": true }
+  ],
+  "expect": { "players": [ { "life": 20 }, { "hand_count": 3 } ] }
+ },
+ {
+  "name": "other spells can still be cast",
+  "players": [
+   { "hand": ["Alhammarret, High Arbiter"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "hand": ["Lightning Bolt", "Shock"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Alhammarret, High Arbiter" },
+   { "resolve": true, "answers": ["Lightning Bolt"] },
+   { "pass": true },
+   { "player": 1, "cast": "Shock", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 18 }, {} ] }
+ },
+ {
+  "name": "once Alhammarret has left the battlefield the chosen name can be cast",
+  "players": [
+   { "hand": ["Alhammarret, High Arbiter"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "hand": ["Lightning Bolt", "Swords to Plowshares", "Mountain"], "battlefield": ["Mountain", "Plains"] }
+  ],
+  "steps": [
+   { "cast": "Alhammarret, High Arbiter" },
+   { "resolve": true, "answers": ["Lightning Bolt"] },
+   { "pass": true },
+   { "player": 1, "cast": "Swords to Plowshares", "targets": ["Alhammarret, High Arbiter"] },
+   { "resolve": true },
+   { "pass": true },
+   { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 22 }, {} ] }
+ },
+ {
+  "name": "ruling: a permanent card with the chosen name can still be put onto the battlefield (Reanimate from the graveyard)",
+  "players": [
+   { "hand": ["Alhammarret, High Arbiter"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "hand": ["Grizzly Bears", "Reanimate"], "battlefield": ["Swamp"], "graveyard": ["Grizzly Bears"] }
+  ],
+  "steps": [
+   { "cast": "Alhammarret, High Arbiter" },
+   { "resolve": true, "answers": ["Grizzly Bears"] },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Reanimate" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ {}, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: with no nonland card in the opponent's hand no name is chosen, so a later Lightning Bolt can be cast",
+  "players": [
+   { "hand": ["Alhammarret, High Arbiter"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+   { "battlefield": ["Mountain"], "library": ["Lightning Bolt"] }
+  ],
+  "steps": [
+   { "cast": "Alhammarret, High Arbiter" },
+   { "resolve": true },
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "cast": "Lightning Bolt", "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 17 }, {} ] }
+ }
+]

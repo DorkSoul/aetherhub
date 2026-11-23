@@ -1,0 +1,169 @@
+[
+  {
+    "name": "rebound: cast from hand, exiled as it resolves; discard/draw happen",
+    "players": [
+      {
+        "hand": [
+          "Faithless Salvaging",
+          "Island"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Faithless Salvaging",
+        "targets": []
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Faithless Salvaging"
+          ],
+          "graveyard": [
+            "Island"
+          ],
+          "hand": [
+            "Forest"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "rebound: at next upkeep may cast from exile for free, then goes to graveyard",
+    "players": [
+      {
+        "hand": [
+          "Faithless Salvaging",
+          "Island"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Mountain"
+        ],
+        "library": [
+          "Forest",
+          "Plains",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Faithless Salvaging"
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [],
+          "graveyard": [
+            "Faithless Salvaging",
+            "Forest",
+            "Island"
+          ],
+          "hand": [
+            "Plains"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: with no cards in hand the discard does nothing, but the draw still happens",
+    "players": [
+      { "hand": ["Faithless Salvaging"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Salvaging" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "exile": ["Faithless Salvaging"], "graveyard": [] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: countered rebound spell goes to the graveyard and never comes back",
+    "players": [
+      { "hand": ["Faithless Salvaging", "Island"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Faithless Salvaging" },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Faithless Salvaging" }] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Island"], "exile": [], "graveyard": ["Faithless Salvaging"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: declining the rebound cast leaves the card in exile",
+    "players": [
+      { "hand": ["Faithless Salvaging", "Island"], "battlefield": ["Mountain", "Mountain"], "library": ["Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Faithless Salvaging" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep", "answers": [false] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Forest"], "exile": ["Faithless Salvaging"], "graveyard": ["Island"] },
+        {}
+      ]
+    }
+  }
+]

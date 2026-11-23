@@ -1,0 +1,193 @@
+[
+ {
+  "name": "two targets cost {1}{R}+{2}{R}: each creature gets a hasty token copy",
+  "players": [
+   {
+    "hand": [ "Twinflame" ],
+    "battlefield": [ "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant" ]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Grizzly Bears", "Hill Giant" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [ "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant", "Grizzly Bears", "Hill Giant" ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "the hasty tokens are exiled at the beginning of the next end step",
+  "players": [
+   {
+    "hand": [ "Twinflame" ],
+    "battlefield": [ "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant" ]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Grizzly Bears", "Hill Giant" ] },
+   { "resolve": true },
+   { "advance_to": "End" }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [ "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant" ],
+     "exile": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "boundary: with only four mana the strive surcharge limits the spell to one target (one token)",
+  "players": [
+   {
+    "hand": [ "Twinflame" ],
+    "battlefield": [ "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant" ]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [ "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant", "Grizzly Bears" ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "strive: two targets cost 5 in total, so after casting nothing is left for a Lightning Bolt",
+  "players": [
+   { "hand": [ "Twinflame", "Lightning Bolt" ], "battlefield": [ "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Hill Giant" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Grizzly Bears", "Hill Giant" ] },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": [ "p1" ], "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "hand": [ "Lightning Bolt" ] }, { "life": 20 } ]
+  }
+ },
+ {
+  "name": "ruling: the token copy's enters-the-battlefield trigger fires (Mulldrifter's copy draws two)",
+  "players": [
+   { "hand": [ "Twinflame" ], "battlefield": [ "Mountain", "Mountain", "Mulldrifter" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Mulldrifter" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "hand_count": 2, "battlefield_has": [ "Mulldrifter" ] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the copy tokens see each other enter (Soul Warden gains life for the Mulldrifter copy too)",
+  "players": [
+   { "hand": [ "Twinflame" ], "battlefield": [ "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Soul Warden", "Mulldrifter" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Soul Warden", "Mulldrifter" ] },
+   { "resolve": true },
+   { "resolve": true },
+   { "resolve": true },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 23 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: a copy of a creature with {X} in its cost has X = 0, so the Hangarback token enters as a 0/0 and dies",
+  "players": [
+   { "hand": [ "Twinflame" ], "battlefield": [ "Mountain", "Mountain", { "name": "Hangarback Walker", "counters": { "p1p1": 2 } } ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Hangarback Walker" ] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": [ "Mountain", "Mountain", "Hangarback Walker" ], "graveyard_has": [ "Twinflame" ] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: with one target made illegal, Twinflame still copies the legal target",
+  "players": [
+   { "hand": [ "Twinflame", "Lightning Bolt" ], "battlefield": [ "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Llanowar Elves" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Grizzly Bears", "Llanowar Elves" ] },
+   { "cast": "Lightning Bolt", "targets": [ "Llanowar Elves" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": [ "Mountain", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Grizzly Bears", "Grizzly Bears" ], "graveyard_has": [ "Lightning Bolt", "Llanowar Elves" ] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: if every target is illegal on resolution, Twinflame does nothing",
+  "players": [
+   { "hand": [ "Twinflame", "Lightning Bolt" ], "battlefield": [ "Mountain", "Mountain", "Mountain", "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [ "Grizzly Bears" ] },
+   { "cast": "Lightning Bolt", "targets": [ "Grizzly Bears" ] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": [ "Mountain", "Mountain", "Mountain" ], "graveyard_has": [ "Twinflame", "Lightning Bolt", "Grizzly Bears" ] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Twinflame may be cast with no targets and then creates no tokens",
+  "players": [
+   { "hand": [ "Twinflame" ], "battlefield": [ "Mountain", "Mountain", "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Twinflame", "targets": [] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield": [ "Mountain", "Mountain", "Grizzly Bears" ], "graveyard_has": [ "Twinflame" ] },
+    {}
+   ]
+  }
+ }
+]

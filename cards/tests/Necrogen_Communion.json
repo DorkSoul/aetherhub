@@ -1,0 +1,88 @@
+[
+ {"name": "enchanted creature with toxic 2 gives two poison counters",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]}, {}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"life": 18, "poison": 2}], "keywords": {"Grizzly Bears": ["Toxic2"]}}},
+ {"name": "when enchanted creature dies it returns under your control",
+  "players": [{"hand": ["Necrogen Communion", "Lightning Bolt"], "battlefield": ["Swamp", "Swamp", "Mountain", "Grizzly Bears"]}, {}],
+  "steps": [
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"cast": "Lightning Bolt", "targets": ["Grizzly Bears"]}, {"resolve": true}, {"resolve": true}
+  ],
+  "expect": {"players": [{"battlefield_has": ["Grizzly Bears"], "graveyard": ["Necrogen Communion", "Lightning Bolt"]}, {}]}},
+ {"name": "can only enchant a creature you control",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp"]}, {"battlefield": ["Grizzly Bears"]}],
+  "steps": [{"cast": "Necrogen Communion", "targets": ["Grizzly Bears"], "illegal": true}],
+  "expect": {}},
+ {"name": "ruling: ten poison counters loses the game (state-based action)",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]}, {"poison": 9}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"poison": 11}], "winner": 0}},
+ {"name": "ruling: nine poison counters is not enough (boundary)",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]}, {"poison": 7}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"poison": 9, "life": 18}], "winner": null}},
+ {"name": "ruling: toxic is cumulative: Necrogen's toxic 2 plus Prosthetic Injector's toxic 1 gives 3 poison",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears", "Prosthetic Injector"]}, {}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"activate": "Prosthetic Injector", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"life": 18, "poison": 3}]}},
+ {"name": "ruling: a 2/2 with toxic 1 deals 2 damage (life loss 2) and gives one poison counter",
+  "players": [{"battlefield": ["Prosthetic Injector", "Grizzly Bears", "Mountain"]}, {}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"activate": "Prosthetic Injector", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"life": 18, "poison": 1}]}},
+ {"name": "ruling: toxic combat damage dealt to a creature gives no poison",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Grizzly Bears"]}, {"battlefield": ["Hill Giant"]}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]},
+   {"block": [{"blocker": "Hill Giant", "attacker": "Grizzly Bears"}], "player": 1},
+   {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"life": 20, "poison": 0}]}},
+ {"name": "ruling: Gratuitous Violence doubles the damage but the toxic counters stay at 2",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Gratuitous Violence", "Grizzly Bears"]}, {}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"life": 16, "poison": 2}]}},
+ {"name": "ruling: Vorinclex, Monstrous Raider doubles the poison counters that toxic gives",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Vorinclex, Monstrous Raider", "Grizzly Bears"]}, {}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Grizzly Bears"]}, {"resolve": true},
+   {"attack": [{"card": "Grizzly Bears", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{}, {"life": 18, "poison": 4}]}},
+ {"name": "ruling: lifelink still applies when toxic damage hits a player",
+  "players": [{"hand": ["Necrogen Communion"], "battlefield": ["Swamp", "Swamp", "Vampire Nighthawk"]}, {}],
+  "steps": [
+   {"advance_to": "Main1"}, {"advance_to": "Main1"},
+   {"cast": "Necrogen Communion", "targets": ["Vampire Nighthawk"]}, {"resolve": true},
+   {"attack": [{"card": "Vampire Nighthawk", "at": "p1"}]}, {"block": []}, {"advance_to": "Main2"}
+  ],
+  "expect": {"players": [{"life": 22}, {"life": 18, "poison": 2}]}}
+]

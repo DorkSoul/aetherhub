@@ -1,0 +1,108 @@
+[
+  {
+    "name": "casting exiles a creature card from your graveyard as the additional cost",
+    "players": [
+      { "hand": ["Relentless Skaabs"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Relentless Skaabs" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Relentless Skaabs"], "exile": ["Grizzly Bears"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot be cast without a creature card in your graveyard to exile",
+    "players": [
+      { "hand": ["Relentless Skaabs"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "graveyard": ["Sol Ring"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Relentless Skaabs", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Relentless Skaabs"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "undying returns it with a +1/+1 counter when it dies without counters",
+    "players": [
+      { "hand": ["Repel Calamity"], "battlefield": ["Plains", "Island", "Relentless Skaabs"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Repel Calamity", "targets": ["Relentless Skaabs"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Relentless Skaabs"] },
+        {}
+      ],
+      "pt": { "Relentless Skaabs": [5, 5] },
+      "counters": { "Relentless Skaabs": { "p1p1": 1 } }
+    }
+  },
+  {
+    "name": "a Skaabs that already has a +1/+1 counter does not return with undying",
+    "players": [
+      { "hand": ["Repel Calamity"], "battlefield": ["Plains", "Island", { "name": "Relentless Skaabs", "counters": { "p1p1": 1 } }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Repel Calamity", "targets": ["Relentless Skaabs"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Relentless Skaabs"], "battlefield_lacks": ["Relentless Skaabs"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: undying's return is not a cast, so no creature card is exiled",
+    "players": [
+      { "hand": ["Repel Calamity"], "battlefield": ["Plains", "Island", "Relentless Skaabs"], "graveyard": ["Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Repel Calamity", "targets": ["Relentless Skaabs"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Relentless Skaabs"], "graveyard_has": ["Grizzly Bears"], "exile": [] },
+        {}
+      ],
+      "pt": { "Relentless Skaabs": [5, 5] }
+    }
+  },
+  {
+    "name": "ruling: exactly one creature card is exiled even with several in the graveyard",
+    "players": [
+      { "hand": ["Relentless Skaabs"], "battlefield": ["Island", "Island", "Island", "Island", "Island"], "graveyard": ["Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Relentless Skaabs", "answers": [["Grizzly Bears"]] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Relentless Skaabs"], "exile": ["Grizzly Bears"], "graveyard_has": ["Hill Giant"] },
+        {}
+      ]
+    }
+  }
+]

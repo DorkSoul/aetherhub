@@ -1,0 +1,113 @@
+[
+  {
+    "name": "when it dies, returns a non-Bear creature card with mana value <= its power",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Fiendish Panda", "sick": false }], "graveyard": ["Llanowar Elves"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Fiendish Panda"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Llanowar Elves"] }, {}]
+    }
+  },
+  {
+    "name": "a creature card with mana value above its power is not returned",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", { "name": "Fiendish Panda", "sick": false }], "graveyard": ["Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Fiendish Panda"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard_has": ["Hill Giant"], "battlefield_lacks": ["Hill Giant"] }, {}]
+    }
+  },
+  {
+    "name": "gaining life puts a +1/+1 counter on it",
+    "players": [
+      { "hand": ["Festival of Trokin"], "battlefield": ["Plains", { "name": "Fiendish Panda", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Festival of Trokin" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "pt": { "Fiendish Panda": [4, 3] }
+    }
+  },
+  {
+    "name": "ruling: the death return uses the power it last had (4 with a counter), so a MV 4 creature returns",
+    "players": [
+      { "hand": ["Festival of Trokin", "Lightning Bolt"], "battlefield": ["Plains", "Mountain", { "name": "Fiendish Panda", "sick": false }], "graveyard": ["Juggernaut"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Festival of Trokin" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Fiendish Panda"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Juggernaut"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a single 'gain life for each creature' is one life-gaining event: one counter",
+    "players": [
+      { "hand": ["Festival of Trokin"], "battlefield": ["Plains", { "name": "Fiendish Panda", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Festival of Trokin" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 24 }, {}],
+      "pt": { "Fiendish Panda": [4, 3] }
+    }
+  },
+  {
+    "name": "ruling: two lifelink creatures dealing combat damage are two life-gaining events: two counters",
+    "players": [
+      { "hand": ["Lifelink"], "battlefield": ["Plains", { "name": "Fiendish Panda", "sick": false }, { "name": "Vampire Nighthawk", "sick": false }, { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "Main1" },
+      { "cast": "Lifelink", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Vampire Nighthawk", "at": "p1" }, { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [{ "life": 24 }, { "life": 16 }],
+      "pt": { "Fiendish Panda": [5, 4] }
+    }
+  },
+  {
+    "name": "ruling: lethal damage at the same time as the life gain: the counter arrives too late, Panda dies",
+    "players": [
+      { "battlefield": ["Plains", { "name": "Fiendish Panda", "sick": false }, { "name": "Vampire Nighthawk", "sick": false }] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Fiendish Panda", "at": "p1" }, { "card": "Vampire Nighthawk", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Fiendish Panda" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Fiendish Panda"], "life": 22 },
+        { "graveyard": ["Grizzly Bears"], "life": 18 }
+      ]
+    }
+  }
+]

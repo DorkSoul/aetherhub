@@ -1,0 +1,35 @@
+{
+  "name": "Surprise Deployment",
+  "mana_cost": "{3}{W}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "CastOnlyIf",
+      "condition": { "type": "AnyOf", "cs": [
+        { "type": "InStep", "step": "BeginCombat" },
+        { "type": "InStep", "step": "DeclareAttackers" },
+        { "type": "InStep", "step": "DeclareBlockers" },
+        { "type": "InStep", "step": "FirstStrikeDamage" },
+        { "type": "InStep", "step": "CombatDamage" },
+        { "type": "InStep", "step": "EndCombat" }
+      ] }
+    },
+    {
+      "type": "Spell",
+      "effects": [
+        { "type": "May", "effects": [
+          { "type": "Choose", "who": { "type": "You" }, "zone": "Hand",
+            "filter": { "types": ["Creature"], "not_colors": ["W"] },
+            "min": 1, "max": 1,
+            "then": [
+              { "type": "Move", "what": { "type": "Remembered" }, "to": "Battlefield", "remember": true },
+              { "type": "Delayed", "at": "NextEndStep", "effects": [
+                { "type": "Move", "what": { "type": "Remembered" }, "from": "Battlefield", "to": "Hand" }
+              ] }
+            ] }
+        ] }
+      ]
+    }
+  ],
+  "oracle_text": "Cast this spell only during combat.\nYou may put a nonwhite creature card from your hand onto the battlefield. At the beginning of the next end step, return that creature to your hand. (Return it only if it's on the battlefield.)"
+}

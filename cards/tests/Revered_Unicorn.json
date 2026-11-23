@@ -1,0 +1,53 @@
+[
+ {"name": "leaving the battlefield gains life equal to age counters",
+  "players": [{"hand": ["Doom Blade"], "battlefield": [{"name": "Revered Unicorn", "counters": {"age": 2}}, "Swamp", "Swamp"]}, {}],
+  "steps": [
+    {"cast": "Doom Blade", "targets": ["Revered Unicorn"]}, {"resolve": true}, {"resolve": true}],
+  "expect": {"players": [{"graveyard_has": ["Revered Unicorn"], "life": 22}, {}]}},
+ {"name": "no age counters: leaving gains nothing",
+  "players": [{"hand": ["Doom Blade"], "battlefield": ["Revered Unicorn", "Swamp", "Swamp"]}, {}],
+  "steps": [
+    {"cast": "Doom Blade", "targets": ["Revered Unicorn"]}, {"resolve": true}, {"resolve": true}],
+  "expect": {"players": [{"graveyard_has": ["Revered Unicorn"], "life": 20}, {}]}},
+  {
+    "name": "upkeep: age counter added, paying {1} keeps the unicorn",
+    "players": [ { "battlefield": ["Revered Unicorn", "Plains"] }, {} ],
+    "start": "Untap",
+    "steps": [ { "advance_to": "Upkeep", "answers": [true] }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "battlefield_has": ["Revered Unicorn"], "life": 20 }, {} ],
+      "counters": { "Revered Unicorn": { "age": 1 } }
+    }
+  },
+  {
+    "name": "upkeep: with no mana to pay the cumulative upkeep it is sacrificed and gains life for its age counter",
+    "players": [ { "battlefield": ["Revered Unicorn"] }, {} ],
+    "start": "Untap",
+    "steps": [ { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": {
+      "players": [ { "graveyard_has": ["Revered Unicorn"], "life": 21 }, {} ]
+    }
+  },
+ {
+  "name": "ruling: declining to pay with mana available still adds the age counter, so leaving gains 1 life",
+  "players": [ { "battlefield": ["Revered Unicorn", "Plains"] }, {} ],
+  "start": "Untap",
+  "steps": [ { "advance_to": "Upkeep", "answers": [false] }, { "resolve": true } ],
+  "expect": {
+    "players": [ { "graveyard_has": ["Revered Unicorn"], "life": 21 }, {} ]
+  }
+ },
+ {
+  "name": "ruling: destroyed by damage also triggers the leaves-the-battlefield life gain",
+  "players": [
+    { "hand": ["Lightning Bolt"], "battlefield": [{ "name": "Revered Unicorn", "counters": { "age": 2 } }, "Mountain"] },
+    {}
+  ],
+  "steps": [
+    { "cast": "Lightning Bolt", "targets": ["Revered Unicorn"] }, { "resolve": true }, { "resolve": true }
+  ],
+  "expect": {
+    "players": [ { "graveyard_has": ["Revered Unicorn"], "life": 22 }, {} ]
+  }
+ }
+]

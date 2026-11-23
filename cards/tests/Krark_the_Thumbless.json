@@ -1,0 +1,74 @@
+[
+  {
+    "name": "creature spells do not trigger the coin flip",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest",
+          "Krark, the Thumbless"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Grizzly Bears",
+            "Krark, the Thumbless"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+ {
+  "name": "seed 1: losing the flip returns the spell to hand, so it does not resolve",
+  "seed": 1,
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Krark, the Thumbless"] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+  "expect": { "players": [ { "hand": ["Lightning Bolt"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "seed 3: winning the flip copies the spell, so the Bolt deals damage twice",
+  "seed": 3,
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Krark, the Thumbless"] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 14 } ] }
+ },
+ {
+  "name": "ruling: a winning copy of a spell with X uses the same X (Fireball X=3 deals 3 twice)",
+  "seed": 3,
+  "players": [ { "hand": ["Fireball"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Krark, the Thumbless"] }, {} ],
+  "steps": [ { "cast": "Fireball", "targets": ["p1"], "answers": [3] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": ["Fireball"] }, { "life": 14 } ] }
+ },
+ {
+  "name": "ruling: a winning copy of a spell with no targets is still created (Divination draws four)",
+  "seed": 3,
+  "players": [ { "hand": ["Divination"], "battlefield": ["Island", "Island", "Island", "Krark, the Thumbless"] }, {} ],
+  "steps": [ { "cast": "Divination" }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 4, "graveyard": ["Divination"] }, {} ] }
+ },
+ {
+  "name": "ruling: a winning copy may choose new targets while the original keeps its own",
+  "seed": 3,
+  "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Krark, the Thumbless"] }, { "battlefield": ["Grizzly Bears", "Hill Giant"] } ],
+  "steps": [ { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] }, { "resolve": true, "answers": ["Hill Giant"] } ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "graveyard_has": ["Grizzly Bears", "Hill Giant"], "battlefield_lacks": ["Grizzly Bears", "Hill Giant"] } ] }
+ }
+]

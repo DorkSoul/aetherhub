@@ -1,0 +1,170 @@
+[
+  {
+    "name": "last time counter: cast free and exile instead of graveyard; graveyard creature castable this turn",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Gaea's Will",
+            "counters": {
+              "time": 1
+            }
+          }
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Gaea's Will"
+          ],
+          "graveyard": [],
+          "battlefield": [
+            "Forest",
+            "Forest",
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "graveyard permission ends at end of turn: cannot cast from graveyard on your next turn",
+    "players": [
+      {
+        "exile": [
+          {
+            "name": "Gaea's Will",
+            "counters": {
+              "time": 1
+            }
+          }
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "Upkeep"
+      },
+      {
+        "advance_to": "Upkeep",
+        "answers": [
+          true
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: after Gaea's Will resolves, your nontoken creature that would die is exiled and its dies trigger does not happen",
+    "players": [
+      { "exile": [ { "name": "Gaea's Will", "counters": { "time": 1 } } ], "battlefield": ["Grim Initiate", "Mountain"], "hand": ["Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [true] },
+      { "resolve": true },
+      { "advance_to": "Main1" },
+      { "cast": "Lightning Bolt", "targets": ["Grim Initiate"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "battlefield_lacks": ["Grim Initiate", "Army"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: suspend from hand exiles the card with four time counters",
+    "players": [ { "hand": ["Gaea's Will"], "battlefield": ["Forest"] }, {} ],
+    "steps": [ { "activate": "Gaea's Will", "ability": 0 } ],
+    "expect": {
+      "players": [ { "hand": [], "exile": ["Gaea's Will"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: declining the free cast leaves the suspended card in exile with no time counters",
+    "players": [ { "exile": [ { "name": "Gaea's Will", "counters": { "time": 1 } } ], "battlefield": ["Forest", "Forest"] }, {} ],
+    "steps": [
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep", "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "exile": ["Gaea's Will"], "graveyard": [] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: a card with no mana cost cannot be cast from hand",
+    "players": [ { "hand": ["Gaea's Will"], "battlefield": ["Forest", "Forest"] }, {} ],
+    "steps": [ { "cast": "Gaea's Will", "illegal": true } ],
+    "expect": {
+      "players": [ { "hand": ["Gaea's Will"] }, {} ]
+    }
+  }
+]

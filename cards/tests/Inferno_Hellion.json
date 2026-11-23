@@ -1,0 +1,131 @@
+[
+  {
+    "name": "shuffled into library at end step after attacking",
+    "players": [
+      {
+        "battlefield": [
+          "Inferno Hellion"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Inferno Hellion",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Inferno Hellion"
+          ],
+          "library_count": 21
+        },
+        {
+          "life": 13
+        }
+      ]
+    }
+  },
+  {
+    "name": "stays on battlefield if it did not attack or block",
+    "players": [
+      {
+        "battlefield": [
+          "Inferno Hellion"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Inferno Hellion"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "blocking a creature: shuffled into its owner's library at the next end step",
+    "players": [
+      { "battlefield": ["Inferno Hellion"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [ { "blocker": "Inferno Hellion", "attacker": "Grizzly Bears" } ], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_lacks": ["Inferno Hellion"], "library_count": 21 },
+        { "graveyard_has": ["Grizzly Bears"] }
+      ]
+    }
+  },
+  {
+    "name": "not blocking: the opponent's unblocked attacker does not trigger the Hellion",
+    "players": [
+      { "battlefield": ["Inferno Hellion"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "advance_to": "BeginCombat" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ], "player": 1 },
+      { "block": [], "player": 0 },
+      { "advance_to": "End" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Inferno Hellion"], "life": 18 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Hellion that left the battlefield is not moved to the library at the end step",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Inferno Hellion", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "attack": [ { "card": "Inferno Hellion", "at": "p1" } ] },
+      { "advance_to": "Main2" },
+      { "cast": "Lightning Bolt", "targets": ["Inferno Hellion"] },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard_has": ["Inferno Hellion"], "library_count": 20 },
+        { "life": 13 }
+      ]
+    }
+  }
+]

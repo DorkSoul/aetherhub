@@ -1,0 +1,68 @@
+[
+  {
+    "name": "1 damage, can't block this turn, and draw a card",
+    "players": [
+      { "hand": ["Blindblast"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blindblast", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "keywords": { "Grizzly Bears": ["CantBlock"] },
+      "players": [ { "graveyard": ["Blindblast"], "hand_count": 1 }, { "battlefield_has": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "no creature to target: cannot cast",
+    "players": [
+      { "hand": ["Blindblast"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "battlefield": ["Plains"] }
+    ],
+    "steps": [ { "cast": "Blindblast", "illegal": true } ],
+    "expect": { "players": [ { "hand": ["Blindblast"] }, {} ] }
+  },
+  {
+    "name": "ruling: blocking creature that survives stays blocking, so the blocked attacker deals no damage to the player",
+    "players": [
+      { "battlefield": ["Llanowar Elves"] },
+      { "hand": ["Blindblast"], "battlefield": ["Mountain", "Mountain", "Mountain", "Hill Giant"] }
+    ],
+    "steps": [
+      { "attack": [ { "card": "Llanowar Elves", "at": "p1" } ] },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Llanowar Elves" } ], "player": 1 },
+      { "pass": true },
+      { "cast": "Blindblast", "targets": ["Hill Giant"], "player": 1 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Llanowar Elves"] },
+        { "battlefield_has": ["Hill Giant"], "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: if the target is gone in response, Blindblast does not resolve and draws nothing",
+    "players": [
+      { "hand": ["Blindblast"], "battlefield": ["Mountain", "Mountain", "Mountain"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Blindblast", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"], "player": 1 },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Blindblast"], "hand_count": 0 },
+        { "graveyard": ["Grizzly Bears", "Lightning Bolt"] }
+      ]
+    }
+  }
+]

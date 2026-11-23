@@ -1,0 +1,63 @@
+[
+ {
+  "name": "destroys an attacker that attacks me",
+  "players": [
+   { "hand": ["Eightfold Maze"], "battlefield": ["Plains", "Plains", "Plains"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" } ] },
+   { "pass": true, "player": 1 },
+   { "cast": "Eightfold Maze", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Eightfold Maze"], "life": 20 }, { "graveyard": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "cannot be cast in my own declare attackers step when I was not attacked",
+  "players": [
+   { "hand": ["Eightfold Maze"], "battlefield": ["Plains", "Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "cast": "Eightfold Maze", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": { "players": [ { "hand_count": 2, "battlefield_has": ["Grizzly Bears"] }, {} ] }
+ },
+ {
+  "name": "ruling: cannot be cast if every attacker attacks my planeswalker (not me)",
+  "players": [
+   { "hand": ["Eightfold Maze"], "battlefield": ["Plains", "Plains", "Plains", "Test Walker"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "Test Walker" } ] },
+   { "pass": true, "player": 1 },
+   { "cast": "Eightfold Maze", "targets": ["Grizzly Bears"], "illegal": true }
+  ],
+  "expect": { "players": [ { "hand": ["Eightfold Maze"], "battlefield_has": ["Test Walker"] }, { "battlefield_has": ["Grizzly Bears"] } ] }
+ },
+ {
+  "name": "ruling: may target an attacker of my planeswalker when another creature attacks me",
+  "players": [
+   { "hand": ["Eightfold Maze"], "battlefield": ["Plains", "Plains", "Plains", "Test Walker"] },
+   { "battlefield": [ { "name": "Grizzly Bears", "sick": false }, { "name": "Hill Giant", "sick": false } ] }
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "advance_to": "Main1" },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p0" }, { "card": "Hill Giant", "at": "Test Walker" } ] },
+   { "pass": true, "player": 1 },
+   { "cast": "Eightfold Maze", "targets": ["Hill Giant"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Eightfold Maze"], "battlefield_has": ["Test Walker"], "life": 20 }, { "graveyard": ["Hill Giant"], "battlefield_has": ["Grizzly Bears"] } ] }
+ }
+]

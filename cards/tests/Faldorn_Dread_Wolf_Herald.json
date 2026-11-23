@@ -1,0 +1,189 @@
+[
+  {
+    "name": "ability exiles the top card of the library (playable this turn) and discards a card as cost",
+    "players": [
+      {
+        "hand": [
+          "Island"
+        ],
+        "battlefield": [
+          "Faldorn, Dread Wolf Herald",
+          "Mountain"
+        ],
+        "library": [
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Faldorn, Dread Wolf Herald",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Forest"
+          ],
+          "hand": [],
+          "graveyard": [
+            "Island"
+          ]
+        },
+        {}
+      ],
+      "tapped": {
+        "Faldorn, Dread Wolf Herald": true
+      }
+    }
+  },
+  {
+    "name": "casting a spell from exile creates a Wolf; a spell cast from hand does not",
+    "players": [
+      {
+        "hand": [
+          "Island"
+        ],
+        "battlefield": [
+          "Faldorn, Dread Wolf Herald",
+          "Mountain",
+          "Forest",
+          "Plains"
+        ],
+        "library": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Faldorn, Dread Wolf Herald",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Faldorn, Dread Wolf Herald",
+            "Grizzly Bears",
+            "Wolf"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "land played from exile creates a Wolf",
+    "players": [
+      {
+        "battlefield": [
+          "Faldorn, Dread Wolf Herald",
+          "Mountain"
+        ],
+        "library": [
+          "Forest"
+        ],
+        "hand": [
+          "Island"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Faldorn, Dread Wolf Herald",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "play_land": "Forest"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield": [
+            "Faldorn, Dread Wolf Herald",
+            "Mountain",
+            "Forest",
+            "Wolf"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land played from exile needs an unused land drop (after a land is played this turn it cannot be played)",
+    "players": [
+      {
+        "hand": ["Plains", "Island"],
+        "battlefield": ["Faldorn, Dread Wolf Herald", "Mountain"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "play_land": "Plains" },
+      { "activate": "Faldorn, Dread Wolf Herald", "ability": 0 },
+      { "resolve": true },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Forest"], "hand": [], "graveyard": ["Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a land played from exile must be played with an empty stack (illegal while a spell is on the stack)",
+    "players": [
+      {
+        "hand": ["Island", "Lightning Bolt"],
+        "battlefield": ["Faldorn, Dread Wolf Herald", "Mountain", "Mountain"],
+        "library": ["Forest"]
+      },
+      {
+        "battlefield": ["Grizzly Bears"]
+      }
+    ],
+    "steps": [
+      { "activate": "Faldorn, Dread Wolf Herald", "ability": 0, "answers": ["Island"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "play_land": "Forest", "illegal": true },
+      { "resolve": true },
+      { "play_land": "Forest" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Forest"] },
+        { "graveyard": ["Grizzly Bears"] }
+      ]
+    }
+  }
+]

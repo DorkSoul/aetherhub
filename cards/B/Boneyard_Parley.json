@@ -1,0 +1,43 @@
+{
+  "name": "Boneyard Parley",
+  "mana_cost": "{5}{B}{B}",
+  "types": ["Sorcery"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        { "what": { "type": "CardIn", "zone": "Graveyard", "filter": { "types": ["Creature"] }, "whose": "Any" }, "min": 0, "max": 5 }
+      ],
+      "effects": [ { "type": "NotePileOrGuess" },
+        { "type": "Move", "what": { "type": "Targets" }, "to": "Exile", "remember": true },
+        { "type": "StoreRemembered", "slot": 1 },
+        { "type": "ClearRemembered" },
+        {
+          "type": "Choose", "who": { "type": "EachOpponent" }, "from": { "type": "EachPlayer" }, "zone": "Exile",
+          "filter": { "among_stored": 1 }, "min": 0, "max": 5,
+          "then": [ { "type": "StoreRemembered", "slot": 0 } ]
+        },
+        {
+          "type": "ChooseModes", "choose_min": 1, "choose_max": 1,
+          "modes": [
+            {
+              "text": "Put the pile the opponent chose onto the battlefield under your control; the other pile goes to owners' graveyards.",
+              "effects": [
+                { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "from": "Exile", "to": "Battlefield", "under_your_control": true },
+                { "type": "Move", "what": { "type": "All", "zone": "Exile", "filter": { "among_stored": 1, "not_among_stored": 0 } }, "from": "Exile", "to": "Graveyard" }
+              ]
+            },
+            {
+              "text": "Put the other pile onto the battlefield under your control; the pile the opponent chose goes to owners' graveyards.",
+              "effects": [
+                { "type": "Move", "what": { "type": "Stored", "slot": 0 }, "from": "Exile", "to": "Graveyard" },
+                { "type": "Move", "what": { "type": "All", "zone": "Exile", "filter": { "among_stored": 1, "not_among_stored": 0 } }, "from": "Exile", "to": "Battlefield", "under_your_control": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Exile up to five target creature cards from graveyards. An opponent separates those cards into two piles. Put all cards from the pile of your choice onto the battlefield under your control and the rest into their owners' graveyards."
+}

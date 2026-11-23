@@ -1,0 +1,120 @@
+[
+ {
+  "name": "the targeted instant gains flashback until end of turn and is exiled when it resolves",
+  "players": [
+   { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island", "Mountain"], "graveyard": ["Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Snapcaster Mage" },
+   { "resolve": true },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "battlefield_has": ["Snapcaster Mage"], "exile": ["Lightning Bolt"] },
+    { "life": 17 }
+   ]
+  }
+ },
+ {
+  "name": "flashback only applies to the targeted card, not another instant in the graveyard",
+  "players": [
+   { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island", "Mountain"], "graveyard": ["Lightning Bolt", "Shock"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Snapcaster Mage" },
+   { "resolve": true, "targets": ["Lightning Bolt"] },
+   { "cast": "Shock", "targets": ["p1"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard": ["Lightning Bolt", "Shock"] },
+    { "life": 20 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: flashback is still a sorcery, so it can't be cast on the opponent's turn",
+  "players": [
+   { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island", "Island", "Island"], "graveyard": ["Deep Analysis"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "Main2" },
+   { "advance_to": "Main1" },
+   { "player": 1, "pass": true },
+   { "cast": "Snapcaster Mage" },
+   { "resolve": true },
+   { "player": 1, "pass": true },
+   { "cast": "Deep Analysis", "alt": 0, "targets": ["p0"], "illegal": true }
+  ],
+  "expect": {
+   "players": [
+    { "graveyard_has": ["Deep Analysis"], "battlefield_has": ["Snapcaster Mage"], "life": 20 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: X spell cast with flashback still lets you choose X and pays {X}{R}",
+  "players": [
+   { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Mountain", "Mountain", "Mountain", "Mountain"], "graveyard": ["Fireball"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Snapcaster Mage" },
+   { "resolve": true },
+   { "cast": "Fireball", "answers": [2], "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Fireball"] },
+    { "life": 18 }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a flashback spell is exiled when it resolves",
+  "players": [
+   { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island", "Island", "Island"], "graveyard": ["Deep Analysis"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Snapcaster Mage" },
+   { "resolve": true },
+   { "cast": "Deep Analysis", "alt": 0, "targets": ["p0"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Deep Analysis"], "life": 17 },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a flashback spell is exiled even when countered",
+  "players": [
+   { "hand": ["Snapcaster Mage"], "battlefield": ["Island", "Island", "Island", "Island"], "graveyard": ["Deep Analysis"] },
+   { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+  ],
+  "steps": [
+   { "cast": "Snapcaster Mage" },
+   { "resolve": true },
+   { "cast": "Deep Analysis", "alt": 0, "targets": ["p0"] },
+   { "pass": true },
+   { "player": 1, "cast": "Counterspell", "targets": [{ "stack": "Deep Analysis" }] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Deep Analysis"], "life": 17, "battlefield_has": ["Snapcaster Mage"] },
+    { "graveyard": ["Counterspell"] }
+   ]
+  }
+ }
+]

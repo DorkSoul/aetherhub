@@ -1,0 +1,46 @@
+[
+ { "name": "the only card in hand is revealed: damage equal to its mana value",
+   "players": [ { "hand": ["Ignite Memories"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "hand": ["Hill Giant"] } ],
+   "steps": [ { "cast": "Ignite Memories", "targets": ["p1"] }, { "resolve": true } ],
+   "expect": { "players": [ {}, { "life": 16, "hand": ["Hill Giant"] } ] } },
+ { "name": "empty hand: no damage",
+   "players": [ { "hand": ["Ignite Memories"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, {} ],
+   "steps": [ { "cast": "Ignite Memories", "targets": ["p1"] }, { "resolve": true } ],
+   "expect": { "players": [ {}, { "life": 20 } ] } },
+ { "name": "ruling: copies made by storm are not cast, so a later storm spell does not count them",
+   "players": [ { "hand": ["Lightning Bolt", "Ignite Memories", "Ignite Memories"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "hand": ["Grizzly Bears"], "battlefield": ["Llanowar Elves"] } ],
+   "steps": [
+     { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] }, { "resolve": true },
+     { "cast": "Ignite Memories", "targets": ["p1"] }, { "resolve": true },
+     { "cast": "Ignite Memories", "targets": ["p1"] }, { "resolve": true }
+   ],
+   "expect": { "players": [ {}, { "life": 10, "hand": ["Grizzly Bears"], "battlefield_lacks": ["Llanowar Elves"] } ] } },
+ { "name": "ruling: a storm copy may be given a different target than the original",
+   "players": [ { "hand": ["Lightning Bolt", "Ignite Memories", "Grizzly Bears"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "hand": ["Hill Giant"], "battlefield": ["Llanowar Elves"] } ],
+   "steps": [
+     { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] }, { "resolve": true },
+     { "cast": "Ignite Memories", "targets": ["p1"] }, { "resolve": true, "answers": ["p0"] }
+   ],
+   "expect": { "players": [ { "life": 18 }, { "life": 16 } ] } },
+ { "name": "ruling: countering the storm trigger means no copies are put onto the stack",
+   "players": [ { "hand": ["Lightning Bolt", "Ignite Memories"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "hand": ["Stifle", "Grizzly Bears"], "battlefield": ["Island", "Island", "Llanowar Elves"] } ],
+   "steps": [
+     { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] }, { "resolve": true },
+     { "cast": "Ignite Memories", "targets": ["p1"] },
+     { "pass": true },
+     { "cast": "Stifle", "player": 1, "targets": [{ "stack": "Ignite Memories" }] },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "life": 20 }, { "life": 18, "hand": ["Grizzly Bears"], "graveyard": ["Llanowar Elves", "Stifle"] } ] } },
+ { "name": "ruling: a countered spell still counts toward storm",
+   "players": [ { "hand": ["Lightning Bolt", "Ignite Memories"], "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"] }, { "hand": ["Counterspell", "Grizzly Bears"], "battlefield": ["Island", "Island", "Llanowar Elves"] } ],
+   "steps": [
+     { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] },
+     { "pass": true },
+     { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+     { "resolve": true },
+     { "cast": "Ignite Memories", "targets": ["p1"] },
+     { "resolve": true }
+   ],
+   "expect": { "players": [ { "graveyard": ["Lightning Bolt", "Ignite Memories"] }, { "life": 14, "hand": ["Grizzly Bears"], "battlefield_has": ["Llanowar Elves"], "graveyard": ["Counterspell"] } ] } }
+]

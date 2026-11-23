@@ -1,0 +1,86 @@
+[
+  {
+    "name": "job select: creates a 1/1 Hero and attaches to it (4/1 Knight)",
+    "players": [{ "hand": ["Dark Knight's Greatsword"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {}],
+    "steps": [{ "cast": "Dark Knight's Greatsword" }, { "resolve": true }, { "resolve": true }],
+    "expect": {
+      "players": [{ "battlefield_has": ["Dark Knight's Greatsword", "Hero"] }, {}],
+      "pt": { "Hero": [4, 1] },
+      "attached": { "Dark Knight's Greatsword": "Hero" }
+    }
+  },
+  {
+    "name": "Chaosbringer equip: pay 3 life instead of mana",
+    "players": [{ "battlefield": ["Dark Knight's Greatsword", "Grizzly Bears"] }, {}],
+    "steps": [
+      { "activate": "Dark Knight's Greatsword", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 17 }, {}],
+      "pt": { "Grizzly Bears": [5, 2] },
+      "attached": { "Dark Knight's Greatsword": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "Chaosbringer: only once each turn",
+    "players": [{ "battlefield": ["Dark Knight's Greatsword", "Grizzly Bears", "Hill Giant"] }, {}],
+    "steps": [
+      { "activate": "Dark Knight's Greatsword", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "activate": "Dark Knight's Greatsword", "ability": 0, "targets": ["Hill Giant"], "illegal": true }
+    ],
+    "expect": { "players": [{ "life": 17 }, {}] }
+  },
+  {
+    "name": "equipped creature is a Knight in addition to its other types",
+    "players": [{ "battlefield": ["Dark Knight's Greatsword", "Grizzly Bears"] }, {}],
+    "steps": [
+      { "activate": "Dark Knight's Greatsword", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Grizzly Bears": ["Knight"] }
+    }
+  },
+  {
+    "name": "ruling: Chaosbringer moves the Equipment off the Hero token onto another creature",
+    "players": [{ "hand": ["Dark Knight's Greatsword"], "battlefield": ["Swamp", "Swamp", "Swamp", "Grizzly Bears"] }, {}],
+    "steps": [
+      { "cast": "Dark Knight's Greatsword" },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Dark Knight's Greatsword", "ability": 0, "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 17, "battlefield_has": ["Dark Knight's Greatsword", "Hero"] }, {}],
+      "pt": { "Hero": [1, 1], "Grizzly Bears": [5, 2] },
+      "attached": { "Dark Knight's Greatsword": "Grizzly Bears" }
+    }
+  },
+  {
+    "name": "ruling: destroying the Hero token leaves the Equipment on the battlefield",
+    "players": [{ "hand": ["Dark Knight's Greatsword", "Lightning Bolt", "Mountain"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, {}],
+    "steps": [
+      { "cast": "Dark Knight's Greatsword" },
+      { "resolve": true },
+      { "resolve": true },
+      { "play_land": "Mountain" },
+      { "cast": "Lightning Bolt", "targets": ["Hero"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Dark Knight's Greatsword"], "battlefield_lacks": ["Hero"], "graveyard_has": ["Lightning Bolt"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: with Doubling Season two Heroes are created; the Equipment attaches to only one of them",
+    "players": [{ "hand": ["Dark Knight's Greatsword"], "battlefield": ["Doubling Season", "Swamp", "Swamp", "Swamp"] }, {}],
+    "steps": [{ "cast": "Dark Knight's Greatsword" }, { "resolve": true }, { "resolve": true }],
+    "expect": {
+      "players": [{ "battlefield_has": ["Dark Knight's Greatsword", "Hero", "Hero"] }, {}],
+      "attached": { "Dark Knight's Greatsword": "Hero" }
+    }
+  }
+]

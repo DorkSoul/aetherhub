@@ -1,0 +1,277 @@
+[
+  {
+    "name": "illegal once the attacker is blocked: no unblocked attacker to target",
+    "players": [
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Trap Runner",
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Llanowar Elves",
+            "attacker": "Hill Giant"
+          }
+        ]
+      },
+      {
+        "pass": true
+      },
+      {
+        "activate": "Trap Runner",
+        "ability": 0,
+        "targets": [
+          "Hill Giant"
+        ],
+        "player": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Trap Runner": false
+      }
+    }
+  },
+  {
+    "name": "illegal in the main phase (before blockers are declared)",
+    "players": [
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Trap Runner",
+          "Plains",
+          "Plains",
+          "Island",
+          "Island"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "activate": "Trap Runner",
+        "ability": 0,
+        "player": 1,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Trap Runner": false
+      }
+    }
+  },
+  {
+    "name": "tapping after blockers makes an unblocked attacker blocked: no combat damage",
+    "players": [
+      {
+        "battlefield": [
+          "Trap Runner"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p0"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "player": 0
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "activate": "Trap Runner",
+        "ability": 0,
+        "targets": [
+          "Hill Giant"
+        ],
+        "player": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 20
+        },
+        {}
+      ],
+      "tapped": {
+        "Trap Runner": true
+      }
+    }
+  },
+  {
+    "name": "without the activation the unblocked attacker deals its damage",
+    "players": [
+      {
+        "battlefield": [
+          "Trap Runner"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p0"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "player": 0
+      },
+      {
+        "advance_to": "Main2"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "life": 17
+        },
+        {}
+      ],
+      "tapped": {
+        "Trap Runner": false
+      }
+    }
+  },
+  {
+    "name": "tapped Trap Runner cannot activate a second time",
+    "players": [
+      {
+        "battlefield": [
+          "Trap Runner"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p0"
+          }
+        ]
+      },
+      {
+        "block": [],
+        "player": 0
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "activate": "Trap Runner",
+        "ability": 0,
+        "targets": [
+          "Hill Giant"
+        ],
+        "player": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "pass": true,
+        "player": 1
+      },
+      {
+        "activate": "Trap Runner",
+        "ability": 0,
+        "player": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "tapped": {
+        "Trap Runner": true
+      }
+    }
+  },
+  {
+    "name": "ruling: trample attacker made blocked still deals all its damage to the player",
+    "players": [
+      { "battlefield": ["Trap Runner"] },
+      { "battlefield": ["Endless Wurm", "Blight Mound"] }
+    ],
+    "steps": [
+      { "advance_to": "Main1", "answers": [true] },
+      { "attack": [ { "card": "Endless Wurm", "at": "p0" } ] },
+      { "block": [], "player": 0 },
+      { "pass": true, "player": 1 },
+      { "activate": "Trap Runner", "ability": 0, "targets": ["Endless Wurm"], "player": 0 },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "life": 11 }, {} ],
+      "tapped": { "Trap Runner": true }
+    }
+  }
+]

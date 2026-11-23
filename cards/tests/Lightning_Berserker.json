@@ -1,0 +1,146 @@
+[
+  {
+    "name": "pump: each R gives +1/+0 until end of turn",
+    "players": [
+      {
+        "battlefield": [
+          "Mountain",
+          "Mountain",
+          {
+            "name": "Lightning Berserker",
+            "sick": false
+          }
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Lightning Berserker",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "activate": "Lightning Berserker",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Lightning Berserker": [
+          3,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "name": "dash: haste attack then returns to hand at end step",
+    "players": [
+      {
+        "hand": [
+          "Lightning Berserker"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Berserker",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "attack": [
+          {
+            "card": "Lightning Berserker",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "advance_to": "End"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "hand": [
+            "Lightning Berserker"
+          ],
+          "battlefield_lacks": [
+            "Lightning Berserker"
+          ]
+        },
+        {
+          "life": 19
+        }
+      ]
+    }
+  },
+  {
+    "name": "dash can't be paid without red mana",
+    "players": [
+      {
+        "hand": [
+          "Lightning Berserker"
+        ],
+        "battlefield": [
+          "Plains"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Berserker",
+        "alt": 0,
+        "illegal": true
+      }
+    ],
+    "expect": {}
+  },
+  {
+    "name": "ruling: countering the dash cast puts the creature in the graveyard, not in hand",
+    "players": [
+      {"hand": ["Lightning Berserker"], "battlefield": ["Mountain"]},
+      {"hand": ["Counterspell"], "battlefield": ["Island", "Island"]}
+    ],
+    "steps": [
+      {"cast": "Lightning Berserker", "alt": 0},
+      {"pass": true},
+      {"cast": "Counterspell", "player": 1, "targets": [{"stack": "Lightning Berserker"}]},
+      {"resolve": true}
+    ],
+    "expect": {
+      "players": [{"graveyard": ["Lightning Berserker"], "hand_count": 0}, {"graveyard": ["Counterspell"]}]
+    }
+  },
+  {
+    "name": "ruling: a dash creature need not attack and still returns to hand at the end step",
+    "players": [{"hand": ["Lightning Berserker"], "battlefield": ["Mountain"]}, {}],
+    "steps": [
+      {"cast": "Lightning Berserker", "alt": 0},
+      {"resolve": true},
+      {"advance_to": "Main2"},
+      {"advance_to": "End"},
+      {"advance_to": "End"}
+    ],
+    "expect": {
+      "players": [{"hand": ["Lightning Berserker"], "battlefield_lacks": ["Lightning Berserker"]}, {"life": 20}]
+    }
+  }
+]

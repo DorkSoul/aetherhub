@@ -1,0 +1,237 @@
+[
+  {
+    "name": "casting an enchantment from hand cascades; declining puts the card on the bottom",
+    "players": [
+      {
+        "hand": [
+          "Astral Drift"
+        ],
+        "battlefield": [
+          "Wildsear, Scouring Maw",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Astral Drift"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          false
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Wildsear, Scouring Maw",
+            "Astral Drift"
+          ],
+          "exile": [],
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "casting a non-enchantment spell does not cascade",
+    "players": [
+      {
+        "hand": [
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Wildsear, Scouring Maw",
+          "Forest",
+          "Forest"
+        ],
+        "library": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Grizzly Bears"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Wildsear, Scouring Maw",
+            "Grizzly Bears"
+          ],
+          "exile": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "accepting the cascade cast casts the revealed nonland card for free",
+    "players": [
+      {
+        "hand": [
+          "Astral Drift"
+        ],
+        "battlefield": [
+          "Wildsear, Scouring Maw",
+          "Plains",
+          "Plains",
+          "Plains"
+        ],
+        "library": [
+          "Lightning Bolt"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Astral Drift"
+      },
+      {
+        "resolve": true,
+        "answers": [
+          true
+        ],
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Wildsear, Scouring Maw",
+            "Astral Drift"
+          ],
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: cascade skips a nonland card whose mana value is not lower (Wall of Stone, MV 3, against Astral Drift MV 3)",
+    "players": [
+      { "hand": ["Astral Drift"], "battlefield": ["Wildsear, Scouring Maw", "Plains", "Plains", "Plains"], "library": ["Wall of Stone", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Astral Drift" },
+      { "resolve": true, "answers": [true], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Astral Drift"], "battlefield_lacks": ["Wall of Stone"], "graveyard_has": ["Lightning Bolt"], "exile": [] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: declining the cascade cast puts the exiled cards on the bottom of the library, none stay exiled",
+    "players": [
+      { "hand": ["Astral Drift"], "battlefield": ["Wildsear, Scouring Maw", "Plains", "Plains", "Plains"], "library": ["Forest", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Astral Drift" },
+      { "resolve": true, "answers": [false] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Astral Drift"], "exile": [], "library_count": 22 }, {} ] }
+  },
+  {
+    "name": "ruling: countering the cascade spell does not stop its cascade trigger",
+    "players": [
+      { "hand": ["Astral Drift"], "battlefield": ["Wildsear, Scouring Maw", "Plains", "Plains", "Plains"], "library": ["Lightning Bolt"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Astral Drift" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Astral Drift" }] },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": { "players": [ { "battlefield_lacks": ["Astral Drift"], "graveyard_has": ["Astral Drift", "Lightning Bolt"] }, { "life": 17, "graveyard_has": ["Counterspell"] } ] }
+  },
+  {
+    "name": "ruling: Wildsear leaving the battlefield after the cast does not stop the cascade",
+    "players": [
+      { "hand": ["Astral Drift"], "battlefield": ["Wildsear, Scouring Maw", "Plains", "Plains", "Plains"], "library": ["Lightning Bolt"] },
+      { "hand": ["Unsummon"], "battlefield": ["Island"] }
+    ],
+    "steps": [
+      { "cast": "Astral Drift" },
+      { "pass": true },
+      { "cast": "Unsummon", "player": 1 },
+      { "resolve": true, "answers": [true], "targets": ["p1"] }
+    ],
+    "expect": { "players": [ { "hand_count": 1, "battlefield_has": ["Astral Drift"], "graveyard_has": ["Lightning Bolt"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: a cascaded X spell is cast with X = 0 (Fireball deals no damage)",
+    "players": [
+      { "hand": ["Astral Drift"], "battlefield": ["Wildsear, Scouring Maw", "Plains", "Plains", "Plains"], "library": ["Fireball"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Astral Drift" },
+      { "resolve": true, "answers": [true], "targets": ["p1"], "auto": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Astral Drift"], "graveyard_has": ["Fireball"] }, { "life": 20 } ] }
+  },
+  {
+    "name": "ruling: cascade uses the printed mana value, not the cost after a cost increase (Sphere of Resistance)",
+    "players": [
+      { "hand": ["Astral Drift"], "battlefield": ["Wildsear, Scouring Maw", "Sphere of Resistance", "Plains", "Plains", "Plains", "Plains"], "library": ["Wall of Stone", "Lightning Bolt"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Astral Drift" },
+      { "resolve": true, "answers": [true], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Astral Drift", "Sphere of Resistance"], "battlefield_lacks": ["Wall of Stone"], "graveyard_has": ["Lightning Bolt"] }, { "life": 17 } ] }
+  },
+  {
+    "name": "ruling: a card cast without paying its mana cost cannot use an alternative cost (cascaded Reveillark stays on the battlefield)",
+    "players": [
+      { "hand": ["Super State"], "battlefield": ["Wildsear, Scouring Maw", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains", "Plains"], "library": ["Reveillark"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Super State" },
+      { "resolve": true, "answers": [true] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Reveillark", "Wildsear, Scouring Maw"] }, {} ] }
+  }
+]

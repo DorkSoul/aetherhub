@@ -1,0 +1,199 @@
+[
+ {
+  "name": "draws two cards",
+  "players": [
+   {
+    "hand": [
+     "Meeting of Minds"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Island",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Meeting of Minds"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Island",
+      "Mountain"
+     ],
+     "graveyard": [
+      "Meeting of Minds"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "convoke: two creatures help pay",
+  "players": [
+   {
+    "hand": [
+     "Meeting of Minds"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Grizzly Bears",
+     "Grizzly Bears"
+    ],
+    "library": [
+     "Island",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Meeting of Minds",
+    "answers": [
+     [
+      "Grizzly Bears",
+      "Grizzly Bears"
+     ]
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Island",
+      "Mountain"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "three lands cannot pay for four mana",
+  "players": [
+   {
+    "hand": [
+     "Meeting of Minds"
+    ],
+    "battlefield": [
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "library": [
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Meeting of Minds",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand": [
+      "Meeting of Minds"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: a summoning-sick creature can be tapped to convoke",
+  "players": [
+    {
+      "hand": ["Meeting of Minds"],
+      "battlefield": ["Island", "Island", "Island", { "name": "Grizzly Bears", "sick": true }],
+      "library": ["Island", "Mountain"]
+    },
+    {}
+  ],
+  "steps": [
+    { "cast": "Meeting of Minds", "answers": [["Grizzly Bears"]] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      { "hand": ["Island", "Mountain"] },
+      {}
+    ],
+    "tapped": { "Grizzly Bears": true }
+  }
+ },
+ {
+  "name": "ruling: a multicolored creature pays for {U} when tapped to convoke",
+  "players": [
+    {
+      "hand": ["Meeting of Minds"],
+      "battlefield": ["Forest", "Forest", "Forest", "Thrasios, Triton Hero"],
+      "library": ["Island", "Mountain"]
+    },
+    {}
+  ],
+  "steps": [
+    { "cast": "Meeting of Minds", "answers": [["Thrasios, Triton Hero"]] },
+    { "resolve": true }
+  ],
+  "expect": {
+    "players": [
+      { "hand": ["Island", "Mountain"] },
+      {}
+    ],
+    "tapped": { "Thrasios, Triton Hero": true }
+  }
+ },
+ {
+  "name": "ruling: tapping a blocker to convoke does not remove it from combat",
+  "players": [
+    {
+      "hand": ["Meeting of Minds"],
+      "battlefield": ["Island", "Island", "Island", { "name": "Grizzly Bears", "sick": false }],
+      "library": ["Island", "Mountain"]
+    },
+    {
+      "battlefield": [{ "name": "Juggernaut", "sick": false }]
+    }
+  ],
+  "steps": [
+    { "advance_to": "End" },
+    { "advance_to": "Main1" },
+    { "player": 1, "attack": [ { "card": "Juggernaut", "at": "p0" } ] },
+    { "block": [ { "blocker": "Grizzly Bears", "attacker": "Juggernaut" } ], "player": 0 },
+    { "pass": true, "player": 1 },
+    { "cast": "Meeting of Minds", "player": 0 },
+    { "resolve": true },
+    { "advance_to": "Main2" }
+  ],
+  "expect": {
+    "players": [
+      { "life": 20, "graveyard_has": ["Grizzly Bears"] },
+      { "battlefield_has": ["Juggernaut"] }
+    ]
+  }
+ }
+]

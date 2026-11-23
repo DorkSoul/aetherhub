@@ -1,0 +1,163 @@
+[
+  {
+    "name": "targeted by a spell: creates a Treasure",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          "Goldspan Dragon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Goldspan Dragon"
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Goldspan Dragon",
+            "Treasure"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "attacking creates a Treasure",
+    "players": [
+      {
+        "battlefield": [
+          "Goldspan Dragon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Goldspan Dragon",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": []
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Treasure"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Treasures you control tap for two mana of one color",
+    "players": [
+      {
+        "battlefield": [
+          "Goldspan Dragon",
+          "Treasure"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Treasure",
+        "color": "R"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "R": 2
+          }
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the targeting trigger resolves while the spell is still on the stack",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Goldspan Dragon"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Goldspan Dragon"] },
+      { "pass": true },
+      { "pass": true, "player": 1 }
+    ],
+    "expect": {
+      "stack_empty": false,
+      "players": [ { "battlefield_has": ["Goldspan Dragon", "Treasure"] }, {} ]
+    }
+  },
+  {
+    "name": "ruling: the trigger still resolves when the targeting spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Goldspan Dragon"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Goldspan Dragon"] },
+      { "pass": true },
+      { "cast": "Counterspell", "targets": [{ "stack": "Lightning Bolt" }], "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Goldspan Dragon", "Treasure"], "graveyard_has": ["Lightning Bolt"] },
+        { "graveyard_has": ["Counterspell"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: players may cast spells after the trigger resolves, before the targeting spell does",
+    "players": [
+      { "hand": ["Lightning Bolt", "Consider"], "battlefield": ["Mountain", "Island", "Goldspan Dragon"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Goldspan Dragon"] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "cast": "Consider" },
+      { "resolve": true, "answers": [[]] }
+    ],
+    "expect": {
+      "stack_empty": true,
+      "players": [
+        { "battlefield_has": ["Goldspan Dragon", "Treasure"], "graveyard_has": ["Lightning Bolt", "Consider"] },
+        {}
+      ]
+    }
+  }
+]

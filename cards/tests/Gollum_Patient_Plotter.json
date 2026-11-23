@@ -1,0 +1,55 @@
+[
+  { "name": "when Gollum leaves the battlefield the Ring tempts its controller",
+    "players": [ { "battlefield": ["Gollum, Patient Plotter", "Swamp"] },
+                 { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] } ],
+    "steps": [ { "pass": true }, { "cast": "Lightning Bolt", "player": 1, "targets": ["Gollum, Patient Plotter"] },
+               { "resolve": true },
+               { "resolve": true } ],
+    "expect": { "players": [ { "graveyard": ["Gollum, Patient Plotter"], "command": ["The Ring 1"] }, { "graveyard": ["Lightning Bolt"] } ] } },
+  { "name": "from the graveyard, sacrificing a creature returns Gollum to hand",
+    "players": [ { "graveyard": ["Gollum, Patient Plotter"], "battlefield": ["Swamp", "Grizzly Bears"] }, {} ],
+    "steps": [ { "activate": "Gollum, Patient Plotter", "ability": 0 }, { "resolve": true } ],
+    "expect": { "players": [ { "hand": ["Gollum, Patient Plotter"], "graveyard": ["Grizzly Bears"] }, {} ] } },
+  { "name": "ruling: a second tempt keeps one Ring emblem, upgraded to The Ring 2 (Gollum dies twice)",
+    "players": [ { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Gollum, Patient Plotter", "Grizzly Bears", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Gollum, Patient Plotter"] },
+      { "resolve": true },
+      { "resolve": true },
+      { "activate": "Gollum, Patient Plotter", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Gollum, Patient Plotter" },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Gollum, Patient Plotter"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "command": ["The Ring 2"], "hand_count": 0, "graveyard_has": ["Lightning Bolt", "Gollum, Patient Plotter"] }, {} ] } },
+  { "name": "ruling: a targeted tempt whose only target became illegal does not tempt (Claim the Precious fizzles)",
+    "players": [ { "hand": ["Claim the Precious"], "battlefield": ["Swamp", "Swamp", "Swamp"] }, { "hand": ["Lightning Bolt"], "battlefield": ["Mountain", "Hill Giant"] } ],
+    "steps": [
+      { "cast": "Claim the Precious", "targets": ["Hill Giant"] },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Hill Giant"] },
+      { "pass": true, "player": 1 },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "command": [], "graveyard_has": ["Claim the Precious"] }, { "graveyard_has": ["Hill Giant", "Lightning Bolt"] } ] } },
+  { "name": "ruling: the same Ring-bearer chosen again still counts for Call of the Ring (draws again)",
+    "players": [ { "hand": ["Lightning Bolt", "Claim the Precious"], "battlefield": ["Call of the Ring", "Gollum, Patient Plotter", "Grizzly Bears", "Mountain", "Swamp", "Swamp", "Swamp"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Gollum, Patient Plotter"] },
+      { "resolve": true, "answers": [true] },
+      { "cast": "Claim the Precious", "targets": ["Hill Giant"] },
+      { "resolve": true, "answers": [true] }
+    ],
+    "expect": { "players": [ { "command": ["The Ring 2"], "life": 16, "hand_count": 2, "battlefield_has": ["Call of the Ring", "Grizzly Bears"] }, { "graveyard_has": ["Hill Giant"] } ] } },
+  { "name": "ruling: with several creatures the Ring-bearer must be chosen (Call of the Ring draws)",
+    "players": [ { "hand": ["Lightning Bolt"], "battlefield": ["Call of the Ring", "Gollum, Patient Plotter", "Grizzly Bears", "Hill Giant", "Mountain"] }, {} ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Gollum, Patient Plotter"] },
+      { "resolve": true, "answers": [0, true] }
+    ],
+    "expect": { "players": [ { "command": ["The Ring 1"], "life": 18, "hand_count": 1 }, {} ] } }
+]

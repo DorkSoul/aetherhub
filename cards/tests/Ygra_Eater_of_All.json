@@ -1,0 +1,177 @@
+[
+  {
+    "name": "creature put into graveyard as Food gives Ygra two counters",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Ygra, Eater of All",
+          "Mountain"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Ygra, Eater of All": {
+          "PlusOnePlusOne": 2
+        }
+      },
+      "pt": {
+        "Ygra, Eater of All": [
+          8,
+          8
+        ]
+      },
+      "players": [
+        {
+          "graveyard": [
+            "Lightning Bolt"
+          ]
+        },
+        {
+          "graveyard": [
+            "Grizzly Bears"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Ygra herself is not a Food: no counters when she is damaged",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Ygra, Eater of All",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Ygra, Eater of All"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "pt": {
+        "Ygra, Eater of All": [
+          6,
+          6
+        ]
+      },
+      "players": [
+        {
+          "battlefield_has": [
+            "Ygra, Eater of All"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ward: an opponent's Terminate is countered when they have no Food to sacrifice",
+    "players": [
+      { "battlefield": ["Ygra, Eater of All"] },
+      { "hand": ["Terminate"], "battlefield": ["Swamp", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Terminate", "player": 1, "targets": ["Ygra, Eater of All"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Ygra, Eater of All"] }, { "graveyard_has": ["Terminate"] } ] }
+  },
+  {
+    "name": "ward: a creature the opponent controls is a Food (Ygra), so they pay by sacrificing it and Terminate resolves",
+    "players": [
+      { "battlefield": ["Ygra, Eater of All"] },
+      { "hand": ["Terminate"], "battlefield": ["Swamp", "Mountain", "Grizzly Bears"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Terminate", "player": 1, "targets": ["Ygra, Eater of All"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "graveyard_has": ["Ygra, Eater of All"] }, { "graveyard_has": ["Terminate", "Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ward: your own Food does not pay the opponent's Sacrifice-a-Food ward cost",
+    "players": [
+      { "battlefield": ["Ygra, Eater of All", "Grizzly Bears"] },
+      { "hand": ["Terminate"], "battlefield": ["Swamp", "Mountain"] }
+    ],
+    "steps": [
+      { "pass": true },
+      { "cast": "Terminate", "player": 1, "targets": ["Ygra, Eater of All"] },
+      { "resolve": true, "auto": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Ygra, Eater of All", "Grizzly Bears"] }, { "graveyard_has": ["Terminate"] } ] }
+  },
+  {
+    "name": "other creatures have '{2}, {T}, sacrifice: gain 3 life'",
+    "players": [
+      { "battlefield": ["Ygra, Eater of All", { "name": "Grizzly Bears", "sick": false }, "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Grizzly Bears", "ability": 32768 },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "life": 23, "graveyard_has": ["Grizzly Bears"] }, {} ] }
+  },
+  {
+    "name": "ruling: an affected creature keeps its own creature type and power/toughness alongside Food",
+    "players": [
+      { "battlefield": ["Ygra, Eater of All", { "name": "Grizzly Bears", "sick": false }] },
+      {}
+    ],
+    "steps": [],
+    "expect": {
+      "players": [ {}, {} ],
+      "pt": { "Grizzly Bears": [2, 2], "Ygra, Eater of All": [6, 6] },
+      "subtypes": { "Grizzly Bears": ["Bear", "Food"] }
+    }
+  },
+  {
+    "name": "ruling: Tough Cookie is a Food artifact, so it can be sacrificed to Maraleaf Rider's Food cost",
+    "players": [
+      { "battlefield": ["Maraleaf Rider", "Tough Cookie"] },
+      { "battlefield": ["Hill Giant"] }
+    ],
+    "steps": [
+      { "activate": "Maraleaf Rider", "ability": 0, "targets": ["Hill Giant"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Tough Cookie"], "battlefield_has": ["Maraleaf Rider"] }, { "battlefield_has": ["Hill Giant"] } ]
+    }
+  }
+]

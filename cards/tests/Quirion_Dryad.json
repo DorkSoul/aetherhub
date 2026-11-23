@@ -1,0 +1,229 @@
+[
+  {
+    "name": "red spell adds a counter",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Quirion Dryad",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Quirion Dryad": {
+          "p1p1": 1
+        }
+      },
+      "pt": {
+        "Quirion Dryad": [
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "name": "green spell does not",
+    "players": [
+      {
+        "hand": [
+          "Giant Growth"
+        ],
+        "battlefield": [
+          "Quirion Dryad",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Giant Growth",
+        "targets": [
+          "Quirion Dryad"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Quirion Dryad": {}
+      },
+      "pt": {
+        "Quirion Dryad": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "name": "colorless spell does not",
+    "players": [
+      {
+        "hand": [
+          "Sol Ring"
+        ],
+        "battlefield": [
+          "Quirion Dryad",
+          "Forest",
+          "Forest"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Sol Ring"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Quirion Dryad": {}
+      }
+    }
+  },
+  {
+    "name": "multicolor spell with a listed color adds one counter",
+    "players": [
+      {
+        "hand": [
+          "Boros Charm"
+        ],
+        "battlefield": [
+          "Quirion Dryad",
+          "Mountain",
+          "Plains",
+          "Mountain"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Boros Charm",
+        "answers": [
+          0
+        ],
+        "targets": [
+          "p1"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Quirion Dryad": {
+          "p1p1": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "opponent's spells do not count",
+    "players": [
+      {
+        "battlefield": [
+          "Quirion Dryad"
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "p0"
+        ],
+        "player": 1
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "counters": {
+        "Quirion Dryad": {}
+      }
+    }
+  },
+  {
+    "name": "ruling: a two-color spell triggers the ability just once",
+    "players": [
+      {
+        "hand": ["Boros Charm"],
+        "battlefield": ["Quirion Dryad", "Mountain", "Plains"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Boros Charm", "answers": [0], "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Quirion Dryad": { "p1p1": 1 } },
+      "pt": { "Quirion Dryad": [2, 2] }
+    }
+  },
+  {
+    "name": "ruling: the cast trigger resolves even though the spell it came from is countered",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Quirion Dryad", "Mountain"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "pass": true },
+      { "pass": true, "player": 1 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Quirion Dryad": { "p1p1": 1 } },
+      "players": [
+        { "graveyard": ["Lightning Bolt"] },
+        { "life": 20, "graveyard": ["Counterspell"] }
+      ],
+      "stack_empty": true
+    }
+  }
+]

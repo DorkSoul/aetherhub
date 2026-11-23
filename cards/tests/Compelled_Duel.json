@@ -1,0 +1,44 @@
+[
+  { "name": "+3/+3 and the creature must be blocked when a blocker is available",
+    "players": [ { "hand": ["Compelled Duel"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, { "battlefield": ["Hill Giant"] } ],
+    "steps": [
+      { "cast": "Compelled Duel", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "block": [], "illegal": true },
+      { "block": [ { "blocker": "Hill Giant", "attacker": "Grizzly Bears" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Compelled Duel"] }, { "graveyard": ["Hill Giant"] } ],
+      "pt": { "Grizzly Bears": [5, 5] }
+    } },
+  { "name": "no requirement when the defending player has no creature to block with",
+    "players": [ { "hand": ["Compelled Duel"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, {} ],
+    "steps": [
+      { "cast": "Compelled Duel", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Compelled Duel"] }, { "life": 15 } ] } },
+  { "name": "ruling: one blocker satisfies the requirement; the other creature may stay out of combat",
+    "players": [ { "hand": ["Compelled Duel"], "battlefield": ["Forest", "Forest", "Hill Giant"] }, { "battlefield": ["Grizzly Bears", "Llanowar Elves"] } ],
+    "steps": [
+      { "cast": "Compelled Duel", "targets": ["Hill Giant"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Hill Giant", "at": "p1" } ] },
+      { "block": [ { "blocker": "Grizzly Bears", "attacker": "Hill Giant" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "life": 20 }, { "graveyard": ["Grizzly Bears"], "battlefield_has": ["Llanowar Elves"] } ] } },
+  { "name": "ruling: a tapped creature cannot block, so the requirement is void and the attacker is unblocked",
+    "players": [ { "hand": ["Compelled Duel"], "battlefield": ["Forest", "Forest", "Grizzly Bears"] }, { "battlefield": [ { "name": "Hill Giant", "tapped": true } ] } ],
+    "steps": [
+      { "cast": "Compelled Duel", "targets": ["Grizzly Bears"] },
+      { "resolve": true },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "advance_to": "Main2" }
+    ],
+    "expect": { "players": [ { "graveyard": ["Compelled Duel"] }, { "life": 15, "battlefield_has": ["Hill Giant"] } ] } }
+]

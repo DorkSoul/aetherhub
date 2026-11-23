@@ -1,0 +1,60 @@
+{
+  "name": "Unleash the Inferno",
+  "mana_cost": "{1}{B}{R}{G}",
+  "types": ["Instant"],
+  "abilities": [
+    {
+      "type": "Spell",
+      "targets": [
+        {
+          "what": { "type": "Permanent", "filter": { "types": ["Creature", "Planeswalker"] } },
+          "label": "target creature or planeswalker"
+        }
+      ],
+      "effects": [
+        {
+          "type": "DealDamage",
+          "to": { "type": "Target", "idx": 0 },
+          "amount": { "type": "Fixed", "n": 7 }
+        },
+        {
+          "type": "If",
+          "cond": {
+            "type": "CompareAmounts",
+            "a": { "type": "LastExcessDamage" },
+            "b": { "type": "Fixed", "n": 0 },
+            "op": "Gt"
+          },
+          "then": [
+            {
+              "type": "Reflexive",
+              "targets": [
+                {
+                  "what": {
+                    "type": "Permanent",
+                    "filter": {
+                      "types": ["Artifact", "Enchantment"],
+                      "controller": "Opponent",
+                      "mana_value_vs": {
+                        "amount": { "type": "LastExcessDamage" },
+                        "op": "Le"
+                      }
+                    }
+                  },
+                  "label": "target artifact or enchantment an opponent controls with mana value <= the excess"
+                }
+              ],
+              "effects": [
+                {
+                  "type": "Destroy",
+                  "what": { "type": "Target", "idx": 0 }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle_text": "Unleash the Inferno deals 7 damage to target creature or planeswalker. When it deals excess damage this way, destroy target artifact or enchantment an opponent controls with mana value less than or equal to that amount of excess damage."
+}

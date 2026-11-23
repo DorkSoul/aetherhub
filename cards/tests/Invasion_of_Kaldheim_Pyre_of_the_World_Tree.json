@@ -1,0 +1,152 @@
+[
+  {
+    "name": "ETB exiles the whole hand and draws that many; the exiled cards stay playable",
+    "players": [
+      {
+        "hand": ["Invasion of Kaldheim // Pyre of the World Tree", "Grizzly Bears", "Lightning Bolt"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Island", "Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Invasion of Kaldheim // Pyre of the World Tree" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Invasion of Kaldheim // Pyre of the World Tree": { "Defense": 4 } },
+      "players": [
+        { "exile": ["Grizzly Bears", "Lightning Bolt"], "hand_count": 2, "library_count": 1 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ETB with an empty hand exiles and draws nothing",
+    "players": [
+      {
+        "hand": ["Invasion of Kaldheim // Pyre of the World Tree"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Island", "Island"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Invasion of Kaldheim // Pyre of the World Tree" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand_count": 0, "library_count": 2 },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "Pyre: discard a land to deal 2 to the opponent, then exile the top card of your library (playable this turn)",
+    "players": [
+      {
+        "hand": ["Mountain"],
+        "battlefield": ["Pyre of the World Tree"],
+        "library": ["Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Pyre of the World Tree", "ability": 0, "targets": ["p1"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "graveyard": ["Mountain"], "exile": ["Island"], "library_count": 1 },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "Pyre: discarding a nonland card does not pay the discard cost (activation illegal)",
+    "players": [
+      {
+        "hand": ["Grizzly Bears"],
+        "battlefield": ["Pyre of the World Tree"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Pyre of the World Tree", "ability": 0, "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Grizzly Bears"] },
+        { "life": 20 }
+      ]
+    }
+  },
+  {
+    "name": "ruling: an exiled land can be played only if no land was played yet this turn (Forest from the draw is blocked)",
+    "players": [
+      {
+        "hand": ["Invasion of Kaldheim // Pyre of the World Tree", "Island"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain"],
+        "library": ["Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Invasion of Kaldheim // Pyre of the World Tree" },
+      { "resolve": true },
+      { "resolve": true },
+      { "play_land": "Island" },
+      { "play_land": "Forest", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Island"], "hand": ["Forest"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: damage to the battle removes defense counters",
+    "players": [
+      {
+        "hand": ["Lightning Bolt"],
+        "battlefield": ["Mountain", {"name": "Invasion of Kaldheim // Pyre of the World Tree", "counters": {"Defense": 4}}]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Invasion of Kaldheim // Pyre of the World Tree"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "counters": { "Invasion of Kaldheim // Pyre of the World Tree": { "Defense": 1 } }
+    }
+  },
+  {
+    "name": "ruling: removing the last defense counter exiles the Siege and casts it transformed for free",
+    "players": [
+      {
+        "hand": ["Lightning Bolt", "Lightning Bolt"],
+        "battlefield": ["Mountain", "Mountain", {"name": "Invasion of Kaldheim // Pyre of the World Tree", "counters": {"Defense": 4}}]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Invasion of Kaldheim // Pyre of the World Tree"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["Invasion of Kaldheim // Pyre of the World Tree"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Pyre of the World Tree"], "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+        {}
+      ]
+    }
+  }
+]

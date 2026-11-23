@@ -1,0 +1,91 @@
+[
+  {
+    "name": "committing a crime creates a tapped Treasure",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Magda, the Hoardmaster", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Magda, the Hoardmaster", "Mountain", "Treasure"] }, {}]
+    }
+  },
+  {
+    "name": "only one Treasure per turn even with two crimes",
+    "players": [
+      { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Magda, the Hoardmaster", "Mountain", "Mountain"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true },
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Magda, the Hoardmaster", "Mountain", "Mountain", "Treasure"] }, {}]
+    }
+  },
+  {
+    "name": "sacrifice three Treasures for a 4/4 flying haste Scorpion Dragon",
+    "players": [
+      { "battlefield": ["Magda, the Hoardmaster", "Treasure", "Treasure", "Treasure"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magda, the Hoardmaster", "ability": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Magda, the Hoardmaster", "Scorpion Dragon 4-4 Flying Haste"] }, {}]
+    }
+  },
+  {
+    "name": "two Treasures are not enough for the Scorpion Dragon ability",
+    "players": [
+      { "battlefield": ["Magda, the Hoardmaster", "Treasure", "Treasure"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Magda, the Hoardmaster", "ability": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield": ["Magda, the Hoardmaster", "Treasure", "Treasure"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: targeting an opponent's creature is a crime",
+    "players": [
+      { "hand": ["Murder"], "battlefield": ["Magda, the Hoardmaster", "Swamp", "Swamp", "Swamp"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [ { "cast": "Murder", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Treasure"], "graveyard": ["Murder"] }, { "graveyard": ["Grizzly Bears"] } ] }
+  },
+  {
+    "name": "ruling: targeting only your own creature is not a crime",
+    "players": [
+      { "hand": ["Shock"], "battlefield": ["Magda, the Hoardmaster", "Mountain", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [ { "cast": "Shock", "targets": ["Grizzly Bears"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_lacks": ["Treasure"], "graveyard": ["Grizzly Bears", "Shock"] }, {} ] }
+  },
+  {
+    "name": "ruling: a crime counts even when the spell is countered",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Magda, the Hoardmaster", "Mountain"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Lightning Bolt" }] },
+      { "resolve": true }
+    ],
+    "expect": { "players": [ { "battlefield_has": ["Treasure"], "graveyard": ["Lightning Bolt"] }, { "life": 20, "graveyard": ["Counterspell"] } ] }
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "paying {3} when it enters taps the enchanted creature, and it stays tapped",
+    "players": [
+      { "hand": ["Marooned"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Marooned", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [true] },
+      { "advance_to": "End" },
+      { "advance_to": "Main1" }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": true },
+      "turn": 2,
+      "players": [ { "battlefield_has": ["Marooned"] }, {} ]
+    }
+  },
+  {
+    "name": "declining to pay leaves the creature untapped",
+    "players": [
+      { "hand": ["Marooned"], "battlefield": ["Island", "Island", "Island", "Island"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Marooned", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] }
+    ],
+    "expect": {
+      "tapped": { "Grizzly Bears": false },
+      "players": [ { "battlefield_has": ["Marooned"] }, {} ]
+    }
+  },
+  {
+    "name": "the enchanted creature can't be returned to hand to beam up a spell, another creature can",
+    "players": [
+      { "hand": ["Marooned"], "graveyard": ["Open Communications"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Marooned", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] },
+      { "cast": "Open Communications", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Open Communications"] }, {} ]
+    }
+  },
+  {
+    "name": "with a second creature to return, the spell can be beamed up",
+    "players": [
+      { "hand": ["Marooned"], "graveyard": ["Open Communications"], "battlefield": ["Island", "Island", "Island", "Island", "Island", "Island", "Grizzly Bears", "Hill Giant"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Marooned", "targets": ["Grizzly Bears"] },
+      { "resolve": true, "answers": [false] },
+      { "cast": "Open Communications", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "hand": ["Forest", "Hill Giant"], "exile": ["Open Communications"], "battlefield_has": ["Grizzly Bears"] }, {} ]
+    }
+  }
+]

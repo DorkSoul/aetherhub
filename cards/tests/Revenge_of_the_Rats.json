@@ -1,0 +1,168 @@
+[
+  {
+    "name": "cast from hand: a tapped Rat for each creature card in your graveyard",
+    "players": [
+      {
+        "hand": [
+          "Revenge of the Rats"
+        ],
+        "graveyard": [
+          "Grizzly Bears",
+          "Hill Giant"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Revenge of the Rats"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Revenge of the Rats",
+            "Grizzly Bears",
+            "Hill Giant"
+          ],
+          "battlefield_has": [
+            "Rat 1-1",
+            "Rat 1-1"
+          ]
+        }
+      ],
+      "tapped": {
+        "Rat 1-1": true
+      }
+    }
+  },
+  {
+    "name": "flashback from graveyard, then exiled",
+    "players": [
+      {
+        "graveyard": [
+          "Revenge of the Rats",
+          "Grizzly Bears"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Revenge of the Rats",
+        "alt": 0
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Revenge of the Rats"
+          ],
+          "battlefield_has": [
+            "Rat 1-1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "no creature cards in graveyard: no Rats",
+    "players": [
+      {
+        "hand": [
+          "Revenge of the Rats"
+        ],
+        "graveyard": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Swamp",
+          "Swamp",
+          "Swamp",
+          "Swamp"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Revenge of the Rats"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_lacks": [
+            "Rat 1-1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: flashback follows sorcery timing, so it cannot be cast on the opponent's turn",
+    "players": [
+      {
+        "graveyard": ["Revenge of the Rats", "Grizzly Bears"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "advance_to": "Main1" },
+      { "pass": true, "player": 1 },
+      { "cast": "Revenge of the Rats", "alt": 0, "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "graveyard": ["Revenge of the Rats", "Grizzly Bears"], "battlefield_lacks": ["Rat 1-1"] }, {}]
+    }
+  },
+  {
+    "name": "ruling: a flashback Revenge of the Rats that is countered is still exiled",
+    "players": [
+      {
+        "graveyard": ["Revenge of the Rats", "Grizzly Bears"],
+        "battlefield": ["Swamp", "Swamp", "Swamp", "Swamp"]
+      },
+      {
+        "hand": ["Counterspell"],
+        "battlefield": ["Island", "Island"]
+      }
+    ],
+    "steps": [
+      { "cast": "Revenge of the Rats", "alt": 0 },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [{ "stack": "Revenge of the Rats" }] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Revenge of the Rats"], "graveyard": ["Grizzly Bears"], "battlefield_lacks": ["Rat 1-1"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]

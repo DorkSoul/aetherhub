@@ -1,0 +1,258 @@
+[
+ {
+  "name": "exiled now, returns at the next end step with a +1/+1 counter",
+  "players": [
+   {
+    "hand": [
+     "Otherworldly Journey"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Otherworldly Journey",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "exile": [
+      "Grizzly Bears"
+     ],
+     "battlefield": [
+      "Plains",
+      "Plains"
+     ],
+     "graveyard": [
+      "Otherworldly Journey"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "returns with a counter",
+  "players": [
+   {
+    "hand": [
+     "Otherworldly Journey"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Otherworldly Journey",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "pass": true
+   }
+  ],
+  "expect": {
+   "counters": {
+    "Grizzly Bears": {
+     "p1p1": 1
+    }
+   },
+   "pt": {
+    "Grizzly Bears": [
+     3,
+     3
+    ]
+   },
+   "players": [
+    {
+     "exile": [],
+     "battlefield_has": [
+      "Grizzly Bears"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "opponent's creature returns under its owner's control",
+  "players": [
+   {
+    "hand": [
+     "Otherworldly Journey"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "battlefield": [
+     "Grizzly Bears"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Otherworldly Journey",
+    "targets": [
+     "Grizzly Bears"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "End"
+   },
+   {
+    "pass": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield": [
+      "Plains",
+      "Plains"
+     ]
+    },
+    {
+     "battlefield": [
+      "Grizzly Bears"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "ruling: a creature that already had counters returns with exactly one +1/+1 counter",
+  "players": [
+   {
+    "hand": ["Otherworldly Journey"],
+    "battlefield": ["Plains", "Plains", { "name": "Grizzly Bears", "counters": { "p1p1": 2 } }]
+   },
+   {}
+  ],
+  "steps": [
+   { "cast": "Otherworldly Journey", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "pass": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] },
+   "players": [
+    { "exile": [], "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: cast in an end step, the creature stays exiled until the next end step",
+  "players": [
+   { "hand": ["Otherworldly Journey"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "cast": "Otherworldly Journey", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Grizzly Bears"], "battlefield": ["Plains", "Plains"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: cast in an end step, the creature returns at the following end step",
+  "players": [
+   { "hand": ["Otherworldly Journey"], "battlefield": ["Plains", "Plains", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "advance_to": "End" },
+   { "cast": "Otherworldly Journey", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "pass": true, "player": 1 }
+  ],
+  "expect": {
+   "players": [
+    { "exile": [], "battlefield_has": ["Grizzly Bears"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: the Aura on the exiled creature goes to its owner's graveyard",
+  "players": [
+   { "hand": ["Otherworldly Journey", "Pacifism"], "battlefield": ["Plains", "Plains", "Plains", "Island", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Pacifism", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Otherworldly Journey", "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [
+    { "exile": ["Grizzly Bears"], "graveyard_has": ["Pacifism"] },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: Equipment stays on the battlefield unattached; the creature returns without its bonus",
+  "players": [
+   { "hand": ["Otherworldly Journey", "Bonesplitter"], "battlefield": ["Plains", "Plains", "Island", "Island", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Bonesplitter" },
+   { "resolve": true },
+   { "activate": "Bonesplitter", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "cast": "Otherworldly Journey", "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "advance_to": "End" },
+   { "pass": true }
+  ],
+  "expect": {
+   "counters": { "Grizzly Bears": { "p1p1": 1 } },
+   "pt": { "Grizzly Bears": [3, 3] },
+   "players": [
+    { "battlefield_has": ["Bonesplitter", "Grizzly Bears"] },
+    {}
+   ]
+  }
+ }
+]

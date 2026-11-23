@@ -1,0 +1,213 @@
+[
+  {
+    "name": "exiles a Dinosaur then casts it with a finality counter",
+    "players": [
+      {
+        "battlefield": [
+          "Intrepid Paleontologist",
+          "Forest",
+          "Forest",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Drowsing Tyrannodon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Intrepid Paleontologist",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Drowsing Tyrannodon"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Drowsing Tyrannodon"
+          ],
+          "graveyard": []
+        },
+        {}
+      ],
+      "counters": {
+        "Drowsing Tyrannodon": {
+          "finality": 1
+        }
+      }
+    }
+  },
+  {
+    "name": "mana ability taps for any color",
+    "players": [
+      {
+        "battlefield": [
+          "Intrepid Paleontologist"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "tap_for_mana": "Intrepid Paleontologist",
+        "color": "U"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "pool": {
+            "U": 1
+          }
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast a non-Dinosaur card exiled with it",
+    "players": [
+      {
+        "battlefield": [
+          "Intrepid Paleontologist",
+          "Forest",
+          "Forest",
+          "Plains",
+          "Plains"
+        ],
+        "graveyard": [
+          "Grizzly Bears"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "activate": "Intrepid Paleontologist",
+        "ability": 0
+      },
+      {
+        "resolve": true
+      },
+      {
+        "cast": "Grizzly Bears",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": []
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "cannot cast a Dinosaur that was not exiled with it",
+    "players": [
+      {
+        "battlefield": [
+          "Intrepid Paleontologist",
+          "Forest",
+          "Forest"
+        ],
+        "exile": [
+          "Drowsing Tyrannodon"
+        ]
+      },
+      {}
+    ],
+    "steps": [
+      {
+        "cast": "Drowsing Tyrannodon",
+        "illegal": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "exile": [
+            "Drowsing Tyrannodon"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Dinosaur cast from exile still resolves if Intrepid Paleontologist is destroyed in response",
+    "players": [
+      { "battlefield": ["Intrepid Paleontologist", "Forest", "Forest", "Plains", "Plains"], "graveyard": ["Drowsing Tyrannodon"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Intrepid Paleontologist", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Drowsing Tyrannodon" },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Intrepid Paleontologist"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Drowsing Tyrannodon"], "battlefield_lacks": ["Intrepid Paleontologist"] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Dinosaur cast with a finality counter is exiled instead of going to the graveyard when it dies",
+    "players": [
+      { "hand": [], "battlefield": ["Intrepid Paleontologist", "Forest", "Forest", "Plains", "Plains"], "graveyard": ["Drowsing Tyrannodon"] },
+      { "hand": ["Lightning Bolt"], "battlefield": ["Mountain"] }
+    ],
+    "steps": [
+      { "activate": "Intrepid Paleontologist", "ability": 0 },
+      { "resolve": true },
+      { "cast": "Drowsing Tyrannodon" },
+      { "resolve": true },
+      { "pass": true },
+      { "cast": "Lightning Bolt", "player": 1, "targets": ["Drowsing Tyrannodon"] },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Drowsing Tyrannodon"], "graveyard": [] },
+        { "graveyard_has": ["Lightning Bolt"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: the Dinosaur must be cast at a time it could normally be cast (not in combat)",
+    "players": [
+      { "battlefield": ["Intrepid Paleontologist", "Forest", "Forest", "Plains", "Plains"], "graveyard": ["Drowsing Tyrannodon"] },
+      {}
+    ],
+    "steps": [
+      { "activate": "Intrepid Paleontologist", "ability": 0 },
+      { "resolve": true },
+      { "advance_to": "BeginCombat" },
+      { "cast": "Drowsing Tyrannodon", "illegal": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Drowsing Tyrannodon"] },
+        {}
+      ]
+    }
+  }
+]

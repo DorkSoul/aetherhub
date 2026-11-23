@@ -1,0 +1,50 @@
+{
+  "name": "Lavabrink Floodgates",
+  "mana_cost": "{3}{R}",
+  "types": ["Artifact"],
+  "abilities": [
+    {
+      "type": "Activated",
+      "cost": [ { "type": "Tap" } ],
+      "effects": [
+        { "type": "AddMana", "mana": [ { "t": "Fixed", "m": "R", "n": 2 } ] }
+      ]
+    },
+    {
+      "type": "Triggered",
+      "trigger": { "type": "BeginningOfStep", "step": "Upkeep", "whose": "Any" },
+      "effects": [
+        {
+          "type": "MayPay",
+          "payer": { "type": "TriggerPlayer" },
+          "cost": [
+            {
+              "type": "Or",
+              "options": [
+                [ { "type": "PutCounters", "kind": "Doom", "n": 1 } ],
+                [ { "type": "RemoveCounters", "kind": "Doom", "n": 1 } ]
+              ]
+            }
+          ],
+          "effects": []
+        },
+        {
+          "type": "If",
+          "cond": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Doom", "of": { "type": "This" } }, "cmp": { "op": "Ge", "n": 3 } },
+          "then": [
+            { "type": "Sacrifice", "who": { "type": "This" } },
+            {
+              "type": "Reflexive",
+              "targets": [],
+              "effects": [
+                { "type": "DealDamage", "to": { "type": "All", "filter": { "types": ["Creature"] } }, "amount": { "type": "Fixed", "n": 6 } }
+              ]
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "oracle_text": "{T}: Add {R}{R}.\nAt the beginning of each player's upkeep, that player may put a doom counter on this artifact or remove a doom counter from it. Then if it has three or more doom counters on it, sacrifice this artifact. When you do, it deals 6 damage to each creature."
+}

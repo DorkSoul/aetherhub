@@ -1,0 +1,251 @@
+[
+  {
+    "name": "a creature with power not less than Baeloth is not goaded and its death makes no Treasure",
+    "players": [
+      {
+        "battlefield": [
+          "Baeloth Barrityl, Entertainer",
+          "Hill Giant"
+        ]
+      },
+      {
+        "battlefield": [
+          "Hill Giant"
+        ],
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Hill Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "block": [
+          {
+            "blocker": "Hill Giant",
+            "attacker": "Hill Giant"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Baeloth Barrityl, Entertainer"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "a goaded attacker that dies to Baeloth's block makes a Treasure",
+    "players": [
+      {
+        "battlefield": [
+          "Baeloth Barrityl, Entertainer"
+        ]
+      },
+      {
+        "battlefield": [
+          "Llanowar Elves"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "advance_to": "Main1"
+      },
+      {
+        "attack": [
+          {
+            "card": "Llanowar Elves",
+            "at": "p0"
+          }
+        ],
+        "player": 1
+      },
+      {
+        "block": [
+          {
+            "blocker": "Baeloth Barrityl, Entertainer",
+            "attacker": "Llanowar Elves"
+          }
+        ]
+      },
+      {
+        "resolve": true
+      },
+      {
+        "advance_to": "End"
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Baeloth Barrityl, Entertainer",
+            "Treasure"
+          ]
+        },
+        {
+          "graveyard": [
+            "Llanowar Elves"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with two commanders, Command Beacon's search lets you choose which one goes to hand",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Baeloth Barrityl, Entertainer", "Raging Goblin"],
+        "battlefield": ["Command Beacon"]
+      },
+      {}
+    ],
+    "steps": [
+      { "activate": "Command Beacon", "ability": 0 },
+      { "resolve": true, "answers": ["Raging Goblin"] }
+    ],
+    "expect": {
+      "players": [
+        { "hand": ["Raging Goblin"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: Baeloth's goad lasts while Baeloth is on the battlefield, not only until the goader's next turn",
+    "players": [
+      { "battlefield": ["Baeloth Barrityl, Entertainer"] },
+      { "battlefield": ["Llanowar Elves"] }
+    ],
+    "steps": [
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      { "advance_to": "Main2" },
+      { "advance_to": "Main1" },
+      {
+        "attack": [{ "card": "Llanowar Elves", "at": "p0" }],
+        "player": 1
+      },
+      {
+        "block": [{ "blocker": "Baeloth Barrityl, Entertainer", "attacker": "Llanowar Elves" }]
+      },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Baeloth Barrityl, Entertainer", "Treasure"] },
+        { "graveyard": ["Llanowar Elves"] }
+      ]
+    }
+  },
+  {
+    "name": "ruling: with a Background granting upkeep exile to commander creatures, both of two commanders get it",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Baeloth Barrityl, Entertainer", "Raging Goblin"],
+        "battlefield": [
+          "Tavern Brawler",
+          "Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"
+        ],
+        "library": ["Lightning Bolt", "Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Baeloth Barrityl, Entertainer" },
+      { "resolve": true },
+      { "cast": "Raging Goblin" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "exile": ["Lightning Bolt", "Island"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: the second commander's first cast pays no {2} commander tax after the first one was cast",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Raging Goblin", "Baeloth Barrityl, Entertainer"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Mountain", "Mountain", "Mountain"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Raging Goblin" },
+      { "resolve": true },
+      { "cast": "Baeloth Barrityl, Entertainer" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Raging Goblin", "Baeloth Barrityl, Entertainer"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "ruling: a Background that is your commander is not a creature, so it gets no commander-creature upkeep trigger",
+    "commander": true,
+    "players": [
+      {
+        "command": ["Tavern Brawler"],
+        "battlefield": ["Mountain", "Mountain", "Mountain"],
+        "library": ["Lightning Bolt", "Island", "Forest"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Tavern Brawler" },
+      { "resolve": true },
+      { "advance_to": "End" },
+      { "advance_to": "End" },
+      { "advance_to": "Upkeep" }
+    ],
+    "expect": {
+      "players": [
+        { "exile": [] },
+        {}
+      ]
+    }
+  }
+]

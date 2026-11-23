@@ -1,0 +1,273 @@
+[
+  {
+    "name": "attack: 3 damage to each opponent",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Tectonic Giant",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Tectonic Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          0
+        ]
+      }
+    ],
+    "expect": {
+      "players": [
+        {},
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "attack: exile top two, pick one (no 3 damage from the mode, only combat damage), playable until end of your next turn",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Tectonic Giant",
+            "sick": false
+          }
+        ],
+        "library": [
+          "Forest",
+          "Forest",
+          "Island"
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "attack": [
+          {
+            "card": "Tectonic Giant",
+            "at": "p1"
+          }
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          1,
+          0
+        ]
+      },
+      {
+        "advance_to": "Main2"
+      },
+      {
+        "play_land": "Forest"
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Tectonic Giant",
+            "Forest"
+          ]
+        },
+        {
+          "life": 17
+        }
+      ]
+    }
+  },
+  {
+    "name": "an opponent's spell targeting it: 3 damage to each opponent (the Giant survives Lightning Bolt)",
+    "players": [
+      {
+        "battlefield": [
+          {
+            "name": "Tectonic Giant",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain"
+        ],
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "pass": true
+      },
+      {
+        "player": 1,
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Tectonic Giant"
+        ]
+      },
+      {
+        "resolve": true,
+        "answers": [
+          0
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Tectonic Giant"
+          ]
+        },
+        {
+          "life": 17,
+          "graveyard_has": [
+            "Lightning Bolt"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "its controller's own spell targeting it does not trigger it",
+    "players": [
+      {
+        "hand": [
+          "Lightning Bolt"
+        ],
+        "battlefield": [
+          "Mountain",
+          {
+            "name": "Tectonic Giant",
+            "sick": false
+          }
+        ]
+      },
+      {
+        "life": 20
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Lightning Bolt",
+        "targets": [
+          "Tectonic Giant"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "battlefield_has": [
+            "Tectonic Giant"
+          ]
+        },
+        {
+          "life": 20
+        }
+      ]
+    }
+  },
+  {
+    "name": "ruling: a sorcery exiled by the Giant can't be cast during combat, but can in the second main phase",
+    "players": [
+      {"battlefield": [{"name": "Tectonic Giant", "sick": false}, "Island", "Island", "Island"], "library": ["Divination", "Forest"]},
+      {}
+    ],
+    "steps": [
+      {"attack": [{"card": "Tectonic Giant", "at": "p1"}]},
+      {"resolve": true, "answers": [1, 0]},
+      {"cast": "Divination", "illegal": true},
+      {"advance_to": "Main2"},
+      {"cast": "Divination"},
+      {"resolve": true}
+    ],
+    "expect": {"players": [{"graveyard_has": ["Divination"], "exile": ["Forest"]}, {"life": 17}]}
+  },
+  {
+    "name": "ruling: the card you did not choose stays in exile with the card you did not play",
+    "players": [
+      {"battlefield": [{"name": "Tectonic Giant", "sick": false}], "library": ["Divination", "Forest"]},
+      {}
+    ],
+    "steps": [
+      {"attack": [{"card": "Tectonic Giant", "at": "p1"}]},
+      {"resolve": true, "answers": [1, 1]},
+      {"advance_to": "Main2"}
+    ],
+    "expect": {"players": [{"exile": ["Divination", "Forest"]}, {"life": 17}]}
+  },
+  {
+    "name": "ruling: playing the exiled card takes it out of exile; the unchosen card stays",
+    "players": [
+      {"battlefield": [{"name": "Tectonic Giant", "sick": false}], "library": ["Forest", "Divination"]},
+      {}
+    ],
+    "steps": [
+      {"attack": [{"card": "Tectonic Giant", "at": "p1"}]},
+      {"resolve": true, "answers": [1, 0]},
+      {"advance_to": "Main2"},
+      {"play_land": "Forest"}
+    ],
+    "expect": {"players": [{"battlefield_has": ["Tectonic Giant", "Forest"], "exile": ["Divination"]}, {"life": 17}]}
+  },
+  {
+    "name": "ruling: an exiled land can't be played during combat, and not after the land drop is used",
+    "players": [
+      {"hand": ["Island"], "battlefield": [{"name": "Tectonic Giant", "sick": false}], "library": ["Forest", "Divination"]},
+      {}
+    ],
+    "steps": [
+      {"attack": [{"card": "Tectonic Giant", "at": "p1"}]},
+      {"resolve": true, "answers": [1, 0]},
+      {"play_land": "Forest", "illegal": true},
+      {"advance_to": "Main2"},
+      {"play_land": "Island"},
+      {"play_land": "Forest", "illegal": true}
+    ],
+    "expect": {"players": [{"battlefield_has": ["Tectonic Giant", "Island"], "exile": ["Divination", "Forest"]}, {"life": 17}]}
+  },
+  {
+    "name": "ruling: the attack trigger resolves even if the spell targeting the Giant is countered",
+    "players": [
+      {"hand": ["Counterspell"], "battlefield": [{"name": "Tectonic Giant", "sick": false}, "Island", "Island"]},
+      {"hand": ["Lightning Bolt"], "battlefield": ["Mountain"]}
+    ],
+    "steps": [
+      {"pass": true},
+      {"player": 1, "cast": "Lightning Bolt", "targets": ["Tectonic Giant"]},
+      {"cast": "Counterspell", "targets": [{"stack": "Lightning Bolt"}]},
+      {"resolve": true, "answers": [0]}
+    ],
+    "expect": {"players": [{"battlefield_has": ["Tectonic Giant"], "graveyard_has": ["Counterspell"]}, {"life": 17, "graveyard_has": ["Lightning Bolt"]}]}
+  }
+]

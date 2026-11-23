@@ -1,0 +1,22 @@
+[
+  { "name": "control: without Dream Tides a creature untaps in its controller's untap step",
+    "players": [ { "battlefield": [ { "name": "Serra Angel", "tapped": true } ] }, {} ],
+    "steps": [ { "advance_to": "Untap", "auto": true }, { "advance_to": "Untap", "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Serra Angel"] }, {} ], "tapped": { "Serra Angel": false } } },
+  { "name": "creature doesn't untap in its controller's untap step with Dream Tides",
+    "players": [ { "battlefield": ["Dream Tides", { "name": "Serra Angel", "tapped": true }] }, {} ],
+    "steps": [ { "advance_to": "Untap", "auto": true }, { "advance_to": "Untap", "auto": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dream Tides", "Serra Angel"] }, {} ], "tapped": { "Serra Angel": true } } },
+  { "name": "opponent's upkeep: they choose a tapped nongreen creature they control and pay {2} to untap it",
+    "players": [ { "battlefield": ["Dream Tides"] }, { "battlefield": [ { "name": "Serra Angel", "tapped": true }, "Island", "Island" ] } ],
+    "steps": [ { "advance_to": "Upkeep", "answers": [[0], true] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dream Tides"] }, { "battlefield_has": ["Serra Angel"] } ], "tapped": { "Serra Angel": false } } },
+  { "name": "opponent's upkeep: declining to pay leaves the creature tapped",
+    "players": [ { "battlefield": ["Dream Tides"] }, { "battlefield": [ { "name": "Serra Angel", "tapped": true }, "Island", "Island" ] } ],
+    "steps": [ { "advance_to": "Upkeep", "answers": [[0], false] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dream Tides"] }, { "battlefield_has": ["Serra Angel"] } ], "tapped": { "Serra Angel": true } } },
+  { "name": "upkeep: a green tapped creature can't be chosen (Grizzly Bears stays tapped)",
+    "players": [ { "battlefield": ["Dream Tides"] }, { "battlefield": [ { "name": "Grizzly Bears", "tapped": true }, "Island", "Island" ] } ],
+    "steps": [ { "advance_to": "Upkeep" }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Dream Tides"] }, { "battlefield_has": ["Grizzly Bears"] } ], "tapped": { "Grizzly Bears": true } } }
+]

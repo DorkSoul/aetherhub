@@ -1,0 +1,85 @@
+[
+  {
+    "name": "ETB returns a creature with MV 3 or less which must attack and is sacrificed after combat damage to a player",
+    "players": [
+      {
+        "hand": ["Carnage, Crimson Chaos"],
+        "battlefield": ["Swamp", "Mountain", "Swamp", "Mountain"],
+        "graveyard": ["Grizzly Bears"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Carnage, Crimson Chaos" },
+      { "resolve": true },
+      { "resolve": true },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Upkeep" },
+      { "advance_to": "Main1" },
+      { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+      { "resolve": true },
+      { "advance_to": "Main2" }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Carnage, Crimson Chaos"], "graveyard_has": ["Grizzly Bears"] },
+        { "life": 18 }
+      ]
+    }
+  },
+  {
+    "name": "creature with mana value 4 is not a legal target",
+    "players": [
+      {
+        "hand": ["Carnage, Crimson Chaos"],
+        "battlefield": ["Swamp", "Mountain", "Swamp", "Mountain"],
+        "graveyard": ["Hill Giant"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Carnage, Crimson Chaos" },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Carnage, Crimson Chaos"], "graveyard_has": ["Hill Giant"] },
+        {}
+      ]
+    }
+  },
+  {
+    "name": "mayhem: discarded this turn, cast from graveyard for B R",
+    "players": [
+      {
+        "hand": ["Wild Guess", "Carnage, Crimson Chaos"],
+        "battlefield": ["Mountain", "Mountain", "Mountain", "Swamp"]
+      },
+      {}
+    ],
+    "steps": [
+      { "cast": "Wild Guess" },
+      { "resolve": true },
+      { "cast": "Carnage, Crimson Chaos", "alt": 0 },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "battlefield_has": ["Carnage, Crimson Chaos"], "graveyard_has": ["Wild Guess"] },
+        {}
+      ]
+    }
+  },
+  { "name": "ruling: mayhem needs the card discarded this turn; an undiscarded creature in the graveyard cannot be cast for B R",
+    "players": [ { "battlefield": ["Swamp", "Mountain", "Swamp", "Mountain"], "graveyard": ["Carnage, Crimson Chaos"] }, {} ],
+    "steps": [ { "cast": "Carnage, Crimson Chaos", "alt": 0, "illegal": true } ],
+    "expect": { "players": [ { "graveyard_has": ["Carnage, Crimson Chaos"] }, {} ] } },
+  { "name": "ruling: a creature returned this turn is summoning sick, so it does not attack (and is not sacrificed)",
+    "players": [ { "hand": ["Carnage, Crimson Chaos"], "battlefield": ["Swamp", "Mountain", "Swamp", "Mountain"], "graveyard": ["Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Carnage, Crimson Chaos" }, { "resolve": true }, { "resolve": true }, { "advance_to": "Main2" } ],
+    "expect": { "players": [ { "battlefield_has": ["Carnage, Crimson Chaos", "Grizzly Bears"] }, { "life": 20 } ] } },
+  { "name": "ruling: Walking Ballista has mana value 0 in the graveyard, so Carnage can target it over a 2-drop",
+    "players": [ { "hand": ["Carnage, Crimson Chaos"], "battlefield": ["Swamp", "Mountain", "Swamp", "Mountain"], "graveyard": ["Walking Ballista", "Grizzly Bears"] }, {} ],
+    "steps": [ { "cast": "Carnage, Crimson Chaos" }, { "resolve": true, "targets": ["Walking Ballista"] }, { "resolve": true } ],
+    "expect": { "players": [ { "battlefield_has": ["Carnage, Crimson Chaos"], "battlefield_lacks": ["Walking Ballista", "Grizzly Bears"], "graveyard_has": ["Walking Ballista", "Grizzly Bears"] }, {} ] } }
+]

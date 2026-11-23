@@ -1,0 +1,108 @@
+[
+ {
+  "name": "reconfigure onto a creature: attached, not a creature, equipped creature gains lifelink",
+  "players": [
+   { "battlefield": ["Leech Gauntlet", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Leech Gauntlet", "Grizzly Bears"] }, {} ],
+   "attached": { "Leech Gauntlet": "Grizzly Bears" },
+   "keywords": { "Grizzly Bears": ["Lifelink"] }
+  }
+ },
+ {
+  "name": "unattaching makes Leech Gauntlet a 2/2 creature again and the creature loses lifelink",
+  "players": [
+   { "battlefield": ["Leech Gauntlet", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "activate": "Leech Gauntlet", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Leech Gauntlet", "Grizzly Bears"] }, {} ],
+   "pt": { "Leech Gauntlet": [2, 2] }
+  }
+ },
+ {
+  "name": "unattach is illegal while Leech Gauntlet is not attached",
+  "players": [
+   { "battlefield": ["Leech Gauntlet", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 1, "illegal": true }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "reconfigure cannot target itself: no other creature to attach to",
+  "players": [
+   { "battlefield": ["Leech Gauntlet", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 0, "illegal": true }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "attached Leech Gauntlet is no longer a creature: its subtypes become Equipment only (no Leech)",
+  "players": [
+   { "battlefield": ["Leech Gauntlet", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Leech Gauntlet", "Grizzly Bears"] }, {} ],
+   "subtypes": { "Leech Gauntlet": ["Equipment"] },
+   "not_subtypes": { "Leech Gauntlet": ["Leech"] }
+  }
+ },
+ {
+  "name": "ruling: tapped equipment can still reconfigure, and attaching does not untap it",
+  "players": [
+   { "battlefield": [ { "name": "Leech Gauntlet", "tapped": true }, "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears" ] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "battlefield_has": ["Leech Gauntlet", "Grizzly Bears"] }, {} ],
+   "attached": { "Leech Gauntlet": "Grizzly Bears" },
+   "tapped": { "Leech Gauntlet": true }
+  }
+ },
+ {
+  "name": "ruling: equipped creature attacks and taps, but the equipment stays untapped; unattaching later leaves it untapped",
+  "players": [
+   { "battlefield": ["Leech Gauntlet", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Grizzly Bears"] },
+   {}
+  ],
+  "steps": [
+   { "activate": "Leech Gauntlet", "ability": 0, "targets": ["Grizzly Bears"] },
+   { "resolve": true },
+   { "attack": [ { "card": "Grizzly Bears", "at": "p1" } ] },
+   { "advance_to": "Main2" },
+   { "activate": "Leech Gauntlet", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": {
+   "players": [ { "life": 22, "battlefield_has": ["Leech Gauntlet", "Grizzly Bears"] }, { "life": 18 } ],
+   "tapped": { "Grizzly Bears": true, "Leech Gauntlet": false }
+  }
+ }
+]

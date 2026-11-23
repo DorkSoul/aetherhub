@@ -1,0 +1,194 @@
+[
+ {
+  "name": "cast an instant from the graveyard; it is exiled afterwards",
+  "players": [
+   {
+    "battlefield": [
+     "Kess, Dissident Mage",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": []
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "only once each turn",
+  "players": [
+   {
+    "battlefield": [
+     "Kess, Dissident Mage",
+     "Mountain",
+     "Mountain"
+    ],
+    "graveyard": [
+     "Lightning Bolt",
+     "Shock"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Shock",
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "graveyard": [
+      "Shock"
+     ]
+    },
+    {
+     "life": 17
+    }
+   ]
+  }
+ },
+ {
+  "name": "a sorcery works too",
+  "players": [
+   {
+    "battlefield": [
+     "Kess, Dissident Mage",
+     "Island",
+     "Island",
+     "Island"
+    ],
+    "graveyard": [
+     "Divination"
+    ],
+    "library": [
+     "Plains",
+     "Plains"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Divination"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2,
+     "graveyard": []
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "creature cards in the graveyard can't be cast",
+  "players": [
+   {
+    "battlefield": [
+     "Kess, Dissident Mage",
+     "Forest",
+     "Forest"
+    ],
+    "graveyard": [
+     "Grizzly Bears"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Grizzly Bears",
+    "illegal": true
+   }
+  ],
+  "expect": {}
+ },
+ {
+  "name": "ruling: a second Kess entering this turn allows another graveyard cast",
+  "players": [
+   { "hand": ["Kess, Dissident Mage"], "battlefield": ["Kess, Dissident Mage", "Mountain", "Mountain", "Mountain", "Mountain", "Island", "Swamp"], "graveyard": ["Lightning Bolt", "Lightning Bolt"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true },
+   { "cast": "Kess, Dissident Mage" },
+   { "resolve": true, "answers": [1] },
+   { "cast": "Lightning Bolt", "targets": ["p1"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "graveyard": ["Kess, Dissident Mage"], "battlefield_has": ["Kess, Dissident Mage"] }, { "life": 14 } ] }
+ },
+ {
+  "name": "ruling: the costs must be paid to cast from the graveyard",
+  "players": [ { "battlefield": ["Kess, Dissident Mage"], "graveyard": ["Lightning Bolt"] }, {} ],
+  "steps": [ { "cast": "Lightning Bolt", "illegal": true } ],
+  "expect": { "players": [ { "graveyard": ["Lightning Bolt"] }, { "life": 20 } ] }
+ },
+ {
+  "name": "ruling: a sorcery in the graveyard cannot be cast during combat",
+  "players": [
+   { "battlefield": ["Kess, Dissident Mage", "Island", "Island", "Island"], "graveyard": ["Divination"], "library": ["Plains", "Plains"] },
+   {}
+  ],
+  "steps": [ { "advance_to": "BeginCombat" }, { "cast": "Divination", "illegal": true } ],
+  "expect": { "players": [ { "graveyard": ["Divination"] }, {} ] }
+ },
+ {
+  "name": "ruling: an instant in the graveyard can be cast during combat",
+  "players": [ { "battlefield": ["Kess, Dissident Mage", "Mountain"], "graveyard": ["Lightning Bolt"] }, {} ],
+  "steps": [ { "advance_to": "BeginCombat" }, { "cast": "Lightning Bolt", "targets": ["p1"] }, { "resolve": true } ],
+  "expect": { "players": [ { "graveyard": [] }, { "life": 17 } ] }
+ },
+ {
+  "name": "ruling: a flashback cast does not use Kess's permission; Kess can still cast another graveyard card",
+  "players": [
+   { "battlefield": ["Kess, Dissident Mage", "Island", "Island", "Island", "Island", "Island", "Island"], "graveyard": ["Think Twice", "Think Twice"], "library": ["Forest", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Think Twice", "alt": 0 },
+   { "resolve": true },
+   { "cast": "Think Twice" },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand": ["Forest", "Swamp"], "exile": ["Think Twice", "Think Twice"], "graveyard": [] }, {} ] }
+ }
+]

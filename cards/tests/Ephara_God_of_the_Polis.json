@@ -1,0 +1,132 @@
+[
+ {
+  "name": "a creature entered last turn: draw at the next upkeep",
+  "players": [
+   {
+    "hand": [
+     "Grizzly Bears"
+    ],
+    "battlefield": [
+     "Ephara, God of the Polis",
+     "Forest",
+     "Forest"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "cast": "Grizzly Bears"
+   },
+   {
+    "resolve": true
+   },
+   {
+    "advance_to": "Upkeep"
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 2
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "no creature entered: no draw",
+  "players": [
+   {
+    "hand": [],
+    "battlefield": [
+     "Ephara, God of the Polis"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Main1"
+   },
+   {
+    "advance_to": "Upkeep"
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "hand_count": 1
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "at devotion below seven Ephara is not a creature: Unsummon cannot target it",
+  "players": [
+   {
+    "hand": [
+     "Unsummon"
+    ],
+    "battlefield": [
+     "Ephara, God of the Polis",
+     "Island"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Unsummon",
+    "targets": [
+     "Ephara, God of the Polis"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "battlefield_has": [
+      "Ephara, God of the Polis"
+     ],
+     "hand": [
+      "Unsummon"
+     ]
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "ruling: numeric mana symbols do not count toward devotion: with a {4}{G}{G} and a {3}{R} permanent Ephara is still not a creature",
+  "players": [ { "battlefield": ["Ephara, God of the Polis", "Colossal Dreadmaw", "Hill Giant"] }, {} ],
+  "steps": [ { "advance_to": "Upkeep" } ],
+  "expect": { "not_subtypes": { "Ephara, God of the Polis": ["God"] } }
+ },
+ {
+  "name": "ruling: two creatures entering last turn still give only one upkeep draw (hand 1 + turn draw 1 - 2 casts + 1 = 2)",
+  "players": [ { "hand": ["Llanowar Elves", "Elvish Mystic"], "battlefield": ["Ephara, God of the Polis", "Forest", "Forest"] }, {} ],
+  "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "cast": "Llanowar Elves" }, { "resolve": true }, { "cast": "Elvish Mystic" }, { "resolve": true }, { "advance_to": "Upkeep" }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 2 }, {} ] }
+ },
+ {
+  "name": "ruling: the upkeep draw still happens after the creature that entered last turn has died (Llanowar Elves killed by Lightning Bolt)",
+  "players": [ { "hand": ["Llanowar Elves", "Lightning Bolt"], "battlefield": ["Ephara, God of the Polis", "Forest", "Mountain"] }, {} ],
+  "steps": [ { "advance_to": "Main1" }, { "advance_to": "Main1" }, { "cast": "Llanowar Elves" }, { "resolve": true }, { "cast": "Lightning Bolt", "targets": ["Llanowar Elves"] }, { "resolve": true }, { "advance_to": "Upkeep" }, { "resolve": true } ],
+  "expect": { "players": [ { "hand_count": 2, "graveyard_has": ["Llanowar Elves", "Lightning Bolt"] }, {} ] }
+ }
+]

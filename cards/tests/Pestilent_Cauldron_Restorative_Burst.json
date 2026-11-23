@@ -1,0 +1,97 @@
+[
+ {
+  "name": "T, discard a card: create a Pest",
+  "players": [ { "hand": ["Mountain"], "battlefield": ["Pestilent Cauldron // Restorative Burst"] }, {} ],
+  "steps": [ { "activate": "Pestilent Cauldron // Restorative Burst", "ability": 0 }, { "resolve": true } ],
+  "expect": { "players": [ { "battlefield_has": ["Pest 1-1"], "graveyard": ["Mountain"] }, {} ], "tapped": { "Pestilent Cauldron // Restorative Burst": true } }
+ },
+ {
+  "name": "each opponent mills cards equal to the life you gained this turn",
+  "players": [ { "hand": ["Revitalize"], "battlefield": ["Pestilent Cauldron // Restorative Burst", "Plains", "Plains", "Swamp"] }, {} ],
+  "steps": [
+   { "cast": "Revitalize" },
+   { "resolve": true },
+   { "activate": "Pestilent Cauldron // Restorative Burst", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 23 }, { "graveyard": ["Forest", "Forest", "Forest"] } ] }
+ },
+ {
+  "name": "exile four target cards from a single graveyard and draw a card",
+  "players": [
+   { "battlefield": ["Pestilent Cauldron // Restorative Burst", "Swamp", "Swamp", "Swamp", "Swamp"] },
+   { "graveyard": ["Grizzly Bears", "Hill Giant", "Giant Spider", "Air Elemental", "Shock"] }
+  ],
+  "steps": [
+   { "activate": "Pestilent Cauldron // Restorative Burst", "ability": 2, "targets": ["Grizzly Bears", "Hill Giant", "Giant Spider", "Air Elemental"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "hand_count": 1 }, { "graveyard": ["Shock"], "exile": ["Air Elemental", "Giant Spider", "Grizzly Bears", "Hill Giant"] } ] }
+ },
+ {
+  "name": "Restorative Burst returns up to two creature/land/planeswalker cards, both players gain 4, and it is exiled",
+  "players": [
+   { "hand": ["Pestilent Cauldron // Restorative Burst"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Grizzly Bears", "Mountain", "Shock"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Pestilent Cauldron // Restorative Burst", "face": true, "targets": ["Grizzly Bears", "Mountain"] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 24, "hand": ["Grizzly Bears", "Mountain"], "graveyard": ["Shock"], "exile": ["Pestilent Cauldron // Restorative Burst"] }, { "life": 24 } ] }
+ },
+ {
+  "name": "ruling: the last ability needs four targets in a single graveyard, so mixing graveyards is illegal",
+  "players": [
+   { "battlefield": ["Pestilent Cauldron // Restorative Burst", "Swamp", "Swamp", "Swamp", "Swamp"], "graveyard": ["Grizzly Bears", "Hill Giant", "Giant Spider"] },
+   { "graveyard": ["Air Elemental"] }
+  ],
+  "steps": [
+   { "activate": "Pestilent Cauldron // Restorative Burst", "ability": 2, "targets": ["Grizzly Bears", "Hill Giant", "Giant Spider", "Air Elemental"], "illegal": true }
+  ],
+  "expect": { "players": [ { "graveyard_has": ["Grizzly Bears", "Hill Giant", "Giant Spider"] }, { "graveyard_has": ["Air Elemental"] } ] }
+ },
+ {
+  "name": "ruling: the mill count is life gained this turn, ignoring life lost earlier",
+  "players": [
+   { "hand": ["Lightning Bolt", "Revitalize"], "battlefield": ["Pestilent Cauldron // Restorative Burst", "Mountain", "Plains", "Plains", "Swamp"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Lightning Bolt", "targets": ["p0"] },
+   { "resolve": true },
+   { "cast": "Revitalize" },
+   { "resolve": true },
+   { "activate": "Pestilent Cauldron // Restorative Burst", "ability": 1 },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 20 }, { "graveyard": ["Forest", "Forest", "Forest"] } ] }
+ },
+ {
+  "name": "ruling: cast with no targets, each player gains 4 and Restorative Burst is exiled",
+  "players": [
+   { "hand": ["Pestilent Cauldron // Restorative Burst"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"] },
+   {}
+  ],
+  "steps": [
+   { "cast": "Pestilent Cauldron // Restorative Burst", "face": true, "targets": [] },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 24, "exile": ["Pestilent Cauldron // Restorative Burst"] }, { "life": 24 } ] }
+ },
+ {
+  "name": "ruling: if both chosen targets are gone on resolution, Restorative Burst does nothing (no life, not exiled)",
+  "players": [
+   { "hand": ["Pestilent Cauldron // Restorative Burst"], "battlefield": ["Forest", "Forest", "Forest", "Forest", "Forest"], "graveyard": ["Grizzly Bears", "Mountain", "Shock", "Hill Giant"] },
+   { "battlefield": ["Pestilent Cauldron // Restorative Burst", "Swamp", "Swamp", "Swamp", "Swamp"] }
+  ],
+  "steps": [
+   { "cast": "Pestilent Cauldron // Restorative Burst", "face": true, "targets": ["Grizzly Bears", "Mountain"] },
+   { "pass": true },
+   { "activate": "Pestilent Cauldron // Restorative Burst", "ability": 2, "player": 1, "targets": ["Grizzly Bears", "Hill Giant", "Shock", "Mountain"] },
+   { "resolve": true },
+   { "resolve": true }
+  ],
+  "expect": { "players": [ { "life": 20, "graveyard_has": ["Pestilent Cauldron // Restorative Burst"], "exile": ["Grizzly Bears", "Hill Giant", "Mountain", "Shock"] }, { "life": 20 } ] }
+ }
+]

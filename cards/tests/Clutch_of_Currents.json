@@ -1,0 +1,200 @@
+[
+  {
+    "name": "normal cast returns target creature to hand and does not awaken",
+    "players": [
+      {
+        "hand": [
+          "Clutch of Currents"
+        ],
+        "battlefield": [
+          "Island"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Clutch of Currents",
+        "targets": [
+          "Grizzly Bears"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Clutch of Currents"
+          ],
+          "battlefield_has": [
+            "Island"
+          ]
+        },
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "counters": {
+        "Island": {}
+      }
+    }
+  },
+  {
+    "name": "awaken: target land you control gets three +1/+1 counters, becomes a 0/0 Elemental with haste",
+    "players": [
+      {
+        "hand": [
+          "Clutch of Currents"
+        ],
+        "battlefield": [
+          "Island",
+          "Island",
+          "Island",
+          "Island",
+          "Forest"
+        ]
+      },
+      {
+        "battlefield": [
+          "Grizzly Bears"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "cast": "Clutch of Currents",
+        "alt": 0,
+        "targets": [
+          "Forest"
+        ]
+      },
+      {
+        "resolve": true
+      }
+    ],
+    "expect": {
+      "players": [
+        {
+          "graveyard": [
+            "Clutch of Currents"
+          ],
+          "battlefield_has": [
+            "Forest"
+          ]
+        },
+        {
+          "hand": [
+            "Grizzly Bears"
+          ],
+          "battlefield_lacks": [
+            "Grizzly Bears"
+          ]
+        }
+      ],
+      "pt": {
+        "Forest": [
+          3,
+          3
+        ]
+      },
+      "keywords": {
+        "Forest": [
+          "Haste"
+        ]
+      },
+      "counters": {
+        "Forest": {
+          "p1p1": 3
+        }
+      }
+    }
+  },
+  {
+    "name": "ruling: an awakened land keeps its land subtypes and gains Elemental",
+    "players": [
+      { "hand": ["Clutch of Currents"], "battlefield": ["Island", "Island", "Island", "Island", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Clutch of Currents", "alt": 0, "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "subtypes": { "Forest": ["Forest", "Elemental"] },
+      "players": [ { "graveyard": ["Clutch of Currents"] }, { "hand": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: awaken gives the awakened land no colour (it stays colourless)",
+    "players": [
+      { "hand": ["Clutch of Currents"], "battlefield": ["Island", "Island", "Island", "Island", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Clutch of Currents", "alt": 0, "targets": ["Forest"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "colors": { "Forest": [] },
+      "players": [ { "graveyard": ["Clutch of Currents"] }, { "hand": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: cast for the mana cost, only the bounce happens: the land does not become a creature",
+    "players": [
+      { "hand": ["Clutch of Currents"], "battlefield": ["Island", "Island", "Island", "Island", "Forest"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Clutch of Currents", "targets": ["Grizzly Bears"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "not_subtypes": { "Forest": ["Elemental"] },
+      "players": [ { "graveyard": ["Clutch of Currents"] }, { "hand": ["Grizzly Bears"] } ]
+    }
+  },
+  {
+    "name": "ruling: awaken cast with the creature target made illegal: the land still gets its counters and becomes a creature",
+    "players": [
+      { "hand": ["Clutch of Currents", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Island", "Forest", "Mountain", "Mountain"] },
+      { "battlefield": ["Grizzly Bears"] }
+    ],
+    "steps": [
+      { "cast": "Clutch of Currents", "alt": 0, "targets": ["Forest"] },
+      { "cast": "Lightning Bolt", "targets": ["Grizzly Bears"] },
+      { "pass": true },
+      { "pass": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [ { "graveyard": ["Clutch of Currents", "Lightning Bolt"], "battlefield_has": ["Forest"] }, { "graveyard": ["Grizzly Bears"] } ],
+      "pt": { "Forest": [3, 3] },
+      "keywords": { "Forest": ["Haste"] },
+      "counters": { "Forest": { "p1p1": 3 } }
+    }
+  },
+  {
+    "name": "ruling: awaken cast needs a legal creature target: with no creature on the battlefield it cannot be cast",
+    "players": [
+      { "hand": ["Clutch of Currents"], "battlefield": ["Island", "Island", "Island", "Island", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Clutch of Currents", "alt": 0, "illegal": true }
+    ],
+    "expect": {}
+  }
+]

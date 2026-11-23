@@ -1,0 +1,156 @@
+[
+ {
+  "name": "enchanted player can cast only one spell per turn",
+  "players": [
+   {
+    "hand": [
+     "Curse of Exhaustion"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains",
+     "Mountain",
+     "Mountain"
+    ]
+   },
+   {}
+  ],
+  "steps": [
+   {
+    "cast": "Curse of Exhaustion",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "targets": [
+     "p1"
+    ],
+    "illegal": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {},
+    {
+     "life": 20
+    }
+   ]
+  }
+ },
+ {
+  "name": "opponent is not restricted by the curse",
+  "players": [
+   {
+    "hand": [
+     "Curse of Exhaustion"
+    ],
+    "battlefield": [
+     "Plains",
+     "Plains",
+     "Plains",
+     "Plains"
+    ]
+   },
+   {
+    "hand": [
+     "Lightning Bolt",
+     "Shock"
+    ],
+    "battlefield": [
+     "Mountain",
+     "Mountain"
+    ]
+   }
+  ],
+  "steps": [
+   {
+    "cast": "Curse of Exhaustion",
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Lightning Bolt",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   },
+   {
+    "pass": true
+   },
+   {
+    "cast": "Shock",
+    "player": 1,
+    "targets": [
+     "p0"
+    ]
+   },
+   {
+    "resolve": true
+   }
+  ],
+  "expect": {
+   "players": [
+    {
+     "life": 15
+    },
+    {}
+   ]
+  }
+ },
+ {
+  "name": "enchanted opponent: a second spell in the same turn is illegal",
+  "players": [
+   { "hand": ["Curse of Exhaustion"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "cast": "Curse of Exhaustion", "targets": ["p1"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 17 }, { "hand_count": 1, "graveyard": ["Lightning Bolt"] } ]
+  }
+ },
+ {
+  "name": "ruling: a spell cast earlier this turn, before the curse arrived, counts toward the limit",
+  "players": [
+   { "hand": ["Curse of Exhaustion"], "battlefield": ["Plains", "Plains", "Plains", "Plains"] },
+   { "hand": ["Lightning Bolt", "Lightning Bolt"], "battlefield": ["Mountain", "Mountain"] }
+  ],
+  "steps": [
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1 },
+   { "resolve": true },
+   { "cast": "Curse of Exhaustion", "targets": ["p1"] },
+   { "resolve": true },
+   { "pass": true },
+   { "cast": "Lightning Bolt", "targets": ["p0"], "player": 1, "illegal": true }
+  ],
+  "expect": {
+   "players": [ { "life": 17 }, { "hand_count": 1, "graveyard": ["Lightning Bolt"] } ]
+  }
+ }
+]

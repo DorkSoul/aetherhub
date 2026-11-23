@@ -1,0 +1,95 @@
+[
+  {
+    "name": "enters: two 0/1 Eldrazi Spawn tokens",
+    "players": [
+      { "hand": ["Path of Annihilation"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Path of Annihilation" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Path of Annihilation", "Eldrazi Spawn"] }, {}],
+      "pt": { "Eldrazi Spawn": [0, 1] }
+    }
+  },
+  {
+    "name": "casting a creature spell with mana value 7 or more gains 4 life",
+    "players": [
+      { "hand": ["Blue Dragon"], "battlefield": ["Path of Annihilation", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Blue Dragon" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "life": 24 }, {}]
+    }
+  },
+  {
+    "name": "Eldrazi you control tap for any color: an Eldrazi creature pays for Lightning Bolt",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Path of Annihilation", "Eldrazi Linebreaker"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{}, { "life": 17 }]
+    }
+  },
+  {
+    "name": "a non-Eldrazi creature does not tap for mana: Lightning Bolt is not castable",
+    "players": [
+      { "hand": ["Lightning Bolt"], "battlefield": ["Path of Annihilation", "Grizzly Bears"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Lightning Bolt", "targets": ["p1"], "illegal": true }
+    ],
+    "expect": {
+      "players": [{ "hand": ["Lightning Bolt"] }, { "life": 20 }]
+    }
+  },
+  {
+    "name": "ruling: devoid makes it colorless",
+    "players": [
+      { "hand": ["Path of Annihilation"], "battlefield": ["Forest", "Forest", "Forest", "Forest"] },
+      {}
+    ],
+    "steps": [
+      { "cast": "Path of Annihilation" },
+      { "resolve": true },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [{ "battlefield_has": ["Path of Annihilation"] }, {}],
+      "colors": { "Path of Annihilation": [] }
+    }
+  },
+  {
+    "name": "ruling: the gain-life ability resolves even though the spell it triggered on is countered",
+    "players": [
+      { "hand": ["Blue Dragon"], "battlefield": ["Path of Annihilation", "Island", "Island", "Island", "Island", "Island", "Island", "Island"] },
+      { "hand": ["Counterspell"], "battlefield": ["Island", "Island"] }
+    ],
+    "steps": [
+      { "cast": "Blue Dragon" },
+      { "pass": true },
+      { "cast": "Counterspell", "player": 1, "targets": [ { "stack": "Blue Dragon" } ] },
+      { "resolve": true }
+    ],
+    "expect": {
+      "players": [
+        { "life": 24, "graveyard": ["Blue Dragon"] },
+        { "graveyard": ["Counterspell"] }
+      ]
+    }
+  }
+]
