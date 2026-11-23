@@ -181,6 +181,12 @@ impl CardDb {
         if c.keywords.contains(&Keyword::Rebound) {
             c = expand_rebound(&c);
         }
+        if c.types.contains(&CardType::Battle) && c.subtypes.iter().any(|s| s == "Siege") && !c.abilities.iter().any(|a| matches!(a, Ability::EntersChoose { kind: ChooseKind::Protector, .. })) {
+            c.abilities.push(Ability::EntersChoose { kind: ChooseKind::Protector, except: vec![], cap: None });
+        }
+        if c.abilities.iter().any(|a| matches!(a, Ability::EntersUnderOpponent)) && !c.abilities.iter().any(|a| matches!(a, Ability::EntersChoose { kind: ChooseKind::UnderOpponent, .. })) {
+            c.abilities.push(Ability::EntersChoose { kind: ChooseKind::UnderOpponent, except: vec![], cap: None });
+        }
         if c.keywords.iter().any(|k| keyword_expansion(*k).is_some()) {
             c = expand_keywords(&c);
         }

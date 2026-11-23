@@ -594,9 +594,21 @@ impl Game {
         (sum >= n).then_some(out)
     }
 
-    /// `Cost::OpponentCreatesToken`: the first opponent of `p` creates `n` tokens of the named definition.
+    /// The opponents of `p` who can be chosen for a cost like "an opponent gains 1 life" (those still in the game).
+    pub(crate) fn cost_opponents(&self, p: PlayerId) -> Vec<PlayerId> {
+        self.opponents(p).into_iter().filter(|q| self.alive(*q)).collect()
+    }
+
+    /// `Cost::OpponentCreatesToken` with no choice to make: the only opponent still in the game creates the tokens.
     pub(crate) fn opponent_creates_tokens(&mut self, p: PlayerId, token: &str, n: i32) {
-        let (Some(o), Some(def)) = (self.opponents(p).first().copied(), self.db.find(token)) else { return };
+        if let Some(o) = self.cost_opponents(p).first().copied() {
+            self.player_creates_tokens(o, token, n);
+        }
+    }
+
+    /// Player `o` creates `n` tokens of the named definition (a cost paid by someone else).
+    pub(crate) fn player_creates_tokens(&mut self, o: PlayerId, token: &str, n: i32) {
+        let Some(def) = self.db.find(token) else { return };
         for _ in 0..n.max(0) {
             if self.token_cap_reached() {
                 break;
@@ -693,7 +705,8 @@ impl Game {
             Cost::PutSelfOnLibraryBottom => c.zone == Zone::Battlefield,
             // a cost that has a player gain life can't be paid when that player can't gain life (CR 119.8: Leyline of Punishment, Everlasting Torment)
             Cost::OpponentGainsLife { .. } => self.opponents(p).iter().any(|q| !(self.effects.iter().any(|e| matches!(e.modif, Modif::NoLifeGain) && e.players.contains(q)) || self.static_cant_gain_life(*q))),
-            Cost::ExileSelf | Cost::DiscardSelf | Cost::ControllerDraws { .. } | Cost::EachOtherPlayerGainsLife { .. } | Cost::OpponentCreatesToken { .. } => true,
+            Cost::PlayerGainsLife { player, .. } => self.alive(*player) && !(self.effects.iter().any(|e| matches!(e.modif, Modif::NoLifeGain) && e.players.contains(player)) || self.static_cant_gain_life(*player)),
+            Cost::ExileSelf | Cost::DiscardSelf | Cost::ControllerDraws { .. } | Cost::EachOtherPlayerGainsLife { .. } | Cost::OpponentCreatesToken { .. } | Cost::PlayerCreatesToken { .. } => true,
             Cost::Sacrifice { filter, n } => self.count_eligible(&self.sac_cost_filter_check(filter), card, p, Zone::Battlefield) >= *n as usize,
             Cost::PayLife { n } => self.can_pay_life(p, *n),
             Cost::PayHalfLife => self.can_pay_life(p, (self.players[p as usize].life.max(0) + 1) / 2),
@@ -1670,10 +1683,12 @@ impl Game {
                     }
                 }
                 Cost::OpponentGainsLife { n } => {
-                    if let Some(o) = self.opponents(p).first().copied() {
+                    if let Some(o) = self.cost_opponents(p).first().copied() {
                         self.gain_life(o, *n);
                     }
                 }
+                Cost::PlayerGainsLife { player, n } => self.gain_life(*player, *n),
+                Cost::PlayerCreatesToken { player, token, n } => self.player_creates_tokens(*player, token, *n),
                 Cost::EachOtherPlayerGainsLife { n } => {
                     for o in self.opponents(p) {
                         self.gain_life(o, *n);

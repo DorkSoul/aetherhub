@@ -1325,6 +1325,11 @@ pub enum Run {
     UntapLimitPick { ids: Vec<CardId> },
     /// Asking which player a permanent that just transformed into a Curse is attached to (`Ability::AttachPlayerOnTransform`); `resume`: the priority state to return to (None: the start of a step).
     AttachPlayerAsk { card: CardId, options: Vec<PlayerId>, resume: Option<(PlayerId, u8)> },
+    /// An Aura put onto the battlefield without being cast, with several legal permanents to enchant: its controller chooses.
+    AttachHostAsk { card: CardId, options: Vec<CardId>, resume: Option<(PlayerId, u8)> },
+    /// The attack declaration doesn't meet a requirement and there is more than one way to meet it: the attacking player
+    /// chooses (`card` None: which creature attacks for "attack with at least one creature"; Some: what that creature attacks).
+    AttackFixAsk { attacks: Vec<(CardId, Obj)>, card: Option<CardId>, options: Vec<Obj> },
     /// Asking which player gets the mana of a `player_choice` mana ability that `player` is tapping by hand.
     ManaGiftAsk { card: CardId, ability: u16, produce: Option<crate::mana::ManaType>, options: Vec<PlayerId>, player: PlayerId, passes: u8 },
     /// Asking which cards a mana ability that `player` is tapping by hand exiles from the graveyard (Sunken Palace).
@@ -2031,6 +2036,8 @@ pub struct Game {
     pub enter_choices: Vec<CardId>,
     /// Enter events of permanents entering as a copy (Clone): matched against triggers only after the copy choice is made.
     pub copy_deferred: Vec<(CardId, Zone)>,
+    /// Permanents entering "under the control of an opponent of your choice": the player who chooses (who would have controlled it).
+    pub under_opponent_chooser: Vec<(CardId, PlayerId)>,
     /// Optional zone-change replacements found by `replace_zone` for the move in progress: (card, instead, bottom).
     pub opt_zone_tmp: std::cell::RefCell<Vec<(CardId, Zone, bool)>>,
     /// Several zone-change replacements applied to one card (Nemata / Rest in Peace): the candidates (source, controller, follow-up effects) found while moving it.
@@ -2222,7 +2229,10 @@ impl Game {
         // a permanent entering as a copy is what it copies only after the choice: enters triggers wait for it
         if let Event::Moved { card, from, to: Zone::Battlefield } = &e {
             let c = &self.cards[card.0 as usize];
-            if !c.face_down && self.enter_choices.contains(card) && self.db.def(c.def).abilities.iter().any(|a| (c.enter_done & 4 == 0 && matches!(a, crate::dsl::Ability::EntersAsCopy { until_turned_face_down: false, .. })) || (c.enter_done & 32 == 0 && matches!(a, crate::dsl::Ability::EntersUnlessCost { .. }))) {
+            let under_choice = c.enter_done & 8 == 0
+                && self.db.def(c.def).abilities.iter().any(|a| matches!(a, crate::dsl::Ability::EntersChoose { kind: crate::dsl::ChooseKind::UnderOpponent, .. }))
+                && self.under_opponent_chooser.iter().find(|(x, _)| x == card).map_or(false, |(_, p)| self.opponents(*p).into_iter().filter(|q| self.alive(*q)).count() > 1);
+            if !c.face_down && self.enter_choices.contains(card) && (under_choice || self.db.def(c.def).abilities.iter().any(|a| (c.enter_done & 4 == 0 && matches!(a, crate::dsl::Ability::EntersAsCopy { until_turned_face_down: false, .. })) || (c.enter_done & 32 == 0 && matches!(a, crate::dsl::Ability::EntersUnlessCost { .. })))) {
                 self.copy_deferred.push((*card, *from));
                 self.events.push(e);
                 return;

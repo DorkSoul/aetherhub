@@ -81,6 +81,10 @@ pub struct CastCtx {
     pub mana: ManaCost,
     pub extra: Vec<Cost>,
     pub extra_idx: usize,
+    /// "Target ... of an opponent's choice" with several opponents: the opponent the caster chose to pick the target of
+    /// target slot `.0`; `asking_chooser` while that question is open.
+    pub target_chooser: Option<(usize, PlayerId)>,
+    pub asking_chooser: bool,
     pub remaining: ManaCost,
     pub backup: Option<Box<Game>>,
     pub from: Zone,
@@ -3600,7 +3604,7 @@ impl Game {
                 Cost::UnattachSelf => self.cards[card.0 as usize].attached_to.is_some(),
                 Cost::UnattachAttached { filter } => self.attached_matching(card, filter, p).is_some(),
                 Cost::PayEnergy { n } => self.players[p as usize].energy >= *n,
-                Cost::SacrificeSelf | Cost::OpponentGainsLife { .. } => self.simple_cost_ok(p, card, part),
+                Cost::SacrificeSelf | Cost::OpponentGainsLife { .. } | Cost::PlayerGainsLife { .. } => self.simple_cost_ok(p, card, part),
                 Cost::Tap => !self.cards[card.0 as usize].tapped && self.can_use_tap_symbol(card) && self.can_become_tapped(card, false),
                 Cost::Crew { power } => self.crew_power(p, card) >= self.crew_requirement(card, *power),
                 Cost::TapPermanents { filter, n } => self.tappable_for_cost(p, card, filter).len() >= *n as usize,
@@ -5136,6 +5140,8 @@ impl Game {
             mana,
             extra,
             extra_idx: 0,
+            target_chooser: None,
+            asking_chooser: false,
             remaining,
             backup,
             from,
@@ -5234,6 +5240,8 @@ impl Game {
             mana,
             extra,
             extra_idx: 0,
+            target_chooser: None,
+            asking_chooser: false,
             remaining,
             backup,
             from: self.cards[card.0 as usize].zone,
@@ -5285,6 +5293,8 @@ impl Game {
             mana: ManaCost::default(),
             extra: vec![],
             extra_idx: 0,
+            target_chooser: None,
+            asking_chooser: false,
             remaining: ManaCost::default(),
             backup: None,
             from: Zone::Battlefield,
@@ -6157,6 +6167,16 @@ self.pending = Some(Decision {
                     return Flow::Wait;
                 }
                 Stage::Targets => {
+                    // the answer to "which opponent chooses this target"
+                    if ctx.asking_chooser {
+                        ctx.asking_chooser = false;
+                        if let (Some(Choice::Pick { indices }), Some(spec)) = (answer.take(), ctx.specs.get(ctx.spec_idx)) {
+                            let opts = self.target_chooser_options(&ctx, spec);
+                            if let Some(q) = indices.first().and_then(|i| opts.get(*i)).or(opts.first()).copied() {
+                                ctx.target_chooser = Some((ctx.spec_idx, q));
+                            }
+                        }
+                    }
                     if ctx.spec_idx >= ctx.specs.len() {
                         // damage divided as the spell is cast (Conflagrate): one number per target but the last, which gets the rest
                         // the alternative cost being cast with and the triggering event are known now (Avacyn's Judgment madness X, Polukranos's monstrosity X)
@@ -6589,16 +6609,32 @@ self.pending = Some(Decision {
                     }
                     let pol = self.target_polarity(&ctx, ctx.spec_idx as u8);
                     // "target ... of an opponent's choice": another player picks the target
-                    let tidx_so_far_targets: Vec<Target> = ctx.item.targets.to_vec();
                     let picker = match &spec.chooser {
-                        Some(sel) => {
-                            let evt = ctx.item.ctx.clone();
-                            let mut ec = EvalCtx::with_controller(ctx.item.source, p);
-                            ec.event = &evt;
-                            // the chooser may name an earlier target ("that creature's controller")
-                            ec.targets = &tidx_so_far_targets;
-                            ec.tidx = &tidx_so_far;
-                            self.sel_players(sel, &ec).first().copied().unwrap_or(p)
+                        Some(_) => {
+                            let opts = self.target_chooser_options(&ctx, &spec);
+                            match ctx.target_chooser {
+                                Some((i, q)) if i == ctx.spec_idx => q,
+                                _ if opts.len() > 1 => {
+                                    // several opponents could make the choice: the caster chooses which one does
+                                    ctx.asking_chooser = true;
+                                    self.pending = Some(Decision {
+                                        player: p,
+                                        kind: DecisionKind::Pick {
+                                            prompt: format!("{}: choose the opponent who chooses {}", ctx.what, if spec.label.is_empty() { "the target".to_string() } else { spec.label.clone() }),
+                                            source: Some(ctx.item.source),
+                                            options: opts.iter().map(|q| Opt::Obj { obj: Obj::player(*q) }).collect(),
+                                            min: 1,
+                                            max: 1,
+                                            cancellable,
+                                            hidden: false,
+                                            purpose: PickPurpose::Generic,
+                                        },
+                                    });
+                                    self.run = Run::Cast(ctx);
+                                    return Flow::Wait;
+                                }
+                                _ => opts.first().copied().unwrap_or(p),
+                            }
                         }
                         None => p,
                     };
@@ -7088,6 +7124,25 @@ self.pending = Some(Decision {
     }
 
     /// Returns None when the cost part was paid, Some(Wait) when a question is pending, Some(Continue) to abandon.
+    /// The players who may pick the targets of a slot with a `chooser` ("target ... of an opponent's choice"): the
+    /// players it selects who are still in the game. The chooser may name an earlier target ("that creature's controller").
+    fn target_chooser_options(&self, ctx: &CastCtx, spec: &TargetSpec) -> Vec<PlayerId> {
+        let Some(sel) = &spec.chooser else { return vec![] };
+        let mut tidx: Vec<u8> = vec![];
+        let mut off = 0usize;
+        for &c in ctx.item.spec_counts.iter().take(ctx.spec_idx) {
+            tidx.push(if c == 0 { 255 } else { off as u8 });
+            off += c as usize;
+        }
+        let targets: Vec<Target> = ctx.item.targets.to_vec();
+        let evt = ctx.item.ctx.clone();
+        let mut ec = EvalCtx::with_controller(ctx.item.source, ctx.player);
+        ec.event = &evt;
+        ec.targets = &targets;
+        ec.tidx = &tidx;
+        self.sel_players(sel, &ec).into_iter().filter(|q| self.alive(*q)).collect()
+    }
+
     fn step_extra_cost(&mut self, ctx: &mut CastCtx, part: &Cost, answer: &mut Option<Choice>) -> Extra {
         // a cost filter may read the chosen targets (Sidisi: "mana value X ... target creature card with mana value X plus 1")
         let mut tidx: Vec<u8> = vec![];
@@ -7105,6 +7160,36 @@ self.pending = Some(Decision {
     fn step_extra_cost_inner(&mut self, ctx: &mut CastCtx, part: &Cost, answer: &mut Option<Choice>) -> Extra {
         let p = ctx.player;
         let source = ctx.item.source;
+        // "an opponent gains 3 life" / "an opponent creates ...": the caster chooses the opponent; it is paid with the other costs
+        if matches!(part, Cost::OpponentGainsLife { .. } | Cost::OpponentCreatesToken { .. }) {
+            let opps = self.cost_opponents(p);
+            if opps.len() <= 1 {
+                return Extra::Paid;
+            }
+            if let Some(Choice::Pick { indices }) = answer.take() {
+                let o = indices.first().and_then(|i| opps.get(*i)).copied().unwrap_or(opps[0]);
+                ctx.extra[ctx.extra_idx] = match part {
+                    Cost::OpponentGainsLife { n } => Cost::PlayerGainsLife { player: o, n: *n },
+                    Cost::OpponentCreatesToken { token, n } => Cost::PlayerCreatesToken { player: o, token: token.clone(), n: *n },
+                    other => other.clone(),
+                };
+                return Extra::Paid;
+            }
+            self.pending = Some(Decision {
+                player: p,
+                kind: DecisionKind::Pick {
+                    prompt: format!("Choose an opponent for {}: {}", ctx.what, crate::describe::cost_text(part)),
+                    source: Some(source),
+                    options: opps.iter().map(|q| Opt::Obj { obj: Obj::player(*q) }).collect(),
+                    min: 1,
+                    max: 1,
+                    cancellable: ctx.backup.is_some(),
+                    hidden: false,
+                    purpose: PickPurpose::Cost,
+                },
+            });
+            return Extra::Wait;
+        }
         let mut random_cost = false;
         let (zone, filter, n, kind): (Zone, Filter, i32, &str) = match part {
             Cost::Sacrifice { filter, n } => (Zone::Battlefield, self.sac_cost_filter(filter), *n, "sacrifice"),
@@ -8688,10 +8773,12 @@ self.pending = Some(Decision {
                     self.emit(Event::DiceRolled { player: p });
                 }
                 Cost::OpponentGainsLife { n } => {
-                    if let Some(o) = self.opponents(p).first().copied() {
+                    if let Some(o) = self.cost_opponents(p).first().copied() {
                         self.gain_life(o, *n);
                     }
                 }
+                Cost::PlayerGainsLife { player, n } => self.gain_life(*player, *n),
+                Cost::PlayerCreatesToken { player, token, n } => self.player_creates_tokens(*player, token, *n),
                 Cost::EachOtherPlayerGainsLife { n } => {
                     for o in self.opponents(p) {
                         self.gain_life(o, *n);

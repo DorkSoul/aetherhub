@@ -153,6 +153,18 @@ pub enum Sub {
     /// The Ring tempts: the controller picks the Ring-bearer among these creatures.
     RingPick { options: Vec<CardId> },
     Clash { opp: PlayerId, mine: Option<CardId>, theirs: Option<CardId>, won: bool, stage: u8 },
+    /// "Clash with an opponent of your choice": the opponents to choose from.
+    ClashPick { options: Vec<PlayerId> },
+    /// Bolster: the creatures tied for least toughness, one of which gets the counters.
+    BolsterPick { options: Vec<CardId>, n: i32 },
+}
+
+#[derive(Clone, Debug)]
+pub enum AuraHostPlan {
+    NotAura,
+    NoHost,
+    One(CardId),
+    Choose,
 }
 
 #[derive(Clone, Debug)]
@@ -165,6 +177,8 @@ pub enum PayChoice {
     SacrificePower(Vec<CardId>, i32),
     /// Cards in the payer's graveyard to exile (the cost's own picks go through `mana_picks`).
     Graveyard(Vec<CardId>, usize),
+    /// The opponent who gains the life / creates the tokens of an "an opponent ..." cost.
+    Opponent(Vec<PlayerId>),
 }
 
 #[derive(Clone, Debug)]
@@ -1114,6 +1128,18 @@ impl Game {
                 f.controller = PlayerFilter::Any;
                 self.matches_card(&f, host, aura, ctrl)
             })
+    }
+
+    /// How an Aura put onto the battlefield without being cast finds what it enchants (CR 303.4f: the player putting it
+    /// there chooses): no legal permanent, exactly one, or several (it enters and its controller is asked before anyone
+    /// gets priority, see `attach_pending`).
+    pub(crate) fn aura_host_plan(&self, id: CardId) -> AuraHostPlan {
+        match self.aura_hosts(id) {
+            None => AuraHostPlan::NotAura,
+            Some(h) if h.is_empty() => AuraHostPlan::NoHost,
+            Some(h) if h.len() == 1 => AuraHostPlan::One(h[0]),
+            Some(_) => AuraHostPlan::Choose,
+        }
     }
 
     pub fn attach(&mut self, card: CardId, to: Option<CardId>) {
@@ -4435,16 +4461,20 @@ impl Game {
                                 }
                             }
                             let mut opts = MoveOpts { tapped, controller: Some(if under_your_control_flag { enter_ctl } else { player }), ..Default::default() };
-                            // an Aura put onto the battlefield without being cast enters attached to a legal permanent (the first one: no prompt); with none it stays in the library
+                            // an Aura put onto the battlefield without being cast: its controller chooses what it enchants; with no legal permanent it stays in the library
+                            let mut ask_host = false;
                             if dest == Zone::Battlefield {
-                                if let Some(hosts) = self.aura_hosts(id) {
-                                    match hosts.first() {
-                                        Some(&h) => opts.attach_to = Some(h),
-                                        None => continue,
-                                    }
+                                match self.aura_host_plan(id) {
+                                    AuraHostPlan::NoHost => continue,
+                                    AuraHostPlan::One(h) => opts.attach_to = Some(h),
+                                    AuraHostPlan::Choose => ask_host = true,
+                                    AuraHostPlan::NotAura => {}
                                 }
                             }
                             self.move_card(id, dest, opts);
+                            if ask_host && self.cards[id.0 as usize].zone == Zone::Battlefield {
+                                self.attach_pending.push(id);
+                            }
                         }
                         if defer_search {
                             self.flush_deferred_events();
@@ -4746,16 +4776,19 @@ impl Game {
                         if let (Some(k), Zone::Battlefield) = (enters_with, *to) {
                             self.cards[id.0 as usize].enter_counter_rider = Some(*k);
                         }
+                        // an Aura put onto the battlefield without being cast: its controller chooses what it enchants
+                        let mut ask_host = false;
                         if *to == Zone::Battlefield {
-                            // an Aura put onto the battlefield without being cast enters attached to a legal host (the first; none: it stays put)
-                            if let Some(hosts) = self.aura_hosts(*id) {
-                                match hosts.first() {
-                                    Some(&h) => mo.attach_to = Some(h),
-                                    None => {}
-                                }
+                            match self.aura_host_plan(*id) {
+                                AuraHostPlan::One(h) => mo.attach_to = Some(h),
+                                AuraHostPlan::Choose => ask_host = true,
+                                AuraHostPlan::NoHost | AuraHostPlan::NotAura => {}
                             }
                         }
                         self.move_card(*id, *to, mo);
+                        if ask_host && self.cards[id.0 as usize].zone == Zone::Battlefield {
+                            self.attach_pending.push(*id);
+                        }
                         }
                         let mut left = others;
                         left.extend(eligible.iter().copied().filter(|c| !picked.contains(c)));
@@ -4779,16 +4812,19 @@ impl Game {
                         if let (Some(k), Zone::Battlefield) = (enters_with, *to) {
                             self.cards[id.0 as usize].enter_counter_rider = Some(*k);
                         }
+                        // an Aura put onto the battlefield without being cast: its controller chooses what it enchants
+                        let mut ask_host = false;
                         if *to == Zone::Battlefield {
-                            // an Aura put onto the battlefield without being cast enters attached to a legal host (the first; none: it stays put)
-                            if let Some(hosts) = self.aura_hosts(*id) {
-                                match hosts.first() {
-                                    Some(&h) => mo.attach_to = Some(h),
-                                    None => {}
-                                }
+                            match self.aura_host_plan(*id) {
+                                AuraHostPlan::One(h) => mo.attach_to = Some(h),
+                                AuraHostPlan::Choose => ask_host = true,
+                                AuraHostPlan::NoHost | AuraHostPlan::NotAura => {}
                             }
                         }
                         self.move_card(*id, *to, mo);
+                        if ask_host && self.cards[id.0 as usize].zone == Zone::Battlefield {
+                            self.attach_pending.push(*id);
+                        }
                     }
                     let mut left = others;
                     left.extend(eligible.iter().copied().filter(|c| !picked.contains(c)));
@@ -8416,17 +8452,47 @@ impl Game {
                 Exec::Done
             }
             Effect::Bolster { n, remember } => {
-                let k = {
-                    let c = ec!();
-                    self.eval_amount(n, &c)
+                // several creatures tied for the least toughness: the controller chooses which one gets the counters
+                let picked = if let Some(Sub::BolsterPick { options, n: k }) = ctx.sub.clone() {
+                    ctx.sub = None;
+                    let i = match self.answer.take() {
+                        Some(Choice::Pick { indices }) => indices.first().copied().unwrap_or(0),
+                        _ => 0,
+                    };
+                    options.get(i).or(options.first()).copied().filter(|id| self.cards[id.0 as usize].zone == Zone::Battlefield).map(|id| (id, k))
+                } else {
+                    let k = {
+                        let c = ec!();
+                        self.eval_amount(n, &c)
+                    };
+                    let mine: Vec<CardId> = self
+                        .battlefield
+                        .iter()
+                        .copied()
+                        .filter(|id| self.cards[id.0 as usize].cur.controller == controller && self.cards[id.0 as usize].cur.types.has(CardType::Creature))
+                        .collect();
+                    let least = mine.iter().map(|id| self.cards[id.0 as usize].cur.toughness).min();
+                    let tied: Vec<CardId> = mine.iter().copied().filter(|id| Some(self.cards[id.0 as usize].cur.toughness) == least).collect();
+                    if tied.len() > 1 {
+                        ctx.sub = Some(Sub::BolsterPick { options: tied.clone(), n: k });
+                        self.pending = Some(Decision {
+                            player: controller,
+                            kind: DecisionKind::Pick {
+                                prompt: format!("Bolster {k}: choose a creature with the least toughness"),
+                                source: Some(source),
+                                options: tied.iter().map(|c| Opt::Obj { obj: Obj::card(*c) }).collect(),
+                                min: 1,
+                                max: 1,
+                                cancellable: false,
+                                hidden: false,
+                                purpose: PickPurpose::Generic,
+                            },
+                        });
+                        return Exec::Wait;
+                    }
+                    tied.first().map(|id| (*id, k))
                 };
-                let mine: Vec<CardId> = self
-                    .battlefield
-                    .iter()
-                    .copied()
-                    .filter(|id| self.cards[id.0 as usize].cur.controller == controller && self.cards[id.0 as usize].cur.types.has(CardType::Creature))
-                    .collect();
-                if let Some(best) = mine.iter().copied().min_by_key(|id| self.cards[id.0 as usize].cur.toughness) {
+                if let Some((best, k)) = picked {
                     self.add_counters_to(Obj::card(best), CounterKind::PlusOnePlusOne, k);
                     self.layers_dirty = true;
                     if *remember {
@@ -10110,7 +10176,38 @@ impl Game {
                     }
                     (opp, mine, theirs, won, stage + 1)
                 } else {
-                    let Some(opp) = self.opponents(controller).first().copied() else { return Exec::Done };
+                    // "clash with an opponent of your choice"
+                    let opp = if let Some(Sub::ClashPick { options }) = ctx.sub.clone() {
+                        ctx.sub = None;
+                        let i = match self.answer.take() {
+                            Some(Choice::Pick { indices }) => indices.first().copied().unwrap_or(0),
+                            _ => 0,
+                        };
+                        options.get(i).or(options.first()).copied()
+                    } else {
+                        let options: Vec<PlayerId> = self.opponents(controller).into_iter().filter(|p| self.alive(*p)).collect();
+                        if options.len() > 1 {
+                            ctx.sub = Some(Sub::ClashPick { options: options.clone() });
+                            self.pending = Some(Decision {
+                                player: controller,
+                                kind: DecisionKind::Pick {
+                                    prompt: "Clash with which opponent?".into(),
+                                    source: Some(source),
+                                    options: options.iter().map(|p| Opt::Obj { obj: Obj::player(*p) }).collect(),
+                                    min: 1,
+                                    max: 1,
+                                    cancellable: false,
+                                    hidden: false,
+                                    purpose: PickPurpose::Generic,
+                                },
+                            });
+                            return Exec::Wait;
+                        }
+                        options.first().copied()
+                    };
+                    let Some(opp) = opp else { return Exec::Done };
+                    // the opponent clashed with is the source's chosen player ("that player gains control": Captivating Glance)
+                    self.cards[source.0 as usize].chosen_player = Some(opp);
                     let mine = self.players[controller as usize].library.last().copied();
                     let theirs = self.players[opp as usize].library.last().copied();
                     let mv = |g: &Game, c: Option<CardId>| c.map_or(-1, |c| g.def_of(c).mana_value as i32);
@@ -10859,10 +10956,10 @@ impl Game {
                     match c {
                         Cost::Mana { cost } => Cost::Mana { cost: cost.repeat(n as usize) },
                         Cost::PayLife { n: k } => Cost::PayLife { n: k * n },
-                        Cost::OpponentGainsLife { n: k } => Cost::OpponentGainsLife { n: k * n },
+                        Cost::OpponentGainsLife { n: k } => Cost::OpponentGainsLife { n: *k },
                         Cost::FlipCoins { n: k } => Cost::FlipCoins { n: k * n },
                         Cost::AddMana { color, n: k } => Cost::AddMana { color: *color, n: k * n },
-                        Cost::OpponentCreatesToken { token, n: k } => Cost::OpponentCreatesToken { token: token.clone(), n: k * n },
+                        Cost::OpponentCreatesToken { token, n: k } => Cost::OpponentCreatesToken { token: token.clone(), n: *k },
                         Cost::Sacrifice { filter, n: k } => Cost::Sacrifice { filter: filter.clone(), n: k * n },
                         Cost::Discard { filter, n: k, random } => Cost::Discard { filter: filter.clone(), n: k * n, random: *random },
                         Cost::ExileFromGraveyard { filter, n: k, bottom } => Cost::ExileFromGraveyard { filter: filter.clone(), n: k * n, bottom: *bottom },
@@ -10883,8 +10980,8 @@ impl Game {
                     .iter()
                     .map(|c| scale_up(c, n))
                     .flat_map(|c| match c {
-                        // one counter per age counter, each on a permanent chosen as it is put
-                        Cost::PutCountersOnChosen { .. } | Cost::ExileFromSingleGraveyard { .. } | Cost::GainControlOfChosen { .. } => vec![c; n as usize],
+                        // one payment per age counter: each counter on a permanent chosen as it is put, each "an opponent ..." to an opponent chosen for it
+                        Cost::PutCountersOnChosen { .. } | Cost::ExileFromSingleGraveyard { .. } | Cost::GainControlOfChosen { .. } | Cost::OpponentGainsLife { .. } | Cost::OpponentCreatesToken { .. } => vec![c; n as usize],
                         c => vec![c],
                     })
                     .collect();
@@ -12852,6 +12949,12 @@ impl Game {
                         return Some((i, PayChoice::Control(el)));
                     }
                 }
+                Cost::OpponentGainsLife { .. } | Cost::OpponentCreatesToken { .. } => {
+                    let opps = self.cost_opponents(p);
+                    if opps.len() > 1 {
+                        return Some((i, PayChoice::Opponent(opps)));
+                    }
+                }
                 _ => {}
             }
         }
@@ -12899,6 +13002,7 @@ impl Game {
             PayChoice::Counters(cards) => ("Choose a permanent to put the counters on".into(), cards.iter().map(|c| Opt::Obj { obj: Obj::card(*c) }).collect(), 1),
             PayChoice::Control(cards) => ("Choose a permanent to gain control of".into(), cards.iter().map(|c| Opt::Obj { obj: Obj::card(*c) }).collect(), 1),
             PayChoice::Graveyard(cards, n) => ("Choose cards to exile from your graveyard".into(), cards.iter().map(|c| Opt::Obj { obj: Obj::card(*c) }).collect(), *n),
+            PayChoice::Opponent(players) => (format!("Choose an opponent: {}", crate::describe::cost_text(&costs[idx])), players.iter().map(|q| Opt::Obj { obj: Obj::player(*q) }).collect(), 1),
         };
         let (choice_kind, options_len) = (choice.clone(), options.len());
         ctx.sub = Some(Sub::PayPick { payer: p, costs, idx, choice, unless });
@@ -12970,6 +13074,15 @@ impl Game {
                 let id = picked.first().and_then(|i| cards.get(*i)).or(cards.first()).copied();
                 if let Some(id) = id {
                     costs[idx] = Cost::GainControlOfCard { card: id.0 };
+                }
+            }
+            PayChoice::Opponent(players) => {
+                if let Some(o) = picked.first().and_then(|i| players.get(*i)).or(players.first()).copied() {
+                    costs[idx] = match costs[idx].clone() {
+                        Cost::OpponentGainsLife { n } => Cost::PlayerGainsLife { player: o, n },
+                        Cost::OpponentCreatesToken { token, n } => Cost::PlayerCreatesToken { player: o, token, n },
+                        other => other,
+                    };
                 }
             }
             PayChoice::Graveyard(cards, n) => {
@@ -13521,10 +13634,12 @@ impl Game {
                     self.flush_followups();
                 }
                 Cost::OpponentGainsLife { n } => {
-                    if let Some(o) = self.opponents(p).first().copied() {
+                    if let Some(o) = self.cost_opponents(p).first().copied() {
                         self.gain_life(o, *n);
                     }
                 }
+                Cost::PlayerGainsLife { player, n } => self.gain_life(*player, *n),
+                Cost::PlayerCreatesToken { player, token, n } => self.player_creates_tokens(*player, token, *n),
                 Cost::EachOtherPlayerGainsLife { n } => {
                     for o in self.opponents(p) {
                         self.gain_life(o, *n);

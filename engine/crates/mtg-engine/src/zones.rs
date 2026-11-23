@@ -1057,6 +1057,10 @@ impl Game {
                 c.suspected = false;
                 let intended = opts.controller.unwrap_or(c.owner);
                 let ctl = self.enters_controller(id, intended);
+                if self.db.def(self.cards[id.0 as usize].def).abilities.iter().any(|a| matches!(a, crate::dsl::Ability::EntersUnderOpponent)) {
+                    self.under_opponent_chooser.retain(|(x, _)| *x != id);
+                    self.under_opponent_chooser.push((id, intended));
+                }
                 let c = &mut self.cards[id.0 as usize];
                 c.controller = ctl;
                 if opts.tapped {
@@ -1287,17 +1291,21 @@ impl Game {
             self.linked_exiles.retain(|(s, z, _, _, _)| !(*s == id && *z == old_zcc));
             for (c, cz, to) in back {
                 if self.cards[c.0 as usize].zone == Zone::Exile && self.cards[c.0 as usize].zcc == cz {
-                    // an Aura returning without being cast enters attached to a legal permanent (the first one: no choice prompt here); with none it stays exiled
+                    // an Aura returning without being cast: its controller chooses what it enchants; with no legal permanent it stays exiled
                     let mut opts = MoveOpts::default();
+                    let mut ask_host = false;
                     if to == Zone::Battlefield {
-                        if let Some(hosts) = self.aura_hosts(c) {
-                            match hosts.first() {
-                                Some(&h) => opts.attach_to = Some(h),
-                                None => continue,
-                            }
+                        match self.aura_host_plan(c) {
+                            crate::resolve::AuraHostPlan::NoHost => continue,
+                            crate::resolve::AuraHostPlan::One(h) => opts.attach_to = Some(h),
+                            crate::resolve::AuraHostPlan::Choose => ask_host = true,
+                            crate::resolve::AuraHostPlan::NotAura => {}
                         }
                     }
                     self.move_card(c, to, opts);
+                    if ask_host && self.cards[c.0 as usize].zone == Zone::Battlefield {
+                        self.attach_pending.push(c);
+                    }
                     if let Some(pos) = self.linked_counters.iter().position(|(lc, lz, _, _)| *lc == c && *lz == cz) {
                         let (_, _, n, ctl) = self.linked_counters.remove(pos);
                         if self.cards[c.0 as usize].zone == Zone::Battlefield && self.cards[c.0 as usize].cur.controller == ctl {

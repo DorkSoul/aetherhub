@@ -240,6 +240,12 @@ pub enum ChooseKind {
     Opponent,
     /// Choose a player (any player, you included).
     Player,
+    /// A Siege's protector: the opponent its controller chooses as it enters (CR 310.11a). Added to every Siege when the
+    /// card loads; with one opponent it is chosen automatically.
+    Protector,
+    /// "Enters under the control of an opponent of your choice" (Xantcha, Sleeper Agent): the player who would have
+    /// controlled it chooses the opponent. Added to every `EntersUnderOpponent` card when the card loads.
+    UnderOpponent,
     /// The second player of "choose two players" (after a `Player` choice; must differ from the first): stored in `Card.chosen_player2`, used by `Replace::Damage.between_chosen_players`.
     SecondPlayer,
     /// The second color of "choose two colors" (after a `Color` choice; must differ from the first): stored in `Card.chosen_color2` (Seal of the Guildpact).
@@ -1480,11 +1486,11 @@ pub enum Cost {
     ExileTop { n: i32 },
     /// "Have <the source's controller> draw `n` cards" as a cost paid by someone else (Development: "unless any opponent has you draw a card"): the controller of the cost's source draws.
     ControllerDraws { n: i32 },
-    /// An opponent gains `n` life as a cost (Wall of Shards: cumulative upkeep; the first opponent).
+    /// An opponent of the payer's choice gains `n` life as a cost (Wall of Shards: cumulative upkeep).
     OpponentGainsLife { n: i32 },
     /// Each other player gains `n` life as a cost (Skyshroud Cutter's alternative cost).
     EachOtherPlayerGainsLife { n: i32 },
-    /// An opponent creates `n` of the named token as a cost ("allow an opponent to create a 1/1 Survivor": Varchild's War-Riders; the first opponent).
+    /// An opponent of the payer's choice creates `n` of the named token as a cost ("allow an opponent to create a 1/1 Survivor": Varchild's War-Riders).
     OpponentCreatesToken { token: String, n: i32 },
     PayEnergy { n: i32 },
     /// "Get n poison counters" as a cost (Ward—Get five poison counters: The Serpent Society); always payable.
@@ -1511,6 +1517,12 @@ pub enum Cost {
     /// Internal (after the payer chose): put the counters on exactly this permanent.
     #[serde(skip)]
     PutCountersOnCard { card: u32, kind: CounterKind, n: i32 },
+    /// Internal (after the payer chose the opponent of `OpponentGainsLife`): this player gains `n` life.
+    #[serde(skip)]
+    PlayerGainsLife { player: u8, n: i32 },
+    /// Internal (after the payer chose the opponent of `OpponentCreatesToken`): this player creates the tokens.
+    #[serde(skip)]
+    PlayerCreatesToken { player: u8, token: String, n: i32 },
     /// Internal (after the payer chose): gain control of exactly this permanent.
     #[serde(skip)]
     GainControlOfCard { card: u32 },
@@ -5877,7 +5889,7 @@ pub enum Effect {
     VoteForCards { from: Sel, #[serde(default, skip_serializing_if = "is_false")] secret: bool, #[serde(default, skip_serializing_if = "is_false")] optional: bool, #[serde(default, skip_serializing_if = "is_false")] all_voted: bool },
     /// Each player votes for a player (`others`: not for themselves). The votes each player received are `Amount::VotesReceived`; `Sel::VotersFor` has the player id as its `option`.
     VoteForPlayers { #[serde(default, skip_serializing_if = "is_false")] others: bool, #[serde(default, skip_serializing_if = "is_false")] secret: bool },
-    /// Clash with an opponent (the first opponent): each player reveals the top card of their library, may put it on the bottom; the player with the
+    /// Clash with an opponent of the controller's choice (recorded as the source's chosen player, `Sel::ChosenPlayer`): each player reveals the top card of their library, may put it on the bottom; the player with the
     /// higher mana value wins. `win` runs if the controller won, `lose` otherwise (a tie is a loss for both).
     Clash {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]

@@ -520,6 +520,7 @@ impl Game {
             sba_waiting: false,
             enter_choices: vec![],
             copy_deferred: vec![],
+            under_opponent_chooser: vec![],
             opt_zone_tmp: std::cell::RefCell::new(vec![]),
             zone_choice_tmp: std::cell::RefCell::new(vec![]),
             opt_zone_q: vec![],

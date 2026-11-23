@@ -93,6 +93,9 @@ On a machine without a desktop, the Linux version runs in the terminal instead (
 - **Linux:** AppImages need FUSE 2 (`libfuse2` / `fuse2` package). Without it, run
   `./Aetherhub-*.AppImage --appimage-extract-and-run`.
 
+Each release also has a `SHA256SUMS` file: to check a download, compare the output of `sha256sum <file>` (Linux) or
+`certutil -hashfile <file> SHA256` (Windows) with the line for that file.
+
 Data is stored per user: `~/.local/share/aetherhub` on Linux, `%LOCALAPPDATA%\Aetherhub` on Windows. Set `DATA_DIR`
 to use another folder, and `PORT` to use another port. The standalone app is meant for your home network. To make it
 reachable from the internet, use the Docker setup behind a reverse proxy (see below).
@@ -208,7 +211,7 @@ The tests run locally, not on GitHub, so a release costs no Actions minutes beyo
    --no-git-tag-version`, plus `version` in `packages/server/src/config.ts` and `packaging/launcher/Cargo.toml`.
 2. Run the tests (see [Tests](#tests)) and `npm run dist`.
 3. Commit, tag and push: `git tag v1.1.0 && git push && git push origin v1.1.0`.
-4. Publish the release with the two files:
+4. Publish the release with the two files and their checksums:
    `gh release create v1.1.0 release/Aetherhub-1.1.0-* --title "Aetherhub 1.1.0" --generate-notes`
 
 Pushing the tag starts `.github/workflows/container.yml`, which only builds the Docker image and publishes it as

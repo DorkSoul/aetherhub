@@ -41,6 +41,7 @@ impl Game {
                 Run::Cast(ctx) => self.step_cast(ctx),
                 Run::Resolve(ctx) => self.step_resolve(ctx),
                 Run::Attackers => self.step_attackers(),
+                Run::AttackFixAsk { attacks, card, options } => self.step_attack_fix_ask(attacks, card, options),
                 Run::Blockers { idx } => self.step_blockers(idx),
                 Run::DamageAssign(ctx) => self.step_damage(ctx),
                 Run::Cleanup => self.step_cleanup(),
@@ -59,6 +60,7 @@ impl Game {
                 Run::UntapPickType { options } => self.step_untap_pick_type(options),
                 Run::UntapLimitPick { ids } => self.step_untap_limit_pick(ids),
                 Run::AttachPlayerAsk { card, options, resume } => self.step_attach_player_ask(card, options, resume),
+                Run::AttachHostAsk { card, options, resume } => self.step_attach_host_ask(card, options, resume),
                 Run::ManaGiftAsk { card, ability, produce, options, player, passes } => self.step_mana_gift_ask(card, ability, produce, options, player, passes),
                 Run::ManaPickAsk { card, ability, produce, options, player, passes } => self.step_mana_pick_ask(card, ability, produce, options, player, passes),
                 Run::EnterCopy { card, options, player, passes } => self.step_enter_copy(card, options, player, passes),
@@ -2081,6 +2083,9 @@ impl Game {
                 continue;
             };
             let mut who = c.cur.controller;
+            if kind == ChooseKind::UnderOpponent {
+                who = self.under_opponent_chooser.iter().find(|(x, _)| *x == card).map_or(c.owner, |(_, p)| *p);
+            }
             if kind == ChooseKind::WarPeace {
                 // the controller chooses first, then each other player in turn order
                 let mut p = who;
@@ -2138,6 +2143,8 @@ impl Game {
                 ChooseKind::EclipsedTypes => ("Choose a creature type".into(), ["Elemental", "Elf", "Faerie", "Giant", "Goblin", "Kithkin", "Merfolk", "Treefolk"].iter().map(|s| s.to_string()).collect()),
                 ChooseKind::FiveOneOrOneFive => ("Choose 5/1 or 1/5".into(), vec!["5/1".into(), "1/5".into()]),
                 ChooseKind::Opponent => ("Choose an opponent".into(), self.opponents(who).iter().map(|p| format!("Player {}", p + 1)).collect()),
+                ChooseKind::Protector => ("Choose an opponent to protect it".into(), self.opponents(who).iter().filter(|p| self.alive(**p)).map(|p| format!("Player {}", p + 1)).collect()),
+                ChooseKind::UnderOpponent => ("Choose the opponent who controls it".into(), self.opponents(who).iter().filter(|p| self.alive(**p)).map(|p| format!("Player {}", p + 1)).collect()),
                 ChooseKind::SecondPlayer => ("Choose a second player".into(), self.alive_players().iter().filter(|p| Some(**p) != c.chosen_player).map(|p| format!("Player {}", p + 1)).collect()),
                 ChooseKind::Player => ("Choose a player".into(), self.alive_players().iter().map(|p| format!("Player {}", p + 1)).collect()),
                 ChooseKind::ExileSpellFromGraveyard => ("Exile an instant or sorcery card from your graveyard".into(), self.players[who as usize].graveyard.iter().filter(|g| self.cards[g.0 as usize].cur.types.has(CardType::Instant) || self.cards[g.0 as usize].cur.types.has(CardType::Sorcery)).map(|g| g.0.to_string()).collect()),
@@ -2189,6 +2196,17 @@ impl Game {
                 self.apply_enter_counters(card);
                 continue;
             }
+            if kind == ChooseKind::UnderOpponent && options.len() <= 1 {
+                // a single opponent: it already entered under that player's control
+                self.under_opponent_chooser.retain(|(x, _)| *x != card);
+                self.cards[card.0 as usize].enter_done |= if nth_choose == 0 { 8 } else { 64 };
+                continue;
+            }
+            if kind == ChooseKind::Protector && options.len() == 1 {
+                self.cards[card.0 as usize].protector = self.opponents(who).into_iter().find(|p| self.alive(*p));
+                self.cards[card.0 as usize].enter_done |= if nth_choose == 0 { 8 } else { 64 };
+                continue;
+            }
             if kind == ChooseKind::Opponent && options.len() == 1 {
                 self.cards[card.0 as usize].chosen_player = self.opponents(who).first().copied();
                 self.cards[card.0 as usize].enter_done |= if nth_choose == 0 { 8 } else { 64 };
@@ -2202,7 +2220,7 @@ impl Game {
                 kind: DecisionKind::Pick {
                     prompt: format!("{}: {}", self.def_of(card).name, prompt),
                     source: Some(card),
-                    options: if kind == ChooseKind::ExileSpellFromGraveyard { options.iter().filter_map(|n| n.parse::<u32>().ok()).map(|n| Opt::Obj { obj: Obj::card(CardId(n)) }).collect() } else if kind == ChooseKind::Color { Color::ALL.iter().filter(|c| !except.contains(c)).map(|c| Opt::Color { c: *c }).collect() } else if kind == ChooseKind::SecondColor { options.iter().filter_map(|n| Color::ALL.iter().copied().find(|c| format!("{c:?}") == *n)).map(|c| Opt::Color { c }).collect() } else { options.iter().map(|t| Opt::Text { text: t.clone() }).collect() },
+                    options: if kind == ChooseKind::Protector || kind == ChooseKind::UnderOpponent { self.opponents(who).into_iter().filter(|p| self.alive(*p)).map(|p| Opt::Obj { obj: Obj::player(p) }).collect() } else if kind == ChooseKind::ExileSpellFromGraveyard { options.iter().filter_map(|n| n.parse::<u32>().ok()).map(|n| Opt::Obj { obj: Obj::card(CardId(n)) }).collect() } else if kind == ChooseKind::Color { Color::ALL.iter().filter(|c| !except.contains(c)).map(|c| Opt::Color { c: *c }).collect() } else if kind == ChooseKind::SecondColor { options.iter().filter_map(|n| Color::ALL.iter().copied().find(|c| format!("{c:?}") == *n)).map(|c| Opt::Color { c }).collect() } else { options.iter().map(|t| Opt::Text { text: t.clone() }).collect() },
                     min: 1,
                     max: 1,
                     cancellable: false,
@@ -2406,8 +2424,40 @@ impl Game {
         while let Some(&card) = self.attach_pending.first() {
             self.attach_pending.remove(0);
             let c = &self.cards[card.0 as usize];
-            if c.zone != Zone::Battlefield || c.enchanted_player.is_some() || !self.def_of(card).abilities.iter().any(|a| matches!(a, Ability::AttachPlayerOnTransform)) {
+            if c.zone != Zone::Battlefield || c.enchanted_player.is_some() {
                 continue;
+            }
+            if !self.def_of(card).abilities.iter().any(|a| matches!(a, Ability::AttachPlayerOnTransform)) {
+                // an Aura put onto the battlefield without being cast: its controller chooses what it enchants
+                if c.attached_to.is_some() {
+                    continue;
+                }
+                let who = c.cur.controller;
+                let hosts: Vec<CardId> = self.aura_hosts(card).unwrap_or_default().into_iter().filter(|h| *h != card && self.cards[h.0 as usize].zone == Zone::Battlefield).collect();
+                match hosts.len() {
+                    0 => continue,
+                    1 => {
+                        self.attach(card, Some(hosts[0]));
+                        self.layers_dirty = true;
+                        continue;
+                    }
+                    _ => {}
+                }
+                self.pending = Some(Decision {
+                    player: who,
+                    kind: DecisionKind::Pick {
+                        prompt: format!("Choose what {} enchants", self.def_of(card).name),
+                        source: Some(card),
+                        options: hosts.iter().map(|h| Opt::Obj { obj: Obj::card(*h) }).collect(),
+                        min: 1,
+                        max: 1,
+                        cancellable: false,
+                        hidden: false,
+                        purpose: PickPurpose::Generic,
+                    },
+                });
+                self.run = Run::AttachHostAsk { card, options: hosts, resume };
+                return Some(Flow::Wait);
             }
             let who = c.cur.controller;
             let mut options: Vec<PlayerId> = self.opponents(who).into_iter().filter(|p| self.alive(*p)).collect();
@@ -2448,6 +2498,24 @@ impl Game {
         };
         if self.cards[card.0 as usize].zone == Zone::Battlefield {
             self.cards[card.0 as usize].enchanted_player = options.get(idx).or(options.first()).copied();
+            self.layers_dirty = true;
+            self.recompute_layers();
+        }
+        self.run = match resume {
+            Some((player, passes)) => Run::Priority { player, passes },
+            None => Run::BeginStep,
+        };
+        Flow::Continue
+    }
+
+    pub(crate) fn step_attach_host_ask(&mut self, card: CardId, options: Vec<CardId>, resume: Option<(PlayerId, u8)>) -> Flow {
+        let idx = match self.answer.take() {
+            Some(Choice::Pick { indices }) => indices.first().copied().unwrap_or(0),
+            _ => 0,
+        };
+        let host = options.get(idx).or(options.first()).copied();
+        if let Some(h) = host.filter(|h| self.cards[card.0 as usize].zone == Zone::Battlefield && self.cards[h.0 as usize].zone == Zone::Battlefield) {
+            self.attach(card, Some(h));
             self.layers_dirty = true;
             self.recompute_layers();
         }
@@ -2765,6 +2833,29 @@ impl Game {
                     self.cards[card.0 as usize].chosen_player = self.opponents(who).get(i).copied();
                 }
                 ChooseKind::Player => self.cards[card.0 as usize].chosen_player = self.alive_players().get(i).copied(),
+                ChooseKind::UnderOpponent => {
+                    let chooser = self.under_opponent_chooser.iter().find(|(x, _)| *x == card).map_or(self.cards[card.0 as usize].owner, |(_, p)| *p);
+                    self.under_opponent_chooser.retain(|(x, _)| *x != card);
+                    let alive: Vec<PlayerId> = self.opponents(chooser).into_iter().filter(|p| self.alive(*p)).collect();
+                    if let Some(p) = alive.get(i).copied() {
+                        self.cards[card.0 as usize].controller = p;
+                        self.cards[card.0 as usize].cur.controller = p;
+                        self.layers_dirty = true;
+                        self.recompute_layers();
+                    }
+                    // the enters event waited for the choice: other permanents' triggers see the permanent under its real controller
+                    if let Some(k) = self.copy_deferred.iter().position(|(c, _)| *c == card) {
+                        let (_, from) = self.copy_deferred.remove(k);
+                        crate::triggers::on_event(self, &Event::Moved { card, from, to: Zone::Battlefield });
+                    }
+                }
+                ChooseKind::Protector => {
+                    let who = self.cards[card.0 as usize].cur.controller;
+                    let alive: Vec<PlayerId> = self.opponents(who).into_iter().filter(|p| self.alive(*p)).collect();
+                    if let Some(p) = alive.get(i) {
+                        self.cards[card.0 as usize].protector = Some(*p);
+                    }
+                }
                 ChooseKind::WarPeace => {
                     let mut p = self.cards[card.0 as usize].cur.controller;
                     for _ in 0..self.players.len() {

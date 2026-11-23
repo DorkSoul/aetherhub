@@ -244,6 +244,157 @@ impl Game {
         self.attack_all.iter().any(|(p, t)| *p == ctl && *t == self.turn)
     }
 
+    /// What `o.card` may attack: every legal player and permanent, without the players who goaded it (and their
+    /// permanents) when anything else is possible, and (with `free`) only where attacking costs nothing.
+    fn attack_alternatives(&self, o: &AttackerOpt, free: bool) -> Vec<Obj> {
+        let goaders = self.goaded_by(o.card);
+        let mut players: Vec<PlayerId> = o.players.iter().copied().filter(|q| !free || (self.combat_costs(o.card, true, Some(*q), None).is_empty() && self.attack_tax(*q, true) == 0)).collect();
+        let mut perms: Vec<CardId> = o.permanents.iter().copied().filter(|c| !free || (self.combat_costs(o.card, true, Some(self.defender_side(*c)), None).is_empty() && self.attack_tax(self.defender_side(*c), false) == 0)).collect();
+        if !goaders.is_empty() && players.iter().any(|q| !goaders.contains(q)) {
+            players.retain(|q| !goaders.contains(q));
+            perms.retain(|c| !goaders.contains(&self.defender_side(*c)));
+        }
+        players.into_iter().map(Obj::player).chain(perms.into_iter().map(|id| Obj::Card { id })).collect()
+    }
+
+    /// Before the declared attacks are checked against the requirements: where a requirement can be met in more than one
+    /// way (which player a creature that must attack attacks, which creature attacks for "attack with at least one
+    /// creature", which other player a goaded creature attacks), the attacking player is asked. A requirement with only one
+    /// way to meet it is applied here. Returns the flow to return when a question is pending.
+    fn ask_attack_requirements(&mut self, p: PlayerId, options: &[AttackerOpt], attacks: &mut Vec<(CardId, Obj)>) -> Option<Flow> {
+        let declared = |attacks: &Vec<(CardId, Obj)>, c: CardId| attacks.iter().any(|(x, _)| *x == c);
+        let mut ask: Option<(Option<CardId>, Vec<Obj>, String)> = None;
+        // a goaded creature declared at the player who goaded it, while it could attack someone else
+        for o in options {
+            let goaders = self.goaded_by(o.card);
+            if goaders.is_empty() {
+                continue;
+            }
+            if let Some(i) = attacks.iter().position(|(c, d)| *c == o.card && matches!(d, Obj::Player { id } if goaders.contains(id))) {
+                let alts = self.attack_alternatives(o, false);
+                if alts.iter().all(|d| matches!(d, Obj::Player { id } if goaders.contains(id))) {
+                    continue;
+                }
+                if alts.len() == 1 {
+                    attacks[i].1 = alts[0];
+                } else if ask.is_none() {
+                    ask = Some((Some(o.card), alts, format!("{} is goaded: choose another player or permanent to attack", self.def_of(o.card).name)));
+                }
+            }
+        }
+        // creatures that must attack but weren't declared
+        for o in options {
+            let cc = &self.cards[o.card.0 as usize].cur;
+            let required = cc.must_attack || cc.kw.has(Keyword::MustAttack) || self.must_attack_all(o.card) || !self.goaded_by(o.card).is_empty();
+            if !required || declared(attacks, o.card) || cc.must_attack_pw.is_some() || self.must_attack_pl(o.card).is_some() {
+                continue;
+            }
+            let alts = self.attack_alternatives(o, true);
+            match alts.len() {
+                0 => {}
+                1 => attacks.push((o.card, alts[0])),
+                _ if ask.is_none() => ask = Some((Some(o.card), alts, format!("{} must attack: choose what it attacks", self.def_of(o.card).name))),
+                _ => {}
+            }
+        }
+        // creatures that attack if another attacks ("all creatures attack if able", magnet counters, "this also attacks")
+        if !attacks.is_empty() {
+            let all = self.must_attack_all_if_any(p);
+            let kinds = self.counter_attack_kinds();
+            for o in options {
+                if declared(attacks, o.card) {
+                    continue;
+                }
+                let magnet = kinds.iter().any(|k| self.cards[o.card.0 as usize].counter(*k) > 0 && attacks.iter().any(|(c, _)| self.cards[c.0 as usize].counter(*k) > 0));
+                if !(all || magnet || self.attacks_if_any_attacks(o.card)) {
+                    continue;
+                }
+                let alts = self.attack_alternatives(o, false);
+                match alts.len() {
+                    0 => {}
+                    1 => attacks.push((o.card, alts[0])),
+                    _ if ask.is_none() => ask = Some((Some(o.card), alts, format!("{} also attacks: choose what it attacks", self.def_of(o.card).name))),
+                    _ => {}
+                }
+            }
+        }
+        // "attack with at least one creature if able"
+        if attacks.is_empty() && ask.is_none() && self.must_attack_one(p) {
+            let able: Vec<&AttackerOpt> = options.iter().filter(|o| !self.attack_alternatives(o, false).is_empty()).collect();
+            if able.len() == 1 {
+                let alts = self.attack_alternatives(able[0], false);
+                if alts.len() == 1 {
+                    attacks.push((able[0].card, alts[0]));
+                } else {
+                    ask = Some((Some(able[0].card), alts, format!("{} must attack: choose what it attacks", self.def_of(able[0].card).name)));
+                }
+            } else if able.len() > 1 {
+                ask = Some((None, able.iter().map(|o| Obj::card(o.card)).collect(), "At least one creature must attack: choose one".into()));
+            }
+        }
+        let (card, opts, prompt) = ask?;
+        self.pending = Some(Decision {
+            player: p,
+            kind: DecisionKind::Pick {
+                prompt,
+                source: card,
+                options: opts.iter().map(|o| Opt::Obj { obj: *o }).collect(),
+                min: 1,
+                max: 1,
+                cancellable: false,
+                hidden: false,
+                purpose: PickPurpose::Generic,
+            },
+        });
+        self.run = Run::AttackFixAsk { attacks: attacks.clone(), card, options: opts };
+        Some(Flow::Wait)
+    }
+
+    pub(crate) fn step_attack_fix_ask(&mut self, mut attacks: Vec<(CardId, Obj)>, card: Option<CardId>, options: Vec<Obj>) -> Flow {
+        let idx = match self.answer.take() {
+            Some(Choice::Pick { indices }) => indices.first().copied().unwrap_or(0),
+            _ => 0,
+        };
+        let picked = options.get(idx).or(options.first()).copied();
+        match (card, picked) {
+            (Some(c), Some(d)) => {
+                attacks.retain(|(x, _)| *x != c);
+                attacks.push((c, d));
+            }
+            (None, Some(Obj::Card { id })) => {
+                // the creature for "attack with at least one creature": now what it attacks
+                let p = self.active;
+                if let Some(o) = self.attacker_options(p).into_iter().find(|o| o.card == id) {
+                    let alts = self.attack_alternatives(&o, false);
+                    if alts.len() == 1 {
+                        attacks.push((id, alts[0]));
+                    } else if !alts.is_empty() {
+                        self.pending = Some(Decision {
+                            player: p,
+                            kind: DecisionKind::Pick {
+                                prompt: format!("{} attacks: choose what it attacks", self.def_of(id).name),
+                                source: Some(id),
+                                options: alts.iter().map(|o| Opt::Obj { obj: *o }).collect(),
+                                min: 1,
+                                max: 1,
+                                cancellable: false,
+                                hidden: false,
+                                purpose: PickPurpose::Generic,
+                            },
+                        });
+                        self.run = Run::AttackFixAsk { attacks, card: Some(id), options: alts };
+                        return Flow::Wait;
+                    }
+                }
+            }
+            _ => {}
+        }
+        // check the completed declaration now (the run loop doesn't carry an answer from one step to the next)
+        self.answer = Some(Choice::Attackers { attacks });
+        self.run = Run::Attackers;
+        self.step_attackers()
+    }
+
     pub(crate) fn step_attackers(&mut self) -> Flow {
         let p = self.active;
         let options = self.attacker_options(p);
@@ -252,6 +403,10 @@ impl Game {
             return Flow::Continue;
         }
         if let Some(Choice::Attackers { attacks }) = self.answer.take() {
+            let mut attacks = attacks;
+            if let Some(flow) = self.ask_attack_requirements(p, &options, &mut attacks) {
+                return flow;
+            }
             let requested: Vec<(CardId, Obj)> = attacks.iter().copied().filter(|(c, _)| (c.0 as usize) < self.cards.len()).collect();
             let mut valid: Vec<(CardId, Obj)> = vec![];
             for (card, def) in attacks {

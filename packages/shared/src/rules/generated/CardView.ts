@@ -34,4 +34,8 @@ art: string,
 /**
  * `art` names a token (look its picture up among tokens).
  */
-art_token: boolean, damage: number, };
+art_token: boolean, damage: number, 
+/**
+ * A battle's protector (the opponent who defends it); the table shows the battle on that player's side.
+ */
+protector: number | null, };

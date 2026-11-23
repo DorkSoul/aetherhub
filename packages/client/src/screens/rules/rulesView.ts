@@ -69,6 +69,9 @@ function slotPitch(seats: number): number {
   return slotGeom(seats).pitch;
 }
 
+/** The seat whose side of the table a permanent sits on: a battle's protector, else its controller. */
+const sideOf = (c: { controller: number; protector?: number | null }) => c.protector ?? c.controller;
+
 const rowY = (c: { types: string }) => (/Land/.test(c.types) ? ROW_Y.land : /Creature/.test(c.types) ? ROW_Y.creature : ROW_Y.other);
 
 /** Gives permanents that have no position yet a free spot: the first free slot in their row, then in the other rows, then
@@ -77,7 +80,7 @@ function settle(list: RCard[], placed: Placed, seatCount: number, memory?: Remem
   const here = new Set(list.map((c) => c.id));
   for (const id of [...placed.keys()]) if (!here.has(id)) placed.delete(id);
   const byController = new Map<number, RCard[]>();
-  for (const c of list) byController.set(c.controller, [...(byController.get(c.controller) ?? []), c]);
+  for (const c of list) byController.set(sideOf(c), [...(byController.get(sideOf(c)) ?? []), c]);
   for (const cards of byController.values()) {
     const { pitch, wide, tall } = slotGeom(seatCount);
     // the spot overlaps a card already there (wherever the player put it): closer than a card's width across (a tapped
@@ -287,13 +290,13 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
         ...(c.name !== ART(c) ? [{ k: `Named ${c.name}`, eot: false }] : []),
       ],
     });
-    const seat = seats[z === 'battlefield' ? c.controller : c.owner];
+    const seat = seats[z === 'battlefield' ? sideOf(c) : c.owner];
     if (!seat) continue;
     // face-up planes are the table's (the top bar), face-up schemes go in the archenemy's scheme row
     if (c.zone === 'Command' && PLANAR.test(c.types)) continue;
     if (c.zone === 'Command' && /\bScheme\b/.test(c.types)) z = 'schemes';
     seat.zones[z].push(iid);
-    if (z === 'battlefield') bf.set(c.controller, [...(bf.get(c.controller) ?? []), c]);
+    if (z === 'battlefield') bf.set(sideOf(c), [...(bf.get(sideOf(c)) ?? []), c]);
   }
   settle([...bf.values()].flat(), placed, snap.players.length, memory);
   if (memory) for (const list of bf.values()) for (const c of list) if (placed.has(c.id)) memory.set(c.id, { ...placed.get(c.id)!, name: c.name });
@@ -410,7 +413,7 @@ export function onlyUntaps(a: RView, b: RView): boolean {
   const before = new Map(a.cards.map((c) => [c.id, c]));
   for (const c of b.cards) {
     const was = before.get(c.id);
-    if (!was || was.zone !== c.zone || was.controller !== c.controller) return false;
+    if (!was || was.zone !== c.zone || sideOf(was) !== sideOf(c)) return false;
     if (was.tapped && !c.tapped) untapped++;
     else if (was.tapped !== c.tapped) return false;
   }
@@ -430,7 +433,7 @@ export function frameDelay(prev: RView | null, next: RView): number {
     if (!was) {
       if (c.zone === 'Hand') draws++; // a card appearing in the hand is a draw
       else big = true;
-    } else if (was.zone !== c.zone || was.controller !== c.controller) big = true;
+    } else if (was.zone !== c.zone || sideOf(was) !== sideOf(c)) big = true;
   }
   for (const c of prev.cards) if (!next.cards.some((n) => n.id === c.id) && c.zone !== 'Hand') big = true;
   if (big || prev.stack.length !== next.stack.length) return 750;

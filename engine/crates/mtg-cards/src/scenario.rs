@@ -271,6 +271,9 @@ pub struct Expect {
     /// card name -> name of the permanent it is attached to
     #[serde(default)]
     pub attached: BTreeMap<String, String>,
+    /// battle name -> seat of its protector
+    #[serde(default)]
+    pub protector: BTreeMap<String, u8>,
     /// card name -> subtypes it must currently have ("Wall", "Avatar" ...)
     #[serde(default)]
     pub subtypes: BTreeMap<String, Vec<String>>,
@@ -1777,6 +1780,13 @@ fn check_expect(g: &Game, e: &Expect) -> Result<(), String> {
             errs.push(format!("attached: '{name}' or '{host}' is not on the battlefield"));
         } else if !ok {
             errs.push(format!("{name} should be attached to {host}"));
+        }
+    }
+    for (name, seat) in &e.protector {
+        match find_bf(name) {
+            None => errs.push(format!("protector: '{name}' is not on the battlefield")),
+            Some(b) if g.card(b).protector != Some(*seat) => errs.push(format!("{name} should be protected by player {seat}, is {:?}", g.card(b).protector)),
+            _ => {}
         }
     }
     if errs.is_empty() {

@@ -122,3 +122,7 @@ case $TARGET in
   *) echo "usage: $0 [linux|windows|all]" >&2; exit 2 ;;
 esac
 rm -rf "$STAGE"
+
+echo "== Checksums"
+(cd "$OUT" && sha256sum "Aetherhub-$VERSION-"*.AppImage "Aetherhub-$VERSION-"*.zip 2>/dev/null > "Aetherhub-$VERSION-SHA256SUMS.txt")
+echo "   $OUT/Aetherhub-$VERSION-SHA256SUMS.txt"

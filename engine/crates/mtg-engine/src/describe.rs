@@ -121,6 +121,8 @@ pub fn cost_text(c: &Cost) -> String {
         Cost::OpponentGainsLife { n } => format!("An opponent gains {n} life"),
         Cost::EachOtherPlayerGainsLife { n } => format!("Each other player gains {n} life"),
         Cost::OpponentCreatesToken { token, n } => format!("An opponent creates {n} {token}"),
+        Cost::PlayerGainsLife { player, n } => format!("Player {} gains {n} life", player + 1),
+        Cost::PlayerCreatesToken { player, token, n } => format!("Player {} creates {n} {token}", player + 1),
         Cost::ExileTop { n } => format!("Exile the top {n} cards of your library"),
         Cost::PayEnergy { n } => format!("Pay {n} energy"),
         Cost::GetPoison { n } => format!("Get {n} poison counters"),
