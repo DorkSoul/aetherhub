@@ -174,11 +174,11 @@ Or run a production build: `npm run build && DATA_DIR=./data npm start`.
 Two levels:
 
 ```bash
-npm run test:changed      # quick: only what covers your changes (seconds to ~15 min)
+npm run test:affected     # quick: only what covers your changes (seconds to ~15 min)
 npm run test:full         # everything, before a release (about an hour)
 ```
 
-`test:changed` looks at the files changed since the last commit (or `-- --since <ref>`) and runs:
+`test:affected` looks at the files changed since the last commit (or `-- --since <ref>`) and runs:
 
 | What changed | What runs |
 |---|---|

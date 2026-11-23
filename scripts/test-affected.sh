@@ -2,7 +2,7 @@
 # Runs only the checks that cover what changed, for quick feedback while working.
 # The complete suite (every card scenario, smoke --all, every test) is scripts/test-full.sh: run that before a release.
 #
-# Usage: scripts/test-changed.sh [--since <git ref>]
+# Usage: scripts/test-affected.sh [--since <git ref>]
 #   default: uncommitted changes against HEAD, or the last commit when the working tree is clean.
 #
 # What runs:

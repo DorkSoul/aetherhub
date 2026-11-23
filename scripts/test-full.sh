@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The complete test suite, run before a release (about an hour): release engine build, every engine test (including
 # every card scenario), every card compiled and played at random, generated files up to date, typecheck, unit tests
-# and browser tests. For quick checks while working use scripts/test-changed.sh.
+# and browser tests. For quick checks while working use scripts/test-affected.sh.
 set -uo pipefail
 
 cd "$(dirname "$0")/.."
