@@ -10296,10 +10296,11 @@ impl Game {
                     }
                 }
                 ctx.sub = Some(Sub::May);
-                self.pending = Some(Decision {
-                    player: decider,
-                    kind: DecisionKind::YesNo { prompt: format!("Do you want to use {}'s effect?", self.def_of(source).name), source: Some(source) },
-                });
+                let prompt = match self.may_text(source, &ctx.item.kind) {
+                    Some(t) => format!("Do you want to use {}'s effect?\n{t}", self.def_of(source).name),
+                    None => format!("Do you want to use {}'s effect?", self.def_of(source).name),
+                };
+                self.pending = Some(Decision { player: decider, kind: DecisionKind::YesNo { prompt, source: Some(source) } });
                 Exec::Wait
             }
             Effect::MayPay { payer, cost, effects } => {
@@ -13988,4 +13989,25 @@ fn bake_x_effects(effects: &[Effect], x: i32) -> Vec<Effect> {
     let Ok(mut v) = serde_json::to_value(effects) else { return effects.to_vec() };
     bake(&mut v, x);
     serde_json::from_value(v).unwrap_or_else(|_| effects.to_vec())
+}
+
+impl Game {
+    /// What a "you may" question is about, shown under it: the printed line of the ability being resolved when it can be
+    /// found, else the source's whole rules text when it is short (a spell, or a card whose one ability is it).
+    pub(crate) fn may_text(&self, source: CardId, kind: &ItemKind) -> Option<String> {
+        let d = self.def_of(source);
+        let ability = match kind {
+            ItemKind::Triggered { ability, .. } | ItemKind::Ability { ability, .. } if *ability < crate::cast::GRANTED_BASE => Some(*ability as usize),
+            _ => None,
+        };
+        let flat = |t: &str| t.split_whitespace().collect::<Vec<_>>().join(" ");
+        if let Some(i) = ability {
+            let line = crate::view::printed_ability_text(d, i);
+            if !line.is_empty() && flat(&d.oracle_text).contains(&line) {
+                return Some(line);
+            }
+        }
+        let all = flat(&d.oracle_text);
+        (!all.is_empty()).then(|| crate::view::short_text(&all, 700))
+    }
 }

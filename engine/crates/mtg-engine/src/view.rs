@@ -391,7 +391,10 @@ impl Game {
                 let text = match &s.kind {
                     ItemKind::Spell { .. } => d.oracle_text.clone(),
                     ItemKind::Ability { ability, .. } | ItemKind::Triggered { ability, .. } => printed_ability_text(d, *ability as usize),
-                    ItemKind::Delayed { .. } => "Delayed trigger".into(),
+                    ItemKind::Delayed { .. } => {
+                        let all = d.oracle_text.split_whitespace().collect::<Vec<_>>().join(" ");
+                        if all.is_empty() { "Delayed trigger".into() } else { format!("Delayed trigger: {}", short_text(&all, 700)) }
+                    }
                 };
                 StackView {
                     id: s.id,
@@ -539,8 +542,20 @@ fn strip_reminder(line: &str) -> String {
 /// `OracleAbilities`), or the Oracle line of the n-th triggered ability when the card has as many trigger lines
 /// ("When / Whenever / At ...") as triggered abilities. Otherwise the generated text.
 pub fn printed_ability_text(d: &crate::carddb::Def, idx: usize) -> String {
-    use crate::dsl::Ability;
+    use crate::dsl::{Ability, Trigger};
     let Some(a) = d.abilities.get(idx) else { return String::new() };
+    // a generated text that says nothing ("…") gives way to the card's own text (cut short on a very long card)
+    let generated = |a: &Ability| {
+        let t = ability_text(a);
+        let all = d.oracle_text.split_whitespace().collect::<Vec<_>>().join(" ");
+        if (t.is_empty() || t.contains('…')) && !all.is_empty() { short_text(&all, 700) } else { t }
+    };
+    if let Ability::Triggered { trigger: Trigger::SagaChapter { chapter }, .. } = a {
+        return saga_chapter_line(&d.oracle_text, *chapter).unwrap_or_else(|| generated(a));
+    }
+    if is_saga_lore_trigger(d, a) {
+        return "Add a lore counter.".into();
+    }
     match a {
         Ability::Activated { .. } => {
             let mut oracle = OracleAbilities::new(&d.oracle_text);
@@ -553,7 +568,10 @@ pub fn printed_ability_text(d: &crate::carddb::Def, idx: usize) -> String {
                     }
                 }
             }
-            found.unwrap_or_else(|| view_ability_text(a))
+            found.or_else(|| activated_line_loose(&d.oracle_text, &view_ability_text(a))).unwrap_or_else(|| {
+                let t = view_ability_text(a);
+                if t.contains('…') { generated(a) } else { t }
+            })
         }
         Ability::Triggered { .. } => {
             let lines: Vec<String> = d
@@ -562,14 +580,120 @@ pub fn printed_ability_text(d: &crate::carddb::Def, idx: usize) -> String {
                 .map(strip_reminder)
                 .filter(|l| l.starts_with("When ") || l.starts_with("Whenever ") || l.starts_with("At "))
                 .collect();
-            let trig: Vec<usize> = d.abilities.iter().enumerate().filter(|(_, b)| matches!(b, Ability::Triggered { .. })).map(|(i, _)| i).collect();
+            // a Saga's chapters and its lore counter have lines of their own
+            let trig: Vec<usize> = d
+                .abilities
+                .iter()
+                .enumerate()
+                .filter(|(_, b)| matches!(b, Ability::Triggered { .. }) && !matches!(b, Ability::Triggered { trigger: Trigger::SagaChapter { .. }, .. }) && !is_saga_lore_trigger(d, b))
+                .map(|(i, _)| i)
+                .collect();
             match trig.iter().position(|&i| i == idx) {
                 Some(k) if lines.len() == trig.len() => lines[k].clone(),
-                _ => ability_text(a),
+                _ => trigger_line_by_event(&lines, a).unwrap_or_else(|| generated(a)),
             }
         }
-        _ => ability_text(a),
+        _ => generated(a),
     }
+}
+
+/// `t` cut to at most `max` bytes at a word boundary, with "…" when it was cut.
+pub(crate) fn short_text(t: &str, max: usize) -> String {
+    if t.len() <= max {
+        return t.to_string();
+    }
+    let mut end = max;
+    while !t.is_char_boundary(end) {
+        end -= 1;
+    }
+    let cut = &t[..end];
+    format!("{}…", cut.rsplit_once(' ').map_or(cut, |(a, _)| a))
+}
+
+/// An activated ability's Oracle line found loosely, when the costs don't line up: the line holding the same mana symbols
+/// (a keyword line, "Morph {2}{W}{B}{G}"), else the one whose cost starts with the same word ("Sacrifice ...").
+fn activated_line_loose(oracle: &str, generated: &str) -> Option<String> {
+    let (cost, _) = generated.split_once(": ")?;
+    let first = cost.split(", ").next().unwrap_or("");
+    let mana: String = first.split_inclusive('}').filter(|p| p.starts_with('{')).collect();
+    let lines: Vec<String> = oracle.lines().map(strip_reminder).collect();
+    if !mana.is_empty() && mana != "{T}" {
+        if let Some(l) = lines.iter().find(|l| l.contains(&mana)) {
+            return Some(l.clone());
+        }
+    }
+    let word = first.split_whitespace().next()?.to_lowercase();
+    if word.starts_with('{') {
+        return None;
+    }
+    lines.into_iter().find(|l| l.split_once(':').map_or(false, |(c, _)| c.to_lowercase().starts_with(&word)))
+}
+
+/// A triggered ability's Oracle line picked by its event when the lines can't be paired one to one: the only trigger
+/// line naming the event ("enters", "dies", "attacks", "upkeep" ...).
+fn trigger_line_by_event(lines: &[String], a: &crate::dsl::Ability) -> Option<String> {
+    let crate::dsl::Ability::Triggered { trigger, .. } = a else { return None };
+    let dbg = format!("{trigger:?}");
+    let variant = dbg.split(|c: char| !c.is_alphanumeric()).next().unwrap_or("");
+    let mut words: Vec<String> = vec![];
+    let mut cur = String::new();
+    for ch in variant.chars() {
+        if ch.is_uppercase() && !cur.is_empty() {
+            words.push(std::mem::take(&mut cur));
+        }
+        cur.push(ch.to_ascii_lowercase());
+    }
+    words.push(cur);
+    if variant == "BeginningOfStep" {
+        words = match () {
+            _ if dbg.contains("Upkeep") => vec!["upkeep".into()],
+            _ if dbg.contains("step: End") => vec!["end step".into()],
+            _ if dbg.contains("step: Draw") => vec!["draw step".into()],
+            _ if dbg.contains("Combat") => vec!["combat".into()],
+            _ if dbg.contains("Main") => vec!["main phase".into()],
+            _ => vec![],
+        };
+    }
+    const FILLER: [&str; 12] = ["battlefield", "or", "to", "player", "creature", "you", "of", "a", "the", "any", "trigger", "beginning"];
+    let stems: Vec<String> = words.iter().filter(|w| !FILLER.contains(&w.as_str()) && w.len() >= 3).map(|w| w.chars().take(5).collect()).collect();
+    if stems.is_empty() {
+        return None;
+    }
+    let score = |l: &String| {
+        let ll = l.to_lowercase();
+        let head = ll.split(',').next().unwrap_or(&ll).to_string();
+        stems.iter().filter(|s| head.contains(s.as_str())).count()
+    };
+    let best = lines.iter().map(score).max().unwrap_or(0);
+    if best == 0 {
+        return None;
+    }
+    let hits: Vec<&String> = lines.iter().filter(|l| score(l) == best).collect();
+    (hits.len() == 1).then(|| hits[0].clone())
+}
+
+/// The Oracle line of a Saga's chapter `n` ("II, III — Until your next turn, ...").
+fn saga_chapter_line(oracle: &str, n: u8) -> Option<String> {
+    let roman = |r: &str| -> Option<u8> {
+        let v = |c| match c { 'I' => Some(1), 'V' => Some(5), 'X' => Some(10), _ => None };
+        let ds: Vec<u8> = r.trim().chars().map(v).collect::<Option<_>>()?;
+        let mut total: i32 = 0;
+        for (i, &x) in ds.iter().enumerate() {
+            if ds.get(i + 1).map_or(false, |&y| y > x) { total -= x as i32 } else { total += x as i32 }
+        }
+        (total > 0 && !ds.is_empty()).then_some(total as u8)
+    };
+    oracle.lines().map(strip_reminder).find(|l| {
+        l.split_once(" \u{2014} ").map_or(false, |(nums, _)| nums.split(',').filter_map(roman).any(|x| x == n))
+    })
+}
+
+/// The lore-counter trigger a Saga is given (`expand_saga`): add a lore counter at the beginning of your precombat main phase.
+fn is_saga_lore_trigger(d: &crate::carddb::Def, a: &crate::dsl::Ability) -> bool {
+    use crate::dsl::{Ability, Effect, Trigger};
+    let saga = d.abilities.iter().any(|b| matches!(b, Ability::Triggered { trigger: Trigger::SagaChapter { .. }, .. }));
+    saga && matches!(a, Ability::Triggered { trigger: Trigger::BeginningOfStep { step: Step::Main1, .. }, effects, .. }
+        if matches!(effects.as_slice(), [Effect::AddCounters { kind: CounterKind::Lore, .. }]))
 }
 
 /// An activated ability's text for the table; the special actions generated from keywords (foretell, plot, warp) say their keyword.

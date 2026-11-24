@@ -437,9 +437,12 @@ export function PromptPanel({ d, v, names, images, onAnswer, onExplain, onPrevie
   }
 
   if (k.t === 'YesNo') {
+    // the engine puts what a "you may" is about (the ability's printed text) on the lines after the question
+    const [question, ...about] = k.prompt.split('\n');
     return (
       <div style={box}>
-        <h3 className="display" style={{ margin: '0 0 10px', fontSize: 18 }}>{k.prompt}</h3>
+        <h3 className="display" style={{ margin: about.length ? '0 0 6px' : '0 0 10px', fontSize: 18 }}>{question}</h3>
+        {about.length > 0 && <p style={{ margin: '0 0 10px', fontSize: 13, lineHeight: 1.45, color: 'var(--tx2)', borderLeft: '2px solid var(--line4)', paddingLeft: 8 }}>{about.join(' ')}</p>}
         <button className="tb pri" data-primary data-option onClick={() => onAnswer({ t: 'YesNo', yes: true })}>Yes</button>{' '}
         <button className="tb" data-option onClick={() => onAnswer({ t: 'YesNo', yes: false })}>No</button>
       </div>

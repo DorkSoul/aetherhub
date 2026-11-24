@@ -314,7 +314,13 @@ impl CardDb {
         }
         self.defs.push(def);
         let is_split = c.layout == crate::dsl::Layout::Split;
-        if let Some(back) = c.back.take() {
+        if let Some(mut back) = c.back.take() {
+            // a back face without text of its own takes its part of the card's text ("front text\n//\nback text")
+            if back.oracle_text.trim().is_empty() {
+                if let Some((_, b)) = format!("\n{}", c.oracle_text).split_once("\n//\n") {
+                    back.oracle_text = b.trim().to_string();
+                }
+            }
             let bid = self.add(*back, false)?;
             if is_split {
                 // Rule 708.4 / 202.3: outside the stack a split card's mana value is the total of both halves.

@@ -1467,26 +1467,59 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
               </g>
             );
           })}
-          {[...combatArrows.filter((a) => !liveArrows.some((l) => l.kind === a.kind && l.from.iid === a.from.iid)), ...liveArrows].map((a) => {
-            const f = a.from.iid ? cardPos(a.from.iid) : null;
-            const t = a.to.iid ? cardPos(a.to.iid) : null;
-            const p1 = f ? { x: f.x + f.w / 2, y: f.y + f.h / 2 } : a.from.seat != null ? seatCenter(a.from.seat) : null;
-            const p2 = t ? { x: t.x + t.w / 2, y: t.y + t.h / 2 } : a.to.seat != null ? seatCenter(a.to.seat) : null;
-            if (!p1 || !p2) return null;
-            const col = a.illegal ? '#8b8f98' : a.kind === 'attack' ? '#e5484d' : '#3b9eff';
-            const ang = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-            // stop at the target's edge so the head isn't hidden under the card
-            const end = t ? { x: p2.x - Math.cos(ang) * Math.min(t.w, t.h) * 0.4, y: p2.y - Math.sin(ang) * Math.min(t.w, t.h) * 0.4 } : p2;
-            const L = 18;
-            const head = `${end.x},${end.y} ${end.x - L * Math.cos(ang - 0.42)},${end.y - L * Math.sin(ang - 0.42)} ${end.x - L * Math.cos(ang + 0.42)},${end.y - L * Math.sin(ang + 0.42)}`;
-            return (
-              <g key={a.kind + a.id + (a.draft ? 'd' : '') + (a.illegal ? 'x' : '')} opacity={a.illegal ? 0.6 : a.draft ? 0.75 : 1}>
-                <line x1={p1.x} y1={p1.y} x2={end.x} y2={end.y} stroke="#000" strokeOpacity={0.45} strokeWidth={8} strokeLinecap="round" />
-                <line x1={p1.x} y1={p1.y} x2={end.x} y2={end.y} stroke={col} strokeWidth={5} strokeLinecap="round" strokeDasharray={a.illegal ? '3 7' : a.draft ? '9 7' : undefined} />
-                <polygon points={head} fill={col} stroke="#000" strokeOpacity={0.45} strokeWidth={1.5} />
-              </g>
-            );
-          })}
+          {(() => {
+            // Attack and block arrows are arcs, so ones that share a line stay apart. Arrows to the same target nest like a
+            // rainbow: each bends in proportion to its length (longer ones further out, so they don't cross), and their heads
+            // land side by side across the way they arrive. Attacks bend one way and blocks the other.
+            const all = [...combatArrows.filter((a) => !liveArrows.some((l) => l.kind === a.kind && l.from.iid === a.from.iid)), ...liveArrows];
+            const placed = all.flatMap((a) => {
+              const f = a.from.iid ? cardPos(a.from.iid) : null;
+              const t = a.to.iid ? cardPos(a.to.iid) : null;
+              const p1 = f ? { x: f.x + f.w / 2, y: f.y + f.h / 2 } : a.from.seat != null ? seatCenter(a.from.seat) : null;
+              const p2 = t ? { x: t.x + t.w / 2, y: t.y + t.h / 2 } : a.to.seat != null ? seatCenter(a.to.seat) : null;
+              return p1 && p2 ? [{ a, t, p1, p2, key: a.to.iid ?? 'seat' + a.to.seat }] : [];
+            });
+            const groups = new Map<string, typeof placed>();
+            for (const x of placed) groups.set(x.key, [...(groups.get(x.key) ?? []), x]);
+            return placed.map((x) => {
+              const { a, t, p1 } = x;
+              const side = a.kind === 'attack' ? 1 : -1;
+              const dist = (m: typeof x) => Math.hypot(m.p2.x - m.p1.x, m.p2.y - m.p1.y);
+              const g = groups.get(x.key)!.slice().sort((m, n) => dist(m) - dist(n));
+              const i = g.indexOf(x);
+              // the group's way in (from the middle of its sources) and the line across it where the heads spread
+              const mx = g.reduce((s2, m) => s2 + m.p1.x, 0) / g.length;
+              const my = g.reduce((s2, m) => s2 + m.p1.y, 0) / g.length;
+              const gl = Math.hypot(x.p2.x - mx, x.p2.y - my) || 1;
+              const gnx = -(x.p2.y - my) / gl;
+              const gny = (x.p2.x - mx) / gl;
+              const gap = t ? Math.min(16, (t.w * 0.7) / Math.max(1, g.length - 1)) : 16;
+              const o = (i - (g.length - 1) / 2) * gap * side;
+              const p2 = { x: x.p2.x + gnx * o, y: x.p2.y + gny * o };
+              const dx = p2.x - p1.x;
+              const dy = p2.y - p1.y;
+              const len = Math.hypot(dx, dy) || 1;
+              const nx = -dy / len;
+              const ny = dx / len;
+              const bend = side * len * Math.min(0.42, 0.1 + 0.07 * i);
+              const c = { x: (p1.x + p2.x) / 2 + nx * bend, y: (p1.y + p2.y) / 2 + ny * bend };
+              const ang = Math.atan2(p2.y - c.y, p2.x - c.x);
+              const col = a.illegal ? '#8b8f98' : a.kind === 'attack' ? '#e5484d' : '#3b9eff';
+              // stop at the target's edge so the head isn't hidden under the card
+              const r = t ? Math.min(t.w, t.h) * 0.4 : 0;
+              const end = { x: p2.x - Math.cos(ang) * r, y: p2.y - Math.sin(ang) * r };
+              const d = `M${p1.x},${p1.y} Q${c.x},${c.y} ${end.x},${end.y}`;
+              const L = 18;
+              const head = `${end.x},${end.y} ${end.x - L * Math.cos(ang - 0.42)},${end.y - L * Math.sin(ang - 0.42)} ${end.x - L * Math.cos(ang + 0.42)},${end.y - L * Math.sin(ang + 0.42)}`;
+              return (
+                <g key={a.kind + a.id + (a.draft ? 'd' : '') + (a.illegal ? 'x' : '')} data-combat-arrow={a.kind} opacity={a.illegal ? 0.6 : a.draft ? 0.75 : 1}>
+                  <path d={d} fill="none" stroke="#000" strokeOpacity={0.45} strokeWidth={8} strokeLinecap="round" />
+                  <path d={d} fill="none" stroke={col} strokeWidth={5} strokeLinecap="round" strokeDasharray={a.illegal ? '3 7' : a.draft ? '9 7' : undefined} />
+                  <polygon points={head} fill={col} stroke="#000" strokeOpacity={0.45} strokeWidth={1.5} />
+                </g>
+              );
+            });
+          })()}
           {arrowDraft && <line x1={arrowDraft.x1} y1={arrowDraft.y1} x2={arrowDraft.x2} y2={arrowDraft.y2} stroke="var(--acc)" strokeWidth={3} strokeDasharray="7 6" strokeLinecap="round" />}
         </svg>
         </div>

@@ -1245,7 +1245,7 @@ export default function RulesGame() {
                 style={{ all: 'unset', boxSizing: 'border-box', display: 'block', width: '100%', marginTop: 4, padding: '4px 6px', borderRadius: 7, cursor: 'pointer', outline: passingItem === x.id ? '2px dashed var(--acc)' : undefined }}
               >
                 <b>{x.name}</b> <span style={{ color: 'var(--mu)' }}>({state?.names[x.controller] ?? 'player'})</span>
-                {x.text && <div style={{ color: 'var(--tx3)', fontSize: 12 }}>{x.text}</div>}
+                {x.text && <div title={x.text} style={{ color: 'var(--tx3)', fontSize: 12, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{x.text}</div>}
               </button>
             ))}
           </div>

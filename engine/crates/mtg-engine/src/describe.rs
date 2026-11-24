@@ -146,7 +146,7 @@ pub fn effect_text(e: &Effect) -> String {
         Effect::Exile { what, .. } => format!("Exile {}", sel(what)),
         Effect::Bounce { what } => format!("Return {} to hand", sel(what)),
         Effect::CounterSpell { .. } => "Counter target spell".into(),
-        Effect::Pump { what, power, toughness, .. } => format!("{} gets {:+}/{:+}", sel(what), as_i(power), as_i(toughness)),
+        Effect::Pump { what, power, toughness, .. } => format!("{} gets {}/{}", sel(what), signed(power), signed(toughness)),
         Effect::AddCounters { kind, n, what } => format!("Put {} {kind:?} counter(s) on {}", amount(n), sel(what)),
         Effect::CreateToken { token, n, .. } => format!("Create {} {token} token(s)", amount(n)),
         Effect::AddMana { mana, .. } => {
@@ -178,11 +178,12 @@ pub fn effect_text(e: &Effect) -> String {
     }
 }
 
-fn as_i(a: &Amount) -> i32 {
+/// "+2", "-1", or "+X" for an amount that is counted when the effect happens.
+fn signed(a: &Amount) -> String {
     if let Amount::Fixed { n } = a {
-        *n
+        format!("{n:+}")
     } else {
-        0
+        "+X".into()
     }
 }
 
