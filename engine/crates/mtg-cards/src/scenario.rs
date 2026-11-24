@@ -29,6 +29,9 @@ pub enum CardSpec {
         /// Enters the battlefield face down (a 2/2 with no abilities).
         #[serde(default)]
         face_down: bool,
+        /// Starts as a solved Case.
+        #[serde(default)]
+        solved: bool,
         /// An exiled card that was exiled before the game for the card with this name ("exiled with cards named ...").
         #[serde(default)]
         pregame_for: Option<String>,
@@ -257,6 +260,9 @@ pub struct Expect {
     /// card name -> counter kind -> count
     #[serde(default)]
     pub counters: BTreeMap<String, BTreeMap<String, i32>>,
+    /// card name -> whether that Case is solved
+    #[serde(default)]
+    pub solved: BTreeMap<String, bool>,
     /// card name -> [power, toughness] (current)
     #[serde(default)]
     pub pt: BTreeMap<String, [i32; 2]>,
@@ -1360,7 +1366,11 @@ pub fn run_scenario(db: &Arc<CardDb>, s: &Scenario) -> Result<(), String> {
             if let CardSpec::Detailed { pregame_for: Some(n), .. } = spec {
                 g.card_mut(id).pregame_for = Some(mtg_engine::types::Sym::new(n));
             }
-            if let CardSpec::Detailed { tapped, counters, sick, face_down, .. } = spec {
+            if let CardSpec::Detailed { tapped, counters, sick, face_down, solved, .. } = spec {
+                if *solved {
+                    g.card_mut(id).solved = true;
+                    g.layers_dirty = true;
+                }
                 if *face_down {
                     g.card_mut(id).face_down = true;
                     g.layers_dirty = true;
@@ -1697,6 +1707,16 @@ fn check_expect(g: &Game, e: &Expect) -> Result<(), String> {
         };
         g.battlefield.iter().chain(g.planes.iter()).copied().find(|c| g.card_name(*c) == name && ctl.map_or(true, |o| g.card(*c).cur.controller == o))
     };
+    for (name, want) in &e.solved {
+        match find_bf(name) {
+            None => errs.push(format!("solved: '{name}' is not on the battlefield")),
+            Some(id) => {
+                if g.card(id).solved != *want {
+                    errs.push(format!("{name} solved: expected {want}, got {}", g.card(id).solved));
+                }
+            }
+        }
+    }
     for (name, kinds) in &e.counters {
         match find_bf(name) {
             None => errs.push(format!("counters: '{name}' is not on the battlefield")),

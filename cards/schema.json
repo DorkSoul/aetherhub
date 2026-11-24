@@ -2353,6 +2353,26 @@
     "Amount": {
       "oneOf": [
         {
+          "description": "The source's `mark` (see `Effect::SetMark`); 0 when unset.",
+          "type": "object",
+          "required": [
+            "mark",
+            "type"
+          ],
+          "properties": {
+            "mark": {
+              "$ref": "#/definitions/Mark"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "SourceMark"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
           "type": "object",
           "required": [
             "n",
@@ -8420,6 +8440,47 @@
           "additionalProperties": false
         },
         {
+          "description": "The source is a solved Case.",
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "Solved"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "The source's `mark` is at least `at_least` (see `Effect::SetMark`).",
+          "type": "object",
+          "required": [
+            "at_least",
+            "mark",
+            "type"
+          ],
+          "properties": {
+            "at_least": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "mark": {
+              "$ref": "#/definitions/Mark"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "SourceMark"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
           "description": "The controller has max speed (speed 4).",
           "type": "object",
           "required": [
@@ -11025,7 +11086,7 @@
           "additionalProperties": false
         },
         {
-          "description": "\"Remove X counters from a permanent you control that matches `filter`\" (Moxite Refinery): X is announced first, then one matching permanent holding at least X counters in total is chosen and X counters (most plentiful kind first) come off it. The chosen permanent is `Remembered`.",
+          "description": "\"Remove X counters from a permanent you control that matches `filter`\" (Moxite Refinery): X is announced first, then one matching permanent holding at least X counters in total is chosen and X counters come off it, the player choosing the kind of each when it has more than one. The chosen permanent is `Remembered`.",
           "type": "object",
           "required": [
             "filter",
@@ -12685,7 +12746,7 @@
           "additionalProperties": false
         },
         {
-          "description": "Remove `n` counters of any kind(s) from this permanent (taken automatically, most plentiful kind first): \"remove a counter from this creature\".",
+          "description": "Remove `n` counters of any kind(s) from this permanent: \"remove a counter from this creature\". The player chooses the kind of each counter when the permanent has more than one kind.",
           "type": "object",
           "required": [
             "type"
@@ -12706,7 +12767,7 @@
           "additionalProperties": false
         },
         {
-          "description": "Remove `n` counters of any kind(s), in total, from permanents you control that match `filter` (taken automatically, most plentiful kind first).",
+          "description": "Remove `n` counters of any kind(s), in total, from permanents you control that match `filter`. For each counter the player chooses the permanent (when more than one has counters) and the kind (when that permanent has more than one kind).",
           "type": "object",
           "required": [
             "filter",
@@ -16214,7 +16275,7 @@
           "additionalProperties": false
         },
         {
-          "description": "Remove up to `n` counters of any kind(s) in total from each selected permanent (most plentiful kind first).",
+          "description": "Remove up to `n` counters of any kind(s) in total from each selected permanent; the player chooses the kind of each counter when the permanent has more than one kind.",
           "type": "object",
           "required": [
             "n",
@@ -19711,6 +19772,52 @@
               "type": "string",
               "enum": [
                 "Harness"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "This Case becomes solved (a designation; lost when it leaves the battlefield). Triggers `Trigger::CaseSolved`.",
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "Solve"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Set (or with `add`, raise) the source's `mark` to `n`: a value its own abilities keep that is not a counter, so it can't be proliferated, moved or removed by other effects. Lost when the source leaves the battlefield; with `this_turn`, it reads as 0 after this turn.",
+          "type": "object",
+          "required": [
+            "mark",
+            "n",
+            "type"
+          ],
+          "properties": {
+            "add": {
+              "type": "boolean"
+            },
+            "mark": {
+              "$ref": "#/definitions/Mark"
+            },
+            "n": {
+              "$ref": "#/definitions/Amount"
+            },
+            "this_turn": {
+              "type": "boolean"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "SetMark"
               ]
             }
           },
@@ -26674,6 +26781,32 @@
         "R",
         "G",
         "C"
+      ]
+    },
+    "Mark": {
+      "description": "A value a permanent's own abilities keep about it (`Effect::SetMark`): what a Licid's ability is doing, what a card has used or counted. Unlike counters, other effects can't see or change it.",
+      "oneOf": [
+        {
+          "description": "A Licid is an Aura through its own ability.",
+          "type": "string",
+          "enum": [
+            "Licid"
+          ]
+        },
+        {
+          "description": "A card's first private value.",
+          "type": "string",
+          "enum": [
+            "First"
+          ]
+        },
+        {
+          "description": "A card's second private value.",
+          "type": "string",
+          "enum": [
+            "Second"
+          ]
+        }
       ]
     },
     "Mode": {
@@ -38478,6 +38611,26 @@
               "type": "string",
               "enum": [
                 "Exerted"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "A Case matching `filter` becomes solved (\"whenever you solve a Case\": `subtypes: [Case], controller: You`); the trigger object is the Case.",
+          "type": "object",
+          "required": [
+            "filter",
+            "type"
+          ],
+          "properties": {
+            "filter": {
+              "$ref": "#/definitions/Filter"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "CaseSolved"
               ]
             }
           },

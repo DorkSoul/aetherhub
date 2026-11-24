@@ -81,7 +81,7 @@ pub fn event_kind_of(t: &Trigger) -> EventKind {
         BeginningOfStep { .. } | FirstUpkeepOfGame | EndOfCombat => EventKind::Step,
         SpellCast { .. } | SpellCopied { .. } | SpellCastTargets { .. } | SpellCastTeamwork { .. } => EventKind::Cast,
         SpellCountered { .. } => EventKind::Countered,
-        BecomesRenowned { .. } | Mutates { .. } | BecomesPlotted { .. } | BecomesForetold { .. } | Exerted { .. } => EventKind::Monstrous,
+        BecomesRenowned { .. } | Mutates { .. } | BecomesPlotted { .. } | BecomesForetold { .. } | Exerted { .. } | CaseSolved { .. } => EventKind::Monstrous,
         SagaFinalChapter { .. } => EventKind::Misc,
         FacesDilemma { .. } => EventKind::Misc,
         Regenerated { .. } => EventKind::Misc,
@@ -155,7 +155,7 @@ fn kind_of_event(e: &Event) -> Option<EventKind> {
         Event::Monarch { .. } => EventKind::Monarch,
         Event::Discarded { .. } => EventKind::Discard,
         Event::Sacrificed { .. } | Event::Exploited { .. } => EventKind::Sacrifice,
-        Event::Monstrous { .. } | Event::Renowned { .. } | Event::Mutated { .. } | Event::Plotted { .. } | Event::Foretold { .. } | Event::Exerted { .. } => EventKind::Monstrous,
+        Event::Monstrous { .. } | Event::Renowned { .. } | Event::Mutated { .. } | Event::Plotted { .. } | Event::Foretold { .. } | Event::Exerted { .. } | Event::Solved { .. } => EventKind::Monstrous,
         Event::Scry { .. } => EventKind::Scry,
         Event::Clashed { .. } => EventKind::Clash,
         Event::VotingFinished { .. } => EventKind::Vote,
@@ -208,6 +208,7 @@ fn subject_card(e: &Event) -> Option<CardId> {
         | Event::Plotted { card }
         | Event::Foretold { card }
         | Event::Exerted { card }
+        | Event::Solved { card }
         | Event::SagaFinalChapter { card }
         | Event::Renowned { card }
         | Event::Counters { card, .. } => Some(*card),
@@ -1213,6 +1214,7 @@ fn match_trigger(g: &Game, t: &Trigger, e: &Event, src: CardId, ctrl: PlayerId) 
         (Trigger::FacesDilemma { who }, Event::FacedDilemma { player }) => g.player_filter_src(src, *who, *player, ctrl).then(|| ctx(None, Some(*player), g.players[*player as usize].dilemmas_turn as i32)),
         (Trigger::SagaFinalChapter { filter }, Event::SagaFinalChapter { card }) => obj_matches(g, filter, *card, src, ctrl, lki).then(|| ctx(Some(Obj::card(*card)), None, 0)),
         (Trigger::Exerted { filter }, Event::Exerted { card }) => obj_matches(g, filter, *card, src, ctrl, None).then(|| ctx(Some(Obj::card(*card)), None, 0)),
+        (Trigger::CaseSolved { filter }, Event::Solved { card }) => obj_matches(g, filter, *card, src, ctrl, None).then(|| ctx(Some(Obj::card(*card)), None, 0)),
         (Trigger::BecomesForetold { filter }, Event::Foretold { card }) => obj_matches(g, filter, *card, src, ctrl, None).then(|| ctx(Some(Obj::card(*card)), None, 0)),
         (Trigger::BecomesPlotted { filter }, Event::Plotted { card }) => obj_matches(g, filter, *card, src, ctrl, None).then(|| ctx(Some(Obj::card(*card)), None, 0)),
         (Trigger::Mutates { filter }, Event::Mutated { card }) => obj_matches(g, filter, *card, src, ctrl, None).then(|| ctx(Some(Obj::card(*card)), None, 0)),

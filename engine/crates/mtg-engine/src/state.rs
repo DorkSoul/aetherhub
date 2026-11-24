@@ -339,6 +339,11 @@ pub struct Card {
     pub renowned: bool,
     /// Harnessed designation (The Soul Stone).
     pub harnessed: bool,
+    /// Solved designation (Cases).
+    pub solved: bool,
+    /// Values a permanent's own abilities keep about it that are not counters: (mark, value, turn it was set or 0 when it lasts).
+    /// Lost when it leaves the battlefield.
+    pub marks: Vec<(crate::dsl::Mark, i32, u32)>,
     /// Suspected: has menace and can't block.
     pub suspected: bool,
     /// Token copy made by a `CopyPermanent` effect of this source (and the source's zone-change count then).
@@ -1213,6 +1218,8 @@ pub enum Event {
     Foretold { card: CardId },
     /// A creature was exerted (by the player who controls it).
     Exerted { card: CardId },
+    /// A Case became solved.
+    Solved { card: CardId },
     /// A Saga's final chapter ability finished resolving (the Saga is `card`).
     SagaFinalChapter { card: CardId },
     /// A player chose modes for a spell or ability (Star Trek: "you face a dilemma").

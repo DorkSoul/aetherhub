@@ -2710,9 +2710,23 @@ impl Cmp {
 
 // ---------------------------------------------------------------- amounts and conditions
 
+/// A value a permanent's own abilities keep about it (`Effect::SetMark`): what a Licid's ability is doing, what a card has used
+/// or counted. Unlike counters, other effects can't see or change it.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub enum Mark {
+    /// A Licid is an Aura through its own ability.
+    Licid,
+    /// A card's first private value.
+    First,
+    /// A card's second private value.
+    Second,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", deny_unknown_fields)]
 pub enum Amount {
+    /// The source's `mark` (see `Effect::SetMark`); 0 when unset.
+    SourceMark { mark: Mark },
     Fixed { n: i32 },
     /// The result of the most recent die roll.
     DieRoll,
@@ -3493,6 +3507,10 @@ pub enum Condition {
     Renowned,
     /// The source is harnessed (The Soul Stone).
     Harnessed,
+    /// The source is a solved Case.
+    Solved,
+    /// The source's `mark` is at least `at_least` (see `Effect::SetMark`).
+    SourceMark { mark: Mark, at_least: i32 },
     /// The controller has max speed (speed 4).
     MaxSpeed,
     /// The controller has the city's blessing.
@@ -4141,6 +4159,8 @@ pub enum Trigger {
     BecomesForetold { filter: FilterBox },
     /// A creature matching `filter` is exerted ("whenever you exert a creature": `controller: You`); the trigger object is the exerted creature.
     Exerted { filter: FilterBox },
+    /// A Case matching `filter` becomes solved ("whenever you solve a Case": `subtypes: [Case], controller: You`); the trigger object is the Case.
+    CaseSolved { filter: FilterBox },
     /// "Whenever the final chapter ability of a Saga (matching `filter`) resolves" (Narci, Tom Bombadil). The trigger object is the Saga.
     SagaFinalChapter { filter: FilterBox },
     /// "Whenever the final chapter ability of a Saga (matching `filter`) triggers" (Historian's Boon): fires as the lore counter reaching the last chapter is added. The trigger object is the Saga.
@@ -5821,6 +5841,19 @@ pub enum Effect {
     BecomeRenowned,
     /// This becomes harnessed (a designation; lost when it leaves the battlefield; The Soul Stone).
     Harness,
+    /// This Case becomes solved (a designation; lost when it leaves the battlefield). Triggers `Trigger::CaseSolved`.
+    Solve,
+    /// Set (or with `add`, raise) the source's `mark` to `n`: a value its own abilities keep that is not a counter, so it can't be
+    /// proliferated, moved or removed by other effects. Lost when the source leaves the battlefield; with `this_turn`, it reads as 0
+    /// after this turn.
+    SetMark {
+        mark: Mark,
+        n: Amount,
+        #[serde(default, skip_serializing_if = "is_false")]
+        add: bool,
+        #[serde(default, skip_serializing_if = "is_false")]
+        this_turn: bool,
+    },
     /// Start your engines!: if the players have no speed, their speed becomes 1.
     StartEngines { who: Sel },
     /// The selected players are restricted for a while ("players can't cast spells this turn", "you can't gain life this turn").

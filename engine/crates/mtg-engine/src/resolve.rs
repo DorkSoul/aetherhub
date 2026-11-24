@@ -7953,6 +7953,29 @@ impl Game {
                 }
                 Exec::Done
             }
+            Effect::Solve => {
+                if self.cards[source.0 as usize].zone == Zone::Battlefield && !self.cards[source.0 as usize].solved {
+                    self.cards[source.0 as usize].solved = true;
+                    self.layers_dirty = true;
+                    self.emit(Event::Solved { card: source });
+                }
+                Exec::Done
+            }
+            Effect::SetMark { mark, n, add, this_turn } => {
+                if self.cards[source.0 as usize].zone == Zone::Battlefield {
+                    let v = {
+                        let c = ec!();
+                        self.eval_amount(n, &c)
+                    };
+                    let old = self.mark_of(source, *mark);
+                    let turn = if *this_turn { self.turn } else { 0 };
+                    let marks = &mut self.cards[source.0 as usize].marks;
+                    marks.retain(|(m, _, _)| m != mark);
+                    marks.push((*mark, if *add { old + v } else { v }, turn));
+                    self.layers_dirty = true;
+                }
+                Exec::Done
+            }
             Effect::Harness => {
                 if self.cards[source.0 as usize].zone == Zone::Battlefield {
                     self.cards[source.0 as usize].harnessed = true;

@@ -74,6 +74,11 @@ thread_local! {
 }
 
 impl Game {
+    /// The value of `card`'s `mark` (`Effect::SetMark`): 0 when unset, or when it was set for a turn that is over.
+    pub fn mark_of(&self, card: CardId, mark: crate::dsl::Mark) -> i32 {
+        self.cards[card.0 as usize].marks.iter().find(|(m, _, t)| *m == mark && (*t == 0 || *t == self.turn)).map_or(0, |(_, n, _)| *n)
+    }
+
     /// Mana value of a card as the rules see it: a split card off the stack has the total of both halves.
     pub(crate) fn mv_of(&self, id: CardId, def: &crate::carddb::Def) -> u32 {
         // a face-down spell or permanent has no mana cost: mana value 0 (CR 708.2)
@@ -2369,6 +2374,7 @@ impl Game {
                 _ => self.cards[id.0 as usize].cur.toughness,
             }),
             Amount::CreatureTypeCount { of } => self.sel_cards(of, c).first().map_or(0, |id| self.cards[id.0 as usize].cur.subtypes.iter().filter(|s| crate::dsl::SubtypeKind::Creature.contains(&s.name())).count() as i32),
+            Amount::SourceMark { mark } => self.mark_of(c.source, *mark),
             Amount::ManaValueOf { of } => {
                 // a targeted spell on the stack has its card's mana value
                 if let Sel::Target { idx } = of {
@@ -4171,6 +4177,8 @@ impl Game {
             Condition::SourcePrepared => self.cards[c.source.0 as usize].prepared_spell.is_some(),
             Condition::Renowned => self.cards[c.source.0 as usize].renowned,
             Condition::Harnessed => self.cards[c.source.0 as usize].harnessed,
+            Condition::Solved => self.cards[c.source.0 as usize].solved,
+            Condition::SourceMark { mark, at_least } => self.mark_of(c.source, *mark) >= *at_least,
             Condition::SourceHasCounter { kind, at_least } => {
                 // after it left the battlefield: what it had when it left (undying / persist)
                 match c.event.lki.as_deref() {
