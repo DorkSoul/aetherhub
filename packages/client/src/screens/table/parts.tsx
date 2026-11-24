@@ -98,6 +98,10 @@ const PILE_FAN = 0.18;
 export const TCard = memo(function TCard(p: TCardProps & { onDown: (e: React.PointerEvent) => void; onCtx: (e: React.MouseEvent) => void; onDbl: () => void; onEnter: (e: React.MouseEvent) => void; onLeave: (e: React.MouseEvent) => void }) {
   const { c, def, rect, rot } = p;
   const rad = Math.max(3, Math.round(rect.w * 0.05));
+  // a face-down card you may look at, turned up on this screen only (the card menu's "Look at the face-down card")
+  const look = p.peek && !!p.turned && !!def;
+  // a permanent turned over (or turned up) on this screen only is outlined, so it isn't taken for transformed
+  const localLook = look || (p.onBf && !!p.turned && p.showFace);
   return (
     <div
       className={p.pinged ? 'tping' : undefined}
@@ -135,16 +139,16 @@ export const TCard = memo(function TCard(p: TCardProps & { onDown: (e: React.Poi
             )}
           </div>
         ))}
-      {p.showFace && def ? (
+      {(p.showFace || look) && def ? (
         // A flipped card on the battlefield is rotated by the wrapper (together with tapping), not here.
-        <CardImage def={def} face={p.turned ? (c.face ? 0 : 1) : c.face} style={{ width: '100%', height: '100%', borderRadius: rad }} />
+        <CardImage def={def} face={p.turned && !look ? (c.face ? 0 : 1) : c.face} style={{ width: '100%', height: '100%', borderRadius: rad, ...(localLook ? { outline: '2px dashed rgba(var(--acc-rgb),.85)', outlineOffset: -2 } : {}) }} />
       ) : (
         <img src={p.sleeve ? imgUrl(p.sleeve) || CARD_BACK : CARD_BACK} alt="" draggable={false} style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover', borderRadius: rad }} />
       )}
       <Overlays c={c} def={def} w={rect.w} onBf={p.onBf} />
       {p.foreignColor && <div title="Owned by another player" style={{ position: 'absolute', left: 4, top: 4, width: 10, height: 10, borderRadius: 5, background: p.foreignColor, boxShadow: '0 0 0 2px #121317' }} />}
       {p.showFace && def && p.onTurn && rect.w >= 40 && <TurnButton def={def} onTurn={p.onTurn} size={Math.round(Math.max(14, Math.min(26, rect.w * 0.2)))} />}
-      {p.peek && rect.w > 60 && <div style={{ position: 'absolute', left: 3, top: 3, fontSize: 9, background: 'rgba(21,19,15,.85)', color: 'var(--acc-tx)', borderRadius: 4, padding: '1px 4px' }}>hover to peek</div>}
+      {p.peek && !look && rect.w > 60 && <div style={{ position: 'absolute', left: 3, top: 3, fontSize: 9, background: 'rgba(21,19,15,.85)', color: 'var(--acc-tx)', borderRadius: 4, padding: '1px 4px' }}>hover to peek</div>}
     </div>
   );
 });

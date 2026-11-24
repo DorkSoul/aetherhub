@@ -780,8 +780,14 @@ fn commander_goes_to_command_zone_and_costs_more() {
     assert_eq!(g.card(cid).zone, Zone::Battlefield);
     // destroy it: it returns to the command zone, and recasting costs {2} more
     g.destroy(cid);
-    // dying puts it in the graveyard; the state-based action (903.9a) then returns it to the command zone
+    // dying puts it in the graveyard; the state-based action (903.9a) asks its owner whether to put it into the command zone
     assert_eq!(g.card(cid).zone, Zone::Graveyard);
+    g.run_sba();
+    let d = g.pending.clone().expect("the owner is asked");
+    assert_eq!(d.player, 0);
+    assert!(matches!(d.kind, DecisionKind::YesNo { .. }));
+    g.pending = None;
+    g.answer = Some(Choice::YesNo { yes: true });
     g.run_sba();
     assert_eq!(g.card(cid).zone, Zone::Command);
     let cost = g.effective_cost(0, cid, None);

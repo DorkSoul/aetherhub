@@ -1,6 +1,6 @@
 // Turns a rules-game view (from the native engine) into the GameView the app's table renders, and maps the table's gestures
 // onto rules actions (a card dropped on the battlefield is played, double-clicking a permanent taps it for mana, ...).
-import type { CardDef, CardInst, CardView, GameView, LogView, Seat, rules as R } from '@aetherhub/shared';
+import type { CardDef, CardFace, CardInst, CardView, GameView, LogView, Seat, rules as R } from '@aetherhub/shared';
 
 export type RView = R.View;
 export type RCard = R.CardView;
@@ -239,6 +239,19 @@ const TOKEN_KEY = (c: { name: string; art?: string; colors: number }) => `${ART(
 const PLANAR = /\b(Plane|Phenomenon)\b/;
 /** The server sends a card's layout (split / Room, planar) in the image map under this key, so previews turn sideways. */
 const LAYOUT_KEY = (name: string) => `@layout:${name}`;
+/** The picture of a double-faced card's other face rides in the image map under this key. */
+const BACK_KEY = (name: string) => `@back:${name}`;
+/** ... and its name, cost, type line, text and P/T (a JSON `CardFace`) under this one. */
+const BACK_FACE_KEY = (name: string) => `@backface:${name}`;
+
+function parseFace(json: string | undefined): CardFace | undefined {
+  if (!json) return undefined;
+  try {
+    return JSON.parse(json) as CardFace;
+  } catch {
+    return undefined;
+  }
+}
 
 /** An optimistic entry with this position has no drop point (a double-click): it takes the first free slot in its row. */
 export const AUTO_SLOT = { x: -1, y: -1 } as const;
@@ -256,14 +269,22 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     const bp = creature ? (c.base_power ?? c.power) : null;
     const bt = creature ? (c.base_toughness ?? c.toughness) : null;
     const art = (c.art_token ?? c.token) ? images[TOKEN_KEY(c)] : images[ART(c)];
+    // img[0] is the face that is up, img[1] the other face (so the card can be turned over to look at it)
+    const back = (c.art_token ?? c.token) ? undefined : images[BACK_KEY(ART(c))];
+    const backFace = back ? parseFace(images[BACK_FACE_KEY(ART(c))]) : undefined;
     const key = `f:${c.name}|${ART(c)}|${creature ? bp + '/' + bt : ''}|${c.colors}|${c.token ? 't' : ''}`;
     if (!defs[key]) {
       defs[key] = {
-        key, name: c.name, layout: (images[LAYOUT_KEY(ART(c))] as CardDef['layout'] | undefined) ?? 'normal', manaCost: c.cost, cmc: c.mana_value, typeLine: c.types, oracleText: c.text, colors: [], colorIdentity: [], img: art ? [art] : [],
+        key, name: c.name, layout: (images[LAYOUT_KEY(ART(c))] as CardDef['layout'] | undefined) ?? 'normal', manaCost: c.cost, cmc: c.mana_value, typeLine: c.types, oracleText: c.text, colors: [], colorIdentity: [], img: art ? (back ? [art, back] : [art]) : [],
         // a token copy says "Copy of ..." itself; the table's generic "Copy" badge is for sandbox tokens made from cards
         isToken: c.token,
         power: creature ? String(bp) : undefined, toughness: creature ? String(bt) : undefined,
       };
+      // faces[0] is the face that is up, as the engine sees it now; faces[1] the printed other face
+      if (backFace) {
+        const d = defs[key];
+        defs[key].faces = [{ name: d.name, manaCost: d.manaCost, typeLine: d.typeLine, oracleText: d.oracleText, power: d.power, toughness: d.toughness }, backFace];
+      }
     }
     return key;
   };
@@ -321,7 +342,9 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     const counters: Record<string, number> = {};
     for (const [k, n] of c.counters) counters[COUNTER_NAMES[k] ?? k] = (counters[COUNTER_NAMES[k] ?? k] ?? 0) + n;
     const creature = c.power !== null;
-    cards[iid] = inst(iid, defFor(c), c.owner, {
+    // an opponent's face-down permanent (the engine masks it: no picture) gets no def, like any card you may not see
+    const masked = c.face_down && !c.art;
+    cards[iid] = inst(iid, masked ? '' : defFor(c), c.owner, {
       tapped: c.tapped, counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
       pt: creature ? { p: (c.power ?? 0) - (c.base_power ?? c.power ?? 0), t: (c.toughness ?? 0) - (c.base_toughness ?? c.toughness ?? 0) } : { p: 0, t: 0 },
       effects: [

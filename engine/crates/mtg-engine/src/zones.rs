@@ -243,6 +243,7 @@ impl Game {
             cast_remembered: vec![],
             x: 0,
             is_commander: false,
+            cmd_offer: false,
             is_companion: false,
             ceased: false,
             cast_count: 0,
@@ -565,7 +566,20 @@ impl Game {
         } else {
             None
         };
+        let from = self.cards[id.0 as usize].zone;
         let r = self.move_card_inner(id, to, opts);
+        // (a commander taken from the command zone, as by Command Beacon, isn't offered a way back)
+        if r && self.cfg.commander && self.cards[id.0 as usize].is_commander && from != Zone::Command {
+            let now = self.cards[id.0 as usize].zone;
+            self.cards[id.0 as usize].cmd_offer = false;
+            if now != from {
+                match now {
+                    // CR 903.9a: its owner may put it into the command zone when state-based actions are next checked
+                    Zone::Graveyard | Zone::Exile => self.cards[id.0 as usize].cmd_offer = true,
+                    _ => {}
+                }
+            }
+        }
         if let Some((a, b)) = halves {
             for h in [a, b] {
                 if self.cards[h.0 as usize].zone == Zone::Exile {
@@ -615,13 +629,11 @@ impl Game {
         if to == Zone::Battlefield && from != Zone::Battlefield && self.enter_battlefield_barred(id, from) {
             return false;
         }
-        // Commander: a commander going to graveyard / exile / hand / library may go to the command zone instead
-        if self.cfg.commander
-            && self.cards[id.0 as usize].is_commander
-            && from != Zone::Command
-            && matches!(to, Zone::Exile | Zone::Hand | Zone::Library)
-        {
-            // (a commander put into the graveyard really dies; a state-based action then returns it to the command zone)
+        // CR 903.9b: a commander going to its owner's hand or library may go to the command zone instead. It goes there now
+        // (so "put into the command zone from the battlefield" triggers see it), and its owner is asked whether to keep it
+        // there; declining sends it on where it was going.
+        if self.cfg.commander && self.cards[id.0 as usize].is_commander && from != Zone::Command && matches!(to, Zone::Hand | Zone::Library) {
+            self.opt_zone_tmp.borrow_mut().push((id, to, opts.bottom));
             to = Zone::Command;
         }
         if from == Zone::Battlefield && to == Zone::Exile && self.trigger_token_barred(id) {

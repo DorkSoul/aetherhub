@@ -108,6 +108,29 @@ test('dragging a card to the battlefield is seen by the others', async () => {
   expect(faces.some((c) => !c.back && c.y < 450)).toBeTruthy();
 });
 
+test('a face-down card: its controller may look at it on their screen, an opponent sees only the back', async () => {
+  const p = alice.page;
+  const card = p.locator(`${seatSel('alice')} [data-bf] [data-iid]`).first();
+  const iid = await card.getAttribute('data-iid');
+  await card.click({ button: 'right' });
+  await p.getByRole('menuitem', { name: 'Turn face down' }).click();
+  const shown = (pg: Page) => pg.locator(`[data-iid="${iid}"] .cardimg`).count();
+  await expect.poll(() => shown(p)).toBe(0);
+  await card.click({ button: 'right' });
+  await p.getByRole('menuitemcheckbox', { name: /Look at the face-down card/ }).click();
+  await expect.poll(() => shown(p)).toBe(1);
+  // bob only sees the card back (his view has no def for it, so he has no look either)
+  await expect(bob.page.locator(`[data-iid="${iid}"]`)).toBeVisible();
+  expect(await shown(bob.page)).toBe(0);
+  // turning it back over ends the look (and turning it face up shows the face as usual)
+  await card.click({ button: 'right' });
+  await p.getByRole('menuitemcheckbox', { name: /Look at the face-down card/ }).click();
+  await expect.poll(() => shown(p)).toBe(0);
+  await card.click({ button: 'right' });
+  await p.getByRole('menuitem', { name: 'Turn face up' }).click();
+  await expect.poll(() => shown(p)).toBe(1);
+});
+
 test("drawing from an opponent's library goes to the clicker's hand", async () => {
   const p = alice.page;
   const before = await pileCount(p, 'bob', 'library');

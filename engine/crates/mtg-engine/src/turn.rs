@@ -295,6 +295,8 @@ impl Game {
             DecisionKind::Pick { purpose: PickPurpose::ModeRepeat, min, options, .. } if !options.is_empty() => Choice::Pick { indices: (0..*min as usize).map(|i| i % options.len()).collect() },
             DecisionKind::Pick { min, options, .. } => Choice::Pick { indices: (0..(*min as usize).min(options.len())).collect() },
             DecisionKind::Number { min, .. } => Choice::Number { n: *min },
+            // a commander's way back to the command zone (CR 903.9) is taken unless its owner says otherwise
+            DecisionKind::YesNo { prompt, .. } if prompt.starts_with("Put your commander ") => Choice::YesNo { yes: true },
             DecisionKind::YesNo { .. } => Choice::YesNo { yes: false },
             DecisionKind::PayMana { .. } => Choice::Pay { answer: PayAnswer::Auto },
             DecisionKind::Attackers { must_attack, options } => Choice::Attackers {
@@ -2893,6 +2895,13 @@ impl Game {
         self.ask_enter_choice(player, passes)
     }
 
+    /// A zone-change trigger that asks for a card put into the command zone.
+    fn trigger_wants_command(&self, t: &crate::state::PendingTrigger) -> bool {
+        let d = self.db.def(t.def);
+        let a = t.granted.as_deref().or_else(|| d.abilities.get(t.ability as usize));
+        matches!(a, Some(Ability::Triggered { trigger: crate::dsl::Trigger::ChangesZone { to: Some(Zone::Command), .. }, .. }))
+    }
+
     /// Asks the owners of cards that an optional zone-change replacement (Library of Leng) could have sent elsewhere.
     fn ask_opt_zone(&mut self, player: PlayerId, passes: u8) -> Flow {
         while !self.opt_zone_q.is_empty() {
@@ -2904,7 +2913,15 @@ impl Game {
             let owner = c.owner;
             self.pending = Some(Decision {
                 player: owner,
-                kind: DecisionKind::YesNo { prompt: format!("Put {} on {} of your library instead?", self.def_of(card).name, if bottom { "the bottom" } else { "top" }), source: Some(card) },
+                kind: DecisionKind::YesNo {
+                    prompt: if self.commander_kept(card) {
+                        let to = if instead == Zone::Hand { "your hand".to_string() } else { format!("the {} of your library", if bottom { "bottom" } else { "top" }) };
+                        format!("Put your commander {} into the command zone instead of {to}?", self.def_of(card).name)
+                    } else {
+                        format!("Put {} on {} of your library instead?", self.def_of(card).name, if bottom { "the bottom" } else { "top" })
+                    },
+                    source: Some(card),
+                },
             });
             self.run = Run::OptZone { card, instead, bottom, player, passes };
             return Flow::Wait;
@@ -2957,7 +2974,28 @@ impl Game {
         self.ask_zone_choice(player, passes)
     }
 
+    /// A commander that a 903.9b replacement put into the command zone, its owner still to say whether it stays there.
+    fn commander_kept(&self, card: CardId) -> bool {
+        let c = &self.cards[card.0 as usize];
+        self.cfg.commander && c.is_commander && c.zone == Zone::Command
+    }
+
     pub(crate) fn step_opt_zone(&mut self, card: CardId, instead: Zone, bottom: bool, player: PlayerId, passes: u8) -> Flow {
+        if self.commander_kept(card) {
+            // yes keeps it in the command zone; no sends it on to the hand / library, and the triggers its going to the
+            // command zone caused (still waiting to go on the stack) never happened
+            if let Some(Choice::YesNo { yes: false }) = self.answer.take() {
+                let caused: Vec<bool> = self.pending_triggers.iter().map(|t| t.ctx.obj == Some(Obj::card(card)) && self.trigger_wants_command(t)).collect();
+                let mut i = 0;
+                self.pending_triggers.retain(|_| {
+                    i += 1;
+                    !caused[i - 1]
+                });
+                // (from the command zone, so the replacement doesn't apply again)
+                self.move_card(card, instead, crate::zones::MoveOpts { bottom, ..Default::default() });
+            }
+            return self.ask_opt_zone(player, passes);
+        }
         if let Some(Choice::YesNo { yes: true }) = self.answer.take() {
             if self.cards[card.0 as usize].zone != Zone::Battlefield {
                 self.move_card(card, instead, crate::zones::MoveOpts { bottom, ..Default::default() });

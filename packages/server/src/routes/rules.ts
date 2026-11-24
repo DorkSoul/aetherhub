@@ -7,7 +7,7 @@ import { requireUser } from '../auth';
 import { bad, forbidden, HttpError, notFound, type Ctx } from '../context';
 import { all, get, run } from '../db/sqlite';
 import { rulesEngine, rulesEngineError } from '../rulesengine';
-import { formatInfo } from '@aetherhub/shared';
+import { formatInfo, normName } from '@aetherhub/shared';
 
 /**
  * Rules-enforced games on the native Rust engine. The engine owns the game state; AI seats play inside it on
@@ -557,14 +557,26 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
   const imgCache = new Map<string, string | null>();
   /** Card name → its Scryfall layout when that changes how it is drawn (split cards and Rooms are pictured sideways). */
   const layoutCache = new Map<string, string>();
+  /** Card name (either face) → the picture of its other face, for double-faced cards. */
+  const backCache = new Map<string, string>();
+  /** Card name (either face) → its other face's name, cost, type line, text and P/T (JSON), for double-faced cards. */
+  const backFaceCache = new Map<string, string>();
   const imageFor = (name: string): string | null => {
     if (imgCache.has(name)) return imgCache.get(name)!;
     let ref: string | null = null;
     try {
-      const id = ctx.cards.matchName(name) ?? ctx.cards.matchName(name, undefined, undefined, true);
+      const id = ctx.cards.matchName(name) ?? ctx.cards.matchName(name, undefined, undefined, true) ?? ctx.cards.matchBackFace(name);
       const def = id ? ctx.cards.defsByPrinting([id])['p:' + id] : undefined;
-      ref = def?.img?.[0] ?? null;
-      if (def && (def.layout === 'split' || def.layout === 'planar')) layoutCache.set(name, def.layout);
+      // the face this name is: a back-face name ("Insectile Aberration") pictures the back
+      const n = normName(name);
+      const face = Math.max(0, def?.faces?.findIndex((f) => normName(f.name) === n) ?? 0);
+      ref = def?.img?.[face] ?? def?.img?.[0] ?? null;
+      if (def && def.img.length > 1) {
+        backCache.set(name, def.img[face === 0 ? 1 : 0]);
+        const f = def.faces?.[face === 0 ? 1 : 0];
+        if (f) backFaceCache.set(name, JSON.stringify({ name: f.name, manaCost: f.manaCost, typeLine: f.typeLine, oracleText: f.oracleText, power: f.power, toughness: f.toughness, loyalty: f.loyalty, defense: f.defense }));
+      }
+      if (def && (def.layout === 'split' || def.layout === 'planar' || (def.layout === 'flip' && face === 0))) layoutCache.set(name, def.layout);
     } catch {
       ref = null;
     }
@@ -608,6 +620,11 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
         // the layout rides along in the same map under its own key (see LAYOUT_KEY in the client's rulesView)
         const layout = layoutCache.get(name);
         if (layout) out['@layout:' + name] = layout;
+        // so is the other face's picture (see BACK_KEY)
+        const back = backCache.get(name);
+        if (back) out['@back:' + name] = back;
+        const backFace = backFaceCache.get(name);
+        if (backFace) out['@backface:' + name] = backFace;
       }
     return out;
   };

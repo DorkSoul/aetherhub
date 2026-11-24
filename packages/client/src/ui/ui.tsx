@@ -524,16 +524,32 @@ export const usePreview = create<PreviewState>((set, get) => ({
   },
 }));
 
-/** Global hover preview placed beside the hovered element; flips away from screen edges; hold Shift to freeze. */
+/** Global hover preview placed beside the hovered element; flips away from screen edges; hold Shift to freeze, hold Alt to see
+ *  the other side of a double-faced, flip or meld card. */
 export function HoverPreview() {
   const { def, rect, extra, face: baseFace, turnKey, overlay, frozen, scale, enabled } = usePreview();
   const turned = useTurned((s) => (turnKey ? !!s.m[turnKey] : false));
+  const [alt, setAlt] = useState(false);
   useEffect(() => {
-    const down = (e: KeyboardEvent) => e.key === 'Shift' && usePreview.getState().def && usePreview.setState({ frozen: true });
-    const up = (e: KeyboardEvent) => e.key === 'Shift' && usePreview.setState({ frozen: false });
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'Shift' && usePreview.getState().def) usePreview.setState({ frozen: true });
+      if (e.key === 'Alt') {
+        setAlt(true);
+        // a bare Alt would otherwise move focus to the browser's menu bar (and the blur below hides the preview)
+        if (usePreview.getState().def) e.preventDefault();
+      }
+    };
+    const up = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') usePreview.setState({ frozen: false });
+      if (e.key === 'Alt') {
+        setAlt(false);
+        if (usePreview.getState().def) e.preventDefault();
+      }
+    };
     // a missed mouseleave (the card was played, moved or re-drawn under the pointer) must not leave the preview up:
     // hide it as soon as the pointer is over something that isn't the hovered element (or outside its rectangle)
     const move = (e: PointerEvent) => {
+      setAlt(e.altKey);
       const st = usePreview.getState();
       if (!st.def || st.frozen || e.shiftKey) return;
       const t = e.target;
@@ -543,7 +559,10 @@ export function HoverPreview() {
       if (!over) st.hide();
     };
     // Shift released in another window never sends keyup here: don't stay frozen
-    const blur = () => usePreview.getState().hide(true);
+    const blur = () => {
+      setAlt(false);
+      usePreview.getState().hide(true);
+    };
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
     window.addEventListener('pointermove', move, { passive: true });
@@ -556,9 +575,12 @@ export function HoverPreview() {
     };
   }, []);
   if (!enabled || !def || !rect) return null;
-  const face = turned ? (baseFace ? 0 : 1) : baseFace;
+  const kind = turnKind(def);
+  // Alt turns the preview over too (and back, when the card is already turned)
+  const other = turned !== (alt && !!kind);
+  const face = other ? (baseFace ? 0 : 1) : baseFace;
   // A meld result and a flipped card keep the front's orientation.
-  const sideways = faceSideways(def, turnKind(def) === 'dfc' ? face : 0);
+  const sideways = faceSideways(def, kind === 'dfc' ? face : 0);
   const W = Math.round(250 * scale);
   const H = Math.round(350 * scale);
   const boxW = sideways ? H : W;

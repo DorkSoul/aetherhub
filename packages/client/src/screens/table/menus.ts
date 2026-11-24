@@ -4,7 +4,7 @@ import { useApp } from '../../lib/store';
 import { socket } from '../../lib/ws';
 import { askConfirm } from '../../ui/dialogs';
 import type { MenuItem } from '../../ui/ui';
-import { useMenu } from '../../ui/ui';
+import { toggleTurned, useMenu, useTurned } from '../../ui/ui';
 import { mySeat, useTable } from './store';
 
 export const EFFECTS = ['Flying', 'Haste', 'Hexproof', 'Indestructible', 'Trample', 'Lifelink', 'Vigilance', 'Deathtouch'];
@@ -161,9 +161,33 @@ export function cardMenu(iid: string): MenuItem[] {
       I.push(item(l, () => send({ type: 'move', iids: ids, seat: z === 'hand' ? (me ?? o) : z === 'battlefield' ? (me ?? o) : o, zone: z })));
     }
   }
+  const look = !multi && I.length ? lookItem(iid) : null;
+  if (look) I.push({ kind: 'sep' }, look);
   // Rulings for any card you can see (not face-down cards you can't peek at, not custom cards).
-  if (!multi && def && !def.custom && def.oracleId && I.length) I.push({ kind: 'sep' }, item('Rulings…', () => useTable.setState({ modal: { kind: 'rulings', iid } })));
+  if (!multi && def && !def.custom && def.oracleId && I.length) I.push(...(look ? [] : [{ kind: 'sep' } as MenuItem]), item('Rulings…', () => useTable.setState({ modal: { kind: 'rulings', iid } })));
   return I;
+}
+
+/** The `useTurned` key of a card on the table: a face-down card's look at its face is kept apart from turning a face-up
+ *  card over, so the card isn't shown turned once it is turned face up. */
+export function turnedKey(c: CardView): string {
+  return c.faceDown ? 'fd:' + c.iid : c.iid;
+}
+
+/** "Look at the other side": a local look (only on this screen) at a double-faced card's other face, or at the face of a
+ *  face-down card you are allowed to see. Cards you may not see have no def here, so they get no item. */
+function lookItem(iid: string): MenuItem | null {
+  const v = view();
+  const c = v.cards[iid];
+  const def = c && !c.hidden ? v.defs[c.def] : undefined;
+  if (!c || !def) return null;
+  const key = turnedKey(c);
+  const checked = !!useTurned.getState().m[key];
+  const run = () => toggleTurned(key);
+  if (c.faceDown) return locateView(v, iid)?.zone === 'battlefield' ? { kind: 'item', label: 'Look at the face-down card', hint: 'only you', checked, run } : null;
+  const kind = turnKind(def);
+  if (!kind) return null;
+  return { kind: 'item', label: kind === 'meld' ? 'Look at the melded card' : 'Look at the other side', hint: 'hold Alt', checked, run };
 }
 
 function moreMenu(iid: string, ids: string[]): MenuItem[] {
@@ -173,8 +197,10 @@ function moreMenu(iid: string, ids: string[]): MenuItem[] {
   const me = mySeat(v);
   const I: MenuItem[] = [];
   if (!c) return I;
-  if (def?.faces && def.faces.length > 1 && turnKind(def) === 'dfc') I.push({ kind: 'item', label: 'Transform / flip over', run: () => send({ type: 'transform', iid }) });
-  if (def?.layout === 'flip') I.push({ kind: 'item', label: c.flipped ? 'Unflip (rotate back)' : 'Flip (rotate 180°)', run: () => send({ type: 'flip', iid }) });
+  // in a rules game the engine transforms and flips cards; the look at the other side is in the card menu
+  const rules = !!st().rules;
+  if (!rules && def?.faces && def.faces.length > 1 && turnKind(def) === 'dfc') I.push({ kind: 'item', label: 'Transform / flip over', run: () => send({ type: 'transform', iid }) });
+  if (!rules && def?.layout === 'flip') I.push({ kind: 'item', label: c.flipped ? 'Unflip (rotate back)' : 'Flip (rotate 180°)', run: () => send({ type: 'flip', iid }) });
   if (c.attachedTo) I.push({ kind: 'item', label: 'Detach', run: () => send({ type: 'attach', iid, to: null }) });
   else I.push({ kind: 'item', label: 'Attach to…', run: () => useTable.setState({ modal: { kind: 'attach', iid, mode: 'attach' } }) });
   I.push({ kind: 'item', label: 'Meld with…', run: () => useTable.setState({ modal: { kind: 'attach', iid, mode: 'meld' } }) });

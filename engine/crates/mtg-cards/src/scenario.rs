@@ -742,6 +742,16 @@ impl Runner {
                 };
                 Choice::Pick { indices: picks }
             }
+            // the commander's way back to the command zone (CR 903.9): answered by "commander: yes" / "commander: no",
+            // else yes, so a scenario needn't mention it
+            DecisionKind::YesNo { prompt, .. } if prompt.starts_with("Put your commander ") => match c.answers.first() {
+                Some(Answer::Text(t)) if t == "commander: yes" || t == "commander: no" => {
+                    let yes = t == "commander: yes";
+                    c.answers.remove(0);
+                    Choice::YesNo { yes }
+                }
+                _ => Choice::YesNo { yes: true },
+            },
             DecisionKind::YesNo { prompt, .. } => match c.answers.first() {
                 Some(Answer::Bool(b)) => {
                     let b = *b;

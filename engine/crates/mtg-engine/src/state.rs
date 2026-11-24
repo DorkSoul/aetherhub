@@ -542,6 +542,9 @@ pub struct Card {
     /// Cards the cast paid as a cost (a kicker discard), read by this permanent's enters-with-counters amount (Dralnu's Pet).
     pub cast_remembered: Vec<Obj>,
     pub is_commander: bool,
+    /// A commander put into a graveyard or exile since state-based actions were last checked: its owner may put it into
+    /// the command zone (CR 903.9a).
+    pub cmd_offer: bool,
     /// A card in its owner's sideboard that is their chosen companion (CR 702.139): `Action::Companion` puts it into hand for {3}.
     pub is_companion: bool,
     /// A token that has left the battlefield: it no longer exists and can't move anywhere.

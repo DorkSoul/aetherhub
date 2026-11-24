@@ -32,9 +32,10 @@ export function resolveOpt(o: Opt, v: RView, names: string[]): Resolved {
 
 const onTable = (c: RCard | undefined, me: number): boolean => !!c && (c.zone === 'Battlefield' || (c.zone === 'Hand' && c.owner === me));
 
-function defOf(c: RCard, img?: string): CardDef {
+/** `back`: the other face's picture of a double-faced card (the image map's `@back:` entry). */
+function defOf(c: RCard, img?: string, back?: string): CardDef {
   return {
-    key: 'o:' + c.id, name: c.name, layout: 'normal', manaCost: c.cost, cmc: c.mana_value, typeLine: c.types, oracleText: c.text, colors: [], colorIdentity: [], img: img ? [img] : [],
+    key: 'o:' + c.id, name: c.name, layout: 'normal', manaCost: c.cost, cmc: c.mana_value, typeLine: c.types, oracleText: c.text, colors: [], colorIdentity: [], img: img ? (back ? [img, back] : [img]) : [],
     power: c.base_power !== null ? String(c.base_power) : undefined, toughness: c.base_toughness !== null ? String(c.base_toughness) : undefined,
   };
 }
@@ -47,7 +48,7 @@ function PickGrid({ cards, sel, images, toggle, max }: { cards: { idx: number; c
       {cards.length > 8 && <input className="inp" placeholder="Filter by name, type or text…" value={q} onChange={(e) => setQ(e.target.value)} style={{ width: '100%', marginBottom: 8 }} />}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(118px, 1fr))', gap: '12px 10px', maxHeight: '58vh', overflowY: 'auto', padding: 2 }}>
         {shown.map(({ idx, card }) => {
-          const def = defOf(card, images[card.name]);
+          const def = defOf(card, images[card.name], images['@back:' + card.name]);
           const on = sel.includes(idx);
           return (
             <button data-option
@@ -390,7 +391,7 @@ export function PromptPanel({ d, v, names, images, onAnswer, onExplain, onPrevie
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
               {k.peek.map((id, i) => {
                 const c = v.decision_cards.find((x) => x.id === id);
-                const def = c ? defOf(c, images[c.name]) : null;
+                const def = c ? defOf(c, images[c.name], images['@back:' + c.name]) : null;
                 const swap = (j: number) => {
                   const order = k.peek.map((_, x) => x);
                   [order[i], order[j]] = [order[j], order[i]];

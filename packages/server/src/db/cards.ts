@@ -739,6 +739,13 @@ export class CardDb {
     return o.default_id;
   }
 
+  /** The default printing of the card whose back face is named `name` ("Insectile Aberration" → Delver of Secrets). */
+  matchBackFace(name: string): string | null {
+    if (!this.db) return null;
+    const n = normName(name).replace(/[\\%_]/g, (m) => '\\' + m);
+    return get<{ default_id: string }>(this.db, "SELECT default_id FROM oracles WHERE norm_name LIKE ? ESCAPE '\\' ORDER BY is_token LIMIT 1", '% // ' + n)?.default_id ?? null;
+  }
+
   /** Top suggestions for an unmatched import line. */
   suggest(name: string, n = 3): string[] {
     if (!this.db) return [];

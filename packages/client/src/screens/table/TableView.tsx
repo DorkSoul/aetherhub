@@ -10,7 +10,7 @@ import { askConfirm } from '../../ui/dialogs';
 import { CardImage, Modal, openMenuAt, openMenuBelow, timeAgo, toggleTurned, useCompact, useMenu, usePreview, useTurned, type MenuItem } from '../../ui/ui';
 import { keyName } from '../settings/Settings';
 import { bfCardRect, computeGeo, dropFrac, freeWorld, handRects, hitTest, pzOf, TABH, TOPBAR, type Geo, type Hit } from './geometry';
-import { battlefieldMenu, cardLabel, cardMenu, diceMenu, handMenu, hostMenu, libraryMenu, playerMenu } from './menus';
+import { battlefieldMenu, cardLabel, cardMenu, diceMenu, handMenu, hostMenu, libraryMenu, playerMenu, turnedKey } from './menus';
 import { TableModals } from './modals';
 import { isPanKey, useCamera } from './camera';
 import { markDragged, useCardFlights } from './flights';
@@ -242,12 +242,14 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
     usePreview.getState().show(def, e.currentTarget as HTMLElement, previewExtra(p, def), p.c.flipped ? 1 : p.c.face, iid, (w) => <LiveOverlays iid={iid} w={w} onBf={onBf} />);
   };
 
-  /** Turn-over icon: on the battlefield it transforms / flips the card for everyone; elsewhere it's a local look at the other side. */
+  /** Turn-over icon: on the battlefield it transforms / flips the card for everyone; elsewhere (and in rules games, where
+   *  the engine transforms cards) it's a local look at the other side. */
   const turnCard = (p: CardPlace) => {
     if (!v) return;
     const def = defOf(v, p.c);
     const kind = turnKind(def);
-    if (def && p.zone === 'battlefield' && me != null && kind === 'dfc' && (def.faces?.length || 0) > 1) {
+    if (useTable.getState().rules) toggleTurned(p.c.iid);
+    else if (def && p.zone === 'battlefield' && me != null && kind === 'dfc' && (def.faces?.length || 0) > 1) {
       send({ type: 'transform', iid: p.c.iid });
       usePreview.getState().setFace(def.key, (p.c.face + 1) % def.faces!.length);
     } else if (def && p.zone === 'battlefield' && me != null && kind === 'flip') {
@@ -1155,7 +1157,7 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
                         foreignColor={pl.c.owner !== s ? v.seats[pl.c.owner]?.color : null}
                         peek={pl.c.faceDown && !!def}
                         onBf
-                        turned={!!turned[pl.c.iid]}
+                        turned={!!turned[turnedKey(pl.c)]}
                         onTurn={() => turnCard(pl)}
                         transition={!prefs.reduceMotion}
                         onDown={(e) => onCardDown(e, pl)}

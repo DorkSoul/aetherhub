@@ -425,14 +425,27 @@ impl Game {
                     }
                 }
             }
-            // a commander in its owner's graveyard returns to the command zone (903.9a)
+            // a commander put into a graveyard or exile since the last check: its owner may put it into the command zone (903.9a)
             if self.cfg.commander {
-                let cmds: Vec<CardId> = (0..self.players.len()).flat_map(|p| self.players[p].graveyard.iter().copied().filter(|id| self.cards[id.0 as usize].is_commander).collect::<Vec<_>>()).collect();
-                for id in cmds {
-                    if self.cards[id.0 as usize].zone == Zone::Graveyard {
-                        if self.move_card(id, Zone::Command, Default::default()) {
-                            acted = true;
+                let offer = self.cards.iter().find(|c| c.is_commander && c.cmd_offer && matches!(c.zone, Zone::Graveyard | Zone::Exile)).map(|c| c.id);
+                if let Some(id) = offer {
+                    if self.sba_waiting && matches!(self.answer, Some(Choice::YesNo { .. })) {
+                        let yes = matches!(self.answer.take(), Some(Choice::YesNo { yes: true }));
+                        self.sba_waiting = false;
+                        self.cards[id.0 as usize].cmd_offer = false;
+                        if yes {
+                            self.move_card(id, Zone::Command, Default::default());
                         }
+                        acted = true;
+                    } else {
+                        let c = &self.cards[id.0 as usize];
+                        let zone = if c.zone == Zone::Graveyard { "graveyard" } else { "exile" };
+                        self.pending = Some(Decision {
+                            player: c.owner,
+                            kind: DecisionKind::YesNo { prompt: format!("Put your commander {} into the command zone from {zone}?", self.def_of(id).name), source: Some(id) },
+                        });
+                        self.sba_waiting = true;
+                        return SbaResult::Ask;
                     }
                 }
             }
