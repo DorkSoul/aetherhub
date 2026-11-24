@@ -1217,7 +1217,7 @@ impl Game {
                     kind: DecisionKind::Pick {
                         prompt: "Choose the kind of counter".into(),
                         source: Some(source),
-                        options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).chain((up_to && !(self.kind_pick_min1.get() && self.counters_removed.get() == 0)).then(|| Opt::Text { text: "Stop".into() })).collect(),
+                        options: kinds.iter().map(|k| Opt::Text { text: k.label() }).chain((up_to && !(self.kind_pick_min1.get() && self.counters_removed.get() == 0)).then(|| Opt::Text { text: "Stop".into() })).collect(),
                         min: 1,
                         max: 1,
                         cancellable: false,
@@ -2825,7 +2825,7 @@ impl Game {
                                 kind: DecisionKind::Pick {
                                     prompt: format!("Choose a kind of counter on {}", self.def_of(id).name),
                                     source: Some(source),
-                                    options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                                    options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                                     min: 1,
                                     max: 1,
                                     cancellable: false,
@@ -2936,7 +2936,7 @@ impl Game {
                                 kind: DecisionKind::Pick {
                                     prompt: "Choose a kind of counter".into(),
                                     source: Some(source),
-                                    options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                                    options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                                     min: 1,
                                     max: 1,
                                     cancellable: false,
@@ -3048,7 +3048,7 @@ impl Game {
                                 kind: DecisionKind::Pick {
                                     prompt: "Choose a kind of counter".into(),
                                     source: Some(source),
-                                    options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                                    options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                                     min: 1,
                                     max: 1,
                                     cancellable: false,
@@ -3126,7 +3126,7 @@ impl Game {
                                 kind: DecisionKind::Pick {
                                     prompt: "Choose a kind of counter".into(),
                                     source: Some(source),
-                                    options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                                    options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                                     min: 1,
                                     max: 1,
                                     cancellable: false,
@@ -3183,7 +3183,7 @@ impl Game {
                             kind: DecisionKind::Pick {
                                 prompt: "Choose a kind of counter".into(),
                                 source: Some(source),
-                                options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                                options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                                 min: 1,
                                 max: 1,
                                 cancellable: false,
@@ -6098,7 +6098,7 @@ impl Game {
                             kind: DecisionKind::Pick {
                                 prompt: "Choose a counter kind".into(),
                                 source: Some(source),
-                                options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                                options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                                 min: 1,
                                 max: 1,
                                 cancellable: false,

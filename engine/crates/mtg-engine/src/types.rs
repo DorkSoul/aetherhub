@@ -717,3 +717,35 @@ pub enum CounterKind {
     Exposure,
     Other,
 }
+
+impl CounterKind {
+    /// The counter's printed name for prompts: "+1/+1 counter", "lore counter", "time counter".
+    pub fn label(self) -> String {
+        // "PlusTwoPlusZero" -> "+2/+0"
+        fn pt_part(s: &str) -> Option<(String, &str)> {
+            let (sign, rest) = if let Some(r) = s.strip_prefix("Plus") { ("+", r) } else { ("-", s.strip_prefix("Minus")?) };
+            for (w, d) in [("Zero", "0"), ("One", "1"), ("Two", "2"), ("Three", "3")] {
+                if let Some(r) = rest.strip_prefix(w) {
+                    return Some((format!("{sign}{d}"), r));
+                }
+            }
+            None
+        }
+        let dbg = format!("{self:?}");
+        let pt = pt_part(&dbg).and_then(|(a, r)| pt_part(r).filter(|(_, r2)| r2.is_empty()).map(|(b, _)| format!("{a}/{b}")));
+        let name = match pt {
+            Some(pt) => pt,
+            None => {
+                let mut s = String::new();
+                for (i, ch) in dbg.chars().enumerate() {
+                    if ch.is_uppercase() && i > 0 {
+                        s.push(' ');
+                    }
+                    s.extend(ch.to_lowercase());
+                }
+                s
+            }
+        };
+        format!("{name} counter")
+    }
+}

@@ -2682,7 +2682,7 @@ impl Game {
                 kind: DecisionKind::Pick {
                     prompt: format!("{}: choose a counter for an exiled card ({left} left)", self.def_of(card).name),
                     source: Some(card),
-                    options: kinds.iter().map(|k| Opt::Text { text: format!("{k:?}") }).collect(),
+                    options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
                     min: 1,
                     max: 1,
                     cancellable: false,

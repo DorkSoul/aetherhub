@@ -114,6 +114,9 @@ pub struct CastCtx {
     pub type_next: Stage,
     /// A mana source picked to pay, waiting for the player to choose the cards its cost exiles (Sunken Palace).
     pub tap_pick: Option<(CardId, u16, Option<ManaType>, Vec<CardId>)>,
+    /// A cost that removes counters of any kind, being paid one counter at a time: (counters still to remove, the permanent
+    /// chosen for the next counter, or for all of them when the cost names one permanent).
+    pub rm_any: Option<(i32, Option<CardId>)>,
 }
 
 impl Game {
@@ -5160,6 +5163,7 @@ impl Game {
             opt_idx: 0,
             type_next: Stage::Targets,
             tap_pick: None,
+            rm_any: None,
         };
         self.run = Run::Cast(Box::new(ctx));
     }
@@ -5260,6 +5264,7 @@ impl Game {
             opt_idx: 0,
             type_next: Stage::Targets,
             tap_pick: None,
+            rm_any: None,
         };
         let mut ctx = ctx;
         if let Some((lo, hi, modes)) = self.stack_modal(self.cards[card.0 as usize].def, ability) {
@@ -5313,6 +5318,7 @@ impl Game {
             opt_idx: 0,
             type_next: Stage::Targets,
             tap_pick: None,
+            rm_any: None,
         };
         let mut ctx = ctx;
         if let Some((lo, hi, modes)) = self.stack_modal(t.def, t.ability) {
@@ -7190,6 +7196,9 @@ self.pending = Some(Decision {
             });
             return Extra::Wait;
         }
+        if matches!(part, Cost::RemoveAnyCounters { .. } | Cost::RemoveAnyCountersFrom { .. } | Cost::RemoveXCountersFromOne { .. }) {
+            return self.pay_any_kind_counters(ctx, part, answer);
+        }
         let mut random_cost = false;
         let (zone, filter, n, kind): (Zone, Filter, i32, &str) = match part {
             Cost::Sacrifice { filter, n } => (Zone::Battlefield, self.sac_cost_filter(filter), *n, "sacrifice"),
@@ -7284,13 +7293,6 @@ self.pending = Some(Decision {
                 return if left <= 0 { Extra::Paid } else { Extra::Abort };
             }
             Cost::RemoveCountersFrom { filter, .. } => (Zone::Battlefield, filter.clone().into_filter(), 1, "rm_counter"),
-            Cost::RemoveAnyCountersFrom { filter, n: 1 } => (Zone::Battlefield, filter.clone().into_filter(), 1, "rm_counter_any"),
-            Cost::RemoveXCountersFromOne { filter } => {
-                if ctx.item.x <= 0 {
-                    return Extra::Paid;
-                }
-                (Zone::Battlefield, filter.clone().into_filter(), 1, "rm_counter_x")
-            }
             Cost::PutCountersOnChosen { filter, .. } => (Zone::Battlefield, filter.clone().into_filter(), 1, "put_counter"),
             Cost::DiscardSameName { filter, n } => {
                 let eligible = self.hand_matching(p, source, filter);
@@ -7822,8 +7824,6 @@ self.pending = Some(Decision {
                         && (kind != "tap" || (!c.tapped && self.can_become_tapped(*id, false)))
                         && (kind != "untap" || c.tapped)
                         && (kind != "rm_counter" || matches!(part, Cost::RemoveCountersFrom { kind: ck, n: cn, .. } if c.counter(*ck) >= *cn))
-                        && (kind != "rm_counter_any" || !c.counters.is_empty())
-                        && (kind != "rm_counter_x" || c.counters.iter().map(|(_, x)| *x as i32).sum::<i32>() >= ctx.item.x)
                         && !(kind == "sacrifice" && ctx.item.targets.iter().any(|t| t.obj == Obj::card(*id)) && false)
                 })
                 .collect();
@@ -8011,15 +8011,6 @@ self.pending = Some(Decision {
                     }
                     ctx.item.remembered.push(Obj::card(id));
                 }
-                "rm_counter_x" => {
-                    self.remove_any_counters(id, ctx.item.x);
-                    self.layers_dirty = true;
-                    ctx.item.remembered.push(Obj::card(id));
-                }
-                "rm_counter_any" => {
-                    self.remove_any_counters(id, 1);
-                    ctx.item.remembered.push(Obj::card(id));
-                }
                 "rm_counter" => {
                     if let Cost::RemoveCountersFrom { kind: ck, n: cn, .. } = part {
                         self.remove_counters_from(Obj::card(id), *ck, *cn);
@@ -8038,6 +8029,109 @@ self.pending = Some(Decision {
             }
         }
         Extra::Paid
+    }
+
+    /// Pays a cost that removes counters of any kind ("remove a counter from this", "remove a counter from a permanent you
+    /// control", "remove X counters from a permanent you control"), one counter at a time. The player chooses the permanent
+    /// when more than one can give a counter, and the kind of counter when the permanent has more than one kind.
+    fn pay_any_kind_counters(&mut self, ctx: &mut CastCtx, part: &Cost, answer: &mut Option<Choice>) -> Extra {
+        let p = ctx.player;
+        let source = ctx.item.source;
+        // `one`: every counter comes off the same permanent
+        let (filter, one): (Option<Filter>, bool) = match part {
+            Cost::RemoveAnyCounters { .. } => (None, true),
+            Cost::RemoveAnyCountersFrom { filter, .. } => (Some(filter.clone().into_filter()), false),
+            Cost::RemoveXCountersFromOne { filter } => (Some(filter.clone().into_filter()), true),
+            _ => return Extra::Paid,
+        };
+        let (mut left, mut card) = ctx.rm_any.take().unwrap_or_else(|| match part {
+            Cost::RemoveAnyCounters { n } => (*n, Some(source)),
+            Cost::RemoveAnyCountersFrom { n, .. } => (*n, None),
+            _ => (ctx.item.x, None),
+        });
+        loop {
+            if left <= 0 {
+                return Extra::Paid;
+            }
+            let id = match card {
+                Some(id) => id,
+                None => {
+                    let mut f = filter.clone().unwrap_or_default();
+                    f.controller = PlayerFilter::Any;
+                    let need = if one { left } else { 1 };
+                    let eligible: Vec<CardId> = self
+                        .battlefield
+                        .iter()
+                        .copied()
+                        .filter(|id| {
+                            let c = &self.cards[id.0 as usize];
+                            c.cur.controller == p && self.matches_card(&f, *id, source, p) && c.counters.iter().map(|(_, x)| *x as i32).sum::<i32>() >= need
+                        })
+                        .collect();
+                    let picked = match answer.take() {
+                        Some(Choice::Pick { indices }) => indices.first().and_then(|i| eligible.get(*i)).copied(),
+                        _ => None,
+                    };
+                    let id = match picked {
+                        Some(id) => id,
+                        None if eligible.is_empty() => return Extra::Abort,
+                        None if eligible.len() == 1 => eligible[0],
+                        None => {
+                            ctx.rm_any = Some((left, None));
+                            self.pending = Some(Decision {
+                                player: p,
+                                kind: DecisionKind::Pick {
+                                    prompt: if one { format!("Choose a permanent to remove {left} counter(s) from for {}", ctx.what) } else { format!("Choose a permanent to remove a counter from for {}", ctx.what) },
+                                    source: Some(source),
+                                    options: eligible.iter().map(|id| Opt::Obj { obj: Obj::card(*id) }).collect(),
+                                    min: 1,
+                                    max: 1,
+                                    cancellable: ctx.backup.is_some(),
+                                    hidden: false,
+                                    purpose: PickPurpose::Cost,
+                                },
+                            });
+                            return Extra::Wait;
+                        }
+                    };
+                    if !ctx.item.remembered.contains(&Obj::card(id)) {
+                        ctx.item.remembered.push(Obj::card(id));
+                    }
+                    card = Some(id);
+                    id
+                }
+            };
+            let kinds: Vec<CounterKind> = self.cards[id.0 as usize].counters.iter().filter(|(_, x)| *x > 0).map(|(k, _)| *k).collect();
+            if kinds.is_empty() {
+                return Extra::Abort;
+            }
+            let k = if kinds.len() == 1 {
+                kinds[0]
+            } else if let Some(Choice::Pick { indices }) = answer.take() {
+                indices.first().and_then(|i| kinds.get(*i)).copied().unwrap_or(kinds[0])
+            } else {
+                ctx.rm_any = Some((left, card));
+                self.pending = Some(Decision {
+                    player: p,
+                    kind: DecisionKind::Pick {
+                        prompt: format!("Choose the kind of counter to remove from {} for {}", self.def_of(id).name, ctx.what),
+                        source: Some(source),
+                        options: kinds.iter().map(|k| Opt::Text { text: k.label() }).collect(),
+                        min: 1,
+                        max: 1,
+                        cancellable: ctx.backup.is_some(),
+                        hidden: false,
+                        purpose: PickPurpose::Mode,
+                    },
+                });
+                return Extra::Wait;
+            };
+            self.remove_counters_from(Obj::card(id), k, 1);
+            left -= 1;
+            if !one {
+                card = None;
+            }
+        }
     }
 
     /// Does `p` control a permanent matching `filter` that holds at least `n` counters of `kind` (Cost::RemoveCountersFrom)?
@@ -8655,15 +8749,8 @@ self.pending = Some(Decision {
                     self.cards[source.0 as usize].remove_counters(*kind, *n);
                     self.layers_dirty = true;
                 }
-                Cost::RemoveAnyCounters { n } => {
-                    self.remove_any_counters(source, *n);
-                    self.layers_dirty = true;
-                }
-                // n = 1 is a choice cost, paid in the Extra stage ("rm_counter_any")
-                Cost::RemoveAnyCountersFrom { filter, n } if *n != 1 => {
-                    self.remove_any_counters_among(filter, *n, source, p);
-                    self.layers_dirty = true;
-                }
+                // paid in the Extra stage (`pay_any_kind_counters`)
+                Cost::RemoveAnyCounters { .. } | Cost::RemoveAnyCountersFrom { .. } => {}
                 Cost::PutCounters { kind, n } => {
                     self.cards[source.0 as usize].add_counters(*kind, *n);
                     self.layers_dirty = true;

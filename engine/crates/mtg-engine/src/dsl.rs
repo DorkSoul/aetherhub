@@ -1226,7 +1226,7 @@ pub enum Cost {
     RemoveLoyaltyX,
     /// Remove X counters of `kind` from this permanent (X is chosen as the cost is paid; `Amount::X` in the effects).
     RemoveCountersX { kind: CounterKind },
-    /// "Remove X counters from a permanent you control that matches `filter`" (Moxite Refinery): X is announced first, then one matching permanent holding at least X counters in total is chosen and X counters (most plentiful kind first) come off it. The chosen permanent is `Remembered`.
+    /// "Remove X counters from a permanent you control that matches `filter`" (Moxite Refinery): X is announced first, then one matching permanent holding at least X counters in total is chosen and X counters come off it, the player choosing the kind of each when it has more than one. The chosen permanent is `Remembered`.
     RemoveXCountersFromOne { filter: FilterBox },
     /// "Add {R}" as a cost (Braid of Fire's cumulative upkeep): adds `n` mana of `color` to your pool; scaled by cumulative upkeep.
     AddMana { color: Color, n: i32 },
@@ -1463,12 +1463,14 @@ pub enum Cost {
         #[serde(default = "one")]
         n: i32,
     },
-    /// Remove `n` counters of any kind(s) from this permanent (taken automatically, most plentiful kind first): "remove a counter from this creature".
+    /// Remove `n` counters of any kind(s) from this permanent: "remove a counter from this creature". The player chooses the kind of each
+    /// counter when the permanent has more than one kind.
     RemoveAnyCounters {
         #[serde(default = "one")]
         n: i32,
     },
-    /// Remove `n` counters of any kind(s), in total, from permanents you control that match `filter` (taken automatically, most plentiful kind first).
+    /// Remove `n` counters of any kind(s), in total, from permanents you control that match `filter`. For each counter the player chooses the
+    /// permanent (when more than one has counters) and the kind (when that permanent has more than one kind).
     RemoveAnyCountersFrom {
         filter: FilterBox,
         #[serde(default = "one")]
@@ -5139,7 +5141,8 @@ pub enum Effect {
     RemoveAllCounters { what: Sel },
     /// The selected permanents or players can't have counters put on them / get counters for as long as the source stays on the battlefield (Suncleanser).
     NoCountersWhileSource { what: Sel },
-    /// Remove up to `n` counters of any kind(s) in total from each selected permanent (most plentiful kind first).
+    /// Remove up to `n` counters of any kind(s) in total from each selected permanent; the player chooses the kind of each counter when the
+    /// permanent has more than one kind.
     RemoveAnyCounters {
         what: Sel,
         n: Amount,
