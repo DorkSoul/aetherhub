@@ -4178,6 +4178,10 @@ impl Game {
             Condition::Renowned => self.cards[c.source.0 as usize].renowned,
             Condition::Harnessed => self.cards[c.source.0 as usize].harnessed,
             Condition::Solved => self.cards[c.source.0 as usize].solved,
+            Condition::SourceExiledBySelf => {
+                let s = &self.cards[c.source.0 as usize];
+                s.zone == Zone::Exile && s.exiled_with.map_or(false, |(w, _)| w == c.source)
+            }
             Condition::SourceMark { mark, at_least } => self.mark_of(c.source, *mark) >= *at_least,
             Condition::SourceHasCounter { kind, at_least } => {
                 // after it left the battlefield: what it had when it left (undying / persist)

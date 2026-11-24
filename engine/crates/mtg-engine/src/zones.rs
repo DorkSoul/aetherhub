@@ -1530,6 +1530,37 @@ impl Game {
             }
         }
         for a in &d.abilities {
+            if let crate::dsl::Ability::EntersWithRolledCounters { kind, dice, sides } = a {
+                use rand::Rng;
+                let mut ctx = EvalCtx::of(self, id);
+                ctx.x = self.cards[id.0 as usize].x;
+                let dice = self.eval_amount(dice, &ctx).clamp(0, 100) as usize;
+                let p = self.cards[id.0 as usize].cur.controller;
+                let extra = if dice > 0 { self.extra_roll_dice(p) } else { 0 };
+                let mut rolls: Vec<i32> = vec![];
+                for _ in 0..dice + extra {
+                    let forced = {
+                        let mut f = self.forced_rolls.borrow_mut();
+                        if f.is_empty() { None } else { Some(f.remove(0)) }
+                    };
+                    let r = forced.map(|r| r.clamp(1, (*sides).max(1))).unwrap_or_else(|| self.rng.gen_range(1..=(*sides).max(1)));
+                    self.log(&format!("Rolled a {r} on a d{sides}"));
+                    self.emit(Event::DieRolled { player: p, n: r, sides: *sides });
+                    rolls.push(r);
+                }
+                rolls.sort_unstable();
+                let total: i32 = rolls.iter().skip(extra).sum();
+                if dice > 0 {
+                    self.emit(Event::DiceRolled { player: p });
+                }
+                let n = self.replace_counters_entering(id, *kind, total);
+                self.cards[id.0 as usize].add_counters(*kind, n);
+                self.layers_dirty = true;
+                if n > 0 {
+                    let by = self.cause_ctl.get().or(Some(p));
+                    self.emit(Event::Counters { card: id, kind: *kind, delta: n, by });
+                }
+            }
             if let crate::dsl::Ability::EntersWithCounters { kind, n, condition } = a {
                 if let Some(cond) = condition {
                     if !self.eval_cond(cond, &EvalCtx::of(self, id)) {
@@ -1614,7 +1645,7 @@ impl Game {
         // static abilities in effect (Barbara Wright grants EntersChoose to Sagas) are part of what this permanent does as it enters.
         // Recomputing layers puts the entrant into the battlefield state, so a permanent whose own counters are counted on entry
         // (Ambitious Dragonborn: X = greatest power) keeps the pre-entry state and is left alone.
-        if !d.abilities.iter().any(|a| matches!(a, crate::dsl::Ability::EntersWithCounters { .. })) {
+        if !d.abilities.iter().any(|a| matches!(a, crate::dsl::Ability::EntersWithCounters { .. } | crate::dsl::Ability::EntersWithRolledCounters { .. })) {
             self.recompute_layers();
         }
         let abils = self.enter_abilities(id, d);
@@ -1659,7 +1690,7 @@ impl Game {
                         self.enter_choices.push(id);
                     }
                 }
-                crate::dsl::Ability::EntersWithCounters { .. } => {
+                crate::dsl::Ability::EntersWithCounters { .. } | crate::dsl::Ability::EntersWithRolledCounters { .. } => {
                     // counters that depend on an as-enters choice (Banner of Kinship) wait for the choice
                     if !counters_done && !abils.iter().any(|x| matches!(x, crate::dsl::Ability::EntersChoose { .. })) {
                         counters_done = true;
@@ -1669,7 +1700,7 @@ impl Game {
                 _ => {}
             }
         }
-        if !abils.iter().any(|a| matches!(a, crate::dsl::Ability::EntersWithCounters { .. })) {
+        if !abils.iter().any(|a| matches!(a, crate::dsl::Ability::EntersWithCounters { .. } | crate::dsl::Ability::EntersWithRolledCounters { .. })) {
             self.apply_rider_counters(id);
         }
         if self.enters_untapped_by_replacement(id) {

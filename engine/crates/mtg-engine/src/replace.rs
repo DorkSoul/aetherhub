@@ -2424,7 +2424,15 @@ impl Game {
                 st.push(t);
             }
         }
-        let list: Vec<(CounterKind, i32)> = self
+        let mut list: Vec<(CounterKind, i32)> = vec![];
+        for r in self.active_replacements().iter() {
+            if let Replace::EntersWithSourceCounterKinds { filter } = &r.what {
+                if r.source != id && self.matches_card_ignore_controller_zone(filter, id, r.source, r.controller) {
+                    list.extend(self.cards[r.source.0 as usize].counters.iter().filter(|(_, n)| *n > 0).map(|(k, _)| (*k, 1)));
+                }
+            }
+        }
+        let rest: Vec<(CounterKind, i32)> = self
             .active_replacements()
             .iter()
             .filter_map(|r| match &r.what {
@@ -2444,6 +2452,7 @@ impl Game {
                 _ => None,
             })
             .collect();
+        list.extend(rest);
         self.cards[id.0 as usize].cur.subtypes = saved_subtypes;
         if let Some(p) = pos {
             self.battlefield.insert(p.min(self.battlefield.len()), id);

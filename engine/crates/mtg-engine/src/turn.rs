@@ -1550,7 +1550,9 @@ impl Game {
                             c.skip_untap = false;
                             c.skip_untap_by = None;
                         }
-                    } else if stun > 0 {
+                    } else if stun > 0 && !self.cards[id.0 as usize].tapped {
+                        // a stun counter only replaces untapping: an untapped permanent keeps it
+                    } else if stun > 0 && !self.doesnt_untap(id) {
                         if !self.stun_locked(id) {
                             self.cards[id.0 as usize].remove_counters(CounterKind::Stun, 1);
                         }
@@ -2381,7 +2383,7 @@ impl Game {
                 // the copied creature's own enters-the-battlefield triggers happen now
                 self.recompute_layers();
                 // counters the copied permanent enters with (Ravaging Riftwurm's time counters) are put on the copy
-                if self.cards[card.0 as usize].counters.iter().all(|(_, n)| *n == 0) && self.db.def(self.cards[card.0 as usize].def).abilities.iter().any(|a| matches!(a, Ability::EntersWithCounters { .. })) {
+                if self.cards[card.0 as usize].counters.iter().all(|(_, n)| *n == 0) && self.db.def(self.cards[card.0 as usize].def).abilities.iter().any(|a| matches!(a, Ability::EntersWithCounters { .. } | Ability::EntersWithRolledCounters { .. })) {
                     self.apply_enter_counters(card);
                 }
                 if !self.cards[card.0 as usize].turnup_choice && !self.copy_deferred.iter().any(|(c, _)| *c == card) {

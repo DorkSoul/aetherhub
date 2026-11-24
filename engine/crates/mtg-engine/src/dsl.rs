@@ -589,6 +589,9 @@ pub enum Ability {
     EntersRemoveAllCounters,
     /// "This spell can't be copied" (Choreographed Sparks): copy effects skip it on the stack.
     CantBeCopied,
+    /// "As this enters, roll `dice` dice with `sides` sides. It enters with a number of `kind` counters equal to the total" (Neverwinter
+    /// Hydra). Extra dice from effects like Pixie Guide are rolled too and the lowest results ignored.
+    EntersWithRolledCounters { kind: CounterKind, dice: Amount, sides: i32 },
     EntersWithCounters {
         kind: CounterKind,
         n: Amount,
@@ -1062,6 +1065,8 @@ pub enum Replace {
         #[serde(default, skip_serializing_if = "is_false")]
         once: bool,
     },
+    /// "For each kind of counter on this, each matching permanent enters with a counter of that kind on it" (Blue, Loyal Raptor).
+    EntersWithSourceCounterKinds { filter: FilterBox },
     /// "If you would lose the game, instead ...": the controller of the replacement doesn't lose; the listed changes happen at once
     /// (Exquisite Archangel, The Golden Throne, Lich's Mirror, Stunning Reversal via `AddReplacement`, which is used up when it applies).
     LoseGame {
@@ -1528,6 +1533,9 @@ pub enum Cost {
     /// Internal (after the payer chose): gain control of exactly this permanent.
     #[serde(skip)]
     GainControlOfCard { card: u32 },
+    /// Internal (after the payer chose): remove `n` counters of `kind` from exactly this permanent.
+    #[serde(skip)]
+    RemoveCountersFromCard { card: u32, kind: CounterKind, n: i32 },
 }
 
 // ---------------------------------------------------------------- targeting & filters
@@ -3511,6 +3519,9 @@ pub enum Condition {
     Harnessed,
     /// The source is a solved Case.
     Solved,
+    /// The source is in exile, put there by one of its own abilities (Cosima, God of the Voyage: "if Cosima is exiled" for the ability
+    /// it gains by exiling itself).
+    SourceExiledBySelf,
     /// The source's `mark` is at least `at_least` (see `Effect::SetMark`).
     SourceMark { mark: Mark, at_least: i32 },
     /// The controller has max speed (speed 4).
@@ -5175,7 +5186,7 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         up_to: bool,
     },
-    /// Move counters from the first selected permanent to the first selected `to`: `n` counters (all when absent) of `kind` (every kind when absent; with an `n` and no kind, the most plentiful kind).
+    /// Move counters from the first selected permanent to the first selected `to`: `n` counters (all when absent) of `kind` (every kind when absent; with an `n` and no kind, the player chooses the kind of each counter moved).
     MoveCounters {
         from: Sel,
         to: Sel,
@@ -5826,6 +5837,9 @@ pub enum Effect {
     /// "For each kind of counter among permanents `among` (checked as this resolves), put a counter of that kind on one of `onto`" (Exotic Pets: `onto` is `Remembered`, the new tokens).
     /// The controller picks the permanent separately for each kind (no question when there is only one).
     CounterKindsAmongOnto { among: FilterBox, onto: Sel },
+    /// "For each kind of counter on permanents matching `among`, you may put your choice of a +1/+1 counter or a counter of that kind on
+    /// `onto`" (Bribe Taker): the kinds are taken as this resolves, then the controller chooses for each kind.
+    CounterKindsAmongOrPlusOne { among: FilterBox, onto: Sel },
     /// General Jarkeld: of the first two selected blocked attackers, if every blocker of each could block the other one, each creature blocking exactly one of them
     /// (of those two) stops blocking it and blocks the other.
     SwitchBlockers { what: Sel },

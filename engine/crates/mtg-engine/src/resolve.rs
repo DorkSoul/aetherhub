@@ -132,6 +132,9 @@ pub enum Sub {
     /// `Effect::CounterKindsAmongOnto`: the kinds still to place (current first) and the permanents they may go on.
     KindsOnto { kinds: Vec<CounterKind>, tokens: Vec<CardId> },
     KindPick { ids: Vec<CardId>, left: i32, n_each: i32, kinds: Vec<CounterKind>, dst: Option<CardId>, up_to: bool },
+    /// `Effect::RemoveAnyCounters` on players: the players still to lose counters (current first), how many the current one may still
+    /// lose, the kinds offered, and the permanents that come after the players.
+    PlayerKindPick { players: Vec<PlayerId>, left: i32, n_each: i32, kinds: Vec<CounterKind>, ids: Vec<CardId> },
     /// DivideCounters.up_to: choosing the total to distribute (between one per object and `max`).
     DivideTotal { objs: Vec<Obj>, max: i32 },
     Divide { targets: Vec<Obj>, idx: usize, left: i32, parts: Vec<i32>, counters: Option<CounterKind> },
@@ -179,6 +182,8 @@ pub enum PayChoice {
     Graveyard(Vec<CardId>, usize),
     /// The opponent who gains the life / creates the tokens of an "an opponent ..." cost.
     Opponent(Vec<PlayerId>),
+    /// One counter of a "remove a counter (of any kind)" cost: which permanent and which kind.
+    RemoveCounter(Vec<(CardId, CounterKind)>),
 }
 
 #[derive(Clone, Debug)]
@@ -3335,32 +3340,91 @@ impl Game {
                     let (ids, left) = if stop { (ids[1..].to_vec(), n_each) } else { (ids, left) };
                     return self.counter_kind_job(ctx, source, controller, ids, left, n_each, dst, pick, *up_to);
                 }
-                self.counters_removed.set(0);
-                let (os, k) = {
-                    let c = ec!();
-                    (self.sel_objs(what, &c), self.eval_amount(n, &c))
-                };
-                // a player loses counters too ("remove a counter from target opponent": the most plentiful of poison / energy / experience / rad)
-                for o in &os {
-                    if let Obj::Player { id } = o {
-                        for _ in 0..k.max(0) {
-                            let pl = &mut self.players[*id as usize];
-                            let slots = [pl.poison, pl.energy, pl.experience, pl.rad];
-                            let (bi, bv) = slots.iter().enumerate().max_by_key(|(_, v)| **v).map(|(i, v)| (i, *v)).unwrap_or((0, 0));
-                            if bv <= 0 {
-                                break;
+                // a player loses counters too ("remove a counter from target opponent"): poison, energy, experience or rad, the kind chosen
+                let (mut players, mut left, n_each, mut ids, mut pick): (Vec<PlayerId>, i32, i32, Vec<CardId>, Option<Option<CounterKind>>) =
+                    if let Some(Sub::PlayerKindPick { players, left, n_each, kinds, ids }) = ctx.sub.clone() {
+                        ctx.sub = None;
+                        let idx = match self.answer.take() {
+                            Some(Choice::Pick { indices }) => indices.first().copied(),
+                            _ => None,
+                        };
+                        // `Some(None)`: the player chose to stop
+                        let pick = match idx {
+                            Some(i) if i >= kinds.len() => Some(None),
+                            Some(i) => Some(kinds.get(i).copied()),
+                            None => Some(kinds.first().copied()),
+                        };
+                        (players, left, n_each, ids, pick)
+                    } else {
+                        self.counters_removed.set(0);
+                        let (os, k) = {
+                            let c = ec!();
+                            (self.sel_objs(what, &c), self.eval_amount(n, &c))
+                        };
+                        let players: Vec<PlayerId> = os.iter().filter_map(|o| if let Obj::Player { id } = o { Some(*id) } else { None }).collect();
+                        let ids: Vec<CardId> = os.into_iter().filter_map(|o| if let Obj::Card { id } = o { Some(id) } else { None }).collect();
+                        (players, k, k, ids, None)
+                    };
+                loop {
+                    let Some(&pl) = players.first() else { break };
+                    let have = |g: &Self, k: CounterKind| -> i32 {
+                        let p = &g.players[pl as usize];
+                        match k {
+                            CounterKind::Poison => p.poison,
+                            CounterKind::Energy => p.energy,
+                            CounterKind::Experience => p.experience,
+                            _ => p.rad,
+                        }
+                    };
+                    let kinds: Vec<CounterKind> = [CounterKind::Poison, CounterKind::Energy, CounterKind::Experience, CounterKind::Rad].into_iter().filter(|k| have(self, *k) > 0).collect();
+                    if left <= 0 || kinds.is_empty() || matches!(pick, Some(None)) {
+                        players.remove(0);
+                        left = n_each;
+                        pick = None;
+                        continue;
+                    }
+                    let k = match pick.take().flatten().filter(|k| kinds.contains(k)) {
+                        Some(k) => k,
+                        None if kinds.len() == 1 && !*up_to => kinds[0],
+                        None => {
+                            let mut options: Vec<Opt> = kinds.iter().map(|k| Opt::Text { text: k.label() }).collect();
+                            if *up_to {
+                                options.push(Opt::Text { text: "Stop".into() });
                             }
-                            match bi {
-                                0 => pl.poison -= 1,
-                                1 => pl.energy -= 1,
-                                2 => pl.experience -= 1,
-                                _ => pl.rad -= 1,
+                            ctx.sub = Some(Sub::PlayerKindPick { players: players.clone(), left, n_each, kinds: kinds.clone(), ids: std::mem::take(&mut ids) });
+                            self.pending = Some(Decision {
+                                player: controller,
+                                kind: DecisionKind::Pick {
+                                    prompt: "Choose the kind of counter to remove".into(),
+                                    source: Some(source),
+                                    options,
+                                    min: 1,
+                                    max: 1,
+                                    cancellable: false,
+                                    hidden: false,
+                                    purpose: PickPurpose::Mode,
+                                },
+                            });
+                            return Exec::Wait;
+                        }
+                    };
+                    // removed, not paid: energy taken away this way doesn't count as energy spent
+                    {
+                        let p = &mut self.players[pl as usize];
+                        match k {
+                            CounterKind::Poison => p.poison -= 1,
+                            CounterKind::Energy => p.energy -= 1,
+                            CounterKind::Experience => {
+                                p.experience -= 1;
+                                self.layers_dirty = true;
                             }
+                            _ => p.rad -= 1,
                         }
                     }
+                    self.counters_removed.set(self.counters_removed.get() + 1);
+                    left -= 1;
                 }
-                let ids: Vec<CardId> = os.into_iter().filter_map(|o| if let Obj::Card { id } = o { Some(id) } else { None }).collect();
-                self.counter_kind_job(ctx, source, controller, ids, k, k, None, None, *up_to)
+                self.counter_kind_job(ctx, source, controller, ids, n_each, n_each, None, None, *up_to)
             }
             Effect::MoveCounters { from, to, kind, n, up_to, at_least_one, each_missing } => {
                 if let Some(Sub::KindPick { ids, left, n_each, kinds, dst, up_to: sub_up }) = ctx.sub.clone() {
@@ -6043,7 +6107,7 @@ impl Game {
                 if kinds.is_empty() {
                     return Exec::Done;
                 }
-                let prompt = format!("Choose which permanent gets a {:?} counter", kinds[0]);
+                let prompt = format!("Choose which permanent gets a {}", kinds[0].label());
                 ctx.sub = Some(Sub::KindsOnto { kinds, tokens: tokens.clone() });
                 self.pending = Some(Decision {
                     player: controller,
@@ -6051,6 +6115,61 @@ impl Game {
                         prompt,
                         source: Some(source),
                         options: tokens.iter().map(|t| Opt::Obj { obj: Obj::card(*t) }).collect(),
+                        min: 1,
+                        max: 1,
+                        cancellable: false,
+                        hidden: false,
+                        purpose: PickPurpose::Mode,
+                    },
+                });
+                Exec::Wait
+            }
+            Effect::CounterKindsAmongOrPlusOne { among, onto } => {
+                let (mut kinds, target) = if let Some(Sub::KindsOnto { kinds, tokens }) = ctx.sub.clone() {
+                    ctx.sub = None;
+                    let idx = match self.answer.take() {
+                        Some(Choice::Pick { indices }) => indices.first().copied(),
+                        _ => None,
+                    };
+                    if let (Some(k), Some(t)) = (kinds.first().copied(), tokens.first().copied()) {
+                        let opts: Vec<Option<CounterKind>> = if k == CounterKind::PlusOnePlusOne { vec![Some(k), None] } else { vec![Some(k), Some(CounterKind::PlusOnePlusOne), None] };
+                        if let Some(Some(put)) = idx.and_then(|i| opts.get(i)).copied() {
+                            self.add_counters_to(Obj::card(t), put, 1);
+                        }
+                    }
+                    (kinds.into_iter().skip(1).collect::<Vec<_>>(), tokens.first().copied())
+                } else {
+                    let c = ec!();
+                    let target = self.sel_cards(onto, &c).into_iter().find(|id| self.cards[id.0 as usize].zone == Zone::Battlefield);
+                    let mut kinds: Vec<CounterKind> = vec![];
+                    for id in self.battlefield.clone() {
+                        if self.matches_card(among, id, source, controller) {
+                            for (k, n) in self.cards[id.0 as usize].counters.iter() {
+                                if *n > 0 && !kinds.contains(k) {
+                                    kinds.push(*k);
+                                }
+                            }
+                        }
+                    }
+                    (kinds, target)
+                };
+                let Some(t) = target else { return Exec::Done };
+                if kinds.is_empty() || self.cards[t.0 as usize].zone != Zone::Battlefield {
+                    return Exec::Done;
+                }
+                let k = kinds[0];
+                let mut options = vec![Opt::Text { text: k.label() }];
+                if k != CounterKind::PlusOnePlusOne {
+                    options.push(Opt::Text { text: CounterKind::PlusOnePlusOne.label() });
+                }
+                options.push(Opt::Text { text: "Neither".into() });
+                ctx.sub = Some(Sub::KindsOnto { kinds: std::mem::take(&mut kinds), tokens: vec![t] });
+                self.pending = Some(Decision {
+                    player: controller,
+                    kind: DecisionKind::Pick {
+                        prompt: format!("For the {} kind: put a counter on {}?", k.label(), self.def_of(t).name),
+                        source: Some(source),
+                        options,
                         min: 1,
                         max: 1,
                         cancellable: false,
@@ -12927,6 +13046,12 @@ impl Game {
     fn next_pay_choice(&self, p: PlayerId, source: CardId, costs: &[Cost]) -> Option<(usize, PayChoice)> {
         for (i, c) in costs.iter().enumerate() {
             match c {
+                Cost::RemoveAnyCounters { n } | Cost::RemoveAnyCountersFrom { n, .. } if *n > 0 => {
+                    let pairs = self.removable_counter_pairs(p, source, c, costs);
+                    if !pairs.is_empty() {
+                        return Some((i, PayChoice::RemoveCounter(pairs)));
+                    }
+                }
                 Cost::Or { options } => {
                     let ok: Vec<Vec<Cost>> = options.iter().filter(|o| self.can_pay_costs(p, source, o)).cloned().collect();
                     if ok.len() >= 2 {
@@ -13008,6 +13133,13 @@ impl Game {
                 return self.pay_with_choices(ctx, p, source, next, unless);
             }
         }
+        if let PayChoice::RemoveCounter(pairs) = &choice {
+            if pairs.len() == 1 {
+                let mut next = costs.clone();
+                Self::take_one_counter(&mut next, idx, pairs[0]);
+                return self.pay_with_choices(ctx, p, source, next, unless);
+            }
+        }
         if let PayChoice::Control(cards) = &choice {
             if cards.len() == 1 {
                 let mut next = costs.clone();
@@ -13028,6 +13160,11 @@ impl Game {
             PayChoice::Control(cards) => ("Choose a permanent to gain control of".into(), cards.iter().map(|c| Opt::Obj { obj: Obj::card(*c) }).collect(), 1),
             PayChoice::Graveyard(cards, n) => ("Choose cards to exile from your graveyard".into(), cards.iter().map(|c| Opt::Obj { obj: Obj::card(*c) }).collect(), *n),
             PayChoice::Opponent(players) => (format!("Choose an opponent: {}", crate::describe::cost_text(&costs[idx])), players.iter().map(|q| Opt::Obj { obj: Obj::player(*q) }).collect(), 1),
+            PayChoice::RemoveCounter(pairs) => (
+                "Choose a counter to remove".into(),
+                pairs.iter().map(|(c, k)| Opt::Text { text: format!("{} on {}", k.label(), self.def_of(*c).name) }).collect(),
+                1,
+            ),
         };
         let (choice_kind, options_len) = (choice.clone(), options.len());
         ctx.sub = Some(Sub::PayPick { payer: p, costs, idx, choice, unless });
@@ -13045,6 +13182,44 @@ impl Game {
             },
         });
         None
+    }
+
+    /// The (permanent, kind) pairs that can still give one counter to the "remove a counter" cost `c`, leaving out counters other
+    /// parts of `costs` already set aside.
+    fn removable_counter_pairs(&self, p: PlayerId, source: CardId, c: &Cost, costs: &[Cost]) -> Vec<(CardId, CounterKind)> {
+        let ids: Vec<CardId> = match c {
+            Cost::RemoveAnyCounters { .. } => vec![source],
+            Cost::RemoveAnyCountersFrom { filter, .. } => {
+                let mut f = filter.clone().into_filter();
+                f.controller = PlayerFilter::Any;
+                self.battlefield.iter().copied().filter(|id| self.cards[id.0 as usize].cur.controller == p && self.matches_card(&f, *id, source, p)).collect()
+            }
+            _ => vec![],
+        };
+        let mut out = vec![];
+        for id in ids {
+            for (k, n) in self.cards[id.0 as usize].counters.iter() {
+                let reserved: i32 = costs.iter().map(|x| if let Cost::RemoveCountersFromCard { card, kind, n } = x { if *card == id.0 && kind == k { *n } else { 0 } } else { 0 }).sum();
+                if *n as i32 > reserved {
+                    out.push((id, *k));
+                }
+            }
+        }
+        out
+    }
+
+    /// One counter of the "remove a counter" cost at `idx` is the chosen one: it becomes a concrete removal, and the rest of the
+    /// cost (if any) stays to be chosen.
+    fn take_one_counter(costs: &mut Vec<Cost>, idx: usize, (card, kind): (CardId, CounterKind)) {
+        let rest = match &costs[idx] {
+            Cost::RemoveAnyCounters { n } if *n > 1 => Some(Cost::RemoveAnyCounters { n: n - 1 }),
+            Cost::RemoveAnyCountersFrom { filter, n } if *n > 1 => Some(Cost::RemoveAnyCountersFrom { filter: filter.clone(), n: n - 1 }),
+            _ => None,
+        };
+        costs[idx] = Cost::RemoveCountersFromCard { card: card.0, kind, n: 1 };
+        if let Some(r) = rest {
+            costs.insert(idx + 1, r);
+        }
     }
 
     /// Handle the answer to a `PayPick` question and keep paying. Returns `Some(paid)` when done.
@@ -13108,6 +13283,11 @@ impl Game {
                         Cost::OpponentCreatesToken { token, n } => Cost::PlayerCreatesToken { player: o, token, n },
                         other => other,
                     };
+                }
+            }
+            PayChoice::RemoveCounter(pairs) => {
+                if let Some(pair) = picked.first().and_then(|i| pairs.get(*i)).or(pairs.first()).copied() {
+                    Self::take_one_counter(&mut costs, idx, pair);
                 }
             }
             PayChoice::Graveyard(cards, n) => {
@@ -13765,6 +13945,9 @@ impl Game {
                             self.emit(Event::Discarded { card: id, player: p, by: self.cause_ctl.get() });
                         }
                     }
+                }
+                Cost::RemoveCountersFromCard { card, kind, n } => {
+                    self.remove_counters_from(Obj::card(CardId(*card)), *kind, *n);
                 }
                 Cost::PutCountersOnCard { card, kind, n } => {
                     if self.cards[*card as usize].zone == Zone::Battlefield {

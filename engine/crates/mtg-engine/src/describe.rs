@@ -68,6 +68,7 @@ pub fn cost_text(c: &Cost) -> String {
         Cost::TapTotalPower { power, .. } => format!("Tap untapped creatures with total power {power} or greater"),
         Cost::GainControlOfChosen { .. } | Cost::GainControlOfCard { .. } => "Gain control of a permanent you don't control".into(),
         Cost::PutCountersOnCard { n, .. } => format!("Put {n} counter(s) on a permanent"),
+        Cost::RemoveCountersFromCard { n, kind, .. } => format!("Remove {n} {}(s) from a permanent", kind.label()),
         Cost::SourceManaCost => "Pay its mana cost".into(),
         Cost::ManaCostOf { .. } => "Pay that card's mana cost".into(),
         Cost::AttachedManaCost => "Pay the enchanted permanent's mana cost".into(),

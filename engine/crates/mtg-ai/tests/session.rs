@@ -45,16 +45,12 @@ fn restore_reproduces_the_same_state() {
             s.answer(d.player, simple(&d)).unwrap();
         }
         let rec = s.record();
-        let mut r = Session::restore(db(), rec.clone()).unwrap();
+        let r = Session::restore(db(), rec.clone()).unwrap();
+        // the restored game is exactly where the original was right after its last answer, waiting on the same question
+        // (playing on from here is not compared: the AI searches for a wall-clock budget, so its later choices can differ)
         assert_eq!(s.game.decision_log.len(), r.game.decision_log.len());
-        // the restored game is exactly where the original was right after its last answer
-        let at_answer = s.game.state_hash();
-        let _ = at_answer;
-        // both continue to the same question (AI choices are a function of the game seed, seat and decision count)
-        let (a, b) = (s.advance(), r.advance());
-        assert_eq!(a.waiting.is_some(), b.waiting.is_some());
         assert_eq!(s.game.state_hash(), r.game.state_hash(), "seed {seed}: turn {} vs {}", s.game.turn, r.game.turn);
-        assert_eq!(s.game.decision_log.len(), r.game.decision_log.len());
+        assert_eq!(format!("{:?}", s.game.decision()), format!("{:?}", r.game.decision()), "seed {seed}");
     }
 }
 
