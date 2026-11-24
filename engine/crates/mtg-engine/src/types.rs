@@ -715,6 +715,8 @@ pub enum CounterKind {
     Scroll,
     /// Exposure counter (Aplan Mortarium).
     Exposure,
+    /// Sin counter (The Darkhold).
+    Sin,
     Other,
 }
 

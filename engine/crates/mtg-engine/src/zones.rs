@@ -671,8 +671,8 @@ impl Game {
             self.cards[id.0 as usize].renowned = false;
             self.cards[id.0 as usize].harnessed = false;
             self.cards[id.0 as usize].solved = false;
-            self.cards[id.0 as usize].marks.clear();
         }
+        self.cards[id.0 as usize].marks.clear();
         // a permanent that returns is a new object: it isn't attacking or blocking any more (Gossip's Talent, flicker)
         if to == Zone::Battlefield && from != Zone::Battlefield {
             if let Some(cb) = self.combat.as_mut() {

@@ -7962,7 +7962,7 @@ impl Game {
                 Exec::Done
             }
             Effect::SetMark { mark, n, add, this_turn } => {
-                if self.cards[source.0 as usize].zone == Zone::Battlefield {
+                {
                     let v = {
                         let c = ec!();
                         self.eval_amount(n, &c)

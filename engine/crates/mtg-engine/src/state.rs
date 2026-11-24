@@ -342,7 +342,7 @@ pub struct Card {
     /// Solved designation (Cases).
     pub solved: bool,
     /// Values a permanent's own abilities keep about it that are not counters: (mark, value, turn it was set or 0 when it lasts).
-    /// Lost when it leaves the battlefield.
+    /// Lost when it changes zones.
     pub marks: Vec<(crate::dsl::Mark, i32, u32)>,
     /// Suspected: has menace and can't block.
     pub suspected: bool,

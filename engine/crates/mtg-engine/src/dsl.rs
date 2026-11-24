@@ -2720,6 +2720,8 @@ pub enum Mark {
     First,
     /// A card's second private value.
     Second,
+    /// A card's third private value.
+    Third,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, JsonSchema)]
@@ -5844,8 +5846,8 @@ pub enum Effect {
     /// This Case becomes solved (a designation; lost when it leaves the battlefield). Triggers `Trigger::CaseSolved`.
     Solve,
     /// Set (or with `add`, raise) the source's `mark` to `n`: a value its own abilities keep that is not a counter, so it can't be
-    /// proliferated, moved or removed by other effects. Lost when the source leaves the battlefield; with `this_turn`, it reads as 0
-    /// after this turn.
+    /// proliferated, moved or removed by other effects. It belongs to the source as it is now (also after it left the battlefield while
+    /// the ability resolves) and is lost when the card changes zones; with `this_turn`, it reads as 0 after this turn.
     SetMark {
         mark: Mark,
         n: Amount,

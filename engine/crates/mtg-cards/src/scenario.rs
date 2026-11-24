@@ -555,6 +555,7 @@ fn counter_kind(s: &str) -> Option<CounterKind> {
         "reprieve" => CounterKind::Reprieve,
         "revival" => CounterKind::Revival,
         "voyage" => CounterKind::Voyage,
+        "sin" => CounterKind::Sin,
         "mire" => CounterKind::Mire,
         "magnet" => CounterKind::Magnet,
         "exalted" => CounterKind::Exalted,
