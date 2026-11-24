@@ -341,6 +341,8 @@ pub struct Card {
     pub harnessed: bool,
     /// Solved designation (Cases).
     pub solved: bool,
+    /// (turn, how many times it became tapped that turn): "the first time that creature has become tapped this turn".
+    pub taps_turn: (u32, u16),
     /// Values a permanent's own abilities keep about it that are not counters: (mark, value, turn it was set or 0 when it lasts).
     /// Lost when it changes zones.
     pub marks: Vec<(crate::dsl::Mark, i32, u32)>,
@@ -463,6 +465,8 @@ pub struct Card {
     pub skip_untap: bool,
     /// With `skip_untap` from exert: the player who exerted it; the skip only applies to that player's untap step (a stolen exerted creature untaps for its owner).
     pub skip_untap_by: Option<PlayerId>,
+    /// With `skip_untap`: how many more of its controller's untap steps it also skips ("its controller's next two untap steps").
+    pub skip_untap_more: u8,
     pub play_by: PlayerId,
     /// Cast from exile spending mana as though it were mana of any type.
     pub spend_any: bool,
@@ -2146,6 +2150,11 @@ impl Game {
         // statics that look at tapped state (Paradise Druid) must be recomputed
         if matches!(e, Event::Tapped { .. } | Event::Untapped { .. } | Event::Monarch { .. }) {
             self.layers_dirty = true;
+        }
+        if let Event::Tapped { card } = &e {
+            let turn = self.turn;
+            let t = &mut self.cards[card.0 as usize].taps_turn;
+            *t = if t.0 == turn { (turn, t.1.saturating_add(1)) } else { (turn, 1) };
         }
         if let Event::Tapped { card } = &e {
             if self.cards[card.0 as usize].unmask {

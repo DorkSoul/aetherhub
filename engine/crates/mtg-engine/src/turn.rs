@@ -1543,8 +1543,13 @@ impl Game {
                             self.untap_card(id);
                         }
                     } else if self.cards[id.0 as usize].skip_untap {
-                        self.cards[id.0 as usize].skip_untap = false;
-                        self.cards[id.0 as usize].skip_untap_by = None;
+                        let c = &mut self.cards[id.0 as usize];
+                        if c.skip_untap_more > 0 {
+                            c.skip_untap_more -= 1;
+                        } else {
+                            c.skip_untap = false;
+                            c.skip_untap_by = None;
+                        }
                     } else if stun > 0 {
                         if !self.stun_locked(id) {
                             self.cards[id.0 as usize].remove_counters(CounterKind::Stun, 1);

@@ -4196,6 +4196,9 @@ pub enum Trigger {
         /// Only when it was tapped to pay a teamwork cost (Agent Maria Hill).
         #[serde(default, skip_serializing_if = "is_false")]
         teamwork: bool,
+        /// Only the first time that permanent has become tapped this turn (Captain America, Living Legend).
+        #[serde(default, skip_serializing_if = "is_false")]
+        first_this_turn: bool,
     },
     BecomesUntapped { filter: FilterBox },
     /// A regeneration shield (or "regenerate instead" replacement) was used on a matching permanent ("when it regenerates this way", Matopi Golem).
@@ -5705,6 +5708,9 @@ pub enum Effect {
         what: Sel,
         #[serde(default)]
         of_targets: bool,
+        /// How many of the controller's next untap steps are skipped (0 and 1 both mean one: "next two untap steps" is 2).
+        #[serde(default, skip_serializing_if = "is_zero_u8")]
+        steps: u8,
     },
     /// Put the selected cards onto the battlefield under the control of the first selected player ("puts target creature card onto the battlefield under their control"); they become `Remembered`.
     MoveUnder {

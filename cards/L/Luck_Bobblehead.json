@@ -1,59 +1,166 @@
 {
-  "name": "Luck Bobblehead",
-  "mana_cost": "{3}",
-  "types": ["Artifact"],
-  "subtypes": ["Bobblehead"],
-  "abilities": [
+ "name": "Luck Bobblehead",
+ "mana_cost": "{3}",
+ "types": [
+  "Artifact"
+ ],
+ "subtypes": [
+  "Bobblehead"
+ ],
+ "abilities": [
+  {
+   "type": "Activated",
+   "cost": [
     {
-      "type": "Activated",
-      "cost": [{ "type": "Tap" }],
-      "effects": [{ "type": "AddMana", "mana": [{ "t": "AnyColor", "n": 1 }] }]
+     "type": "Tap"
+    }
+   ],
+   "effects": [
+    {
+     "type": "AddMana",
+     "mana": [
+      {
+       "t": "AnyColor",
+       "n": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "Activated",
+   "cost": [
+    {
+     "type": "Mana",
+     "cost": "{1}"
     },
     {
-      "type": "Activated",
-      "cost": [
-        { "type": "Mana", "cost": "{1}" },
-        { "type": "Tap" }
-      ],
-      "effects": [
-        {
-          "type": "Repeat",
-          "n": { "type": "Count", "filter": { "subtypes": ["Bobblehead"], "controller": "You" }, "zone": "Battlefield" },
-          "effects": [
-            {
-              "type": "RollDie",
-              "sides": 6,
-              "outcomes": [
-                { "min": 1, "max": 1, "effects": [] },
-                { "min": 2, "max": 2, "effects": [{ "type": "CreateToken", "token": "Treasure", "n": { "type": "Fixed", "n": 1 }, "tapped": true }] },
-                { "min": 3, "max": 3, "effects": [] },
-                { "min": 4, "max": 4, "effects": [{ "type": "CreateToken", "token": "Treasure", "n": { "type": "Fixed", "n": 1 }, "tapped": true }] },
-                { "min": 5, "max": 5, "effects": [] },
-                {
-                  "min": 6,
-                  "max": 6,
-                  "effects": [
-                    { "type": "CreateToken", "token": "Treasure", "n": { "type": "Fixed", "n": 1 }, "tapped": true },
-                    { "type": "AddCounters", "what": { "type": "This" }, "kind": "Hit", "n": { "type": "Fixed", "n": 1 } }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "If",
-          "cond": { "type": "Compare", "a": { "type": "CountersOn", "kind": "Hit", "of": { "type": "This" } }, "cmp": { "op": "Eq", "n": 7 } },
-          "then": [{ "type": "WinGame", "who": { "type": "You" } }]
-        },
-        {
-          "type": "RemoveCounters",
-          "what": { "type": "This" },
-          "kind": "Hit",
-          "n": { "type": "CountersOn", "kind": "Hit", "of": { "type": "This" } }
-        }
-      ]
+     "type": "Tap"
     }
-  ],
-  "oracle_text": "{T}: Add one mana of any color.\n{1}, {T}: Roll X six-sided dice, where X is the number of Bobbleheads you control. Create a tapped Treasure token for each even result. If you rolled 6 exactly seven times, you win the game."
+   ],
+   "effects": [
+    {
+     "type": "SetMark",
+     "mark": "First",
+     "n": {
+      "type": "Fixed",
+      "n": 0
+     }
+    },
+    {
+     "type": "Repeat",
+     "n": {
+      "type": "Count",
+      "filter": {
+       "subtypes": [
+        "Bobblehead"
+       ],
+       "controller": "You"
+      },
+      "zone": "Battlefield"
+     },
+     "effects": [
+      {
+       "type": "RollDie",
+       "sides": 6,
+       "outcomes": [
+        {
+         "min": 1,
+         "max": 1,
+         "effects": []
+        },
+        {
+         "min": 2,
+         "max": 2,
+         "effects": [
+          {
+           "type": "CreateToken",
+           "token": "Treasure",
+           "n": {
+            "type": "Fixed",
+            "n": 1
+           },
+           "tapped": true
+          }
+         ]
+        },
+        {
+         "min": 3,
+         "max": 3,
+         "effects": []
+        },
+        {
+         "min": 4,
+         "max": 4,
+         "effects": [
+          {
+           "type": "CreateToken",
+           "token": "Treasure",
+           "n": {
+            "type": "Fixed",
+            "n": 1
+           },
+           "tapped": true
+          }
+         ]
+        },
+        {
+         "min": 5,
+         "max": 5,
+         "effects": []
+        },
+        {
+         "min": 6,
+         "max": 6,
+         "effects": [
+          {
+           "type": "CreateToken",
+           "token": "Treasure",
+           "n": {
+            "type": "Fixed",
+            "n": 1
+           },
+           "tapped": true
+          },
+          {
+           "type": "SetMark",
+           "mark": "First",
+           "n": {
+            "type": "Fixed",
+            "n": 1
+           },
+           "add": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "If",
+     "cond": {
+      "type": "Compare",
+      "a": {
+       "type": "SourceMark",
+       "mark": "First"
+      },
+      "cmp": {
+       "op": "Eq",
+       "n": 7
+      }
+     },
+     "then": [
+      {
+       "type": "WinGame",
+       "who": {
+        "type": "You"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "oracle_text": "{T}: Add one mana of any color.\n{1}, {T}: Roll X six-sided dice, where X is the number of Bobbleheads you control. Create a tapped Treasure token for each even result. If you rolled 6 exactly seven times, you win the game."
 }

@@ -1285,7 +1285,10 @@ fn match_trigger(g: &Game, t: &Trigger, e: &Event, src: CardId, ctrl: PlayerId) 
         (Trigger::WinsClash { who }, Event::Clashed { player, won: true }) => g.player_filter_src(src, *who, *player, ctrl).then(|| ctx(None, Some(*player), 0)),
         (Trigger::ExploitedBy { filter, victim: vf }, Event::Exploited { card, victim }) => (obj_matches(g, filter, *card, src, ctrl, None) && victim.map_or(true, |v| obj_matches(g, vf, v, src, ctrl, None))).then(|| ctx(Some(Obj::card(victim.unwrap_or(*card))), None, 0)),
         (Trigger::Exploited, Event::Exploited { card, victim }) => (*card == src).then(|| ctx(Some(Obj::card(victim.unwrap_or(*card))), None, 0)),
-        (Trigger::BecomesTapped { filter, by_effect_of, not_declared_attacker, teamwork }, Event::Tapped { card }) => {
+        (Trigger::BecomesTapped { filter, by_effect_of, not_declared_attacker, teamwork, first_this_turn }, Event::Tapped { card }) => {
+            if *first_this_turn && g.cards[card.0 as usize].taps_turn != (g.turn, 1) {
+                return None;
+            }
             if *not_declared_attacker && g.declaring_attacker.get() {
                 return None;
             }

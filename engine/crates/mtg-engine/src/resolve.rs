@@ -7260,7 +7260,7 @@ impl Game {
                     self.continue_sacrifice(ctx, ps, ns, filter.clone().into_filter(), 0)
                 }
             }
-            Effect::SkipNextUntap { what, of_targets } => {
+            Effect::SkipNextUntap { what, of_targets, steps } => {
                 let (cs, step_of) = {
                     let c = ec!();
                     (self.sel_cards(what, &c), if *of_targets { self.sel_players(&Sel::Targets, &c).first().copied() } else { None })
@@ -7268,6 +7268,7 @@ impl Game {
                 for id in cs {
                     if self.cards[id.0 as usize].zone == Zone::Battlefield {
                         self.cards[id.0 as usize].skip_untap = true;
+                        self.cards[id.0 as usize].skip_untap_more = steps.saturating_sub(1);
                         // "doesn't untap during your next untap step" on itself (exert): only the ability controller's untap step is skipped
                         self.cards[id.0 as usize].skip_untap_by = if id == source { Some(controller) } else { step_of };
                     }

@@ -1,32 +1,80 @@
 {
-  "name": "Divine Reckoning",
-  "mana_cost": "{2}{W}{W}",
-  "types": ["Sorcery"],
-  "abilities": [
+ "name": "Divine Reckoning",
+ "mana_cost": "{2}{W}{W}",
+ "types": [
+  "Sorcery"
+ ],
+ "abilities": [
+  {
+   "type": "Spell",
+   "effects": [
     {
-      "type": "Spell",
-      "effects": [
-        {
-          "type": "Choose",
-          "who": { "type": "EachPlayer" },
-          "zone": "Battlefield",
-          "filter": { "types": ["Creature"], "controller": "You" },
-          "min": 1,
-          "max": 1,
-          "then": [
-            { "type": "AddCounters", "what": { "type": "Remembered" }, "kind": "Indestructible", "n": { "type": "Fixed", "n": 1 } },
-            { "type": "Destroy", "what": { "type": "All", "filter": { "types": ["Creature"] } } },
-            { "type": "RemoveCounters", "what": { "type": "Remembered" }, "kind": "Indestructible", "n": { "type": "Fixed", "n": 1 } }
-          ]
-        }
-      ]
+     "type": "ClearRemembered"
     },
     {
-      "type": "AlternativeCost",
-      "cost": [ { "type": "Mana", "cost": "{5}{W}{W}" } ],
-      "from": "Graveyard",
-      "exile_after": true
+     "type": "StoreRemembered",
+     "slot": 0,
+     "append": false
+    },
+    {
+     "type": "ForEachPlayer",
+     "players": {
+      "type": "EachPlayer"
+     },
+     "effects": [
+      {
+       "type": "Choose",
+       "who": {
+        "type": "EachObject"
+       },
+       "zone": "Battlefield",
+       "filter": {
+        "types": [
+         "Creature"
+        ],
+        "controller": "You"
+       },
+       "min": 1,
+       "max": 1,
+       "then": [
+        {
+         "type": "StoreRemembered",
+         "slot": 0,
+         "append": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "Destroy",
+     "what": {
+      "type": "All",
+      "filter": {
+       "types": [
+        "Creature"
+       ],
+       "not_among_stored": 0
+      },
+      "zone": "Battlefield"
+     }
+    },
+    {
+     "type": "ClearRemembered"
     }
-  ],
-  "oracle_text": "Each player chooses a creature they control. Destroy the rest.\nFlashback {5}{W}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+   ]
+  },
+  {
+   "type": "AlternativeCost",
+   "cost": [
+    {
+     "type": "Mana",
+     "cost": "{5}{W}{W}"
+    }
+   ],
+   "from": "Graveyard",
+   "exile_after": true
+  }
+ ],
+ "oracle_text": "Each player chooses a creature they control. Destroy the rest.\nFlashback {5}{W}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
 }

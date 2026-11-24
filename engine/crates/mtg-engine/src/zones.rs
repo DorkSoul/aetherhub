@@ -134,6 +134,7 @@ impl Game {
             renowned: false,
             harnessed: false,
             solved: false,
+            taps_turn: (0, 0),
             marks: vec![],
             suspected: false,
             made_by: None,
@@ -211,6 +212,7 @@ impl Game {
             free_haste: false,
             skip_untap: false,
             skip_untap_by: None,
+            skip_untap_more: 0,
             play_by: 0,
             spend_any: false,
             cast_copies: 0,
@@ -671,6 +673,7 @@ impl Game {
             self.cards[id.0 as usize].renowned = false;
             self.cards[id.0 as usize].harnessed = false;
             self.cards[id.0 as usize].solved = false;
+            self.cards[id.0 as usize].taps_turn = (0, 0);
         }
         self.cards[id.0 as usize].marks.clear();
         // a permanent that returns is a new object: it isn't attacking or blocking any more (Gossip's Talent, flicker)
