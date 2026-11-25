@@ -40,6 +40,20 @@ describe('which side of the table a permanent sits on', () => {
   });
 });
 
+describe('flip cards', () => {
+  const images = { 'Rune-Tail, Kitsune Ascendant': 'p/x/0', "Rune-Tail's Essence": 'p/x/0', '@layout:Rune-Tail, Kitsune Ascendant': 'flip', "@layout:Rune-Tail's Essence": 'flip', "@flipped:Rune-Tail's Essence": '1' };
+  const flipped = (c: RCard) => toGameView(snapOf([c]), images, ['A', 'B'], 0, 'g', undefined, new Map(), new Map()).view.cards[String(c.id)].flipped;
+
+  it('a flipped permanent is turned 180°, the unflipped one is not', () => {
+    expect(flipped(card(1, "Rune-Tail's Essence", 'Legendary Enchantment', 0))).toBe(true);
+    expect(flipped(card(1, 'Rune-Tail, Kitsune Ascendant', 'Legendary Creature — Fox Monk', 0, { power: 2, toughness: 2 }))).toBe(false);
+  });
+
+  it('only on the battlefield', () => {
+    expect(flipped(card(1, "Rune-Tail's Essence", 'Legendary Enchantment', 0, { zone: 'Exile' }))).toBe(false);
+  });
+});
+
 describe('the hand', () => {
   const hand = (ids: number[]) => ids.map((id) => card(id, `Card ${id}`, 'Instant', 0, { zone: 'Hand' }));
   const shown = (ids: number[], order: number[]) => toGameView(snapOf(hand(ids)), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map(), undefined, undefined, order).view.seats[0].zones.hand;

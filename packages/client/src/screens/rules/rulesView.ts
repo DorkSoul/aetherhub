@@ -243,6 +243,8 @@ const LAYOUT_KEY = (name: string) => `@layout:${name}`;
 const BACK_KEY = (name: string) => `@back:${name}`;
 /** ... and its name, cost, type line, text and P/T (a JSON `CardFace`) under this one. */
 const BACK_FACE_KEY = (name: string) => `@backface:${name}`;
+/** Set for the bottom half's name of a flip card (Rune-Tail's Essence): that permanent is shown turned 180°. */
+const FLIPPED_KEY = (name: string) => `@flipped:${name}`;
 
 function parseFace(json: string | undefined): CardFace | undefined {
   if (!json) return undefined;
@@ -345,7 +347,7 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     // an opponent's face-down permanent (the engine masks it: no picture) gets no def, like any card you may not see
     const masked = c.face_down && !c.art;
     cards[iid] = inst(iid, masked ? '' : defFor(c), c.owner, {
-      tapped: c.tapped, counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
+      tapped: c.tapped, flipped: z === 'battlefield' && !masked && !!images[FLIPPED_KEY(ART(c))], counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
       pt: creature ? { p: (c.power ?? 0) - (c.base_power ?? c.power ?? 0), t: (c.toughness ?? 0) - (c.base_toughness ?? c.toughness ?? 0) } : { p: 0, t: 0 },
       effects: [
         ...(c.zone === 'Stack' && stackSources.has(c.id) ? [{ k: 'On the stack', eot: false }] : queued?.has(c.id) ? [{ k: `Queued #${queued.get(c.id)}`, eot: false }] : []),

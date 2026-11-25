@@ -561,6 +561,8 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
   const backCache = new Map<string, string>();
   /** Card name (either face) → its other face's name, cost, type line, text and P/T (JSON), for double-faced cards. */
   const backFaceCache = new Map<string, string>();
+  /** Names of a flip card's bottom half (Rune-Tail's Essence): a permanent with this name is shown turned 180°. */
+  const flippedNames = new Set<string>();
   const imageFor = (name: string): string | null => {
     if (imgCache.has(name)) return imgCache.get(name)!;
     let ref: string | null = null;
@@ -576,7 +578,8 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
         const f = def.faces?.[face === 0 ? 1 : 0];
         if (f) backFaceCache.set(name, JSON.stringify({ name: f.name, manaCost: f.manaCost, typeLine: f.typeLine, oracleText: f.oracleText, power: f.power, toughness: f.toughness, loyalty: f.loyalty, defense: f.defense }));
       }
-      if (def && (def.layout === 'split' || def.layout === 'planar' || (def.layout === 'flip' && face === 0))) layoutCache.set(name, def.layout);
+      if (def && (def.layout === 'split' || def.layout === 'planar' || def.layout === 'flip')) layoutCache.set(name, def.layout);
+      if (def?.layout === 'flip' && face === 1) flippedNames.add(name);
     } catch {
       ref = null;
     }
@@ -625,6 +628,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
         if (back) out['@back:' + name] = back;
         const backFace = backFaceCache.get(name);
         if (backFace) out['@backface:' + name] = backFace;
+        if (flippedNames.has(name)) out['@flipped:' + name] = '1';
       }
     return out;
   };

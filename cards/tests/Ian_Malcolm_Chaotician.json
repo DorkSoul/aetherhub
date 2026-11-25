@@ -99,4 +99,109 @@
    "players": [ { "hand_count": 3, "exile": ["Mountain"] }, {} ]
   }
  }
+,
+ {
+  "name": "an opponent's card exiled with Ian stays in exile after Ian dies on their turn",
+  "players": [
+   {"battlefield": ["Ian Malcolm, Chaotician"]},
+   {"hand": ["Divination", "Lightning Bolt"], "battlefield": ["Island", "Island", "Island", "Mountain"], "library": ["Forest", "Forest", "Forest", "Shock", "Forest"]}
+  ],
+  "steps": [
+   {"advance_to": "Main1", "auto": true},
+   {"player": 1, "cast": "Divination"},
+   {"resolve": true},
+   {"player": 1, "cast": "Lightning Bolt", "targets": ["Ian Malcolm, Chaotician"]},
+   {"resolve": true}
+  ],
+  "expect": {
+   "players": [ {"graveyard_has": ["Ian Malcolm, Chaotician"]}, {"exile": ["Shock"], "graveyard": ["Divination", "Lightning Bolt"]} ]
+  }
+ }
+,
+ {
+  "name": "Ian re-entering starts a new pile: cards exiled before can't be cast",
+  "players": [
+   {"hand": ["Unsummon"], "battlefield": ["Ian Malcolm, Chaotician", "Island", "Island", "Island", "Mountain", "Mountain", "Mountain"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Shock", "Forest"]}
+  ],
+  "steps": [
+   {"advance_to": "Main1", "auto": true},
+   {"player": 1, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "End"},
+   {"advance_to": "Main1", "auto": true},
+   {"cast": "Unsummon", "targets": ["Ian Malcolm, Chaotician"]},
+   {"resolve": true},
+   {"cast": "Ian Malcolm, Chaotician"},
+   {"resolve": true},
+   {"cast": "Shock", "targets": ["p1"], "illegal": true}
+  ],
+  "expect": {
+   "players": [ {"battlefield_has": ["Ian Malcolm, Chaotician"]}, {"exile": ["Shock"], "life": 20} ]
+  }
+ }
+,
+ {
+  "name": "cards exiled with Ian stay in exile after a board wipe in Commander, whoever owns them",
+  "commander": true,
+  "players": [
+   {"command": ["Ian Malcolm, Chaotician"], "hand": ["Divination", "Wrath of God"], "battlefield": ["Island", "Island", "Island", "Mountain", "Plains", "Plains", "Plains", "Plains"], "library": ["Forest", "Forest", "Forest", "Shock", "Forest"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Grizzly Bears", "Forest"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Mountain", "Forest"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Lightning Bolt", "Forest"]}
+  ],
+  "steps": [
+   {"cast": "Ian Malcolm, Chaotician"},
+   {"resolve": true},
+   {"cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"player": 1, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"player": 2, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"player": 3, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"cast": "Wrath of God"},
+   {"resolve": true, "answers": ["commander: yes"]}
+  ],
+  "expect": {
+   "players": [ {"exile": ["Forest"]}, {"exile": ["Grizzly Bears"]}, {"exile": ["Mountain"]}, {"exile": ["Lightning Bolt"]} ]
+  }
+ }
+,
+ {
+  "name": "the same when the commander stays in the graveyard",
+  "commander": true,
+  "players": [
+   {"command": ["Ian Malcolm, Chaotician"], "hand": ["Divination", "Wrath of God"], "battlefield": ["Island", "Island", "Island", "Mountain", "Plains", "Plains", "Plains", "Plains"], "library": ["Forest", "Forest", "Forest", "Shock", "Forest"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Grizzly Bears", "Forest"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Mountain", "Forest"]},
+   {"hand": ["Divination"], "battlefield": ["Island", "Island", "Island"], "library": ["Forest", "Forest", "Forest", "Lightning Bolt", "Forest"]}
+  ],
+  "steps": [
+   {"cast": "Ian Malcolm, Chaotician"},
+   {"resolve": true},
+   {"cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"player": 1, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"player": 2, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"player": 3, "cast": "Divination"},
+   {"resolve": true},
+   {"advance_to": "Main1", "auto": true},
+   {"cast": "Wrath of God"},
+   {"resolve": true, "answers": ["commander: no"]}
+  ],
+  "expect": {
+   "players": [ {"exile": ["Forest"], "graveyard_has": ["Ian Malcolm, Chaotician"]}, {"exile": ["Grizzly Bears"]}, {"exile": ["Mountain"]}, {"exile": ["Lightning Bolt"]} ]
+  }
+ }
 ]
