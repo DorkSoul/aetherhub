@@ -9,9 +9,16 @@ Everything runs as one server: the web UI, the API and the live game connection 
 lives in one data folder. Anyone on your network (or on the internet, if you put it behind a reverse proxy) can
 join from a browser. Nothing needs to be installed on the players' devices.
 
+![A four-player rules-enforced Commander game against three AI opponents](docs/screenshots/game-four-player.webp)
+
 ## Features
 
 **Decks**
+
+| Deck library | Deck editor |
+|---|---|
+| ![The deck library with folders, filters and colour identity](docs/screenshots/deck-library.webp) | ![Editing a Commander deck in visual mode, with the stats panel](docs/screenshots/deck-editor.webp) |
+
 - Deckbuilder with fast card search using Scryfall-style syntax (`t:`, `o:`, `c:`, `id:`, `mv:`, `pow:`, `r:`, `s:`,
   `is:`, `f:`, comparisons, `or`, `-` and quoted phrases).
 - Formats: Commander, Standard, Pioneer, Modern, Legacy, Vintage, Pauper, Brawl, Standard Brawl, Oathbreaker, Cube,
@@ -37,6 +44,10 @@ join from a browser. Nothing needs to be installed on the players' devices.
   mix people and AI drafters, with an optional pick timer. Build your deck from the pool with suggested lands.
 - Solo play to goldfish or playtest a deck. Games can be suspended, saved and resumed, and survive a server restart.
   Match history keeps every game's full log.
+
+| Rules-enforced game, side panel layout | Draft |
+|---|---|
+| ![A rules-enforced game with the opponents in tabs and the game panel on the side](docs/screenshots/game-side-panel.webp) | ![Picking from a draft pack, with the picks so far and their stats](docs/screenshots/draft.webp) |
 
 **Rules engine**
 - Written in Rust. More than 33,000 cards are defined as data (`cards/`), and each card is checked by scenario tests
