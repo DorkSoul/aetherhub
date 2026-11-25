@@ -714,6 +714,11 @@ impl Runner {
     /// Respond to a non-priority decision using the step's targets / answers.
     fn answer_decision(&mut self, d: &Decision, c: &mut Common) -> R<()> {
         let choice = match &d.kind {
+            // "don't use": decline a "you may" trigger while its targets are being chosen
+            DecisionKind::Pick { purpose: PickPurpose::Targets { optional: true, .. }, .. } if matches!(c.answers.first(), Some(Answer::Text(t)) if t == "don't use") => {
+                c.answers.remove(0);
+                Choice::Cancel
+            }
             DecisionKind::Pick { options, min, max, purpose, .. } => {
                 let is_target = matches!(purpose, PickPurpose::Targets { .. });
                 let picks: Vec<usize> = if is_target && !c.targets.is_empty() {

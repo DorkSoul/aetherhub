@@ -494,7 +494,14 @@ export function PromptPanel({ d, v, names, images, onAnswer, onExplain, onPrevie
               {sel.length === 0 && min === 0 ? 'None' : 'Confirm'}
             </button>
           )}
-          {cancellable && <button className="tb" onClick={() => onAnswer({ t: 'Cancel' })} title="Back out: the cast or ability is undone, and anything tapped as a cost untaps">✕ Cancel</button>}
+          {cancellable &&
+            (k.purpose.t === 'Targets' && k.purpose.optional ? (
+              <button className="tb" onClick={() => onAnswer({ t: 'Cancel' })} title="This ability is optional: don't use it (it isn't put on the stack)">
+                Don’t use it
+              </button>
+            ) : (
+              <button className="tb" onClick={() => onAnswer({ t: 'Cancel' })} title="Back out: the cast or ability is undone, and anything tapped as a cost untaps">✕ Cancel</button>
+            ))}
         </div>
       </div>
     );

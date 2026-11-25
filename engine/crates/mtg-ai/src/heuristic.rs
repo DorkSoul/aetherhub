@@ -525,7 +525,7 @@ pub fn policy(g: &Game, d: &Decision) -> Choice {
                         .collect();
                     return Choice::Pick { indices: bad };
                 }
-                PickPurpose::Targets { polarity } => {
+                PickPurpose::Targets { polarity, .. } => {
                     // take as many as needed; fewer when the best options are bad
                     let n = min.max(1).min(max);
                     let good = ranked.iter().take(n).filter(|i| option_score(g, me, &options[**i], *polarity) > -50.0).count();
@@ -664,7 +664,7 @@ pub fn rank_options(g: &Game, me: PlayerId, d: &Decision) -> Vec<usize> {
         .enumerate()
         .map(|(i, o)| {
             let s = match purpose {
-                PickPurpose::Targets { polarity } => option_score(g, me, o, *polarity),
+                PickPurpose::Targets { polarity, .. } => option_score(g, me, o, *polarity),
                 PickPurpose::Discard | PickPurpose::Cost | PickPurpose::Sacrifice => {
                     // lowest keep-value first
                     match o {

@@ -5275,6 +5275,24 @@ impl Game {
         self.run = Run::Cast(Box::new(ctx));
     }
 
+    /// A "you may" triggered ability being put on the stack, which its controller may decline while choosing its targets.
+    /// That is an optional ability, or one whose whole effect is a single "you may [pay ...]" (declining it does nothing else).
+    fn trigger_declinable(&self, ctx: &CastCtx) -> bool {
+        let ItemKind::Triggered { ability, optional } = ctx.item.kind else { return false };
+        if !matches!(ctx.origin, Origin::Trigger) {
+            return false;
+        }
+        if optional {
+            return true;
+        }
+        let owned = if ability < GRANTED_BASE { self.db.def(ctx.item.def).abilities.get(ability as usize).cloned() } else { ctx.item.granted_snap.as_ref().map(|a| (**a).clone()) };
+        let Some(Ability::Triggered { effects, .. }) = owned else { return false };
+        matches!(
+            effects.as_slice(),
+            [Effect::May { otherwise, who: None | Some(Sel::You), .. }] if otherwise.is_empty()
+        ) || matches!(effects.as_slice(), [Effect::MayPay { payer: Sel::You, .. }])
+    }
+
     /// Start putting a triggered ability on the stack (choose targets, then it goes on).
     pub fn begin_trigger(&mut self, t: PendingTrigger) {
         let db = self.db.clone();
@@ -5335,6 +5353,12 @@ impl Game {
         let p = ctx.player;
         let cancellable = ctx.backup.is_some();
         let answer = self.answer.take();
+        // "don't use it": a "you may" trigger declined while its targets are chosen is left off the stack
+        if matches!(answer, Some(Choice::Cancel)) && ctx.stage == Stage::Targets && self.trigger_declinable(&ctx) {
+            let first = if self.alive(self.active) { self.active } else { self.next_player(self.active) };
+            self.run = Run::Priority { player: first, passes: 0 };
+            return Flow::Continue;
+        }
         // cancel at any point
         if let Some(Choice::Cancel) = answer {
             if let Some(b) = ctx.backup.take() {
@@ -6644,6 +6668,8 @@ self.pending = Some(Decision {
                         }
                         None => p,
                     };
+                    // a "you may" trigger's controller may decline it here instead of choosing targets for nothing
+                    let declinable = picker == p && self.trigger_declinable(&ctx);
                     self.pending = Some(Decision {
                         player: picker,
                         kind: DecisionKind::Pick {
@@ -6652,9 +6678,9 @@ self.pending = Some(Decision {
                             options: legal.into_iter().map(|obj| Opt::Obj { obj }).collect(),
                             min: if exact_amt.is_some() || (spec.max_x && spec.exact_x) { max } else { spec.min },
                             max,
-                            cancellable,
+                            cancellable: cancellable || declinable,
                             hidden: false,
-                            purpose: PickPurpose::Targets { polarity: pol },
+                            purpose: PickPurpose::Targets { polarity: pol, optional: declinable },
                         },
                     });
                     self.run = Run::Cast(ctx);

@@ -94,7 +94,13 @@ pub struct ManaSourceOpt {
 #[serde(tag = "t")]
 #[ts(export)]
 pub enum PickPurpose {
-    Targets { polarity: Polarity },
+    /// `optional`: the targets of a "you may" triggered ability; a `Cancel` answer means "don't use it" and the trigger is
+    /// left off the stack (the question offers that instead of backing out of a cast).
+    Targets {
+        polarity: Polarity,
+        #[serde(default)]
+        optional: bool,
+    },
     Mode,
     /// Like `Mode`, but the same option may be picked more than once (the answer may repeat indices).
     ModeRepeat,

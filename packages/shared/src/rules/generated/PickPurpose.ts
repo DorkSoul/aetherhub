@@ -4,4 +4,4 @@ import type { Polarity } from "./Polarity";
 /**
  * Why a `Pick` is being asked (so agents and UIs can treat target choices, discards and searches differently).
  */
-export type PickPurpose = { "t": "Targets", polarity: Polarity, } | { "t": "Mode" } | { "t": "ModeRepeat" } | { "t": "Discard" } | { "t": "Sacrifice" } | { "t": "Search" } | { "t": "Scry" } | { "t": "Surveil" } | { "t": "Legend" } | { "t": "Cost" } | { "t": "Proliferate" } | { "t": "Generic" };
+export type PickPurpose = { "t": "Targets", polarity: Polarity, optional: boolean, } | { "t": "Mode" } | { "t": "ModeRepeat" } | { "t": "Discard" } | { "t": "Sacrifice" } | { "t": "Search" } | { "t": "Scry" } | { "t": "Surveil" } | { "t": "Legend" } | { "t": "Cost" } | { "t": "Proliferate" } | { "t": "Generic" };
