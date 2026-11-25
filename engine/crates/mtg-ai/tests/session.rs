@@ -491,3 +491,49 @@ fn undo_after_casting_then_attacking_takes_back_only_the_attack() {
     }
     assert!(done >= 2, "attacked after casting in {done} games");
 }
+
+/// "Skip until my next turn" stops at the start of that turn, also when the request reaches the engine after the turn
+/// it was clicked in (the AI was still playing): the next turn is counted from the turn the player saw.
+#[test]
+fn skip_until_my_turn_stops_when_it_starts() {
+    for seed in [3u64, 11, 21] {
+        for late in [false, true] {
+            let mut s = Session::new(db(), duel(seed)).unwrap();
+            let mut armed: Option<u32> = None;
+            let mut stopped = None;
+            for _ in 0..400 {
+                let adv = s.advance();
+                let Some(d) = adv.waiting else { break };
+                if d.player == 0 && matches!(d.kind, DecisionKind::Priority { .. }) {
+                    if armed.is_some() {
+                        stopped = Some((s.game.turn, s.game.step, s.game.active));
+                        break;
+                    }
+                    if late && s.game.active == 0 && s.game.turn >= 3 {
+                        // clicked during the opponent's turn, arriving in our own
+                        armed = Some(s.game.turn);
+                        s.pass_until_player(0, 0, Some(s.game.turn - 1));
+                        s.answer(0, Choice::Priority { action: None }).unwrap();
+                        continue;
+                    }
+                    if !late && s.game.active == 1 && s.game.turn >= 2 {
+                        armed = Some(s.game.turn);
+                        s.pass_until_player(0, 0, Some(s.game.turn));
+                        s.answer(0, Choice::Priority { action: None }).unwrap();
+                        continue;
+                    }
+                }
+                s.answer(d.player, simple(&d)).unwrap();
+            }
+            let t = armed.expect("armed");
+            let (turn, step, active) = stopped.expect("stopped");
+            assert_eq!(active, 0, "seed {seed} late {late}");
+            assert!(s.passing(0).is_none(), "seed {seed} late {late}: still passing");
+            if late {
+                assert_eq!(turn, t, "seed {seed}: the turn that had already begun");
+            } else {
+                assert_eq!((turn, step), (t + 1, mtg_engine::types::Step::Upkeep), "seed {seed}");
+            }
+        }
+    }
+}

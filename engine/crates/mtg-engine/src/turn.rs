@@ -3119,6 +3119,8 @@ impl Game {
         // "end turn" / "pass to a phase" / "pass to a stack item": keep passing every plain priority (also with things on
         // the stack) until the target is reached; questions other than priority (blocks, costs, targets...) still come through
         let mut skipping = false;
+        // the priority where the target is reached is always offered, whatever the player's usual stops are
+        let mut arrived = false;
         if let Some(target) = self.players[player as usize].pass_until {
             let reached = match target {
                 PassUntil::Step { turn, step } => (self.turn, self.step as u8) >= (turn, step as u8),
@@ -3128,11 +3130,12 @@ impl Game {
             };
             if reached {
                 self.players[player as usize].pass_until = None;
+                arrived = true;
             } else {
                 skipping = true;
             }
         }
-        let auto = skipping || {
+        let auto = !arrived && (skipping || {
             let pl = &self.players[player as usize];
             let mask = if player == self.active { pl.stops_mine } else { pl.stops_opp };
             let stopped_here = mask & Step::stop_bit(self.step) != 0;
@@ -3146,7 +3149,7 @@ impl Game {
                 // something could be done: ask only when responding to the stack or at a step the player stops on
                 pl.auto_skip && self.stack.is_empty() && !stopped_here
             }
-        };
+        });
         if auto {
             return self.pass_priority(player, passes);
         }

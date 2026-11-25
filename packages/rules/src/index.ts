@@ -103,9 +103,9 @@ export class RulesGame {
   previewBlocks(blocks: [number, number][]): R.BlockPreview[] {
     return JSON.parse(this.g.previewBlocks(JSON.stringify(blocks))) as R.BlockPreview[];
   }
-  /** Pass priority for a seat until `player`'s next turn starts. */
-  passUntilPlayer(seat: number, player: number): void {
-    this.g.passUntilPlayer(seat, player);
+  /** Pass priority for a seat until `player`'s next turn starts: one after turn `after` (the turn the player saw), else after the current one. */
+  passUntilPlayer(seat: number, player: number, after?: number): void {
+    this.g.passUntilPlayer(seat, player, after ?? null);
   }
   /** Stop passing priority automatically. */
   cancelPass(seat: number): void {

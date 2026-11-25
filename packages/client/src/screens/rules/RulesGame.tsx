@@ -672,7 +672,7 @@ export default function RulesGame() {
   answerRef.current = (c) => void answer(c);
   undoRef.current = () => void undo();
   saveRef.current = () => void save();
-  const passRef = useRef<(target: { turn: number; step: number } | { stackItem: number } | { player: number }) => void>(() => {});
+  const passRef = useRef<(target: { turn: number; step: number } | { stackItem: number } | { player: number; after?: number }) => void>(() => {});
   passRef.current = (target) => {
     if (!gameId) return;
     setEnding(true);
@@ -786,7 +786,11 @@ export default function RulesGame() {
           if (cur) passRef.current({ turn: cur.turn + 1, step: 0 });
         },
         cancelPass: () => cancelPassRef.current(),
-        passToPlayer: (seat) => passRef.current({ player: seat }),
+        // the turn on screen when clicked: the request can reach the engine after that player's turn has begun
+        passToPlayer: (seat) => {
+          const cur = stateRef.current?.view;
+          passRef.current(cur ? { player: seat, after: cur.turn } : { player: seat });
+        },
         breakRules: { by: state.paused ? (state.paused.mine ? null : state.paused.name) : null, active: !!state.paused, mine: !!state.paused?.mine },
         toggleBreak: () => void toggleBreakRef.current(),
         openTokens: (seat) => setTokenSeat(seat),

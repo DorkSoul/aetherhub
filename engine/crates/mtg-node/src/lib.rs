@@ -194,15 +194,15 @@ impl Game {
         })
     }
 
-    /// Pass priority for a seat until `player`'s next turn starts.
+    /// Pass priority for a seat until `player`'s next turn starts (one after turn `after`, when given).
     #[napi]
-    pub fn pass_until_player(&self, seat: u32, player: u32) -> Result<()> {
+    pub fn pass_until_player(&self, seat: u32, player: u32, after: Option<u32>) -> Result<()> {
         guard(|| {
             let mut g = lock(&self.inner)?;
             if player as usize >= g.game.players.len() {
                 return Err(err("bad player"));
             }
-            g.pass_until_player(seat as u8, player as u8);
+            g.pass_until_player(seat as u8, player as u8, after);
             Ok(())
         })
     }

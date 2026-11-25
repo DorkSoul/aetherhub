@@ -879,6 +879,37 @@ fn pass_until_skips_priority() {
 }
 
 #[test]
+fn pass_until_my_turn_stops_when_it_starts() {
+    let mut g = game();
+    g.add_card("Forest", 0, Zone::Battlefield);
+    g.add_card("Giant Growth", 0, Zone::Hand);
+    for _ in 0..6 {
+        g.add_card("Forest", 0, Zone::Library);
+        g.add_card("Forest", 1, Zone::Library);
+    }
+    g.start_at(0, Step::Main1);
+    for p in g.players.iter_mut() {
+        p.full_control = false;
+        p.auto_skip = true;
+        // no stops of their own: only the pass's target stops player 0
+        p.stops_mine = 0;
+        p.stops_opp = 0;
+    }
+    g.players[0].pass_until = Some(PassUntil::PlayerTurn { player: 0, after: 1 });
+    let mut asked = None;
+    for _ in 0..50 {
+        let Some(d) = g.next_decision() else { break };
+        if d.player == 0 {
+            asked = Some((g.turn, g.step));
+            break;
+        }
+        let c = g.default_choice(&d);
+        g.apply(c).unwrap();
+    }
+    assert_eq!(asked, Some((3, Step::Upkeep)));
+}
+
+#[test]
 fn revealed_top_card_of_the_library_is_in_the_view() {
     let mut g = game();
     g.add_card("Oracle of Mul Daya", 0, Zone::Battlefield);

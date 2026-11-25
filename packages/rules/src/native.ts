@@ -12,7 +12,7 @@ export interface NativeGame {
   passUntil(seat: number, turn: number, step: number): void;
   explain(seat: number, kind: string, card: number | null, other: number | null): string;
   passUntilStack(seat: number, item: number): void;
-  passUntilPlayer(seat: number, player: number): void;
+  passUntilPlayer(seat: number, player: number, after?: number | null): void;
   cancelPass(seat: number): void;
   setManualPay(seat: number, on: boolean): void;
   edit(seat: number, opJson: string): void;

@@ -407,9 +407,10 @@ impl Session {
         self.command(SessionCommand::PassUntil { seat, until: PassUntil::StackTop { item } });
     }
 
-    /// Pass priority automatically until `player`'s next turn starts (a turn after the current one).
-    pub fn pass_until_player(&mut self, seat: PlayerId, player: PlayerId) {
-        let after = self.game.turn;
+    /// Pass priority automatically until `player`'s next turn starts: a turn after `after` (the turn the player saw
+    /// when they asked; the current turn when not given), so a request that arrives after that turn has begun still stops there.
+    pub fn pass_until_player(&mut self, seat: PlayerId, player: PlayerId, after: Option<u32>) {
+        let after = after.map_or(self.game.turn, |t| t.min(self.game.turn));
         self.command(SessionCommand::PassUntil { seat, until: PassUntil::PlayerTurn { player, after } });
     }
 

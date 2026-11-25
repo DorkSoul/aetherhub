@@ -1017,7 +1017,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
   r.post('/api/rules/games/:id/passuntil', auth, async (req) => {
     const { s, seat } = own(req);
     const body = z
-      .union([z.object({ turn: z.number().int().min(0), step: z.number().int().min(0).max(12) }), z.object({ stackItem: z.number().int().min(0) }), z.object({ player: z.number().int().min(0).max(7) })])
+      .union([z.object({ turn: z.number().int().min(0), step: z.number().int().min(0).max(12) }), z.object({ stackItem: z.number().int().min(0) }), z.object({ player: z.number().int().min(0).max(7), after: z.number().int().min(0).optional() })])
       .parse(req.body);
     if (s.status !== 'running' || !s.game) bad('The game is not running');
     if (s.paused) bad('The game is paused while the rules are broken; finish that first');
@@ -1025,7 +1025,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     return locked(s, () => {
       const g = s.game!;
       if ('stackItem' in body) g.passUntilStack(seat, body.stackItem);
-      else if ('player' in body) g.passUntilPlayer(seat, body.player);
+      else if ('player' in body) g.passUntilPlayer(seat, body.player, body.after);
       else g.passUntil(seat, body.turn, body.step);
       syncPassing(s);
       if (s.waiting && s.waiting.player === seat && s.waiting.kind.t === 'Priority' && !s.paused) {
