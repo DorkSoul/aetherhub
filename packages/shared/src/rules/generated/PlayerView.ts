@@ -14,4 +14,8 @@ team: number,
 /**
  * Planechase: planar die rolls this turn (the next roll costs this much).
  */
-planar_rolls: number, };
+planar_rolls: number, 
+/**
+ * The library in order, top first, while it is shown to the viewer during a rule break (else empty).
+ */
+library_shown: Array<CardId>, };

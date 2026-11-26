@@ -37,7 +37,7 @@ pub mod zones;
 
 pub use carddb::{CardDb, CompileError, Def};
 pub use decision::*;
-pub use edit::EditOp;
+pub use edit::{EditOp, PlayerCounter};
 pub use ids::*;
 pub use replay::GameRecord;
 pub use state::*;

@@ -284,8 +284,8 @@ impl Session {
             SessionCommand::Concede { seat } => self.game.concede(seat),
             SessionCommand::ManualPay { seat, on } => self.game.players[seat as usize].manual_pay = on,
             SessionCommand::ManualOnce { seat } => self.game.players[seat as usize].manual_once = true,
-            SessionCommand::Edit { op, .. } => {
-                let _ = self.game.apply_edit(&op);
+            SessionCommand::Edit { seat, op } => {
+                let _ = self.game.apply_edit(seat, &op);
             }
             SessionCommand::EndBreak { .. } => self.game.end_rule_break(),
         }
@@ -454,7 +454,13 @@ impl Session {
 
     /// "Break the rules": apply a direct change (recorded for replay). An error changes nothing.
     pub fn edit(&mut self, seat: PlayerId, op: EditOp) -> Result<(), String> {
-        self.game.apply_edit(&op)?;
+        // an AI shows its hidden cards to whoever breaks the rules; another player's hand or library stays theirs
+        if let EditOp::Show { player, .. } = op {
+            if player != seat && self.agents.get(player as usize).map_or(true, |a| a.is_none()) {
+                return Err("Only your own or an AI's hand and library can be looked at while breaking the rules".into());
+            }
+        }
+        self.game.apply_edit(seat, &op)?;
         let at = self.game.decision_log.len() as u32;
         self.commands.push(LoggedCommand { at, cmd: SessionCommand::Edit { seat, op } });
         Ok(())

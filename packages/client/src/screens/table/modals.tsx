@@ -36,7 +36,9 @@ export function ZoneModal({ seat, zone }: { seat: number; zone: ZoneName }) {
   const p = v.seats[seat];
   const rules = useTable((s) => s.rules);
   // a library only shows the card that is revealed (the rest are face down placeholders)
-  const list = [...p.zones[zone]].reverse().filter((iid) => zone !== 'library' || (v.cards[iid] && !v.cards[iid].hidden));
+  const shownLib = zone === 'library' && p.zones.library.length > 0 && p.zones.library.every((iid) => v.cards[iid] && !v.cards[iid].hidden);
+  // a library is listed top first; other zones newest first
+  const list = (zone === 'library' ? [...p.zones[zone]] : [...p.zones[zone]].reverse()).filter((iid) => zone !== 'library' || (v.cards[iid] && !v.cards[iid].hidden));
   const rows = list.filter((iid) => {
     const c = v.cards[iid];
     const d = c && v.defs[c.def];
@@ -44,7 +46,7 @@ export function ZoneModal({ seat, zone }: { seat: number; zone: ZoneName }) {
   });
   return (
     <Modal
-      title={zone === 'library' ? `${seat === me ? 'Your' : p.name + "'s"} library · top card` : `${seat === me ? 'Your' : p.name + "'s"} ${ZONE_LABEL[zone].replace(/^the /, '')} · ${list.length}`}
+      title={zone === 'library' ? `${seat === me ? 'Your' : p.name + "'s"} library · ${shownLib ? `${list.length} cards, top first` : 'top card'}` : `${seat === me ? 'Your' : p.name + "'s"} ${ZONE_LABEL[zone].replace(/^the /, '')} · ${list.length}`}
       onClose={close}
       width={1000}
       head={<input className="inp" placeholder="Filter by name or type…" value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 240 }} />}

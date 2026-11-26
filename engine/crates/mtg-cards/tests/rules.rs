@@ -1221,21 +1221,48 @@ fn block_preview_reports_dropped_blocks_and_damage_targets() {
     assert_eq!(b.damage_to, vec![Obj::card(bears), Obj::card(elf)]);
 }
 
+/// "Break the rules" also mills, attaches, transforms, pumps and changes poison and commander damage.
+#[test]
+fn rule_break_moves_top_cards_attaches_transforms_and_pumps() {
+    let mut g = game();
+    let bears = g.add_card("Grizzly Bears", 0, Zone::Battlefield);
+    let rancor = g.add_card("Rancor", 0, Zone::Battlefield);
+    let delver = g.add_card("Delver of Secrets // Insectile Aberration", 0, Zone::Battlefield);
+    for _ in 0..3 {
+        g.add_card("Forest", 1, Zone::Library);
+    }
+    g.start_at(0, Step::Main1);
+    g.apply_edit(0, &EditOp::TopCards { player: 1, n: 2, to: Zone::Graveyard }).unwrap();
+    assert_eq!((g.players[1].library.len(), g.players[1].graveyard.len()), (1, 2));
+    g.apply_edit(0, &EditOp::Attach { card: rancor, to: Some(bears) }).unwrap();
+    assert_eq!(g.card(rancor).attached_to, Some(bears));
+    g.apply_edit(0, &EditOp::Transform { card: delver }).unwrap();
+    assert_eq!(g.card_name(delver), "Insectile Aberration");
+    assert!(g.apply_edit(0, &EditOp::Transform { card: bears }).is_err(), "no other face");
+    g.apply_edit(0, &EditOp::Pump { card: bears, power: 3, toughness: 3, eot: false }).unwrap();
+    g.run();
+    assert_eq!((g.card(bears).cur.power, g.card(bears).cur.toughness), (7, 5), "2/2, +2/+0 Rancor, +3/+3");
+    g.apply_edit(0, &EditOp::PlayerCounters { player: 1, kind: PlayerCounter::Poison, delta: 3 }).unwrap();
+    assert_eq!(g.players[1].poison, 3);
+    g.apply_edit(0, &EditOp::CommanderDamage { player: 1, commander: bears, delta: 5 }).unwrap();
+    assert_eq!(g.players[1].commander_damage.as_slice(), &[(bears, 5)]);
+}
+
 /// "Break the rules" can make the tokens a card failed to make: a named token, and token copies of a permanent.
 #[test]
 fn rule_break_creates_tokens_and_token_copies() {
     let mut g = game();
     let bears = g.add_card("Grizzly Bears", 1, Zone::Battlefield);
     g.start_at(0, Step::Main1);
-    g.apply_edit(&EditOp::CreateToken { player: 0, name: "Soldier".into(), n: 2, tapped: false }).unwrap();
+    g.apply_edit(0, &EditOp::CreateToken { player: 0, name: "Soldier".into(), n: 2, tapped: false }).unwrap();
     let soldiers: Vec<CardId> = g.battlefield.iter().copied().filter(|id| g.card_name(*id) == "Soldier").collect();
     assert_eq!(soldiers.len(), 2);
     assert!(soldiers.iter().all(|id| g.card(*id).token && g.card(*id).controller == 0));
-    g.apply_edit(&EditOp::TokenCopy { card: bears, player: 0, n: 1 }).unwrap();
+    g.apply_edit(0, &EditOp::TokenCopy { card: bears, player: 0, n: 1 }).unwrap();
     let copies: Vec<CardId> = g.battlefield.iter().copied().filter(|id| g.card_name(*id) == "Grizzly Bears" && g.card(*id).token).collect();
     assert_eq!(copies.len(), 1);
     assert_eq!(g.card(copies[0]).controller, 0);
-    assert!(g.apply_edit(&EditOp::CreateToken { player: 0, name: "No Such Token".into(), n: 1, tapped: false }).is_err());
+    assert!(g.apply_edit(0, &EditOp::CreateToken { player: 0, name: "No Such Token".into(), n: 1, tapped: false }).is_err());
 }
 
 #[test]
@@ -1346,8 +1373,8 @@ fn token_copies_and_copies_of_tokens_show_what_they_copy() {
     }
     g.start_at(0, Step::Main1);
     // a token copy of a card looks like the card
-    g.apply_edit(&EditOp::TokenCopy { card: bears, player: 0, n: 1 }).unwrap();
-    g.apply_edit(&EditOp::CreateToken { player: 0, name: "Soldier".into(), n: 1, tapped: false }).unwrap();
+    g.apply_edit(0, &EditOp::TokenCopy { card: bears, player: 0, n: 1 }).unwrap();
+    g.apply_edit(0, &EditOp::CreateToken { player: 0, name: "Soldier".into(), n: 1, tapped: false }).unwrap();
     let soldier = *g.battlefield.iter().find(|id| g.card_name(**id) == "Soldier").unwrap();
     let view = g.view_for(0);
     let t = view.cards.iter().find(|c| c.token && c.name == "Grizzly Bears").unwrap();
@@ -1415,7 +1442,7 @@ fn treasures_pay_for_a_spell() {
     g.add_card("Chameleon, Master of Disguise", 0, Zone::Hand);
     g.add_card("Grizzly Bears", 0, Zone::Hand);
     g.start_at(0, Step::Main1);
-    g.apply_edit(&EditOp::CreateToken { player: 0, name: "Treasure".into(), n: 4, tapped: false }).unwrap();
+    g.apply_edit(0, &EditOp::CreateToken { player: 0, name: "Treasure".into(), n: 4, tapped: false }).unwrap();
     g.run();
     let Some(DecisionKind::Priority { actions: acts, .. }) = g.pending.as_ref().map(|d| d.kind.clone()) else { panic!("no priority") };
     let names: Vec<String> = acts.iter().filter_map(|a| if let Action::Cast { card, alt: None } = a { Some(g.card_name(*card).to_string()) } else { None }).collect();

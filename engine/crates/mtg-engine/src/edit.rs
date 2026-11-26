@@ -47,6 +47,29 @@ pub enum EditOp {
         #[serde(default = "one")]
         n: u32,
     },
+    /// Show `player`'s hand or library (in order) to the player breaking the rule, until the rule break ends.
+    Show { player: PlayerId, zone: Zone },
+    /// Put the top `n` cards of `player`'s library into `to` (mill, exile from the top).
+    TopCards { player: PlayerId, n: u32, to: Zone },
+    /// Attach a permanent to another one, or unattach it (`to` none).
+    Attach { card: CardId, to: Option<CardId> },
+    /// Turn a double-faced permanent to its other face.
+    Transform { card: CardId },
+    /// Raise (or lower) a creature's power and toughness, until end of turn or for good.
+    Pump { card: CardId, power: i32, toughness: i32, eot: bool },
+    /// Poison, energy or experience counters on a player.
+    PlayerCounters { player: PlayerId, kind: PlayerCounter, delta: i32 },
+    /// Combat damage `player` has taken from the commander `commander`.
+    CommanderDamage { player: PlayerId, commander: CardId, delta: i32 },
+}
+
+/// The counters a player can have that a rule break can change.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub enum PlayerCounter {
+    Poison,
+    Energy,
+    Experience,
 }
 
 fn one() -> u32 {
@@ -57,8 +80,8 @@ fn one() -> u32 {
 const MAX_EDIT_TOKENS: u32 = 50;
 
 impl Game {
-    /// Apply one "break the rules" change. Errors leave the game as it was.
-    pub fn apply_edit(&mut self, op: &EditOp) -> Result<(), String> {
+    /// Apply one "break the rules" change made by player `by`. Errors leave the game as it was.
+    pub fn apply_edit(&mut self, by: PlayerId, op: &EditOp) -> Result<(), String> {
         let card_ok = |g: &Game, c: CardId| (c.0 as usize) < g.cards.len() && g.cards[c.0 as usize].zone != Zone::Sideboard;
         let player_ok = |g: &Game, p: PlayerId| (p as usize) < g.players.len() && !g.players[p as usize].lost;
         match op.clone() {
@@ -141,6 +164,70 @@ impl Game {
                     self.edit_token(def, player, false, Some(card));
                 }
             }
+            EditOp::Show { player, zone } => {
+                if (player as usize) >= self.players.len() || !matches!(zone, Zone::Hand | Zone::Library) {
+                    return Err("only a player's hand or library can be shown".into());
+                }
+                if !self.edit_shown.contains(&(by, player, zone)) {
+                    self.edit_shown.push((by, player, zone));
+                }
+            }
+            EditOp::TopCards { player, n, to } => {
+                if !player_ok(self, player) || matches!(to, Zone::Sideboard | Zone::Library | Zone::Stack) {
+                    return Err("the top cards can go to a hand, the battlefield, a graveyard, exile or the command zone".into());
+                }
+                for _ in 0..n.min(999) {
+                    let Some(&top) = self.players[player as usize].library.last() else { break };
+                    self.move_card(top, to, crate::zones::MoveOpts::default());
+                }
+            }
+            EditOp::Attach { card, to } => {
+                let on_bf = |g: &Game, c: CardId| card_ok(g, c) && g.cards[c.0 as usize].zone == Zone::Battlefield;
+                if !on_bf(self, card) || to.map_or(false, |h| !on_bf(self, h) || h == card) {
+                    return Err("only a permanent can be attached to another permanent".into());
+                }
+                self.attach(card, to);
+            }
+            EditOp::Transform { card } => {
+                if !card_ok(self, card) || self.cards[card.0 as usize].zone != Zone::Battlefield {
+                    return Err("only a permanent can be transformed".into());
+                }
+                let before = self.cards[card.0 as usize].def;
+                self.transform(card);
+                if self.cards[card.0 as usize].def == before {
+                    return Err("this permanent has no other face to transform to".into());
+                }
+            }
+            EditOp::Pump { card, power, toughness, eot } => {
+                if !card_ok(self, card) || self.cards[card.0 as usize].zone != Zone::Battlefield {
+                    return Err("only a permanent's power and toughness can be changed".into());
+                }
+                let ctl = self.cards[card.0 as usize].controller;
+                self.add_effect(card, ctl, &[card], Modif::Pump { power, toughness }, if eot { Duration::UntilEndOfTurn } else { Duration::Forever });
+            }
+            EditOp::PlayerCounters { player, kind, delta } => {
+                if !player_ok(self, player) {
+                    return Err("no such player".into());
+                }
+                let pl = &mut self.players[player as usize];
+                let v = match kind {
+                    PlayerCounter::Poison => &mut pl.poison,
+                    PlayerCounter::Energy => &mut pl.energy,
+                    PlayerCounter::Experience => &mut pl.experience,
+                };
+                *v = (*v + delta).max(0);
+            }
+            EditOp::CommanderDamage { player, commander, delta } => {
+                if !player_ok(self, player) || !card_ok(self, commander) {
+                    return Err("no such player or commander".into());
+                }
+                let list = &mut self.players[player as usize].commander_damage;
+                match list.iter_mut().find(|(c, _)| *c == commander) {
+                    Some(e) => e.1 = (e.1 + delta).max(0),
+                    None if delta > 0 => list.push((commander, delta)),
+                    None => {}
+                }
+            }
         }
         self.layers_dirty = true;
         Ok(())
@@ -169,6 +256,7 @@ impl Game {
     /// Finish a rule break: the open priority question is asked again from scratch, after state-based actions and any
     /// triggers the changes caused (the actions offered before may no longer be right).
     pub fn end_rule_break(&mut self) {
+        self.edit_shown.clear();
         if let (Some(Decision { player, kind: DecisionKind::Priority { .. } }), Run::Priority { .. }) = (&self.pending, &self.run) {
             let p = *player;
             self.pending = None;

@@ -544,3 +544,27 @@ fn skip_until_my_turn_stops_when_it_starts() {
         }
     }
 }
+
+/// Breaking the rules, a player may look at an AI's hand and library (in order) until the break ends; nobody else sees
+/// them, a human's cards stay hidden, and undo / restore replay the reveal.
+#[test]
+fn rule_break_shows_an_ai_hand_and_library_to_that_player_only() {
+    let mut s = Session::new(db(), duel(5)).unwrap();
+    s.advance();
+    let opp_hand = |s: &Session, viewer: u8| s.view(viewer).cards.iter().filter(|c| c.owner == 1 && c.zone == types::Zone::Hand).count();
+    assert_eq!(opp_hand(&s, 0), 0, "the AI's hand is hidden");
+    s.edit(0, EditOp::Show { player: 1, zone: types::Zone::Hand }).unwrap();
+    s.edit(0, EditOp::Show { player: 1, zone: types::Zone::Library }).unwrap();
+    assert_eq!(opp_hand(&s, 0), s.game.players[1].hand.len());
+    let v = s.view(0);
+    let lib: Vec<CardId> = s.game.players[1].library.iter().rev().copied().collect();
+    assert_eq!(v.players[1].library_shown, lib, "the library in order, top first");
+    assert!(s.view(1).players[1].library_shown.is_empty(), "shown to the player who asked only");
+    assert!(s.edit(1, EditOp::Show { player: 0, zone: types::Zone::Hand }).is_err(), "a human's hand stays theirs");
+    // a restored game replays the edit
+    let r = Session::restore(db(), s.record()).unwrap();
+    assert_eq!(opp_hand(&r, 0), s.game.players[1].hand.len());
+    s.end_break(0);
+    assert_eq!(opp_hand(&s, 0), 0, "hidden again once the rule break ends");
+    assert!(s.view(0).players[1].library_shown.is_empty());
+}

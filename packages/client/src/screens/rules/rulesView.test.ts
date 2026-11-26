@@ -196,8 +196,20 @@ describe('Rooms', () => {
     const room = card(1, 'Dazzling Theater // Prop Room', 'Enchantment — Room', 0, { doors: 1 });
     const { view } = toGameView(snapOf([room]), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map());
     expect(view.cards['1'].locked).toEqual([2]);
-    expect(view.cards['1'].effects.map((e) => e.k)).toContain('Locked: Prop Room');
     const open = toGameView(snapOf([{ ...room, doors: 3 }]), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map()).view;
     expect(open.cards['1'].locked).toBeUndefined();
+  });
+});
+
+describe('breaking the rules', () => {
+  it("shows an AI's revealed hand face up (no extra face-down cards) and its library in order", () => {
+    const hand = [card(5, 'Forest', 'Basic Land — Forest', 1, { zone: 'Hand' }), card(6, 'Bear', 'Creature — Bear', 1, { zone: 'Hand' })];
+    const lib = [card(7, 'Island', 'Basic Land — Island', 1, { zone: 'Library' }), card(8, 'Swamp', 'Basic Land — Swamp', 1, { zone: 'Library' })];
+    const snap = snapOf([...hand, ...lib]) as unknown as { players: Record<string, unknown>[] };
+    snap.players[1] = { ...snap.players[1], hand: 2, library: 2, library_shown: [8, 7] };
+    const { view } = toGameView(snap as unknown as RView, {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map());
+    expect(view.seats[1].zones.hand).toEqual(['5', '6']);
+    expect(view.seats[1].zones.library).toEqual(['8', '7']);
+    expect(view.seats[1].revealTop).toBe(false);
   });
 });

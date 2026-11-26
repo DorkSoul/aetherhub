@@ -39,6 +39,7 @@ export type { PayAnswer } from './PayAnswer';
 export type { PickPurpose } from './PickPurpose';
 export type { PlanarFace } from './PlanarFace';
 export type { PlayWindow } from './PlayWindow';
+export type { PlayerCounter } from './PlayerCounter';
 export type { PlayerView } from './PlayerView';
 export type { Polarity } from './Polarity';
 export type { SeatSetup } from './SeatSetup';

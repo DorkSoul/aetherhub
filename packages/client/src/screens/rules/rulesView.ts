@@ -328,7 +328,9 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
   };
   const seats: Seat[] = snap.players.map((p, i) => {
     const zones: Seat['zones'] = { library: [], hand: [], battlefield: [], graveyard: [], exile: [], command: [], sideboard: [], schemeDeck: [], schemes: [], attractionDeck: [], stickers: [] };
-    for (let k = 0; k < p.library; k++) {
+    // a library shown while breaking the rules: its cards in order, top first
+    if (p.library_shown?.length) zones.library = p.library_shown.map(String);
+    else for (let k = 0; k < p.library; k++) {
       const iid = `L${i}:${k}`;
       cards[iid] = { ...inst(iid, '', i), faceDown: true, hidden: true };
       zones.library.push(iid);
@@ -360,6 +362,7 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
       if (!seat) continue;
       const iid = String(c.id);
       cards[iid] = inst(iid, defFor(c), c.owner);
+      if (snap.players[c.owner]?.library_shown?.length) continue;
       delete cards[`L${c.owner}:0`];
       if (seat.zones.library.length) seat.zones.library[0] = iid;
       else seat.zones.library.push(iid);
@@ -384,7 +387,6 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     const masked = c.face_down && !c.art;
     // a Room's locked doors (1 = left, 2 = right)
     const locked = c.doors == null ? [] : [1, 2].filter((d) => !(c.doors! & (1 << (d - 1))));
-    const doorNames = c.name.split(' // ');
     cards[iid] = inst(iid, masked ? '' : defFor(c), c.owner, {
       ...(locked.length && { locked }),
       tapped: c.tapped, flipped: z === 'battlefield' && !masked && !!images[FLIPPED_KEY(ART(c))], counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
@@ -392,7 +394,6 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
       effects: [
         ...(c.zone === 'Stack' && stackSources.has(c.id) ? [{ k: 'On the stack', eot: false }] : queued?.has(c.id) ? [{ k: `Queued #${queued.get(c.id)}`, eot: false }] : []),
         ...(c.copy_of ? [{ k: `Copy of ${c.copy_of}`, eot: false }] : []),
-        ...locked.map((d) => ({ k: `Locked: ${doorNames[d - 1] ?? `door ${d}`}`, eot: false })),
         // a name that isn't the one on the picture (a copy "except its name is ...", or a name-changing effect)
         ...(c.name !== ART(c) ? [{ k: `Named ${c.name}`, eot: false }] : []),
       ],
@@ -420,7 +421,9 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
   for (const list of bf.values()) for (const c of list) Object.assign(cards[String(c.id)], placed.get(c.id));
   snap.players.forEach((p, i) => {
     if (i === me) return;
-    for (let k = 0; k < p.hand; k++) {
+    // cards of this hand the viewer may see (shown while breaking the rules) are already in it
+    const seen = seats[i].zones.hand.length;
+    for (let k = seen; k < p.hand; k++) {
       const iid = `H${i}:${k}`;
       cards[iid] = { ...inst(iid, '', i), faceDown: true, hidden: true };
       seats[i].zones.hand.push(iid);

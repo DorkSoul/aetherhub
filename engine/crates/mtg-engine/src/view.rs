@@ -94,6 +94,9 @@ pub struct PlayerView {
     /// Planechase: planar die rolls this turn (the next roll costs this much).
     #[serde(default)]
     pub planar_rolls: u32,
+    /// The library in order, top first, while it is shown to the viewer during a rule break (else empty).
+    #[serde(default)]
+    pub library_shown: Vec<CardId>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -207,9 +210,10 @@ impl Game {
         let c = self.card(id);
         let d = self.def_of(id);
         // visibility
+        let shown = |z: Zone| self.edit_shown.contains(&(viewer, c.owner, z));
         let visible = match c.zone {
-            Zone::Hand => c.owner == viewer,
-            Zone::Library => self.revealed_top(id, viewer),
+            Zone::Hand => c.owner == viewer || shown(Zone::Hand),
+            Zone::Library => self.revealed_top(id, viewer) || shown(Zone::Library),
             Zone::Sideboard => c.owner == viewer,
             Zone::Exile => !c.face_down || c.owner == viewer,
             // the planar deck and scheme decks are face down: kept in the command zone but in no player's command list
@@ -385,6 +389,7 @@ impl Game {
                 schemes: p.scheme_deck.len() as u32,
                 team: p.team,
                 planar_rolls: p.planar_rolls,
+                library_shown: if self.edit_shown.contains(&(viewer, p.id, Zone::Library)) { p.library.iter().rev().copied().collect() } else { vec![] },
             })
             .collect();
         let stack = self

@@ -177,3 +177,41 @@ test('Auras and Curses on an opponent sit on their side, the hand keeps its orde
   await p.screenshot({ path: test.info().outputPath('server-page.png'), fullPage: true });
   await p.request.delete(srv.url + `api/rules/games/${id}`);
 });
+
+test("breaking the rules, the AI's hand and library can be looked at, and are hidden again afterwards", async () => {
+  test.setTimeout(300_000);
+  const p = alice.page;
+  await startRulesGame(p, srv, 'Curses', 1, 'Freeform');
+  await p.waitForFunction(() => !!localStorage.getItem('aetherhub.rulesGame'));
+  const id = (await p.evaluate(() => localStorage.getItem('aetherhub.rulesGame')))!;
+  for (let i = 0; i < 60; i++) {
+    const s = await waitForQuestion(p, id);
+    const k = s.waiting.kind;
+    if (k.t === 'Mulligan') await api(p, 'POST', `api/rules/games/${id}/answer`, { choice: { t: 'Keep', keep: true } });
+    else if (k.t === 'Priority') break;
+    else await api(p, 'POST', `api/rules/games/${id}/answer`, { choice: { t: 'Default' } });
+  }
+  let s = await api(p, 'GET', `api/rules/games/${id}`);
+  const me = s.view.players.findIndex((x: { name: string }) => x.name === 'alice');
+  const opp = 1 - me;
+  const oppHand = s.view.players[opp].hand;
+  await api(p, 'POST', `api/rules/games/${id}/break`, { on: true });
+  await p.reload();
+  const hand = p.locator(`[data-seat="${opp}"] [data-hand]`);
+  await expect(hand).toBeVisible({ timeout: 20_000 });
+  await hand.click({ button: 'right', position: { x: 20, y: 20 } });
+  await p.getByText('Request to view hand').click();
+  // the AI agrees at once: its cards are face up (real ids), with no extra face-down ones
+  await expect.poll(async () => (await handOrder(p, opp)).length, { timeout: 10_000 }).toBe(oppHand);
+  await expect(p.locator(`[data-seat="${opp}"] [data-iid^="H"]`)).toHaveCount(0);
+  s = await api(p, 'GET', `api/rules/games/${id}`);
+  expect(s.view.cards.filter((c: Card) => c.owner === opp && c.zone === 'Hand')).toHaveLength(oppHand);
+  // the library, in order
+  await api(p, 'POST', `api/rules/games/${id}/edit`, { op: { t: 'Show', player: opp, zone: 'Library' } });
+  s = await api(p, 'GET', `api/rules/games/${id}`);
+  expect(s.view.players[opp].library_shown).toHaveLength(s.view.players[opp].library);
+  await api(p, 'POST', `api/rules/games/${id}/break`, { on: false });
+  s = await api(p, 'GET', `api/rules/games/${id}`);
+  expect(s.view.cards.filter((c: Card) => c.owner === opp && c.zone === 'Hand')).toHaveLength(0);
+  expect(s.view.players[opp].library_shown).toHaveLength(0);
+});

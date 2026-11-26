@@ -233,6 +233,7 @@ impl Game {
             events: vec![],
             over: None,
             layers_dirty: true,
+            edit_shown: vec![],
             layer_started: std::cell::RefCell::new(vec![]),
             monarch: None,
             initiative: None,

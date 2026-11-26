@@ -1505,6 +1505,9 @@ pub struct Game {
     pub events: Vec<Event>,
     pub over: Option<GameResult>,
     pub layers_dirty: bool,
+    /// While a rule is being broken: (viewer, owner, zone) of the hidden zones shown to the player breaking it (a hand or a
+    /// library, its order included). Cleared when the rule break ends.
+    pub edit_shown: Vec<(PlayerId, PlayerId, Zone)>,
     /// Sources of static abilities whose effects already started to apply in an earlier layer of this pass; they keep applying in later layers even if the ability is removed meanwhile (rule 613.6: Humility, Opalescence).
     pub layer_started: std::cell::RefCell<Vec<CardId>>,
     /// Cards outside the battlefield currently carry an extra chosen creature type (reset on the next recompute).
