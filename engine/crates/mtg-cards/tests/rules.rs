@@ -1248,6 +1248,49 @@ fn rule_break_moves_top_cards_attaches_transforms_and_pumps() {
     assert_eq!(g.players[1].commander_damage.as_slice(), &[(bears, 5)]);
 }
 
+/// "Break the rules" does everything the sandbox does: face down, meld, notes, "doesn't untap", markers, dungeons,
+/// commander tax, and taking another player's cards.
+#[test]
+fn rule_break_turns_face_down_melds_takes_cards_and_sets_markers() {
+    let mut g = game();
+    let bears = g.add_card("Grizzly Bears", 0, Zone::Battlefield);
+    let bruna = g.add_card("Bruna, the Fading Light", 0, Zone::Battlefield);
+    let gisela = g.add_card("Gisela, the Broken Blade", 0, Zone::Battlefield);
+    let theirs = g.add_card("Lightning Bolt", 1, Zone::Hand);
+    g.add_card("Forest", 1, Zone::Graveyard);
+    g.start_at(0, Step::Main1);
+    g.apply_edit(0, &EditOp::FaceDown { card: bears, face_down: true }).unwrap();
+    g.run();
+    assert!(g.card(bears).face_down && g.card(bears).cur.power == 2);
+    g.apply_edit(0, &EditOp::FaceDown { card: bears, face_down: false }).unwrap();
+    assert!(!g.card(bears).face_down);
+    g.apply_edit(0, &EditOp::Meld { card: gisela, with: bruna, into: None }).unwrap();
+    assert!(g.battlefield.iter().any(|id| g.card_name(*id) == "Brisela, Voice of Nightmares"));
+    // taking a card from another player's hand, and a random one from their graveyard
+    g.apply_edit(0, &EditOp::Move { card: theirs, to: Zone::Hand, bottom: false, controller: None, owner: Some(0) }).unwrap();
+    assert!(g.players[0].hand.contains(&theirs) && !g.players[1].hand.contains(&theirs) && g.card(theirs).owner == 0);
+    g.apply_edit(0, &EditOp::RandomCard { player: 1, zone: Zone::Graveyard, to: Zone::Hand, owner: Some(0) }).unwrap();
+    assert!(g.players[1].graveyard.is_empty() && g.players[0].hand.len() == 2);
+    // notes and "doesn't untap" show on the card
+    g.apply_edit(0, &EditOp::Note { card: bears, text: "can't block".into(), eot: true, remove: false }).unwrap();
+    g.apply_edit(0, &EditOp::NoUntap { card: bears, value: true }).unwrap();
+    let v = g.view_for(0);
+    let cv = v.cards.iter().find(|c| c.id == bears).unwrap();
+    assert_eq!(cv.notes, vec!["can't block · EOT".to_string()]);
+    assert!(cv.no_untap && g.doesnt_untap(bears));
+    g.apply_edit(0, &EditOp::Monarch { player: Some(1) }).unwrap();
+    g.apply_edit(0, &EditOp::Ring { player: 0, delta: 9 }).unwrap();
+    g.apply_edit(0, &EditOp::Marker { player: Some(1), label: "rad".into(), delta: 3, remove: false }).unwrap();
+    g.apply_edit(0, &EditOp::CommanderTax { player: 0, commander: bears, delta: 2 }).unwrap();
+    g.apply_edit(0, &EditOp::Dungeon { player: 0, dungeon: Some("Lost Mine of Phandelver".into()), room: "Goblin Lair".into() }).unwrap();
+    let v = g.view_for(0);
+    assert!(v.players[1].monarch);
+    assert_eq!(v.players[0].ring, 4);
+    assert_eq!(v.players[1].markers, vec![("rad".to_string(), 3)]);
+    assert_eq!(v.players[0].commander_tax, vec![(bears, 2)]);
+    assert_eq!(v.players[0].dungeon, Some(("Lost Mine of Phandelver".to_string(), "Goblin Lair".to_string())));
+}
+
 /// "Break the rules" can make the tokens a card failed to make: a named token, and token copies of a permanent.
 #[test]
 fn rule_break_creates_tokens_and_token_copies() {

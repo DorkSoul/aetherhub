@@ -1228,6 +1228,9 @@ impl Game {
 
     /// Does a static ability stop this permanent from untapping during its controller's untap step?
     pub fn doesnt_untap(&self, card: CardId) -> bool {
+        if self.edit_no_untap.contains(&card) {
+            return true;
+        }
         if self.cards[card.0 as usize].cur.types.has(CardType::Land) && self.players[self.cards[card.0 as usize].cur.controller as usize].lands_no_untap {
             return true;
         }

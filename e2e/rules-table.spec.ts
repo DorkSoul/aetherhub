@@ -194,11 +194,19 @@ test("breaking the rules, the AI's hand and library can be looked at, and are hi
   let s = await api(p, 'GET', `api/rules/games/${id}`);
   const me = s.view.players.findIndex((x: { name: string }) => x.name === 'alice');
   const opp = 1 - me;
-  const oppHand = s.view.players[opp].hand;
+  let oppHand = s.view.players[opp].hand;
   await api(p, 'POST', `api/rules/games/${id}/break`, { on: true });
   await p.reload();
   const hand = p.locator(`[data-seat="${opp}"] [data-hand]`);
   await expect(hand).toBeVisible({ timeout: 20_000 });
+  // taking a random card from the AI's hand puts it into this player's hand
+  const mine = s.view.players[me].hand;
+  await hand.click({ button: 'right', position: { x: 20, y: 20 } });
+  await p.getByText('Take a random card').click();
+  await expect.poll(async () => (await api(p, 'GET', `api/rules/games/${id}`)).view.players[me].hand, { timeout: 10_000 }).toBe(mine + 1);
+  s = await api(p, 'GET', `api/rules/games/${id}`);
+  expect(s.view.players[opp].hand).toBe(oppHand - 1);
+  oppHand -= 1;
   await hand.click({ button: 'right', position: { x: 20, y: 20 } });
   await p.getByText('Request to view hand').click();
   // the AI agrees at once: its cards are face up (real ids), with no extra face-down ones

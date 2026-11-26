@@ -31,6 +31,10 @@ mana_sources: Array<ManaSourceOpt>,
  */
 planar_deck: number, 
 /**
+ * Labelled markers on the game made while breaking the rules: (label, value).
+ */
+markers: Array<[string, number]>, 
+/**
  * Who is being asked (any player), so the UI can show "waiting for X".
  */
 waiting_for: number | null, };

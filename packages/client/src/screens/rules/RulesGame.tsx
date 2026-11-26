@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import type { rules as R } from '@aetherhub/shared';
+import { DUNGEONS, type rules as R } from '@aetherhub/shared';
 import { api, ApiError } from '../../lib/api';
 import { useApp } from '../../lib/store';
 import { askConfirm, askText } from '../../ui/dialogs';
@@ -915,7 +915,11 @@ export default function RulesGame() {
               if (to === 'Battlefield' && pos) placed.current.set(c.id, { x: pos.x, y: pos.y });
               if (c.zone === 'Battlefield' && to === 'Battlefield') {
                 if (intent.seat !== undefined && intent.seat !== c.controller && intent.seat !== sideOf(c)) ops.push({ t: 'Control', card: c.id, player: intent.seat });
-              } else ops.push({ t: 'Move', card: c.id, to, bottom: intent.pos === 'bottom', controller: to === 'Battlefield' ? (intent.seat ?? null) : null });
+              } else {
+                // into another player's hand, library, graveyard or exile: that player takes the card
+                const owner = to !== 'Battlefield' && to !== 'Command' && intent.seat !== undefined && intent.seat !== c.owner ? intent.seat : null;
+                ops.push({ t: 'Move', card: c.id, to, bottom: intent.pos === 'bottom', controller: to === 'Battlefield' ? (intent.seat ?? null) : null, owner });
+              }
             });
             setLayoutTick((t) => t + 1);
           } else if (intent.type === 'tap') {
@@ -954,14 +958,13 @@ export default function RulesGame() {
           else if (intent.type === 'delete') {
             for (const iid of intent.iids) {
               const c = byId(iid);
-              if (c) ops.push({ t: 'Move', card: c.id, to: 'Exile', bottom: false, controller: null });
+              if (c) ops.push({ t: 'Move', card: c.id, to: 'Exile', bottom: false, controller: null, owner: null });
             }
           } else if (intent.type === 'randomCard') {
-            if (intent.to === 'hand' && intent.seat !== st.seat) return void useApp.getState().toast("The rules engine keeps every card in its owner's hand: take it with Control on the battlefield instead.");
-            const pool = st.view.cards.filter((c) => c.owner === intent.seat && c.zone === zoneOf[intent.zone]);
-            if (!pool.length) return void useApp.getState().toast(intent.zone === 'hand' ? 'Look at that hand first (Request to view hand): only cards you can see can be picked.' : 'There is no card there.');
-            const c = pool[Math.floor(Math.random() * pool.length)];
-            ops.push({ t: 'Move', card: c.id, to: zoneOf[intent.to ?? 'graveyard'] ?? 'Graveyard', bottom: false, controller: null });
+            // "take a random card" puts it into your own hand
+            const to = zoneOf[intent.to ?? 'graveyard'] ?? 'Graveyard';
+            const from = zoneOf[intent.zone];
+            if (from) ops.push({ t: 'RandomCard', player: intent.seat, zone: from, to, owner: to === 'Hand' && intent.seat !== st.seat ? st.seat : null });
           } else if (intent.type === 'attach') {
             const c = byId(intent.iid);
             const to = intent.to ? byId(intent.to) : undefined;
@@ -974,13 +977,43 @@ export default function RulesGame() {
             if (c) ops.push({ t: 'Pump', card: c.id, power: intent.p, toughness: intent.t, eot: intent.eot });
           } else if (intent.type === 'playerCounter') {
             const kind = ({ poison: 'Poison', energy: 'Energy', experience: 'Experience' } as const)[intent.key as 'poison' | 'energy' | 'experience'];
-            if (!kind) return void useApp.getState().toast(`The rules engine keeps no "${intent.key}" counters on players: only poison, energy and experience.`);
-            ops.push({ t: 'PlayerCounters', player: intent.seat, kind, delta: intent.delta });
+            // other player counters (rad, tickets ...) are kept as labelled markers
+            ops.push(kind ? { t: 'PlayerCounters', player: intent.seat, kind, delta: intent.delta } : { t: 'Marker', player: intent.seat, label: intent.key, delta: intent.delta, remove: false });
           } else if (intent.type === 'cmdDmg') {
             const c = byId(intent.source);
             if (c) ops.push({ t: 'CommanderDamage', player: intent.seat, commander: c.id, delta: intent.delta });
+          } else if (intent.type === 'cmdTax') {
+            const c = byId(intent.iid);
+            if (c) ops.push({ t: 'CommanderTax', player: intent.seat, commander: c.id, delta: intent.delta });
+          } else if (intent.type === 'faceDown') {
+            for (const iid of intent.iids) {
+              const c = byId(iid);
+              if (c) ops.push({ t: 'FaceDown', card: c.id, face_down: intent.value });
+            }
+          } else if (intent.type === 'flip') {
+            // a flip card turns to its other half
+            const c = byId(intent.iid);
+            if (c) ops.push({ t: 'Transform', card: c.id });
+          } else if (intent.type === 'meld') {
+            const [a, b] = [byId(intent.iid), byId(intent.with)];
+            if (a && b) ops.push({ t: 'Meld', card: a.id, with: b.id, into: null });
+          } else if (intent.type === 'effect') {
+            const c = byId(intent.iid);
+            if (c) ops.push({ t: 'Note', card: c.id, text: intent.k, eot: !!intent.eot, remove: !!intent.remove });
+          } else if (intent.type === 'noUntap') {
+            const c = byId(intent.iid);
+            if (c) ops.push({ t: 'NoUntap', card: c.id, value: intent.value });
+          } else if (intent.type === 'marker') ops.push(intent.key === 'monarch' ? { t: 'Monarch', player: intent.seat } : { t: 'Initiative', player: intent.seat });
+          else if (intent.type === 'day') ops.push({ t: 'DayNight', day: intent.value === null ? null : intent.value === 'day' });
+          else if (intent.type === 'citysBlessing') ops.push({ t: 'CitysBlessing', player: intent.seat, value: intent.value });
+          else if (intent.type === 'ring') ops.push({ t: 'Ring', player: intent.seat, delta: intent.delta });
+          else if (intent.type === 'customMarker') ops.push({ t: 'Marker', player: intent.seat, label: intent.label, delta: intent.delta ?? 0, remove: !!intent.remove });
+          else if (intent.type === 'dungeon') {
+            const room = intent.name ? DUNGEONS[intent.name]?.[intent.room]?.name : undefined;
+            if (intent.name && !room) return void useApp.getState().toast(`No room ${intent.room + 1} in ${intent.name}`);
+            ops.push({ t: 'Dungeon', player: intent.seat, dungeon: intent.name, room: room ?? '' });
           }
-          else if (intent.type !== 'concede') return void useApp.getState().toast("That isn't available while breaking the rules. You can move cards anywhere, tap them, change counters, power/toughness, life, poison and commander damage, attach and transform, draw, mill, shuffle, create tokens and look at an AI's hand or library.");
+          else if (intent.type !== 'concede') return void useApp.getState().toast("That isn't available while breaking the rules: turns, phases, the planar die, attractions and dice belong to the game itself. Press Finish and play on.");
           if (intent.type !== 'concede') {
             if (gameId) void (async () => {
               for (const op of ops) await api.post(`api/rules/games/${gameId}/edit`, { op }).catch((e: Error) => useApp.getState().toast(e.message));

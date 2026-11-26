@@ -15,6 +15,7 @@ use ts_rs::TS;
 #[serde(tag = "t")]
 pub enum EditOp {
     /// Put a card into a zone (library: on top unless `bottom`; battlefield: under `controller`, else its owner).
+    /// `owner`: put it into that player's hand, library, graveyard or exile instead, and make them its owner (taking a card).
     Move {
         card: CardId,
         to: Zone,
@@ -22,6 +23,8 @@ pub enum EditOp {
         bottom: bool,
         #[serde(default)]
         controller: Option<PlayerId>,
+        #[serde(default)]
+        owner: Option<PlayerId>,
     },
     Tap { card: CardId, tapped: bool },
     /// Add (positive) or remove (negative) counters.
@@ -61,6 +64,54 @@ pub enum EditOp {
     PlayerCounters { player: PlayerId, kind: PlayerCounter, delta: i32 },
     /// Combat damage `player` has taken from the commander `commander`.
     CommanderDamage { player: PlayerId, commander: CardId, delta: i32 },
+    /// Times `player` has cast the commander `commander` from the command zone (its tax is {2} each).
+    CommanderTax { player: PlayerId, commander: CardId, delta: i32 },
+    /// Turn a permanent (or an exiled card) face down as a 2/2, or face up.
+    FaceDown { card: CardId, face_down: bool },
+    /// Meld two permanents into the card `into` (none: the one either card's meld ability names).
+    Meld {
+        card: CardId,
+        with: CardId,
+        #[serde(default)]
+        into: Option<String>,
+    },
+    /// A note shown on a card ("can't block"), until end of turn or for good; `remove` takes it off.
+    Note {
+        card: CardId,
+        text: String,
+        #[serde(default)]
+        eot: bool,
+        #[serde(default)]
+        remove: bool,
+    },
+    /// The permanent doesn't untap during its controller's untap step (or does again).
+    NoUntap { card: CardId, value: bool },
+    Monarch { player: Option<PlayerId> },
+    Initiative { player: Option<PlayerId> },
+    /// Day (true), night (false) or neither.
+    DayNight { day: Option<bool> },
+    CitysBlessing { player: PlayerId, value: bool },
+    /// How many times the Ring has tempted `player` (0-4).
+    Ring { player: PlayerId, delta: i32 },
+    /// A counter-like marker with a label on a player, or on the game (`player` none); `remove` takes it off.
+    Marker {
+        player: Option<PlayerId>,
+        label: String,
+        #[serde(default)]
+        delta: i32,
+        #[serde(default)]
+        remove: bool,
+    },
+    /// Put `player` in room `room` of the dungeon `dungeon` (no room ability happens), or out of any dungeon (`dungeon` none).
+    Dungeon { player: PlayerId, dungeon: Option<String>, room: String },
+    /// A random card of `player`'s hand, graveyard, exile or library to `to` (into `owner`'s zone, taking it, when given).
+    RandomCard {
+        player: PlayerId,
+        zone: Zone,
+        to: Zone,
+        #[serde(default)]
+        owner: Option<PlayerId>,
+    },
 }
 
 /// The counters a player can have that a rule break can change.
@@ -85,9 +136,14 @@ impl Game {
         let card_ok = |g: &Game, c: CardId| (c.0 as usize) < g.cards.len() && g.cards[c.0 as usize].zone != Zone::Sideboard;
         let player_ok = |g: &Game, p: PlayerId| (p as usize) < g.players.len() && !g.players[p as usize].lost;
         match op.clone() {
-            EditOp::Move { card, to, bottom, controller } => {
+            EditOp::Move { card, to, bottom, controller, owner } => {
                 if !card_ok(self, card) {
                     return Err("no such card".into());
+                }
+                if let Some(o) = owner {
+                    if (o as usize) >= self.players.len() {
+                        return Err("no such player".into());
+                    }
                 }
                 if to == Zone::Sideboard {
                     return Err("cards can't be moved out of the game".into());
@@ -102,6 +158,9 @@ impl Game {
                     self.stack.retain(|s| !(s.source == card && matches!(s.kind, ItemKind::Spell { .. })));
                 }
                 self.move_card(card, to, crate::zones::MoveOpts { bottom, controller, ..Default::default() });
+                if let Some(o) = owner {
+                    self.give_card(card, o, bottom);
+                }
             }
             EditOp::Tap { card, tapped } => {
                 if !card_ok(self, card) || self.cards[card.0 as usize].zone != Zone::Battlefield {
@@ -228,9 +287,199 @@ impl Game {
                     None => {}
                 }
             }
+            EditOp::CommanderTax { player, commander, delta } => {
+                if !player_ok(self, player) || !card_ok(self, commander) {
+                    return Err("no such player or commander".into());
+                }
+                let list = &mut self.players[player as usize].commander_cast;
+                match list.iter_mut().find(|(c, _)| *c == commander) {
+                    Some(e) => e.1 = (e.1 as i32 + delta).max(0) as u32,
+                    None if delta > 0 => list.push((commander, delta as u32)),
+                    None => {}
+                }
+            }
+            EditOp::FaceDown { card, face_down } => {
+                if !card_ok(self, card) || !matches!(self.cards[card.0 as usize].zone, Zone::Battlefield | Zone::Exile) {
+                    return Err("only a permanent or an exiled card can be turned face down or up".into());
+                }
+                if face_down {
+                    let ctl = self.cards[card.0 as usize].controller;
+                    self.run_effect_now(card, ctl, &Effect::TurnFaceDown { what: Sel::This });
+                } else {
+                    self.cards[card.0 as usize].face_down = false;
+                }
+            }
+            EditOp::Meld { card, with, into } => {
+                let on_bf = |g: &Game, c: CardId| card_ok(g, c) && g.cards[c.0 as usize].zone == Zone::Battlefield;
+                if !on_bf(self, card) || !on_bf(self, with) || card == with {
+                    return Err("two permanents are needed to meld".into());
+                }
+                let into = into.or_else(|| self.meld_result(card)).or_else(|| self.meld_result(with)).ok_or("neither card has a meld ability")?;
+                let def = self.db.find(&into).ok_or_else(|| format!("the rules engine has no card called \"{into}\""))?;
+                let ctl = self.cards[card.0 as usize].controller;
+                self.move_card(card, Zone::Exile, Default::default());
+                self.move_card(with, Zone::Exile, Default::default());
+                let new = self.create_card(def, ctl, Zone::Exile, true);
+                self.players[ctl as usize].exile.retain(|x| *x != new);
+                self.move_card(new, Zone::Battlefield, crate::zones::MoveOpts { controller: Some(ctl), ..Default::default() });
+                self.meld_parts.push((new, card, with));
+            }
+            EditOp::Note { card, text, eot, remove } => {
+                if !card_ok(self, card) {
+                    return Err("no such card".into());
+                }
+                self.edit_notes.retain(|(c, t, _)| !(*c == card && *t == text));
+                if !remove {
+                    let turn = self.turn;
+                    self.edit_notes.push((card, text.chars().take(60).collect(), eot.then_some(turn)));
+                }
+            }
+            EditOp::NoUntap { card, value } => {
+                if !card_ok(self, card) {
+                    return Err("no such card".into());
+                }
+                self.edit_no_untap.retain(|c| *c != card);
+                if value {
+                    self.edit_no_untap.push(card);
+                }
+            }
+            EditOp::Monarch { player } => {
+                if player.map_or(false, |p| !player_ok(self, p)) {
+                    return Err("no such player".into());
+                }
+                self.monarch = player;
+            }
+            EditOp::Initiative { player } => {
+                if player.map_or(false, |p| !player_ok(self, p)) {
+                    return Err("no such player".into());
+                }
+                self.initiative = player;
+            }
+            EditOp::DayNight { day } => self.day_night = day,
+            EditOp::CitysBlessing { player, value } => {
+                if !player_ok(self, player) {
+                    return Err("no such player".into());
+                }
+                self.players[player as usize].city_blessing = value;
+            }
+            EditOp::Ring { player, delta } => {
+                if !player_ok(self, player) {
+                    return Err("no such player".into());
+                }
+                let pl = &mut self.players[player as usize];
+                pl.ring_level = (pl.ring_level as i32 + delta).clamp(0, 4) as u8;
+            }
+            EditOp::Marker { player, label, delta, remove } => {
+                if player.map_or(false, |p| !player_ok(self, p)) {
+                    return Err("no such player".into());
+                }
+                let label: String = label.chars().take(40).collect();
+                match self.edit_markers.iter_mut().position(|(p, l, _)| *p == player && *l == label) {
+                    Some(i) if remove => {
+                        self.edit_markers.remove(i);
+                    }
+                    Some(i) => self.edit_markers[i].2 += delta,
+                    None if !remove => self.edit_markers.push((player, label, delta)),
+                    None => {}
+                }
+            }
+            EditOp::Dungeon { player, dungeon, room } => {
+                if !player_ok(self, player) {
+                    return Err("no such player".into());
+                }
+                let current = self.players[player as usize].dungeon.clone();
+                match dungeon {
+                    None => {
+                        if let Some((dc, _)) = current {
+                            self.players[player as usize].command.retain(|c| *c != dc);
+                        }
+                        self.players[player as usize].dungeon = None;
+                    }
+                    Some(name) => {
+                        let same = current.as_ref().map_or(false, |(dc, _)| self.def_of(*dc).name == name);
+                        if !same {
+                            let def = self.db.find(&name).ok_or_else(|| format!("the rules engine has no dungeon called \"{name}\""))?;
+                            if let Some((dc, _)) = current {
+                                self.players[player as usize].command.retain(|c| *c != dc);
+                            }
+                            let id = self.create_card(def, player, Zone::Command, true);
+                            self.cards[id.0 as usize].controller = player;
+                            self.players[player as usize].dungeon = Some((id, room.clone()));
+                        }
+                        if let Some(d) = self.players[player as usize].dungeon.as_mut() {
+                            d.1 = room;
+                        }
+                    }
+                }
+            }
+            EditOp::RandomCard { player, zone, to, owner } => {
+                if !player_ok(self, player) || owner.map_or(false, |o| (o as usize) >= self.players.len()) {
+                    return Err("no such player".into());
+                }
+                let pl = &self.players[player as usize];
+                let pool: Vec<CardId> = match zone {
+                    Zone::Hand => pl.hand.to_vec(),
+                    Zone::Graveyard => pl.graveyard.to_vec(),
+                    Zone::Exile => pl.exile.to_vec(),
+                    Zone::Library => pl.library.to_vec(),
+                    _ => return Err("a random card comes from a hand, graveyard, exile or library".into()),
+                };
+                if pool.is_empty() {
+                    return Err("there is no card there".into());
+                }
+                use rand::Rng;
+                let card = pool[self.rng.gen_range(0..pool.len())];
+                self.move_card(card, to, Default::default());
+                if let Some(o) = owner {
+                    self.give_card(card, o, false);
+                }
+            }
         }
         self.layers_dirty = true;
         Ok(())
+    }
+
+    /// The card a meld ability of `card` makes ("melds them into ...").
+    fn meld_result(&self, card: CardId) -> Option<String> {
+        fn find(v: &serde_json::Value) -> Option<String> {
+            match v {
+                serde_json::Value::Object(m) => {
+                    if let (Some(serde_json::Value::String(into)), true) = (m.get("into"), m.contains_key("with")) {
+                        return Some(into.clone());
+                    }
+                    m.values().find_map(find)
+                }
+                serde_json::Value::Array(a) => a.iter().find_map(find),
+                _ => None,
+            }
+        }
+        find(&serde_json::to_value(&self.def_of(card).abilities).ok()?)
+    }
+
+    /// Make `to` the owner of a card in a hand, library, graveyard or exile: it moves into that player's list of the zone.
+    fn give_card(&mut self, card: CardId, to: PlayerId, bottom: bool) {
+        let (from, zone) = (self.cards[card.0 as usize].owner, self.cards[card.0 as usize].zone);
+        if from == to || !matches!(zone, Zone::Hand | Zone::Library | Zone::Graveyard | Zone::Exile) {
+            return;
+        }
+        fn list(pl: &mut Player, zone: Zone) -> &mut Vec<CardId> {
+            match zone {
+                Zone::Hand => &mut pl.hand,
+                Zone::Library => &mut pl.library,
+                Zone::Graveyard => &mut pl.graveyard,
+                _ => &mut pl.exile,
+            }
+        }
+        list(&mut self.players[from as usize], zone).retain(|c| *c != card);
+        let l = list(&mut self.players[to as usize], zone);
+        if zone == Zone::Library && bottom {
+            l.insert(0, card);
+        } else {
+            l.push(card);
+        }
+        let c = &mut self.cards[card.0 as usize];
+        c.owner = to;
+        c.controller = to;
     }
 
     /// Put a new token onto the battlefield under `player` (as an effect creating a token copy does: made in a staging zone,

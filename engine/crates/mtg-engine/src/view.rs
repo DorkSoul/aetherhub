@@ -65,6 +65,12 @@ pub struct CardView {
     /// A Room on the battlefield: its unlocked doors (bit 0 = the left door, bit 1 = the right door).
     #[serde(default)]
     pub doors: Option<u8>,
+    /// Notes put on it while breaking the rules ("can't block"); one lasting until end of turn ends with " · EOT".
+    #[serde(default)]
+    pub notes: Vec<String>,
+    /// Made not to untap during its controller's untap step while breaking the rules.
+    #[serde(default)]
+    pub no_untap: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -97,6 +103,17 @@ pub struct PlayerView {
     /// The library in order, top first, while it is shown to the viewer during a rule break (else empty).
     #[serde(default)]
     pub library_shown: Vec<CardId>,
+    #[serde(default)]
+    pub city_blessing: bool,
+    /// Times the Ring has tempted this player (0-4).
+    #[serde(default)]
+    pub ring: u8,
+    /// The dungeon this player is in and the room they are in.
+    #[serde(default)]
+    pub dungeon: Option<(String, String)>,
+    /// Labelled markers made while breaking the rules: (label, value).
+    #[serde(default)]
+    pub markers: Vec<(String, i32)>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -170,6 +187,9 @@ pub struct View {
     /// Planechase: cards left in the planar deck (the face-up planes are command-zone cards).
     #[serde(default)]
     pub planar_deck: u32,
+    /// Labelled markers on the game made while breaking the rules: (label, value).
+    #[serde(default)]
+    pub markers: Vec<(String, i32)>,
     /// Who is being asked (any player), so the UI can show "waiting for X".
     pub waiting_for: Option<PlayerId>,
 }
@@ -262,6 +282,8 @@ impl Game {
                 protector: c.protector,
                 enchanted_player: c.enchanted_player,
                 doors: None,
+                notes: vec![],
+                no_untap: false,
             });
         }
         // what it is a copy of: a permanent that entered as or became a copy (its definition is another card's), or a token copy of a card.
@@ -352,6 +374,8 @@ impl Game {
             protector: c.protector,
             enchanted_player: c.enchanted_player,
             doors: (on_bf && d.room).then_some(c.doors),
+            notes: self.edit_notes.iter().filter(|(x, _, until)| *x == id && until.map_or(true, |t| t == self.turn)).map(|(_, t, until)| if until.is_some() { format!("{t} · EOT") } else { t.clone() }).collect(),
+            no_untap: self.edit_no_untap.contains(&id),
         })
     }
 
@@ -390,6 +414,10 @@ impl Game {
                 team: p.team,
                 planar_rolls: p.planar_rolls,
                 library_shown: if self.edit_shown.contains(&(viewer, p.id, Zone::Library)) { p.library.iter().rev().copied().collect() } else { vec![] },
+                city_blessing: p.city_blessing,
+                ring: p.ring_level,
+                dungeon: p.dungeon.as_ref().map(|(dc, room)| (self.def_of(*dc).name.clone(), room.clone())),
+                markers: self.edit_markers.iter().filter(|(q, _, _)| *q == Some(p.id)).map(|(_, l, v)| (l.clone(), *v)).collect(),
             })
             .collect();
         let stack = self
@@ -476,6 +504,7 @@ impl Game {
             decision_about,
             mana_sources,
             planar_deck: self.planar_deck.len() as u32,
+            markers: self.edit_markers.iter().filter(|(q, _, _)| q.is_none()).map(|(_, l, v)| (l.clone(), *v)).collect(),
             waiting_for: self.pending.as_ref().map(|d| d.player),
         }
     }

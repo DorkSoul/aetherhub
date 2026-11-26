@@ -18,4 +18,16 @@ planar_rolls: number,
 /**
  * The library in order, top first, while it is shown to the viewer during a rule break (else empty).
  */
-library_shown: Array<CardId>, };
+library_shown: Array<CardId>, city_blessing: boolean, 
+/**
+ * Times the Ring has tempted this player (0-4).
+ */
+ring: number, 
+/**
+ * The dungeon this player is in and the room they are in.
+ */
+dungeon: [string, string] | null, 
+/**
+ * Labelled markers made while breaking the rules: (label, value).
+ */
+markers: Array<[string, number]>, };

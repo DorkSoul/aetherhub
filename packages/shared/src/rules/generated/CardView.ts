@@ -46,4 +46,12 @@ enchanted_player: number | null,
 /**
  * A Room on the battlefield: its unlocked doors (bit 0 = the left door, bit 1 = the right door).
  */
-doors: number | null, };
+doors: number | null, 
+/**
+ * Notes put on it while breaking the rules ("can't block"); one lasting until end of turn ends with " · EOT".
+ */
+notes: Array<string>, 
+/**
+ * Made not to untap during its controller's untap step while breaking the rules.
+ */
+no_untap: boolean, };

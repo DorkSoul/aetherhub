@@ -1508,6 +1508,12 @@ pub struct Game {
     /// While a rule is being broken: (viewer, owner, zone) of the hidden zones shown to the player breaking it (a hand or a
     /// library, its order included). Cleared when the rule break ends.
     pub edit_shown: Vec<(PlayerId, PlayerId, Zone)>,
+    /// Notes put on cards while breaking the rules: (card, text, the turn it lasts until the end of, or none for good).
+    pub edit_notes: Vec<(CardId, String, Option<u32>)>,
+    /// Permanents made not to untap during their controller's untap step while breaking the rules.
+    pub edit_no_untap: Vec<CardId>,
+    /// Labelled markers made while breaking the rules: (player, or none for the game; label; value).
+    pub edit_markers: Vec<(Option<PlayerId>, String, i32)>,
     /// Sources of static abilities whose effects already started to apply in an earlier layer of this pass; they keep applying in later layers even if the ability is removed meanwhile (rule 613.6: Humility, Opalescence).
     pub layer_started: std::cell::RefCell<Vec<CardId>>,
     /// Cards outside the battlefield currently carry an extra chosen creature type (reset on the next recompute).

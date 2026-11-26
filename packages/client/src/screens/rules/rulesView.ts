@@ -1,6 +1,6 @@
 // Turns a rules-game view (from the native engine) into the GameView the app's table renders, and maps the table's gestures
 // onto rules actions (a card dropped on the battlefield is played, double-clicking a permanent taps it for mana, ...).
-import type { CardDef, CardFace, CardInst, CardView, GameView, LogView, Seat, rules as R } from '@aetherhub/shared';
+import { DUNGEONS, type CardDef, type CardFace, type CardInst, type CardView, type GameView, type LogView, type Marker, type Seat, type rules as R } from '@aetherhub/shared';
 
 export type RView = R.View;
 export type RCard = R.CardView;
@@ -349,7 +349,7 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
       userId: i, name: names[i] ?? p.name, color: COLORS[i % COLORS.length], deckId: null, deckName: '', sleeve: null, playmat: null, life: p.life, lifeHist: [],
       counters, cmdTax: Object.fromEntries(p.commander_tax.map(([cid, n]) => [String(cid), n])), cmdDmg: Object.fromEntries(p.commander_damage.map(([cid, n]) => [String(cid), n])),
       zones, handFrac: 0.28, cardScale: BOARD_CARD_SCALE, connected: true, conceded: p.lost, revealTop: false,
-      manaPool: poolOf(p.pool), handViewers: [], handRevealAll: false, autoUntap: false, dungeon: null, ring: 0, citysBlessing: false, mulligan: null, tokenDefs: [], archenemy: p.schemes > 0 || snap.cards.some((c) => c.zone === 'Command' && c.owner === i && /\bScheme\b/.test(c.types)),
+      manaPool: poolOf(p.pool), handViewers: [], handRevealAll: false, autoUntap: false, dungeon: dungeonOf(p.dungeon), ring: p.ring ?? 0, citysBlessing: !!p.city_blessing, mulligan: null, tokenDefs: [], archenemy: p.schemes > 0 || snap.cards.some((c) => c.zone === 'Command' && c.owner === i && /\bScheme\b/.test(c.types)),
     };
   });
   const bf = new Map<number, RCard[]>();
@@ -389,11 +389,13 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     const locked = c.doors == null ? [] : [1, 2].filter((d) => !(c.doors! & (1 << (d - 1))));
     cards[iid] = inst(iid, masked ? '' : defFor(c), c.owner, {
       ...(locked.length && { locked }),
-      tapped: c.tapped, flipped: z === 'battlefield' && !masked && !!images[FLIPPED_KEY(ART(c))], counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
+      noUntap: !!c.no_untap, tapped: c.tapped, flipped: z === 'battlefield' && !masked && !!images[FLIPPED_KEY(ART(c))], counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
       pt: creature ? (c.base_power === null || c.base_toughness === null ? { p: c.power ?? 0, t: c.toughness ?? 0 } : { p: (c.power ?? 0) - c.base_power, t: (c.toughness ?? 0) - c.base_toughness }) : { p: 0, t: 0 },
       effects: [
         ...(c.zone === 'Stack' && stackSources.has(c.id) ? [{ k: 'On the stack', eot: false }] : queued?.has(c.id) ? [{ k: `Queued #${queued.get(c.id)}`, eot: false }] : []),
         ...(c.copy_of ? [{ k: `Copy of ${c.copy_of}`, eot: false }] : []),
+        // notes put on it while breaking the rules
+        ...(c.notes ?? []).map((n) => (n.endsWith(' · EOT') ? { k: n.slice(0, -6), eot: true } : { k: n, eot: false })),
         // a name that isn't the one on the picture (a copy "except its name is ...", or a name-changing effect)
         ...(c.name !== ART(c) ? [{ k: `Named ${c.name}`, eot: false }] : []),
       ],
@@ -445,11 +447,26 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     seats, cards, defs, table: { planarDeck, planes },
     turn: { active: Math.max(0, snap.active), n: roundOf(snap.turn, snap.players.length), phase: PHASE_INDEX[snap.step] ?? 3 },
     stage: 'play',
-    global: { monarch: monarch >= 0 ? monarch : null, initiative: initiative >= 0 ? initiative : null, day: snap.day_night === null ? null : snap.day_night ? 'day' : 'night', markers: [] },
+    global: { monarch: monarch >= 0 ? monarch : null, initiative: initiative >= 0 ? initiative : null, day: snap.day_night === null ? null : snap.day_night ? 'day' : 'night', markers: markersOf(snap) },
     requests: [],
     match: { game: 1, wins: wins ?? seats.map(() => 0), results: [] }, winner: null, nextIid: 1, startedAt: 0, viewer: me,
   };
   return { view };
+}
+
+/** The dungeon room a player is in, as the table shows it (the room's place in the dungeon). */
+function dungeonOf(d: [string, string] | null | undefined): Seat['dungeon'] {
+  if (!d) return null;
+  const room = DUNGEONS[d[0]]?.findIndex((r) => r.name === d[1]) ?? -1;
+  return { name: d[0], room: Math.max(0, room) };
+}
+
+/** Labelled markers made while breaking the rules: the game's, then each player's. */
+function markersOf(snap: RView): Marker[] {
+  return [
+    ...(snap.markers ?? []).map(([label, value]) => ({ id: `g:${label}`, seat: null, label, value })),
+    ...snap.players.flatMap((p, i) => (p.markers ?? []).map(([label, value]) => ({ id: `${i}:${label}`, seat: i, label, value }))),
+  ];
 }
 
 export interface ROption {
