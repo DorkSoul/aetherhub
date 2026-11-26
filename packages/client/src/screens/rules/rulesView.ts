@@ -466,7 +466,10 @@ export function optionsOf(d: R.Decision | null, v: RView | null): ROption[] | nu
       case 'ActivateMana': return { action, cardId: a.card, kind: 'ability' as const, label: `${name}: ${c?.abilities.find((x) => x.index === a.ability)?.text ?? 'add mana'}` };
       case 'TurnFaceUp': return { action, cardId: a.card, kind: 'ability' as const, label: `Turn ${name} face up` };
       case 'Companion': return { action, cardId: a.card, kind: 'ability' as const, label: `Put your companion ${name} into your hand ({3})` };
-      case 'UnlockDoor': return { action, cardId: a.card, kind: 'ability' as const, label: `Unlock door ${a.door + 1} of ${name}` };
+      case 'UnlockDoor': {
+        const door = c && roomDoors(c)?.[a.door - 1];
+        return { action, cardId: a.card, kind: 'ability' as const, label: door ? `Unlock ${doorLabel(door)}` : `Unlock door ${a.door} of ${name}` };
+      }
       case 'RollPlanarDie': {
         const cost = v.players[v.you]?.planar_rolls ?? 0;
         const plane = v.cards.find((x) => x.zone === 'Command' && /\b(Plane|Phenomenon)\b/.test(x.types));
@@ -485,8 +488,35 @@ export function tapChoices(s: R.ManaSourceOpt): { s: R.ManaSourceOpt; m: R.ManaT
   return outs.map((o) => ({ s, m: o[0][0], text: o.map(([t, n]) => `{${t}}`.repeat(n)).join('') }));
 }
 
-/** "Cast X", or how it is cast: the other face, face down, or for which alternative cost (flashback, evoke, a foretold card's cost...). */
+export interface RoomDoor {
+  name: string;
+  cost: string;
+  text: string;
+}
+
+/** A Room's two doors (name, mana cost, rules text without the Room reminder), or null for any other card. The second
+ *  door is cast with the card's last own alternative cost, which is that door's mana cost. */
+export function roomDoors(c: R.CardView): [RoomDoor, RoomDoor] | null {
+  const names = c.name.split(' // ');
+  if (names.length !== 2 || !/\bRoom\b/.test(c.types) || !c.alt_costs.length) return null;
+  const texts = c.text.split(/\n\/\/\n/);
+  const clean = (t: string | undefined) => (t ?? '').split('\n').filter((l) => !/^\(You may cast either half\b/.test(l)).join(' ').trim();
+  return [
+    { name: names[0], cost: c.cost, text: clean(texts[0]) },
+    { name: names[1], cost: c.alt_costs[c.alt_costs.length - 1], text: clean(texts[1]) },
+  ];
+}
+
+function doorLabel(d: RoomDoor): string {
+  return `${d.name} (${d.cost})${d.text ? `: ${d.text}` : ''}`;
+}
+
+/** "Cast X", or how it is cast: the other face, face down, or for which alternative cost (flashback, evoke, a foretold card's cost...).
+ *  A Room names the door being cast, with its cost and text. */
 function castLabel(name: string, alt: number | null, c: R.CardView | undefined): string {
+  const doors = c && roomDoors(c);
+  if (doors && alt === null) return `Cast ${doorLabel(doors[0])}`;
+  if (doors && alt === c!.alt_costs.length - 1) return `Cast ${doorLabel(doors[1])}`;
   if (alt === null) return `Cast ${name}`;
   if (alt === 255) return `Cast the other face of ${name}`;
   if (alt === 254) return `Cast ${name} face down`;

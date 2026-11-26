@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ptOf } from '../table/pt';
-import { layoutBoard, markTightPiles, toGameView, type Placed, type RCard, type RView } from './rulesView';
+import { layoutBoard, markTightPiles, optionsOf, toGameView, type Placed, type RCard, type RView } from './rulesView';
 
 const player = (name: string) => ({
   name, life: 20, library: 0, hand: 0, schemes: 0, poison: 0, energy: 0, experience: 0, pool: [0, 0, 0, 0, 0, 0], commander_tax: [], commander_damage: [], lost: false, monarch: false, initiative: false,
@@ -173,5 +173,22 @@ describe('sorting a battlefield', () => {
     const top = [...bf].filter((i) => ['1', '2', '3'].includes(i)).pop()!;
     expect(view.cards[top].stacked).toBe(3);
     expect(bf.filter((i) => view.cards[i].stacked).length).toBe(1);
+  });
+});
+
+describe('Rooms', () => {
+  it('names the door being cast or unlocked, with its cost and text', () => {
+    const reminder = '(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)';
+    const room = card(1, 'Dazzling Theater // Prop Room', 'Enchantment — Room', 0, {
+      zone: 'Hand', cost: '{3}{W}', alt_costs: ['{2}{W}'],
+      text: `Creature spells you cast have convoke.\n${reminder}\n//\nUntap each creature you control during each other player's untap step.\n${reminder}`,
+    });
+    const v = snapOf([room]);
+    const d = { player: 0, kind: { t: 'Priority', stack_len: 0, actions: [{ t: 'Cast', card: 1, alt: null }, { t: 'Cast', card: 1, alt: 0 }, { t: 'UnlockDoor', card: 1, door: 2 }] } } as never;
+    expect(optionsOf(d, v)!.map((o) => o.label)).toEqual([
+      'Cast Dazzling Theater ({3}{W}): Creature spells you cast have convoke.',
+      "Cast Prop Room ({2}{W}): Untap each creature you control during each other player's untap step.",
+      "Unlock Prop Room ({2}{W}): Untap each creature you control during each other player's untap step.",
+    ]);
   });
 });
