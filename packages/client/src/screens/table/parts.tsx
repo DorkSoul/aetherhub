@@ -1,8 +1,9 @@
 import { memo, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CardDef, CardView, GameView, LogView, Rect, Seat } from '@aetherhub/shared';
-import { basePT, DUNGEONS, FRAME_COLORS, frameKey, hexA, mixHex, PHASES } from '@aetherhub/shared';
+import { DUNGEONS, FRAME_COLORS, frameKey, hexA, mixHex, PHASES } from '@aetherhub/shared';
 import { CARD_BACK, imgUrl } from '../../lib/base';
 import { CardImage, TurnButton } from '../../ui/ui';
+import { ptOf } from './pt';
 import { useTable } from './store';
 
 // ------------------------------------------------------------------ card
@@ -27,20 +28,6 @@ export interface TCardProps {
   /** Local "show the other side" toggle (hand cards, meld pieces, cards you can't act on). */
   turned?: boolean;
   onTurn?: () => void;
-}
-
-export function ptOf(c: CardView, def: CardDef | undefined): { txt: string; delta: number } | null {
-  const b = basePT(def, c.face);
-  if (!b) return null;
-  const counters = (c.counters['+1/+1'] || 0) - (c.counters['-1/-1'] || 0);
-  // rules games: the engine's power/toughness (the def's) already includes counters, so don't add them again
-  const net = !!def?.key.startsWith('f:');
-  const d = net ? 0 : counters;
-  const p = b[0] + d + c.pt.p + c.ptEot.p;
-  const t = b[1] + d + c.pt.t + c.ptEot.t;
-  const delta = p - b[0] + (t - b[1]);
-  if (!delta) return null;
-  return { txt: `${p}/${t}`, delta };
 }
 
 /** Effect / counter / P/T / pile overlays in a 90×126 box scaled to the card. */
@@ -74,7 +61,7 @@ export function Overlays({ c, def, w, onBf }: { c: CardView; def?: CardDef; w: n
         </div>
       )}
       {pt && (
-        <div style={{ ...chip, position: 'absolute', right: 4.5, bottom: 4, minWidth: 15.5, height: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--display)', fontWeight: 700, color: pt.delta > 0 ? '#8fdca6' : '#f5a397', borderColor: pt.delta > 0 ? 'rgba(143,220,166,.6)' : 'rgba(245,163,151,.6)' }}>
+        <div style={{ ...chip, position: 'absolute', right: 4.5, bottom: 4, minWidth: 15.5, height: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--display)', fontWeight: 700, ...(pt.delta !== 0 && { color: pt.delta > 0 ? '#8fdca6' : '#f5a397', borderColor: pt.delta > 0 ? 'rgba(143,220,166,.6)' : 'rgba(245,163,151,.6)' }) }}>
           {pt.txt}
         </div>
       )}

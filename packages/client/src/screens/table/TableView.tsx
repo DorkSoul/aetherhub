@@ -15,7 +15,8 @@ import { TableModals } from './modals';
 import { isPanKey, useCamera } from './camera';
 import { markDragged, useCardFlights } from './flights';
 import { ManaPoolBox } from '../rules/mana';
-import { ChatInput, dungeonLabel, LifeBox, LiveOverlays, LogFilters, LogList, Overlays, PhaseStrip, Pile, pileThumb, ptOf, seatTint, TCard } from './parts';
+import { ChatInput, dungeonLabel, LifeBox, LiveOverlays, LogFilters, LogList, Overlays, PhaseStrip, Pile, pileThumb, seatTint, TCard } from './parts';
+import { ptOf } from './pt';
 import { mySeat, useTable, type PanZoom } from './store';
 import { AfterGameButtons } from '../afterGame';
 

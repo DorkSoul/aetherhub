@@ -50,6 +50,8 @@ export interface CardDef {
   /** Image references, one per face that has its own image: `p/<id>/<face>` or `a/<assetId>`. Empty = render a frame. */
   img: string[];
   isToken?: boolean;
+  /** Rules games: a creature with no printed power/toughness (star P/T set by a characteristic-defining ability, or an animated land or artifact). Its current P/T is always shown on the table. */
+  unprintedPT?: boolean;
   legalities?: Record<string, string>;
   usd?: number | null;
   eur?: number | null;

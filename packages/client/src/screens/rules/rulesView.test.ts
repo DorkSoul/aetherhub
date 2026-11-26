@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ptOf } from '../table/pt';
 import { layoutBoard, markTightPiles, toGameView, type Placed, type RCard, type RView } from './rulesView';
 
 const player = (name: string) => ({
@@ -37,6 +38,28 @@ describe('which side of the table a permanent sits on', () => {
   it('an Aura on its own creature stays with its controller', () => {
     const cards = [card(1, 'Bear', 'Creature — Bear', 0, { power: 2, toughness: 2 }), card(2, 'Rancor', 'Enchantment — Aura', 0, { attached_to: 1 })];
     expect(sideOf(cards, 'Rancor')).toBe(0);
+  });
+});
+
+describe('power and toughness on the table', () => {
+  const shownPT = (c: RCard) => {
+    const { view } = toGameView(snapOf([c]), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map());
+    const inst = view.cards[String(c.id)];
+    return ptOf(inst, view.defs[inst.def])?.txt ?? null;
+  };
+
+  it('a */* creature always shows its current P/T', () => {
+    expect(shownPT(card(1, 'Old Stickfingers', 'Legendary Creature — Horror', 0, { power: 2, toughness: 2 }))).toBe('2/2');
+  });
+
+  it('an animated land shows its P/T', () => {
+    expect(shownPT(card(1, 'Mutavault', 'Land Creature — Shapeshifter', 0, { power: 2, toughness: 2 }))).toBe('2/2');
+  });
+
+  it('a printed P/T shows only when changed', () => {
+    expect(shownPT(card(1, 'Bear', 'Creature — Bear', 0, { power: 2, toughness: 2, base_power: 2, base_toughness: 2 }))).toBe(null);
+    expect(shownPT(card(1, 'Bear', 'Creature — Bear', 0, { power: 3, toughness: 3, base_power: 2, base_toughness: 2 }))).toBe('3/3');
+    expect(shownPT(card(1, 'Lhurgoyf', 'Creature — Lhurgoyf', 0, { power: 2, toughness: 3, base_power: 0, base_toughness: 1 }))).toBe('2/3');
   });
 });
 

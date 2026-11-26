@@ -301,19 +301,22 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
   const cards: Record<string, CardView> = {};
   const defFor = (c: RCard): string => {
     const creature = c.power !== null;
-    const bp = creature ? (c.base_power ?? c.power) : null;
-    const bt = creature ? (c.base_toughness ?? c.toughness) : null;
+    // no printed P/T (Old Stickfingers' */*, an animated land): the def carries none and the instance carries the whole P/T
+    const unprinted = creature && (c.base_power === null || c.base_toughness === null);
+    const bp = creature && !unprinted ? c.base_power : null;
+    const bt = creature && !unprinted ? c.base_toughness : null;
     const art = (c.art_token ?? c.token) ? images[TOKEN_KEY(c)] : images[ART(c)];
     // img[0] is the face that is up, img[1] the other face (so the card can be turned over to look at it)
     const back = (c.art_token ?? c.token) ? undefined : images[BACK_KEY(ART(c))];
     const backFace = back ? parseFace(images[BACK_FACE_KEY(ART(c))]) : undefined;
-    const key = `f:${c.name}|${ART(c)}|${creature ? bp + '/' + bt : ''}|${c.colors}|${c.token ? 't' : ''}`;
+    const key = `f:${c.name}|${ART(c)}|${unprinted ? '*' : creature ? bp + '/' + bt : ''}|${c.colors}|${c.token ? 't' : ''}`;
     if (!defs[key]) {
       defs[key] = {
         key, name: c.name, layout: (images[LAYOUT_KEY(ART(c))] as CardDef['layout'] | undefined) ?? 'normal', manaCost: c.cost, cmc: c.mana_value, typeLine: c.types, oracleText: c.text, colors: [], colorIdentity: [], img: art ? (back ? [art, back] : [art]) : [],
         // a token copy says "Copy of ..." itself; the table's generic "Copy" badge is for sandbox tokens made from cards
         isToken: c.token,
-        power: creature ? String(bp) : undefined, toughness: creature ? String(bt) : undefined,
+        power: bp !== null ? String(bp) : undefined, toughness: bt !== null ? String(bt) : undefined,
+        ...(unprinted ? { unprintedPT: true } : {}),
       };
       // faces[0] is the face that is up, as the engine sees it now; faces[1] the printed other face
       if (backFace) {
@@ -381,7 +384,7 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     const masked = c.face_down && !c.art;
     cards[iid] = inst(iid, masked ? '' : defFor(c), c.owner, {
       tapped: c.tapped, flipped: z === 'battlefield' && !masked && !!images[FLIPPED_KEY(ART(c))], counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
-      pt: creature ? { p: (c.power ?? 0) - (c.base_power ?? c.power ?? 0), t: (c.toughness ?? 0) - (c.base_toughness ?? c.toughness ?? 0) } : { p: 0, t: 0 },
+      pt: creature ? (c.base_power === null || c.base_toughness === null ? { p: c.power ?? 0, t: c.toughness ?? 0 } : { p: (c.power ?? 0) - c.base_power, t: (c.toughness ?? 0) - c.base_toughness }) : { p: 0, t: 0 },
       effects: [
         ...(c.zone === 'Stack' && stackSources.has(c.id) ? [{ k: 'On the stack', eot: false }] : queued?.has(c.id) ? [{ k: `Queued #${queued.get(c.id)}`, eot: false }] : []),
         ...(c.copy_of ? [{ k: `Copy of ${c.copy_of}`, eot: false }] : []),
