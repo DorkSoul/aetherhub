@@ -36,10 +36,10 @@ export const IntentSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('effect'), iid, k: z.string().min(1).max(40), eot: z.boolean().optional(), remove: z.boolean().optional() }),
   z.object({ type: z.literal('noUntap'), iid, value: z.boolean() }),
   z.object({ type: z.literal('delete'), iids }),
-  z.object({ type: z.literal('group'), iid }),
+  z.object({ type: z.literal('group'), iid, tight: z.boolean().optional() }),
   z.object({ type: z.literal('split'), iid, n: z.number().int().min(1).max(999).optional(), tap: z.boolean().optional() }),
   z.object({ type: z.literal('ungroup'), iid }),
-  z.object({ type: z.literal('stack'), iids }),
+  z.object({ type: z.literal('stack'), iids, tight: z.boolean().optional() }),
   z.object({ type: z.literal('grantPeek'), iid, seat }),
   z.object({ type: z.literal('toFront'), iids }),
   // ---- library

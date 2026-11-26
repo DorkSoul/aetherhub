@@ -19,7 +19,7 @@ test.afterAll(async () => {
   srv.cleanup();
 });
 
-type Card = { id: number; name: string; zone: string; owner: number };
+type Card = { id: number; name: string; zone: string; owner: number; controller: number };
 
 async function api(p: Page, method: 'GET' | 'POST', path: string, data?: unknown) {
   const r = method === 'GET' ? await p.request.get(srv.url + path) : await p.request.post(srv.url + path, { data });
@@ -152,6 +152,21 @@ test('Auras and Curses on an opponent sit on their side, the hand keeps its orde
     const old = was.find((w) => w.iid === iid)!.box!;
     expect(Math.abs(box!.x - old.x) + Math.abs(box!.y - old.y), `card ${iid} moved`).toBeLessThan(2);
   }
+
+  // the Treasures can lie exactly on top of each other instead, with their count on the top one
+  s = await api(p, 'GET', `api/rules/games/${id}`);
+  const treasures: Card[] = s.view.cards.filter((c: Card) => c.name === 'Treasure' && c.zone === 'Battlefield' && c.controller === me);
+  const n = treasures.length;
+  expect(n).toBeGreaterThanOrEqual(2);
+  await onSide(me, treasures[0]).click({ button: 'right' });
+  await p.getByText(`Group identical: stacked with count (×${n})`).click();
+  await expect(p.locator(`[data-seat="${me}"] [data-bf]`).getByText(`×${n}`, { exact: true })).toBeVisible();
+  const spread = async () => {
+    const spots = await Promise.all(treasures.map(async (t) => (await onSide(me, t).boundingBox())!));
+    return Math.max(...spots.map((b) => Math.abs(b.x - spots[0].x) + Math.abs(b.y - spots[0].y)));
+  };
+  await expect.poll(spread).toBeLessThan(2);
+  await p.screenshot({ path: test.info().outputPath('treasures-stacked.png') });
 
   // the admin Server page lists the game and shows the server log
   await p.goto(srv.url + 'settings/server');

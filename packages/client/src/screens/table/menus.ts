@@ -121,12 +121,23 @@ export function cardMenu(iid: string): MenuItem[] {
     if (!multi) I.push(item('Ping', () => socket.send({ t: 'ping', iid }), 'Middle-click'));
     I.push(item('Draw arrow', () => useApp.getState().toast('Hold Alt and drag from a card to a card or player'), 'Alt-drag'));
     const bf = v.seats[loc.seat].zones.battlefield;
-    if (multi && ids.every((i) => bf.includes(i) && v.cards[i]?.def === c.def && !v.cards[i]?.faceDown)) I.push(item(`Stack ${ids.length} selected into a pile`, () => send({ type: 'stack', iids: ids })));
-    if (!multi && c.pile > 1) {
+    const rulesGame = !!useTable.getState().rules;
+    if (multi && ids.every((i) => bf.includes(i) && v.cards[i]?.def === c.def && !v.cards[i]?.faceDown)) {
+      // a rules game keeps every card: they can lie fanned out or exactly on top of each other with a count
+      if (rulesGame) {
+        I.push(item(`Pile ${ids.length} selected: fanned out`, () => send({ type: 'stack', iids: ids, tight: false })));
+        I.push(item(`Pile ${ids.length} selected: stacked with count (×${ids.length})`, () => send({ type: 'stack', iids: ids, tight: true })));
+      } else I.push(item(`Stack ${ids.length} selected into a pile`, () => send({ type: 'stack', iids: ids })));
+    }
+    const copies = bf.filter((i) => v.cards[i]?.def === c.def && v.cards[i]?.token === c.token).length;
+    if (!multi && rulesGame && copies > 1) {
+      I.push(item('Group identical: fanned out', () => send({ type: 'group', iid, tight: false })));
+      I.push(item(`Group identical: stacked with count (×${copies})`, () => send({ type: 'group', iid, tight: true })));
+    } else if (!multi && c.pile > 1) {
       I.push(item('Split one off the pile', () => send({ type: 'split', iid, n: 1 })));
       I.push({ kind: 'input', label: `Tap N of the ${c.pile}`, placeholder: 'N', button: 'Tap', submit: (t) => parseInt(t, 10) > 0 && send({ type: 'split', iid, n: parseInt(t, 10), tap: true }) });
       I.push(item('Ungroup pile', () => send({ type: 'ungroup', iid })));
-    } else if (!multi && (c.token || useTable.getState().rules) && bf.filter((i) => v.cards[i]?.def === c.def && v.cards[i]?.token === c.token).length > 1) I.push(item('Group identical', () => send({ type: 'group', iid })));
+    } else if (!multi && c.token && copies > 1) I.push(item('Group identical', () => send({ type: 'group', iid })));
     I.push({
       kind: 'sub',
       label: 'More…',

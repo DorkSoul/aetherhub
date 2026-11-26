@@ -13,7 +13,7 @@ import { unmarkDragged } from '../table/flights';
 import { resetTable, useTable } from '../table/store';
 import { TableView } from '../table/TableView';
 import { isGridPick, PromptPanel } from './RulesPrompts';
-import { AUTO_SLOT, counterKindOf, tapChoices, describeEvent, frameDelay, gestureOption, isPermanentCard, layoutBoard, logViews, onlyUntaps, optionsOf, PHASE_INDEX, PILE_DX, PHASE_STEP, sides, stepIndex, toGameView, type Placed, type Remembered, type RView } from './rulesView';
+import { AUTO_SLOT, counterKindOf, tapChoices, describeEvent, frameDelay, gestureOption, isPermanentCard, layoutBoard, logViews, markTightPiles, onlyUntaps, optionsOf, PHASE_INDEX, PILE_DX, PHASE_STEP, type Pile, sides, stepIndex, toGameView, type Placed, type Remembered, type RView } from './rulesView';
 
 // Wire shapes of the rules-game API (packages/server/src/routes/rules.ts).
 interface Frame {
@@ -312,8 +312,10 @@ export default function RulesGame() {
   const epochRef = useRef<number | null>(null);
   const imgs = useRef<Record<string, string>>({});
   const placed = useRef<Placed>(new Map());
-  /** piles of permanents the player made ("Group identical", "Stack into a pile") or that sorting made: kept together by sorting */
-  const groups = useRef<number[][]>([]);
+  /** piles of permanents the player made ("Group identical", "Pile selected") or that sorting made: kept together by sorting */
+  const groups = useRef<Pile[]>([]);
+  /** permanents the player dragged out of a pile: sorting doesn't put them back into it */
+  const loose = useRef(new Set<number>());
   /** where the player left each permanent, kept across undo / replay (which rebuild the game and so forget `placed`) */
   const memory = useRef<Remembered>(new Map());
   /** the game log, built from the events as the frames are shown */
@@ -438,6 +440,7 @@ export default function RulesGame() {
     resetPlayback();
     memory.current.clear();
     groups.current = [];
+    loose.current.clear();
   }, [gameId]);
 
   useEffect(() => {
@@ -728,9 +731,12 @@ export default function RulesGame() {
   const sortSeat = (v: RView, seat: number): boolean => {
     const sideOf = sides(v.cards);
     const mine = v.cards.filter((c) => c.zone === 'Battlefield' && sideOf(c) === seat && !optimistic.current.has(c.id));
-    const { pos, piles } = layoutBoard(mine, v.players.length, groups.current, placed.current);
+    const { pos, piles } = layoutBoard(mine, v.players.length, groups.current, placed.current, loose.current);
     const onField = new Set(v.cards.filter((c) => c.zone === 'Battlefield').map((c) => c.id));
-    groups.current = [...groups.current, ...piles].map((g) => g.filter((id) => onField.has(id))).filter((g) => g.length > 1);
+    const sorted = new Set(mine.map((c) => c.id));
+    groups.current = [...groups.current.filter((g) => !g.ids.some((id) => sorted.has(id))), ...piles]
+      .map((g) => ({ ...g, ids: g.ids.filter((id) => onField.has(id)) }))
+      .filter((g) => g.ids.length > 1);
     let moved = false;
     for (const [id, p] of pos) {
       const was = placed.current.get(id);
@@ -758,6 +764,7 @@ export default function RulesGame() {
           if (c.zone === 'Battlefield' && p && view.cards[String(c.id)]) Object.assign(view.cards[String(c.id)], p);
         }
     }
+    markTightPiles(view, groups.current);
     view.settings.format = state.commander ? 'commander' : 'standard';
     view.seats.forEach((seat, i) => {
       const sz = sizes.current[i];
@@ -949,7 +956,10 @@ export default function RulesGame() {
           const onField = (id: number) => st.view!.cards.some((c) => c.id === id && c.zone === 'Battlefield');
           if (ids.length && ids.every(onField)) {
             // dragging one card out of a pile takes it out of the pile
-            if (ids.length === 1) groups.current = groups.current.map((g) => g.filter((x) => x !== ids[0])).filter((g) => g.length > 1);
+            if (ids.length === 1 && groups.current.some((g) => g.ids.includes(ids[0]))) {
+              groups.current = groups.current.map((g) => ({ ...g, ids: g.ids.filter((x) => x !== ids[0]) })).filter((g) => g.ids.length > 1);
+              loose.current.add(ids[0]);
+            }
             ids.forEach((id: number, k: number) => {
               const pos = intent.positions?.[k] ?? (intent.x !== undefined && intent.y !== undefined ? { x: intent.x, y: intent.y } : null);
               if (pos) placed.current.set(id, { x: pos.x, y: pos.y });
@@ -958,15 +968,18 @@ export default function RulesGame() {
             return;
           }
         }
-        // "Group identical" / "Stack into a pile": lay copies of a card on top of each other, slightly offset. Only table layout, never a game action.
+        // "Group identical" / "Pile selected": lay copies of a card on top of each other, fanned out or exactly (with a count). Only table layout, never a game action.
         if ((intent.type === 'group' || intent.type === 'stack') && st?.view) {
           const ids: number[] = intent.type === 'stack' ? (intent.iids ?? []).map(Number) : [Number(intent.iid)];
           const first = st.view.cards.find((c) => c.id === ids[0]);
           if (first) {
             const group = intent.type === 'stack' ? ids : st.view.cards.filter((c) => c.zone === 'Battlefield' && c.controller === first.controller && c.name === first.name && c.token === first.token).map((c) => c.id);
             const base = placed.current.get(ids[0]) ?? { x: 0.5, y: 0.5 };
-            group.forEach((id, k) => placed.current.set(id, { x: Math.min(1, base.x + k * PILE_DX), y: base.y }));
-            groups.current = [...groups.current.map((g) => g.filter((x) => !group.includes(x))).filter((g) => g.length > 1), group];
+            const dx = intent.tight ? 0 : PILE_DX;
+            group.forEach((id, k) => placed.current.set(id, { x: Math.min(1, base.x + k * dx), y: base.y }));
+            group.forEach((id) => loose.current.delete(id));
+            const pile: Pile = { ids: group, mode: intent.tight ? 'tight' : 'fan' };
+            groups.current = [...groups.current.map((g) => ({ ...g, ids: g.ids.filter((x) => !group.includes(x)) })).filter((g) => g.ids.length > 1), pile];
             setLayoutTick((t) => t + 1);
           }
           return;

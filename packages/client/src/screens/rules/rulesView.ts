@@ -47,6 +47,14 @@ export type Remembered = Map<number, { x: number; y: number; name: string }>;
 export const BOARD_CARD_SCALE = 0.8;
 /** Sideways offset between the cards of a pile of identical permanents (a fraction of the board width): piles fan out horizontally. */
 export const PILE_DX = 0.014;
+/** A pile made by sorting lies exactly on top of itself, with a count, from this many cards. */
+export const TIGHT_PILE = 7;
+/** A pile of permanents kept together on the table: `fan` partly covered, `tight` exactly on top of each other with a
+ *  count, `auto` (made by sorting) fanned until it holds `TIGHT_PILE` cards, then tight. */
+export type Pile = { ids: number[]; mode: 'auto' | 'fan' | 'tight' };
+export const pileTight = (p: Pile, n = p.ids.length): boolean => p.mode === 'tight' || (p.mode === 'auto' && n >= TIGHT_PILE);
+/** What makes permanents identical for piling: same name, token or not, face-down or not, same power and toughness. */
+const pileKey = (c: RCard): string => `${c.name}|${c.token}|${c.face_down}|${c.power}/${c.toughness}`;
 const ROW_Y = { creature: 0, other: 0.5, land: 1 };
 
 /** A board card's size in board units (positions run 0..1 over the room the card can move in): `pitch` the width of a
@@ -148,39 +156,50 @@ function settle(list: RCard[], placed: Placed, seatCount: number, memory?: Remem
 }
 
 /** "Sort this board": the three automatic rows (creatures, other permanents, lands), with every pile kept together and
- *  laid out as one wide unit. `groups` are piles the player made (kept as they are); three or more copies of the same
- *  card that are not in a pile yet become a new pile. Each card moves as little as it can: it goes to its row at about
- *  where it is now, cards keep their left-to-right order, and only cards that would overlap are pushed apart; cards with
- *  no position yet go after the others in their row. Sorting a sorted board changes nothing. Returns the position of every
- *  card except attached ones, and the new piles. */
-export function layoutBoard(all: RCard[], seatCount: number, groups: number[][], current?: Placed): { pos: Map<number, { x: number; y: number }>; piles: number[][] } {
+ *  laid out as one wide unit. `groups` are the piles there already: a copy of a pile's card that is in no pile joins it
+ *  (unless the player took it out of a pile: `loose`), and three or more copies of the same card that are in no pile become
+ *  a new pile (`auto`). A tight pile (see `pileTight`) takes one slot, its cards exactly on top of each other. Each card
+ *  moves as little as it can: it goes to its row at about where it is now, cards keep their left-to-right order, and only
+ *  cards that would overlap are pushed apart; cards with no position yet go after the others in their row. Sorting a
+ *  sorted board changes nothing. Returns the position of every card except attached ones, and the piles of this board as
+ *  they are now (with the copies that joined them, and the new ones). */
+export function layoutBoard(all: RCard[], seatCount: number, groups: Pile[], current?: Placed, loose?: Set<number>): { pos: Map<number, { x: number; y: number }>; piles: Pile[] } {
   const pitch = slotPitch(seatCount);
   // an Aura or Equipment is drawn under its host, so it takes no place of its own in a row
   const here = new Set(all.map((c) => c.id));
   const cards = all.filter((c) => c.attached_to == null || !here.has(c.attached_to));
   const byId = new Map(cards.map((c) => [c.id, c]));
   const used = new Set<number>();
-  const units: number[][] = [];
+  const piles: Pile[] = [];
+  const pileOf = new Map<string, Pile>();
   for (const g of groups) {
-    const ids = g.filter((id) => byId.has(id) && !used.has(id));
+    const ids = g.ids.filter((id) => byId.has(id) && !used.has(id));
     if (ids.length < 2) continue;
-    units.push(ids);
+    const p = { ids, mode: g.mode };
+    piles.push(p);
     ids.forEach((id) => used.add(id));
+    const k = pileKey(byId.get(ids[0])!);
+    if (!pileOf.has(k)) pileOf.set(k, p);
   }
   const same = new Map<string, number[]>();
   for (const c of cards) {
     if (used.has(c.id)) continue;
-    const k = `${c.name}|${c.token}|${c.face_down}|${c.power}/${c.toughness}`;
+    const k = pileKey(c);
+    const p = pileOf.get(k);
+    if (p && !loose?.has(c.id)) {
+      p.ids.push(c.id);
+      used.add(c.id);
+      continue;
+    }
     same.set(k, [...(same.get(k) ?? []), c.id]);
   }
-  const piles: number[][] = [];
   for (const ids of same.values()) {
     if (ids.length < 3) continue;
-    units.push(ids);
-    piles.push(ids);
+    piles.push({ ids, mode: 'auto' });
     ids.forEach((id) => used.add(id));
   }
-  for (const c of cards) if (!used.has(c.id)) units.push([c.id]);
+  const units: { u: number[]; tight: boolean }[] = piles.map((p) => ({ u: p.ids, tight: pileTight(p) }));
+  for (const c of cards) if (!used.has(c.id)) units.push({ u: [c.id], tight: false });
   // where a unit is now: its leftmost card (none for a card that has no position yet)
   const at = (u: number[]): number | null => {
     const xs = u.map((id) => current?.get(id)).filter((p): p is { x: number; y: number } => !!p && p.x >= 0).map((p) => p.x);
@@ -189,12 +208,13 @@ export function layoutBoard(all: RCard[], seatCount: number, groups: number[][],
   const pos = new Map<number, { x: number; y: number }>();
   for (const y of [ROW_Y.creature, ROW_Y.other, ROW_Y.land]) {
     const row = units
-      .filter((u) => rowY(byId.get(u[0])!) === y)
-      .map((u) => ({ u, x: at(u) }))
+      .filter(({ u }) => rowY(byId.get(u[0])!) === y)
+      .map(({ u, tight }) => ({ u, tight, x: at(u) }))
       .sort((a, b) => (a.x ?? Infinity) - (b.x ?? Infinity) || byId.get(a.u[0])!.name.localeCompare(byId.get(b.u[0])!.name) || a.u[0] - b.u[0]);
     if (!row.length) continue;
-    // each unit takes a slot plus the fan of its pile
-    const fan = row.map(({ u }) => (u.length - 1) * PILE_DX);
+    // each unit takes a slot plus the fan of its pile (none for a tight pile)
+    const dx = row.map(({ tight }) => (tight ? 0 : PILE_DX));
+    const fan = row.map(({ u }, i) => (u.length - 1) * dx[i]);
     const advance = fan.map((f) => pitch + f);
     const needed = advance.slice(0, -1).reduce((a, b) => a + b, 0) + fan[fan.length - 1];
     const xs: number[] = [];
@@ -206,7 +226,7 @@ export function layoutBoard(all: RCard[], seatCount: number, groups: number[][],
         xs.push(x);
         x += advance[i] * f;
       });
-      row.forEach(({ u }, i) => u.forEach((id, k) => pos.set(id, { x: Math.min(1, xs[i] + k * PILE_DX * f), y })));
+      row.forEach(({ u }, i) => u.forEach((id, k) => pos.set(id, { x: Math.min(1, xs[i] + k * dx[i] * f), y })));
       continue;
     }
     // where each unit is, pushed right past the one before it, then back left from the edge
@@ -215,9 +235,22 @@ export function layoutBoard(all: RCard[], seatCount: number, groups: number[][],
       xs.push(Math.max(prev, x ?? prev));
     });
     for (let i = row.length - 1; i >= 0; i--) xs[i] = Math.min(xs[i], i === row.length - 1 ? 1 - fan[i] : xs[i + 1] - advance[i]);
-    row.forEach(({ u }, i) => u.forEach((id, k) => pos.set(id, { x: Math.max(0, Math.min(1, xs[i] + k * PILE_DX)), y })));
+    row.forEach(({ u }, i) => u.forEach((id, k) => pos.set(id, { x: Math.max(0, Math.min(1, xs[i] + k * dx[i])), y })));
   }
   return { pos, piles };
+}
+
+/** Puts the count on the top card of every tight pile (the one drawn last on its battlefield). Display only. */
+export function markTightPiles(view: GameView, piles: Pile[]): void {
+  for (const p of piles) {
+    const iids = p.ids.map(String).filter((iid) => view.cards[iid]);
+    if (iids.length < 2 || !pileTight(p, iids.length)) continue;
+    for (const s of view.seats) {
+      const bf = s.zones.battlefield;
+      const top = iids.filter((iid) => bf.includes(iid)).sort((a, b) => bf.indexOf(b) - bf.indexOf(a))[0];
+      if (top) view.cards[top].stacked = iids.filter((iid) => bf.includes(iid)).length;
+    }
+  }
 }
 
 /** The engine counts every player's turn (turn 1 = first player, turn 2 = second); the table shows rounds: turn 1 for everyone, then turn 2. */

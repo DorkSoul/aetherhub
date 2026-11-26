@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { layoutBoard, toGameView, type Placed, type RCard, type RView } from './rulesView';
+import { layoutBoard, markTightPiles, toGameView, type Placed, type RCard, type RView } from './rulesView';
 
 const player = (name: string) => ({
   name, life: 20, library: 0, hand: 0, schemes: 0, poison: 0, energy: 0, experience: 0, pool: [0, 0, 0, 0, 0, 0], commander_tax: [], commander_damage: [], lost: false, monarch: false, initiative: false,
@@ -110,7 +110,7 @@ describe('sorting a battlefield', () => {
     const pile = [bear(1, 'Goblin'), bear(2, 'Goblin'), bear(3, 'Goblin'), bear(4)];
     const near: Placed = new Map([[1, { x: 0.2, y: 0 }], [2, { x: 0.2, y: 0 }], [3, { x: 0.2, y: 0 }], [4, { x: 0.21, y: 0 }]]);
     const sorted = layoutBoard(pile, 2, [], near);
-    expect(sorted.piles).toEqual([[1, 2, 3]]);
+    expect(sorted.piles).toEqual([{ ids: [1, 2, 3], mode: 'auto' }]);
     expect(layoutBoard(pile, 2, sorted.piles, sorted.pos).pos).toEqual(sorted.pos);
   });
 
@@ -119,5 +119,36 @@ describe('sorting a battlefield', () => {
     const { pos } = layoutBoard(cards, 2, [], new Map([[1, { x: 0.3, y: 0 }], [2, { x: 0.3, y: 0.5 }]]));
     expect(pos.has(2)).toBe(false);
     expect(pos.get(1)).toEqual({ x: 0.3, y: 0 });
+  });
+
+  it('fans a pile out until it holds 7 cards, then lays them exactly on top of each other; new copies join it', () => {
+    const goblins = (n: number) => Array.from({ length: n }, (_, i) => bear(i + 1, 'Goblin'));
+    const six = layoutBoard(goblins(6), 2, [], new Map());
+    expect(six.piles).toEqual([{ ids: [1, 2, 3, 4, 5, 6], mode: 'auto' }]);
+    expect(new Set([1, 2, 3, 4, 5, 6].map((id) => six.pos.get(id)!.x)).size).toBe(6);
+    // a seventh copy arrives: it joins the pile, which now lies in one spot
+    const seven = layoutBoard(goblins(7), 2, six.piles, six.pos);
+    expect(seven.piles).toEqual([{ ids: [1, 2, 3, 4, 5, 6, 7], mode: 'auto' }]);
+    expect(new Set([1, 2, 3, 4, 5, 6, 7].map((id) => seven.pos.get(id)!.x)).size).toBe(1);
+    // one the player dragged out of the pile stays out
+    expect(layoutBoard(goblins(7), 2, [{ ids: [1, 2, 3, 4, 5, 6], mode: 'auto' }], six.pos, new Set([7])).piles).toEqual([{ ids: [1, 2, 3, 4, 5, 6], mode: 'auto' }]);
+  });
+
+  it('keeps the style the player chose: a pile of two stacked with a count, a big pile fanned out', () => {
+    const cards = [bear(1, 'Goblin'), bear(2, 'Goblin'), ...Array.from({ length: 8 }, (_, i) => bear(10 + i, 'Elf'))];
+    const elves = Array.from({ length: 8 }, (_, i) => 10 + i);
+    const { pos } = layoutBoard(cards, 2, [{ ids: [1, 2], mode: 'tight' }, { ids: elves, mode: 'fan' }], new Map());
+    expect(pos.get(1)).toEqual(pos.get(2));
+    expect(new Set(elves.map((id) => pos.get(id)!.x)).size).toBe(8);
+  });
+
+  it('puts the count on the top card of a tight pile only', () => {
+    const cards = [bear(1, 'Goblin'), bear(2, 'Goblin'), bear(3, 'Goblin'), bear(4, 'Elf'), bear(5, 'Elf')];
+    const { view } = toGameView(snapOf(cards), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map());
+    markTightPiles(view, [{ ids: [1, 2, 3], mode: 'tight' }, { ids: [4, 5], mode: 'fan' }]);
+    const bf = view.seats[0].zones.battlefield;
+    const top = [...bf].filter((i) => ['1', '2', '3'].includes(i)).pop()!;
+    expect(view.cards[top].stacked).toBe(3);
+    expect(bf.filter((i) => view.cards[i].stacked).length).toBe(1);
   });
 });

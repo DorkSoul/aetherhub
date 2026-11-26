@@ -8,6 +8,8 @@ export type Viewer = number | 'spectator';
 
 export interface CardView extends CardInst {
   hidden?: boolean;
+  /** The top card of a pile whose cards lie exactly on top of each other: how many cards the pile holds (display only). */
+  stacked?: number;
 }
 
 export interface GameView extends Omit<GameState, 'cards'> {

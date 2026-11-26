@@ -78,7 +78,7 @@ export function Overlays({ c, def, w, onBf }: { c: CardView; def?: CardDef; w: n
           {pt.txt}
         </div>
       )}
-      {c.pile > 1 && <div style={{ position: 'absolute', right: 3, top: 3, fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 9, background: 'var(--acc)', color: 'var(--acc-ink)', boxShadow: '0 1px 3px rgba(0,0,0,.6)' }}>×{c.pile}</div>}
+      {(c.pile > 1 || (c.stacked ?? 0) > 1) && <div style={{ position: 'absolute', right: 3, top: 3, fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 9, background: 'var(--acc)', color: 'var(--acc-ink)', boxShadow: '0 1px 3px rgba(0,0,0,.6)' }}>×{c.pile > 1 ? c.pile : c.stacked}</div>}
       {onBf && c.faceDown && <div style={{ position: 'absolute', right: 3, bottom: 3, fontSize: 10, fontWeight: 600, background: '#15130f', color: '#ebe8e2', borderRadius: 4, padding: '1px 4px' }}>2/2</div>}
     </div>
   );
