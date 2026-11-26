@@ -448,58 +448,8 @@ pub fn evaluate_with_risk(g: &Game, me: PlayerId) -> f32 {
 pub fn policy(g: &Game, d: &Decision) -> Choice {
     let me = d.player;
     match &d.kind {
-        DecisionKind::Mulligan { hand, mulligans, peek } => {
-            let is_land = |c: &CardId| g.card(*c).cur.types.has(CardType::Land);
-            let lands = hand.iter().filter(|c| is_land(c)).count();
-            let n = hand.len();
-            let mut keep = n <= 5 || (*mulligans >= 3) || (lands >= 2 && lands <= if n >= 7 { 5 } else { 4 });
-            if !peek.is_empty() {
-                // free mulligan + scry 3: the scry can keep the lands it needs on top (or bottom the extra ones), so a
-                // one-lander with two lands coming, or a six-lander with spells coming, is fine; mulligans are free,
-                // so stop only after several
-                let peek_lands = peek.iter().filter(|c| is_land(c)).count();
-                keep = (2..=5).contains(&lands) || (lands == 1 && peek_lands >= 2) || (lands == 6 && peek_lands < peek.len()) || *mulligans >= 5;
-                if keep {
-                    // scry before keeping: lands past five and spells far above the land count go to the bottom
-                    let bad: Vec<usize> = peek
-                        .iter()
-                        .enumerate()
-                        .filter(|(_, c)| if is_land(c) { lands >= 5 } else { g.def_of(**c).mana_value as usize > lands + 3 })
-                        .map(|(i, _)| i)
-                        .collect();
-                    if !bad.is_empty() {
-                        return Choice::Pick { indices: bad };
-                    }
-                }
-            }
-            Choice::Keep { keep }
-        }
-        DecisionKind::Bottom { hand, n } => {
-            let mut cards: Vec<CardId> = hand.clone();
-            let mut out = vec![];
-            for _ in 0..*n {
-                let lands = cards.iter().filter(|c| g.card(**c).cur.types.has(CardType::Land)).count();
-                let idx = if lands > 3 {
-                    cards.iter().position(|c| g.card(*c).cur.types.has(CardType::Land))
-                } else {
-                    let mut best: Option<(usize, u32)> = None;
-                    for (i, c) in cards.iter().enumerate() {
-                        let k = g.card(*c);
-                        if k.cur.types.has(CardType::Land) {
-                            continue;
-                        }
-                        let mv = g.def_of(*c).mana_value;
-                        if best.map_or(true, |b| mv > b.1) {
-                            best = Some((i, mv));
-                        }
-                    }
-                    best.map(|b| b.0)
-                };
-                let i = idx.unwrap_or(0);
-                out.push(cards.remove(i));
-            }
-            Choice::Bottom { cards: out }
-        }
+        DecisionKind::Mulligan { hand, mulligans, peek } => crate::mulligan::decide(g, hand, *mulligans, peek),
+        DecisionKind::Bottom { hand, n } => Choice::Bottom { cards: crate::mulligan::choose_bottom(g, hand, *n as usize) },
         DecisionKind::Priority { .. } => pass(),
         DecisionKind::Pick { options, min, max, purpose, .. } => {
             let ranked = rank_options(g, me, d);
@@ -507,22 +457,11 @@ pub fn policy(g: &Game, d: &Decision) -> Choice {
             let want = match purpose {
                 PickPurpose::Scry | PickPurpose::Surveil => {
                     // choose cards to bottom/graveyard: keep good ones on top
-                    let lands_have = g.player(me).hand.iter().filter(|c| g.card(**c).cur.types.has(CardType::Land)).count()
+                    let lands_have = g.player(me).hand.iter().filter(|c| crate::mulligan::is_land(g, **c)).count()
                         + g.battlefield.iter().filter(|c| g.card(**c).cur.controller == me && g.card(**c).cur.types.has(CardType::Land)).count();
-                    let bad: Vec<usize> = options
-                        .iter()
-                        .enumerate()
-                        .filter_map(|(i, o)| {
-                            if let Opt::Obj { obj: Obj::Card { id } } = o {
-                                let land = g.card(*id).cur.types.has(CardType::Land);
-                                let mv = g.def_of(*id).mana_value as usize;
-                                if (land && lands_have >= 5) || (!land && mv > lands_have + 3) {
-                                    return Some(i);
-                                }
-                            }
-                            None
-                        })
-                        .collect();
+                    let ids: Vec<(usize, CardId)> = options.iter().enumerate().filter_map(|(i, o)| if let Opt::Obj { obj: Obj::Card { id } } = o { Some((i, *id)) } else { None }).collect();
+                    let seen: Vec<CardId> = ids.iter().map(|x| x.1).collect();
+                    let bad: Vec<usize> = crate::mulligan::scry_bottom(g, lands_have, &seen).into_iter().map(|k| ids[k].0).collect();
                     return Choice::Pick { indices: bad };
                 }
                 PickPurpose::Targets { polarity, .. } => {

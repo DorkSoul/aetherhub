@@ -8,6 +8,7 @@ pub mod fuzz;
 pub mod heuristic;
 pub mod kinds;
 pub mod mcts;
+pub mod mulligan;
 pub mod random;
 pub mod session;
 pub mod smoke;
