@@ -270,6 +270,24 @@ describe.skipIf(!hasNative)('rules games (native engine)', () => {
     expect((await drive(rs.json.id, [cookie])).over).toBeTruthy();
   });
 
+  it('skips until my next turn: from the AI turn it stops at my upkeep; once my turn has begun it keeps the question waiting', async () => {
+    for (const seed of [3, 11]) {
+      for (const late of [false, true]) {
+        const g = await req('POST', '/api/rules/games', { deckId, seed, ais: [{ deckId: null }] }, cookie);
+        const id = g.json.id;
+        // late: the click was made while the AI's turn was still shown, but the engine already waits in mine
+        const at = await drive(id, [cookie], (s) => s.waiting?.kind.t === 'Priority' && s.view.active === (late ? 0 : 1) && s.view.turn >= 3);
+        expect(at.over).toBeFalsy();
+        const t = at.view.turn;
+        expect((await req('POST', `/api/rules/games/${id}/passuntil`, { player: 0, after: late ? t - 1 : t }, cookie)).status).toBe(200);
+        const stop = await drive(id, [cookie], (s) => s.waiting?.kind.t === 'Priority');
+        expect(stop.passing).toBeNull();
+        expect([stop.view.turn, stop.view.step, stop.view.active], `seed ${seed} late ${late}`).toEqual(late ? [t, at.view.step, 0] : [t + 1, 'Upkeep', 0]);
+        await req('DELETE', `/api/rules/games/${id}`, undefined, cookie);
+      }
+    }
+  });
+
   it('plays a 4-player commander-less game against three AIs', async () => {
     // Easy AIs: this checks a 4-player game end to end, not AI strength (Normal thinks 250 ms per decision: 20+ seconds a game)
     const g = await req('POST', '/api/rules/games', { deckId, seed: 11, ais: [{ difficulty: 'Easy' }, { difficulty: 'Easy' }, { difficulty: 'Easy' }] }, cookie);

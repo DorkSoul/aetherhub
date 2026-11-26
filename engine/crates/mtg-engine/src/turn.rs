@@ -3011,6 +3011,16 @@ impl Game {
         self.ask_opt_zone(player, passes)
     }
 
+    /// Whether an automatic pass of priority has reached its target in the current game state.
+    pub fn pass_reached(&self, target: PassUntil) -> bool {
+        match target {
+            PassUntil::Step { turn, step } => (self.turn, self.step as u8) >= (turn, step as u8),
+            PassUntil::StackTop { item } => self.stack.last().map_or(true, |top| top.id == item) || !self.stack.iter().any(|x| x.id == item),
+            // a player who has left the game never gets that turn: stop passing rather than pass forever
+            PassUntil::PlayerTurn { player: who, after } => (self.active == who && self.turn > after) || self.players[who as usize].lost,
+        }
+    }
+
     pub(crate) fn step_priority(&mut self, player: PlayerId, passes: u8) -> Flow {
         if self.answer.is_none() && !self.attach_pending.is_empty() {
             self.run = Run::Priority { player, passes };
@@ -3122,13 +3132,7 @@ impl Game {
         // the priority where the target is reached is always offered, whatever the player's usual stops are
         let mut arrived = false;
         if let Some(target) = self.players[player as usize].pass_until {
-            let reached = match target {
-                PassUntil::Step { turn, step } => (self.turn, self.step as u8) >= (turn, step as u8),
-                PassUntil::StackTop { item } => self.stack.last().map_or(true, |top| top.id == item) || !self.stack.iter().any(|x| x.id == item),
-                // a player who has left the game never gets that turn: stop passing rather than pass forever
-                PassUntil::PlayerTurn { player: who, after } => (self.active == who && self.turn > after) || self.players[who as usize].lost,
-            };
-            if reached {
+            if self.pass_reached(target) {
                 self.players[player as usize].pass_until = None;
                 arrived = true;
             } else {

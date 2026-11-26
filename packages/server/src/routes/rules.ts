@@ -1028,7 +1028,8 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
       else if ('player' in body) g.passUntilPlayer(seat, body.player, body.after);
       else g.passUntil(seat, body.turn, body.step);
       syncPassing(s);
-      if (s.waiting && s.waiting.player === seat && s.waiting.kind.t === 'Priority' && !s.paused) {
+      // a target the game has already reached arms no pass: the question waiting now is where it stops
+      if (s.passing.has(seat) && s.waiting && s.waiting.player === seat && s.waiting.kind.t === 'Priority' && !s.paused) {
         g.answer(seat, { t: 'Priority', action: null });
         s.waiting = null;
         void pump(s, seat);

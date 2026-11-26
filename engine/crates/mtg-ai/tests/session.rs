@@ -493,7 +493,8 @@ fn undo_after_casting_then_attacking_takes_back_only_the_attack() {
 }
 
 /// "Skip until my next turn" stops at the start of that turn, also when the request reaches the engine after the turn
-/// it was clicked in (the AI was still playing): the next turn is counted from the turn the player saw.
+/// it was clicked in (the AI was still playing): the next turn is counted from the turn the player saw, and when that turn
+/// has already begun the priority waiting in it is kept.
 #[test]
 fn skip_until_my_turn_stops_when_it_starts() {
     for seed in [3u64, 11, 21] {
@@ -510,11 +511,17 @@ fn skip_until_my_turn_stops_when_it_starts() {
                         break;
                     }
                     if late && s.game.active == 0 && s.game.turn >= 3 {
-                        // clicked during the opponent's turn, arriving in our own
+                        // clicked during the opponent's turn, arriving in our own: nothing is armed, and the priority
+                        // waiting now (not a later one) is where it stops
                         armed = Some(s.game.turn);
+                        let at = (s.game.turn, s.game.step);
                         s.pass_until_player(0, 0, Some(s.game.turn - 1));
-                        s.answer(0, Choice::Priority { action: None }).unwrap();
-                        continue;
+                        assert!(s.passing(0).is_none(), "seed {seed}: a reached target is not armed");
+                        // an "End turn" clicked on the turn before is already reached too
+                        s.pass_until(0, s.game.turn, mtg_engine::types::Step::Untap);
+                        assert!(s.passing(0).is_none(), "seed {seed}: end turn already reached");
+                        stopped = Some((at.0, at.1, s.game.active));
+                        break;
                     }
                     if !late && s.game.active == 1 && s.game.turn >= 2 {
                         armed = Some(s.game.turn);

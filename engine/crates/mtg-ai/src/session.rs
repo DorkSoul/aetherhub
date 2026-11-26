@@ -399,7 +399,17 @@ impl Session {
 
     /// Pass priority for `seat` until `turn`/`step` is reached (questions other than priority still stop it).
     pub fn pass_until(&mut self, seat: PlayerId, turn: u32, step: Step) {
-        self.command(SessionCommand::PassUntil { seat, until: PassUntil::Step { turn, step } });
+        self.arm_pass(seat, PassUntil::Step { turn, step });
+    }
+
+    /// Start passing toward a turn or step. One the game has already reached (the request was made while the player
+    /// was still watching earlier moves) arms nothing, so the question waiting now is the place it stops.
+    fn arm_pass(&mut self, seat: PlayerId, until: PassUntil) {
+        if self.game.pass_reached(until) {
+            self.cancel_pass(seat);
+        } else {
+            self.command(SessionCommand::PassUntil { seat, until });
+        }
     }
 
     /// Pass priority for `seat` until the stack item is on top of the stack (or has left it).
@@ -411,7 +421,7 @@ impl Session {
     /// when they asked; the current turn when not given), so a request that arrives after that turn has begun still stops there.
     pub fn pass_until_player(&mut self, seat: PlayerId, player: PlayerId, after: Option<u32>) {
         let after = after.map_or(self.game.turn, |t| t.min(self.game.turn));
-        self.command(SessionCommand::PassUntil { seat, until: PassUntil::PlayerTurn { player, after } });
+        self.arm_pass(seat, PassUntil::PlayerTurn { player, after });
     }
 
     /// Stop passing priority automatically.

@@ -677,9 +677,10 @@ export default function RulesGame() {
     if (!gameId) return;
     setEnding(true);
     setSending((n) => n + 1);
+    // "passing…" stays on until the playback reaches the stop's question (cleared below), also when the engine was already
+    // there and armed nothing
     api
       .post(`api/rules/games/${gameId}/passuntil`, target)
-      .then(() => setEnding(false))
       .catch((e) => {
         setEnding(false);
         setEndPhase(null);
