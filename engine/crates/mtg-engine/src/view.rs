@@ -62,6 +62,9 @@ pub struct CardView {
     pub protector: Option<PlayerId>,
     /// The player an Aura enchants (a Curse); the table shows it on that player's side.
     pub enchanted_player: Option<PlayerId>,
+    /// A Room on the battlefield: its unlocked doors (bit 0 = the left door, bit 1 = the right door).
+    #[serde(default)]
+    pub doors: Option<u8>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -254,6 +257,7 @@ impl Game {
                 damage: c.damage,
                 protector: c.protector,
                 enchanted_player: c.enchanted_player,
+                doors: None,
             });
         }
         // what it is a copy of: a permanent that entered as or became a copy (its definition is another card's), or a token copy of a card.
@@ -343,6 +347,7 @@ impl Game {
             damage: c.damage,
             protector: c.protector,
             enchanted_player: c.enchanted_player,
+            doors: (on_bf && d.room).then_some(c.doors),
         })
     }
 

@@ -80,6 +80,8 @@ export interface CardInst {
   companion: boolean;
   /** Seats that may see this face-down card. */
   peekers: number[];
+  /** A Room's locked doors (1 = left, 2 = right); absent when none is locked or the card isn't a Room. */
+  locked?: number[];
 }
 
 export interface Seat {

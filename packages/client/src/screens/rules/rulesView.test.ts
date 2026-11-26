@@ -10,7 +10,7 @@ const card = (id: number, name: string, types: string, controller: number, over:
   ({
     id, name, zone: 'Battlefield', owner: controller, controller, tapped: false, face_down: false, token: false, power: null, toughness: null, base_power: null, base_toughness: null,
     types, colors: 0, cost: '', mana_value: 0, text: '', loyalty: null, counters: [], attached_to: null, summoning_sick: false, commander: false, keywords: [], abilities: [],
-    alt_costs: [], granted_alts: [], copy_of: null, art: name, art_token: false, damage: 0, protector: null, enchanted_player: null, ...over,
+    alt_costs: [], granted_alts: [], copy_of: null, art: name, art_token: false, damage: 0, protector: null, enchanted_player: null, doors: null, ...over,
   }) as RCard;
 
 const snapOf = (cards: RCard[]) => ({ players: [player('A'), player('B')], cards, stack: [], planar_deck: 0, active: 0, turn: 1, step: 'Main1', day_night: null }) as unknown as RView;
@@ -190,5 +190,14 @@ describe('Rooms', () => {
       "Cast Prop Room ({2}{W}): Untap each creature you control during each other player's untap step.",
       "Unlock Prop Room ({2}{W}): Untap each creature you control during each other player's untap step.",
     ]);
+  });
+
+  it('marks the locked doors of a Room on the battlefield', () => {
+    const room = card(1, 'Dazzling Theater // Prop Room', 'Enchantment — Room', 0, { doors: 1 });
+    const { view } = toGameView(snapOf([room]), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map());
+    expect(view.cards['1'].locked).toEqual([2]);
+    expect(view.cards['1'].effects.map((e) => e.k)).toContain('Locked: Prop Room');
+    const open = toGameView(snapOf([{ ...room, doors: 3 }]), {}, ['A', 'B'], 0, 'g', undefined, new Map(), new Map()).view;
+    expect(open.cards['1'].locked).toBeUndefined();
   });
 });

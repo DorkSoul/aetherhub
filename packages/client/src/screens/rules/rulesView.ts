@@ -54,7 +54,7 @@ export const TIGHT_PILE = 7;
 export type Pile = { ids: number[]; mode: 'auto' | 'fan' | 'tight' };
 export const pileTight = (p: Pile, n = p.ids.length): boolean => p.mode === 'tight' || (p.mode === 'auto' && n >= TIGHT_PILE);
 /** What makes permanents identical for piling: same name, token or not, face-down or not, same power and toughness. */
-const pileKey = (c: RCard): string => `${c.name}|${c.token}|${c.face_down}|${c.power}/${c.toughness}`;
+const pileKey = (c: RCard): string => `${c.name}|${c.token}|${c.face_down}|${c.power}/${c.toughness}|${c.doors ?? ''}`;
 const ROW_Y = { creature: 0, other: 0.5, land: 1 };
 
 /** A board card's size in board units (positions run 0..1 over the room the card can move in): `pitch` the width of a
@@ -382,12 +382,17 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     const creature = c.power !== null;
     // an opponent's face-down permanent (the engine masks it: no picture) gets no def, like any card you may not see
     const masked = c.face_down && !c.art;
+    // a Room's locked doors (1 = left, 2 = right)
+    const locked = c.doors == null ? [] : [1, 2].filter((d) => !(c.doors! & (1 << (d - 1))));
+    const doorNames = c.name.split(' // ');
     cards[iid] = inst(iid, masked ? '' : defFor(c), c.owner, {
+      ...(locked.length && { locked }),
       tapped: c.tapped, flipped: z === 'battlefield' && !masked && !!images[FLIPPED_KEY(ART(c))], counters, attachedTo: c.attached_to != null ? String(c.attached_to) : null, faceDown: c.face_down, token: c.token, commander: c.commander,
       pt: creature ? (c.base_power === null || c.base_toughness === null ? { p: c.power ?? 0, t: c.toughness ?? 0 } : { p: (c.power ?? 0) - c.base_power, t: (c.toughness ?? 0) - c.base_toughness }) : { p: 0, t: 0 },
       effects: [
         ...(c.zone === 'Stack' && stackSources.has(c.id) ? [{ k: 'On the stack', eot: false }] : queued?.has(c.id) ? [{ k: `Queued #${queued.get(c.id)}`, eot: false }] : []),
         ...(c.copy_of ? [{ k: `Copy of ${c.copy_of}`, eot: false }] : []),
+        ...locked.map((d) => ({ k: `Locked: ${doorNames[d - 1] ?? `door ${d}`}`, eot: false })),
         // a name that isn't the one on the picture (a copy "except its name is ...", or a name-changing effect)
         ...(c.name !== ART(c) ? [{ k: `Named ${c.name}`, eot: false }] : []),
       ],

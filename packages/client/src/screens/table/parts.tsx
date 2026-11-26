@@ -42,6 +42,12 @@ export function Overlays({ c, def, w, onBf }: { c: CardView; def?: CardDef; w: n
   const chip: CSSProperties = { fontSize: 6, lineHeight: '7px', padding: '0 2.5px', borderRadius: 2.3, background: 'rgba(28,30,35,.92)', color: 'var(--acc-tx)', border: '1px solid rgba(var(--acc-rgb),.5)' };
   return (
     <div style={{ position: 'absolute', left: 0, top: 0, width: 90, height: 126, transform: `scale(${w / 90})`, transformOrigin: '0 0', pointerEvents: 'none' }}>
+      {/* a Room's locked doors are shaded: the picture is read turned a quarter clockwise, so the left door is its bottom half */}
+      {c.locked?.map((d) => (
+        <div key={d} style={{ position: 'absolute', left: 2, right: 2, top: d === 2 ? 2 : 63, height: 61, background: 'rgba(10,11,14,.6)', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ ...chip, fontSize: 8, lineHeight: '10px', padding: '0 4px', transform: 'rotate(90deg)' }}>Locked</div>
+        </div>
+      ))}
       {effs.length > 0 && (
         <div style={{ position: 'absolute', left: 2, right: 2, top: 2, display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {effs.map((e, i) => (

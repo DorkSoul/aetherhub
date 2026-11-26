@@ -42,4 +42,8 @@ protector: number | null,
 /**
  * The player an Aura enchants (a Curse); the table shows it on that player's side.
  */
-enchanted_player: number | null, };
+enchanted_player: number | null, 
+/**
+ * A Room on the battlefield: its unlocked doors (bit 0 = the left door, bit 1 = the right door).
+ */
+doors: number | null, };
