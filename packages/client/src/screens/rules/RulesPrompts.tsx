@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { CardDef, rules as R } from '@aetherhub/shared';
 import { CardImage, previewProps, useMenu } from '../../ui/ui';
 import { useTable } from '../table/store';
-import { ManaChip, ManaCostText, POOL_COLORS } from './mana';
+import { ManaChip, ManaCostText, POOL_COLORS, RichLabel } from './mana';
 import type { RCard, RView } from './rulesView';
 import { tapChoices } from './rulesView';
 
@@ -483,7 +483,7 @@ export function PromptPanel({ d, v, names, images, onAnswer, onExplain, onPrevie
           <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 6 }}>
             {[...players, ...others].map(({ r, i }) => (
               <button key={i} data-option className={sel.includes(i) ? 'tb pri' : 'tb'} style={{ margin: 3 }} onClick={() => (max === 1 && min >= 1 ? onAnswer({ t: 'Pick', indices: [i] }) : toggle(i, max))}>
-                {r.label}
+                <RichLabel text={r.label} />
               </button>
             ))}
           </div>
@@ -594,7 +594,7 @@ function RepeatPick({ prompt, options, min, max, cancellable, onAnswer }: { prom
       <h3 className="display" style={{ margin: '0 0 6px', fontSize: 17 }}>{prompt} (choose {min === max ? min : `${min}–${max}`}; a mode may be chosen more than once)</h3>
       {options.map((o, i) => (
         <div key={i} className="row" style={{ gap: 8, alignItems: 'center', marginBottom: 4 }}>
-          <span style={{ flex: 1 }}>{o}</span>
+          <span style={{ flex: 1 }}><RichLabel text={o} /></span>
           <button className="tb sm" disabled={counts[i] === 0} onClick={() => set(i, -1)} aria-label={`Fewer: ${o}`}>−</button>
           <b style={{ minWidth: 18, textAlign: 'center' }}>{counts[i]}</b>
           <button className="tb sm" disabled={total >= max} onClick={() => set(i, 1)} aria-label={`More: ${o}`}>+</button>

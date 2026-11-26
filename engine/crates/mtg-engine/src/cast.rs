@@ -7820,7 +7820,7 @@ self.pending = Some(Decision {
                     kind: DecisionKind::Pick {
                         prompt: format!("Choose how to pay for {}", ctx.what),
                         source: Some(source),
-                        options: options.iter().map(|o| Opt::Text { text: format!("{o:?}") }).collect(),
+                        options: options.iter().map(|o| Opt::Text { text: o.iter().map(crate::describe::cost_text).collect::<Vec<_>>().join(", ") }).collect(),
                         min: 1,
                         max: 1,
                         cancellable: ctx.backup.is_some(),
