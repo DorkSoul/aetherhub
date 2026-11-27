@@ -3,7 +3,7 @@ import { canBeCommander, isBasicLand, isLand, manaValue, pipCounts, typeGroup, C
 import { formatInfo } from './formats';
 import { commanderDeckRules } from './deckrules';
 
-export const SECTIONS = ['commander', 'companion', 'main', 'side', 'maybe', 'tokens', 'planar', 'schemes', 'attractions', 'stickers'] as const;
+export const SECTIONS = ['commander', 'companion', 'main', 'side', 'maybe', 'tokens', 'planar', 'schemes'] as const;
 export type Section = (typeof SECTIONS)[number];
 
 export const SECTION_NAMES: Record<Section, string> = {
@@ -15,12 +15,10 @@ export const SECTION_NAMES: Record<Section, string> = {
   tokens: 'Tokens/Extras',
   planar: 'Planar',
   schemes: 'Schemes',
-  attractions: 'Attractions',
-  stickers: 'Stickers',
 };
 
 /** Sections that are never flagged for legality and never shuffled into the library. */
-export const EXTRA_SECTIONS: Section[] = ['maybe', 'tokens', 'planar', 'schemes', 'attractions', 'stickers'];
+export const EXTRA_SECTIONS: Section[] = ['maybe', 'tokens', 'planar', 'schemes'];
 
 export interface DeckCard {
   id: number;

@@ -7130,7 +7130,6 @@ self.pending = Some(Decision {
         }
     }
 
-    /// Returns None when the cost part was paid, Some(Wait) when a question is pending, Some(Continue) to abandon.
     /// The players who may pick the targets of a slot with a `chooser` ("target ... of an opponent's choice"): the
     /// players it selects who are still in the game. The chooser may name an earlier target ("that creature's controller").
     fn target_chooser_options(&self, ctx: &CastCtx, spec: &TargetSpec) -> Vec<PlayerId> {
@@ -7150,6 +7149,8 @@ self.pending = Some(Decision {
         self.sel_players(sel, &ec).into_iter().filter(|q| self.alive(*q)).collect()
     }
 
+    /// Pays one extra cost part: `Paid`, `Wait` while a question is pending, `Abort` to back out, or `Retry` when the part was
+    /// replaced by a choice.
     fn step_extra_cost(&mut self, ctx: &mut CastCtx, part: &Cost, answer: &mut Option<Choice>) -> Extra {
         // a cost filter may read the chosen targets (Sidisi: "mana value X ... target creature card with mana value X plus 1")
         let mut tidx: Vec<u8> = vec![];

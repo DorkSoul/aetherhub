@@ -199,7 +199,7 @@ export function moveCard(state: GameState, ctx: ApplyCtx, iid: string, toSeat: n
     c.peekers = [];
   }
   const dest = state.seats[toSeat].zones[toZone];
-  if (toZone === 'library' || toZone === 'schemeDeck' || toZone === 'attractionDeck') {
+  if (toZone === 'library' || toZone === 'schemeDeck') {
     if (o.pos === 'bottom') dest.push(iid);
     else if (typeof o.pos === 'number') dest.splice(Math.min(dest.length, o.pos - 1), 0, iid);
     else dest.unshift(iid);
@@ -340,8 +340,6 @@ export function resolveIntent(state: GameState, ctx: ApplyCtx, intent: Intent, r
       return { value: rng.int(2) };
     case 'planarRoll':
       return { value: rng.int(6) };
-    case 'rollVisit':
-      return { value: 1 + rng.int(6) };
     default:
       return {};
   }
@@ -1085,21 +1083,6 @@ export function applyIntent(state: GameState, ctx: ApplyCtx, intent: Intent, res
     }
     case 'setInMotion': {
       setInMotion(state, intent.seat, logs, notices, ctx.actorName);
-      break;
-    }
-    case 'openAttraction': {
-      checkSeat(state, intent.seat);
-      const s = state.seats[intent.seat];
-      const top = s.zones.attractionDeck[0];
-      if (!top) fail('The attraction deck is empty');
-      moveCard(state, ctx, top, intent.seat, 'battlefield', { x: 0.8, y: 0.1 }, notices);
-      log(`opened an Attraction: ${cardName(state, card(top))}`);
-      break;
-    }
-    case 'rollVisit': {
-      log(`rolled to visit Attractions: ${resolved.value}`);
-      notices.push({ to: 'all', kind: 'toast', text: `${ctx.actorName} rolled to visit → ${resolved.value}` });
-      notices.push({ to: 'all', kind: 'sound', sound: 'dice' });
       break;
     }
 

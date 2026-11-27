@@ -84,11 +84,6 @@ pub struct GameSetup {
     /// Planechase: (card name, copies) of the shared planar deck (empty: no Planechase).
     #[serde(default)]
     pub planar: Vec<(String, u32)>,
-    /// Human players get combat priority when they have something to do: after attackers are declared when attacked, and
-    /// after blocks when attacking or attacked. Off for games recorded before this existed, so their decision logs replay
-    /// unchanged.
-    #[serde(default)]
-    pub combat_stops: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -229,7 +224,6 @@ impl Session {
                 game.players[i].auto_skip = true;
                 game.players[i].allow_cancel = true;
                 game.players[i].offer_mana = true;
-                game.players[i].combat_stops = setup.combat_stops;
                 agents.push(None);
             } else {
                 game.players[i].auto_skip = true;

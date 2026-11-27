@@ -234,8 +234,8 @@ pub fn build_db_subset(dir: &Path, names: &[String], extra_texts: &[String]) -> 
     (db, notes)
 }
 
-/// The playable card pool: every card file that compiles and has no note in `blocked/` (a card with a known engine bug stays out
-/// until the bug is fixed). Broken files are reported, not fatal. Used by the server.
+/// The playable card pool: every card file that compiles and has no note in `blocked/` (a card with a note there stays
+/// out of the pool). Broken files are reported, not fatal. Used by the server.
 pub fn build_db_playable(dir: &Path) -> (Arc<CardDb>, Vec<String>) {
     let blocked: std::collections::HashSet<String> = std::fs::read_dir(dir.join("blocked"))
         .map(|rd| rd.filter_map(|e| e.ok()).filter_map(|e| e.path().file_stem().map(|s| s.to_string_lossy().to_string())).collect())

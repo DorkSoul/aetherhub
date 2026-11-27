@@ -28,7 +28,7 @@ export interface CombatArrow {
 }
 
 export type TableModal =
-  | { kind: 'zone'; seat: number; zone: 'library' | 'graveyard' | 'exile' | 'command' | 'sideboard' | 'schemes' | 'stickers' }
+  | { kind: 'zone'; seat: number; zone: 'library' | 'graveyard' | 'exile' | 'command' | 'sideboard' | 'schemes' }
   | { kind: 'cards'; data: CardsNotice }
   | { kind: 'tokens'; seat: number }
   | { kind: 'commander'; iid: string }

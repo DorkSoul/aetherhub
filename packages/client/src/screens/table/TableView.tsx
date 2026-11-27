@@ -706,7 +706,7 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
   const dragIds = drag?.moved ? (sel.includes(drag.iid) && sel.length > 1 ? sel : [drag.iid]) : [];
   const planar = v.settings.planechase || v.table.planes.length > 0;
   // a rules game: the engine runs Planechase and Archenemy (the planar die is in the action list), so no sandbox controls
-  const specials = !rules && (planar || v.settings.dungeons || v.settings.archenemy || v.settings.attractions || v.seats.some((s) => s.archenemy));
+  const specials = !rules && (planar || v.settings.dungeons || v.settings.archenemy || v.seats.some((s) => s.archenemy));
 
   // Ghost: exactly where the card will land.
   let ghost: { r: Rect; rot: number; face: boolean; def?: CardDef; sleeve: string | null } | null = null;

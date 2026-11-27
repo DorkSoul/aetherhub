@@ -24,7 +24,6 @@ fn setup(seed: u64) -> GameSetup {
         mulligan: MulliganRule::London,
         seats: vec![seat("Human", true, true, Difficulty::Normal), seat("Bot 1", false, false, Difficulty::Normal), seat("Bot 2", false, true, Difficulty::Easy), seat("Bot 3", false, false, Difficulty::Hard)],
         planar: vec![],
-        combat_stops: true,
     }
 }
 
@@ -101,7 +100,7 @@ fn find_first_divergence() {
 
 fn duel(seed: u64) -> GameSetup {
     let seat = |name: &str, human: bool, gr: bool| SeatSetup { name: name.into(), human, deck: deck(gr), commander: vec![], sideboard: vec![], companion: None, difficulty: Difficulty::Easy, schemes: vec![] };
-    GameSetup { seed, commander: false, mulligan: MulliganRule::London, seats: vec![seat("Human", true, true), seat("Bot", false, true)], planar: vec![], combat_stops: true }
+    GameSetup { seed, commander: false, mulligan: MulliganRule::London, seats: vec![seat("Human", true, true), seat("Bot", false, true)], planar: vec![] }
 }
 
 /// "End turn" passes every plain priority (also with spells on the stack) until the target; the passes are not in the

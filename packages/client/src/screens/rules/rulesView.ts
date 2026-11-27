@@ -327,7 +327,7 @@ export function toGameView(snap: RView, images: Record<string, string>, names: s
     return key;
   };
   const seats: Seat[] = snap.players.map((p, i) => {
-    const zones: Seat['zones'] = { library: [], hand: [], battlefield: [], graveyard: [], exile: [], command: [], sideboard: [], schemeDeck: [], schemes: [], attractionDeck: [], stickers: [] };
+    const zones: Seat['zones'] = { library: [], hand: [], battlefield: [], graveyard: [], exile: [], command: [], sideboard: [], schemeDeck: [], schemes: [] };
     // a library shown while breaking the rules: its cards in order, top first
     if (p.library_shown?.length) zones.library = p.library_shown.map(String);
     else for (let k = 0; k < p.library; k++) {

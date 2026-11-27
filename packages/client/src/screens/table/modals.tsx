@@ -564,7 +564,7 @@ export function NumberModal({ title, onDone }: { title: string; onDone: (n: numb
   );
 }
 
-// ------------------------------------------------------------------ specials (planechase, archenemy, dungeons, attractions)
+// ------------------------------------------------------------------ specials (planechase, archenemy, dungeons)
 
 export function SpecialsModal() {
   const v = useTable((s) => s.view)!;
@@ -688,42 +688,6 @@ export function SpecialsModal() {
                 </div>
               );
             })}
-          </section>
-        )}
-        {v.settings.attractions && (
-          <section className="col" style={{ gap: 10 }}>
-            <h3 style={{ fontSize: 17 }}>Attractions &amp; stickers</h3>
-            {v.seats.map((s, i) => (
-              <div key={i} className="col" style={{ gap: 6 }}>
-                <div className="row">
-                  <span className="dot" style={{ background: s.color }} />
-                  <b>{s.name}</b>
-                  <span style={{ fontSize: 12, color: 'var(--mu)' }}>{s.zones.attractionDeck.length} attractions in deck</span>
-                  {i === me && (
-                    <>
-                      <button className="tb sm" onClick={() => send({ type: 'openAttraction', seat: i })}>
-                        Open an Attraction
-                      </button>
-                      <button className="tb sm" onClick={() => send({ type: 'rollVisit', seat: i })}>
-                        Roll to visit
-                      </button>
-                    </>
-                  )}
-                </div>
-                {s.zones.stickers.length > 0 && (
-                  <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
-                    {s.zones.stickers.map((iid) => {
-                      const d = v.defs[v.cards[iid]?.def];
-                      return (
-                        <div key={iid} {...previewProps(d)}>
-                          <CardImage def={d} style={{ width: 90, height: 126, borderRadius: 6 }} />
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))}
           </section>
         )}
       </div>

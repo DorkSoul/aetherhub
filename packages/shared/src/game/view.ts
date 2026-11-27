@@ -27,7 +27,6 @@ export function canSee(state: GameState, viewer: Viewer, c: CardInst, seat: numb
     case 'graveyard':
     case 'command':
     case 'schemes':
-    case 'stickers':
     case 'planes':
       return true;
     case 'hand': {

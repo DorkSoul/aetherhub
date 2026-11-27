@@ -74,7 +74,7 @@ function shuffled<T>(arr: T[], rng: Rng): T[] {
 /**
  * Builds a fresh game. `order` lists the seat inputs in turn order (seat 0 goes first unless `starter` is given).
  * Libraries are shuffled, commanders/companions go to the command zone, everyone draws 7.
- * Cards of hidden decks (library, scheme, attraction and planar decks) are created in shuffled order, so their ids
+ * Cards of hidden decks (library, scheme and planar decks) are created in shuffled order, so their ids
  * (`c1`, `c2`, …) say nothing about the deck list's order or which cards are copies of each other.
  */
 export function createGame(opts: {
@@ -111,7 +111,6 @@ export function createGame(opts: {
     const seat = state.seats[si];
     const library: string[] = [];
     const schemes: string[] = [];
-    const attractions: string[] = [];
     for (const e of inp.cards) {
       if (!state.defs[e.def]) continue;
       for (let k = 0; k < e.qty; k++) {
@@ -141,12 +140,6 @@ export function createGame(opts: {
               seat.archenemy = true;
             }
             break;
-          case 'attractions':
-            if (settings.attractions) attractions.push(e.def);
-            break;
-          case 'stickers':
-            if (settings.attractions) seat.zones.stickers.push(makeCard(state, e.def, si).iid);
-            break;
           default:
             break;
         }
@@ -155,7 +148,6 @@ export function createGame(opts: {
     // Two independent shuffles: one for the order the ids are handed out in, one for the deck order itself.
     seat.zones.library = shuffled(shuffled(library, rng).map((def) => makeCard(state, def, si).iid), rng);
     seat.zones.schemeDeck = shuffled(shuffled(schemes, rng).map((def) => makeCard(state, def, si).iid), rng);
-    seat.zones.attractionDeck = shuffled(shuffled(attractions, rng).map((def) => makeCard(state, def, si).iid), rng);
     for (let k = 0; k < 7 && seat.zones.library.length; k++) seat.zones.hand.push(seat.zones.library.shift()!);
     if (state.stage === 'mulligan') seat.mulligan = { count: 0, kept: false };
   });

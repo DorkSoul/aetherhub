@@ -904,7 +904,7 @@ fn pass_until_my_turn_stops_when_it_starts() {
 }
 
 /// The first question for player 0 once player 1 attacks them with Grizzly Bears (player 0 holds Giant Growth and a Forest).
-fn first_question_when_attacked(combat_stops: bool, pass_until: Option<PassUntil>, castable: bool) -> (Step, bool) {
+fn first_question_when_attacked(pass_until: Option<PassUntil>, castable: bool) -> (Step, bool) {
     let mut g = game();
     g.add_card("Forest", 0, Zone::Battlefield);
     if castable {
@@ -918,7 +918,6 @@ fn first_question_when_attacked(combat_stops: bool, pass_until: Option<PassUntil
         p.auto_skip = true;
         p.stops_opp = 0;
     }
-    g.players[0].combat_stops = combat_stops;
     g.players[0].pass_until = pass_until;
     g.attack(&[(bears, Obj::player(0))]);
     for _ in 0..50 {
@@ -934,13 +933,11 @@ fn first_question_when_attacked(combat_stops: bool, pass_until: Option<PassUntil
 
 #[test]
 fn an_attacked_player_gets_priority_before_blocks_when_they_can_act() {
-    assert_eq!(first_question_when_attacked(true, None, true), (Step::DeclareAttackers, true));
+    assert_eq!(first_question_when_attacked(None, true), (Step::DeclareAttackers, true));
     // also while passing until their own turn; the pass stays armed
-    assert_eq!(first_question_when_attacked(true, Some(PassUntil::PlayerTurn { player: 0, after: 1 }), true), (Step::DeclareAttackers, true));
+    assert_eq!(first_question_when_attacked(Some(PassUntil::PlayerTurn { player: 0, after: 1 }), true), (Step::DeclareAttackers, true));
     // nothing to cast: straight to blocks
-    assert_eq!(first_question_when_attacked(true, None, false), (Step::DeclareBlockers, false));
-    // the setting off (games recorded before it existed): straight to blocks
-    assert_eq!(first_question_when_attacked(false, None, true), (Step::DeclareBlockers, false));
+    assert_eq!(first_question_when_attacked(None, false), (Step::DeclareBlockers, false));
 }
 
 #[test]
@@ -1691,7 +1688,6 @@ fn combat_priority_steps(asked: PlayerId, p0_attacks: bool, pass_until: Option<P
         p.auto_skip = true;
         p.stops_mine = 0;
         p.stops_opp = 0;
-        p.combat_stops = true;
     }
     g.players[asked as usize].pass_until = pass_until;
     g.attack(&[(attacker, Obj::player(defender))]);

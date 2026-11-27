@@ -1014,7 +1014,7 @@ export default function RulesGame() {
             if (intent.name && !room) return void useApp.getState().toast(`No room ${intent.room + 1} in ${intent.name}`);
             ops.push({ t: 'Dungeon', player: intent.seat, dungeon: intent.name, room: room ?? '' });
           }
-          else if (intent.type !== 'concede') return void useApp.getState().toast("That isn't available while breaking the rules: turns, phases, the planar die, attractions and dice belong to the game itself. Press Finish and play on.");
+          else if (intent.type !== 'concede') return void useApp.getState().toast("That isn't available while breaking the rules: turns, phases, the planar die and dice belong to the game itself. Press Finish and play on.");
           if (intent.type !== 'concede') {
             if (gameId) void (async () => {
               for (const op of ops) await api.post(`api/rules/games/${gameId}/edit`, { op }).catch((e: Error) => useApp.getState().toast(e.message));

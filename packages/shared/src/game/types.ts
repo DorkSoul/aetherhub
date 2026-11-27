@@ -10,8 +10,6 @@ export const SEAT_ZONES = [
   'sideboard',
   'schemeDeck',
   'schemes',
-  'attractionDeck',
-  'stickers',
 ] as const;
 export type ZoneName = (typeof SEAT_ZONES)[number];
 
@@ -25,12 +23,10 @@ export const ZONE_LABEL: Record<ZoneName, string> = {
   sideboard: 'sideboard',
   schemeDeck: 'scheme deck',
   schemes: 'schemes in play',
-  attractionDeck: 'attraction deck',
-  stickers: 'sticker sheets',
 };
 
 /** Zones whose card identities are hidden from other players by default. */
-export const HIDDEN_ZONES: ZoneName[] = ['library', 'hand', 'sideboard', 'schemeDeck', 'attractionDeck'];
+export const HIDDEN_ZONES: ZoneName[] = ['library', 'hand', 'sideboard', 'schemeDeck'];
 
 export const PHASES = ['Untap', 'Upkeep', 'Draw', 'Main', 'Combat', 'Main 2', 'End'];
 
@@ -143,8 +139,6 @@ export interface GameSettings {
   planechase: boolean;
   planarPool: 'host' | 'all';
   archenemy: boolean;
-  /** no longer offered (joke sets are not supported); kept so older saved games load */
-  attractions?: boolean;
 }
 
 export interface Marker {

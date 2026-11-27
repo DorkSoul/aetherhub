@@ -199,7 +199,7 @@ export function exportDeck(cards: DeckCard[], defs: Record<string, CardDef>, fmt
   const by = (s: Section) => cards.filter((c) => c.section === s && defs[c.def]);
   if (fmt === 'mtgo') {
     const rows = cards
-      .filter((c) => defs[c.def] && !['maybe', 'tokens', 'planar', 'schemes', 'attractions', 'stickers'].includes(c.section))
+      .filter((c) => defs[c.def] && !['maybe', 'tokens', 'planar', 'schemes'].includes(c.section))
       .map((c) => `  <Cards Quantity="${c.qty}" Sideboard="${c.section === 'side' ? 'true' : 'false'}" Name="${xmlEsc(defs[c.def].name)}" />`);
     return `<?xml version="1.0" encoding="utf-8"?>\n<Deck xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n  <NetDeckID>0</NetDeckID>\n  <PreconstructedDeckID>0</PreconstructedDeckID>\n${rows.join('\n')}\n</Deck>\n`;
   }
@@ -216,9 +216,7 @@ export function exportDeck(cards: DeckCard[], defs: Record<string, CardDef>, fmt
     block('Maybeboard', 'maybe') +
     block('Tokens', 'tokens') +
     block('Planar', 'planar') +
-    block('Schemes', 'schemes') +
-    block('Attractions', 'attractions') +
-    block('Stickers', 'stickers')
+    block('Schemes', 'schemes')
   ).trim() + '\n';
 }
 

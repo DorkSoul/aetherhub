@@ -15,7 +15,7 @@ import { CardDetail, ExportModal, ProxyModal, SampleHand, SCOPE_TITLE, shownDef,
 /** Tag filter value for cards with no tags. */
 const UNTAGGED = '\u0000untagged';
 
-type Board = 'main' | 'side' | 'maybe' | 'tokens' | 'companion' | 'planar' | 'schemes' | 'attractions' | 'stickers';
+type Board = 'main' | 'side' | 'maybe' | 'tokens' | 'companion' | 'planar' | 'schemes';
 const BOARD_SECTIONS: Record<Board, Section[]> = {
   main: ['commander', 'main'],
   side: ['side'],
@@ -24,8 +24,6 @@ const BOARD_SECTIONS: Record<Board, Section[]> = {
   companion: ['companion'],
   planar: ['planar'],
   schemes: ['schemes'],
-  attractions: ['attractions', 'stickers'],
-  stickers: ['stickers'],
 };
 
 /** The deck picker (lobby): the deck is read-only and the header offers Select deck and Sample hand. */
@@ -133,7 +131,7 @@ export function DeckView({ deckId, pick }: { deckId: number; pick?: DeckPickMode
   const extraBoards: Board[] = (['companion', 'planar', 'schemes'] as Board[]).filter((b) => showMore || boardCount(b) > 0 || board === b);
   const reasonsOf = (c: DeckCard) => legality.cards[c.id] || [];
   const coverDef = deck.coverKey ? deck.defs[deck.coverKey] : deck.cards.find((c) => c.section === 'commander') ? deck.defs[deck.cards.find((c) => c.section === 'commander')!.def] : undefined;
-  const targetSection: Section = board === 'main' ? 'main' : board === 'attractions' ? 'attractions' : (board as Section);
+  const targetSection: Section = board === 'main' ? 'main' : (board as Section);
 
   const clickCard = (e: React.MouseEvent, c: DeckCard) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {

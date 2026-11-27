@@ -249,7 +249,7 @@ CREATE INDEX rules_saves_user ON rules_saves(user_id, updated_at);
   {
     id: 6,
     name: 'attractions_to_maybe',
-    // joke-set Attractions and stickers are no longer supported: what was in those deck sections moves to the maybeboard
+    // joke-set Attraction and sticker deck sections move to the maybeboard
     sql: `UPDATE deck_cards SET section = 'maybe' WHERE section IN ('attractions', 'stickers');`,
   },
   {

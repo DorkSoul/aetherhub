@@ -103,7 +103,6 @@ impl Game {
                 stops_mine: Step::stop_bit(Step::Main1) | Step::stop_bit(Step::Main2),
                 stops_opp: 0,
                 full_control: false,
-                combat_stops: false,
                 offer_mana: false,
                 pass_until: None,
                 skip_turns: 0,
@@ -603,7 +602,6 @@ impl Game {
             new.stops_mine = old.stops_mine;
             new.stops_opp = old.stops_opp;
             new.full_control = old.full_control;
-            new.combat_stops = old.combat_stops;
             new.conceded = old.conceded;
             new.lost = old.lost;
         }

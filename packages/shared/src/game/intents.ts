@@ -88,8 +88,6 @@ export const IntentSchema = z.discriminatedUnion('type', [
   /** extra: turn over one more plane and keep the current ones (Spatial Merging, Interplanar Tunnel) */
   z.object({ type: z.literal('planeswalk'), extra: z.boolean().optional() }),
   z.object({ type: z.literal('setInMotion'), seat }),
-  z.object({ type: z.literal('openAttraction'), seat }),
-  z.object({ type: z.literal('rollVisit'), seat }),
   // ---- tokens
   z.object({
     type: z.literal('createToken'),
