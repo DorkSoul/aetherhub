@@ -55,7 +55,9 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
   const [view, setView] = useState<string>('mine');
   const precons = useQuery({ queryKey: ['precons'], queryFn: () => api.get<DeckSummary[]>('api/precons'), enabled: preconsOn && view === 'precon', staleTime: Infinity });
   const [q, setQ] = useState('');
-  const [fmt, setFmt] = useState('all');
+  // When picking a deck for a lobby, every tab starts filtered to the lobby's format.
+  const pickFmt = pick?.format && FORMATS.some((f) => f.id === pick.format) ? pick.format : 'all';
+  const [fmt, setFmt] = useState(pickFmt);
   const [owner, setOwner] = useState('all');
   const [colors, setColors] = useState<string[]>([]);
   const [editCustom, setEditCustom] = useState<CardDef | 'new' | null>(null);
@@ -106,7 +108,10 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
   const refresh = () => qc.invalidateQueries({ queryKey: ['decks'] });
   const count = (fn: (d: DeckSummary) => boolean) => all.filter(fn).length;
   const navItem = (key: string, label: string, icon: string, n: number | null, iconColor = 'var(--mu3)') => (
-    <button key={key} className={'nav' + (view === key ? ' on' : '')} onClick={() => setView(key)}>
+    <button key={key} className={'nav' + (view === key ? ' on' : '')} onClick={() => {
+        setView(key);
+        if (pick) setFmt(pickFmt);
+      }}>
       <span style={{ width: 16, textAlign: 'center', color: iconColor }}>{icon}</span>
       <span className="grow">{label}</span>
       <span className="mono" style={{ fontSize: 11.5, color: 'var(--mu3)' }}>
