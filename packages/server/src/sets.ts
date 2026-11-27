@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import type { LogFn } from './activity';
 import { config, dataPath } from './config';
 import type { AppDb } from './db/app';
 import type { CardDb } from './db/cards';
@@ -50,7 +51,7 @@ export class SetCatalog {
   constructor(
     private app: AppDb,
     private cards: CardDb,
-    private log: (m: string) => void = () => {},
+    private log: LogFn = () => {},
   ) {
     try {
       const saved = JSON.parse(app.setting('scryfallSets', '{}')) as { sets?: ScryfallSet[] };
@@ -75,7 +76,7 @@ export class SetCatalog {
         this.app.setSetting('scryfallSets', JSON.stringify({ sets: keep }));
         this.app.setSetting('scryfallSetsAt', String(Date.now()));
       } catch (e) {
-        this.log(`Set list not refreshed: ${(e as Error).message}`);
+        this.log(`Set list not refreshed: ${(e as Error).message}`, { cat: 'cards', level: 'warn' });
       } finally {
         this.loading = null;
       }

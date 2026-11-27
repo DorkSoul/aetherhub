@@ -50,7 +50,7 @@ export function draftRoutes(r: FastifyInstance, ctx: Ctx) {
       sessions.set(row.id, { id: row.id, lobbyId: l.id, draft: d });
       hub.lobbies.set(l.id, l);
     } catch (e) {
-      ctx.log(`Draft event ${row.id} could not be restored: ${(e as Error).message}`);
+      ctx.log(`Draft event ${row.id} could not be restored: ${(e as Error).message}`, { cat: 'game', level: 'error' });
     }
   }
 

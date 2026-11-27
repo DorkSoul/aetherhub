@@ -37,7 +37,8 @@ fetch_node() { # <file name>
   (cd "$CACHE" && grep " $f\$" "SHASUMS256-$NODE_VERSION.txt" | sha256sum -c --quiet -)
 }
 
-# The app folder shared by both platforms: bundled server, built client, card definitions (scenario tests left out).
+# The app folder shared by both platforms: bundled server, built client, card definitions (scenario tests left out),
+# the preconstructed deck list.
 stage_app() { # <dest>
   local d=$1
   mkdir -p "$d/server" "$d/native"
@@ -45,6 +46,8 @@ stage_app() { # <dest>
   cp -r packages/client/dist "$d/client"
   mkdir -p "$d/cards"
   (cd cards && find . -mindepth 1 -maxdepth 1 -type d ! -name tests -exec cp -r {} "$d/cards/" \;)
+  mkdir -p "$d/decks"
+  cp decks/precons.json "$d/decks/"
   # runtime dependencies at the exact versions the repo is built and tested with
   node -e "
     const srv=require('./packages/server/package.json');

@@ -1,7 +1,6 @@
 //! The AI's answers to text-change and number questions are chosen on purpose, not by position.
 
 use mtg_ai::*;
-use mtg_engine::textchange::*;
 use mtg_engine::types::*;
 use mtg_engine::*;
 use std::sync::{Arc, OnceLock};

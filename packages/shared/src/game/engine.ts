@@ -3,11 +3,10 @@
 // same `resolved` data reproduces the same state, which is what undo/rewind relies on.
 
 import type { CardDef } from '../cards';
-import { basePT } from '../cards';
 import { DUNGEONS } from './dungeons';
 import type { Intent } from './intents';
 import type { CardInst, GameState, LogDraft, Notice, Resolved, Rng, Seat, ZoneName } from './types';
-import { HIDDEN_ZONES, PHASES, SEAT_ZONES, ZONE_LABEL } from './types';
+import { HIDDEN_ZONES, SEAT_ZONES, ZONE_LABEL } from './types';
 
 export class IntentError extends Error {}
 function fail(msg: string): never {
@@ -1275,20 +1274,6 @@ function enteredPhase(state: GameState, before: number, logs: LogDraft[], notice
 export function isTopRowSeat(seat: number, n: number): boolean {
   const rows: Record<number, [number, number]> = { 1: [0, 1], 2: [1, 1], 3: [2, 1], 4: [2, 2], 5: [3, 2], 6: [3, 3], 7: [4, 3], 8: [4, 4] };
   return seat >= 1 && seat <= (rows[n] || [1, 1])[0];
-}
-
-/** Current power/toughness including counters and modifiers. */
-export function currentPT(state: GameState, c: CardInst): { p: number; t: number; delta: number } | null {
-  const b = basePT(state.defs[c.def], c.face);
-  if (!b) return null;
-  const d = (c.counters['+1/+1'] || 0) - (c.counters['-1/-1'] || 0);
-  const p = b[0] + d + c.pt.p + c.ptEot.p;
-  const t = b[1] + d + c.pt.t + c.ptEot.t;
-  return { p, t, delta: p - b[0] + (t - b[1]) };
-}
-
-export function phaseName(i: number): string {
-  return PHASES[i] || '';
 }
 
 export type { Seat };

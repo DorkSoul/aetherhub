@@ -212,7 +212,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
       // nobody came back: keep the game in Saved games instead of losing it
       if ((s.game || s.pending) && s.status === 'running' && !s.over && !s.error)
         void locked(s, () => saveSession(s, `Autosave – ${new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`))
-          .catch((e) => ctx.log('rules autosave failed: ' + String((e as Error).message ?? e)))
+          .catch((e) => ctx.log('Rules game autosave failed: ' + String((e as Error).message ?? e), { cat: 'game', level: 'error' }))
           .finally(() => unpersist(id));
       else unpersist(id);
     }
@@ -251,7 +251,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
       run(db, 'INSERT INTO rules_games (id, state, record, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET state = excluded.state, record = excluded.record, updated_at = excluded.updated_at', s.id, JSON.stringify(stateOf(s)), record, Date.now());
       s.savedAt = Date.now();
     } catch (e) {
-      ctx.log(`rules game ${s.id}: saving failed: ${String((e as Error).message ?? e)}`);
+      ctx.log(`Rules game ${s.id}: saving failed: ${String((e as Error).message ?? e)}`, { cat: 'game', level: 'error' });
     }
   }
 
@@ -272,7 +272,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     try {
       run(db, 'DELETE FROM rules_games WHERE id = ?', id);
     } catch (e) {
-      ctx.log(`rules game ${id}: removing its save failed: ${String((e as Error).message ?? e)}`);
+      ctx.log(`Rules game ${id}: removing its save failed: ${String((e as Error).message ?? e)}`, { cat: 'game', level: 'error' });
     }
   }
 
@@ -299,7 +299,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
       s.pending = st.status === 'running' ? row.record : null;
       sessions.set(s.id, s);
     } catch (e) {
-      ctx.log(`rules game ${row.id} could not be restored, skipped: ${String((e as Error).message ?? e)}`);
+      ctx.log(`Rules game ${row.id} could not be restored, skipped: ${String((e as Error).message ?? e)}`, { cat: 'game', level: 'error' });
     }
   }
 
@@ -322,7 +322,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
           new Promise<false>((res) => (timer = setTimeout(() => res(false), CLOSE_WAIT_MS))),
         ]);
         clearTimeout(timer);
-        if (!saved) ctx.log(`rules game ${s.id}: an AI was still thinking at shutdown; keeping its last save`);
+        if (!saved) ctx.log(`Rules game ${s.id}: an AI was still thinking at shutdown; keeping its last save`, { cat: 'game', level: 'warn' });
       }),
     );
     stopped = true;
@@ -338,7 +338,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
       begin(s, json);
     } catch (e) {
       s.error = 'This game could not be restored: ' + String((e as Error).message ?? e).split('\n')[0];
-      ctx.log(`rules game ${s.id}: ${s.error}`);
+      ctx.log(`Rules game ${s.id}: ${s.error}`, { cat: 'game', level: 'error' });
       // keep what there is in the players' Saved games, and drop it from the games in progress
       try {
         saveSession(s, `Could not be restored – ${new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`);
@@ -440,7 +440,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
           storeFrames(s, adv, n === 0 ? by : undefined);
           if (adv.over && !s.over) {
             const names = playersOf(s);
-            ctx.log(`Rules game over: ${names.join(', ')} – ${adv.over.t === 'Winner' ? `${names[adv.over.player] ?? 'a player'} won` : 'a draw'} on turn ${s.turn}`);
+            ctx.log(`Rules game over: ${names.join(', ')} – ${adv.over.t === 'Winner' ? `${names[adv.over.player] ?? 'a player'} won` : 'a draw'} on turn ${s.turn}`, { cat: 'game' });
           }
           s.over = adv.over;
           s.out = !!adv.humans_out && !adv.over;
@@ -459,7 +459,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
       })
       .catch((e) => {
         s.error = String((e as Error).message ?? e).split('\n')[0];
-        ctx.log('rules game error: ' + s.error);
+        ctx.log('Rules game error: ' + s.error, { cat: 'game', level: 'error' });
       })
       .finally(() => {
         notify(s);
@@ -769,6 +769,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     sessions.set(s.id, s);
     if (!body.open) begin(s);
     else persistSoon(s);
+    ctx.log(`Rules game ${body.open ? 'opened' : 'started'}: ${playersOf(s).join(', ')}`, { cat: 'game', user: req.user!.username });
     return { id: s.id };
   });
 
@@ -827,7 +828,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     );
     sessions.set(s.id, s);
     begin(s);
-    ctx.log(`Rules game started: ${playersOf(s).join(', ')}`);
+    ctx.log(`Rules game started: ${playersOf(s).join(', ')}`, { cat: 'game' });
     return s.id;
   };
 

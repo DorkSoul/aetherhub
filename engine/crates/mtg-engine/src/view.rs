@@ -195,6 +195,19 @@ pub struct View {
 }
 
 impl Game {
+    /// What a stack item does, as the stack and the game log show it: a spell's Oracle text, an ability's printed text.
+    pub(crate) fn stack_item_text(&self, s: &StackItem) -> String {
+        let d = self.db.def(s.def);
+        match &s.kind {
+            ItemKind::Spell { .. } => d.oracle_text.clone(),
+            ItemKind::Ability { ability, .. } | ItemKind::Triggered { ability, .. } => printed_ability_text(d, *ability as usize),
+            ItemKind::Delayed { .. } => {
+                let all = d.oracle_text.split_whitespace().collect::<Vec<_>>().join(" ");
+                if all.is_empty() { "Delayed trigger".into() } else { format!("Delayed trigger: {}", short_text(&all, 700)) }
+            }
+        }
+    }
+
     /// Is `id` the top card of a library that `viewer` may look at (`TopCardVisible`: the controller of the static, or everyone when the card is played revealed)?
     fn revealed_top(&self, id: CardId, viewer: PlayerId) -> bool {
         let owner = self.card(id).owner;
@@ -426,14 +439,7 @@ impl Game {
             .map(|s| {
                 let d = self.db.def(s.def);
                 let is_spell = matches!(s.kind, ItemKind::Spell { .. });
-                let text = match &s.kind {
-                    ItemKind::Spell { .. } => d.oracle_text.clone(),
-                    ItemKind::Ability { ability, .. } | ItemKind::Triggered { ability, .. } => printed_ability_text(d, *ability as usize),
-                    ItemKind::Delayed { .. } => {
-                        let all = d.oracle_text.split_whitespace().collect::<Vec<_>>().join(" ");
-                        if all.is_empty() { "Delayed trigger".into() } else { format!("Delayed trigger: {}", short_text(&all, 700)) }
-                    }
-                };
+                let text = self.stack_item_text(s);
                 StackView {
                     id: s.id,
                     source: s.source,

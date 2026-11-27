@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CardDef, CardView, GameView, LogView, Rect, Seat } from '@aetherhub/shared';
-import { DUNGEONS, FRAME_COLORS, frameKey, hexA, mixHex, PHASES } from '@aetherhub/shared';
+import { DUNGEONS, hexA, mixHex, PHASES } from '@aetherhub/shared';
 import { CARD_BACK, imgUrl } from '../../lib/base';
 import { CardImage, TurnButton } from '../../ui/ui';
 import { ptOf } from './pt';
@@ -405,10 +405,6 @@ export function pileThumb(v: GameView, iid: string | undefined): string | null {
   const d = c && !c.hidden ? v.defs[c.def] : undefined;
   if (!d) return null;
   return d.img[0] ? imgUrl(d.img[0]) : null;
-}
-
-export function frameColor(d?: CardDef): string {
-  return d ? FRAME_COLORS[frameKey(d.colors, d.typeLine)].bg : '#26282e';
 }
 
 export function dungeonLabel(s: Seat): string | null {

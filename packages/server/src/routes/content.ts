@@ -228,6 +228,7 @@ export function contentRoutes(r: FastifyInstance, ctx: Ctx) {
   };
 
   r.get('/api/decks', auth, async (req) => ctx.decks.listDecks(req.user!.id));
+  r.get('/api/precons', auth, async () => (ctx.decks.precons.enabled() ? ctx.decks.precons.list() : []));
 
   r.post('/api/decks', auth, async (req) => {
     const b = z.object({ name: z.string().trim().min(1).max(80).default('New deck'), format: z.string().default('commander'), folderId: z.number().int().nullable().optional() }).parse(req.body ?? {});
@@ -360,13 +361,14 @@ export function contentRoutes(r: FastifyInstance, ctx: Ctx) {
 
   r.post('/api/decks/:id/clone', auth, async (req) => {
     const src = idParam(req);
-    if (!get(ctx.app.db, 'SELECT 1 FROM decks WHERE id = ?', src)) notFound();
+    if (!ctx.decks.exists(src)) notFound();
     const id = ctx.decks.clone(src, req.user!.id);
     return ctx.decks.getDeck(id, req.user!.id);
   });
 
   r.post('/api/decks/:id/pin', auth, async (req) => {
     const b = z.object({ pinned: z.boolean() }).parse(req.body);
+    if (idParam(req) < 0) bad("Preconstructed decks can't be pinned");
     ctx.decks.setPinned(req.user!.id, idParam(req), b.pinned);
     return { ok: true };
   });

@@ -55,6 +55,8 @@ export interface ServerStatus {
   cardDataUpdatedAt: number | null;
   cardCount: number;
   importing: boolean;
+  /** the bundled preconstructed decks are switched on (an admin setting) */
+  precons: boolean;
   /** every open lobby on the server */
   lobbies: LobbySummary[];
   /** every running sandbox game (rules games are listed by GET api/rules/mine) */
@@ -75,12 +77,34 @@ export interface AdminGame {
   state: 'waiting' | 'running' | 'over' | 'sleeping';
 }
 
-/** A line of the server's log (kept in memory: the most recent ones). */
+export type LogLevel = 'info' | 'warn' | 'error';
+
+/** What an activity log entry is about, with its label in the admin log. */
+export const LOG_CATEGORIES = {
+  auth: 'Sign-ins',
+  users: 'Accounts',
+  decks: 'Decks',
+  lobby: 'Lobbies',
+  game: 'Games',
+  admin: 'Admin',
+  cards: 'Card data',
+  server: 'Server',
+  request: 'Other requests',
+} as const;
+export type LogCategory = keyof typeof LOG_CATEGORIES;
+
+/** An entry of the server's activity log (Settings → Server). */
 export interface AdminLogLine {
-  seq: number;
+  id: number;
   at: number;
-  level: string;
+  level: LogLevel;
+  cat: LogCategory;
+  /** who did it, when someone did */
+  user: string | null;
+  ip: string | null;
   msg: string;
+  /** shown when the entry is expanded: a stack trace, what changed */
+  detail: string | null;
 }
 
 /** sandbox: no rules enforced; rules: the rules engine plays the game (AI seats allowed); draft / sealed: a limited event */

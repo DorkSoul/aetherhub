@@ -78,7 +78,7 @@ export function DeckView({ deckId, pick }: { deckId: number; pick?: DeckPickMode
   });
   const found = results.data?.pages.flatMap((pg) => pg.cards) ?? [];
   useDeckPreview();
-  const editable = !pick && !!deck && (deck.ownerId === me.id || me.isAdmin);
+  const editable = !pick && !!deck && !deck.precon && (deck.ownerId === me.id || me.isAdmin);
   const [notes, setNotes] = useState<string | null>(null);
 
   useEffect(() => {
@@ -294,7 +294,8 @@ export function DeckView({ deckId, pick }: { deckId: number; pick?: DeckPickMode
             <Select aria-label="Format" value={deck.format} disabled={!editable} onChange={(v) => updateDeck({ format: v })} style={{ height: 26, fontSize: 12 }} options={FORMATS.map((x) => ({ value: x.id, label: x.name }))} menuWidth={180} />
           </div>
           <div style={{ fontSize: 12, color: 'var(--mu)' }}>
-            by {deck.ownerName} · {stats.total} cards · starting life {legality.life ?? f.life} · {f.commandZone ? 'command zone on' : 'no command zone'} · edited {timeAgo(deck.updatedAt)}
+            {deck.precon ? `${deck.precon.type} · ${deck.precon.set}${deck.precon.released ? ` (${deck.precon.released.slice(0, 4)})` : ''}` : `by ${deck.ownerName}`} · {stats.total} cards · starting life {legality.life ?? f.life} · {f.commandZone ? 'command zone on' : 'no command zone'}
+            {deck.precon ? '' : ` · edited ${timeAgo(deck.updatedAt)}`}
           </div>
         </div>
         <div className="grow" />
@@ -337,10 +338,10 @@ export function DeckView({ deckId, pick }: { deckId: number; pick?: DeckPickMode
               const d = await api.post<Deck>(`api/decks/${deck.id}/clone`);
               qc.invalidateQueries({ queryKey: ['decks'] });
               nav(`/decks/${d.id}`);
-              toast('Cloned into your decks');
+              toast(deck.precon ? 'Copied into your decks' : 'Cloned into your decks');
             }}
           >
-            Clone
+            {deck.precon ? 'Copy to my decks' : 'Clone'}
           </button>
         )}
         {editable && (

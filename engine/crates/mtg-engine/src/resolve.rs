@@ -8570,7 +8570,6 @@ impl Game {
                 Exec::Done
             }
             Effect::FlipCoin { who, win, lose } => {
-                use rand::Rng;
                 let flipper = match who {
                     Some(w) => {
                         let c = ec!();

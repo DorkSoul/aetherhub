@@ -3686,7 +3686,7 @@ impl Game {
             Sel::Remembered => c.remembered.iter().filter_map(|o| if let Obj::Player { id } = o { Some(*id) } else { None }).collect(),
             Sel::Stored { slot } => self.stored_view().get(*slot as usize).map_or(vec![], |s| s.iter().filter_map(|o| if let Obj::Player { id } = o { Some(*id) } else { None }).collect()),
             Sel::EachObject => self.each_current.iter().filter_map(|o| if let Obj::Player { id } = o { Some(*id) } else { None }).collect(),
-            Sel::ChosenByEach { .. } | Sel::BoundCard | Sel::ChosenCard | Sel::LinkedCard | Sel::OwnersOf { .. } | Sel::RememberedSlice { .. } | Sel::RememberedWhere { .. } | Sel::RingBearer | Sel::SlotTargets { .. } | Sel::SpellTargets { .. } | Sel::YourCommanders | Sel::YourCommandersInPlay | Sel::LegalTargetsOf { .. } | Sel::ExiledWithThis | Sel::ConvokedCreatures { .. } | Sel::TopOfLibrary { .. } | Sel::TopOfGraveyard { .. } | Sel::BottomOfLibrary { .. } | Sel::BottomOfGraveyard { .. } => vec![],
+            Sel::ChosenByEach { .. } | Sel::BoundCard | Sel::ChosenCard | Sel::LinkedCard | Sel::RememberedSlice { .. } | Sel::RememberedWhere { .. } | Sel::RingBearer | Sel::SpellTargets { .. } | Sel::YourCommanders | Sel::YourCommandersInPlay | Sel::LegalTargetsOf { .. } | Sel::ExiledWithThis | Sel::ConvokedCreatures { .. } | Sel::TopOfLibrary { .. } | Sel::TopOfGraveyard { .. } | Sel::BottomOfLibrary { .. } | Sel::BottomOfGraveyard { .. } => vec![],
             Sel::AttachmentsOf { .. } | Sel::HostOf { .. } | Sel::PairedWith { .. } | Sel::AttachedTo | Sel::Enchanted | Sel::This | Sel::All { .. } | Sel::PhasedOut { .. } | Sel::PhaseHeldBySource | Sel::AllOfPlayer { .. } => vec![],
         }
     }

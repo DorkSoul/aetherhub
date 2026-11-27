@@ -104,21 +104,12 @@ export function frontFace(def: CardDef): CardFace {
   return def;
 }
 
-export function hasBackImage(def: CardDef): boolean {
-  return def.img.length > 1;
-}
-
-/** Card is shown rotated 90° in previews (split, battles, rooms, planes). */
 /** Whether a card face is printed landscape (split cards and Rooms, planes, the front of a battle). */
 export function faceSideways(def: CardDef, face = 0): boolean {
   if (def.layout === 'planar') return true;
   if (def.layout === 'split') return !/Aftermath/i.test(def.oracleText);
   const t = def.faces?.[face]?.typeLine ?? def.typeLine.split(' // ')[face] ?? def.typeLine;
   return /\bBattle\b/.test(t);
-}
-
-export function isSideways(def: CardDef): boolean {
-  return faceSideways(def, 0);
 }
 
 /** The card a meld piece becomes, when this card is one of the halves. */
@@ -137,10 +128,6 @@ export function turnKind(def: CardDef | null | undefined): 'dfc' | 'flip' | 'mel
   if (def.layout === 'flip') return 'flip';
   if (meldResult(def)) return 'meld';
   return null;
-}
-
-export function isFlipLayout(def: CardDef): boolean {
-  return def.layout === 'flip';
 }
 
 /**

@@ -1166,7 +1166,8 @@ pub enum Event {
     /// A triggered ability was put on the stack; `entering` = it triggered because a permanent entered.
     AbilityTriggered { id: StackId, source: CardId, player: PlayerId, entering: bool, attacking: bool },
     /// A spell or ability was put onto the stack (spells, activated and triggered abilities); `targets` = how many targets it has.
-    StackPut { id: StackId, targets: u8 },
+    /// `text`: an ability's printed text (empty for a spell, whose card says what it does), `x`: the chosen X, for the game log.
+    StackPut { id: StackId, targets: u8, text: String, x: i32 },
     Saddled { card: CardId },
     Resolved { card: CardId },
     /// A spell was countered; `by` = the controller of the spell or ability that countered it (None: ward / other).

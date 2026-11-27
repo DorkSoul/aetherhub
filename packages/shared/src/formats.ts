@@ -54,8 +54,3 @@ export function formatName(id: string | null | undefined): string {
   return formatInfo(id).name;
 }
 
-export function formatFromName(name: string): FormatId | null {
-  const n = name.trim().toLowerCase().replace(/\s+/g, '');
-  const f = FORMATS.find((x) => x.id === n || x.name.toLowerCase().replace(/\s+/g, '') === n);
-  return f ? f.id : null;
-}

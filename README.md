@@ -28,6 +28,9 @@ join from a browser. Nothing needs to be installed on the players' devices.
 - Sections (commander, companion, sideboard, maybeboard, tokens, planes, schemes, attractions, stickers), folders,
   tags, pinned decks, printing choice, grouping and sorting, and a stats panel.
 - Friends can browse and clone each other's decks. Custom cards with your own art. Printable proxy PDFs.
+- About 1,200 official preconstructed decks (Commander, theme, starter, duel, challenger and more), switched on by an
+  admin in Settings → Card data. They get their own tab in the deckbuilder and the lobby deck picker and can be played
+  or copied, but not edited.
 - Official card rulings on every card, plus a rulings search.
 
 **Playing**
@@ -158,7 +161,7 @@ Aetherhub.exe reset-password <username>                        # Windows standal
 | `packages/rules` | TypeScript bindings for the rules engine addon |
 | `engine/` | the rules engine in Rust: `mtg-engine` (rules), `mtg-cards` (card loader, scenario tests), `mtg-ai` (AI players), `mtg-node` (Node addon) |
 | `cards/` | one JSON definition per card, plus scenario tests in `cards/tests/`. See [`cards/README.md`](cards/README.md) for the card format |
-| `decks/` | sample decks used by the engine's AI and fuzz tools |
+| `decks/` | the preconstructed deck list (`precons.json`, rebuilt with `node scripts/precons.mjs`) and sample decks for the engine's fuzz tools |
 | `e2e/` | Playwright end-to-end tests |
 | `fixtures/` | a small card database (~470 printings) so tests don't need the full Scryfall file |
 | `packaging/` | the standalone release builder and its launcher |
@@ -254,6 +257,7 @@ Pushing the tag starts `.github/workflows/container.yml`, which only builds the 
 Aetherhub is free software under the [GNU General Public License v3.0 or later](LICENSE).
 
 Card data and images are provided by [Scryfall](https://scryfall.com) and fetched by each server from Scryfall's API.
+The preconstructed deck lists come from [MTGJSON](https://mtgjson.com).
 Aetherhub is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions
 of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC. Magic: The Gathering and its
 card names, text and art are trademarks and copyrights of Wizards of the Coast.

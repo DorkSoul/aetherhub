@@ -9,7 +9,6 @@ import { config } from '../config';
 import { bad, notFound, type Ctx } from '../context';
 import { AppDb } from '../db/app';
 import { all, get, run, tx } from '../db/sqlite';
-import { recentLog } from '../serverlog';
 import { NewPw, Username } from './auth';
 
 export function adminRoutes(r: FastifyInstance, ctx: Ctx) {
@@ -118,8 +117,18 @@ export function adminRoutes(r: FastifyInstance, ctx: Ctx) {
   r.get('/api/admin/games', opts, async () => ctx.hub.adminGames());
 
   r.get('/api/admin/log', opts, async (req) => {
-    const { after } = z.object({ after: z.coerce.number().int().min(0).optional() }).parse(req.query);
-    return recentLog(after ?? 0);
+    const f = z
+      .object({
+        before: z.coerce.number().int().min(0).optional(),
+        after: z.coerce.number().int().min(0).optional(),
+        cat: z.string().max(20).optional(),
+        level: z.enum(['warn', 'error']).optional(),
+        user: z.string().max(60).optional(),
+        q: z.string().max(200).optional(),
+        limit: z.coerce.number().int().min(1).max(1000).optional(),
+      })
+      .parse(req.query);
+    return { entries: ctx.activity.query(f), users: ctx.activity.users() };
   });
 
   r.get('/api/admin/carddata', opts, async () => ({ ...ctx.carddata.status(), cache: ctx.images.cacheStats(), prefetch: ctx.images.prefetch, queued: ctx.images.queued() }));
@@ -129,7 +138,18 @@ export function adminRoutes(r: FastifyInstance, ctx: Ctx) {
     ctx.carddata
       .refresh(true)
       .then(() => ctx.hub.broadcastStatus())
-      .catch((e) => ctx.log('Refresh failed: ' + e.message));
+      .catch((e) => ctx.log('Card data refresh failed: ' + e.message, { cat: 'cards', level: 'error' }));
+    return { ok: true };
+  });
+
+  r.get('/api/admin/precons', opts, async () => ({ enabled: ctx.decks.precons.enabled(), available: ctx.decks.precons.available() }));
+
+  r.put('/api/admin/precons', opts, async (req) => {
+    const b = z.object({ enabled: z.boolean() }).parse(req.body);
+    if (b.enabled && !ctx.decks.precons.available()) bad('This server has no preconstructed deck list');
+    ctx.decks.precons.setEnabled(b.enabled);
+    if (b.enabled) ctx.decks.precons.list().catch((e) => ctx.log('Preconstructed decks: ' + e.message, { level: 'warn' }));
+    ctx.hub.broadcastStatus();
     return { ok: true };
   });
 

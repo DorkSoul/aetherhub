@@ -3436,19 +3436,6 @@ impl Game {
         c2
     }
 
-    /// How much generic mana convoke / improvise / delve could contribute to casting `spell`.
-    pub(crate) fn alt_reduction(&self, p: PlayerId, spell: CardId) -> u32 {
-        let kws = self.spell_alt_keywords(p, spell);
-        let mut n = 0;
-        for (i, k) in [Keyword::Convoke, Keyword::Improvise, Keyword::Delve].iter().enumerate() {
-            if kws.has(*k) {
-                let src: Vec<CardId> = if i < 2 { self.mana_sources_for_payment(p).iter().map(|m| m.card).collect() } else { vec![] };
-                n += self.alt_options(p, i as u8, spell).into_iter().filter(|id| !src.contains(id)).count() as u32;
-            }
-        }
-        n
-    }
-
     /// Total power of the untapped creatures `p` could tap to crew `vehicle` (summoning sickness doesn't matter).
     pub(crate) fn crew_power(&self, p: PlayerId, vehicle: CardId) -> i32 {
         self.battlefield
@@ -3624,17 +3611,6 @@ impl Game {
                 }
                 Cost::Or { options } => options.iter().any(|o| self.cost_parts_payable(p, card, o)),
                 Cost::ReturnToHand { filter, n } | Cost::ExileFromBattlefield { filter, n } => self.count_eligible(filter, card, p, Zone::Battlefield) >= *n as usize,
-                Cost::RemoveCountersFrom { filter, kind, n, among, suspended } => self.counters_removable_from(filter, *kind, *n, *among, *suspended, card, p),
-                Cost::RemoveAnyCounters { n } => self.cards[card.0 as usize].counters.iter().map(|(_, x)| *x as i32).sum::<i32>() >= *n,
-                Cost::RemoveAnyCountersFrom { filter, n } => self.any_counters_removable(filter, *n, card, p),
-                Cost::PutCountersOnChosen { filter, opponent, .. } => if *opponent { !self.counter_targets(p, filter, card, true).is_empty() } else { self.count_eligible(filter, card, p, Zone::Battlefield) >= 1 },
-                Cost::TapTotalPower { filter, power } => self.tappable_for_cost(p, card, filter).iter().map(|id| self.cards[id.0 as usize].cur.power.max(0)).sum::<i32>() >= *power,
-                Cost::SacrificeTotalPower { filter, power } => self.eligible_permanents(p, filter, card).iter().map(|id| self.cards[id.0 as usize].cur.power.max(0)).sum::<i32>() >= *power,
-                Cost::TapShareType { filter, n } => self.share_type_group(&self.tappable_for_cost(p, card, filter), *n).is_some(),
-                Cost::SacrificeDistinctNames { filter, n } => self.distinct_names_ok(&self.sac_pool(filter, card, p), *n),
-                Cost::DiscardSameName { filter, n } => self.same_name_group(&self.hand_matching(p, card, filter), *n).is_some(),
-                Cost::DiscardDistinctNames { filter, n } => self.distinct_names_ok(&self.hand_matching(p, card, filter), *n),
-                Cost::RevealShareColor { n } => self.share_color_group(&self.hand_matching(p, card, &Filter::default()), *n),
                 Cost::Reveal { filter, n } => self.players[p as usize].hand.iter().filter(|h| (**h != card || filter.this) && self.matches_card(&Filter { controller: PlayerFilter::Any, ..filter.clone().into_filter() }, **h, card, p)).count() >= *n as usize,
                 _ => true,
             };
@@ -4526,7 +4502,6 @@ impl Game {
                         return false;
                     }
                 }
-                Cost::DiscardSelf | Cost::ExileSelf | Cost::SacrificeSelf | Cost::PutSelfOnLibraryBottom => {}
                 _ => {}
             }
         }
@@ -8479,7 +8454,8 @@ self.pending = Some(Decision {
     /// permanent it targets (an opponent's permanent). Paid automatically when possible.
     fn apply_ward(&mut self) {
         let Some(item) = self.stack.last().cloned() else { return };
-        self.emit(Event::StackPut { id: item.id, targets: item.targets.len().min(255) as u8 });
+        let text = if matches!(item.kind, ItemKind::Spell { .. }) { String::new() } else { self.stack_item_text(&item) };
+        self.emit(Event::StackPut { id: item.id, targets: item.targets.len().min(255) as u8, text, x: item.x });
         // a crime: the spell or ability targets an opponent, an opponent's permanent or a card in an opponent's graveyard
         let crime = item.targets.iter().any(|t| match t.obj {
             Obj::Player { id } => id != item.controller,

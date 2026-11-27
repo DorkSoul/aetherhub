@@ -4,7 +4,7 @@ import { config } from './config';
 const { f, ctx } = await buildApp({ logger: true });
 ctx.carddata.start();
 await f.listen({ port: config.port, host: config.host });
-f.log.info(`Aetherhub ${config.version} listening on http://${config.host}:${config.port}${config.basePath} · data in ${config.dataDir}`);
+ctx.log(`Aetherhub ${config.version} started, listening on http://${config.host}:${config.port}${config.basePath} · data in ${config.dataDir}`);
 
 let closing = false;
 /** Close the app (onClose hooks save running games), then exit; a hung close still exits after 10 s. */
@@ -20,7 +20,7 @@ function shutdown(code: number) {
 
 for (const sig of ['SIGINT', 'SIGTERM'] as const) {
   process.on(sig, () => {
-    f.log.info('Shutting down');
+    ctx.log(`Shutting down (${sig})`);
     shutdown(0);
   });
 }
@@ -29,7 +29,7 @@ for (const sig of ['SIGINT', 'SIGTERM'] as const) {
 // launcher's window is closed or the launcher itself ends.
 if (process.env.AETHERHUB_STOP_ON_STDIN_EOF === '1') {
   process.stdin.on('end', () => {
-    f.log.info('Launcher closed, shutting down');
+    ctx.log('Launcher closed, shutting down');
     shutdown(0);
   });
   process.stdin.resume();

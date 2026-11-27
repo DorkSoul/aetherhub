@@ -48,22 +48,6 @@ export function Seg<T extends string | number>({ value, options, onChange, label
   );
 }
 
-export function Stepper({ value, onDec, onInc, label, width = 26 }: { value: ReactNode; onDec: () => void; onInc: () => void; label: string; width?: number }) {
-  return (
-    <div className="row" style={{ gap: 6 }}>
-      <button className="sq" onClick={onDec} aria-label={`Decrease ${label}`}>
-        −
-      </button>
-      <span className="mono" style={{ minWidth: width, textAlign: 'center', fontSize: 13 }}>
-        {value}
-      </span>
-      <button className="sq" onClick={onInc} aria-label={`Increase ${label}`}>
-        +
-      </button>
-    </div>
-  );
-}
-
 /** A number with − / + buttons that keep stepping while held, and a value that can be clicked to type a number. */
 export function NumberField({ value, min, max, step, set, format, label, width = 46, small }: { value: number; min: number; max?: number; /** the next value going up (dir 1) or down (dir -1) from v */ step: (v: number, dir: 1 | -1) => number; set: (v: number) => void; format?: (v: number) => string; label: string; width?: number; small?: boolean }) {
   const clamp = (v: number) => Math.min(max ?? Infinity, Math.max(min, v));

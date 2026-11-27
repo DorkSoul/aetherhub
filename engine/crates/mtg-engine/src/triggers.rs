@@ -1434,7 +1434,7 @@ fn match_trigger(g: &Game, t: &Trigger, e: &Event, src: CardId, ctrl: PlayerId) 
         (Trigger::AbilityTriggeredByEntering { by, filter }, Event::AbilityTriggered { id, source, player, entering: true, .. }) => {
             (g.player_filter_src(src, *by, *player, ctrl) && obj_matches(g, filter, *source, src, ctrl, None)).then(|| ctx(Some(Obj::Stack { id: *id }), Some(*player), 0))
         }
-        (Trigger::StackItemPut { single_target, has_targets }, Event::StackPut { id, targets }) => {
+        (Trigger::StackItemPut { single_target, has_targets }, Event::StackPut { id, targets, .. }) => {
             ((!*single_target || *targets == 1) && (!*has_targets || *targets > 0)).then(|| {
                 let mut c = ctx(Some(Obj::Stack { id: *id }), None, 0);
                 c.stack = Some(*id);

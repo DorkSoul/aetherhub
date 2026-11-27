@@ -28,6 +28,7 @@ COPY --from=build /app/packages/server/dist ./packages/server/dist
 COPY --from=build /app/packages/client/dist ./packages/client/dist
 COPY --from=engine /mtg_node.so ./native/libmtg_node.so
 COPY cards ./cards
+COPY decks/precons.json ./decks/precons.json
 RUN mkdir -p /data && chown node:node /data
 USER node
 VOLUME /data

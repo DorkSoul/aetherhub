@@ -1,4 +1,4 @@
-//! With `TABLE_DECKS=<dir of deck json>` (decks/precons) it plays Commander (40 life) with those decks, four at a time, every deck at least once when `games` is omitted.
+//! With `TABLE_DECKS=decks/precons.json` it plays Commander (40 life) with the Commander decks in that list, four at a time, every deck at least once when `games` is omitted.
 //! `table [games] [budget_ms] [players]` (env `TABLE_SEED` first seed, `TABLE_GAME_SECS` wall-clock limit per game (default 300), `TABLE_LOG` log dir, default `target/table-logs`) - every seat is a heuristic AI (default 4 players, free-for-all); prints each game's outcome and any illegal answers.
 
 use mtg_ai::*;
@@ -158,18 +158,14 @@ impl Precon {
     }
 }
 
-/// `TABLE_DECKS=<dir>`: every deck file in it that has all its commanders in the card database; the coverage of the rest is printed.
+/// `TABLE_DECKS=<precons.json>`: every Commander deck in it that has all its commanders in the card database; the coverage of the rest is printed.
 fn load_precons_from_env() -> Vec<Precon> {
-    let Ok(dir) = std::env::var("TABLE_DECKS") else { return vec![] };
+    let Ok(path) = std::env::var("TABLE_DECKS") else { return vec![] };
     let db = mtg_cards::build_db(&mtg_cards::default_cards_dir()).unwrap();
-    let mut files: Vec<_> = std::fs::read_dir(&dir).unwrap().filter_map(|e| e.ok()).map(|e| e.path()).filter(|p| p.extension().map_or(false, |x| x == "json")).collect();
-    files.sort();
     let mut out = vec![];
     let (mut skipped, mut partial) = (0, 0);
-    for f in files {
-        let v: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(&f).unwrap()).unwrap();
-        let strings = |k: &str| -> Vec<String> { v[k].as_array().map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect()).unwrap_or_default() };
-        let p = Precon { name: format!("{} ({})", v["name"].as_str().unwrap_or("?"), v["code"].as_str().unwrap_or("?")), commanders: strings("commanders"), main: strings("main") };
+    for d in fuzz::commander_precons(&path) {
+        let p = Precon { name: d.name, commanders: d.commanders, main: d.main };
         let missing: Vec<&String> = p.commanders.iter().chain(p.main.iter()).filter(|n| db.find(n).is_none()).collect();
         if p.commanders.is_empty() || p.commanders.iter().any(|n| db.find(n).is_none()) {
             println!("SKIP {}: commander not in the card database ({:?})", p.name, missing);

@@ -161,3 +161,33 @@ pub fn fuzz(db: &Arc<CardDb>, games: u64, first_seed: u64, max_decisions: u64) -
     }
     rep
 }
+
+/// A Commander deck from the bundled preconstructed deck list: its name ("Name (SET)") and card names, one per copy.
+pub struct CommanderPrecon {
+    pub name: String,
+    pub commanders: Vec<String>,
+    pub main: Vec<String>,
+}
+
+/// The Commander decks in `decks/precons.json` (written by scripts/precons.mjs): every deck with a commander.
+pub fn commander_precons(path: &str) -> Vec<CommanderPrecon> {
+    let text = std::fs::read_to_string(path).unwrap_or_else(|e| panic!("{path}: {e}"));
+    let v: serde_json::Value = serde_json::from_str(&text).unwrap_or_else(|e| panic!("{path}: {e}"));
+    let mut out = vec![];
+    for d in v["decks"].as_array().into_iter().flatten() {
+        let (mut commanders, mut main) = (vec![], vec![]);
+        for c in d["cards"].as_array().into_iter().flatten() {
+            let (Some(section), Some(qty), Some(name)) = (c[0].as_str(), c[1].as_u64(), c[2].as_str()) else { continue };
+            let list = match section {
+                "commander" => &mut commanders,
+                "main" => &mut main,
+                _ => continue,
+            };
+            list.extend(std::iter::repeat(name.to_string()).take(qty as usize));
+        }
+        if !commanders.is_empty() {
+            out.push(CommanderPrecon { name: format!("{} ({})", d["name"].as_str().unwrap_or("?"), d["code"].as_str().unwrap_or("?")), commanders, main });
+        }
+    }
+    out
+}

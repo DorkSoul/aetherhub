@@ -48,6 +48,8 @@ export const config = {
   clientDir: process.env.CLIENT_DIR || '',
   /** Directory of rules-engine card definitions (one JSON file per card). */
   rulesCards: process.env.RULES_CARDS || path.resolve('cards'),
+  /** The bundled preconstructed decks (written by scripts/precons.mjs). */
+  preconsFile: process.env.PRECONS_FILE || path.resolve('decks/precons.json'),
   uploadLimit: 10 * 1024 * 1024,
   heartbeatMs: 25_000,
   sessionDays: 30,

@@ -1,7 +1,7 @@
 //! `mullstat [games]` - plays only the opening (mulligans, bottoming, scries) with the heuristic AI in every seat and prints,
 //! for every mulligan rule, how many lands the kept hands hold, how many mulligans were taken and how often a player is
 //! short of three lands (or holds 70%+ lands) by the third draw.
-//! `MULL_DECKS=<dir of deck json>` (decks/precons): four-player Commander with those decks; without it two-player games
+//! `MULL_DECKS=decks/precons.json`: four-player Commander with the Commander decks in that list; without it two-player games
 //! with the 60-card decks in `FUZZ_DECK_DIR` (decks/fuzz). `MULL_CUT=n` takes n lands out of every deck.
 
 use mtg_ai::heuristic::policy;
@@ -96,14 +96,11 @@ fn main() {
 }
 
 fn load_precons(db: &Arc<CardDb>) -> Vec<(Vec<DefId>, Vec<DefId>)> {
-    let dir = std::env::var("MULL_DECKS").unwrap();
-    let mut files: Vec<_> = std::fs::read_dir(&dir).unwrap().filter_map(|e| e.ok()).map(|e| e.path()).filter(|p| p.extension().map_or(false, |x| x == "json")).collect();
-    files.sort();
+    let path = std::env::var("MULL_DECKS").unwrap();
     let mut out = vec![];
-    for f in files {
-        let v: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(&f).unwrap()).unwrap();
-        let ids = |k: &str| -> Vec<DefId> { v[k].as_array().map(|a| a.iter().filter_map(|x| x.as_str().and_then(|n| db.find(n))).collect()).unwrap_or_default() };
-        let (main, cmd) = (ids("main"), ids("commanders"));
+    for d in fuzz::commander_precons(&path) {
+        let ids = |names: &[String]| -> Vec<DefId> { names.iter().filter_map(|n| db.find(n)).collect() };
+        let (main, cmd) = (ids(&d.main), ids(&d.commanders));
         if !cmd.is_empty() && main.len() >= 95 {
             out.push((main, cmd));
         }

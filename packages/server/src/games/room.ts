@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import type WebSocket from 'ws';
 import type { ArrowMsg, CardDef, CardInst, ClientMsg, GameSettings, GameState, GameSummary, GameView, LogEntry, LogView, Notice, Section, SeatInput, ServerMsg, SideboardState, Viewer } from '@aetherhub/shared';
 import { createGame, diff, IntentError, IntentSchema, logFor, PLAYER_COLORS, viewFor } from '@aetherhub/shared';
+import type { LogFn } from '../activity';
 import type { AppDb } from '../db/app';
 import { get, run, tx } from '../db/sqlite';
 import type { DeckService } from '../decks';
@@ -60,7 +61,7 @@ export interface RoomHost {
   app: AppDb;
   decks: DeckService;
   images: ImageCache;
-  logger: (m: string) => void;
+  logger: LogFn;
   send(c: Conn, m: ServerMsg): void;
   isConnected(userId: number): boolean;
   prefsOf(userId: number): import('@aetherhub/shared').UserPrefs;
@@ -401,7 +402,7 @@ export class GameRoom {
     } catch (e) {
       if (e instanceof IntentError) this.h.send(c, { t: 'reject', id, reason: e.message });
       else {
-        this.h.logger('Intent failed: ' + (e as Error).stack);
+        this.h.logger(`Game action failed in “${this.game.state.settings.name}”: ${(e as Error).message}`, { level: 'error', detail: (e as Error).stack });
         this.h.send(c, { t: 'reject', id, reason: 'Something went wrong' });
       }
     }
@@ -543,6 +544,7 @@ export class GameRoom {
         winner != null ? s.seats[winner].name : null,
       );
       const mid = Number(r.lastInsertRowid);
+      this.h.logger(`Game over in “${s.settings.name}” (${s.seats.map((x) => x.name).join(', ')}): ${winner != null ? `${s.seats[winner].name} won` : 'no winner'} after ${s.turn.n} turns`);
       s.seats.forEach((p, i) => {
         let result = '—';
         if (bo === 3) {

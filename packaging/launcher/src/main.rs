@@ -6,6 +6,7 @@
 //!   app/client/      the built web UI
 //!   app/native/      the rules engine addon (libmtg_node.so / mtg_node.dll)
 //!   app/cards/       the card definitions
+//!   app/decks/       the preconstructed deck list (precons.json, found relative to the working directory)
 //!   app/node_modules the server's runtime dependencies
 //!
 //! It starts the server on all network interfaces (so other devices on the home network can join) and shows a small

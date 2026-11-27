@@ -109,6 +109,3 @@ export const IntentSchema = z.discriminatedUnion('type', [
 
 export type Intent = z.infer<typeof IntentSchema>;
 export type IntentType = Intent['type'];
-
-/** Intents that consume randomness or DB data and therefore can't be applied optimistically. */
-export const RANDOM_INTENTS: IntentType[] = ['shuffle', 'mulligan', 'randomCard', 'roll', 'coin', 'planarRoll', 'rollVisit', 'createToken'];

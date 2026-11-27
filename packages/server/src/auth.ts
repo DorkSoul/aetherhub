@@ -93,11 +93,6 @@ export function userFromToken(app: AppDb, token: string | undefined, ip?: string
   return { id: row.user_id, username: row.username, isAdmin: !!row.is_admin };
 }
 
-export function refreshCookie(req: FastifyRequest, reply: FastifyReply) {
-  const t = req.cookies[COOKIE];
-  if (t) setCookie(req, reply, t, Date.now() + config.sessionDays * 86400_000);
-}
-
 // ---------------------------------------------------------------- login rate limit
 
 /**

@@ -171,9 +171,11 @@ test('Auras and Curses on an opponent sit on their side, the hand keeps its orde
   // the admin Server page lists the game and shows the server log
   await p.goto(srv.url + 'settings/server');
   await expect(p.getByRole('heading', { name: 'Running games' })).toBeVisible({ timeout: 20_000 });
-  await expect(p.getByText(/alice, .*\(AI\)/)).toBeVisible();
+  // the running game (the server log below names it too)
+  await expect(p.getByText(/alice, .*\(AI\)/).first()).toBeVisible();
   await expect(p.getByText('in progress', { exact: false }).first()).toBeVisible();
   await expect(p.getByRole('heading', { name: 'Server log' })).toBeVisible();
+  await expect(p.getByRole('log', { name: 'Server log entries' }).getByText(/Rules game started: alice/)).toBeVisible();
   await p.screenshot({ path: test.info().outputPath('server-page.png'), fullPage: true });
   await p.request.delete(srv.url + `api/rules/games/${id}`);
 });

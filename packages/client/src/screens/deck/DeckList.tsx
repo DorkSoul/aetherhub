@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Select } from '../../ui/Select';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { CardDef, Deck, DeckSummary } from '@aetherhub/shared';
 import { FORMATS, formatName, PLAYER_COLORS } from '@aetherhub/shared';
@@ -36,6 +36,9 @@ export interface DeckLibraryPick {
   onClose: () => void;
 }
 
+/** Deck cards rendered at first; more render as the list scrolls. */
+const PAGE = 60;
+
 export default function DeckList() {
   return <DeckLibrary />;
 }
@@ -48,7 +51,9 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
   const decks = useQuery({ queryKey: ['decks'], queryFn: () => api.get<DeckSummary[]>('api/decks') });
   const folders = useQuery({ queryKey: ['folders'], queryFn: () => api.get<Folder[]>('api/folders') });
   const customs = useQuery({ queryKey: ['custom-cards'], queryFn: () => api.get<CustomEntry[]>('api/custom-cards') });
-  const [view, setView] = useState<string>('all');
+  const preconsOn = useApp((s) => !!s.status?.precons);
+  const [view, setView] = useState<string>('mine');
+  const precons = useQuery({ queryKey: ['precons'], queryFn: () => api.get<DeckSummary[]>('api/precons'), enabled: preconsOn && view === 'precon', staleTime: Infinity });
   const [q, setQ] = useState('');
   const [fmt, setFmt] = useState('all');
   const [owner, setOwner] = useState('all');
@@ -57,9 +62,20 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
   const [newFolder, setNewFolder] = useState<string | null>(null);
   const all = decks.data || [];
   const owners = Array.from(new Set(all.map((d) => d.ownerName))).sort();
+  const isPrecon = view === 'precon';
+  useEffect(() => {
+    if (isPrecon && !preconsOn) setView('mine');
+  }, [isPrecon, preconsOn]);
 
   const list = useMemo(() => {
     const ql = q.toLowerCase();
+    if (isPrecon)
+      return (precons.data || []).filter((d) => {
+        if (ql && !`${d.name} ${d.precon?.set} ${d.precon?.type}`.toLowerCase().includes(ql)) return false;
+        if (fmt !== 'all' && d.format !== fmt) return false;
+        if (colors.length && !colors.every((c) => d.colors.includes(c))) return false;
+        return true;
+      });
     return all
       .filter((d) => {
         if (view === 'pinned' && !d.pinned) return false;
@@ -73,11 +89,23 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
         return true;
       })
       .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.updatedAt - a.updatedAt);
-  }, [all, view, q, fmt, owner, colors, me.id]);
+  }, [all, precons.data, isPrecon, view, q, fmt, owner, colors, me.id]);
+
+  // Covers load as the cards render, so a long list (hundreds of preconstructed decks) renders in steps while scrolling.
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => setShown(PAGE), [view, q, fmt, owner, colors]);
+  const more = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = more.current;
+    if (!el || shown >= list.length) return;
+    const io = new IntersectionObserver((es) => es.some((e) => e.isIntersecting) && setShown((n) => n + PAGE), { rootMargin: '600px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [shown, list.length]);
 
   const refresh = () => qc.invalidateQueries({ queryKey: ['decks'] });
   const count = (fn: (d: DeckSummary) => boolean) => all.filter(fn).length;
-  const navItem = (key: string, label: string, icon: string, n: number, iconColor = 'var(--mu3)') => (
+  const navItem = (key: string, label: string, icon: string, n: number | null, iconColor = 'var(--mu3)') => (
     <button key={key} className={'nav' + (view === key ? ' on' : '')} onClick={() => setView(key)}>
       <span style={{ width: 16, textAlign: 'center', color: iconColor }}>{icon}</span>
       <span className="grow">{label}</span>
@@ -125,9 +153,11 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
       <div style={{ flexGrow: 1, display: 'flex', minHeight: 0 }}>
         <aside className="hide-sm lg" style={{ width: 240, flexShrink: 0, borderRight: '1px solid var(--line)', padding: '18px 14px', display: 'flex', flexDirection: 'column', gap: 4, overflowY: 'auto' }}>
           <div className="nav-head">Library</div>
+          {navItem('mine', 'My decks', '◧', count((d) => d.ownerId === me.id))}
+          {navItem('shared', 'Others’ decks', '◎', count((d) => d.ownerId !== me.id))}
           {navItem('all', 'All decks', '▦', all.length)}
           {navItem('pinned', 'Pinned', '★', count((d) => d.pinned), 'var(--acc)')}
-          {navItem('mine', 'My decks', '◧', count((d) => d.ownerId === me.id))}
+          {preconsOn && navItem('precon', 'Pre-constructed', '▤', precons.data?.length ?? null)}
           <div className="nav-head">Your folders</div>
           {(folders.data || []).map((f) => navItem('f:' + f.id, f.name, '▸', count((d) => d.ownerId === me.id && d.folderId === f.id)))}
           {pick ? null : newFolder != null ? (
@@ -152,8 +182,6 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
               <span style={{ width: 16, textAlign: 'center' }}>+</span>New folder
             </button>
           )}
-          <div className="nav-head">Others</div>
-          {navItem('shared', 'Others’ decks', '◎', count((d) => d.ownerId !== me.id))}
           {!pick && (
             <>
               <div className="nav-head">Server</div>
@@ -171,17 +199,18 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                   value={view}
                   onChange={setView}
                   options={[
+                    { value: 'mine', label: 'My decks' },
+                    { value: 'shared', label: 'Others’ decks' },
                     { value: 'all', label: 'All decks' },
                     { value: 'pinned', label: 'Pinned' },
-                    { value: 'mine', label: 'My decks' },
+                    ...(preconsOn ? [{ value: 'precon', label: 'Pre-constructed' }] : []),
                     ...(folders.data || []).map((f) => ({ value: 'f:' + f.id, label: `Folder: ${f.name}` })),
-                    { value: 'shared', label: 'Others’ decks' },
                     ...(pick ? [] : [{ value: 'custom', label: 'Custom cards' }]),
                   ]}
                 />
                 <input className="inp" aria-label="Search decks" placeholder="Search decks by name…" value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 280 }} />
                 <Select aria-label="Format filter" value={fmt} onChange={setFmt} options={[{ value: 'all', label: 'All formats' }, ...FORMATS.map((f) => ({ value: f.id as string, label: f.name }))]} />
-                <Select aria-label="Owner filter" value={owner} onChange={setOwner} options={[{ value: 'all', label: 'Any owner' }, ...owners.map((o) => ({ value: o, label: o + (o === me.username ? ' (you)' : '') }))]} />
+                {!isPrecon && <Select aria-label="Owner filter" value={owner} onChange={setOwner} options={[{ value: 'all', label: 'Any owner' }, ...owners.map((o) => ({ value: o, label: o + (o === me.username ? ' (you)' : '') }))]} />}
                 <div className="row" style={{ gap: 5, marginLeft: 4 }} role="group" aria-label="Color filter">
                   {['W', 'U', 'B', 'R', 'G'].map((c) => {
                     const on = colors.includes(c);
@@ -204,8 +233,9 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                 </span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-                {list.map((d) => {
+                {list.slice(0, shown).map((d) => {
                   const mine = d.ownerId === me.id;
+                  const pc = d.precon;
                   return (
                     <div key={d.id} className="dcard" style={{ position: 'relative', borderRadius: 12, border: '1px solid var(--line2)', background: 'var(--surface)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                       {pick ? (
@@ -216,34 +246,48 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                       <div style={{ position: 'relative' }}>
                         <DeckArt deck={d} height={128} />
                         <div style={{ position: 'absolute', left: 12, top: 10, fontSize: 11, color: '#f1ece4', background: 'rgba(16,17,20,.72)', borderRadius: 5, padding: '2px 7px' }}>{formatName(d.format)}</div>
-                        <button
-                          aria-label={d.pinned ? 'Unpin (pinned decks are offered first in the lobby)' : 'Pin as favourite'}
-                          title={d.pinned ? 'Unpin (pinned decks are offered first in the lobby)' : 'Pin as favourite'}
-                          onClick={async () => {
-                            await api.post(`api/decks/${d.id}/pin`, { pinned: !d.pinned });
-                            refresh();
-                          }}
-                          style={{ position: 'absolute', right: 10, top: 10, zIndex: 2, width: 30, height: 30, borderRadius: 8, border: 0, background: 'rgba(16,17,20,.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" style={{ fill: d.pinned ? 'var(--acc)' : 'none', stroke: d.pinned ? 'var(--acc)' : '#cfccc5' }} strokeWidth="1.8" aria-hidden="true">
-                            <path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />
-                          </svg>
-                        </button>
+                        {!pc && (
+                          <button
+                            aria-label={d.pinned ? 'Unpin (pinned decks are offered first in the lobby)' : 'Pin as favourite'}
+                            title={d.pinned ? 'Unpin (pinned decks are offered first in the lobby)' : 'Pin as favourite'}
+                            onClick={async () => {
+                              await api.post(`api/decks/${d.id}/pin`, { pinned: !d.pinned });
+                              refresh();
+                            }}
+                            style={{ position: 'absolute', right: 10, top: 10, zIndex: 2, width: 30, height: 30, borderRadius: 8, border: 0, background: 'rgba(16,17,20,.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" style={{ fill: d.pinned ? 'var(--acc)' : 'none', stroke: d.pinned ? 'var(--acc)' : '#cfccc5' }} strokeWidth="1.8" aria-hidden="true">
+                              <path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />
+                            </svg>
+                          </button>
+                        )}
                       </div>
                       <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 4, flexGrow: 1 }}>
                         <div style={{ fontSize: 14.5, fontWeight: 600 }}>{d.name}</div>
                         <div style={{ fontSize: 12, color: 'var(--mu)' }}>
-                          {d.cardCount} cards · edited {timeAgo(d.updatedAt)}
+                          {d.cardCount} cards · {pc ? pc.type : `edited ${timeAgo(d.updatedAt)}`}
                         </div>
-                        <div className="row" style={{ gap: 6, marginTop: 4 }}>
-                          <Avatar name={d.ownerName} color={ownerColor(d.ownerName)} size={18} />
-                          <span style={{ fontSize: 12, color: 'var(--tx3)' }}>{mine ? 'You' : d.ownerName}</span>
-                          {d.warnings > 0 && (
-                            <span title="Has legality warnings" style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--danger-tx)' }}>
-                              ! {d.warnings} warning{d.warnings === 1 ? '' : 's'}
-                            </span>
-                          )}
-                        </div>
+                        {pc ? (
+                          <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 4 }}>
+                            {pc.set}
+                            {pc.released ? ` · ${pc.released.slice(0, 4)}` : ''}
+                            {pc.missing.length > 0 && (
+                              <span title={`Not in the card data: ${pc.missing.join(', ')}`} style={{ marginLeft: 8, color: 'var(--danger-tx)' }}>
+                                {pc.missing.length} card{pc.missing.length === 1 ? '' : 's'} missing
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="row" style={{ gap: 6, marginTop: 4 }}>
+                            <Avatar name={d.ownerName} color={ownerColor(d.ownerName)} size={18} />
+                            <span style={{ fontSize: 12, color: 'var(--tx3)' }}>{mine ? 'You' : d.ownerName}</span>
+                            {d.warnings > 0 && (
+                              <span title="Has legality warnings" style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--danger-tx)' }}>
+                                ! {d.warnings} warning{d.warnings === 1 ? '' : 's'}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                       {pick ? (
                         <div className="acts row" style={{ position: 'relative', zIndex: 2, gap: 6, padding: '0 14px 12px' }}>
@@ -258,17 +302,17 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                       ) : (
                       <div className="acts row" style={{ position: 'relative', zIndex: 2, gap: 6, padding: '0 14px 12px', opacity: 0.75 }}>
                         <Link to={`/decks/${d.id}`} className="mbtn">
-                          {mine || me.isAdmin ? 'Edit' : 'View'}
+                          {!pc && (mine || me.isAdmin) ? 'Edit' : 'View'}
                         </Link>
                         <button
                           className="mbtn"
                           onClick={async () => {
                             await api.post(`api/decks/${d.id}/clone`);
                             refresh();
-                            toast(`Cloned “${d.name}” into your decks`);
+                            toast(pc ? `Copied “${d.name}” into your decks` : `Cloned “${d.name}” into your decks`);
                           }}
                         >
-                          Clone
+                          {pc ? 'Copy to my decks' : 'Clone'}
                         </button>
                       </div>
                       )}
@@ -276,7 +320,20 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                   );
                 })}
               </div>
-              {!list.length && <div style={{ padding: 80, textAlign: 'center', color: 'var(--mu2)', fontSize: 14 }}>{all.length ? 'No decks match these filters.' : 'No decks yet — make one or import a list.'}</div>}
+              {shown < list.length && <div ref={more} style={{ height: 1 }} />}
+              {!list.length && (
+                <div style={{ padding: 80, textAlign: 'center', color: 'var(--mu2)', fontSize: 14 }}>
+                  {isPrecon
+                    ? precons.isLoading
+                      ? 'Loading preconstructed decks…'
+                      : precons.data?.length
+                        ? 'No decks match these filters.'
+                        : 'No preconstructed decks yet: the card data may still be downloading.'
+                    : all.length
+                      ? 'No decks match these filters.'
+                      : 'No decks yet — make one or import a list.'}
+                </div>
+              )}
             </>
           ) : (
             <>

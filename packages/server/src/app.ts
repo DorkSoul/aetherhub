@@ -7,6 +7,8 @@ import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import { WebSocketServer } from 'ws';
 import { ZodError } from 'zod';
+import { ActivityLog, logDbPath } from './activity';
+import { registerActivityLog } from './activityRoutes';
 import { COOKIE, userFromToken } from './auth';
 import { CardDataService } from './carddata';
 import { config } from './config';
@@ -15,9 +17,10 @@ import { AppDb } from './db/app';
 import { CardDb, cardsDbPath } from './db/cards';
 import { RulingsDb, rulingsDbPath } from './db/rulings';
 import { DeckService } from './decks';
+import { PreconService } from './precons';
 import { GameHub } from './games/hub';
 import { ImageCache } from './images';
-import { logStream } from './serverlog';
+import { logStream, setLogSink } from './serverlog';
 import { adminRoutes } from './routes/admin';
 import { authRoutes } from './routes/auth';
 import { contentRoutes } from './routes/content';
@@ -41,25 +44,29 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<{ f: Fa
     bodyLimit: 12 * 1024 * 1024,
     forceCloseConnections: true,
   });
-  const log = (m: string) => (opts.logger ? f.log.info(m) : undefined);
+  const activity = new ActivityLog(logDbPath(config.dataDir), !!opts.logger);
+  const log = activity.fn();
+  setLogSink((e) => activity.add(e));
 
   const app = new AppDb();
   const cards = new CardDb(cardsDbPath(config.dataDir));
   const images = new ImageCache();
-  const decks = new DeckService(app, cards);
+  const decks = new DeckService(app, cards, new PreconService(app, cards, config.preconsFile));
   try {
     decks.refreshWarnings();
   } catch (e) {
     log(`Deck warnings not refreshed: ${(e as Error).message}`);
   }
   const rulings = new RulingsDb(rulingsDbPath(config.dataDir));
-  const carddata = new CardDataService(app, cards, rulings, log);
-  const hub = new GameHub(app, cards, decks, images, log);
+  const carddata = new CardDataService(app, cards, rulings, activity.fn({ cat: 'cards' }));
+  const hub = new GameHub(app, cards, decks, images, activity.fn({ cat: 'game' }));
   hub.statusExtra = () => {
     const s = cards.stats();
-    return { serverName: app.setting('serverName', 'Aetherhub'), cardDataUpdatedAt: s.importedAt, cardCount: s.oracles, importing: carddata.importing };
+    return { serverName: app.setting('serverName', 'Aetherhub'), cardDataUpdatedAt: s.importedAt, cardCount: s.oracles, importing: carddata.importing, precons: decks.precons.enabled() && decks.precons.available() > 0 };
   };
-  const ctx: Ctx = { app, cards, rulings, images, decks, carddata, hub, log };
+  const ctx: Ctx = { app, cards, rulings, images, decks, carddata, hub, activity, log };
+  // Resolve the preconstructed decks' cards in the background, so the first visit to the tab is quick.
+  if (decks.precons.enabled()) decks.precons.list().catch((e) => log('Preconstructed decks: ' + e.message));
 
   await f.register(cookie);
   await f.register(multipart, { limits: { fileSize: config.uploadLimit, files: 1 } });
@@ -68,13 +75,18 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<{ f: Fa
   f.addHook('onRequest', async (req) => {
     req.user = userFromToken(app, req.cookies[COOKIE], req.ip);
   });
+  registerActivityLog(f, ctx);
 
   f.setErrorHandler((err, req, reply) => {
     if (err instanceof ZodError) return reply.code(400).send({ error: err.issues.map((i) => i.message).join('; ') });
     if (err instanceof HttpError) return reply.code(err.status).send({ error: err.message });
     const status = (err as { statusCode?: number }).statusCode;
     if (status && status < 500) return reply.code(status).send({ error: (err as Error).message });
-    req.log.error(err);
+    req.log.error({ err, logged: true });
+    if (req.activity) {
+      req.activity.error = (err as Error).message;
+      req.activity.stack = (err as Error).stack;
+    } else log(`Server error: ${(err as Error).message}`, { level: 'error', cat: 'server', user: req.user?.username, detail: (err as Error).stack });
     return reply.code(500).send({ error: 'Server error' });
   });
 
@@ -156,6 +168,7 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<{ f: Fa
     cards.close();
     rulings.close();
     app.db.close();
+    activity.close();
   });
 
   hub.init(config.heartbeatMs);

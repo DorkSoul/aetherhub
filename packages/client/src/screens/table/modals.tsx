@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
-import type { CardDef, CardInst, CardView, GameView, ZoneName } from '@aetherhub/shared';
-import { DUNGEON_NAMES, DUNGEONS, FRAME_COLORS, MULLIGAN_RULES, SEAT_ZONES, ZONE_LABEL } from '@aetherhub/shared';
+import type { CardDef, CardInst, CardView, ZoneName } from '@aetherhub/shared';
+import { DUNGEON_NAMES, DUNGEONS, FRAME_COLORS, MULLIGAN_RULES, ZONE_LABEL } from '@aetherhub/shared';
 import { api } from '../../lib/api';
-import { useApp } from '../../lib/store';
 import { socket } from '../../lib/ws';
 import { RulingsList } from '../../ui/rulings';
 import { CardImage, Modal, previewProps, TurnableCard, useDebounced } from '../../ui/ui';
@@ -588,7 +587,6 @@ export function SpecialsModal() {
   const v = useTable((s) => s.view)!;
   const me = mySeat(v);
   const planeDefs = v.table.planes.map((iid) => (v.cards[iid] ? v.defs[v.cards[iid].def] : undefined)).filter((d): d is NonNullable<typeof d> => !!d);
-  const planeDef = planeDefs[0];
   const rollCost = v.table.planarRolls ?? 0;
   const encounter = v.table.encounter ? v.defs[v.cards[v.table.encounter]?.def] : undefined;
   return (
@@ -991,10 +989,3 @@ export function TableModals() {
   );
 }
 
-export function zoneList(): ZoneName[] {
-  return [...SEAT_ZONES];
-}
-
-export function useToast() {
-  return useApp((s) => s.toast);
-}

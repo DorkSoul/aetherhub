@@ -21,7 +21,7 @@ export const PHASE_STEP = ['Untap', 'Upkeep', 'Draw', 'Main1', 'BeginCombat', 'M
 // A spell on the stack is shown on its controller's battlefield (tagged "On the stack") so it never vanishes between the hand and where it ends up.
 const ZONES: Record<string, 'battlefield' | 'graveyard' | 'exile' | 'command' | 'hand' | 'sideboard' | 'schemes'> = { Battlefield: 'battlefield', Stack: 'battlefield', Graveyard: 'graveyard', Exile: 'exile', Command: 'command', Hand: 'hand', Sideboard: 'sideboard' };
 
-const COUNTER_NAMES: Record<string, string> = {
+export const COUNTER_NAMES: Record<string, string> = {
   PlusOnePlusOne: '+1/+1', MinusOneMinusOne: '-1/-1', Loyalty: 'loyalty', Defense: 'defense', Charge: 'charge', Poison: 'poison', Energy: 'energy', Experience: 'experience', Time: 'time', Lore: 'lore',
   Shield: 'shield', Stun: 'stun', Flying: 'flying', Level: 'level', Age: 'age', Fade: 'fade', Quest: 'quest', Verse: 'verse', Other: 'counter',
 };
@@ -614,54 +614,6 @@ export function frameDelay(prev: RView | null, next: RView): number {
   return 140;
 }
 
-/** A readable line for an engine event (for the game log). */
-export function describeEvent(e: REvent, v: RView, names: string[], known?: Map<number, string>): string | null {
-  // `known`: names learned from earlier events for cards that are hidden again (a one-shot scheme back in its deck)
-  if (e.t === 'SchemeSetInMotion') known?.set(e.card, e.name);
-  const card = (id: number) => v.cards.find((c) => c.id === id)?.name ?? known?.get(id) ?? 'a card';
-  const who = (p: number) => names[p] ?? `Player ${p + 1}`;
-  const obj = (o: R.Obj): string => (o.kind === 'Player' ? who(o.id) : o.kind === 'Card' ? card(o.id) : 'a spell');
-  switch (e.t) {
-    case 'Notice': return `⚠ ${who(e.player)}: ${e.text}`;
-    case 'TurnBegin': return `— ${who(e.player)}'s turn ${roundOf(e.turn, names.length)} —`;
-    case 'Cast': return `${who(e.player)} casts ${card(e.card)}`;
-    case 'LandPlayed': return `${who(e.player)} plays ${card(e.card)}`;
-    case 'Activated': return `${who(v.cards.find((c) => c.id === e.card)?.controller ?? e.player)} activates ${card(e.card)}`;
-    case 'Moved':
-      if (e.from === 'Battlefield' && e.to === 'Graveyard') return `${card(e.card)} dies`;
-      if (e.from === 'Battlefield' && e.to === 'Exile') return `${card(e.card)} is exiled`;
-      if (e.from === 'Battlefield' && e.to === 'Hand') return `${card(e.card)} returns to hand`;
-      if (e.from === 'Stack' && e.to === 'Graveyard') return null;
-      if (e.to === 'Battlefield' && e.from !== 'Stack' && e.from !== 'Hand') return `${card(e.card)} enters the battlefield`;
-      return null;
-    case 'Resolved': return null;
-    case 'Countered': return `${card(e.card)} is countered`;
-    case 'Fizzled': return `${card(e.card)} fizzles (no legal targets)`;
-    case 'Attacked': return `${card(e.card)} attacks ${obj(e.defender)}`;
-    case 'Blocked': return `${card(e.blocker)} blocks ${card(e.attacker)}`;
-    case 'Damage': return e.amount > 0 ? `${e.source !== null ? card(e.source) : 'Damage'} deals ${e.amount} to ${obj(e.target)}` : null;
-    case 'Life': return e.delta > 0 ? `${who(e.player)} gains ${e.delta} life` : `${who(e.player)} loses ${-e.delta} life`;
-    case 'Token': return `${card(e.card)} token is created`;
-    case 'Counters': return `${e.delta > 0 ? 'Added' : 'Removed'} ${Math.abs(e.delta)} ${COUNTER_NAMES[e.kind] ?? e.kind} counter(s) ${e.delta > 0 ? 'to' : 'from'} ${card(e.card)}`;
-    case 'Lost': return `${who(e.player)} loses the game (${e.reason})`;
-    case 'Mulligan': return e.keep ? `${who(e.player)} keeps` : `${who(e.player)} takes a mulligan`;
-    case 'Shuffled': return null;
-    case 'Over': return e.result.t === 'Winner' ? `${who(e.result.player)} wins` : 'The game is a draw';
-    case 'Scry': return `${who(e.player)} scries ${e.n}`;
-    case 'Attach': return e.to !== null ? `${card(e.card)} attaches to ${card(e.to)}` : null;
-    case 'Transformed': return `${card(e.card)} transforms`;
-    case 'Monarch': return `${who(e.player)} becomes the monarch`;
-    case 'Discarded': return `${who(e.player)} discards ${card(e.card)}`;
-    case 'Sacrificed': return `${who(e.player)} sacrifices ${card(e.card)}`;
-    case 'PlanarDieRolled': return `${who(e.player)} rolls the planar die: ${e.face === 'Chaos' ? 'chaos' : e.face === 'Planeswalk' ? 'planeswalk' : 'blank'}`;
-    case 'ChaosEnsued': return 'Chaos ensues';
-    case 'Planeswalked': return `${who(e.player)} planeswalks to ${card(e.to)}`;
-    case 'SchemeSetInMotion': return `${who(e.player)} sets ${e.name} in motion`;
-    case 'ChoiceRevealed': return `${who(e.player)} chose ${e.option ?? (e.cards.length ? e.cards.map(card).join(' and ') : 'nothing')} (${card(e.source)})`;
-    default: return null;
-  }
-}
-
-export function logViews(lines: string[]): LogView[] {
-  return [...lines].reverse().map((t, i) => ({ id: i, at: 0, actor: null, actorName: '', kind: 'act', text: t, priv: false }));
+export function logViews(lines: { text: string; at: number }[]): LogView[] {
+  return [...lines].reverse().map((l, i) => ({ id: i, at: l.at, actor: null, actorName: '', kind: 'act', text: l.text, priv: false }));
 }

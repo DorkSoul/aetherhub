@@ -151,12 +151,6 @@ fn flametongue_etb_kills() {
     assert_eq!(g.count_in("Hill Giant", Zone::Graveyard), 1);
 }
 
-fn attacker_game() -> Game {
-    let mut g = game();
-    g.start_at(0, Step::Main1);
-    g
-}
-
 fn creature_pt(g: &Game, id: CardId) -> (i32, i32) {
     (g.card(id).cur.power, g.card(id).cur.toughness)
 }

@@ -47,6 +47,20 @@ export interface DeckSummary {
   coverImg: string | null;
   pinned: boolean;
   updatedAt: number;
+  /** set on a bundled preconstructed deck (read-only, negative id) */
+  precon?: PreconInfo;
+}
+
+/** Where a preconstructed deck comes from. */
+export interface PreconInfo {
+  /** product type, e.g. "Commander Deck", "Theme Deck" */
+  type: string;
+  /** set code */
+  set: string;
+  /** release date (YYYY-MM-DD) */
+  released: string | null;
+  /** cards of the printed list the card database doesn't have */
+  missing: string[];
 }
 
 /** global: the owner's tag, follows the card into all their decks (Moxfield "#!tag"). deck: this deck only ("#tag"). */

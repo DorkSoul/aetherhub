@@ -1,7 +1,6 @@
 //! Creating a game.
 
 use crate::carddb::CardDb;
-use crate::decision::*;
 use crate::ids::*;
 use crate::state::*;
 use crate::types::*;

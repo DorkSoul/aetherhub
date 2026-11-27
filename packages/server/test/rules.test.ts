@@ -297,7 +297,7 @@ describe.skipIf(!hasNative)('rules games (native engine)', () => {
     const mine = listed.find((x) => x.id === g.json.id);
     expect(mine).toMatchObject({ kind: 'rules', state: 'running' });
     expect(mine!.players.filter((p) => p.endsWith('(AI)'))).toHaveLength(3);
-    expect(Array.isArray((await req('GET', '/api/admin/log', undefined, cookie)).json)).toBe(true);
+    expect((await req('GET', '/api/admin/log?cat=game', undefined, cookie)).json.entries.some((e: { msg: string }) => e.msg.startsWith('Rules game started'))).toBe(true);
     const done = await drive(g.json.id, [cookie]);
     expect(done.view.players.length).toBe(4);
     expect(done.over).toBeTruthy();

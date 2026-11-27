@@ -13,7 +13,8 @@ import { unmarkDragged } from '../table/flights';
 import { resetTable, useTable } from '../table/store';
 import { TableView } from '../table/TableView';
 import { isGridPick, PromptPanel } from './RulesPrompts';
-import { AUTO_SLOT, counterKindOf, tapChoices, describeEvent, frameDelay, gestureOption, isPermanentCard, layoutBoard, logViews, markTightPiles, onlyUntaps, optionsOf, PHASE_INDEX, PILE_DX, PHASE_STEP, type Pile, sides, stepIndex, toGameView, type Placed, type Remembered, type RView } from './rulesView';
+import { describeFrame } from './rulesLog';
+import { AUTO_SLOT, counterKindOf, tapChoices, frameDelay, gestureOption, isPermanentCard, layoutBoard, logViews, markTightPiles, onlyUntaps, optionsOf, PHASE_INDEX, PILE_DX, PHASE_STEP, type Pile, sides, stepIndex, toGameView, type Placed, type Remembered, type RView } from './rulesView';
 
 // Wire shapes of the rules-game API (packages/server/src/routes/rules.ts).
 interface Frame {
@@ -322,9 +323,9 @@ export default function RulesGame() {
   /** where the player left each permanent, kept across undo / replay (which rebuild the game and so forget `placed`) */
   const memory = useRef<Remembered>(new Map());
   /** the game log, built from the events as the frames are shown */
-  const logLines = useRef<string[]>([]);
+  const logLines = useRef<{ text: string; at: number }[]>([]);
   /** names of cards the log saw once that are hidden again (a one-shot scheme back at the bottom of its deck) */
-  const knownNames = useRef(new Map<number, string>());
+  const knownCards = useRef({ known: new Map<number, string>(), owners: new Map<number, number>() });
   // Card / hand size per seat: only how this screen draws the table.
   const sizes = useRef<Record<number, { handFrac?: number; cardScale?: number }>>({});
   /** cards the player just dropped on the table from their hand: shown there at once, until the engine accepts the play or it is refused */
@@ -482,10 +483,10 @@ export default function RulesGame() {
       for (const e of next.events) {
         // the rules changed or refused something this player asked for (a block that was ignored, a forced attacker ...)
         if (e.t === 'Notice' && e.player === stateRef.current?.seat) useApp.getState().toast(e.text);
-        const line = describeEvent(e, next.view, names(), knownNames.current);
-        if (line) logLines.current.push(line);
       }
-      if (logLines.current.length > 400) logLines.current.splice(0, logLines.current.length - 400);
+      const now = Date.now();
+      logLines.current.push(...describeFrame(next.events, next.view, shownRef.current?.view ?? null, { names: names(), ...knownCards.current }).map((text) => ({ text, at: now })));
+      if (logLines.current.length > 1000) logLines.current.splice(0, logLines.current.length - 1000);
       const prev = shownRef.current;
       shownRef.current = next;
       setShown(next);

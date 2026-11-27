@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import zlib from 'node:zlib';
+import type { LogFn } from './activity';
 import { config, dataPath } from './config';
 import type { AppDb } from './db/app';
 import { CardDb, importBulk, type ImportProgress } from './db/cards';
@@ -19,7 +20,7 @@ export class CardDataService {
     private app: AppDb,
     public cards: CardDb,
     public rulings: RulingsDb,
-    private log: (msg: string) => void = () => {},
+    private log: LogFn = () => {},
   ) {}
 
   get importing(): boolean {
@@ -120,7 +121,7 @@ export class CardDataService {
       this.app.setSetting('rulings.bulkUpdatedAt', b.info.updated_at);
       return true;
     } catch (e) {
-      this.log('Rulings download failed: ' + (e as Error).message);
+      this.log('Rulings download failed: ' + (e as Error).message, { level: 'error' });
       return false;
     }
   }
@@ -199,16 +200,16 @@ export class CardDataService {
         const seed = this.findSeed(/^rulings.*\.jsonl?$/);
         if (seed) {
           this.log(`No rulings yet — importing ${seed}`);
-          await this.importRulingsFile(seed).catch((e) => this.log('Rulings import failed: ' + (e as Error).message));
+          await this.importRulingsFile(seed).catch((e) => this.log('Rulings import failed: ' + (e as Error).message, { level: 'error' }));
         } else if (!config.noAutoDownload) await this.refreshRulings(true);
       }
     };
     boot()
-      .catch((e) => this.log('Card data import failed: ' + (e as Error).message))
+      .catch((e) => this.log('Card data import failed: ' + (e as Error).message, { level: 'error' }))
       .finally(() => {
         const tick = () => {
           const last = parseInt(this.app.setting('carddata.lastCheck', '0'), 10) || 0;
-          if (!config.noAutoDownload && Date.now() - last > WEEK && !this.busy) this.refresh(false).catch((e) => this.log('Weekly card check failed: ' + e.message));
+          if (!config.noAutoDownload && Date.now() - last > WEEK && !this.busy) this.refresh(false).catch((e) => this.log('Weekly card check failed: ' + e.message, { level: 'error' }));
         };
         tick();
         this.timer = setInterval(tick, 6 * 3600_000);

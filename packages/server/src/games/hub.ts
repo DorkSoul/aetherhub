@@ -1,11 +1,13 @@
 import type WebSocket from 'ws';
 import type { AdminGame, AiLevel, ClientMsg, GameSettings, GameState, LobbySlot, LobbyView, ServerMsg, ServerStatus } from '@aetherhub/shared';
 import { mergePrefs } from '@aetherhub/shared';
+import type { LogFn } from '../activity';
 import type { AppDb } from '../db/app';
 import type { CardDb } from '../db/cards';
 import { all, get, run } from '../db/sqlite';
 import type { DeckService } from '../decks';
 import type { ImageCache } from '../images';
+import { PRECON_OWNER, PreconService } from '../precons';
 import { LiveGame, type GameMeta } from './live';
 import { Lobby, LobbyError, type DeckRef } from './lobby';
 import { buildGame, GameRoom, seatInputs, type Conn, type HubUser, type RoomHost } from './room';
@@ -32,6 +34,9 @@ export interface GameStarters {
  * Every lobby and running sandbox game on the server, and every browser connection. Several lobbies and games run at
  * once; a user is in at most one lobby at a time.
  */
+/** How long a user has to stay disconnected before the log says they went offline. */
+const OFFLINE_AFTER_MS = 30_000;
+
 export class GameHub implements RoomHost {
   lobbies = new Map<string, Lobby>();
   rooms = new Map<string, GameRoom>();
@@ -51,15 +56,18 @@ export class GameHub implements RoomHost {
   /** the rules games the server holds, for the admin Server page */
   rulesGames?: () => AdminGame[];
   private nextConnId = 1;
+  /** users logged as online, and the pending "went offline" entries of those whose last tab closed */
+  private online = new Set<number>();
+  private offlineTimers = new Map<number, NodeJS.Timeout>();
   private heartbeat: NodeJS.Timeout | null = null;
-  statusExtra: () => Pick<ServerStatus, 'serverName' | 'cardDataUpdatedAt' | 'cardCount' | 'importing'> = () => ({ serverName: 'Aetherhub', cardDataUpdatedAt: null, cardCount: 0, importing: false });
+  statusExtra: () => Pick<ServerStatus, 'serverName' | 'cardDataUpdatedAt' | 'cardCount' | 'importing' | 'precons'> = () => ({ serverName: 'Aetherhub', cardDataUpdatedAt: null, cardCount: 0, importing: false, precons: false });
 
   constructor(
     public app: AppDb,
     public cards: CardDb,
     public decks: DeckService,
     public images: ImageCache,
-    public logger: (m: string) => void = () => {},
+    public logger: LogFn = () => {},
   ) {}
 
   init(heartbeatMs: number) {
@@ -72,7 +80,7 @@ export class GameHub implements RoomHost {
         this.rooms.set(g.id, new GameRoom(this, g));
         this.logger(`Resumed game ${g.state.settings.name} at event ${g.seq}`);
       } catch (e) {
-        this.logger(`Game ${row.id} could not be resumed: ${(e as Error).message}`);
+        this.logger(`Game ${row.id} could not be resumed: ${(e as Error).message}`, { level: 'error', detail: (e as Error).stack });
       }
     }
     this.heartbeat = setInterval(() => {
@@ -94,6 +102,8 @@ export class GameHub implements RoomHost {
 
   stop() {
     if (this.heartbeat) clearInterval(this.heartbeat);
+    for (const t of this.offlineTimers.values()) clearTimeout(t);
+    this.offlineTimers.clear();
     for (const c of this.conns) c.ws.close();
   }
 
@@ -118,11 +128,17 @@ export class GameHub implements RoomHost {
 
   attach(ws: WebSocket, user: HubUser) {
     const c: Conn = { id: this.nextConnId++, ws, user, alive: true, room: null, primary: true, created: Date.now(), lastView: null, role: 'none', seat: null };
+    clearTimeout(this.offlineTimers.get(user.id));
+    this.offlineTimers.delete(user.id);
+    if (!this.online.has(user.id)) {
+      this.online.add(user.id);
+      this.logger('Came online', { cat: 'auth', user: user.username });
+    }
     this.conns.add(c);
     // ws emits 'error' for an oversized frame (maxPayload), invalid UTF-8 or a malformed frame; without a listener
     // Node treats it as an uncaught exception and the whole server exits. Drop just this connection ('close' follows).
     ws.on('error', (e) => {
-      this.logger(`WebSocket error from ${user.username}: ${e.message}`);
+      this.logger(`WebSocket error: ${e.message}`, { level: 'warn', cat: 'server', user: user.username });
       ws.terminate();
     });
     ws.on('pong', () => (c.alive = true));
@@ -144,6 +160,18 @@ export class GameHub implements RoomHost {
       this.conns.delete(c);
       c.room?.onDisconnect(c);
       this.lobbyPresence(user.id);
+      // a reload or a dropped connection that comes back soon isn't worth an entry
+      if (!this.isConnected(user.id) && this.online.has(user.id)) {
+        clearTimeout(this.offlineTimers.get(user.id));
+        const t = setTimeout(() => {
+          this.offlineTimers.delete(user.id);
+          if (this.isConnected(user.id)) return;
+          this.online.delete(user.id);
+          this.logger('Went offline', { cat: 'auth', user: user.username });
+        }, OFFLINE_AFTER_MS);
+        t.unref();
+        this.offlineTimers.set(user.id, t);
+      }
     });
     this.send(c, { t: 'status', status: this.status(user.id) });
     this.sendLobby(c);
@@ -303,6 +331,11 @@ export class GameHub implements RoomHost {
 
   deckRef(deckId: number | null): DeckRef | null {
     if (deckId == null) return null;
+    if (PreconService.isPreconId(deckId)) {
+      const p = this.decks.precons.contents(deckId);
+      if (!p) throw new LobbyError('Deck not found');
+      return { id: deckId, name: p.name, owner: PRECON_OWNER };
+    }
     const r = get<DeckRef>(this.app.db, 'SELECT d.id, d.name, u.username AS owner FROM decks d JOIN users u ON u.id = d.owner_id WHERE d.id = ?', deckId);
     if (!r) throw new LobbyError('Deck not found');
     return r;

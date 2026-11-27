@@ -3,7 +3,7 @@ import { Select } from '../../ui/Select';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { AdminGame, AdminLogLine, HotkeyAction, PanelSlot, UserPrefs } from '@aetherhub/shared';
-import { ACCENT_DEFAULT, ACCENTS, DEFAULT_HOTKEYS, defaultSlots, FORMATS, hexA, HOTKEY_LABELS, PLAYER_COLORS } from '@aetherhub/shared';
+import { ACCENT_DEFAULT, ACCENTS, DEFAULT_HOTKEYS, defaultSlots, FORMATS, hexA, HOTKEY_LABELS, LOG_CATEGORIES, PLAYER_COLORS } from '@aetherhub/shared';
 import { api, download } from '../../lib/api';
 import { imgUrl } from '../../lib/base';
 import { play } from '../../lib/sound';
@@ -693,6 +693,49 @@ function CardData() {
         )}
       </div>
       <div style={{ fontSize: 12.5, color: 'var(--mu2)' }}>Images load through the server and are cached at normal (table) and large (preview) sizes on first request.</div>
+      <Precons />
+    </div>
+  );
+}
+
+/** Switches the bundled preconstructed decks on or off for everyone. */
+function Precons() {
+  const toast = useApp((s) => s.toast);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: ['admin-precons'], queryFn: () => api.get<{ enabled: boolean; available: number }>('api/admin/precons') });
+  const s = q.data;
+  if (!s) return null;
+  const set = (enabled: boolean) =>
+    api
+      .put('api/admin/precons', { enabled })
+      .then(() => {
+        q.refetch();
+        qc.invalidateQueries({ queryKey: ['precons'] });
+        toast(enabled ? 'Preconstructed decks added' : 'Preconstructed decks removed');
+      })
+      .catch((e) => toast(errMsg(e)));
+  return (
+    <div className="card-box" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="row">
+        <div className="grow">
+          <div style={{ fontSize: 14, fontWeight: 600 }}>Preconstructed decks</div>
+          <div style={{ fontSize: 12.5, color: 'var(--mu)', marginTop: 2 }}>
+            {s.available
+              ? `${s.available.toLocaleString()} official decks (Commander, theme, starter, duel, challenger and more), from MTGJSON. They get their own Pre-constructed tab in the deckbuilder and the lobby deck picker, and stay out of All decks. Anyone can play them or copy one into their decks; nobody can edit them.`
+              : 'This server has no preconstructed deck list (decks/precons.json is missing).'}
+          </div>
+        </div>
+        {s.enabled ? (
+          <button className="tb danger" onClick={() => set(false)}>
+            Remove
+          </button>
+        ) : (
+          <button className="tb pri" disabled={!s.available} onClick={() => set(true)}>
+            Add decks
+          </button>
+        )}
+      </div>
+      {s.enabled && <div style={{ fontSize: 12, color: 'var(--mu2)' }}>Removing them hides the tab again; games already using one keep working.</div>}
     </div>
   );
 }
@@ -779,38 +822,121 @@ function RunningGames() {
 }
 
 /** The server's most recent log lines, newest at the bottom. */
+const LOG_PAGE = 200;
+const LEVEL_COLOR: Record<string, string> = { error: 'var(--danger)', warn: 'var(--acc)', info: 'var(--mu2)' };
+
+/** The server's activity log: who did what (sign-ins, accounts, decks, lobbies, games, admin actions) and every error. */
 function ServerLog() {
-  const q = useQuery({ queryKey: ['admin-log'], queryFn: () => api.get<AdminLogLine[]>('api/admin/log'), refetchInterval: 5000 });
-  const box = useRef<HTMLDivElement>(null);
-  const lines = q.data ?? [];
-  const last = lines.at(-1)?.seq ?? 0;
-  // follow new lines unless the admin scrolled up to read
-  const pinned = useRef(true);
+  const [cat, setCat] = useState('');
+  const [level, setLevel] = useState('');
+  const [user, setUser] = useState('');
+  const [text, setText] = useState('');
+  const [q, setQ] = useState('');
   useEffect(() => {
-    const el = box.current;
-    if (el && pinned.current) el.scrollTop = el.scrollHeight;
-  }, [last]);
-  const color = (level: string) => (level === 'error' || level === 'fatal' ? 'var(--danger)' : level === 'warn' ? 'var(--acc)' : 'var(--mu)');
+    const t = setTimeout(() => setQ(text.trim()), 300);
+    return () => clearTimeout(t);
+  }, [text]);
+  const [rows, setRows] = useState<AdminLogLine[]>([]);
+  const [users, setUsers] = useState<string[]>([]);
+  const [more, setMore] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState<number | null>(null);
+  const top = useRef(0);
+  const page = (extra: Record<string, number>) => {
+    const p = new URLSearchParams();
+    for (const [k, v] of Object.entries({ cat, level, user, q, ...extra })) if (v !== '') p.set(k, String(v));
+    return api.get<{ entries: AdminLogLine[]; users: string[] }>('api/admin/log?' + p.toString());
+  };
+  useEffect(() => {
+    let live = true;
+    setLoading(true);
+    page({ limit: LOG_PAGE })
+      .then((r) => {
+        if (!live) return;
+        setRows(r.entries);
+        setUsers(r.users);
+        setMore(r.entries.length === LOG_PAGE);
+        top.current = r.entries[0]?.id ?? 0;
+      })
+      .finally(() => live && setLoading(false));
+    // new entries since the newest one shown
+    const t = setInterval(() => {
+      page({ after: top.current, limit: LOG_PAGE }).then((r) => {
+        if (!live || !r.entries.length) return;
+        top.current = r.entries[0].id;
+        setRows((cur) => [...r.entries, ...cur]);
+        setUsers(r.users);
+      });
+    }, 5000);
+    return () => {
+      live = false;
+      clearInterval(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cat, level, user, q]);
+  const older = () =>
+    page({ before: rows.at(-1)!.id, limit: LOG_PAGE }).then((r) => {
+      setRows((cur) => [...cur, ...r.entries]);
+      setMore(r.entries.length === LOG_PAGE);
+    });
+  const when = (at: number) => new Date(at).toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <h3 style={{ fontSize: 16 }}>Server log</h3>
-      <div style={{ fontSize: 12.5, color: 'var(--mu)' }}>The most recent lines since the server started (up to 1,000 are kept), refreshed every few seconds.</div>
-      <div
-        ref={box}
-        className="card-box mono"
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
-        }}
-        style={{ borderRadius: 10, padding: '10px 14px', fontSize: 12, lineHeight: 1.6, height: 320, overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-      >
-        {lines.map((l) => (
-          <div key={l.seq}>
-            <span style={{ color: 'var(--mu2)' }}>{new Date(l.at).toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>{' '}
-            <span style={{ color: color(l.level) }}>{l.level.padEnd(5)}</span> <span style={{ color: l.level === 'info' ? 'var(--tx2)' : color(l.level) }}>{l.msg}</span>
+      <div style={{ fontSize: 12.5, color: 'var(--mu)' }}>
+        Everything that happens on the server, newest first: sign-ins, account changes, decks, lobbies and games, admin actions, card data updates and errors. Moves inside a game, chat and preference changes are not logged. Kept for 90 days; click an entry for details.
+      </div>
+      <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
+        <Select aria-label="Log category" value={cat} onChange={setCat} options={[{ value: '', label: 'Everything' }, ...Object.entries(LOG_CATEGORIES).map(([value, label]) => ({ value, label }))]} />
+        <Select
+          aria-label="Log level"
+          value={level}
+          onChange={setLevel}
+          options={[
+            { value: '', label: 'All levels' },
+            { value: 'warn', label: 'Warnings and errors' },
+            { value: 'error', label: 'Errors only' },
+          ]}
+        />
+        <Select aria-label="Log user" value={user} onChange={setUser} options={[{ value: '', label: 'Anyone' }, ...users.map((u) => ({ value: u, label: u }))]} />
+        <input className="inp" aria-label="Search the log" placeholder="Search…" value={text} onChange={(e) => setText(e.target.value)} style={{ width: 220 }} />
+      </div>
+      <div className="card-box" role="log" aria-label="Server log entries" style={{ borderRadius: 10, fontSize: 12.5, lineHeight: 1.5, height: 480, overflow: 'auto' }}>
+        {rows.map((l) => (
+          <div key={l.id} style={{ borderBottom: '1px solid var(--line)' }}>
+            <button
+              onClick={() => setOpen(open === l.id ? null : l.id)}
+              aria-expanded={open === l.id}
+              style={{ display: 'grid', gridTemplateColumns: '112px 40px 92px minmax(0, 110px) 1fr', gap: 10, width: '100%', padding: '6px 12px', border: 0, background: open === l.id ? 'var(--surface2)' : 'transparent', color: 'var(--tx2)', textAlign: 'left', cursor: 'pointer', font: 'inherit' }}
+            >
+              <span className="mono" style={{ color: 'var(--mu2)', fontSize: 11.5, whiteSpace: 'nowrap' }}>
+                {when(l.at)}
+              </span>
+              <span className="mono" style={{ color: LEVEL_COLOR[l.level], fontSize: 11.5 }}>
+                {l.level}
+              </span>
+              <span style={{ color: 'var(--mu)' }}>{LOG_CATEGORIES[l.cat] ?? l.cat}</span>
+              <span style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.user ?? ''}</span>
+              <span style={{ color: l.level === 'info' ? 'var(--tx)' : LEVEL_COLOR[l.level], wordBreak: 'break-word' }}>{l.msg}</span>
+            </button>
+            {open === l.id && (
+              <div className="mono" style={{ padding: '4px 12px 10px 12px', fontSize: 11.5, color: 'var(--mu)', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                {new Date(l.at).toLocaleString()}
+                {l.user ? ` · ${l.user}` : ''}
+                {l.ip ? ` · from ${l.ip}` : ''}
+                {l.detail ? '\n\n' + l.detail : ''}
+              </div>
+            )}
           </div>
         ))}
-        {!lines.length && <span style={{ color: 'var(--mu)' }}>{q.isLoading ? 'Loading…' : 'Nothing logged yet.'}</span>}
+        {!rows.length && <div style={{ padding: 14, color: 'var(--mu)' }}>{loading ? 'Loading…' : cat || level || user || q ? 'Nothing matches these filters.' : 'Nothing logged yet.'}</div>}
+        {more && (
+          <div style={{ padding: 10, textAlign: 'center' }}>
+            <button className="tb" onClick={older}>
+              Load older
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

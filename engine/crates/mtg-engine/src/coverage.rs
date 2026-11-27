@@ -4,7 +4,7 @@ use crate::carddb::CardDb;
 use crate::dsl::Ability;
 use crate::state::{ItemKind, StackItem};
 use std::collections::HashSet;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::AtomicBool;
 use std::sync::Mutex;
 
 pub static ON: AtomicBool = AtomicBool::new(false);

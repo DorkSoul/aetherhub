@@ -3,6 +3,7 @@ import { checkLegality, COLORS, manaSymbols, manaValue, MAX_CARD_TAGS, MAX_DECK_
 import type { AppDb } from './db/app';
 import type { CardDb } from './db/cards';
 import { all, get, run, tx } from './db/sqlite';
+import { PreconService } from './precons';
 
 /** Bump when checkLegality changes what it warns about, so the cached warning counts are recomputed at startup. */
 const LEGALITY_VERSION = '2026-11-21b commander deck rules';
@@ -91,6 +92,7 @@ export class DeckService {
   constructor(
     private app: AppDb,
     private cards: CardDb,
+    readonly precons: PreconService,
   ) {}
 
   resolveDefs(keys: Iterable<string>): Record<string, CardDef> {
@@ -145,6 +147,7 @@ export class DeckService {
   }
 
   getDeck(id: number, viewerId: number): Deck | null {
+    if (PreconService.isPreconId(id)) return this.precons.getDeck(id);
     const r = get<DeckRow>(
       this.app.db,
       `SELECT d.*, u.username AS owner_name, (SELECT 1 FROM deck_pins p WHERE p.deck_id = d.id AND p.user_id = ?) AS pinned
@@ -344,7 +347,14 @@ export class DeckService {
     this.recompute(deckId);
   }
 
+  /** Whether a deck (one of the users' or a bundled precon) exists. */
+  exists(deckId: number): boolean {
+    if (PreconService.isPreconId(deckId)) return !!this.precons.contents(deckId);
+    return !!get(this.app.db, 'SELECT 1 FROM decks WHERE id = ?', deckId);
+  }
+
   clone(deckId: number, newOwner: number): number {
+    if (PreconService.isPreconId(deckId)) return this.clonePrecon(deckId, newOwner);
     return tx(this.app.db, () => {
       const d = get<DeckRow>(this.app.db, `SELECT *, '' AS owner_name FROM decks WHERE id = ?`, deckId);
       if (!d) throw new Error('Deck not found');
@@ -645,8 +655,23 @@ export class DeckService {
       );
   }
 
+  private clonePrecon(deckId: number, newOwner: number): number {
+    const p = this.precons.contents(deckId);
+    if (!p) throw new Error('Deck not found');
+    const id = this.create(newOwner, p.name, p.format);
+    this.replaceCards(
+      id,
+      p.cards.map((c) => ({ key: c.def, section: c.section, qty: c.qty, foil: false, tags: [] })),
+    );
+    return id;
+  }
+
   /** Deck contents for a game: defs with image overrides folded in (as variant keys) so everyone sees them. */
   forGame(deckId: number, cardsOverride?: { def: string; section: Section; qty: number }[]): { name: string; sleeve: string | null; cards: { def: string; section: Section; qty: number }[]; defs: Record<string, CardDef> } | null {
+    if (PreconService.isPreconId(deckId)) {
+      const p = this.precons.contents(deckId);
+      return p && { name: p.name, sleeve: null, cards: cardsOverride ?? p.cards.map((c) => ({ def: c.def, section: c.section, qty: c.qty })), defs: { ...p.defs } };
+    }
     const d = get<DeckRow>(this.app.db, `SELECT *, '' AS owner_name FROM decks WHERE id = ?`, deckId);
     if (!d) return null;
     const rows = all<CardRow>(this.app.db, 'SELECT * FROM deck_cards WHERE deck_id = ?', deckId).map((x) => this.toCard(x));

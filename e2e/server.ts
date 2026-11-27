@@ -15,7 +15,7 @@ export class TestServer {
   }
   async start() {
     this.proc = spawn(process.execPath, [path.join(ROOT, 'packages/server/dist/index.js')], {
-      env: { ...process.env, PORT: String(this.port), DATA_DIR: this.dataDir, NO_AUTO_DOWNLOAD: '1', IMAGE_OFFLINE: '1', SEED_CARDS: path.join(ROOT, 'fixtures/cards-fixture.jsonl'), LOG_LEVEL: 'warn', RULES_CARDS: path.join(ROOT, 'cards') },
+      env: { ...process.env, PORT: String(this.port), DATA_DIR: this.dataDir, NO_AUTO_DOWNLOAD: '1', IMAGE_OFFLINE: '1', SEED_CARDS: path.join(ROOT, 'fixtures/cards-fixture.jsonl'), PRECONS_FILE: path.join(ROOT, 'fixtures/precons-fixture.json'), LOG_LEVEL: 'warn', RULES_CARDS: path.join(ROOT, 'cards') },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     this.proc.stderr?.on('data', (d) => process.stderr.write(d));
@@ -137,11 +137,6 @@ export async function api(p: Player, srv: TestServer, method: 'get' | 'post' | '
   const body = await r.text();
   if (!r.ok()) throw new Error(`${method} ${url} → ${r.status()} ${body}`);
   return body ? JSON.parse(body) : null;
-}
-
-/** Visible card element for a card that is currently rendered, by index within an area. */
-export function tableCards(p: Page) {
-  return p.locator('[data-iid]');
 }
 
 export async function cardBoxes(p: Page) {

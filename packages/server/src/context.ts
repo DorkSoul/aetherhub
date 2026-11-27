@@ -2,6 +2,7 @@ import type { AppDb } from './db/app';
 import type { CardDb } from './db/cards';
 import type { RulingsDb } from './db/rulings';
 import type { CardDataService } from './carddata';
+import type { ActivityLog, LogFn } from './activity';
 import type { DeckService } from './decks';
 import type { GameHub } from './games/hub';
 import type { ImageCache } from './images';
@@ -14,7 +15,8 @@ export interface Ctx {
   decks: DeckService;
   carddata: CardDataService;
   hub: GameHub;
-  log: (m: string) => void;
+  activity: ActivityLog;
+  log: LogFn;
 }
 
 export class HttpError extends Error {
