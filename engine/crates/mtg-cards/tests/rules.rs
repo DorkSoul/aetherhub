@@ -903,6 +903,46 @@ fn pass_until_my_turn_stops_when_it_starts() {
     assert_eq!(asked, Some((3, Step::Upkeep)));
 }
 
+/// The first question for player 0 once player 1 attacks them with Grizzly Bears (player 0 holds Giant Growth and a Forest).
+fn first_question_when_attacked(combat_stops: bool, pass_until: Option<PassUntil>, castable: bool) -> (Step, bool) {
+    let mut g = game();
+    g.add_card("Forest", 0, Zone::Battlefield);
+    if castable {
+        g.add_card("Giant Growth", 0, Zone::Hand);
+    }
+    g.add_card("Grizzly Bears", 0, Zone::Battlefield);
+    let bears = g.add_card("Grizzly Bears", 1, Zone::Battlefield);
+    g.start_at(1, Step::Main1);
+    for p in g.players.iter_mut() {
+        p.full_control = false;
+        p.auto_skip = true;
+        p.stops_opp = 0;
+    }
+    g.players[0].combat_stops = combat_stops;
+    g.players[0].pass_until = pass_until;
+    g.attack(&[(bears, Obj::player(0))]);
+    for _ in 0..50 {
+        let d = g.next_decision().expect("game over");
+        if d.player == 0 {
+            return (g.step, matches!(d.kind, DecisionKind::Priority { .. }));
+        }
+        let c = g.default_choice(&d);
+        g.apply(c).unwrap();
+    }
+    panic!("player 0 was never asked");
+}
+
+#[test]
+fn an_attacked_player_gets_priority_before_blocks_when_they_can_act() {
+    assert_eq!(first_question_when_attacked(true, None, true), (Step::DeclareAttackers, true));
+    // also while passing until their own turn; the pass stays armed
+    assert_eq!(first_question_when_attacked(true, Some(PassUntil::PlayerTurn { player: 0, after: 1 }), true), (Step::DeclareAttackers, true));
+    // nothing to cast: straight to blocks
+    assert_eq!(first_question_when_attacked(true, None, false), (Step::DeclareBlockers, false));
+    // the setting off (games recorded before it existed): straight to blocks
+    assert_eq!(first_question_when_attacked(false, None, true), (Step::DeclareBlockers, false));
+}
+
 #[test]
 fn revealed_top_card_of_the_library_is_in_the_view() {
     let mut g = game();
@@ -1634,4 +1674,59 @@ fn lotus_field_trigger_stops_so_lands_can_be_tapped_before_the_sacrifice() {
     let DecisionKind::Priority { actions, stack_len } = d.kind else { panic!("{:?}", d.kind) };
     assert_eq!((d.player, stack_len), (0, 1));
     assert!(actions.iter().any(|a| matches!(a, Action::ActivateMana { .. })), "{actions:?}");
+}
+
+/// The steps where `asked` is offered priority in a combat where player 1's Grizzly Bears attack player 0 (or player 0's
+/// attack player 1 when `p0_attacks`), the other player blocking with their own Bears. `asked` holds Giant Growth and a Forest.
+fn combat_priority_steps(asked: PlayerId, p0_attacks: bool, pass_until: Option<PassUntil>) -> Vec<Step> {
+    let mut g = game();
+    g.add_card("Forest", asked, Zone::Battlefield);
+    g.add_card("Giant Growth", asked, Zone::Hand);
+    let b0 = g.add_card("Grizzly Bears", 0, Zone::Battlefield);
+    let b1 = g.add_card("Grizzly Bears", 1, Zone::Battlefield);
+    let (active, attacker, blocker, defender) = if p0_attacks { (0, b0, b1, 1) } else { (1, b1, b0, 0) };
+    g.start_at(active, Step::Main1);
+    for p in g.players.iter_mut() {
+        p.full_control = false;
+        p.auto_skip = true;
+        p.stops_mine = 0;
+        p.stops_opp = 0;
+        p.combat_stops = true;
+    }
+    g.players[asked as usize].pass_until = pass_until;
+    g.attack(&[(attacker, Obj::player(defender))]);
+    let mut steps = vec![];
+    for _ in 0..100 {
+        if g.step == Step::EndCombat || g.step == Step::Main2 {
+            break;
+        }
+        let Some(d) = g.next_decision() else { break };
+        match d.kind {
+            DecisionKind::Priority { .. } => {
+                if d.player == asked && matches!(g.step, Step::DeclareAttackers | Step::DeclareBlockers | Step::FirstStrikeDamage | Step::CombatDamage) {
+                    steps.push(g.step);
+                }
+                g.apply(Choice::Priority { action: None }).unwrap();
+            }
+            DecisionKind::Blockers { .. } => g.apply(Choice::Blockers { blocks: vec![(blocker, attacker)] }).unwrap(),
+            _ => {
+                let c = g.default_choice(&d);
+                g.apply(c).unwrap();
+            }
+        }
+    }
+    steps
+}
+
+#[test]
+fn both_sides_of_a_combat_get_priority_after_blocks_when_they_can_act() {
+    use Step::*;
+    // the defender: before blocks and before damage
+    assert_eq!(combat_priority_steps(0, false, None), vec![DeclareAttackers, DeclareBlockers]);
+    // ... also while passing until their own turn
+    assert_eq!(combat_priority_steps(0, false, Some(PassUntil::PlayerTurn { player: 0, after: 1 })), vec![DeclareAttackers, DeclareBlockers]);
+    // the attacker: before damage
+    assert_eq!(combat_priority_steps(0, true, None), vec![DeclareBlockers]);
+    // ... but an "end turn" of their own passes it
+    assert_eq!(combat_priority_steps(0, true, Some(PassUntil::Step { turn: 1, step: End })), Vec::<Step>::new());
 }

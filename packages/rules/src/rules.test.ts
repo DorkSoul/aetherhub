@@ -19,6 +19,7 @@ function setup(): GameSetup {
     commander: false,
     mulligan: 'London',
     planar: [],
+    combat_stops: true,
     seats: [
       { name: 'Human', human: true, deck: deck('GR'), commander: [], sideboard: [], companion: null, schemes: [], difficulty: 'Normal' },
       // Easy AIs: these tests check the game and session plumbing, not how well the AI plays (Normal / Hard think 250 / 600 ms

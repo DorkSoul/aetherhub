@@ -744,6 +744,10 @@ pub struct Player {
     pub stops_opp: u16,
     /// Ask for priority at every step, even with nothing to do.
     pub full_control: bool,
+    /// Combat priority with something to cast or activate, whatever the stops are: a player being attacked is asked after
+    /// attackers are declared and after blocks (also while passing until a later point); the attacking player is asked
+    /// after blocks unless they are passing.
+    pub combat_stops: bool,
     /// Offer "tap this for mana" as a priority action (humans: a land can be tapped at instant speed with nothing to spend the mana on).
     /// It never counts as something to do, so it never holds priority by itself.
     pub offer_mana: bool,

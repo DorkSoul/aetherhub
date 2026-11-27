@@ -6,4 +6,10 @@ export type GameSetup = { seed: number, commander: boolean, mulligan: MulliganRu
 /**
  * Planechase: (card name, copies) of the shared planar deck (empty: no Planechase).
  */
-planar: Array<[string, number]>, };
+planar: Array<[string, number]>, 
+/**
+ * Human players get combat priority when they have something to do: after attackers are declared when attacked, and
+ * after blocks when attacking or attacked. Off for games recorded before this existed, so their decision logs replay
+ * unchanged.
+ */
+combat_stops: boolean, };

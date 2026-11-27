@@ -821,7 +821,7 @@ impl Game {
 
     // ------------------------------------------------------------------ blockers
 
-    fn defending_players(&self) -> Vec<PlayerId> {
+    pub(crate) fn defending_players(&self) -> Vec<PlayerId> {
         let Some(cb) = &self.combat else { return vec![] };
         let mut v: Vec<PlayerId> = vec![];
         for a in &cb.attackers {

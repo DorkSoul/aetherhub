@@ -761,7 +761,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     }
     const s = makeSession(
       crypto.randomUUID(),
-      { seed: body.seed ?? crypto.randomInt(2 ** 31 - 1), commander, mulligan: body.mulligan ?? (commander ? 'LondonFreeFirst' : 'London'), seats, planar: [] },
+      { seed: body.seed ?? crypto.randomInt(2 ** 31 - 1), commander, mulligan: body.mulligan ?? (commander ? 'LondonFreeFirst' : 'London'), seats, planar: [], combat_stops: true },
       info,
       mineInfo.name,
       new Map(warnings.length ? [[0, warnings]] : []),
@@ -821,7 +821,7 @@ export function rulesRoutes(r: FastifyInstance, ctx: Ctx) {
     for (const list of planarFrom) for (const [n] of list) planar.set(n, 1);
     const s = makeSession(
       crypto.randomUUID(),
-      { seed: crypto.randomInt(2 ** 31 - 1), commander, mulligan: ENGINE_MULLIGAN[settings.mulligan] ?? (commander ? 'LondonFreeFirst' : 'London'), seats: setupSeats, planar: [...planar.entries()] },
+      { seed: crypto.randomInt(2 ** 31 - 1), commander, mulligan: ENGINE_MULLIGAN[settings.mulligan] ?? (commander ? 'LondonFreeFirst' : 'London'), seats: setupSeats, planar: [...planar.entries()], combat_stops: true },
       info,
       settings.name,
       warnings,
