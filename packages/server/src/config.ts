@@ -53,7 +53,7 @@ export const config = {
   uploadLimit: 10 * 1024 * 1024,
   heartbeatMs: 25_000,
   sessionDays: 30,
-  version: '1.0.19',
+  version: '1.0.20',
 };
 
 export function dataPath(...p: string[]): string {
