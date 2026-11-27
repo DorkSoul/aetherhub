@@ -166,7 +166,7 @@ test('box-select cards in your hand, then drag them together or move them from t
   await p.mouse.up();
   await expect(mine).toHaveCount(4);
 
-  // Box two more, then Discard from the right-click menu moves both.
+  // Box two more, then Move to → Graveyard from the right-click menu moves both.
   const c2 = (await mine.nth(2).boundingBox())!;
   await p.mouse.move(strip.x + strip.width - 20, c2.y + c2.height / 2);
   await p.mouse.down();
@@ -174,7 +174,8 @@ test('box-select cards in your hand, then drag them together or move them from t
   await p.mouse.up();
   await mine.nth(3).click({ button: 'right' });
   await expect(p.getByText('2 selected')).toBeVisible();
-  await p.getByText('Discard', { exact: true }).click();
+  await p.getByRole('menuitem', { name: /Move to/ }).click();
+  await p.getByRole('menuitem', { name: 'Graveyard (discard)' }).click();
   await expect(mine).toHaveCount(2);
   await expect(p.locator('[data-seat="0"] [data-pile="graveyard"]')).toContainText('2');
   await closeGame(p);

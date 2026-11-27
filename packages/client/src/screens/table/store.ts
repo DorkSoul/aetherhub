@@ -38,8 +38,10 @@ export type TableModal =
   | { kind: 'attach'; iid: string; mode: 'attach' | 'meld' }
   | { kind: 'counter'; iids: string[] }
   | { kind: 'nth'; iid: string }
-  | { kind: 'rulings'; iid: string }
   | { kind: 'x'; title: string; run: (n: number) => void };
+
+/** A card to show in the details window: `iid` follows a card on the table, `def` is used as is (cards in a look or reveal). */
+export type CardDetailsTarget = { iid: string; def?: undefined } | { iid?: string; def: CardDef };
 
 export interface TableState {
   mode: 'online' | 'local';
@@ -57,6 +59,8 @@ export interface TableState {
   pings: Record<string, number>;
   modal: TableModal | null;
   reveal: CardsNotice | null;
+  /** Card details opened by this player only; kept apart from `modal` so it opens on top of a zone or a pending choice. */
+  details: CardDetailsTarget | null;
   undoRequests: UndoRequestMsg[];
   sideboard: SideboardState | null;
   sel: string[];
@@ -168,6 +172,7 @@ export const useTable = create<TableState>((set, get) => ({
   pings: {},
   modal: null,
   reveal: null,
+  details: null,
   undoRequests: [],
   sideboard: null,
   sel: [],
@@ -213,6 +218,7 @@ export function resetTable() {
     pings: {},
     modal: null,
     reveal: null,
+    details: null,
     undoRequests: [],
     sideboard: null,
     sel: [],

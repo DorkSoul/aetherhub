@@ -1,11 +1,11 @@
-import type { CardView, GameView, Intent, ZoneName } from '@aetherhub/shared';
+import type { CardDef, CardView, GameView, Intent, ZoneName } from '@aetherhub/shared';
 import { basePT, DUNGEON_NAMES, DUNGEONS, turnKind } from '@aetherhub/shared';
 import { useApp } from '../../lib/store';
 import { socket } from '../../lib/ws';
 import { askConfirm } from '../../ui/dialogs';
 import type { MenuItem } from '../../ui/ui';
 import { toggleTurned, useMenu, useTurned } from '../../ui/ui';
-import { mySeat, useTable } from './store';
+import { mySeat, useTable, type CardDetailsTarget } from './store';
 
 export const EFFECTS = ['Flying', 'Haste', 'Hexproof', 'Indestructible', 'Trample', 'Lifelink', 'Vigilance', 'Deathtouch'];
 let menuX = 3;
@@ -55,6 +55,30 @@ function targets(iid: string): string[] {
   return sel.includes(iid) && sel.length > 1 ? sel : [iid];
 }
 
+/** The card a details window shows: a card on the table only while this player can see it (never a face-down card
+ *  they may not look at), or a def handed over by a look or reveal window. */
+export function detailsCard(v: GameView, t: CardDetailsTarget): { def: CardDef; card?: CardView } | null {
+  const c = t.iid != null ? v.cards[t.iid] : undefined;
+  const live = c && !c.hidden ? v.defs[c.def] : undefined;
+  if (t.def) return { def: t.def, card: live?.key === t.def.key ? c : undefined };
+  return live ? { def: live, card: c } : null;
+}
+
+/** "Card details…" for a card on the table this player can see, or null. */
+export function detailsItem(v: GameView, iid: string): MenuItem | null {
+  if (!detailsCard(v, { iid })) return null;
+  return { kind: 'item', label: 'Card details…', hint: 'only you', run: () => useTable.setState({ details: { iid } }) };
+}
+
+/** The menu of a card shown in a window (zone, look, reveal): its details. */
+export function detailsMenu(def: CardDef | undefined, target: CardDetailsTarget): MenuItem[] {
+  if (!def) return [];
+  return [
+    { kind: 'head', label: def.name },
+    { kind: 'item', label: 'Card details…', hint: 'only you', run: () => useTable.setState({ details: target }) },
+  ];
+}
+
 export function cardMenu(iid: string): MenuItem[] {
   const v = view();
   const c = v.cards[iid];
@@ -65,7 +89,6 @@ export function cardMenu(iid: string): MenuItem[] {
   const ids = targets(iid);
   const multi = ids.length > 1;
   const o = c.owner;
-  const def = v.defs[c.def];
   const item = (label: string, run: () => void, hint?: string, danger?: boolean): MenuItem => ({ kind: 'item', label, run, hint, danger });
   const toZone = (zone: ZoneName, extra: Partial<Extract<Intent, { type: 'move' }>> = {}) => {
     // Menu moves go to each card's owner's zone.
@@ -77,107 +100,144 @@ export function cardMenu(iid: string): MenuItem[] {
     }
     for (const [seat, list] of byOwner) send({ type: 'move', iids: list, seat, zone, ...extra });
   };
+  const nth = item('Nth from the top of library…', () => useTable.setState({ modal: { kind: 'nth', iid } }));
+  const library = (): MenuItem[] => [item('Top of library', () => toZone('library', { pos: 'top' })), item('Bottom of library', () => toZone('library', { pos: 'bottom' })), ...(multi ? [] : [nth])];
 
   if (loc.zone === 'battlefield') {
     I.push({ kind: 'head', label: multi ? `${ids.length} selected` : cardLabel(v, c, loc.seat) });
     I.push(item(c.tapped ? 'Untap' : 'Tap', () => send({ type: 'tap', iids: ids, tapped: !c.tapped }), 'T'));
     I.push(item(c.faceDown ? 'Turn face up' : 'Turn face down', () => send({ type: 'faceDown', iids: ids, value: !c.faceDown })));
     I.push({ kind: 'sep' });
-    I.push(item('To hand', () => toZone('hand'), "owner's"));
-    I.push(item('To graveyard', () => toZone('graveyard')));
-    I.push(item('To exile', () => toZone('exile')));
-    I.push(item('Top of library', () => toZone('library', { pos: 'top' })));
-    I.push(item('Bottom of library', () => toZone('library', { pos: 'bottom' })));
-    I.push(item('Command zone', () => toZone('command')));
-    I.push({ kind: 'sep' });
-    if (!multi) {
-      if (basePT(def, c.face) || c.hidden) {
-        I.push({ kind: 'step', label: '+1/+1 counters', value: c.counters['+1/+1'] || 0, dec: () => send({ type: 'counter', iids: ids, counter: '+1/+1', delta: -1 }), inc: () => send({ type: 'counter', iids: ids, counter: '+1/+1', delta: 1 }) });
-        I.push({ kind: 'step', label: '−1/−1 counters', value: c.counters['-1/-1'] || 0, dec: () => send({ type: 'counter', iids: ids, counter: '-1/-1', delta: -1 }), inc: () => send({ type: 'counter', iids: ids, counter: '-1/-1', delta: 1 }) });
-      }
-      const others = Object.keys(c.counters).filter((k) => k !== '+1/+1' && k !== '-1/-1');
-      for (const k of Array.from(new Set(['charge', ...others])))
-        I.push({ kind: 'step', label: `${k[0].toUpperCase()}${k.slice(1)} counters`, value: c.counters[k] || 0, dec: () => send({ type: 'counter', iids: ids, counter: k, delta: -1 }), inc: () => send({ type: 'counter', iids: ids, counter: k, delta: 1 }) });
-      const custom = c.effects.map((e) => e.k).filter((k) => !EFFECTS.includes(k));
-      I.push({
-        kind: 'chips',
-        label: 'Effects (stay until removed · click again to remove)',
-        chips: [...EFFECTS.slice(0, 6), ...custom].map((k) => ({ label: k + (c.effects.find((e) => e.k === k)?.eot ? ' · EOT' : ''), on: c.effects.some((e) => e.k === k), run: () => send({ type: 'effect', iid, k }) })),
-      });
-      I.push({ kind: 'input', label: 'Custom effect', placeholder: 'e.g. Can’t block, Goaded', submit: (t) => send({ type: 'effect', iid, k: t }) });
-    } else {
-      I.push({ kind: 'step', label: '+1/+1 counters (each)', value: '±', dec: () => send({ type: 'counter', iids: ids, counter: '+1/+1', delta: -1 }), inc: () => send({ type: 'counter', iids: ids, counter: '+1/+1', delta: 1 }) });
-    }
-    const others = v.seats.map((s, i) => ({ s, i })).filter((x) => x.i !== loc.seat);
-    if (others.length)
-      I.push({
-        kind: 'dots',
-        label: 'Change control',
-        dots: others.map((x) => ({ label: x.s.name, color: x.s.color, run: () => send({ type: 'move', iids: ids, seat: x.i, zone: 'battlefield', x: c.x, y: 1 - c.y }) })),
-      });
-    I.push({ kind: 'sep' });
-    if (!multi) I.push(item(`Doesn't untap: ${c.noUntap ? 'on' : 'off'}`, () => send({ type: 'noUntap', iid, value: !c.noUntap })));
-    if (!multi) I.push(item('Create copy', () => send({ type: 'copy', iid })));
-    if (!multi) I.push(item('Ping', () => socket.send({ t: 'ping', iid }), 'Middle-click'));
-    I.push(item('Draw arrow', () => useApp.getState().toast('Hold Alt and drag from a card to a card or player'), 'Alt-drag'));
-    const bf = v.seats[loc.seat].zones.battlefield;
-    const rulesGame = !!useTable.getState().rules;
-    if (multi && ids.every((i) => bf.includes(i) && v.cards[i]?.def === c.def && !v.cards[i]?.faceDown)) {
-      // a rules game keeps every card: they can lie fanned out or exactly on top of each other with a count
-      if (rulesGame) {
-        I.push(item(`Pile ${ids.length} selected: fanned out`, () => send({ type: 'stack', iids: ids, tight: false })));
-        I.push(item(`Pile ${ids.length} selected: stacked with count (×${ids.length})`, () => send({ type: 'stack', iids: ids, tight: true })));
-      } else I.push(item(`Stack ${ids.length} selected into a pile`, () => send({ type: 'stack', iids: ids })));
-    }
-    const copies = bf.filter((i) => v.cards[i]?.def === c.def && v.cards[i]?.token === c.token).length;
-    if (!multi && rulesGame && copies > 1) {
-      I.push(item('Group identical: fanned out', () => send({ type: 'group', iid, tight: false })));
-      I.push(item(`Group identical: stacked with count (×${copies})`, () => send({ type: 'group', iid, tight: true })));
-    } else if (!multi && c.pile > 1) {
-      I.push(item('Split one off the pile', () => send({ type: 'split', iid, n: 1 })));
-      I.push({ kind: 'input', label: `Tap N of the ${c.pile}`, placeholder: 'N', button: 'Tap', submit: (t) => parseInt(t, 10) > 0 && send({ type: 'split', iid, n: parseInt(t, 10), tap: true }) });
-      I.push(item('Ungroup pile', () => send({ type: 'ungroup', iid })));
-    } else if (!multi && c.token && copies > 1) I.push(item('Group identical', () => send({ type: 'group', iid })));
     I.push({
       kind: 'sub',
-      label: 'More…',
-      items: () => moreMenu(iid, ids),
+      label: 'Move to…',
+      items: () => {
+        const M: MenuItem[] = [item('Hand', () => toZone('hand'), "owner's"), item('Graveyard', () => toZone('graveyard')), item('Exile', () => toZone('exile')), { kind: 'sep' }, ...library(), { kind: 'sep' }, item('Command zone', () => toZone('command'))];
+        const others = v.seats.map((s, i) => ({ s, i })).filter((x) => x.i !== loc.seat);
+        if (others.length)
+          M.push(
+            { kind: 'sep' },
+            { kind: 'dots', label: 'Give control to', dots: others.map((x) => ({ label: x.s.name, color: x.s.color, run: () => send({ type: 'move', iids: ids, seat: x.i, zone: 'battlefield', x: c.x, y: 1 - c.y }) })) },
+          );
+        return M;
+      },
     });
-    if (ids.every((i) => v.cards[i]?.token)) I.push(item(multi ? 'Delete tokens' : 'Delete token', () => send({ type: 'delete', iids: ids }), 'Del', true));
+    I.push({ kind: 'sub', label: 'Counters…', items: () => counterItems(iid, ids) });
+    if (!multi) I.push({ kind: 'sub', label: 'Effects and P/T…', items: () => effectItems(iid) });
+    const piles = pileItems(iid, ids);
+    if (piles.length) I.push({ kind: 'sub', label: 'Pile…', items: () => pileItems(iid, ids) });
+    I.push({ kind: 'sub', label: 'More…', items: () => moreMenu(iid, ids) });
+    if (ids.every((i) => v.cards[i]?.token)) I.push({ kind: 'sep' }, item(multi ? 'Delete tokens' : 'Delete token', () => send({ type: 'delete', iids: ids }), 'Del', true));
   } else if (loc.zone === 'hand') {
     I.push({ kind: 'head', label: multi ? `${ids.length} selected` : cardLabel(v, c) });
     I.push(item('Play to battlefield', () => send({ type: 'move', iids: ids, seat: me ?? loc.seat, zone: 'battlefield', x: 0.45, y: 0.4 }), 'dbl-click'));
     I.push(item('Play face down', () => send({ type: 'move', iids: ids, seat: me ?? loc.seat, zone: 'battlefield', x: 0.6, y: 0.4, faceDown: true })));
     I.push({ kind: 'sep' });
-    I.push(item('Discard', () => toZone('graveyard')));
-    I.push(item('Exile', () => toZone('exile')));
-    I.push(item('Exile face down', () => toZone('exile', { faceDown: true })));
-    I.push(item('Top of library', () => toZone('library', { pos: 'top' })));
-    I.push(item('Bottom of library', () => toZone('library', { pos: 'bottom' })));
-    I.push(item('Nth from the top…', () => useTable.setState({ modal: { kind: 'nth', iid } })));
-    I.push(item('Command zone', () => toZone('command')));
-    I.push({ kind: 'sep' });
+    I.push({
+      kind: 'sub',
+      label: 'Move to…',
+      items: () => [item('Graveyard (discard)', () => toZone('graveyard')), item('Exile', () => toZone('exile')), item('Exile face down', () => toZone('exile', { faceDown: true })), { kind: 'sep' }, ...library(), { kind: 'sep' }, item('Command zone', () => toZone('command'))],
+    });
     I.push(item('Reveal to everyone', () => send({ type: 'reveal', iids: ids })));
   } else {
     I.push({ kind: 'head', label: cardLabel(v, c) });
-    for (const [z, l] of [
-      ['hand', 'To hand'],
-      ['battlefield', 'To battlefield'],
-      ['graveyard', 'To graveyard'],
-      ['exile', 'To exile'],
-      ['library', 'Top of library'],
-      ['command', 'Command zone'],
-    ] as [ZoneName, string][]) {
-      if (z === loc.zone) continue;
-      I.push(item(l, () => send({ type: 'move', iids: ids, seat: z === 'hand' ? (me ?? o) : z === 'battlefield' ? (me ?? o) : o, zone: z })));
-    }
+    I.push({
+      kind: 'sub',
+      label: 'Move to…',
+      items: () =>
+        (
+          [
+            ['hand', 'Hand'],
+            ['battlefield', 'Battlefield'],
+            ['graveyard', 'Graveyard'],
+            ['exile', 'Exile'],
+            ['library', 'Top of library'],
+            ['command', 'Command zone'],
+          ] as [ZoneName, string][]
+        )
+          .filter(([z]) => z !== loc.zone)
+          .map(([z, l]) => item(l, () => send({ type: 'move', iids: ids, seat: z === 'hand' || z === 'battlefield' ? (me ?? o) : o, zone: z }))),
+    });
   }
-  const look = !multi && I.length ? lookItem(iid) : null;
-  if (look) I.push({ kind: 'sep' }, look);
-  // Rulings for any card you can see (not face-down cards you can't peek at, not custom cards).
-  if (!multi && def && !def.custom && def.oracleId && I.length) I.push(...(look ? [] : [{ kind: 'sep' } as MenuItem]), item('Rulings…', () => useTable.setState({ modal: { kind: 'rulings', iid } })));
+  if (!multi) {
+    const info = [detailsItem(v, iid), lookItem(iid)].filter((x): x is MenuItem => !!x);
+    if (info.length) I.push({ kind: 'sep' }, ...info);
+  }
   return I;
 }
+
+/** Counters on the clicked card (or +1/+1 on every selected card), and a counter of any type. */
+function counterItems(iid: string, ids: string[]): MenuItem[] {
+  const v = view();
+  const c = v.cards[iid];
+  if (!c) return [];
+  const def = v.defs[c.def];
+  const step = (label: string, counter: string, value: string | number): MenuItem => ({ kind: 'step', label, value, dec: () => send({ type: 'counter', iids: ids, counter, delta: -1 }), inc: () => send({ type: 'counter', iids: ids, counter, delta: 1 }) });
+  const I: MenuItem[] = [];
+  if (ids.length > 1) {
+    I.push(step('+1/+1 (each)', '+1/+1', '±'), step('−1/−1 (each)', '-1/-1', '±'));
+  } else {
+    if (basePT(def, c.face) || c.hidden) I.push(step('+1/+1', '+1/+1', c.counters['+1/+1'] || 0), step('−1/−1', '-1/-1', c.counters['-1/-1'] || 0));
+    const others = Object.keys(c.counters).filter((k) => k !== '+1/+1' && k !== '-1/-1');
+    for (const k of Array.from(new Set(['charge', ...others]))) I.push(step(`${k[0].toUpperCase()}${k.slice(1)}`, k, c.counters[k] || 0));
+  }
+  I.push({ kind: 'sep' }, { kind: 'input', label: 'Counter of any type', placeholder: 'e.g. loyalty, time, oil', button: '+1', submit: (t) => send({ type: 'counter', iids: ids, counter: t.toLowerCase(), delta: 1 }) });
+  return I;
+}
+
+/** Keywords, custom effects and power/toughness changes on one card. */
+function effectItems(iid: string): MenuItem[] {
+  const v = view();
+  const c = v.cards[iid];
+  if (!c) return [];
+  const custom = c.effects.map((e) => e.k).filter((k) => !EFFECTS.includes(k));
+  const sign = (n: number) => `${n >= 0 ? '+' : ''}${n}`;
+  return [
+    {
+      kind: 'chips',
+      label: 'Effects (stay until removed · click again to remove)',
+      chips: [...EFFECTS, ...custom].map((k) => ({ label: k + (c.effects.find((e) => e.k === k)?.eot ? ' · EOT' : ''), on: c.effects.some((e) => e.k === k), run: () => send({ type: 'effect', iid, k }) })),
+    },
+    { kind: 'input', label: 'Custom effect', placeholder: 'e.g. Can’t block, Goaded', submit: (t) => send({ type: 'effect', iid, k: t }) },
+    { kind: 'input', label: 'Effect until end of turn', placeholder: 'e.g. +2/+0, Menace', submit: (t) => send({ type: 'effect', iid, k: t, eot: true }) },
+    { kind: 'sep' },
+    { kind: 'step', label: 'P/T until end of turn', value: sign(c.ptEot.p), dec: () => send({ type: 'ptMod', iid, p: -1, t: -1, eot: true }), inc: () => send({ type: 'ptMod', iid, p: 1, t: 1, eot: true }) },
+    { kind: 'step', label: 'P/T modifier (lasting)', value: sign(c.pt.p), dec: () => send({ type: 'ptMod', iid, p: -1, t: -1, eot: false }), inc: () => send({ type: 'ptMod', iid, p: 1, t: 1, eot: false }) },
+    { kind: 'step', label: 'Power only (EOT)', value: `${c.ptEot.p}`, dec: () => send({ type: 'ptMod', iid, p: -1, t: 0, eot: true }), inc: () => send({ type: 'ptMod', iid, p: 1, t: 0, eot: true }) },
+  ];
+}
+
+/** Piling identical cards together, splitting and ungrouping piles. Empty when none applies. */
+function pileItems(iid: string, ids: string[]): MenuItem[] {
+  const v = view();
+  const c = v.cards[iid];
+  const loc = c && locateView(v, iid);
+  if (!c || !loc) return [];
+  const multi = ids.length > 1;
+  const I: MenuItem[] = [];
+  const item = (label: string, run: () => void): MenuItem => ({ kind: 'item', label, run });
+  const bf = v.seats[loc.seat].zones.battlefield;
+  const rulesGame = !!st().rules;
+  if (multi && ids.every((i) => bf.includes(i) && v.cards[i]?.def === c.def && !v.cards[i]?.faceDown)) {
+    // a rules game keeps every card: they can lie fanned out or exactly on top of each other with a count
+    if (rulesGame) {
+      I.push(item(`Pile ${ids.length} selected: fanned out`, () => send({ type: 'stack', iids: ids, tight: false })));
+      I.push(item(`Pile ${ids.length} selected: stacked with count (×${ids.length})`, () => send({ type: 'stack', iids: ids, tight: true })));
+    } else I.push(item(`Stack ${ids.length} selected into a pile`, () => send({ type: 'stack', iids: ids })));
+  }
+  if (multi) return I;
+  const copies = bf.filter((i) => v.cards[i]?.def === c.def && v.cards[i]?.token === c.token).length;
+  if (rulesGame && copies > 1) {
+    I.push(item('Group identical: fanned out', () => send({ type: 'group', iid, tight: false })));
+    I.push(item(`Group identical: stacked with count (×${copies})`, () => send({ type: 'group', iid, tight: true })));
+  } else if (c.pile > 1) {
+    I.push(item('Split one off the pile', () => send({ type: 'split', iid, n: 1 })));
+    I.push({ kind: 'input', label: `Tap N of the ${c.pile}`, placeholder: 'N', button: 'Tap', submit: (t) => parseInt(t, 10) > 0 && send({ type: 'split', iid, n: parseInt(t, 10), tap: true }) });
+    I.push(item('Ungroup pile', () => send({ type: 'ungroup', iid })));
+  } else if (c.token && copies > 1) I.push(item('Group identical', () => send({ type: 'group', iid })));
+  return I;
+}
+
 
 /** The `useTurned` key of a card on the table: a face-down card's look at its face is kept apart from turning a face-up
  *  card over, so the card isn't shown turned once it is turned face up. */
@@ -208,6 +268,7 @@ function moreMenu(iid: string, ids: string[]): MenuItem[] {
   const me = mySeat(v);
   const I: MenuItem[] = [];
   if (!c) return I;
+  const multi = ids.length > 1;
   // in a rules game the engine transforms and flips cards; the look at the other side is in the card menu
   const rules = !!st().rules;
   if (!rules && def?.faces && def.faces.length > 1 && turnKind(def) === 'dfc') I.push({ kind: 'item', label: 'Transform / flip over', run: () => send({ type: 'transform', iid }) });
@@ -217,12 +278,10 @@ function moreMenu(iid: string, ids: string[]): MenuItem[] {
   I.push({ kind: 'item', label: 'Meld with…', run: () => useTable.setState({ modal: { kind: 'attach', iid, mode: 'meld' } }) });
   I.push({ kind: 'item', label: 'Reveal to everyone', run: () => send({ type: 'reveal', iids: ids }) });
   I.push({ kind: 'sep' });
-  I.push({ kind: 'step', label: 'P/T until end of turn', value: `${c.ptEot.p >= 0 ? '+' : ''}${c.ptEot.p}`, dec: () => send({ type: 'ptMod', iid, p: -1, t: -1, eot: true }), inc: () => send({ type: 'ptMod', iid, p: 1, t: 1, eot: true }) });
-  I.push({ kind: 'step', label: 'P/T modifier (lasting)', value: `${c.pt.p >= 0 ? '+' : ''}${c.pt.p}`, dec: () => send({ type: 'ptMod', iid, p: -1, t: -1, eot: false }), inc: () => send({ type: 'ptMod', iid, p: 1, t: 1, eot: false }) });
-  I.push({ kind: 'step', label: 'Power only (EOT)', value: `${c.ptEot.p}`, dec: () => send({ type: 'ptMod', iid, p: -1, t: 0, eot: true }), inc: () => send({ type: 'ptMod', iid, p: 1, t: 0, eot: true }) });
-  I.push({ kind: 'input', label: 'Counter of any type', placeholder: 'e.g. loyalty, time, oil', button: '+1', submit: (t) => send({ type: 'counter', iids: ids, counter: t.toLowerCase(), delta: 1 }) });
-  I.push({ kind: 'input', label: 'Effect until end of turn', placeholder: 'e.g. +2/+0, Menace', submit: (t) => send({ type: 'effect', iid, k: t, eot: true }) });
-  I.push({ kind: 'chips', label: 'More keywords', chips: EFFECTS.slice(6).map((k) => ({ label: k, on: c.effects.some((e) => e.k === k), run: () => send({ type: 'effect', iid, k }) })) });
+  if (!multi) I.push({ kind: 'item', label: 'Create copy', run: () => send({ type: 'copy', iid }) });
+  if (!multi) I.push({ kind: 'item', label: 'Ping', hint: 'Middle-click', run: () => socket.send({ t: 'ping', iid }) });
+  I.push({ kind: 'item', label: 'Draw arrow', hint: 'Alt-drag', run: () => useApp.getState().toast('Hold Alt and drag from a card to a card or player') });
+  if (!multi) I.push({ kind: 'item', label: "Doesn't untap", checked: c.noUntap, run: () => send({ type: 'noUntap', iid, value: !c.noUntap }) });
   if (c.faceDown && me != null && (c.peekers.includes(me) || c.owner === me)) {
     const others = v.seats.map((s, i) => ({ s, i })).filter((x) => !c.peekers.includes(x.i));
     if (others.length) I.push({ kind: 'dots', label: 'Let a player peek', dots: others.map((x) => ({ label: x.s.name, color: x.s.color, run: () => send({ type: 'grantPeek', iid, seat: x.i }) })) });

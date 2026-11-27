@@ -159,6 +159,7 @@ test('Auras and Curses on an opponent sit on their side, the hand keeps its orde
   const n = treasures.length;
   expect(n).toBeGreaterThanOrEqual(2);
   await onSide(me, treasures[0]).click({ button: 'right' });
+  await p.getByRole('menuitem', { name: /Pile…/ }).click();
   await p.getByText(`Group identical: stacked with count (×${n})`).click();
   await expect(p.locator(`[data-seat="${me}"] [data-bf]`).getByText(`×${n}`, { exact: true })).toBeVisible();
   const spread = async () => {

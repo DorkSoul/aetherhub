@@ -4,9 +4,9 @@ import type { CardDef, CardInst, CardView, ZoneName } from '@aetherhub/shared';
 import { DUNGEON_NAMES, DUNGEONS, FRAME_COLORS, MULLIGAN_RULES, ZONE_LABEL } from '@aetherhub/shared';
 import { api } from '../../lib/api';
 import { socket } from '../../lib/ws';
-import { RulingsList } from '../../ui/rulings';
-import { CardImage, Modal, previewProps, TurnableCard, useDebounced } from '../../ui/ui';
-import { cardLabel, locateView } from './menus';
+import { CardImage, Modal, openMenuAt, previewProps, TurnableCard, useDebounced } from '../../ui/ui';
+import { CardDetailsModal } from './CardDetails';
+import { cardLabel, detailsMenu, locateView } from './menus';
 import { mySeat, useTable, type CardsNotice } from './store';
 
 const send = (i: Parameters<ReturnType<typeof useTable.getState>['send']>[0]) => useTable.getState().send(i);
@@ -16,7 +16,7 @@ function CardTile({ c, def, w = 130, children }: { c: CardInst | CardView; def?:
   const ctrs = Object.entries(c.counters || {}).filter(([, v]) => v);
   return (
     <div className="col" style={{ gap: 6, alignItems: 'center' }}>
-      <div style={{ position: 'relative' }} {...previewProps(def, undefined, 0, 'z:' + c.iid)}>
+      <div style={{ position: 'relative' }} {...previewProps(def, undefined, 0, 'z:' + c.iid)} onContextMenu={(e) => def && openMenuAt(e, () => detailsMenu(def, { iid: c.iid, def }))}>
         {def ? <TurnableCard def={def} turnKey={'z:' + c.iid} style={{ width: w, height: Math.round((w * 88) / 63), borderRadius: 7 }} /> : <CardImage back style={{ width: w, height: Math.round((w * 88) / 63), borderRadius: 7 }} />}
         {ctrs.length > 0 && <div style={{ position: 'absolute', left: 4, bottom: 4, fontSize: 10, fontWeight: 600, background: '#2f7a45', color: '#fff', borderRadius: 7, padding: '1px 6px' }}>{ctrs.map(([k, v]) => `${k} ×${v}`).join(' ')}</div>}
         {c.faceDown && <div style={{ position: 'absolute', right: 4, top: 4, fontSize: 10, background: '#15130f', color: '#ebe8e2', borderRadius: 4, padding: '1px 5px' }}>face down</div>}
@@ -234,7 +234,7 @@ export function CardsModal({ data }: { data: CardsNotice }) {
           const def = c ? data.defs[c.def] : undefined;
           return (
             <div key={x.iid} className="col" style={{ alignItems: 'center', gap: 8, width: 170 }}>
-              <div {...previewProps(def, undefined, 0, 'z:' + x.iid)}>
+              <div {...previewProps(def, undefined, 0, 'z:' + x.iid)} onContextMenu={(e) => def && openMenuAt(e, () => detailsMenu(def, { def }))}>
                 <TurnableCard def={def} turnKey={'z:' + x.iid} style={{ width: 150, height: 210, borderRadius: 8 }} />
               </div>
               <div className="row" style={{ gap: 4 }}>
@@ -281,7 +281,7 @@ export function RevealPopup({ data }: { data: CardsNotice }) {
         {data.notice.iids.map((iid) => {
           const d = data.defs[data.cards[iid]?.def];
           return (
-            <div key={iid} {...previewProps(d)}>
+            <div key={iid} {...previewProps(d)} onContextMenu={(e) => d && openMenuAt(e, () => detailsMenu(d, { def: d }))}>
               <CardImage def={d} style={{ width: 100, height: 140, borderRadius: 6 }} />
             </div>
           );
@@ -501,23 +501,6 @@ export function GiveSeatModal({ seat }: { seat: number }) {
               {u.username}
             </button>
           ))}
-      </div>
-    </Modal>
-  );
-}
-
-export function RulingsModal({ iid }: { iid: string }) {
-  const v = useTable((s) => s.view);
-  const c = v?.cards[iid];
-  const def = c && v ? v.defs[c.def] : undefined;
-  if (!def) return null;
-  return (
-    <Modal title={`Rulings · ${def.name}`} onClose={close} width={620}>
-      <div className="row" style={{ padding: '16px 20px', gap: 18, alignItems: 'flex-start' }}>
-        <TurnableCard def={def} turnKey={'r:' + iid} style={{ width: 180, height: 252, borderRadius: 9 }} />
-        <div className="grow" style={{ minWidth: 0 }}>
-          <RulingsList oracleId={def.oracleId} maxHeight={460} link={false} />
-        </div>
       </div>
     </Modal>
   );
@@ -965,9 +948,6 @@ export function TableModals() {
       case 'attach':
         body = <AttachModal iid={modal.iid} mode={modal.mode} />;
         break;
-      case 'rulings':
-        body = <RulingsModal iid={modal.iid} />;
-        break;
       case 'nth':
         body = <NumberModal title="Put it Nth from the top — N =" onDone={(n) => send({ type: 'move', iids: [modal.iid], seat: v.cards[modal.iid]?.owner ?? 0, zone: 'library', pos: n })} />;
         break;
@@ -982,6 +962,7 @@ export function TableModals() {
     <>
       {body}
       {reveal && <RevealPopup data={reveal} />}
+      <CardDetailsModal />
       <SideboardModal />
       <Prompts />
       <MulliganBar />

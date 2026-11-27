@@ -122,6 +122,22 @@ test('a face-down card: its controller may look at it on their screen, an oppone
   // bob only sees the card back (his view has no def for it, so he has no look either)
   await expect(bob.page.locator(`[data-iid="${iid}"]`)).toBeVisible();
   expect(await shown(bob.page)).toBe(0);
+  // card details: alice may open them for her face-down card, only on her screen; bob's menu has no such item
+  await card.click({ button: 'right' });
+  await p.getByRole('menuitem', { name: /Card details/ }).click();
+  const details = p.getByRole('dialog');
+  await expect(details).toBeVisible();
+  await details.getByRole('button', { name: 'Close' }).click();
+  await expect(details).toHaveCount(0);
+  // a log notice can cover the card on bob's screen, so the right-click goes straight to the card
+  await bob.page.locator(`[data-iid="${iid}"]`).evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    el.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2, clientX: r.x + r.width / 2, clientY: r.y + r.height / 2 }));
+  });
+  await expect(bob.page.getByRole('menu').first()).toBeVisible();
+  await expect(bob.page.getByRole('menuitem', { name: /Card details/ })).toHaveCount(0);
+  await expect(bob.page.getByRole('dialog')).toHaveCount(0);
+  await bob.page.keyboard.press('Escape');
   // turning it back over ends the look (and turning it face up shows the face as usual)
   await card.click({ button: 'right' });
   await p.getByRole('menuitemcheckbox', { name: /Look at the face-down card/ }).click();
