@@ -34,6 +34,8 @@ export interface DraftSet {
   booster: 'play' | 'draft';
 }
 
+/** Gap between set icon downloads. */
+const ICON_SPACING_MS = 100;
 const WEEK = 7 * 24 * 3600_000;
 const SET_TYPES = ['expansion', 'core', 'masters', 'draft_innovation'];
 /** Products in those set types that are not opened as draft boosters (The List, Commander-only Mystery Boosters, Jumpstart). */
@@ -127,6 +129,23 @@ export class SetCatalog {
     if (fs.existsSync(file)) return fs.readFileSync(file, 'utf8');
     const uri = this.meta.get(code)?.icon_svg_uri;
     if (!uri || config.imageOffline) return null;
+    // the set picker asks for dozens of icons at once: download them one at a time, spaced out, each only once
+    const running = this.iconLoads.get(code);
+    if (running) return running;
+    const load = this.iconQueue.then(async () => {
+      await new Promise((r) => setTimeout(r, ICON_SPACING_MS));
+      return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : this.downloadIcon(uri, file);
+    });
+    this.iconQueue = load.catch(() => null);
+    this.iconLoads.set(code, load);
+    void load.finally(() => this.iconLoads.delete(code));
+    return load;
+  }
+
+  private iconQueue: Promise<unknown> = Promise.resolve();
+  private iconLoads = new Map<string, Promise<string | null>>();
+
+  private async downloadIcon(uri: string, file: string): Promise<string | null> {
     try {
       const res = await scryfallFetch(uri, { accept: 'image/svg+xml' });
       if (!res.ok) return null;

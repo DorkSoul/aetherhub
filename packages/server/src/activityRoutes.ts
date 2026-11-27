@@ -94,6 +94,7 @@ const ROUTES: Record<string, [LogCategory, Describe]> = {
   'POST /api/admin/carddata/refresh': ['admin', () => 'Started a card data refresh'],
   'PUT /api/admin/precons': ['admin', (e) => (e.body.enabled ? 'Added the preconstructed decks' : 'Removed the preconstructed decks')],
   'POST /api/admin/images/prefetch': ['admin', () => 'Started prefetching every card image'],
+  'POST /api/admin/images/prefetch/pause': ['admin', () => 'Paused prefetching card images'],
   'POST /api/admin/images/clear': ['admin', () => 'Cleared the image cache'],
   'POST /api/admin/backups': ['admin', () => 'Made a backup'],
   'POST /api/admin/backups/:file/restore': ['admin', (e) => `Restored the backup ${q(e.params.file)}`],

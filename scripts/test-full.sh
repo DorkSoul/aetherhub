@@ -16,7 +16,9 @@ section "Engine tests (every card scenario included)"
 (cd engine && cargo test --release --workspace 2>&1 | grep -E "^test result|FAILED|panicked|^error" | sort | uniq -c; exit "${PIPESTATUS[0]}") || fail "engine tests"
 
 section "Every card compiles"
-bash scripts/safe-run.sh 600 engine/target/release/cards validate 2>&1 | tail -2 | tee /dev/stderr | grep -q "^ok:" || fail "cards validate"
+OUT=$(bash scripts/safe-run.sh 600 engine/target/release/cards validate 2>&1 | tail -2)
+echo "$OUT"
+echo "$OUT" | grep -q "^ok:" || fail "cards validate"
 
 section "Every card survives random play"
 OUT=$(bash scripts/safe-run.sh 2400 engine/target/release/smoke --all 2>&1)

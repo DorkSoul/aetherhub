@@ -15,17 +15,39 @@ interface Job {
   size: ImgSize;
   resolve: (f: string | null) => void;
   tries: number;
+  /** queued by "prefetch every image" (dropped when it is paused) */
+  prefetch?: boolean;
+}
+
+/** Progress of "prefetch every image": `total` images were missing when it started, `done` of them are handled. */
+export interface PrefetchState {
+  running: boolean;
+  /** stopped by an admin before it finished */
+  paused: boolean;
+  total: number;
+  done: number;
+  /** of `done`: downloaded now (the rest Scryfall had no image for, or the download failed) */
+  downloaded: number;
+  failed: number;
+  /** bytes downloaded by this run */
+  bytes: number;
+  /** images that were already cached when it started */
+  cached: number;
 }
 
 /** On-disk cache of Scryfall card images with a polite download queue. */
 export class ImageCache {
   private queue: Job[] = [];
   private inflight = new Map<string, Promise<string | null>>();
+  /** the queued job behind each in-flight key, so a player's request can take over a prefetch download */
+  private jobs = new Map<string, Job>();
   private running = 0;
   private lastStart = 0;
   private stats: { files: number; bytes: number } | null = null;
-  prefetch = { running: false, done: 0, total: 0 };
+  prefetch: PrefetchState = { running: false, paused: false, total: 0, done: 0, downloaded: 0, failed: 0, bytes: 0, cached: 0 };
   private cancelPrefetch = false;
+  /** told when "prefetch every image" ends (finished, paused or cleared), for the activity log */
+  onPrefetchEnd: (s: PrefetchState) => void = () => {};
 
   dir(size: ImgSize): string {
     return dataPath('images', size);
@@ -40,21 +62,34 @@ export class ImageCache {
   }
 
   /** Returns the cached file path, downloading on a miss. Null when Scryfall has no such image. */
-  get(id: string, face: number, size: ImgSize, priority = true): Promise<string | null> {
+  get(id: string, face: number, size: ImgSize, priority = true, prefetch = false): Promise<string | null> {
     if (!/^[0-9a-f-]{36}$/.test(id) || face < 0 || face > 1) return Promise.resolve(null);
     const f = this.file(id, face, size);
     if (fs.existsSync(f)) return Promise.resolve(f);
     if (config.imageOffline) return Promise.resolve(null);
     const key = `${id}-${face}-${size}`;
     const existing = this.inflight.get(key);
-    if (existing) return existing;
+    if (existing) {
+      // a player wants an image the prefetch has queued: it is theirs now (pausing won't drop it), and it goes first
+      const j = this.jobs.get(key);
+      if (j && !prefetch && j.prefetch) {
+        j.prefetch = false;
+        const i = this.queue.indexOf(j);
+        if (priority && i > 0) this.queue.unshift(...this.queue.splice(i, 1));
+      }
+      return existing;
+    }
     const p = new Promise<string | null>((resolve) => {
-      const job = { id, face, size, resolve, tries: 0 };
+      const job: Job = { id, face, size, resolve, tries: 0, prefetch };
+      this.jobs.set(key, job);
       if (priority) this.queue.unshift(job);
       else this.queue.push(job);
     });
     this.inflight.set(key, p);
-    p.finally(() => this.inflight.delete(key));
+    p.finally(() => {
+      this.inflight.delete(key);
+      this.jobs.delete(key);
+    });
     this.pump();
     return p;
   }
@@ -115,6 +150,7 @@ export class ImageCache {
       this.stats.files++;
       this.stats.bytes += buf.length;
     }
+    if (job.prefetch) this.prefetch.bytes += buf.length;
     return f;
   }
 
@@ -150,27 +186,66 @@ export class ImageCache {
 
   clear() {
     this.cancelPrefetch = true;
+    for (const j of this.queue) j.resolve(null);
     this.queue = [];
     fs.rmSync(dataPath('images'), { recursive: true, force: true });
     this.stats = { files: 0, bytes: 0 };
+    this.prefetch = { running: false, paused: false, total: 0, done: 0, downloaded: 0, failed: 0, bytes: 0, cached: 0 };
   }
 
+  /**
+   * Downloads the normal-size image of every listed card face that isn't cached yet, at low priority (players'
+   * requests go first). `ids` are [printing id, face count] pairs. Stops when paused or cleared.
+   */
   async prefetchAll(ids: string[][]) {
     if (this.prefetch.running) return;
     this.cancelPrefetch = false;
-    this.prefetch = { running: true, done: 0, total: ids.length };
-    try {
-      for (const [id, faces] of ids) {
-        if (this.cancelPrefetch) break;
-        const n = parseInt(faces, 10) || 1;
-        const jobs: Promise<unknown>[] = [];
-        for (let f = 0; f < n; f++) jobs.push(this.get(id, f, 'normal', false));
-        // Keep the queue shallow so interactive requests stay fast.
-        while (this.queue.length > 50) await new Promise((r) => setTimeout(r, 200));
-        void Promise.all(jobs).then(() => this.prefetch.done++);
+    const missing: [string, number][] = [];
+    let cached = 0;
+    for (const [id, faces] of ids) {
+      const n = Math.min(2, parseInt(faces, 10) || 1);
+      for (let f = 0; f < n; f++) {
+        if (fs.existsSync(this.file(id, f, 'normal'))) cached++;
+        else missing.push([id, f]);
       }
-    } finally {
-      this.prefetch.running = false;
     }
+    this.prefetch = { running: true, paused: false, total: missing.length, done: 0, downloaded: 0, failed: 0, bytes: 0, cached };
+    const state = this.prefetch;
+    const pending: Promise<unknown>[] = [];
+    try {
+      for (const [id, face] of missing) {
+        if (this.cancelPrefetch) break;
+        // Keep the queue shallow so interactive requests stay fast.
+        while (this.queue.length > 50 && !this.cancelPrefetch) await new Promise((r) => setTimeout(r, 200));
+        if (this.cancelPrefetch) break;
+        pending.push(
+          this.get(id, face, 'normal', false, true).then((f) => {
+            // a download dropped by pausing isn't done: resuming fetches it
+            if (this.prefetch !== state || (!f && this.cancelPrefetch)) return;
+            state.done++;
+            if (f) state.downloaded++;
+            else state.failed++;
+          }),
+        );
+      }
+      await Promise.all(pending);
+    } finally {
+      state.running = false;
+      state.paused = this.cancelPrefetch && state.done < state.total;
+      this.onPrefetchEnd(state);
+    }
+  }
+
+  /** Pauses "prefetch every image": nothing new is queued and its queued downloads are dropped. Images already
+   * downloaded stay; starting it again carries on with the ones still missing. */
+  pausePrefetch() {
+    if (!this.prefetch.running) return;
+    this.cancelPrefetch = true;
+    const keep: Job[] = [];
+    for (const j of this.queue) {
+      if (j.prefetch) j.resolve(null);
+      else keep.push(j);
+    }
+    this.queue = keep;
   }
 }

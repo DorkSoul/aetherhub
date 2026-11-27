@@ -601,7 +601,7 @@ interface CardDataStatus {
   bulkName: string | null;
   lastError: string | null;
   cache: { files: number; bytes: number };
-  prefetch: { running: boolean; done: number; total: number };
+  prefetch: { running: boolean; paused: boolean; total: number; done: number; downloaded: number; failed: number; bytes: number; cached: number };
   queued: number;
   rulings?: number;
   rulingsUpdatedAt?: number | null;
@@ -616,7 +616,17 @@ function fmtBytes(b: number): string {
 function CardData() {
   const toast = useApp((s) => s.toast);
   const q = useQuery({ queryKey: ['carddata'], queryFn: () => api.get<CardDataStatus>('api/admin/carddata'), refetchInterval: (d) => (d.state.data?.importing || d.state.data?.prefetch.running ? 700 : 5000) });
+  const [confirmClear, setConfirmClear] = useState(false);
   const s = q.data;
+  const pf = s?.prefetch;
+  const startPrefetch = () =>
+    api
+      .post<{ total: number; cached: number }>('api/admin/images/prefetch')
+      .then((r) => {
+        toast(r.total ? `Downloading ${r.total.toLocaleString()} missing images in the background` : 'Every image is already downloaded');
+        q.refetch();
+      })
+      .catch((e) => toast(errMsg(e)));
   const pr = s?.progress;
   const pct = !pr ? 0 : pr.stage === 'done' ? 100 : pr.stage === 'indexing' ? 90 : pr.totalBytes ? Math.min(88, (pr.bytes / pr.totalBytes) * 88) : pr.stage === 'importing' ? 50 : 5;
   const stageTxt = !pr ? '' : pr.stage === 'error' ? `Failed: ${pr.message}` : pr.stage === 'done' ? `Imported ${pr.rows.toLocaleString()} printings. Search index rebuilt.` : pr.stage === 'indexing' ? 'Rebuilding the search index…' : pr.rows ? `Streaming cards into SQLite… ${pr.rows.toLocaleString()}` : 'Downloading bulk file…';
@@ -671,28 +681,57 @@ function CardData() {
           </div>
         )}
       </div>
-      <div className="row">
-        <button
-          className="tb"
-          onClick={() =>
-            api
-              .post<{ total: number }>('api/admin/images/prefetch')
-              .then((r) => toast(`Prefetching ${r.total.toLocaleString()} images in the background`))
-              .catch((e) => toast(errMsg(e)))
-          }
-        >
-          Prefetch every image
-        </button>
-        <button className="tb danger" onClick={() => api.post('api/admin/images/clear').then(() => q.refetch())}>
-          Clear image cache
-        </button>
-        {s?.prefetch.running && (
-          <span style={{ fontSize: 12.5, color: 'var(--mu)' }}>
-            Prefetching {s.prefetch.done.toLocaleString()} / {s.prefetch.total.toLocaleString()}
-          </span>
+      <div className="card-box" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="row">
+          <div className="grow">
+            <div style={{ fontSize: 14, fontWeight: 600 }}>Card images</div>
+            <div style={{ fontSize: 12.5, color: 'var(--mu)', marginTop: 2 }}>
+              Prefetching downloads every card's image now, so games never wait for one. Players' own requests still go first, and downloaded images are kept until you clear them.
+            </div>
+          </div>
+          {pf?.running ? (
+            <button className="tb" onClick={() => api.post('api/admin/images/prefetch/pause').then(() => q.refetch()).catch((e) => toast(errMsg(e)))}>
+              Pause
+            </button>
+          ) : (
+            <button className="tb pri" onClick={startPrefetch}>
+              {pf?.paused ? 'Resume prefetch' : 'Prefetch every image'}
+            </button>
+          )}
+          <button className="tb danger" disabled={!s?.cache.files} onClick={() => setConfirmClear(true)}>
+            Clear image cache
+          </button>
+        </div>
+        {pf && (pf.running || pf.paused || pf.total > 0) && (
+          <div role="progressbar" aria-label="Image prefetch" aria-valuemin={0} aria-valuemax={pf.total} aria-valuenow={pf.done}>
+            <div style={{ height: 8, borderRadius: 4, background: 'var(--surface4)', overflow: 'hidden' }}>
+              <div style={{ width: `${pf.total ? (pf.done / pf.total) * 100 : 100}%`, height: '100%', background: pf.paused ? 'var(--mu2)' : 'var(--acc)', transition: 'width .25s' }} />
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--mu)', marginTop: 6 }}>
+              {pf.total === 0
+                ? `Every image was already downloaded (${pf.cached.toLocaleString()})`
+                : `${pf.paused ? 'Paused: ' : pf.running ? '' : 'Done: '}${pf.done.toLocaleString()} of ${pf.total.toLocaleString()} missing images (${Math.floor((pf.done / pf.total) * 100)}%) · ${fmtBytes(pf.bytes)} downloaded · ${pf.cached.toLocaleString()} were already cached${pf.failed ? ` · ${pf.failed.toLocaleString()} not available` : ''}`}
+            </div>
+          </div>
         )}
       </div>
       <div style={{ fontSize: 12.5, color: 'var(--mu2)' }}>Images load through the server and are cached at normal (table) and large (preview) sizes on first request.</div>
+      {confirmClear && s && (
+        <Confirm
+          title="Clear the image cache?"
+          text={`This deletes all ${s.cache.files.toLocaleString()} downloaded card images (${fmtBytes(s.cache.bytes)}). They are downloaded from Scryfall again as cards are shown${pf?.running ? ', and the prefetch running now stops' : ''}.`}
+          confirm="Delete images"
+          danger
+          onNo={() => setConfirmClear(false)}
+          onYes={() => {
+            setConfirmClear(false);
+            api
+              .post('api/admin/images/clear')
+              .then(() => q.refetch())
+              .catch((e) => toast(errMsg(e)));
+          }}
+        />
+      )}
       <Precons />
     </div>
   );

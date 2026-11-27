@@ -155,12 +155,19 @@ export function adminRoutes(r: FastifyInstance, ctx: Ctx) {
 
   r.post('/api/admin/images/prefetch', opts, async () => {
     if (!ctx.cards.db) bad('No card data yet');
+    if (config.imageOffline) bad('Image downloads are turned off on this server (IMAGE_OFFLINE)');
     const ids = ctx.cards.db
       .prepare('SELECT p.id, p.image_faces FROM oracles o JOIN printings p ON p.id = o.default_id WHERE o.paper = 1')
       .all()
       .map((x) => [String(x.id), String(x.image_faces)]);
     void ctx.images.prefetchAll(ids);
-    return { ok: true, total: ids.length };
+    // the missing images are counted before prefetchAll first waits, so the totals are ready here
+    return { ok: true, total: ctx.images.prefetch.total, cached: ctx.images.prefetch.cached };
+  });
+
+  r.post('/api/admin/images/prefetch/pause', opts, async () => {
+    ctx.images.pausePrefetch();
+    return { ok: true };
   });
 
   r.post('/api/admin/images/clear', opts, async () => {

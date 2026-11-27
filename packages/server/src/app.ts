@@ -51,6 +51,8 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<{ f: Fa
   const app = new AppDb();
   const cards = new CardDb(cardsDbPath(config.dataDir));
   const images = new ImageCache();
+  images.onPrefetchEnd = (s) =>
+    log(`Image prefetch ${s.paused ? 'paused' : 'finished'}: ${s.downloaded.toLocaleString('en')} of ${s.total.toLocaleString('en')} missing images downloaded (${(s.bytes / 1e6).toFixed(0)} MB)${s.failed ? `, ${s.failed} not available` : ''}`, { cat: 'cards', level: s.failed && !s.paused ? 'warn' : 'info' });
   const decks = new DeckService(app, cards, new PreconService(app, cards, config.preconsFile));
   try {
     decks.refreshWarnings();
