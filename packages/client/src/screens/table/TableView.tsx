@@ -867,8 +867,15 @@ export function TableView({ onExit, title }: { onExit: () => void; title?: strin
             <span className="dot" style={{ background: ap?.color }} />
             <span style={{ fontWeight: 600, maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis' }}>{active === me && !solo ? 'Your turn' : ap?.name}</span>
           </div>
-          <PhaseStrip phase={v.turn.phase} onPick={(i) => (rules ? rules.passTo(i) : send({ type: 'phase', phase: i }))} target={rules?.endPhase ?? null} />
-          {rules?.status && <RulesStatus text={rules.status} />}
+          {/* the status sits outside the layout, to the right of the phases, so showing it never moves the turn and phase bars */}
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            <PhaseStrip phase={v.turn.phase} onPick={(i) => (rules ? rules.passTo(i) : send({ type: 'phase', phase: i }))} target={rules?.endPhase ?? null} />
+            {rules?.status && (
+              <div style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 10 }}>
+                <RulesStatus text={rules.status} />
+              </div>
+            )}
+          </div>
         </div>
         {!solo && mySeats.length > 1 && (
           <Select
