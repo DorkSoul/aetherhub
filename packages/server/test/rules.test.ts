@@ -280,9 +280,7 @@ describe.skipIf(!hasNative)('rules games (native engine)', () => {
         expect(at.over).toBeFalsy();
         const t = at.view.turn;
         expect((await req('POST', `/api/rules/games/${id}/passuntil`, { player: 0, after: late ? t - 1 : t }, cookie)).status).toBe(200);
-        // being attacked with something to do is offered on the way (and passed here); the pass stays armed
-        const combat = (s: any) => !!s.passing && s.view.active !== 0 && ['DeclareAttackers', 'DeclareBlockers'].includes(s.view.step);
-        const stop = await drive(id, [cookie], (s) => s.waiting?.kind.t === 'Priority' && !combat(s));
+        const stop = await drive(id, [cookie], (s) => s.waiting?.kind.t === 'Priority');
         expect(stop.passing).toBeNull();
         expect([stop.view.turn, stop.view.step, stop.view.active], `seed ${seed} late ${late}`).toEqual(late ? [t, at.view.step, 0] : [t + 1, 'Upkeep', 0]);
         await req('DELETE', `/api/rules/games/${id}`, undefined, cookie);

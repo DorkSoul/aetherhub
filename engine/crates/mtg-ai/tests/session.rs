@@ -115,9 +115,7 @@ fn end_turn_passes_through_the_stack_and_replays() {
             let adv = s.advance();
             let Some(d) = adv.waiting else { break };
             if let DecisionKind::Priority { .. } = d.kind {
-                // the one exception: being attacked with something to do (the last chance before blocks and before damage)
-                let attacked = matches!(s.game.step, mtg_engine::types::Step::DeclareAttackers | mtg_engine::types::Step::DeclareBlockers) && s.game.active != 0;
-                assert!(attacked || s.passing(0).is_none(), "seed {seed}: asked for priority while passing (turn {})", s.game.turn);
+                assert!(s.passing(0).is_none(), "seed {seed}: asked for priority while passing (turn {})", s.game.turn);
                 if i % 3 == 0 {
                     s.pass_until(0, s.game.turn + 1, mtg_engine::types::Step::Untap);
                     ended += 1;
@@ -508,11 +506,6 @@ fn skip_until_my_turn_stops_when_it_starts() {
                 let adv = s.advance();
                 let Some(d) = adv.waiting else { break };
                 if d.player == 0 && matches!(d.kind, DecisionKind::Priority { .. }) {
-                    if armed.is_some() && s.passing(0).is_some() && matches!(s.game.step, mtg_engine::types::Step::DeclareAttackers | mtg_engine::types::Step::DeclareBlockers) && s.game.active != 0 {
-                        // attacked with something to do: offered on the way, and the pass stays armed
-                        s.answer(0, Choice::Priority { action: None }).unwrap();
-                        continue;
-                    }
                     if armed.is_some() {
                         stopped = Some((s.game.turn, s.game.step, s.game.active));
                         break;

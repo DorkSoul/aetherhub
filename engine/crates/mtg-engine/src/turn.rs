@@ -3139,15 +3139,16 @@ impl Game {
                 skipping = true;
             }
         }
-        // combat with something to do: a defending player is offered the last chance before blocks and before damage,
-        // the attacking player the chance before damage (an "end turn" of their own passes it)
-        let combat_stop = !actions.is_empty()
+        // combat with something to do and no pass under way: a defending player is offered the last chance before blocks
+        // and before damage, the attacking player the chance before damage
+        let combat_stop = !skipping
+            && !actions.is_empty()
             && self.stack.is_empty()
             && match self.step {
                 Step::DeclareAttackers => player != self.active && self.defending_players().contains(&player),
                 Step::DeclareBlockers => {
                     if player == self.active {
-                        !skipping && self.combat.as_ref().is_some_and(|c| !c.attackers.is_empty())
+                        self.combat.as_ref().is_some_and(|c| !c.attackers.is_empty())
                     } else {
                         self.defending_players().contains(&player)
                     }

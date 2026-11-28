@@ -934,8 +934,8 @@ fn first_question_when_attacked(pass_until: Option<PassUntil>, castable: bool) -
 #[test]
 fn an_attacked_player_gets_priority_before_blocks_when_they_can_act() {
     assert_eq!(first_question_when_attacked(None, true), (Step::DeclareAttackers, true));
-    // also while passing until their own turn; the pass stays armed
-    assert_eq!(first_question_when_attacked(Some(PassUntil::PlayerTurn { player: 0, after: 1 }), true), (Step::DeclareAttackers, true));
+    // passing until their own turn: no stop, straight to blocks
+    assert_eq!(first_question_when_attacked(Some(PassUntil::PlayerTurn { player: 0, after: 1 }), true), (Step::DeclareBlockers, false));
     // nothing to cast: straight to blocks
     assert_eq!(first_question_when_attacked(None, false), (Step::DeclareBlockers, false));
 }
@@ -1719,10 +1719,10 @@ fn both_sides_of_a_combat_get_priority_after_blocks_when_they_can_act() {
     use Step::*;
     // the defender: before blocks and before damage
     assert_eq!(combat_priority_steps(0, false, None), vec![DeclareAttackers, DeclareBlockers]);
-    // ... also while passing until their own turn
-    assert_eq!(combat_priority_steps(0, false, Some(PassUntil::PlayerTurn { player: 0, after: 1 })), vec![DeclareAttackers, DeclareBlockers]);
+    // ... none while passing until their own turn
+    assert_eq!(combat_priority_steps(0, false, Some(PassUntil::PlayerTurn { player: 0, after: 1 })), Vec::<Step>::new());
     // the attacker: before damage
     assert_eq!(combat_priority_steps(0, true, None), vec![DeclareBlockers]);
-    // ... but an "end turn" of their own passes it
+    // ... none while passing to the end step
     assert_eq!(combat_priority_steps(0, true, Some(PassUntil::Step { turn: 1, step: End })), Vec::<Step>::new());
 }
