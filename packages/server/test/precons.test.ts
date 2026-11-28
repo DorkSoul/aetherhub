@@ -6,6 +6,7 @@ import type { FastifyInstance } from 'fastify';
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'aetherhub-precons-'));
 const PRECON = -12345;
+const BURN = -23456;
 const preconsFile = path.join(dir, 'precons.json');
 fs.writeFileSync(
   preconsFile,
@@ -25,6 +26,19 @@ fs.writeFileSync(
           ['main', 1, 'Sol Ring', 'ECC', '57'],
           ['main', 30, 'Forest', 'BLB', '280'],
           ['main', 1, 'No Such Card Anywhere', 'XXX', '1'],
+        ],
+      },
+      {
+        id: BURN,
+        file: 'Burn_TEST',
+        name: 'Burn Test',
+        code: 'TST',
+        type: 'Theme Deck',
+        date: '2024-01-01',
+        format: 'freeform',
+        cards: [
+          ['main', 4, 'Lightning Bolt', 'SLD', '901'],
+          ['main', 56, 'Mountain', '2ED', '298'],
         ],
       },
     ],
@@ -66,13 +80,20 @@ afterAll(async () => {
 describe('preconstructed decks', () => {
   it('are listed only after an admin switches them on, and never among the users’ decks', async () => {
     expect((await req('GET', '/api/precons', undefined, bob)).json).toEqual([]);
-    expect((await req('GET', '/api/admin/precons', undefined, admin)).json).toEqual({ enabled: false, available: 1 });
+    expect((await req('GET', '/api/admin/precons', undefined, admin)).json).toEqual({ enabled: false, available: 2 });
     expect((await req('PUT', '/api/admin/precons', { enabled: true }, bob)).status).toBe(403);
     expect((await req('PUT', '/api/admin/precons', { enabled: true }, admin)).status).toBe(200);
     const list = (await req('GET', '/api/precons', undefined, bob)).json;
-    expect(list).toHaveLength(1);
-    expect(list[0]).toMatchObject({ id: PRECON, name: 'Angelic Test', format: 'commander', cardCount: 32, colors: ['W'], precon: { type: 'Commander Deck', set: 'TST', missing: ['No Such Card Anywhere'] } });
+    expect(list).toHaveLength(2);
+    expect(list[0]).toMatchObject({ id: PRECON, name: 'Angelic Test', format: 'commander', cardCount: 32, colors: ['W'], precon: { type: 'Commander Deck', set: 'TST', missing: ['No Such Card Anywhere'], formats: ['commander'] } });
     expect((await req('GET', '/api/decks', undefined, bob)).json.some((d: { id: number }) => d.id === PRECON)).toBe(false);
+  });
+
+  it('list every format they are legal in, under the narrowest one when they have no format of their own', async () => {
+    const burn = (await req('GET', '/api/precons', undefined, bob)).json.find((d: { id: number }) => d.id === BURN);
+    expect(burn.format).toBe('modern');
+    expect(burn.precon.formats).toEqual(['modern', 'legacy', 'vintage', 'pauper']);
+    expect(ctx.decks.precons.contents(BURN)!.format).toBe('modern');
   });
 
   it('open read-only, cannot be pinned, and copy into the viewer’s decks', async () => {

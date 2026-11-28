@@ -59,6 +59,8 @@ export interface PreconInfo {
   released: string | null;
   /** cards of the printed list the card database doesn't have */
   missing: string[];
+  /** every format the deck is legal in as printed (its own `format` first); the deck lists show it under each */
+  formats: string[];
 }
 
 /** global: the owner's tag, follows the card into all their decks (Moxfield "#!tag"). deck: this deck only ("#tag"). */

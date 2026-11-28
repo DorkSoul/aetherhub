@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import type { CardDef, Deck, DeckCard, DeckSummary, PreconInfo, Section } from '@aetherhub/shared';
-import { COLORS } from '@aetherhub/shared';
+import { checkLegality, COLORS, FORMATS } from '@aetherhub/shared';
 import type { AppDb } from './db/app';
 import type { CardDb } from './db/cards';
 
@@ -22,7 +22,12 @@ interface Resolved {
   defs: Record<string, CardDef>;
   /** cards the card database doesn't have, by name */
   missing: string[];
+  /** the formats the deck is legal in, the one it is listed under first */
+  formats: string[];
 }
+
+/** Formats a bundled deck is tested against: the ones with a legality list. */
+const CHECKED = FORMATS.filter((f) => f.legalityKey);
 
 export const PRECON_OWNER = 'Pre-constructed';
 
@@ -101,17 +106,30 @@ export class PreconService {
       cards.push({ id: i + 1, section, def: 'p:' + id, qty, foil: false, tags: [], addedAt: 0, frontAsset: null, backAsset: null });
     }
     const defs = this.cards.defsByPrinting(cards.map((c) => c.def.slice(2)));
-    r = { cards: cards.filter((c) => defs[c.def]), defs, missing };
+    const found = cards.filter((c) => defs[c.def]);
+    r = { cards: found, defs, missing, formats: PreconService.legalFormats(e.format, found, defs, missing.length > 0) };
     this.resolved.set(e.id, r);
     return r;
   }
 
-  private info(e: PreconEntry, missing: string[]): PreconInfo {
-    return { type: e.type, set: e.code, released: e.date, missing };
+  /**
+   * Every format the deck passes the legality check in without a warning. A deck with cards the database doesn't have
+   * stays in its own format only. A freeform deck is listed under the first legal format instead (Standard before
+   * Pioneer before Modern ...), since that is the narrowest one.
+   */
+  static legalFormats(format: string, cards: DeckCard[], defs: Record<string, CardDef>, incomplete: boolean): string[] {
+    const legal = incomplete ? [] : CHECKED.filter((f) => !checkLegality(f.id, cards, defs).warnings.length).map((f) => f.id as string);
+    const own = format === 'freeform' && legal.length ? legal[0] : format;
+    return [own, ...legal.filter((f) => f !== own)];
+  }
+
+  private info(e: PreconEntry, r: Resolved): PreconInfo {
+    return { type: e.type, set: e.code, released: e.date, missing: r.missing, formats: r.formats };
   }
 
   private summary(e: PreconEntry): DeckSummary {
-    const { cards, defs, missing } = this.resolve(e);
+    const r = this.resolve(e);
+    const { cards, defs } = r;
     const cmd = cards.filter((c) => c.section === 'commander');
     const src = cmd.length ? cmd : cards.filter((c) => c.section === 'main');
     const cols = new Set<string>();
@@ -122,7 +140,7 @@ export class PreconService {
       ownerId: 0,
       ownerName: PRECON_OWNER,
       name: e.name,
-      format: e.format,
+      format: r.formats[0],
       folderId: null,
       colors: COLORS.filter((c) => cols.has(c)),
       cardCount: cards.filter((c) => c.section === 'main' || c.section === 'commander').reduce((n, c) => n + c.qty, 0),
@@ -130,7 +148,7 @@ export class PreconService {
       coverImg: cover || null,
       pinned: false,
       updatedAt: e.date ? Date.parse(e.date) : 0,
-      precon: this.info(e, missing),
+      precon: this.info(e, r),
     };
   }
 
@@ -171,7 +189,7 @@ export class PreconService {
   contents(id: number): { name: string; format: string; cards: DeckCard[]; defs: Record<string, CardDef> } | null {
     const e = this.load().get(id);
     if (!e) return null;
-    const { cards, defs } = this.resolve(e);
-    return { name: e.name, format: e.format, cards, defs };
+    const { cards, defs, formats } = this.resolve(e);
+    return { name: e.name, format: formats[0], cards, defs };
   }
 }

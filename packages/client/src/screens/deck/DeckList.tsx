@@ -39,6 +39,11 @@ export interface DeckLibraryPick {
 /** Deck cards rendered at first; more render as the list scrolls. */
 const PAGE = 60;
 
+/** A preconstructed deck fits every format it is legal in; any other deck only its own format. */
+function fitsFormat(d: DeckSummary, fmt: string): boolean {
+  return d.precon ? d.precon.formats.includes(fmt) : d.format === fmt;
+}
+
 export default function DeckList() {
   return <DeckLibrary />;
 }
@@ -74,7 +79,7 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
     if (isPrecon)
       return (precons.data || []).filter((d) => {
         if (ql && !`${d.name} ${d.precon?.set} ${d.precon?.type}`.toLowerCase().includes(ql)) return false;
-        if (fmt !== 'all' && d.format !== fmt) return false;
+        if (fmt !== 'all' && !fitsFormat(d, fmt)) return false;
         if (colors.length && !colors.every((c) => d.colors.includes(c))) return false;
         return true;
       });
@@ -250,7 +255,7 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                       )}
                       <div style={{ position: 'relative' }}>
                         <DeckArt deck={d} height={128} />
-                        <div style={{ position: 'absolute', left: 12, top: 10, fontSize: 11, color: '#f1ece4', background: 'rgba(16,17,20,.72)', borderRadius: 5, padding: '2px 7px' }}>{formatName(d.format)}</div>
+                        <div style={{ position: 'absolute', left: 12, top: 10, fontSize: 11, color: '#f1ece4', background: 'rgba(16,17,20,.72)', borderRadius: 5, padding: '2px 7px' }}>{formatName(fmt !== 'all' && fitsFormat(d, fmt) ? fmt : d.format)}</div>
                         {!pc && (
                           <button
                             aria-label={d.pinned ? 'Unpin (pinned decks are offered first in the lobby)' : 'Pin as favourite'}
@@ -302,7 +307,7 @@ export function DeckLibrary({ pick }: { pick?: DeckLibraryPick }) {
                           <button className="mbtn" onClick={() => pick.onOpen(d.id)}>
                             View
                           </button>
-                          {pick.format && d.format !== pick.format && <span style={{ marginLeft: 'auto', fontSize: 11, color: '#e0a84f' }}>{formatName(d.format)}</span>}
+                          {pick.format && !fitsFormat(d, pick.format) && <span style={{ marginLeft: 'auto', fontSize: 11, color: '#e0a84f' }}>{formatName(d.format)}</span>}
                         </div>
                       ) : (
                       <div className="acts row" style={{ position: 'relative', zIndex: 2, gap: 6, padding: '0 14px 12px', opacity: 0.75 }}>
